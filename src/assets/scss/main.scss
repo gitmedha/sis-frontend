@@ -1,0 +1,40 @@
+@import "../../../node_modules/nprogress/nprogress.css";
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../../node_modules/react-datepicker/dist/react-datepicker.min.css";
+@import "variables";
+@import "typography";
+@import "badge";
+@import "card";
+@import "accrodian";
+@import "sidebar";
+@import "table";
+@import "utils";
+@import "section";
+@import "tab-picker";
+@import "datepicker";
+@import "avatar";
+@import "buttons";
+@import "progress";
+@import "input";
+@import "grid";
+
+body {
+  font-family: Latto-Regular !important;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  font-family: Latto-Regular !important;
+}
+
+.sidebar {
+  width: 256px;
+  flex-shrink: 0;
+  border-right: 1px solid #ddd;
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+}

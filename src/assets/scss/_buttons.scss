@@ -1,0 +1,22 @@
+.btn {
+  border-radius: 5px !important;
+  outline: none;
+  border: none;
+  &-regular {
+    font-size: 16px;
+    border-radius: 5px;
+    font-family: Latto-Bold;
+    padding: 5px 50px !important;
+  }
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited {
+  outline: none;
+  word-spacing: 3px;
+  text-transform: uppercase;
+  font-family: Latto-Regular;
+  background-color: $custom-primary !important;
+}
