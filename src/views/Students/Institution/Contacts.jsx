@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { Form, Input } from "../../../utils/Form";
+import { queryBuilder } from "./instituteActions";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
 import Table from "../../../components/content/Table";
 import { ContactValidations } from "../../../validations";
+import { UPADTE_INSTITUTIONS } from "../../../graphql";
+import nProgress from "nprogress";
 
 const AddContactModal = (props) => {
   let { onHide } = props;
@@ -11,13 +14,11 @@ const AddContactModal = (props) => {
   const newContact = {
     phone: "",
     email: "",
-    last_name: "",
-    first_name: "",
+    full_name: "",
     designation: "",
   };
 
-  const onSubmit = (data) => {
-    console.log("NEW_CONTACT_DATA", data);
+  const onSubmit = async (data) => {
     onHide(data);
   };
 
@@ -46,18 +47,9 @@ const AddContactModal = (props) => {
             <div className="col-md-6 col-sm-12 mt-2">
               <Input
                 control="input"
-                name="first_name"
-                label="First Name"
-                placeholder="First Name"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                name="last_name"
-                label="Last Name"
-                placeholder="Last Name"
+                name="full_name"
+                label="Name"
+                placeholder="Name"
                 className="form-control"
               />
             </div>
@@ -110,8 +102,33 @@ const AddContactModal = (props) => {
   );
 };
 
-const Contacts = ({ contacts }) => {
+const Contacts = ({ contacts, id }) => {
   const [modalShow, setModalShow] = useState(false);
+
+  const hideUpdateContactModal = async (data) => {
+    if (data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    nProgress.start();
+    try {
+      let resp = await queryBuilder({
+        query: UPADTE_INSTITUTIONS,
+        variables: {
+          id,
+          data: {
+            contacts: [data, ...contacts],
+          },
+        },
+      });
+      console.log(resp, "CONATCT_UPDATE_RESPOSE");
+    } catch (err) {
+      console.log("UPDATE_CONTACT_ERR", err);
+    } finally {
+      nProgress.done();
+    }
+  };
 
   return (
     <div className="container-fluid my-3">
@@ -149,7 +166,7 @@ const Contacts = ({ contacts }) => {
           Add NEW CONTACT
         </button>
       </div>
-      <AddContactModal show={modalShow} onHide={() => setModalShow(false)} />
+      <AddContactModal show={modalShow} onHide={hideUpdateContactModal} />
     </div>
   );
 };

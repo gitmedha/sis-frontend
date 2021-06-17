@@ -1,4 +1,5 @@
 import { Form, Input } from "../../../utils/Form";
+import NP from "nprogress";
 import {
   AddressValidations,
   ContactValidations,
@@ -12,9 +13,9 @@ import { Modal } from "react-bootstrap";
 const AddNewInstitute = () => {
   const [address, setAddress] = useState({});
   const [contacts, setContacts] = useState([]);
-  const [institute, setIntstituteData] = useState({});
   const [modalContactShow, setModalContactShow] = useState(false);
   const [modalAddressShow, setModalAddressShow] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const statusOpts = [
     { key: "Active", value: "active" },
@@ -54,15 +55,19 @@ const AddNewInstitute = () => {
 
   const onSubmit = async (data) => {
     console.log("NEW_INSTITUTE_DATA", data);
-    setIntstituteData(data);
+    setLoading(true);
+    NP.start();
     try {
       let resp = await queryBuilder({
         query: CREATE_NEW_INSTITUTE,
-        variables: { ...institute, contacts, address },
+        variables: { ...data, contacts, address },
       });
       console.log(resp);
     } catch (err) {
       console.log("ERR_ADD", err);
+    } finally {
+      setLoading(false);
+      NP.done();
     }
   };
 
@@ -187,9 +192,9 @@ const AddNewInstitute = () => {
             </button>
           </Form>
         </div>
-        <pre>
+        {/* <pre>
           {JSON.stringify({ ...institute, contacts, address }, null, 2)}
-        </pre>
+        </pre> */}
       </div>
       <ContactModal show={modalContactShow} onHide={hideContactModal} />
       <AddAddressModal show={modalAddressShow} onHide={hideAddressModal} />
@@ -203,8 +208,7 @@ const ContactModal = (props) => {
   const newContact = {
     phone: "",
     email: "",
-    last_name: "",
-    first_name: "",
+    full_name: "",
     designation: "",
   };
 
@@ -235,18 +239,9 @@ const ContactModal = (props) => {
             <div className="col-md-6 col-sm-12 mt-2">
               <Input
                 control="input"
-                name="first_name"
-                label="First Name"
-                placeholder="First Name"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                name="last_name"
-                label="Last Name"
-                placeholder="Last Name"
+                label="Name"
+                name="full_name"
+                placeholder="Name"
                 className="form-control"
               />
             </div>

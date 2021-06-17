@@ -44,7 +44,7 @@ mutation CREATE_INSTITUTIONS(
   $phone: String!
   $email: String!
   $assigned_to: ID!
-  $status: ENUM_INSTITUTIONS_STATUS!
+  $status: String!
   $contacts: [ComponentCommonContactInput!]!
   $address: ComponentCommonAddressInput!
   $logo: ID
@@ -144,8 +144,7 @@ mutation UPDATE_INSTITUTIONS(
           medha_area
         }
         contacts {
-          first_name
-          last_name
+          full_name
           email
           phone
         }

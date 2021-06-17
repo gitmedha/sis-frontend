@@ -8,10 +8,7 @@ const EditAddressModal = (props) => {
 
   const [newAddress, setNewAddress] = useState(data);
 
-  const onSubmit = (data) => {
-    console.log("NEW_ADDRESS_DATA", data);
-    onHide(data);
-  };
+  const onSubmit = (data) => onHide(data);
 
   return (
     <Modal

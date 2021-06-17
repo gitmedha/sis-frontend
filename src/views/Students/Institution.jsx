@@ -36,16 +36,18 @@ const Institute = (props) => {
 
   const { address, contacts, ...rest } = instituteData;
 
+  console.log("REST", rest);
+
   return (
     <>
       <Collapsible opened={true} title="Details">
         <Details {...rest} />
       </Collapsible>
       <Collapsible title="Contacts">
-        <Contacts contacts={contacts} />
+        <Contacts contacts={contacts} id={rest.id} />
       </Collapsible>
       <Collapsible title="Address">
-        <Address {...address} />
+        <Address {...address} id={rest.id} />
       </Collapsible>
     </>
   );

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 const name = Yup.string().required("Name is required.");
-const first_name = Yup.string().required("First name is required.");
+const full_name = Yup.string().required("First name is required.");
 const last_name = Yup.string().required("Last name is required.");
 const status = Yup.string().required("Status is required.");
 const type = Yup.string().required("College type is required.");
@@ -41,8 +41,7 @@ export const AddressValidations = Yup.object({
 export const ContactValidations = Yup.object({
   email,
   phone,
-  last_name,
-  first_name,
+  full_name,
   designation,
 });
 
