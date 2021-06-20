@@ -3,14 +3,24 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 
-const CollapsiblePanels = ({ children, title, badge, opened = false }) => {
+const CollapsiblePanels = ({
+  title,
+  badge,
+  children,
+  opened = false,
+  titleContent = null,
+}) => {
   const [isOpen, setOpen] = useState(opened);
 
   return (
     <section className="no-border p-2 mt-2">
       <div className="section-header d-flex justify-content-between px-2">
         <div className="d-flex justify-content-center align-items-center">
-          <h1 className="bebas-thick text--primary mr-3">{title}</h1>
+          {titleContent ? (
+            titleContent
+          ) : (
+            <h1 className="bebas-thick text--primary mr-3">{title}</h1>
+          )}
           {badge && (
             <div className="section-badge d-flex justify-content-center align-items-center">
               {badge}
@@ -44,7 +54,7 @@ const CollapsiblePanels = ({ children, title, badge, opened = false }) => {
 CollapsiblePanels.propTypes = {
   opened: PropTypes.bool,
   children: PropTypes.node,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 export default CollapsiblePanels;

@@ -6,6 +6,7 @@ import Address from "./Institution/Address";
 import Skeleton from "react-loading-skeleton";
 import { GET_INSTITUTE } from "../../graphql";
 import Contacts from "./Institution/Contacts";
+import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 
 const Institute = (props) => {
@@ -56,7 +57,12 @@ const Institute = (props) => {
   } else {
     return (
       <>
-        <Collapsible opened={true} title={rest.name}>
+        <Collapsible
+          opened={true}
+          titleContent={
+            <TitleWithLogo title={rest.name} logo={rest.logo} done={done} />
+          }
+        >
           <Details {...rest} done={done} />
         </Collapsible>
         <Collapsible title="Contacts">
