@@ -1,3 +1,4 @@
+import api from "../../apis";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
@@ -14,7 +15,7 @@ const Avatar = ({ logo, name }) => {
           alt={`${name}-logo`}
         />
       ) : (
-        <div className="d-flex justify-content-center align-items-center avatar avatar-default">
+        <div className="flex-row-centered avatar avatar-default">
           <FaSchool size={25} />
         </div>
       )}
@@ -23,14 +24,22 @@ const Avatar = ({ logo, name }) => {
   );
 };
 
-export const TitleWithLogo = ({ logo, title, done }) => {
+export const TitleWithLogo = ({ logo, title, done, query }) => {
   const [modalShow, setModalShow] = useState(false);
 
-  const modalCloseHandler = (data) => {
+  const modalCloseHandler = async (id) => {
     if (data.isTrusted) {
       setModalShow(false);
       return;
     }
+
+    let { data } = await api.post("/graphql", {
+      query,
+      variables: {
+        logo: id,
+      },
+    });
+
     setModalShow(false);
   };
 
@@ -50,7 +59,7 @@ export const TitleWithLogo = ({ logo, title, done }) => {
         <div
           style={{ cursor: "pointer" }}
           onClick={() => setModalShow(true)}
-          className="d-flex justify-content-center align-items-center avatar avatar-default"
+          className="flex-row-centered avatar avatar-default"
         >
           <FaSchool size={25} />
         </div>
@@ -86,7 +95,10 @@ const ChangeAvatarModal = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-light">
-        <div className="d-flex justify-content-center align-items-center">
+        <div
+          style={{ width: "100%", height: "200px" }}
+          className="flex-row-centered"
+        >
           <ImageUploader handler={handler} />
         </div>
       </Modal.Body>

@@ -44,3 +44,20 @@
   @extend .align-items-center;
   @extend .justify-content-center;
 }
+
+.flex-row-centered {
+  @extend .d-flex;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.flex-col-centered {
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.wrapped {
+  flex-wrap: wrap;
+}

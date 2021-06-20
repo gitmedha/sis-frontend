@@ -15,16 +15,14 @@ const CollapsiblePanels = ({
   return (
     <section className="no-border p-2 mt-2">
       <div className="section-header d-flex justify-content-between px-2">
-        <div className="d-flex justify-content-center align-items-center">
+        <div className="flex-row-centered">
           {titleContent ? (
             titleContent
           ) : (
             <h1 className="bebas-thick text--primary mr-3">{title}</h1>
           )}
           {badge && (
-            <div className="section-badge d-flex justify-content-center align-items-center">
-              {badge}
-            </div>
+            <div className="section-badge flex-row-centered">{badge}</div>
           )}
         </div>
         <button className="section-toggle" onClick={() => setOpen(!isOpen)}>
