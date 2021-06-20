@@ -50,7 +50,11 @@ export const NewInstituteValidations = Yup.object({
   type,
   email,
   phone,
+  state,
   status,
   website,
+  pin_code,
+  medha_area,
   assigned_to,
+  address_line,
 });

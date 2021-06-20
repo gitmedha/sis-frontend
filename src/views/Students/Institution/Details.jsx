@@ -1,7 +1,10 @@
 import { useState } from "react";
+import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
+import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
 import Badge from "../../../components/content/Badge";
+import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
 
 const UpdateInstituteDetails = (props) => {
@@ -14,8 +17,7 @@ const UpdateInstituteDetails = (props) => {
   ];
 
   const onSubmit = (data) => {
-    console.log("NEW_DETAILS_DATA", data);
-    onHide();
+    onHide(data);
   };
 
   const statusOpts = [
@@ -123,18 +125,37 @@ const UpdateInstituteDetails = (props) => {
 };
 
 const Details = (props) => {
-  console.log(props, "DATAT");
-  const {
-    name,
-    phone,
-    assigned_to,
-    website,
-    email,
-    status,
-    // type = "Government",
-  } = props;
+  const { name, phone, assigned_to, website, email, status, type, done, id } =
+    props;
 
   const [modalShow, setModalShow] = useState(false);
+
+  const hideUpdateModal = async (data) => {
+    console.log("PAYLOAD", data);
+
+    if (data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    nProgress.start();
+    try {
+      let resp = await queryBuilder({
+        query: UPADTE_INSTITUTIONS,
+        variables: {
+          id,
+          data,
+        },
+      });
+      console.log(resp, "DETAILS_UPDATE_RESPOSE");
+    } catch (err) {
+      console.log("UPDATE_DETAILS_ERR", err);
+    } finally {
+      nProgress.done();
+      done();
+    }
+    setModalShow(false);
+  };
 
   return (
     <div className="container-fluid my-3">
@@ -173,7 +194,7 @@ const Details = (props) => {
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge type={"gov"} text={"Government College"} />
+          <Badge type={"gov"} text={type} />
         </div>
       </div>
       <div className="row">
@@ -187,10 +208,10 @@ const Details = (props) => {
         </div>
       </div>
       <UpdateInstituteDetails
-        show={modalShow}
-        onHide={() => setModalShow(false)}
         {...props}
+        show={modalShow}
         type={"governmnet"}
+        onHide={hideUpdateModal}
       />
     </div>
   );

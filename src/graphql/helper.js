@@ -20,3 +20,16 @@ query GET_PICKLIST_VALUES(
   "field": "type"
 }
 */
+
+export const IMAGE_UPLOADER = `
+mutation UPLOAD_FILE(
+  $file: Upload!
+) {
+  upload(
+    file: $file
+  ) {
+    id
+    url
+  }
+}
+`;

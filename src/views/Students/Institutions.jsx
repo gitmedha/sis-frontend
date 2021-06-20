@@ -1,14 +1,16 @@
 import NP from "nprogress";
 import api from "../../apis";
+import {
+  TableLink,
+  BadgeRenderer,
+  AvatarRenderer,
+} from "../../components/content/AgGridUtils";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { GET_MY_INSTITUTES } from "../../graphql";
-import Table from "../../components/content/Table";
-import Badge from "../../components/content/Badge";
-import Avatar from "../../components/content/Avatar";
+import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import TabPicker from "../../components/content/TabPicker";
-import { FaAngleDoubleRight, FaLongArrowAltDown } from "react-icons/fa";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -16,6 +18,13 @@ const tabPickerOptions = [
   { title: "My State", key: "test-3" },
   { title: "All Area", key: "test-4" },
 ];
+
+const cellStyle = {
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+  justifyContent: "center",
+};
 
 const Institutions = () => {
   const history = useHistory();
@@ -48,8 +57,6 @@ const Institutions = () => {
     }
   };
 
-  const viewInstitute = ({ id }) => history.push(`/institution/${id}`);
-
   useEffect(() => {
     getAllInstitutes();
   }, []);
@@ -66,54 +73,55 @@ const Institutions = () => {
         </button>
       </div>
       {!isLoading ? (
-        <Table>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">
-                Name
-                <FaLongArrowAltDown size={16} style={{ marginLeft: "10px" }} />
-              </th>
-              <th scope="col">
-                Assigned To{" "}
-                <FaLongArrowAltDown size={16} style={{ marginLeft: "10px" }} />
-              </th>
-              <th scope="col">
-                Status{" "}
-                <FaLongArrowAltDown size={16} style={{ marginLeft: "10px" }} />
-              </th>
-              <th scope="col">
-                Type{" "}
-                <FaLongArrowAltDown size={16} style={{ marginLeft: "10px" }} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {institutions.map((institute, index) => (
-              <tr key={institute.id}>
-                <th scope="row">{index + 1}</th>
-                <td>
-                  <Avatar {...institute} />
-                </td>
-                <td>@mdo</td>
-                <td>
-                  <Badge type={institute.status} text={institute.status} />
-                </td>
-                <td>
-                  <Badge type={"pvt"} text={"ITI"} />
-                </td>
-                <td>
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => viewInstitute(institute)}
-                  >
-                    <FaAngleDoubleRight size={18} color={"#257b69"} />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <div
+          className="ag-theme-alpine"
+          style={{ height: "50vh", width: "85vw" }}
+        >
+          <AgGridReact
+            rowHeight={80}
+            rowData={institutions}
+            frameworkComponents={{
+              link: TableLink,
+              badgeRenderer: BadgeRenderer,
+              avatarRenderer: AvatarRenderer,
+            }}
+          >
+            <AgGridColumn
+              sortable
+              width={300}
+              field="name"
+              headerName="Name"
+              cellRenderer="avatarRenderer"
+            />
+            <AgGridColumn
+              sortable
+              width={300}
+              cellStyle={cellStyle}
+              headerName="Assingned To"
+              field="assigned_to.username"
+            />
+            <AgGridColumn
+              sortable
+              width={240}
+              field="status"
+              headerName="Status"
+              cellRenderer="badgeRenderer"
+            />
+            <AgGridColumn
+              sortable
+              field="type"
+              headerName="Type"
+              cellRenderer="badgeRenderer"
+            />
+            <AgGridColumn
+              field="id"
+              width={70}
+              headerName=""
+              cellRenderer="link"
+              cellRendererParams={{ to: "institution" }}
+            />
+          </AgGridReact>
+        </div>
       ) : (
         <Skeleton count={3} height={50} />
       )}

@@ -1,12 +1,12 @@
 import { useState } from "react";
+import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
 import Table from "../../../components/content/Table";
-import { ContactValidations } from "../../../validations";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
-import nProgress from "nprogress";
+import { ContactValidations } from "../../../validations";
 
 const AddContactModal = (props) => {
   let { onHide } = props;
@@ -102,7 +102,7 @@ const AddContactModal = (props) => {
   );
 };
 
-const Contacts = ({ contacts, id }) => {
+const Contacts = ({ contacts, id, done }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const hideUpdateContactModal = async (data) => {
@@ -127,6 +127,7 @@ const Contacts = ({ contacts, id }) => {
       console.log("UPDATE_CONTACT_ERR", err);
     } finally {
       nProgress.done();
+      done();
     }
   };
 

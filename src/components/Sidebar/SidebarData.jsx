@@ -32,7 +32,7 @@ export const SidebarData = [
   },
   {
     title: "Students",
-    path: "/students",
+    path: "/institutions",
     icon: <FaUserGraduate size={20} color={"#808080"} />,
     iconClosed: <FaAngleDown color={"#808080"} />,
     iconOpened: <FaAngleUp color={"#808080"} />,

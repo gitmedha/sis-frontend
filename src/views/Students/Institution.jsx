@@ -1,14 +1,15 @@
 import NP from "nprogress";
 import api from "../../apis";
 import { useState, useEffect } from "react";
-import { GET_INSTITUTE } from "../../graphql";
-import Collapsible from "../../components/content/CollapsiblePanels";
 import Details from "./Institution/Details";
-import Contacts from "./Institution/Contacts";
 import Address from "./Institution/Address";
+import Skeleton from "react-loading-skeleton";
+import { GET_INSTITUTE } from "../../graphql";
+import Contacts from "./Institution/Contacts";
+import Collapsible from "../../components/content/CollapsiblePanels";
 
 const Institute = (props) => {
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const [instituteData, setInstituteData] = useState({});
 
   useEffect(() => {
@@ -34,23 +35,39 @@ const Institute = (props) => {
     }
   };
 
+  const done = () => getThisInstitute();
+
   const { address, contacts, ...rest } = instituteData;
 
   console.log("REST", rest);
 
-  return (
-    <>
-      <Collapsible opened={true} title="Details">
-        <Details {...rest} />
-      </Collapsible>
-      <Collapsible title="Contacts">
-        <Contacts contacts={contacts} id={rest.id} />
-      </Collapsible>
-      <Collapsible title="Address">
-        <Address {...address} id={rest.id} />
-      </Collapsible>
-    </>
-  );
+  if (isLoading) {
+    return (
+      <div className="container-fluid py-4">
+        <Skeleton count={1} height={30} />
+        <div style={{ height: "10px" }} />
+        <Skeleton count={1} height={30} />
+        <div style={{ height: "10px" }} />
+        <Skeleton count={1} height={30} />
+        <div style={{ height: "10px" }} />
+        <Skeleton count={1} height={30} />
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <Collapsible opened={true} title={rest.name}>
+          <Details {...rest} done={done} />
+        </Collapsible>
+        <Collapsible title="Contacts">
+          <Contacts contacts={contacts} id={rest.id} done={done} />
+        </Collapsible>
+        <Collapsible title="Address">
+          <Address {...address} id={rest.id} done={done} />
+        </Collapsible>
+      </>
+    );
+  }
 };
 
 export default Institute;

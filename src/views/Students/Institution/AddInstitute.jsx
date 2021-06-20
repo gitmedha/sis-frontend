@@ -1,21 +1,20 @@
-import { Form, Input } from "../../../utils/Form";
 import NP from "nprogress";
 import {
-  AddressValidations,
   ContactValidations,
   NewInstituteValidations,
 } from "../../../validations";
 import { useState } from "react";
+import { Modal } from "react-bootstrap";
+import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
 import { CREATE_NEW_INSTITUTE } from "../../../graphql";
-import { Modal } from "react-bootstrap";
+import ImageUploader from "../../../components/content/ImageUploader";
 
 const AddNewInstitute = () => {
-  const [address, setAddress] = useState({});
+  const [logo, setLogo] = useState(null);
   const [contacts, setContacts] = useState([]);
-  const [modalContactShow, setModalContactShow] = useState(false);
-  const [modalAddressShow, setModalAddressShow] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [modalContactShow, setModalContactShow] = useState(false);
 
   const statusOpts = [
     { key: "Active", value: "active" },
@@ -24,7 +23,7 @@ const AddNewInstitute = () => {
 
   const institutionTypeOpts = [
     { key: "Private", value: "private" },
-    { key: "Government", value: "governmnet" },
+    { key: "Government", value: "government" },
     { key: "ITI", value: "iti" },
   ];
 
@@ -49,7 +48,11 @@ const AddNewInstitute = () => {
     email: "",
     phone: "",
     status: "",
+    state: "",
     website: "",
+    pin_code: "",
+    medha_area: "",
+    address_line: "",
     assigned_to: assigneeOpts[0].value,
   };
 
@@ -58,9 +61,23 @@ const AddNewInstitute = () => {
     setLoading(true);
     NP.start();
     try {
+      let payload = {
+        ...data,
+        address: {
+          state: data.state,
+          pin_code: data.pin_code,
+          medha_area: data.medha_area,
+          address_line: data.address_line,
+        },
+      };
+
+      if (logo) {
+        payload.logo = logo;
+      }
+
       let resp = await queryBuilder({
         query: CREATE_NEW_INSTITUTE,
-        variables: { ...data, contacts, address },
+        variables: { ...payload, contacts },
       });
       console.log(resp);
     } catch (err) {
@@ -80,14 +97,7 @@ const AddNewInstitute = () => {
     setModalContactShow(false);
   };
 
-  const hideAddressModal = (data) => {
-    if (data.isTrusted) {
-      setModalAddressShow(false);
-      return;
-    }
-    setAddress(data);
-    setModalAddressShow(false);
-  };
+  const logoUploadHandler = ({ id }) => setLogo(id);
 
   return (
     <div className="card">
@@ -96,6 +106,11 @@ const AddNewInstitute = () => {
       </div>
       <div className="card-body py-5">
         <div className="container">
+          <div className="row">
+            <div className="col-md-4">
+              <ImageUploader handler={logoUploadHandler} />
+            </div>
+          </div>
           <Form
             onSubmit={onSubmit}
             initialValues={instituteData}
@@ -170,6 +185,44 @@ const AddNewInstitute = () => {
                 />
               </div>
             </div>
+            <div className="row">
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  label="Address"
+                  name="address_line"
+                  placeholder="Address"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="state"
+                  label="State"
+                  control="input"
+                  placeholder="State"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  name="medha_area"
+                  label="Medha Area"
+                  className="form-control"
+                  placeholder="Medha Area"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  name="pin_code"
+                  label="Pin Code"
+                  placeholder="Pin Code"
+                  className="form-control"
+                />
+              </div>
+            </div>
             <div className="d-flex mt-2 py-2">
               <button
                 type="button"
@@ -178,26 +231,14 @@ const AddNewInstitute = () => {
               >
                 ADD CONTACT
               </button>
-              <div style={{ width: "20px" }} />
-              <button
-                type="button"
-                className="btn btn-secondary btn-regular"
-                onClick={() => setModalAddressShow(true)}
-              >
-                ADD ADDRESS
-              </button>
             </div>
             <button type="submit" className="btn btn-primary btn-regular mt-3">
               Add Institution
             </button>
           </Form>
         </div>
-        {/* <pre>
-          {JSON.stringify({ ...institute, contacts, address }, null, 2)}
-        </pre> */}
       </div>
       <ContactModal show={modalContactShow} onHide={hideContactModal} />
-      <AddAddressModal show={modalAddressShow} onHide={hideAddressModal} />
     </div>
   );
 };
@@ -294,95 +335,6 @@ const ContactModal = (props) => {
   );
 };
 
-const AddAddressModal = (props) => {
-  const newAddress = {
-    address_line: "",
-    medha_area: "",
-    pin_code: "",
-    state: "",
-  };
-
-  let { onHide } = props;
-  const onSubmit = (data) => onHide(data);
-
-  return (
-    <Modal
-      {...props}
-      centered
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-    >
-      <Modal.Header className="bg-light">
-        <Modal.Title
-          id="contained-modal-title-vcenter"
-          className="text--primary latto-bold"
-        >
-          Add Address
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="bg-light">
-        <Form
-          onSubmit={onSubmit}
-          initialValues={newAddress}
-          validationSchema={AddressValidations}
-        >
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                label="Address"
-                name="address_line"
-                placeholder="Address"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="state"
-                label="State"
-                control="input"
-                placeholder="State"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                name="medha_area"
-                label="Medha Area"
-                className="form-control"
-                placeholder="Medha Area"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                name="pin_code"
-                label="Pin Code"
-                placeholder="Pin Code"
-                className="form-control"
-              />
-            </div>
-          </div>
-          <div className="row mt-3 py-3">
-            <div className="d-flex justify-content-end">
-              <button
-                type="button"
-                onClick={onHide}
-                className="btn btn-secondary btn-regular mr-2"
-              >
-                CLOSE
-              </button>
-              <div style={{ width: "20px" }}></div>
-              <button className="btn btn-primary btn-regular" type="submit">
-                Add Address
-              </button>
-            </div>
-          </div>
-        </Form>
-      </Modal.Body>
-    </Modal>
-  );
-};
+// const ContactList = () => {};
 
 export default AddNewInstitute;

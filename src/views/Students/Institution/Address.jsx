@@ -1,6 +1,9 @@
+import np from "nprogress";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
+import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { AddressValidations } from "../../../validations";
 
 const EditAddressModal = (props) => {
@@ -90,8 +93,34 @@ const EditAddressModal = (props) => {
   );
 };
 
-const Address = ({ address_line, medha_area, pin_code, state }) => {
+const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
   const [modalShow, setModalShow] = useState(false);
+
+  const hideModal = async (data) => {
+    if (data.target) {
+      setModalShow(false);
+      return;
+    }
+    setModalShow(false);
+    np.start();
+    try {
+      let resp = await queryBuilder({
+        query: UPADTE_INSTITUTIONS,
+        variables: {
+          id,
+          data: {
+            address: data,
+          },
+        },
+      });
+      console.log("UPDATE_ADDRESS_RESPONSE", resp);
+    } catch (err) {
+      console.log("UPDATE_ADDRESS_ERR", err);
+    } finally {
+      np.done();
+      done();
+    }
+  };
 
   return (
     <div className="container-fluid my-3">
@@ -122,7 +151,7 @@ const Address = ({ address_line, medha_area, pin_code, state }) => {
       </div>
       <EditAddressModal
         show={modalShow}
-        onHide={() => setModalShow(false)}
+        onHide={hideModal}
         data={{ address_line, medha_area, pin_code, state }}
       />
     </div>

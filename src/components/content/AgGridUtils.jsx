@@ -1,3 +1,5 @@
+import Avatar from "./Avatar";
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleDoubleRight } from "react-icons/fa";
 
@@ -40,6 +42,36 @@ const colorRenderer = (value) => {
         color: "#F84A00",
         backgroundColor: "#FFD2BF",
       };
+    case "active":
+      return {
+        color: "#0EC62B",
+        backgroundColor: "#B2FFBF",
+        textTransform: "capitalize",
+      };
+    case "inactive":
+      return {
+        color: "#FF3737",
+        backgroundColor: "#FFCDCD",
+        textTransform: "capitalize",
+      };
+    case "government":
+      return {
+        color: "#3D29B6",
+        backgroundColor: "#E7E3FF",
+        textTransform: "capitalize",
+      };
+    case "iti":
+      return {
+        color: "#FCA600",
+        backgroundColor: "#FFEAC1",
+        textTransform: "capitalize",
+      };
+    case "private":
+      return {
+        color: "#62636C",
+        backgroundColor: "#DCDCDC",
+        textTransform: "capitalize",
+      };
   }
 };
 
@@ -55,6 +87,10 @@ export const BadgeRenderer = ({ value }) => {
       {value}
     </div>
   );
+};
+
+export const AvatarRenderer = (props) => {
+  return <Avatar name={props.data.name} logo={props.data.logo} />;
 };
 
 export const TableLink = ({ value, to }) => {

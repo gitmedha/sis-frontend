@@ -12,6 +12,38 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
   ) {
     id
     name
+    logo{
+      url
+    }
+    assigned_to{
+      id
+      username
+    }
+    status
+    assigned_to {
+      id
+      email
+    }
+    type
+    created_at
+  }
+}
+`;
+
+export const GET_MY_INSTITUTE = `
+query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
+  institutions(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      assigned_to: { 
+        id: $id
+      }
+    }
+  ) {
+    id
+    name
     contacts{
       id
       email
@@ -45,6 +77,7 @@ mutation CREATE_INSTITUTIONS(
   $email: String!
   $assigned_to: ID!
   $status: String!
+  $type: String!
   $contacts: [ComponentCommonContactInput!]!
   $address: ComponentCommonAddressInput!
   $logo: ID
@@ -53,24 +86,26 @@ mutation CREATE_INSTITUTIONS(
     input: {
       data: {
         name: $name
-        website: $website
-        assigned_to: $assigned_to
+        logo: $logo
+        type: $type
         phone: $phone
         email: $email
         status: $status
+        website: $website
         address: $address
         contacts: $contacts
-        logo: $logo
+        assigned_to: $assigned_to
       }
     }
   ) {
     institution {
       id
       name
-      website
+      type
       phone
-      status
       email
+      status
+      website
       logo{
         url
       }
