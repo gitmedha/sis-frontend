@@ -24,11 +24,11 @@ const Avatar = ({ logo, name }) => {
   );
 };
 
-export const TitleWithLogo = ({ logo, title, done, query }) => {
+export const TitleWithLogo = ({ logo, title, done, query, id }) => {
   const [modalShow, setModalShow] = useState(false);
 
-  const modalCloseHandler = async (id) => {
-    if (data.isTrusted) {
+  const modalCloseHandler = async (logoId) => {
+    if (id.isTrusted) {
       setModalShow(false);
       return;
     }
@@ -36,11 +36,12 @@ export const TitleWithLogo = ({ logo, title, done, query }) => {
     let { data } = await api.post("/graphql", {
       query,
       variables: {
-        logo: id,
+        data: { logo: logoId },
+        id,
       },
     });
-
     setModalShow(false);
+    done();
   };
 
   return (

@@ -6,6 +6,7 @@ import Address from "./Institution/Address";
 import Skeleton from "react-loading-skeleton";
 import { GET_INSTITUTE } from "../../graphql";
 import Contacts from "./Institution/Contacts";
+import { UPADTE_INSTITUTIONS } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 
@@ -60,7 +61,13 @@ const Institute = (props) => {
         <Collapsible
           opened={true}
           titleContent={
-            <TitleWithLogo title={rest.name} logo={rest.logo} done={done} />
+            <TitleWithLogo
+              done={done}
+              id={rest.id}
+              logo={rest.logo}
+              title={rest.name}
+              query={UPADTE_INSTITUTIONS}
+            />
           }
         >
           <Details {...rest} done={done} />

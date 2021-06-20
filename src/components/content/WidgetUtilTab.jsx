@@ -11,12 +11,10 @@ const TabPicker = () => {
     { title: "All", key: "all" },
   ]);
 
-  const [activeTab, setActive] = useState(tabs[0].key);
-
-  const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
-
+  const [activeTab, setActive] = useState(tabs[0].key);
   const [pickerOpen, openDatePicker] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
 
   const changeTab = ({ key }) => {
     if (key === "date") {
