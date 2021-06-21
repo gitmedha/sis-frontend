@@ -4,6 +4,7 @@ import Select from "./Select";
 import Textarea from "./Textarea";
 import PropTypes from "prop-types";
 import DatePicker from "./DatePicker";
+import SelectLookup from "./SelectLookup";
 import CheckboxGroup from "./CheckboxGroup";
 
 const FormController = (props) => {
@@ -22,6 +23,8 @@ const FormController = (props) => {
       return <CheckboxGroup {...rest} />;
     case "datepicker":
       return <DatePicker {...rest} />;
+    case "lookup":
+      return <SelectLookup {...rest} />;
     default:
       return null;
   }

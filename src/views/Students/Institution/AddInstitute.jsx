@@ -3,16 +3,18 @@ import {
   ContactValidations,
   NewInstituteValidations,
 } from "../../../validations";
-import { useState } from "react";
 import { Modal } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
-import { CREATE_NEW_INSTITUTE } from "../../../graphql";
 import ImageUploader from "../../../components/content/ImageUploader";
+import { CREATE_NEW_INSTITUTE, GET_ASSIGNEES_LIST } from "../../../graphql";
+import Skeleton from "react-loading-skeleton";
 
 const AddNewInstitute = () => {
   const [logo, setLogo] = useState(null);
   const [contacts, setContacts] = useState([]);
+  const [assigneeOpts, setAssignees] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [modalContactShow, setModalContactShow] = useState(false);
 
@@ -27,21 +29,6 @@ const AddNewInstitute = () => {
     { key: "ITI", value: "iti" },
   ];
 
-  const assigneeOpts = [
-    {
-      key: "Someone 1",
-      value: "1",
-    },
-    {
-      key: "Someone 2",
-      value: "2",
-    },
-    {
-      key: "Someone 3",
-      value: "3",
-    },
-  ];
-
   const instituteData = {
     name: "",
     type: "",
@@ -53,11 +40,24 @@ const AddNewInstitute = () => {
     pin_code: "",
     medha_area: "",
     address_line: "",
-    assigned_to: assigneeOpts[0].value,
+    assigned_to: "",
+  };
+
+  const getAssignees = async () => {
+    let data = await queryBuilder({
+      query: GET_ASSIGNEES_LIST,
+    });
+
+    let newAssignees = data.data.users.map((assignee) => ({
+      key: assignee.username,
+      label: assignee.username,
+      value: Number(assignee.id),
+    }));
+
+    setAssignees(newAssignees);
   };
 
   const onSubmit = async (data) => {
-    console.log("NEW_INSTITUTE_DATA", data);
     setLoading(true);
     NP.start();
     try {
@@ -87,6 +87,10 @@ const AddNewInstitute = () => {
       NP.done();
     }
   };
+
+  useEffect(() => {
+    getAssignees();
+  }, []);
 
   const hideContactModal = (data) => {
     if (data.isTrusted) {
@@ -155,14 +159,18 @@ const AddNewInstitute = () => {
                 />
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
-                <Input
-                  control="select"
-                  name="assigned_to"
-                  label="Assigned To"
-                  options={assigneeOpts}
-                  className="form-control"
-                  placeholder="Assigned To"
-                />
+                {assigneeOpts.length ? (
+                  <Input
+                    control="lookup"
+                    name="assigned_to"
+                    label="Assigned To"
+                    options={assigneeOpts}
+                    className="form-control"
+                    placeholder="Assigned To"
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
                 <Input

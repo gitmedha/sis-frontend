@@ -27,7 +27,6 @@ const Batches = () => {
         },
       });
       // Set Seed Data Later we will push in Real Values
-      //   setBatches(data.data.batches);
       setBatches(data.data.batches);
     } catch (err) {
       console.log("BATCHES", err);
@@ -55,16 +54,8 @@ const Batches = () => {
               badgeRenderer: BadgeRenderer,
             }}
           >
-            <AgGridColumn
-              sortable
-              field="name"
-              headerName="Name"
-            ></AgGridColumn>
-            <AgGridColumn
-              sortable
-              headerName="Program"
-              field="program.name"
-            ></AgGridColumn>
+            <AgGridColumn sortable field="name" headerName="Name" />
+            <AgGridColumn sortable headerName="Program" field="program.name" />
             <AgGridColumn
               sortable
               headerName="Number of Students"

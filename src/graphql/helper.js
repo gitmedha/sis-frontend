@@ -33,3 +33,22 @@ mutation UPLOAD_FILE(
   }
 }
 `;
+
+export const GET_ASSIGNEES_LIST = `
+query GET_ALL_USERS {
+  users {
+    id
+    username
+    email
+    provider
+    role {
+      name
+    }
+    medha_role
+    reports_to {
+      id
+      username
+    }
+  }
+}
+`;

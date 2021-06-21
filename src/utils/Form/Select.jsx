@@ -1,4 +1,3 @@
-import React from "react";
 import InputErr from "./InputErr";
 import { Field, ErrorMessage } from "formik";
 
