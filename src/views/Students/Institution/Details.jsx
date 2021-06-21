@@ -16,9 +16,7 @@ const UpdateInstituteDetails = (props) => {
     { key: "ITI", value: "iti" },
   ];
 
-  const onSubmit = (data) => {
-    onHide(data);
-  };
+  const onSubmit = (data) => onHide(data);
 
   const statusOpts = [
     { key: "Active", value: "active" },
@@ -138,15 +136,19 @@ const Details = (props) => {
       return;
     }
 
+    delete data["logo"];
+    delete data["assigned_to"];
+
     nProgress.start();
     try {
       let resp = await queryBuilder({
         query: UPADTE_INSTITUTIONS,
         variables: {
-          id,
+          id: Number(id),
           data,
         },
       });
+
       console.log(resp, "DETAILS_UPDATE_RESPOSE");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
@@ -188,13 +190,13 @@ const Details = (props) => {
         </div>
         <div className="col-md-4">
           <p className="text-heading text--md">Status</p>
-          <Badge type={"active"} text={status} />
+          <Badge type={status} text={status} />
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge type={"gov"} text={type} />
+          <Badge type={type} text={type} />
         </div>
       </div>
       <div className="row">
