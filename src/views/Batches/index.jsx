@@ -28,7 +28,7 @@ const Batches = () => {
       });
       // Set Seed Data Later we will push in Real Values
       //   setBatches(data.data.batches);
-      setBatches(mockBatches);
+      setBatches(data.data.batches);
     } catch (err) {
       console.log("BATCHES", err);
     } finally {

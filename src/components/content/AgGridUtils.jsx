@@ -22,7 +22,7 @@ const colorRenderer = (value) => {
         color: "#0AC1B6",
         backgroundColor: "#D2FFFC",
       };
-    case "To Be Started":
+    case "To be started":
       return {
         color: "#E9AD03",
         backgroundColor: "#FFE69E",

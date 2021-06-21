@@ -12,18 +12,10 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
       name
       start_date
       end_date
-      assigned_to{
-        id
-        email
-        username
-      }
       status
       number_of_sessions_planned
       program{
         name
-        status
-        start_date
-        end_date
       }
     }
 }`;
@@ -33,3 +25,29 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
      id: 2
  }
  */
+
+export const GET_BATCH = `
+query GET_BATCH ($id:ID!) {
+  batch(id: $id) {
+    name
+    start_date
+    end_date
+    created_at
+    updated_at
+    status
+    program {
+      id
+      name
+      status
+      start_date
+      end_date
+    }
+    assigned_to{
+      id
+      email
+      username
+    }
+    number_of_sessions_planned
+  }
+}
+`;
