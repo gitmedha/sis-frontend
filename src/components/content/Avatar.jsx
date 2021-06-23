@@ -19,7 +19,7 @@ const Avatar = ({ logo, name }) => {
           <FaSchool size={25} />
         </div>
       )}
-      <p className="mt-3">{name}</p>
+      <p className="mt-3 latto-regular">{name}</p>
     </div>
   );
 };

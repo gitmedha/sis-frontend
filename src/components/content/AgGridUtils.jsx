@@ -13,6 +13,7 @@ const styleObject = {
   alignItems: "center",
   letterSpacing: "0.5px",
   justifyContent: "center",
+  maxWidth: "200px",
 };
 
 const colorRenderer = (value) => {

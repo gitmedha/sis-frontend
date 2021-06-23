@@ -43,7 +43,7 @@ const Batch = (props) => {
     return (
       <div>
         <Collapsible title="Batch Details" opened={true}>
-          <Details />
+          <Details batch={batch} />
         </Collapsible>
         <Collapsible title="Sessions">
           <Sessions />

@@ -51,3 +51,15 @@ query GET_BATCH ($id:ID!) {
   }
 }
 `;
+
+export const GET_SESSIONS = `
+query GET_SESSIONS($id: ID!) {
+  sessions (where: {batch: {id: $id}}) {
+    id
+    topics_covered
+    batch {
+      id
+    }
+  }
+}
+`;

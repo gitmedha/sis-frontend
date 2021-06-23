@@ -24,6 +24,7 @@ const cellStyle = {
   alignItems: "center",
   flexDirection: "column",
   justifyContent: "center",
+  fontFamily: "Latto-Regular",
 };
 
 const Institutions = () => {
@@ -75,7 +76,7 @@ const Institutions = () => {
       {!isLoading ? (
         <div
           className="ag-theme-alpine"
-          style={{ height: "50vh", width: "85vw" }}
+          style={{ height: "50vh", width: "100%" }}
         >
           <AgGridReact
             rowHeight={80}

@@ -9,6 +9,14 @@ import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { BadgeRenderer, TableLink } from "../../components/content/AgGridUtils";
 
+const cellStyle = {
+  display: "flex",
+  // alignItems: "center",
+  flexDirection: "column",
+  // justifyContent: "center",
+  fontFamily: "Latto-Regular",
+};
+
 const Batches = () => {
   const [batches, setBatches] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -54,12 +62,23 @@ const Batches = () => {
               badgeRenderer: BadgeRenderer,
             }}
           >
-            <AgGridColumn sortable field="name" headerName="Name" />
-            <AgGridColumn sortable headerName="Program" field="program.name" />
+            <AgGridColumn
+              sortable
+              field="name"
+              headerName="Name"
+              cellStyle={cellStyle}
+            />
+            <AgGridColumn
+              sortable
+              headerName="Program"
+              field="program.name"
+              cellStyle={cellStyle}
+            />
             <AgGridColumn
               sortable
               headerName="Number of Students"
               field="number_of_students.total"
+              cellStyle={cellStyle}
             />
             <AgGridColumn
               sortable
@@ -71,6 +90,7 @@ const Batches = () => {
               sortable
               width={210}
               field="start_date"
+              cellStyle={cellStyle}
               headerName="Start Date"
               cellRenderer={({ value }) => moment(value).format("DD MMM YYYY")}
             />
