@@ -6,7 +6,7 @@ import { BadgeRenderer } from "../../../components/content/AgGridUtils";
 const Details = ({ batch }) => {
   console.log("BATCH_DETAILS", batch);
   return (
-    <div className="py-2">
+    <div className="py-2 px-3">
       {/* <pre>
         <code>{JSON.stringify(batch, null, 2)}</code>
       </pre> */}

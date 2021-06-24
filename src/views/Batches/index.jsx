@@ -53,7 +53,7 @@ const Batches = () => {
       {!isLoading ? (
         <div
           className="ag-theme-alpine"
-          style={{ height: "50vh", width: "97vw" }}
+          style={{ height: "50vh", width: "100%" }}
         >
           <AgGridReact
             rowData={batches}
