@@ -48,10 +48,18 @@ const Batch = (props) => {
         },
       });
       console.log("GET_BATCH", data.data);
-      setSessions(data.data.sessions);
+      setSessions(prepareDummySessionAttendanceAndStatus(data.data.sessions));
     } catch (err) {
       console.log("ERR", err);
     }
+  };
+
+  const prepareDummySessionAttendanceAndStatus = (sessions) => {
+    return sessions.map((session) => ({
+      ...session,
+      attendance: 70,
+      status: "In Progress",
+    }));
   };
 
   console.log("SESSIONS", sessions);

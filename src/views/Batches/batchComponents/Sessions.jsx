@@ -1,6 +1,11 @@
 import moment from "moment";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
-import { cellStyle, TableLink } from "../../../components/content/AgGridUtils";
+import {
+  cellStyle,
+  TableLink,
+  BadgeRenderer,
+  ProgressRenderer,
+} from "../../../components/content/AgGridUtils";
 
 const Sessions = ({ sessions }) => {
   return (
@@ -13,8 +18,11 @@ const Sessions = ({ sessions }) => {
           >
             <AgGridReact
               rowData={sessions}
+              rowHeight={70}
               frameworkComponents={{
                 link: TableLink,
+                badge: BadgeRenderer,
+                progress: ProgressRenderer,
               }}
             >
               <AgGridColumn
@@ -43,18 +51,19 @@ const Sessions = ({ sessions }) => {
                 sortable
                 field="status"
                 headerName="Status"
+                cellRenderer="badge"
                 cellStyle={cellStyle}
               />
               <AgGridColumn
                 sortable
+                width={300}
                 field="attendance"
-                cellStyle={cellStyle}
+                cellRenderer="progress"
                 headerName="Attendance"
               />
               <AgGridColumn
                 field="id"
                 width={70}
-                headerName=""
                 cellRenderer="link"
                 cellRendererParams={{ to: "session" }}
               />

@@ -1,7 +1,7 @@
 import Avatar from "./Avatar";
-import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { FaAngleDoubleRight } from "react-icons/fa";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 const styleObject = {
   height: "25px",
@@ -101,6 +101,16 @@ export const TableLink = ({ value, to }) => {
     </Link>
   );
 };
+
+export const ProgressRenderer = ({ value }) => (
+  <div style={{ marginTop: "10px" }}>
+    <ProgressBar
+      completed={value}
+      bgColor={"#5C4CBF"}
+      baseBgColor={"#EEEFF8"}
+    />
+  </div>
+);
 
 export const cellStyle = {
   display: "flex",

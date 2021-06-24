@@ -2,8 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
-import DashboardIcon from "@material-ui/icons/Dashboard";
 import { motion, AnimatePresence } from "framer-motion";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Batches from "./views/Batches";
@@ -110,7 +111,7 @@ const App = () => {
             </MenuItem>
             <MenuItem>
               <Link to="/institutions">
-                <DashboardIcon style={{ color: "white", marginRight: "5px" }} />
+                <FaUserGraduate size={22} style={{ marginRight: "5px" }} />
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
@@ -127,7 +128,7 @@ const App = () => {
             </MenuItem>
             <MenuItem>
               <Link to="/batches">
-                <DashboardIcon style={{ color: "white", marginRight: "5px" }} />
+                <FaChalkboardTeacher size={22} style={{ marginRight: "5px" }} />
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
