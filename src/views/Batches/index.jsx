@@ -10,6 +10,7 @@ import {
   TableLink,
   cellStyle,
   BadgeRenderer,
+  SerialNumberRenderer,
 } from "../../components/content/AgGridUtils";
 
 const Batches = () => {
@@ -54,9 +55,17 @@ const Batches = () => {
             rowData={batches}
             frameworkComponents={{
               link: TableLink,
+              sno: SerialNumberRenderer,
               badgeRenderer: BadgeRenderer,
             }}
           >
+            <AgGridColumn
+              sortable
+              field="name"
+              cellRenderer="sno"
+              headerName="S. No."
+              cellStyle={cellStyle}
+            />
             <AgGridColumn
               sortable
               field="name"

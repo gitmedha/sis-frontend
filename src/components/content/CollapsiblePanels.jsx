@@ -14,7 +14,10 @@ const CollapsiblePanels = ({
 
   return (
     <section className="no-border p-2 mt-2">
-      <div className="section-header d-flex justify-content-between px-2">
+      <div
+        className="section-header d-flex justify-content-between px-2"
+        onClick={() => setOpen(!isOpen)}
+      >
         <div className="flex-row-centered">
           {titleContent ? (
             titleContent

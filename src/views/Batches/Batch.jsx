@@ -1,16 +1,17 @@
 import NP from "nprogress";
 import api from "../../apis";
-import { GET_BATCH, GET_SESSIONS } from "../../graphql";
 import { useState, useEffect } from "react";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
 import Students from "./batchComponents/Students";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
+import { GET_BATCH, GET_SESSIONS, GET_BATCH_STUDENTS } from "../../graphql";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState({});
   const [sessions, setSessions] = useState([]);
+  const [students, setStudents] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const Batch = (props) => {
       console.log("GET_BATCH", data.data);
       setBatch(data.data.batch);
       await getSessions();
+      await getStudents();
     } catch (err) {
       console.log("ERR", err);
     } finally {
@@ -54,6 +56,23 @@ const Batch = (props) => {
     }
   };
 
+  const getStudents = async () => {
+    try {
+      const batchID = props.match.params.id;
+      let { data } = await api.post("/graphql", {
+        query: GET_BATCH_STUDENTS,
+        variables: {
+          // id: Number(batchID)
+          id: 1,
+        },
+      });
+      console.log("GET_STUDENTS", data.data);
+      setStudents(data.data.programEnrollments);
+    } catch (err) {
+      console.log("ERR", err);
+    }
+  };
+
   const prepareDummySessionAttendanceAndStatus = (sessions) => {
     return sessions.map((session) => ({
       ...session,
@@ -61,8 +80,6 @@ const Batch = (props) => {
       status: "In Progress",
     }));
   };
-
-  console.log("SESSIONS", sessions);
 
   const done = () => getThisBatch();
 
@@ -78,7 +95,7 @@ const Batch = (props) => {
           <Sessions sessions={sessions} />
         </Collapsible>
         <Collapsible title="Students">
-          <Students />
+          <Students students={students} />
         </Collapsible>
       </div>
     );

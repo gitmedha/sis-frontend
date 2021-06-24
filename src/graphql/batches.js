@@ -67,3 +67,43 @@ query GET_SESSIONS($id: ID!) {
   }
 }
 `;
+
+export const GET_BATCH_STUDENTS = `
+query GET_STUDENTS_IN_BATCH ($id: ID!){
+  programEnrollments (where: {batch: {id: $id}}) {
+    id
+    status
+    batch {
+      id 
+      name
+    }
+    institution {
+      id
+      name
+    }
+    student {
+      id 
+      phone
+      last_name
+      first_name
+    }
+  }
+}
+`;
+
+export const GET_STUDENT_DETAILS = `
+query GET_STUDENT ($id: ID!){
+  student(id: $id){
+    name_of_parent_or_guardian
+    phone
+    status
+    gender
+    date_of_birth
+    email
+    category
+    CV {
+      id
+    }
+  }
+}
+`;

@@ -1,5 +1,12 @@
+import moment from "moment";
+import api from "../../apis";
 import Avatar from "./Avatar";
+import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SkeletonLoader from "./SkeletonLoader";
+import { FaAngleDoubleDown } from "react-icons/fa";
+import { GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import ProgressBar from "@ramonak/react-progress-bar";
 
@@ -7,13 +14,13 @@ const styleObject = {
   height: "25px",
   display: "flex",
   marginTop: "7px",
+  maxWidth: "200px",
   paddingLeft: "5px",
   paddingRight: "5px",
   borderRadius: "5px",
   alignItems: "center",
   letterSpacing: "0.5px",
   justifyContent: "center",
-  maxWidth: "200px",
 };
 
 const colorRenderer = (value) => {
@@ -90,9 +97,9 @@ export const BadgeRenderer = ({ value }) => {
   );
 };
 
-export const AvatarRenderer = (props) => {
-  return <Avatar name={props.data.name} logo={props.data.logo} />;
-};
+export const AvatarRenderer = (props) => (
+  <Avatar name={props.data.name} logo={props.data.logo} />
+);
 
 export const TableLink = ({ value, to }) => {
   return (
@@ -100,6 +107,131 @@ export const TableLink = ({ value, to }) => {
       <FaAngleDoubleRight size={18} color={"#257b69"} />
     </Link>
   );
+};
+
+export const StudentDetailsRenderer = (props) => {
+  const [openModal, showModal] = useState(false);
+  const toggleModal = () => showModal(!openModal);
+
+  console.log("STUDENT_DETAILS", props.data.institution.name);
+
+  return (
+    <div>
+      <FaAngleDoubleDown size={20} color={"#257b69"} onClick={toggleModal} />
+      {openModal && (
+        <StudentModal
+          show={openModal}
+          onHide={toggleModal}
+          student={{
+            id: props.data.student.id,
+            institute: props.data.institution.name,
+            name: `${props.data.student.first_name} ${props.data.student.last_name}`,
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+const StudentModal = (props) => {
+  const [details, setDetails] = useState({});
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getStudentDetails();
+  }, []);
+
+  const getStudentDetails = async () => {
+    setLoading(true);
+    try {
+      let { data } = await api.post("/graphql", {
+        query: GET_STUDENT_DETAILS,
+        variables: {
+          id: props.student.id,
+        },
+      });
+      setDetails(data.data.student);
+    } catch (err) {
+      console.log("ERROR_STUDENT_DETAILS: 148 AgGridUitls.jsx", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal
+      centered
+      size="lg"
+      {...props}
+      aria-labelledby="contained-modal-title-vcenter"
+    >
+      <Modal.Header className="bg-light">
+        <Modal.Title
+          id="contained-modal-title-vcenter"
+          className="text--primary latto-bold"
+        >
+          {props.student.name}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="bg-light">
+        {isLoading ? (
+          <SkeletonLoader />
+        ) : (
+          <div className="row px-3">
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Parents Name</p>
+              <p>{details.name_of_parent_or_guardian}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Phone Number</p>
+              <p>{details.phone}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Status</p>
+              <p>{details.status}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">
+                Date Of Birth
+              </p>
+              <p>{moment(details.date_of_birth).format("DD MMM YYYY")}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Category</p>
+              <p>{details.category}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Email</p>
+              <p>{details.email}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Gender</p>
+              <p className="text-capitalize">{details.gender}</p>
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <p className="text--primary latto-bold pb-0 mb-0">Institute</p>
+              <p className="text-capitalize">{props.student.institute}</p>
+            </div>
+          </div>
+        )}
+        <div className="row mt-3 py-3">
+          <div className="d-flex justify-content-end">
+            <button
+              type="button"
+              onClick={props.onHide}
+              className="btn btn-secondary btn-regular mr-2"
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export const SerialNumberRenderer = ({ node }) => {
+  return <p>{node.rowIndex + 1}</p>;
 };
 
 export const ProgressRenderer = ({ value }) => (
