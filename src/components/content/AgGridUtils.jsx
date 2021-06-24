@@ -101,3 +101,11 @@ export const TableLink = ({ value, to }) => {
     </Link>
   );
 };
+
+export const cellStyle = {
+  display: "flex",
+  // alignItems: "center",
+  flexDirection: "column",
+  // justifyContent: "center",
+  fontFamily: "Latto-Regular",
+};

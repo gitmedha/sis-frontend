@@ -56,10 +56,14 @@ export const GET_SESSIONS = `
 query GET_SESSIONS($id: ID!) {
   sessions (where: {batch: {id: $id}}) {
     id
-    topics_covered
+    date
     batch {
       id
     }
+    created_at
+    updated_at
+    topics_covered
+    session_number
   }
 }
 `;

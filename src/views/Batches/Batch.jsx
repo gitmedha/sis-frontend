@@ -1,6 +1,6 @@
 import NP from "nprogress";
 import api from "../../apis";
-import { GET_BATCH } from "../../graphql";
+import { GET_BATCH, GET_SESSIONS } from "../../graphql";
 import { useState, useEffect } from "react";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
@@ -10,6 +10,7 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState({});
+  const [sessions, setSessions] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const Batch = (props) => {
       });
       console.log("GET_BATCH", data.data);
       setBatch(data.data.batch);
+      await getSessions();
     } catch (err) {
       console.log("ERR", err);
     } finally {
@@ -34,6 +36,25 @@ const Batch = (props) => {
       NP.done();
     }
   };
+
+  const getSessions = async () => {
+    try {
+      const batchID = props.match.params.id;
+      let { data } = await api.post("/graphql", {
+        query: GET_SESSIONS,
+        variables: {
+          // id: Number(batchID)
+          id: 1,
+        },
+      });
+      console.log("GET_BATCH", data.data);
+      setSessions(data.data.sessions);
+    } catch (err) {
+      console.log("ERR", err);
+    }
+  };
+
+  console.log("SESSIONS", sessions);
 
   const done = () => getThisBatch();
 
@@ -46,7 +67,7 @@ const Batch = (props) => {
           <Details batch={batch} />
         </Collapsible>
         <Collapsible title="Sessions">
-          <Sessions />
+          <Sessions sessions={sessions} />
         </Collapsible>
         <Collapsible title="Students">
           <Students />

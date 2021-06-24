@@ -1,21 +1,16 @@
 import NP from "nprogress";
 import api from "../../apis";
 import moment from "moment";
-import { batches as mockBatches } from "../../mock/batches";
 import { useState, useEffect } from "react";
 import { GET_BATCHES } from "../../graphql";
 import Skeleton from "react-loading-skeleton";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { BadgeRenderer, TableLink } from "../../components/content/AgGridUtils";
-
-const cellStyle = {
-  display: "flex",
-  // alignItems: "center",
-  flexDirection: "column",
-  // justifyContent: "center",
-  fontFamily: "Latto-Regular",
-};
+import {
+  TableLink,
+  cellStyle,
+  BadgeRenderer,
+} from "../../components/content/AgGridUtils";
 
 const Batches = () => {
   const [batches, setBatches] = useState([]);
