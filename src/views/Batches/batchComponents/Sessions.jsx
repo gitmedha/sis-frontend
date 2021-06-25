@@ -1,17 +1,29 @@
 import moment from "moment";
-import { AgGridColumn, AgGridReact } from "ag-grid-react";
+import { Link } from "react-router-dom";
 import {
   cellStyle,
   TableLink,
   BadgeRenderer,
   ProgressRenderer,
 } from "../../../components/content/AgGridUtils";
+import { AgGridColumn, AgGridReact } from "ag-grid-react";
 
-const Sessions = ({ sessions }) => {
+const Sessions = ({ sessions, batchID }) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-        <div className="col-12">
+        <div className="col-md-6 col-sm-12">
+          {/* Filter and Sorting goes here */}
+        </div>
+        <div className="col-md-6 col-sm-12 d-flex justify-content-end">
+          <Link
+            to={`/new-session/${batchID}`}
+            className="btn btn regular btn-primary"
+          >
+            Add Session & Attendance
+          </Link>
+        </div>
+        <div className="col-12 mt-3">
           <div
             className="ag-theme-alpine"
             style={{ height: "50vh", width: "100%" }}

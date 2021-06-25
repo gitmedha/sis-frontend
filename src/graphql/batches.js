@@ -63,7 +63,6 @@ query GET_SESSIONS($id: ID!) {
     created_at
     updated_at
     topics_covered
-    session_number
   }
 }
 `;
@@ -91,6 +90,18 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
 }
 `;
 
+export const GET_BATCH_STUDENTS_ONLY = `
+query GET_STUDENTS_IN_BATCH ($id: ID!){
+  programEnrollments (where: {batch: {id: $id}}) {
+    student {
+      id 
+      last_name
+      first_name
+    }
+  }
+}
+`;
+
 export const GET_STUDENT_DETAILS = `
 query GET_STUDENT ($id: ID!){
   student(id: $id){
@@ -107,3 +118,35 @@ query GET_STUDENT ($id: ID!){
   }
 }
 `;
+
+export const CREATE_SESSION = `
+mutation CREATE_SESSION($batchID: ID!, $date: Date!, $topics: String!) {
+  createSession(
+    input: { 
+      data: { 
+        date: $date, 
+        batch: $batchID, 
+        topics_covered: $topics 
+      }
+    }
+  ) {
+    session {
+      id
+      date
+      batch {
+        id
+      }
+      topics_covered
+    }
+  }
+}
+`;
+
+/**
+ * Payload Sample
+  {
+    "batchID": 6,
+    "date": "2021-07-22",
+    "topics": "Something Someone"
+  }
+ */

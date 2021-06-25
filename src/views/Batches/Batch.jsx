@@ -13,6 +13,7 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const [students, setStudents] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const batchID = Number(props.match.params.id);
 
   useEffect(() => {
     getThisBatch();
@@ -41,15 +42,13 @@ const Batch = (props) => {
 
   const getSessions = async () => {
     try {
-      const batchID = props.match.params.id;
       let { data } = await api.post("/graphql", {
         query: GET_SESSIONS,
         variables: {
-          // id: Number(batchID)
-          id: 1,
+          id: batchID,
         },
       });
-      console.log("GET_BATCH", data.data);
+      // console.log("GET_BATCH", data.data);
       setSessions(prepareDummySessionAttendanceAndStatus(data.data.sessions));
     } catch (err) {
       console.log("ERR", err);
@@ -62,8 +61,7 @@ const Batch = (props) => {
       let { data } = await api.post("/graphql", {
         query: GET_BATCH_STUDENTS,
         variables: {
-          // id: Number(batchID)
-          id: 1,
+          id: batchID,
         },
       });
       console.log("GET_STUDENTS", data.data);
@@ -92,7 +90,7 @@ const Batch = (props) => {
           <Details batch={batch} />
         </Collapsible>
         <Collapsible title="Sessions">
-          <Sessions sessions={sessions} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} />
         </Collapsible>
         <Collapsible title="Students">
           <Students students={students} />

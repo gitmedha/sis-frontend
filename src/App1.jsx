@@ -12,6 +12,7 @@ import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
 import Institution from "./views/Students/Institution";
 import Institutions from "./views/Students/Institutions";
+import AddSession from "./views/Batches/batchComponents/AddSession";
 import AddNewInstitute from "./views/Students/Institution/AddInstitute";
 
 const AppContainer = styled.div`
@@ -185,6 +186,11 @@ const App = () => {
               <Route path="/institution/:id" exact component={Institution} />
               <Route path="/batches" exact component={Batches} />
               <Route path="/batch/:id" exact component={Batch} />
+              <Route
+                path="/new-session/:batchId"
+                exact
+                component={AddSession}
+              />
             </Switch>
           </RouteContainer>
         </Container>

@@ -7,7 +7,7 @@ const DatePicker = (props) => {
 
   return (
     <div className="form-group d-flex flex-column date-picker-ui">
-      <label htmlFor={name} className="text-heading">
+      <label htmlFor={name} className="text-heading pb-1">
         {label}
       </label>
       <Field name={name}>
