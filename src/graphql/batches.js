@@ -93,6 +93,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
 export const GET_BATCH_STUDENTS_ONLY = `
 query GET_STUDENTS_IN_BATCH ($id: ID!){
   programEnrollments (where: {batch: {id: $id}}) {
+    id
     student {
       id 
       last_name
@@ -150,3 +151,32 @@ mutation CREATE_SESSION($batchID: ID!, $date: Date!, $topics: String!) {
     "topics": "Something Someone"
   }
  */
+
+export const MARK_ATTENDANCE = `
+mutation CREATE_ATTENDANCE_RECORD (
+  $session: ID
+  $present: Boolean
+  $program_enrollment_id: ID
+) {
+  createAttendance (
+    input : {
+        data:   {
+          present: $present
+          session: $session
+          program_enrollment: $program_enrollment_id
+        }
+    }
+  ) {
+    attendance {
+      id
+      program_enrollment {
+        id
+      }
+      session {
+        id
+      }
+      present
+    }
+  }
+}
+`;

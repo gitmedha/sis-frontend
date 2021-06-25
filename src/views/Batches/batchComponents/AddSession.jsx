@@ -10,9 +10,10 @@ import SkeletonLoader from "../../../components/content/SkeletonLoader";
 
 const AddSession = (props) => {
   const [students, setStudents] = useState([]);
-  const [isSessionCreated, setSessionCreated] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const batchID = Number(props.match.params.batchId);
+  const [session, setCurrentSession] = useState(null);
+  const [isSessionCreated, setSessionCreated] = useState(false);
 
   const initialValues = {
     date: "",
@@ -31,6 +32,7 @@ const AddSession = (props) => {
         },
       });
       console.log("RES", data);
+      setCurrentSession(Number(data.data.createSession.session.id));
       setSessionCreated(true);
       await getStudents();
     } catch (err) {
@@ -57,6 +59,7 @@ const AddSession = (props) => {
   const clubStudentRecords = (records) => {
     return records.map((rec) => ({
       id: rec.student.id,
+      program_enrollment_id: rec.id,
       name: `${rec.student.first_name} ${rec.student.last_name}`,
     }));
   };
@@ -117,7 +120,9 @@ const AddSession = (props) => {
         </>
       )}
       {isSessionCreated && !isLoading && (
-        <SessionStudentList students={students} loading={isLoading} />
+        <>
+          <SessionStudentList session={session} students={students} />
+        </>
       )}
     </div>
   );
