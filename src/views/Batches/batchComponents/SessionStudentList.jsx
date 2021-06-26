@@ -1,68 +1,37 @@
-import api from "../../../apis";
+import { map } from "lodash";
 import { useState } from "react";
 import {
   cellStyle,
   SerialNumberRenderer,
 } from "../../../components/content/AgGridUtils";
-import { MARK_ATTENDANCE } from "../../../graphql";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 
-const SessionStudentList = ({ students, session }) => {
+const SessionStudentList = ({ students, updateAttendance }) => {
   const [gridApi, setGridApi] = useState(null);
-  const [isLoading, setLoading] = useState(false);
-  const [selected, setSelectedData] = useState([]);
   const [gridColumnApi, setGridColumnApi] = useState([]);
 
-  const attendanceApiCaller = async (params) => {
-    try {
-      let resp = await api.post("/graphql", {
-        variables: params,
-        query: MARK_ATTENDANCE,
-      });
-      console.log("DATA", resp.data);
-    } catch (err) {
-      console.log("MARK_ATTENDANCE_ERR", err);
-    }
-  };
+  const getRowData = async ({
+    data: { program_enrollment_id },
+    node: { selected },
+  }) => {
+    const updatedAttendance = map(students, (student) => {
+      if (student.program_enrollment_id === program_enrollment_id) {
+        student.present = selected;
+      }
 
-  const getRowData = async ({ data, node: { selected } }) => {
-    if (selected) {
-      return;
-    }
-    await attendanceApiCaller({
-      session,
-      present: selected,
-      program_enrollment_id: Number(data.program_enrollment_id),
+      return {
+        present: student.present,
+        program_enrollment_id: student.program_enrollment_id,
+      };
     });
-  };
 
-  const getSelectedRowData = () => {
-    if (!gridApi) {
-      return null;
-    }
-    const selectedNodes = gridApi.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => ({
-      session,
-      present: true,
-      program_enrollment_id: Number(node.data.program_enrollment_id),
-    }));
-    setSelectedData(selectedData);
+    updateAttendance(updatedAttendance);
   };
 
   const onGridReady = async (params) => {
     params.api.selectAll();
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-  };
-
-  console.log("SELECTED", selected);
-
-  const markAttendance = async () => {
-    setLoading(true);
-    await selected.forEach(async (student) => {
-      await attendanceApiCaller(student);
-    });
-    setLoading(false);
   };
 
   return (
@@ -81,7 +50,7 @@ const SessionStudentList = ({ students, session }) => {
             rowSelection={"multiple"}
             onRowSelected={getRowData}
             suppressRowClickSelection={true}
-            onSelectionChanged={getSelectedRowData}
+            // onSelectionChanged={getUnSelectedRowData}
           >
             <AgGridColumn
               sortable
@@ -104,15 +73,6 @@ const SessionStudentList = ({ students, session }) => {
             />
           </AgGridReact>
         </div>
-      </div>
-      <div className="col-12 mt-3">
-        <button
-          disabled={isLoading}
-          onClick={markAttendance}
-          className="btn btn-primary btn-regular"
-        >
-          SAVE
-        </button>
       </div>
     </div>
   );
