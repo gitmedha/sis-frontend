@@ -4,9 +4,15 @@ import { useState, useEffect } from "react";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
 import Students from "./batchComponents/Students";
+import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
-import { GET_BATCH, GET_SESSIONS, GET_BATCH_STUDENTS } from "../../graphql";
+import {
+  GET_BATCH,
+  GET_SESSIONS,
+  GET_BATCH_STUDENTS,
+  UPDATE_BATCH,
+} from "../../graphql";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState({});
@@ -86,7 +92,18 @@ const Batch = (props) => {
   } else {
     return (
       <div>
-        <Collapsible title="Batch Details" opened={true}>
+        <Collapsible
+          titleContent={
+            <TitleWithLogo
+              done={done}
+              id={batch.id}
+              logo={batch.logo}
+              title={batch.name}
+              query={UPDATE_BATCH}
+            />
+          }
+          opened={true}
+        >
           <Details batch={batch} />
         </Collapsible>
         <Collapsible title="Sessions">

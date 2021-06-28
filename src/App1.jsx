@@ -7,6 +7,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+// Route Components
 import Batches from "./views/Batches";
 import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";

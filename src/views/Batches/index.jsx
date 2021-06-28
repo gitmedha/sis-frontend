@@ -7,6 +7,7 @@ import {
   TableLink,
   cellStyle,
   BadgeRenderer,
+  AvatarRenderer,
   SerialNumberRenderer,
 } from "../../components/content/AgGridUtils";
 import Skeleton from "react-loading-skeleton";
@@ -52,9 +53,11 @@ const Batches = () => {
           style={{ height: "50vh", width: "100%" }}
         >
           <AgGridReact
+            rowHeight={80}
             rowData={batches}
             frameworkComponents={{
               link: TableLink,
+              avatar: AvatarRenderer,
               sno: SerialNumberRenderer,
               badgeRenderer: BadgeRenderer,
             }}
@@ -70,7 +73,7 @@ const Batches = () => {
               sortable
               field="name"
               headerName="Name"
-              cellStyle={cellStyle}
+              cellRenderer="avatar"
             />
             <AgGridColumn
               sortable

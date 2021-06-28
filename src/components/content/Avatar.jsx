@@ -28,7 +28,7 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const modalCloseHandler = async (logoId) => {
-    if (id.isTrusted) {
+    if (logoId.isTrusted) {
       setModalShow(false);
       return;
     }
@@ -40,6 +40,7 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
         id,
       },
     });
+
     setModalShow(false);
     done();
   };

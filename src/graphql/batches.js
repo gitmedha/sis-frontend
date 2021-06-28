@@ -13,6 +13,9 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
       start_date
       end_date
       status
+      logo{
+        url
+      }
       number_of_sessions_planned
       program{
         name
@@ -29,6 +32,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
 export const GET_BATCH = `
 query GET_BATCH ($id:ID!) {
   batch(id: $id) {
+    id
     name
     start_date
     end_date
@@ -46,6 +50,9 @@ query GET_BATCH ($id:ID!) {
       id
       email
       username
+    }
+    logo{
+      url
     }
     number_of_sessions_planned
   }
@@ -176,6 +183,29 @@ mutation CREATE_ATTENDANCE_RECORD (
         id
       }
       present
+    }
+  }
+}
+`;
+
+export const UPDATE_BATCH = `
+mutation UPDATE_BATCH(
+  $id: ID!
+  $data: editBatchInput!
+) {
+  updateBatch(
+    input: {
+      data: $data,
+      where: { id: $id }
+    }
+  ) {
+    batch {
+      id
+      name
+      status
+      logo{
+        url
+      }
     }
   }
 }

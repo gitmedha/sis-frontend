@@ -71,16 +71,16 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
 
 export const CREATE_NEW_INSTITUTE = `
 mutation CREATE_INSTITUTIONS(
+  $logo: ID
   $name: String!
-  $website: String!
+  $type: String!
   $phone: String!
   $email: String!
-  $assigned_to: ID!
   $status: String!
-  $type: String!
+  $website: String!
+  $assigned_to: ID!
   $contacts: [ComponentCommonContactInput!]!
   $address: ComponentCommonAddressInput!
-  $logo: ID
 ) {
   createInstitution(
     input: {
@@ -184,7 +184,7 @@ mutation UPDATE_INSTITUTIONS(
           phone
         }
       }
-    }
+  }
 }
 `;
 /**

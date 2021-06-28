@@ -43,7 +43,10 @@ const AddSession = (props) => {
   const markAttendance = async (sessionID) => {
     setLoading(true);
     await attendanceRecords.forEach(async (student) => {
-      await attendanceApiCaller({ ...student, session: sessionID });
+      await attendanceApiCaller({
+        ...student,
+        session: sessionID,
+      });
     });
     setLoading(false);
     return;
@@ -55,7 +58,6 @@ const AddSession = (props) => {
         variables: params,
         query: MARK_ATTENDANCE,
       });
-      console.log("DATA", resp.data);
     } catch (err) {
       console.log("MARK_ATTENDANCE_ERR", err);
     }
@@ -135,7 +137,11 @@ const AddSession = (props) => {
           />
         )}
         <div className="col-12 mt-3 d-flex">
-          <button type="submit" className="btn btn-primary btn-regular">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="btn btn-primary btn-regular"
+          >
             SAVE
           </button>
           <div style={{ width: "10px" }} />
