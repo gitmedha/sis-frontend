@@ -4,6 +4,7 @@ import {
   TableLink,
   BadgeRenderer,
   AvatarRenderer,
+  SerialNumberRenderer,
 } from "../../components/content/AgGridUtils";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -83,10 +84,18 @@ const Institutions = () => {
             rowData={institutions}
             frameworkComponents={{
               link: TableLink,
+              sno: SerialNumberRenderer,
               badgeRenderer: BadgeRenderer,
               avatarRenderer: AvatarRenderer,
             }}
           >
+            <AgGridColumn
+              sortable
+              field="name"
+              cellRenderer="sno"
+              headerName="S. No."
+              cellStyle={cellStyle}
+            />
             <AgGridColumn
               sortable
               width={300}
