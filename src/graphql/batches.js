@@ -34,8 +34,8 @@ query GET_BATCH ($id:ID!) {
   batch(id: $id) {
     id
     name
-    start_date
     end_date
+    start_date
     created_at
     updated_at
     status
@@ -61,7 +61,10 @@ query GET_BATCH ($id:ID!) {
 
 export const GET_SESSIONS = `
 query GET_SESSIONS($id: ID!) {
-  sessions (where: {batch: {id: $id}}) {
+  sessions (
+    where: {batch: { id: $id }},
+    sort: "date:desc"
+  ) {
     id
     date
     batch {

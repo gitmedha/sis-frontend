@@ -5,6 +5,7 @@ import {
   TableLink,
   BadgeRenderer,
   ProgressRenderer,
+  SerialNumberRenderer,
 } from "../../../components/content/AgGridUtils";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 
@@ -12,9 +13,7 @@ const Sessions = ({ sessions, batchID }) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-        <div className="col-md-6 col-sm-12">
-          {/* Filter and Sorting goes here */}
-        </div>
+        <div className="col-md-6 col-sm-12"></div>
         <div className="col-md-6 col-sm-12 d-flex justify-content-end">
           <Link
             to={`/new-session/${batchID}`}
@@ -34,15 +33,30 @@ const Sessions = ({ sessions, batchID }) => {
               frameworkComponents={{
                 link: TableLink,
                 badge: BadgeRenderer,
+                sno: SerialNumberRenderer,
                 progress: ProgressRenderer,
               }}
             >
-              <AgGridColumn
+              {/* <AgGridColumn
                 sortable
                 field="session_number"
                 cellStyle={cellStyle}
                 headerName="Session No."
+              /> */}
+              <AgGridColumn
+                sortable
+                width={90}
+                headerName="#"
+                cellRenderer="sno"
+                cellStyle={cellStyle}
+                field="name"
               />
+              {/* <AgGridColumn
+                sortable
+                field="session_number"
+                cellStyle={cellStyle}
+                headerName="Session No."
+              /> */}
               <AgGridColumn
                 sortable
                 cellStyle={cellStyle}
@@ -59,13 +73,13 @@ const Sessions = ({ sessions, batchID }) => {
                   moment(value).format("DD MMM YYYY")
                 }
               />
-              <AgGridColumn
+              {/* <AgGridColumn
                 sortable
                 field="status"
                 headerName="Status"
                 cellRenderer="badge"
                 cellStyle={cellStyle}
-              />
+              /> */}
               <AgGridColumn
                 sortable
                 width={300}
@@ -76,6 +90,7 @@ const Sessions = ({ sessions, batchID }) => {
               <AgGridColumn
                 field="id"
                 width={70}
+                headerName=""
                 cellRenderer="link"
                 cellRendererParams={{ to: "session" }}
               />

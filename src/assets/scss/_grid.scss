@@ -42,3 +42,12 @@
   border: 5px solid rgba(#ccc, 0.1);
   box-shadow: 5px 5px 12px 5px rgba(#ccc, 0.5);
 }
+
+.ag-cell-focus,
+.ag-cell-no-focus {
+  border: none !important;
+}
+.ag-cell:focus {
+  outline: none;
+  border: none !important;
+}

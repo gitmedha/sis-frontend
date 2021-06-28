@@ -250,4 +250,5 @@ export const cellStyle = {
   flexDirection: "column",
   // justifyContent: "center",
   fontFamily: "Latto-Regular",
+  outline: "none",
 };

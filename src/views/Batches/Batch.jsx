@@ -106,10 +106,10 @@ const Batch = (props) => {
         >
           <Details batch={batch} />
         </Collapsible>
-        <Collapsible title="Sessions">
+        <Collapsible title="Sessions" badge={sessions.length}>
           <Sessions sessions={sessions} batchID={props.match.params.id} />
         </Collapsible>
-        <Collapsible title="Students">
+        <Collapsible title="Students" badge={students.length}>
           <Students students={students} />
         </Collapsible>
       </div>

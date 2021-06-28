@@ -24,10 +24,6 @@ const Details = ({ batch }) => {
           <p>{batch.program?.name}</p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Students</p>
-          <p>{"234"}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
           <p className="text--primary latto-bold pb-0 mb-0">Area</p>
           <p>{"Shaheed Path"}</p>
         </div>

@@ -49,7 +49,8 @@ const SessionStudentList = ({ students, updateAttendance }) => {
             onGridReady={onGridReady}
             rowSelection={"multiple"}
             onRowSelected={getRowData}
-            suppressRowClickSelection={true}
+            // suppressRowClickSelection={true}
+            rowMultiSelectWithClick={true}
             // onSelectionChanged={getUnSelectedRowData}
           >
             <AgGridColumn
@@ -66,10 +67,9 @@ const SessionStudentList = ({ students, updateAttendance }) => {
               cellStyle={cellStyle}
             />
             <AgGridColumn
-              sortable
-              headerName=""
               cellStyle={cellStyle}
               checkboxSelection={true}
+              headerName="Mark Attendance"
             />
           </AgGridReact>
         </div>
