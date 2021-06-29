@@ -1,6 +1,7 @@
 import NP from "nprogress";
 import moment from "moment";
 import api from "../../apis";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { GET_BATCHES } from "../../graphql";
 import {
@@ -46,7 +47,14 @@ const Batches = () => {
   }, []);
 
   return (
-    <Collapse title="All Batches" opened={true}>
+    <Collapse title="All Batches" type="plain" opened={true}>
+      <div className="row my-4">
+        <div className="col-md-6 col-sm-12 ml-auto">
+          <Link to="/add-new-batch" className="btn btn-primary btn-regular">
+            Add New Batch
+          </Link>
+        </div>
+      </div>
       {!isLoading ? (
         <div
           className="ag-theme-alpine"

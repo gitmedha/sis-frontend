@@ -8,6 +8,7 @@ const CollapsiblePanels = ({
   badge,
   children,
   opened = false,
+  type = "default",
   titleContent = null,
 }) => {
   const [isOpen, setOpen] = useState(opened);
@@ -16,7 +17,7 @@ const CollapsiblePanels = ({
     <section className="no-border p-2 mt-2">
       <div
         className="section-header d-flex justify-content-between px-2"
-        onClick={() => setOpen(!isOpen)}
+        onClick={() => (type === "default" ? setOpen(!isOpen) : null)}
       >
         <div className="flex-row-centered">
           {titleContent ? (
@@ -28,13 +29,18 @@ const CollapsiblePanels = ({
             <div className="section-badge flex-row-centered">{badge}</div>
           )}
         </div>
-        <button className="section-toggle" onClick={() => setOpen(!isOpen)}>
-          {isOpen ? (
-            <FaChevronUp size={18} style={{ color: "#207B69" }} />
-          ) : (
-            <FaChevronDown size={18} style={{ color: "#207B69" }} />
-          )}
-        </button>
+        {type === "default" && (
+          <button
+            className="section-toggle"
+            onClick={() => (type === "default" ? setOpen(!isOpen) : null)}
+          >
+            {isOpen ? (
+              <FaChevronUp size={18} style={{ color: "#207B69" }} />
+            ) : (
+              <FaChevronDown size={18} style={{ color: "#207B69" }} />
+            )}
+          </button>
+        )}
       </div>
       <AnimatePresence>
         {isOpen && (

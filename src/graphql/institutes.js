@@ -280,4 +280,12 @@ query INSTITUTION(
 }
 */
 
-export const GET_ALL_INSTITUTES = ``;
+export const GET_ALL_INSTITUTES = `
+query TO_GET_ALL_INSTITUTES {
+  institutions{
+    id
+    name
+    status
+  }
+}
+`;

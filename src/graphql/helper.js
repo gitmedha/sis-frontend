@@ -52,3 +52,21 @@ query GET_ALL_USERS {
   }
 }
 `;
+
+export const GET_ALL_PROGRAMS = `
+query TO_GET_ALL_PROGRAMS {
+  programs{
+    id
+    name
+    status
+  }
+}`;
+
+export const GET_ALL_GRANTS = `
+query TO_GET_ALL_GRANTS {
+  grants{
+    id
+    name
+    status
+  }
+}`;

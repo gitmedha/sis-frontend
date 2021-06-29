@@ -80,3 +80,7 @@
     border-left-color: #fff !important;
   }
 }
+
+.react-datepicker__input-container {
+  @extend .input-group;
+}

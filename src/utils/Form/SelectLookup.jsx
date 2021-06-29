@@ -1,6 +1,19 @@
-import Select from "react-select";
 import InputErr from "./InputErr";
+import { FaSearch } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
+import Select, { components } from "react-select";
+
+const SearchIcon = () => {
+  return <FaSearch size={15} />;
+};
+
+const DropdownIndicator = (props) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <SearchIcon />
+    </components.DropdownIndicator>
+  );
+};
 
 export const SelectField = (props) => {
   const { options, field, form, placeholder, isSearchable = true } = props;
@@ -12,6 +25,7 @@ export const SelectField = (props) => {
       onBlur={field.onBlur}
       placeholder={placeholder}
       isSearchable={isSearchable}
+      components={{ DropdownIndicator }}
       onChange={(option) => form.setFieldValue(field.name, option.value)}
       value={
         options ? options.find((option) => option.value === field.value) : null

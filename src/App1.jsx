@@ -15,6 +15,7 @@ import Institution from "./views/Students/Institution";
 import Institutions from "./views/Students/Institutions";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import AddNewInstitute from "./views/Students/Institution/AddInstitute";
+import NewBatch from "./views/Batches/NewBatch";
 
 const AppContainer = styled.div`
   z-index: 0;
@@ -192,6 +193,7 @@ const App = () => {
                 exact
                 component={AddSession}
               />
+              <Route path="/add-new-batch" exact component={NewBatch} />
             </Switch>
           </RouteContainer>
         </Container>
