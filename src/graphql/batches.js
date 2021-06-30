@@ -46,14 +46,16 @@ query GET_BATCH ($id:ID!) {
       start_date
       end_date
     }
-    assigned_to{
+    assigned_to {
       id
       email
       username
     }
-    logo{
+    logo {
       url
     }
+    per_student_fees
+    name_in_current_sis
     number_of_sessions_planned
   }
 }

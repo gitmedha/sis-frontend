@@ -47,7 +47,7 @@ const Details = ({ batch }) => {
           <p className="text--primary latto-bold pb-0 mb-0">
             Name in Current SIS
           </p>
-          <p>Lorem Ipsum</p>
+          <p>{batch.name_in_current_sis}</p>
         </div>
         <div className="col-md-6 col-sm-12 mb-3">
           <Table>
@@ -61,7 +61,7 @@ const Details = ({ batch }) => {
             <tbody>
               <tr>
                 <td>{batch.number_of_sessions_planned}</td>
-                <td>2000</td>
+                <td>{batch.per_student_fees}</td>
                 <td>50</td>
               </tr>
             </tbody>
