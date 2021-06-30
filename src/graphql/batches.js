@@ -236,3 +236,13 @@ mutation CREATE_NEW_BATCH(
   }
 }
 `;
+
+export const DELETE_BATCH = `
+mutation DELETE_BATCH($batch: ID!) {
+  deleteBatch(input: { where: { id: $batch } }) {
+    batch {
+      id
+    }
+  }
+}
+`;

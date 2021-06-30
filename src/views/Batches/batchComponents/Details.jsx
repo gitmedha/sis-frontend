@@ -1,10 +1,37 @@
+import NP from "nprogress";
+import { useState } from "react";
 import Moment from "react-moment";
+import { useHistory } from "react-router-dom";
+import { queryBuilder } from "../../../apis";
+import { DELETE_BATCH } from "../../../graphql";
+import SweetAlert from "react-bootstrap-sweetalert";
 import Table from "../../../components/content/Table";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { BadgeRenderer } from "../../../components/content/AgGridUtils";
 
 const Details = ({ batch }) => {
-  console.log("BATCH_DETAILS", batch);
+  const history = useHistory();
+  const [showAlert, setAlertShow] = useState(false);
+
+  const handleDelete = async () => {
+    NP.start();
+    try {
+      let data = await queryBuilder({
+        query: DELETE_BATCH,
+        variables: {
+          batch: batch.id,
+        },
+      });
+      console.log("BATCH_DELETED", data);
+    } catch (err) {
+      console.log("BATCH_DELETE_ERR", err);
+    } finally {
+      setAlertShow(false);
+      NP.done();
+      history.goBack();
+    }
+  };
+
   return (
     <div className="py-2 px-3">
       {/* <pre>
@@ -78,13 +105,54 @@ const Details = ({ batch }) => {
           />
         </div>
         <div className="col-12">
-          <button className="btn btn-regular btn-primary">EDIT</button>
-          <button className="btn btn-regular btn-primary">DELETE</button>
-          <button className="btn btn-regular btn-secondary">
-            MARK As COMPLETE
+          <button
+            style={{ marginLeft: "0px" }}
+            className="btn btn-regular btn-primary"
+          >
+            EDIT
+          </button>
+          <button
+            className="btn btn-regular btn-primary"
+            onClick={() => setAlertShow(true)}
+          >
+            DELETE
+          </button>
+          <button className="btn btn-regular btn-secondary latto-regular">
+            MARK AS COMPLETE
           </button>
         </div>
       </div>
+      <SweetAlert
+        warning
+        showCancel
+        btnSize="md"
+        show={showAlert}
+        onConfirm={() => handleDelete()}
+        onCancel={() => setAlertShow(false)}
+        title={
+          <span className="text--primary latto-bold">Delete this batch</span>
+        }
+        customButtons={
+          <>
+            <button
+              className="btn btn-secondary btn-regular latto-regular"
+              onClick={() => setAlertShow(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary btn-regular latto-regular text-capitalize"
+              onClick={() => handleDelete()}
+            >
+              Okay
+            </button>
+          </>
+        }
+      >
+        <div>
+          <p>Are you sure, You want to delete this batch?</p>
+        </div>
+      </SweetAlert>
     </div>
   );
 };
