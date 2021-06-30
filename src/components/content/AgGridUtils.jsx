@@ -113,8 +113,6 @@ export const StudentDetailsRenderer = (props) => {
   const [openModal, showModal] = useState(false);
   const toggleModal = () => showModal(!openModal);
 
-  console.log("STUDENT_DETAILS", props.data.institution.name);
-
   return (
     <div>
       <FaAngleDoubleDown size={20} color={"#257b69"} onClick={toggleModal} />

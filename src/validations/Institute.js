@@ -1,10 +1,10 @@
 import * as Yup from "yup";
 
 const name = Yup.string().required("Name is required.");
-const full_name = Yup.string().required("First name is required.");
-const last_name = Yup.string().required("Last name is required.");
 const status = Yup.string().required("Status is required.");
 const type = Yup.string().required("College type is required.");
+const last_name = Yup.string().required("Last name is required.");
+const full_name = Yup.string().required("First name is required.");
 const assigned_to = Yup.string().required("Assignee is required.");
 const designation = Yup.string().required("Designation is required.");
 const website = Yup.string().required("Website of college is required.");

@@ -206,7 +206,28 @@ mutation UPDATE_BATCH(
       id
       name
       status
-      logo{
+      logo {
+        url
+      }
+    }
+  }
+}
+`;
+
+export const CREATE_NEW_BATCH = `
+mutation CREATE_NEW_BATCH(
+  $data: BatchInput!
+) {
+  createBatch(
+    input: {
+      data: $data,
+    }
+  ) {
+    batch {
+      id
+      name
+      status
+      logo {
         url
       }
     }

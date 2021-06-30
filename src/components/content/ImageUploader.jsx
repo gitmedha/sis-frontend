@@ -63,7 +63,7 @@ const ImageUploader = ({
       {!isUploading && !image && (
         <div className="uploader-container">
           <div className="imageUploader">
-            <p className="upload-helper-text">Click Here To Uplaod Image</p>
+            <p className="upload-helper-text">Click Here To Upload Image</p>
             <div className="upload-helper-icon">
               <FaFileImage size={30} color={"#257b69"} />
             </div>

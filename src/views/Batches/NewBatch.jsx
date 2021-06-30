@@ -1,24 +1,31 @@
 import {
   GET_ALL_GRANTS,
   GET_ALL_PROGRAMS,
+  CREATE_NEW_BATCH,
   GET_ALL_INSTITUTES,
   GET_ASSIGNEES_LIST,
 } from "../../graphql";
-
+import moment from "moment";
 import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Form, Input } from "../../utils/Form";
+import { Link, useHistory } from "react-router-dom";
+import { batchValidations } from "../../validations";
 import ImageUploader from "../../components/content/ImageUploader";
 
 const NewBatch = () => {
+  const history = useHistory();
   const [logo, setLogo] = useState(null);
   const [grants, setGrants] = useState([]);
+  const [addLogo, setAddLogo] = useState(null);
   const [programs, setPrograms] = useState([]);
   const [isLoading, setLoading] = useState(null);
-  const logoUploadHandler = ({ id }) => setLogo(id);
   const [assigneeOpts, setAssignees] = useState([]);
   const [institutions, setInstitutions] = useState([]);
+
+  const logoUploadHandler = ({ id }) => setLogo(id);
+  const addLogoUploadHandler = ({ id }) => setAddLogo(id);
 
   const batchDetails = {
     name: "",
@@ -29,22 +36,57 @@ const NewBatch = () => {
     start_date: "",
     institution: "",
     per_student_fees: "",
+    seats_available: "0000",
     name_in_current_sis: "",
     number_of_sessions_planned: "",
+    include_institution_logo_in_certificates: "yes",
     // TODO: default set to the authenticated user's ID
     assigned_to: "",
   };
 
   const statusOpts = [
-    { key: "Enrollment Ongoing", value: "Enrollment Ongoing" },
-    { key: "To Be Started", value: "To Be Started" },
-    { key: "In Progress", value: "In Progress" },
-    { key: "Complete", value: "Complete" },
-    { key: "Certified", value: "Certified" },
-    { key: "Discontinued", value: "Discontinued" },
+    {
+      label: "Enrollment Ongoing",
+      key: "Enrollment Ongoing",
+      value: "Enrollment Ongoing",
+    },
+    { label: "To Be Started", key: "To Be Started", value: "To Be Started" },
+    { label: "In Progress", key: "In Progress", value: "In Progress" },
+    { label: "Complete", key: "Complete", value: "Complete" },
+    { label: "Certified", key: "Certified", value: "Certified" },
+    { label: "Discontinued", key: "Discontinued", value: "Discontinued" },
   ];
 
-  const onSubmit = async (data) => console.log("DATA", data);
+  const onSubmit = async (values) => {
+    let { include_institution_logo_in_certificates } = values;
+    let newBatchId;
+    delete values["seats_available"];
+
+    values.include_institution_logo_in_certificates =
+      include_institution_logo_in_certificates === "yes";
+
+    setLoading(true);
+    try {
+      let data = await queryBuilder({
+        query: CREATE_NEW_BATCH,
+        variables: {
+          data: {
+            ...values,
+            start_date: moment(values.start_date).format("YYYY-MM-DD"),
+            end_date: moment(values.end_date).format("YYYY-MM-DD"),
+            additional_logos_for_certificates: addLogo,
+            logo: logo,
+          },
+        },
+      });
+      newBatchId = data.data.createBatch.batch.id;
+    } catch (err) {
+      console.log("BATCH_CREATE_ERR", err);
+    } finally {
+      setLoading(false);
+      history.push(`/batch/${newBatchId}`);
+    }
+  };
 
   const getAssignees = async () => {
     let data = await queryBuilder({
@@ -109,8 +151,6 @@ const NewBatch = () => {
     init();
   }, []);
 
-  //   console.log("GRANTS", grants);
-
   return (
     <div className="card">
       <div className="card-header bg-white py-2 mt-2">
@@ -126,7 +166,7 @@ const NewBatch = () => {
           <Form
             onSubmit={onSubmit}
             initialValues={batchDetails}
-            // validationSchema={NewInstituteValidations}
+            validationSchema={batchValidations}
           >
             <div className="row">
               <div className="col-md-6 col-sm-12 mt-2">
@@ -171,7 +211,7 @@ const NewBatch = () => {
                   <Input
                     name="status"
                     label="Status"
-                    control="select"
+                    control="lookup"
                     placeholder="Status"
                     options={statusOpts}
                     className="form-control"
@@ -208,6 +248,109 @@ const NewBatch = () => {
                   <Skeleton count={1} height={45} />
                 )}
               </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="start_date"
+                  label="Start Date"
+                  control="datepicker"
+                  className="form-control"
+                  placeholder="Start Date"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="end_date"
+                  label="End Date"
+                  control="datepicker"
+                  placeholder="End Date"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  className="form-control"
+                  name="name_in_current_sis"
+                  label="Name in Current SIS"
+                  placeholder="Name in Current SIS"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  min={0}
+                  type="number"
+                  control="input"
+                  className="form-control"
+                  name="number_of_sessions_planned"
+                  label="Number of sessions planned"
+                  placeholder="Number of sessions planned"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  min={0}
+                  type="number"
+                  control="input"
+                  className="form-control"
+                  name="per_student_fees"
+                  label="Per Student Fees"
+                  placeholder="Per Student Fees"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  min={0}
+                  type="number"
+                  control="input"
+                  disabled={true}
+                  name="seats_available"
+                  label="Seats Available"
+                  className="form-control"
+                  placeholder="Seats Available"
+                />
+              </div>
+            </div>
+            <hr className="my-4" />
+            <div className="row">
+              <p className="title-text text--primary latto-bold">
+                Certification Details
+              </p>
+              <div className="col-md-6 col-sm-12">
+                <Input
+                  control="radio"
+                  className="form-control"
+                  label="Include Logo in Certificate?"
+                  name="include_institution_logo_in_certificates"
+                  options={[
+                    // { key: "Yes", value: true },
+                    // { key: "No", value: false },
+                    { key: "Yes", value: "yes" },
+                    { key: "No", value: "no" },
+                  ]}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4">
+                <ImageUploader handler={addLogoUploadHandler} label={null} />
+              </div>
+            </div>
+            <div className="d-flex mt-2 py-4">
+              <button
+                type="submit"
+                style={{ marginLeft: "0px" }}
+                className="btn btn-primary btn-regular"
+              >
+                SAVE
+              </button>
+              <button
+                type="button"
+                style={{ marginLeft: "20px" }}
+                onClick={() => history.goBack()}
+                className="btn btn-primary btn-regular"
+              >
+                CANCEL
+              </button>
             </div>
           </Form>
         </div>

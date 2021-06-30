@@ -3,6 +3,17 @@ import { FaSearch } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
 import Select, { components } from "react-select";
 
+const style = {
+  control: (base) => ({
+    ...base,
+    border: "1px solid #ced4da",
+    borderRadius: "2px",
+    "&:hover": {
+      borderColor: "#ced4da",
+    },
+  }),
+};
+
 const SearchIcon = () => {
   return <FaSearch size={15} />;
 };
@@ -20,6 +31,7 @@ export const SelectField = (props) => {
 
   return (
     <Select
+      styles={style}
       name={field.name}
       options={options}
       onBlur={field.onBlur}
