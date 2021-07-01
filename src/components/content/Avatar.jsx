@@ -28,7 +28,7 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const modalCloseHandler = async (logoId) => {
-    if (logoId.isTrusted) {
+    if (typeof logoId === "object" || logoId === undefined) {
       setModalShow(false);
       return;
     }
@@ -86,6 +86,7 @@ const ChangeAvatarModal = (props) => {
       centered
       size="lg"
       {...props}
+      animation={false}
       aria-labelledby="contained-modal-title-vcenter"
     >
       <Modal.Header className="bg-light">

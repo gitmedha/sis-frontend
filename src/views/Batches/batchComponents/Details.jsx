@@ -1,6 +1,7 @@
 import NP from "nprogress";
 import { useState } from "react";
 import Moment from "react-moment";
+import UpdateDetails from "./UpdateDetail";
 import { useHistory } from "react-router-dom";
 import { queryBuilder } from "../../../apis";
 import { DELETE_BATCH } from "../../../graphql";
@@ -12,6 +13,11 @@ import { BadgeRenderer } from "../../../components/content/AgGridUtils";
 const Details = ({ batch }) => {
   const history = useHistory();
   const [showAlert, setAlertShow] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+
+  const hideUpdateModal = async (data) => {
+    setModalShow(false);
+  };
 
   const handleDelete = async () => {
     NP.start();
@@ -28,7 +34,7 @@ const Details = ({ batch }) => {
     } finally {
       setAlertShow(false);
       NP.done();
-      history.goBack();
+      history.push("/batches");
     }
   };
 
@@ -107,6 +113,7 @@ const Details = ({ batch }) => {
         <div className="col-12">
           <button
             style={{ marginLeft: "0px" }}
+            onClick={() => setModalShow(true)}
             className="btn btn-regular btn-primary"
           >
             EDIT
@@ -122,6 +129,12 @@ const Details = ({ batch }) => {
           </button>
         </div>
       </div>
+      <UpdateDetails
+        batch={batch}
+        show={modalShow}
+        type={"governmnet"}
+        onHide={hideUpdateModal}
+      />
       <SweetAlert
         warning
         showCancel

@@ -189,9 +189,9 @@ const App = () => {
               <Route path="/batches" exact component={Batches} />
               <Route path="/batch/:id" exact component={Batch} />
               <Route
-                path="/new-session/:batchId"
                 exact
                 component={AddSession}
+                path="/new-session/:batchId"
               />
               <Route path="/add-new-batch" exact component={NewBatch} />
             </Switch>

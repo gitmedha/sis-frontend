@@ -18,6 +18,7 @@ const EditAddressModal = (props) => {
       {...props}
       centered
       size="lg"
+      animation={false}
       aria-labelledby="contained-modal-title-vcenter"
     >
       <Modal.Header className="bg-light">
