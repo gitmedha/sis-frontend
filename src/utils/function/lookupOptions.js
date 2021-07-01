@@ -8,6 +8,19 @@ import {
 } from "../../graphql";
 
 export const batchLookupHandler = async () => {
+  const statusOptions = [
+    {
+      label: "Enrollment Ongoing",
+      key: "Enrollment Ongoing",
+      value: "Enrollment Ongoing",
+    },
+    { label: "To Be Started", key: "To Be Started", value: "To Be Started" },
+    { label: "In Progress", key: "In Progress", value: "In Progress" },
+    { label: "Complete", key: "Complete", value: "Complete" },
+    { label: "Certified", key: "Certified", value: "Certified" },
+    { label: "Discontinued", key: "Discontinued", value: "Discontinued" },
+  ];
+
   let data = await queryBuilder({
     query: GET_ASSIGNEES_LIST,
   });
@@ -46,6 +59,7 @@ export const batchLookupHandler = async () => {
 
   return {
     grantOptions,
+    statusOptions,
     programOptions,
     instituteOptions,
     assigneesOptions,

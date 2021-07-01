@@ -1,23 +1,27 @@
+import moment from "moment";
 import { Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { queryBuilder } from "../../../apis";
 import Skeleton from "react-loading-skeleton";
+import { UPDATE_BATCH } from "../../../graphql";
 import { Form, Input } from "../../../utils/Form";
 import { batchLookupHandler } from "../../../utils/function/lookupOptions";
 
 const UpdateBatchDetails = (props) => {
   const { onHide, show } = props;
   const [options, setOptions] = useState(null);
+  const [isUpdating, setUpdating] = useState(false);
   const [loopUpIsLoading, setLookUpLoading] = useState(false);
 
-  const batch = {
-    ...props.batch,
+  const originalVal = {
+    ...JSON.parse(JSON.stringify(props.batch)),
     end_date: new Date(props.batch.end_date),
     start_date: new Date(props.batch.start_date),
     // Change the Fields from String to Original IDs
-    // grant: Number(props.batch.grant.id),
-    // program: Number(props.batch.program.id),
-    // institution: Number(props.batch.institution.id),
-    // assigned_to: Number(props.batch.assigned_to.id),
+    grant: Number(props.batch.grant.id),
+    program: Number(props.batch.program.id),
+    institution: Number(props.batch.institution.id),
+    assigned_to: Number(props.batch.assigned_to.id),
   };
 
   const prepareLookUpFields = async () => {
@@ -33,9 +37,33 @@ const UpdateBatchDetails = (props) => {
     }
   }, [show]);
 
-  console.log("LOOKUP_OPTS", options);
+  const onSubmit = async (values) => {
+    setUpdating(true);
+    try {
+      delete values["id"];
+      delete values["logo"];
+      delete values["created_at"];
+      delete values["updated_at"];
 
-  const onSubmit = (data) => console.log(data);
+      let { data } = await queryBuilder({
+        query: UPDATE_BATCH,
+        variables: {
+          id: originalVal.id,
+          data: {
+            ...values,
+            end_date: moment(values.end_date).format("YYYY-MM-DD"),
+            start_date: moment(values.start_date).format("YYYY-MM-DD"),
+          },
+        },
+      });
+    } catch (err) {
+      console.log("BATCH_UPDATE_ERR", err);
+    } finally {
+      setTimeout(() => {
+        setUpdating(false);
+      }, 5000);
+    }
+  };
 
   return (
     <Modal
@@ -55,7 +83,7 @@ const UpdateBatchDetails = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-light container">
-        <Form initialValues={batch} onSubmit={onSubmit}>
+        <Form initialValues={originalVal} onSubmit={onSubmit}>
           <div className="row">
             <div className="col-md-6 col-sm-12 mt-2">
               <Input
@@ -126,6 +154,20 @@ const UpdateBatchDetails = (props) => {
                   placeholder="Institution"
                   className="form-control"
                   options={options?.instituteOptions}
+                />
+              ) : (
+                <Skeleton count={1} height={45} />
+              )}
+            </div>
+            <div className="col-md-6 col-sm-12 mt-2">
+              {!loopUpIsLoading ? (
+                <Input
+                  name="status"
+                  label="Status"
+                  control="lookup"
+                  placeholder="Status"
+                  className="form-control"
+                  options={options?.statusOptions}
                 />
               ) : (
                 <Skeleton count={1} height={45} />

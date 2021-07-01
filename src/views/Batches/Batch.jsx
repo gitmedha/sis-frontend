@@ -15,30 +15,33 @@ import {
 } from "../../graphql";
 
 const Batch = (props) => {
-  const [batch, setBatch] = useState({});
+  const [batch, setBatch] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [students, setStudents] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const batchID = Number(props.match.params.id);
 
-  const getThisBatch = async () => {
+  const init = async () => {
     setLoading(true);
     NP.start();
+    await getThisBatch();
+    await getSessions();
+    await getStudents();
+    setLoading(false);
+    NP.done();
+  };
+
+  const getThisBatch = async () => {
     try {
       const batchID = props.match.params.id;
       let { data } = await api.post("/graphql", {
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
-      console.log("GET_BATCH", data.data);
+      // console.log("GET_BATCH", data.data);
       setBatch(data.data.batch);
-      await getSessions();
-      await getStudents();
     } catch (err) {
       console.log("ERR", err);
-    } finally {
-      setLoading(false);
-      NP.done();
     }
   };
 
@@ -66,7 +69,7 @@ const Batch = (props) => {
           id: batchID,
         },
       });
-      console.log("GET_STUDENTS", data.data);
+      // console.log("GET_STUDENTS", data.data);
       setStudents(data.data.programEnrollments);
     } catch (err) {
       console.log("ERR", err);
@@ -84,7 +87,7 @@ const Batch = (props) => {
   const done = () => getThisBatch();
 
   useEffect(() => {
-    getThisBatch();
+    init();
     // eslint-disable-next-line
   }, []);
 
@@ -93,20 +96,22 @@ const Batch = (props) => {
   } else {
     return (
       <div>
-        <Collapsible
-          titleContent={
-            <TitleWithLogo
-              done={done}
-              id={batch.id}
-              logo={batch.logo}
-              title={batch.name}
-              query={UPDATE_BATCH}
-            />
-          }
-          opened={true}
-        >
-          <Details batch={batch} />
-        </Collapsible>
+        {batch && (
+          <Collapsible
+            titleContent={
+              <TitleWithLogo
+                done={done}
+                id={batch.id}
+                logo={batch.logo}
+                title={batch.name}
+                query={UPDATE_BATCH}
+              />
+            }
+            opened={true}
+          >
+            <Details batch={batch} />
+          </Collapsible>
+        )}
         <Collapsible title="Sessions" badge={sessions.length.toString()}>
           <Sessions sessions={sessions} batchID={props.match.params.id} />
         </Collapsible>

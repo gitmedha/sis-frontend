@@ -44,9 +44,9 @@ const Details = ({ batch }) => {
 
   return (
     <div className="py-2 px-3">
-      <pre>
+      {/* <pre>
         <code>{JSON.stringify(batch, null, 2)}</code>
-      </pre>
+      </pre> */}
       <div className="row">
         <div className="col-md-4 col-sm-12 mb-3">
           <p className="text-detail-title">Batch Name</p>
