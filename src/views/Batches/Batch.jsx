@@ -21,10 +21,6 @@ const Batch = (props) => {
   const [isLoading, setLoading] = useState(false);
   const batchID = Number(props.match.params.id);
 
-  useEffect(() => {
-    getThisBatch();
-  }, []);
-
   const getThisBatch = async () => {
     setLoading(true);
     NP.start();
@@ -86,6 +82,11 @@ const Batch = (props) => {
   };
 
   const done = () => getThisBatch();
+
+  useEffect(() => {
+    getThisBatch();
+    // eslint-disable-next-line
+  }, []);
 
   if (isLoading) {
     return <SkeletonLoader />;

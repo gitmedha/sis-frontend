@@ -14,10 +14,6 @@ const Institute = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [instituteData, setInstituteData] = useState({});
 
-  useEffect(() => {
-    getThisInstitute();
-  }, []);
-
   const getThisInstitute = async () => {
     setLoading(true);
     NP.start();
@@ -40,7 +36,10 @@ const Institute = (props) => {
 
   const { address, contacts, ...rest } = instituteData;
 
-  console.log("REST", rest);
+  useEffect(() => {
+    getThisInstitute();
+    // eslint-disable-next-line
+  }, []);
 
   if (isLoading) {
     return <SkeletonLoader />;

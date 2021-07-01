@@ -141,6 +141,7 @@ const StudentModal = (props) => {
 
   useEffect(() => {
     getStudentDetails();
+    // eslint-disable-next-line
   }, []);
 
   const getStudentDetails = async () => {

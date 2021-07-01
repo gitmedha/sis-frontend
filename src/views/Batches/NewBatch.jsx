@@ -150,6 +150,7 @@ const NewBatch = () => {
 
   useEffect(() => {
     init();
+    // eslint-disable-next-line
   }, []);
 
   return (

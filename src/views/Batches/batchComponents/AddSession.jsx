@@ -91,6 +91,7 @@ const AddSession = (props) => {
 
   useEffect(() => {
     getStudents();
+    // eslint-disable-next-line
   }, []);
 
   return (

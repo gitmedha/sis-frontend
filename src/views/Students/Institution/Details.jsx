@@ -183,8 +183,8 @@ const Details = (props) => {
           <a
             href={website}
             target="_blank"
-            className="latto-regular"
             rel="noreferrer"
+            className="latto-regular"
           >
             {website}
           </a>
