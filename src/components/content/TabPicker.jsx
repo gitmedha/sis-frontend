@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const TabPicker = ({ options, setActiveTab }) => {
-  const [tabs, setTabs] = useState(options);
+  // const [tabs, setTabs] = useState(options);
   const [activeTab, setActive] = useState(options[0].key);
 
   const changeTab = (tab) => {
@@ -12,7 +12,7 @@ const TabPicker = ({ options, setActiveTab }) => {
 
   return (
     <div className="topnav my-3 latto-regular">
-      {tabs.map((tab) => (
+      {options.map((tab) => (
         <div
           key={tab.key}
           onClick={() => changeTab(tab)}

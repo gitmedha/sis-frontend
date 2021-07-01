@@ -8,10 +8,7 @@ import { AddressValidations } from "../../../validations";
 
 const EditAddressModal = (props) => {
   let { onHide, show, data } = props;
-
-  const [newAddress, setNewAddress] = useState(data);
-
-  const onSubmit = (data) => onHide(data);
+  const onSubmit = (values) => onHide(values);
 
   return (
     <Modal
@@ -33,7 +30,7 @@ const EditAddressModal = (props) => {
       <Modal.Body className="bg-light">
         <Form
           onSubmit={onSubmit}
-          initialValues={newAddress}
+          initialValues={data}
           validationSchema={AddressValidations}
         >
           <div className="row">
@@ -99,7 +96,7 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const hideModal = async (data) => {
-    if (data.target) {
+    if (!data || data.target) {
       setModalShow(false);
       return;
     }
@@ -107,7 +104,7 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
     setModalShow(false);
     np.start();
     try {
-      let resp = await queryBuilder({
+      await queryBuilder({
         query: UPADTE_INSTITUTIONS,
         variables: {
           id,
@@ -116,7 +113,6 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
           },
         },
       });
-      console.log("UPDATE_ADDRESS_RESPONSE", resp);
     } catch (err) {
       console.log("UPDATE_ADDRESS_ERR", err);
     } finally {

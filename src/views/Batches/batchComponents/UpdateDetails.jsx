@@ -5,7 +5,8 @@ import { queryBuilder } from "../../../apis";
 import Skeleton from "react-loading-skeleton";
 import { UPDATE_BATCH } from "../../../graphql";
 import { Form, Input } from "../../../utils/Form";
-import { batchLookupHandler } from "../../../utils/function/lookupOptions";
+import { batchValidations } from "../../../validations";
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
 const UpdateBatchDetails = (props) => {
   const { onHide, show } = props;
@@ -25,7 +26,7 @@ const UpdateBatchDetails = (props) => {
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
-    let lookUpOpts = await batchLookupHandler();
+    let lookUpOpts = await batchLookUpOptions();
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
@@ -34,6 +35,7 @@ const UpdateBatchDetails = (props) => {
     if (show && !options) {
       prepareLookUpFields();
     }
+    // eslint-disable-next-line
   }, [show]);
 
   const onSubmit = async (values) => {
@@ -44,7 +46,7 @@ const UpdateBatchDetails = (props) => {
       delete values["created_at"];
       delete values["updated_at"];
 
-      let { data } = await queryBuilder({
+      await queryBuilder({
         query: UPDATE_BATCH,
         variables: {
           data: {
@@ -81,7 +83,11 @@ const UpdateBatchDetails = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-light container">
-        <Form initialValues={originalVal} onSubmit={onSubmit}>
+        <Form
+          onSubmit={onSubmit}
+          initialValues={originalVal}
+          validationSchema={batchValidations}
+        >
           {!isUpdating ? (
             <div className="row">
               <div className="col-md-6 col-sm-12 mt-2">

@@ -133,7 +133,7 @@ const Details = (props) => {
   const hideUpdateModal = async (data) => {
     console.log("PAYLOAD", data);
 
-    if (data.isTrusted) {
+    if (!data || data.isTrusted) {
       setModalShow(false);
       return;
     }
@@ -151,7 +151,7 @@ const Details = (props) => {
         },
       });
 
-      console.log(resp, "DETAILS_UPDATE_RESPOSE");
+      // console.log(resp, "DETAILS_UPDATE_RESPOSE");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
     } finally {

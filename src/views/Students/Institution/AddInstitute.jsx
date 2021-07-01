@@ -231,17 +231,22 @@ const AddNewInstitute = () => {
                 />
               </div>
             </div>
-            <div className="d-flex mt-2 py-2">
+            <div className="d-flex mt-2 py-4">
               <button
                 type="button"
-                className="btn btn-secondary btn-regular"
+                className="btn--secondary"
+                style={{ marginLeft: "0px" }}
                 onClick={() => setModalContactShow(true)}
               >
                 ADD CONTACT
               </button>
             </div>
-            <button type="submit" className="btn btn-primary btn-regular mt-3">
-              Add Institution
+            <button
+              type="submit"
+              className="btn--primary mt-3"
+              style={{ marginLeft: "0px" }}
+            >
+              ADD INSTITUTION
             </button>
           </Form>
         </div>

@@ -38,8 +38,8 @@ export const GET_ASSIGNEES_LIST_OPTS = `
 query GET_ALL_USERS {
   users {
     id
-    username
     email
+    username
   }
 }
 `;

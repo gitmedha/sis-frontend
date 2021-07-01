@@ -1,20 +1,13 @@
-import {
-  GET_ALL_GRANTS,
-  GET_ALL_PROGRAMS,
-  CREATE_NEW_BATCH,
-  GET_ALL_INSTITUTES,
-  GET_ASSIGNEES_LIST,
-} from "../../graphql";
-
 import moment from "moment";
 import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Form, Input } from "../../utils/Form";
 import { useHistory } from "react-router-dom";
+import { Form, Input } from "../../utils/Form";
+import { CREATE_NEW_BATCH } from "../../graphql";
 import { batchValidations } from "../../validations";
 import ImageUploader from "../../components/content/ImageUploader";
-import { batchLookupHandler } from "../../utils/function/lookupOptions";
+import { batchLookUpOptions } from "../../utils/function/lookupOptions";
 
 const NewBatch = () => {
   const history = useHistory();
@@ -79,7 +72,7 @@ const NewBatch = () => {
 
   const init = async () => {
     setLookUpLoading(true);
-    let options = await batchLookupHandler();
+    let options = await batchLookUpOptions();
     setOptions(options);
     setLookUpLoading(false);
   };

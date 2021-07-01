@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { FaRegCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 const TabPicker = () => {
-  const [tabs, setTabs] = useState([
+  const tabs = [
     { title: <FaRegCalendarAlt size={20} />, key: "date" },
     { title: "30 D", key: "30days" },
     { title: "1 Qtr", key: "first-quarter" },
     { title: "1 Y", key: "year" },
     { title: "All", key: "all" },
-  ]);
+  ];
 
   const [endDate, setEndDate] = useState(null);
   const [activeTab, setActive] = useState(tabs[0].key);

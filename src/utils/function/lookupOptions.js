@@ -7,7 +7,7 @@ import {
   GET_ASSIGNEES_LIST_OPTS,
 } from "../../graphql";
 
-export const batchLookupHandler = async () => {
+export const batchLookUpOptions = async () => {
   const statusOptions = [
     {
       label: "Enrollment Ongoing",

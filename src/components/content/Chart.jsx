@@ -1,8 +1,7 @@
 import Chart from "react-apexcharts";
-import { useState } from "react";
 
 const BarChart = (props) => {
-  const [options, setOptions] = useState({
+  const options = {
     xaxis: {
       categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
     },
@@ -23,9 +22,9 @@ const BarChart = (props) => {
       width: 1,
       colors: ["#AA223C", "#207B69"],
     },
-  });
+  };
 
-  const [series, setSeries] = useState([
+  const series = [
     {
       name: "series-1",
       data: [30, 40, 45, 50, 49, 60, 70, 91],
@@ -34,7 +33,7 @@ const BarChart = (props) => {
       name: "series-2",
       data: [35, 35, 40, 25, 44, 55, 75, 102],
     },
-  ]);
+  ];
 
   return <Chart options={options} type={props.type} series={series} />;
 };
