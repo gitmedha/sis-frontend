@@ -1,23 +1,19 @@
 import NP from "nprogress";
 import { useState } from "react";
 import Moment from "react-moment";
-import UpdateDetails from "./UpdateDetail";
-import { useHistory } from "react-router-dom";
 import { queryBuilder } from "../../../apis";
+import { useHistory } from "react-router-dom";
 import { DELETE_BATCH } from "../../../graphql";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Table from "../../../components/content/Table";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { BadgeRenderer } from "../../../components/content/AgGridUtils";
+import UpdateBatchDetails from "./UpdateDetails";
 
 const Details = ({ batch }) => {
   const history = useHistory();
   const [showAlert, setAlertShow] = useState(false);
-  const [modalShow, setModalShow] = useState(false);
-
-  const hideUpdateModal = async (data) => {
-    setModalShow(false);
-  };
+  const [showModal, setModalShow] = useState(false);
 
   const handleDelete = async () => {
     NP.start();
@@ -38,48 +34,54 @@ const Details = ({ batch }) => {
     }
   };
 
+  const handleModalOnHide = () => {
+    setModalShow(false);
+  };
+
+  const openModal = () => {
+    setModalShow(true);
+  };
+
   return (
     <div className="py-2 px-3">
-      {/* <pre>
+      <pre>
         <code>{JSON.stringify(batch, null, 2)}</code>
-      </pre> */}
+      </pre>
       <div className="row">
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Batch Name</p>
+          <p className="text-detail-title">Batch Name</p>
           <p>{batch.name}</p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Assigned To</p>
+          <p className="text-detail-title">Assigned To</p>
           <p>{batch.assigned_to?.username}</p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Program</p>
+          <p className="text-detail-title">Program</p>
           <p>{batch.program?.name}</p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Area</p>
+          <p className="text-detail-title">Area</p>
           <p>{"Shaheed Path"}</p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Status</p>
+          <p className="text-detail-title">Status</p>
           <BadgeRenderer value={batch.status} />
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">Start Date</p>
+          <p className="text-detail-title">Start Date</p>
           <p>
             <Moment date={batch.start_date} format={"DD-MMM-YYYY"} />
           </p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">End Date</p>
+          <p className="text-detail-title">End Date</p>
           <p>
             <Moment date={batch.end_date} format={"DD-MMM-YYYY"} />
           </p>
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text--primary latto-bold pb-0 mb-0">
-            Name in Current SIS
-          </p>
+          <p className="text-detail-title">Name in Current SIS</p>
           <p>{batch.name_in_current_sis}</p>
         </div>
         <div className="col-md-6 col-sm-12 mb-3">
@@ -112,28 +114,22 @@ const Details = ({ batch }) => {
         </div>
         <div className="col-12">
           <button
+            onClick={openModal}
+            className="btn--primary"
             style={{ marginLeft: "0px" }}
-            onClick={() => setModalShow(true)}
-            className="btn btn-regular btn-primary"
           >
             EDIT
           </button>
-          <button
-            className="btn btn-regular btn-primary"
-            onClick={() => setAlertShow(true)}
-          >
+          <button onClick={() => setAlertShow(true)} className="btn--primary">
             DELETE
           </button>
-          <button className="btn btn-regular btn-secondary latto-regular">
-            MARK AS COMPLETE
-          </button>
+          <button className="btn--secondary">MARK AS COMPLETE</button>
         </div>
       </div>
-      <UpdateDetails
+      <UpdateBatchDetails
         batch={batch}
-        show={modalShow}
-        type={"governmnet"}
-        onHide={hideUpdateModal}
+        show={showModal}
+        onHide={handleModalOnHide}
       />
       <SweetAlert
         warning
@@ -148,15 +144,12 @@ const Details = ({ batch }) => {
         customButtons={
           <>
             <button
-              className="btn btn-secondary btn-regular latto-regular"
               onClick={() => setAlertShow(false)}
+              className="btn--secondary"
             >
               Cancel
             </button>
-            <button
-              className="btn btn-primary btn-regular latto-regular text-capitalize"
-              onClick={() => handleDelete()}
-            >
+            <button onClick={() => handleDelete()} className="btn--primary">
               Okay
             </button>
           </>

@@ -181,3 +181,10 @@ $green: #207b69;
   @extend .latto-bold;
   @extend .text-danger;
 }
+
+.text-detail-title {
+  @extend.pb-0;
+  @extend.mb-0;
+  @extend.latto-bold;
+  @extend.text--primary;
+}

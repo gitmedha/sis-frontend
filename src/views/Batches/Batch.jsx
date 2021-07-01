@@ -10,8 +10,8 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import {
   GET_BATCH,
   GET_SESSIONS,
-  GET_BATCH_STUDENTS,
   UPDATE_BATCH,
+  GET_BATCH_STUDENTS,
 } from "../../graphql";
 
 const Batch = (props) => {

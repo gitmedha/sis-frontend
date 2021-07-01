@@ -249,9 +249,9 @@ export const ProgressRenderer = ({ value }) => (
 
 export const cellStyle = {
   display: "flex",
-  // alignItems: "center",
-  flexDirection: "column",
+  outline: "none",
+  alignItems: "center",
+  // flexDirection: "column",
   // justifyContent: "center",
   fontFamily: "Latto-Regular",
-  outline: "none",
 };

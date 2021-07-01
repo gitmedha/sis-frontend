@@ -324,8 +324,6 @@ const NewBatch = () => {
                   label="Include Logo in Certificate?"
                   name="include_institution_logo_in_certificates"
                   options={[
-                    // { key: "Yes", value: true },
-                    // { key: "No", value: false },
                     { key: "Yes", value: "yes" },
                     { key: "No", value: "no" },
                   ]}

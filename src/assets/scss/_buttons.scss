@@ -21,3 +21,18 @@
   font-family: Latto-Regular;
   background-color: $custom-primary !important;
 }
+
+.btn--secondary {
+  @extend.btn;
+  @extend.btn-regular;
+  @extend.btn-secondary;
+  @extend.latto-regular;
+}
+
+.btn--primary {
+  @extend.btn;
+  @extend.btn-primary;
+  @extend.btn-regular;
+  @extend.latto-regular;
+  @extend.text-capitalize;
+}
