@@ -10,7 +10,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import { BadgeRenderer } from "../../../components/content/AgGridUtils";
 import UpdateBatchDetails from "./UpdateDetails";
 
-const Details = ({ batch }) => {
+const Details = ({ batch, done }) => {
   const history = useHistory();
   const [showAlert, setAlertShow] = useState(false);
   const [showModal, setModalShow] = useState(false);
@@ -34,8 +34,11 @@ const Details = ({ batch }) => {
     }
   };
 
-  const handleModalOnHide = () => {
+  const handleModalOnHide = (status) => {
     setModalShow(false);
+    if (status === "updated") {
+      done();
+    }
   };
 
   const openModal = () => {

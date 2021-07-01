@@ -15,11 +15,10 @@ const UpdateBatchDetails = (props) => {
 
   const originalVal = {
     ...JSON.parse(JSON.stringify(props.batch)),
-    end_date: new Date(props.batch.end_date),
-    start_date: new Date(props.batch.start_date),
-    // Change the Fields from String to Original IDs
     grant: Number(props.batch.grant.id),
     program: Number(props.batch.program.id),
+    end_date: new Date(props.batch.end_date),
+    start_date: new Date(props.batch.start_date),
     institution: Number(props.batch.institution.id),
     assigned_to: Number(props.batch.assigned_to.id),
   };
@@ -48,20 +47,19 @@ const UpdateBatchDetails = (props) => {
       let { data } = await queryBuilder({
         query: UPDATE_BATCH,
         variables: {
-          id: originalVal.id,
           data: {
             ...values,
             end_date: moment(values.end_date).format("YYYY-MM-DD"),
             start_date: moment(values.start_date).format("YYYY-MM-DD"),
           },
+          id: Number(props.batch.id),
         },
       });
     } catch (err) {
       console.log("BATCH_UPDATE_ERR", err);
     } finally {
-      setTimeout(() => {
-        setUpdating(false);
-      }, 5000);
+      setUpdating(false);
+      onHide("updated");
     }
   };
 
@@ -84,136 +82,140 @@ const UpdateBatchDetails = (props) => {
       </Modal.Header>
       <Modal.Body className="bg-light container">
         <Form initialValues={originalVal} onSubmit={onSubmit}>
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="name"
-                label="Name"
-                control="input"
-                placeholder="Name"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                control="input"
-                className="form-control"
-                name="name_in_current_sis"
-                label="Name in Current SIS"
-                placeholder="Name in Current SIS"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              {!loopUpIsLoading ? (
+          {!isUpdating ? (
+            <div className="row">
+              <div className="col-md-6 col-sm-12 mt-2">
                 <Input
-                  control="lookup"
-                  name="assigned_to"
-                  label="Assigned To"
+                  name="name"
+                  label="Name"
+                  control="input"
+                  placeholder="Name"
                   className="form-control"
-                  placeholder="Assigned To"
-                  options={options?.assigneesOptions}
                 />
-              ) : (
-                <Skeleton count={1} height={45} />
-              )}
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              {!loopUpIsLoading ? (
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
                 <Input
-                  name="program"
-                  label="Program"
-                  control="lookup"
-                  placeholder="Program"
+                  control="input"
                   className="form-control"
-                  options={options?.programOptions}
+                  name="name_in_current_sis"
+                  label="Name in Current SIS"
+                  placeholder="Name in Current SIS"
                 />
-              ) : (
-                <Skeleton count={1} height={45} />
-              )}
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              {!loopUpIsLoading ? (
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    control="lookup"
+                    name="assigned_to"
+                    label="Assigned To"
+                    className="form-control"
+                    placeholder="Assigned To"
+                    options={options?.assigneesOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    name="program"
+                    label="Program"
+                    control="lookup"
+                    placeholder="Program"
+                    className="form-control"
+                    options={options?.programOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    name="grant"
+                    label="Grant"
+                    control="lookup"
+                    placeholder="Grant"
+                    className="form-control"
+                    options={options?.grantOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    label="Institution"
+                    name="institution"
+                    control="lookup"
+                    placeholder="Institution"
+                    className="form-control"
+                    options={options?.instituteOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    name="status"
+                    label="Status"
+                    control="lookup"
+                    placeholder="Status"
+                    className="form-control"
+                    options={options?.statusOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
                 <Input
-                  name="grant"
-                  label="Grant"
-                  control="lookup"
-                  placeholder="Grant"
+                  min={0}
+                  type="number"
+                  control="input"
                   className="form-control"
-                  options={options?.grantOptions}
+                  name="number_of_sessions_planned"
+                  label="Number of sessions planned"
+                  placeholder="Number of sessions planned"
                 />
-              ) : (
-                <Skeleton count={1} height={45} />
-              )}
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              {!loopUpIsLoading ? (
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
                 <Input
-                  label="Institution"
-                  name="institution"
-                  control="lookup"
-                  placeholder="Institution"
+                  min={0}
+                  type="number"
+                  control="input"
                   className="form-control"
-                  options={options?.instituteOptions}
+                  name="per_student_fees"
+                  label="Per Student Fees"
+                  placeholder="Per Student Fees"
                 />
-              ) : (
-                <Skeleton count={1} height={45} />
-              )}
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              {!loopUpIsLoading ? (
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
                 <Input
-                  name="status"
-                  label="Status"
-                  control="lookup"
-                  placeholder="Status"
+                  name="start_date"
+                  label="Start Date"
+                  control="datepicker"
                   className="form-control"
-                  options={options?.statusOptions}
+                  placeholder="Start Date"
                 />
-              ) : (
-                <Skeleton count={1} height={45} />
-              )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="end_date"
+                  label="End Date"
+                  control="datepicker"
+                  placeholder="End Date"
+                  className="form-control"
+                />
+              </div>
             </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                min={0}
-                type="number"
-                control="input"
-                className="form-control"
-                name="number_of_sessions_planned"
-                label="Number of sessions planned"
-                placeholder="Number of sessions planned"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                min={0}
-                type="number"
-                control="input"
-                className="form-control"
-                name="per_student_fees"
-                label="Per Student Fees"
-                placeholder="Per Student Fees"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="start_date"
-                label="Start Date"
-                control="datepicker"
-                className="form-control"
-                placeholder="Start Date"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="end_date"
-                label="End Date"
-                control="datepicker"
-                placeholder="End Date"
-                className="form-control"
-              />
-            </div>
-          </div>
+          ) : (
+            <Skeleton height={66} count={6} />
+          )}
           <div className="d-flex justify-content-end mt-2 py-4">
             <button
               type="submit"
