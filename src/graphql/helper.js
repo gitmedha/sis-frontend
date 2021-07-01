@@ -34,6 +34,16 @@ mutation UPLOAD_FILE(
 }
 `;
 
+export const GET_ASSIGNEES_LIST_OPTS = `
+query GET_ALL_USERS {
+  users {
+    id
+    username
+    email
+  }
+}
+`;
+
 export const GET_ASSIGNEES_LIST = `
 query GET_ALL_USERS {
   users {

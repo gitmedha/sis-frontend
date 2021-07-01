@@ -3,8 +3,8 @@ import { queryBuilder } from "../../apis";
 import {
   GET_ALL_GRANTS,
   GET_ALL_PROGRAMS,
-  GET_ASSIGNEES_LIST,
   GET_ALL_INSTITUTES,
+  GET_ASSIGNEES_LIST_OPTS,
 } from "../../graphql";
 
 export const batchLookupHandler = async () => {
@@ -22,7 +22,7 @@ export const batchLookupHandler = async () => {
   ];
 
   let data = await queryBuilder({
-    query: GET_ASSIGNEES_LIST,
+    query: GET_ASSIGNEES_LIST_OPTS,
   });
   let assigneesOptions = data.data.users.map((assignee) => ({
     key: assignee.username,

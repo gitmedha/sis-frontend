@@ -7,8 +7,6 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
       where: { assigned_to: { id: $id } }
     ){
       id
-      created_at
-      updated_at
       name
       start_date
       end_date

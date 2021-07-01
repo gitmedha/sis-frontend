@@ -5,6 +5,7 @@ import {
   GET_ALL_INSTITUTES,
   GET_ASSIGNEES_LIST,
 } from "../../graphql";
+
 import moment from "moment";
 import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
@@ -13,17 +14,17 @@ import { Form, Input } from "../../utils/Form";
 import { useHistory } from "react-router-dom";
 import { batchValidations } from "../../validations";
 import ImageUploader from "../../components/content/ImageUploader";
+import { batchLookupHandler } from "../../utils/function/lookupOptions";
 
 const NewBatch = () => {
   const history = useHistory();
   const [logo, setLogo] = useState(null);
-  const [grants, setGrants] = useState([]);
   const [addLogo, setAddLogo] = useState(null);
-  const [programs, setPrograms] = useState([]);
   // eslint-disable-next-line
   const [isLoading, setLoading] = useState(null);
-  const [assigneeOpts, setAssignees] = useState([]);
-  const [institutions, setInstitutions] = useState([]);
+
+  const [options, setOptions] = useState(null);
+  const [loopUpIsLoading, setLookUpLoading] = useState(false);
 
   const logoUploadHandler = ({ id }) => setLogo(id);
   const addLogoUploadHandler = ({ id }) => setAddLogo(id);
@@ -44,19 +45,6 @@ const NewBatch = () => {
     // TODO: default set to the authenticated user's ID
     assigned_to: "",
   };
-
-  const statusOpts = [
-    {
-      label: "Enrollment Ongoing",
-      key: "Enrollment Ongoing",
-      value: "Enrollment Ongoing",
-    },
-    { label: "To Be Started", key: "To Be Started", value: "To Be Started" },
-    { label: "In Progress", key: "In Progress", value: "In Progress" },
-    { label: "Complete", key: "Complete", value: "Complete" },
-    { label: "Certified", key: "Certified", value: "Certified" },
-    { label: "Discontinued", key: "Discontinued", value: "Discontinued" },
-  ];
 
   const onSubmit = async (values) => {
     let { include_institution_logo_in_certificates } = values;
@@ -89,63 +77,11 @@ const NewBatch = () => {
     }
   };
 
-  const getAssignees = async () => {
-    let data = await queryBuilder({
-      query: GET_ASSIGNEES_LIST,
-    });
-
-    let newAssignees = data.data.users.map((assignee) => ({
-      key: assignee.username,
-      label: assignee.username,
-      value: Number(assignee.id),
-    }));
-
-    setAssignees(newAssignees);
-  };
-
-  const getPrograms = async () => {
-    let data = await queryBuilder({
-      query: GET_ALL_PROGRAMS,
-    });
-    let programOptions = data.data.programs.map((program) => ({
-      key: program.name,
-      label: program.name,
-      value: Number(program.id),
-    }));
-    setPrograms(programOptions);
-  };
-
-  const getGrants = async () => {
-    let data = await queryBuilder({
-      query: GET_ALL_GRANTS,
-    });
-    let grantOptions = data.data.grants.map((grant) => ({
-      key: grant.name,
-      label: grant.name,
-      value: Number(grant.id),
-    }));
-    setGrants(grantOptions);
-  };
-
-  const getAllInstitutes = async () => {
-    let data = await queryBuilder({
-      query: GET_ALL_INSTITUTES,
-    });
-    let instituteOptions = data.data.institutions.map((institution) => ({
-      key: institution.name,
-      label: institution.name,
-      value: Number(institution.id),
-    }));
-    setInstitutions(instituteOptions);
-  };
-
   const init = async () => {
-    setLoading(true);
-    await getAssignees();
-    await getPrograms();
-    await getGrants();
-    await getAllInstitutes();
-    setLoading(false);
+    setLookUpLoading(true);
+    let options = await batchLookupHandler();
+    setOptions(options);
+    setLookUpLoading(false);
   };
 
   useEffect(() => {
@@ -181,70 +117,79 @@ const NewBatch = () => {
                 />
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
-                {assigneeOpts.length ? (
+                <Input
+                  control="input"
+                  className="form-control"
+                  name="name_in_current_sis"
+                  label="Name in Current SIS"
+                  placeholder="Name in Current SIS"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
                   <Input
                     control="lookup"
                     name="assigned_to"
                     label="Assigned To"
-                    options={assigneeOpts}
                     className="form-control"
                     placeholder="Assigned To"
+                    options={options?.assigneesOptions}
                   />
                 ) : (
                   <Skeleton count={1} height={45} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
-                {programs.length ? (
+                {!loopUpIsLoading ? (
                   <Input
                     name="program"
                     label="Program"
                     control="lookup"
-                    options={programs}
                     placeholder="Program"
                     className="form-control"
+                    options={options?.programOptions}
                   />
                 ) : (
                   <Skeleton count={1} height={45} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
-                {statusOpts.length ? (
+                {!loopUpIsLoading ? (
+                  <Input
+                    name="grant"
+                    label="Grant"
+                    control="lookup"
+                    placeholder="Grant"
+                    className="form-control"
+                    options={options?.grantOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
+                  <Input
+                    control="lookup"
+                    name="institution"
+                    label="Institution"
+                    placeholder="Institution"
+                    className="form-control"
+                    options={options?.instituteOptions}
+                  />
+                ) : (
+                  <Skeleton count={1} height={45} />
+                )}
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                {!loopUpIsLoading ? (
                   <Input
                     name="status"
                     label="Status"
                     control="lookup"
                     placeholder="Status"
-                    options={statusOpts}
                     className="form-control"
-                  />
-                ) : (
-                  <Skeleton count={1} height={45} />
-                )}
-              </div>
-              <div className="col-md-6 col-sm-12 mt-2">
-                {grants.length ? (
-                  <Input
-                    name="grant"
-                    label="Grant"
-                    control="lookup"
-                    options={grants}
-                    placeholder="Grant"
-                    className="form-control"
-                  />
-                ) : (
-                  <Skeleton count={1} height={45} />
-                )}
-              </div>
-              <div className="col-md-6 col-sm-12 mt-2">
-                {institutions.length ? (
-                  <Input
-                    control="lookup"
-                    name="institution"
-                    label="Institution"
-                    options={institutions}
-                    className="form-control"
-                    placeholder="Institution"
+                    options={options?.statusOptions}
                   />
                 ) : (
                   <Skeleton count={1} height={45} />
@@ -268,15 +213,7 @@ const NewBatch = () => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
-                <Input
-                  control="input"
-                  className="form-control"
-                  name="name_in_current_sis"
-                  label="Name in Current SIS"
-                  placeholder="Name in Current SIS"
-                />
-              </div>
+
               <div className="col-md-6 col-sm-12 mt-2">
                 <Input
                   min={0}
