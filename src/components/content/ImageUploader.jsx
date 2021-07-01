@@ -84,7 +84,9 @@ const ImageUploader = ({
       {isUploading && !image && (
         <ProgressBar variant="success" now={uploadProgress} />
       )}
-      {image && <img src={image} className="uploaded-img" />}
+      {image && (
+        <img src={image} className="uploaded-img" alt={"uploaded-pic"} />
+      )}
     </div>
   );
 };

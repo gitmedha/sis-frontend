@@ -7,7 +7,7 @@ import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { AddressValidations } from "../../../validations";
 
 const EditAddressModal = (props) => {
-  let { onHide, data } = props;
+  let { onHide, show, data } = props;
 
   const [newAddress, setNewAddress] = useState(data);
 
@@ -15,9 +15,10 @@ const EditAddressModal = (props) => {
 
   return (
     <Modal
-      {...props}
       centered
       size="lg"
+      show={show}
+      onHide={onHide}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
     >
@@ -102,6 +103,7 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
       setModalShow(false);
       return;
     }
+
     setModalShow(false);
     np.start();
     try {

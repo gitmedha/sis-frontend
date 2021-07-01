@@ -9,7 +9,7 @@ import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
 
 const AddContactModal = (props) => {
-  let { onHide } = props;
+  let { onHide, show } = props;
 
   const newContact = {
     phone: "",
@@ -24,9 +24,10 @@ const AddContactModal = (props) => {
 
   return (
     <Modal
-      {...props}
       centered
       size="lg"
+      show={show}
+      onHide={onHide}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
     >

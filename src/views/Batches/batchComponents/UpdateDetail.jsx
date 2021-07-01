@@ -1,6 +1,6 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { From, Input } from "../../../utils/Form";
+// import { From, Input } from "../../../utils/Form";
 
 const UpdateDetails = (props) => {
   let { onHide, show, batch } = props;

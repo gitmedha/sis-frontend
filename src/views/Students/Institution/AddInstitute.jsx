@@ -15,7 +15,7 @@ const AddNewInstitute = () => {
   const [logo, setLogo] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [assigneeOpts, setAssignees] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  // const [isLoading, setLoading] = useState(false);
   const [modalContactShow, setModalContactShow] = useState(false);
 
   const statusOpts = [
@@ -58,7 +58,7 @@ const AddNewInstitute = () => {
   };
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    // setLoading(true);
     NP.start();
     try {
       let payload = {
@@ -83,7 +83,7 @@ const AddNewInstitute = () => {
     } catch (err) {
       console.log("ERR_ADD", err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
       NP.done();
     }
   };

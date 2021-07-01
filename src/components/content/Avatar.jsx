@@ -33,7 +33,7 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
       return;
     }
 
-    let { data } = await api.post("/graphql", {
+    await api.post("/graphql", {
       query,
       variables: {
         data: { logo: logoId },

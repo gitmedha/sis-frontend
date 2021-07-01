@@ -25,9 +25,10 @@ const UpdateInstituteDetails = (props) => {
 
   return (
     <Modal
-      {...props}
       centered
       size="lg"
+      show={show}
+      onHide={onHide}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
     >
@@ -179,13 +180,18 @@ const Details = (props) => {
       <div className="row">
         <div className="col-md-4">
           <p className="text-heading text--md">Website</p>
-          <a href={website} target="_blank" className="latto-regular">
+          <a
+            href={website}
+            target="_blank"
+            className="latto-regular"
+            rel="noreferrer"
+          >
             {website}
           </a>
         </div>
         <div className="col-md-4">
           <p className="text-heading text--md">Email</p>
-          <a target="_blank" href={`mailto:${email}`}>
+          <a target="_blank" href={`mailto:${email}`} rel="noreferrer">
             {email}
           </a>
         </div>

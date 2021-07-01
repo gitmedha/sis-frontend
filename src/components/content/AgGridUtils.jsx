@@ -24,28 +24,30 @@ const styleObject = {
 };
 
 const colorRenderer = (value) => {
-  switch (value) {
-    case "Enrollment Ongoing":
+  const casedValue = value ? value.toLowerCase() : "";
+
+  switch (casedValue) {
+    case "enrollment ongoing":
       return {
         color: "#0AC1B6",
         backgroundColor: "#D2FFFC",
       };
-    case "To be started":
+    case "to be started":
       return {
         color: "#E9AD03",
         backgroundColor: "#FFE69E",
       };
-    case "In Progress":
+    case "in progress":
       return {
         color: "#A5BC18",
         backgroundColor: "#E7FE5C",
       };
-    case "Completed":
+    case "completed":
       return {
         color: "#00ADEF",
         backgroundColor: "#D6F4FF",
       };
-    case "Discontinued":
+    case "discontinued":
       return {
         color: "#F84A00",
         backgroundColor: "#FFD2BF",
@@ -80,6 +82,8 @@ const colorRenderer = (value) => {
         backgroundColor: "#DCDCDC",
         textTransform: "capitalize",
       };
+    default:
+      return {};
   }
 };
 

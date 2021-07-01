@@ -10,7 +10,7 @@ import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Form, Input } from "../../utils/Form";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { batchValidations } from "../../validations";
 import ImageUploader from "../../components/content/ImageUploader";
 
@@ -20,6 +20,7 @@ const NewBatch = () => {
   const [grants, setGrants] = useState([]);
   const [addLogo, setAddLogo] = useState(null);
   const [programs, setPrograms] = useState([]);
+  // eslint-disable-next-line
   const [isLoading, setLoading] = useState(null);
   const [assigneeOpts, setAssignees] = useState([]);
   const [institutions, setInstitutions] = useState([]);

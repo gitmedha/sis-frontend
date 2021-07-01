@@ -54,7 +54,7 @@ const AddSession = (props) => {
 
   const attendanceApiCaller = async (params) => {
     try {
-      let resp = await api.post("/graphql", {
+      await api.post("/graphql", {
         variables: params,
         query: MARK_ATTENDANCE,
       });
