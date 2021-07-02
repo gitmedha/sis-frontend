@@ -348,6 +348,4 @@ const ContactModal = (props) => {
   );
 };
 
-// const ContactList = () => {};
-
 export default AddNewInstitute;

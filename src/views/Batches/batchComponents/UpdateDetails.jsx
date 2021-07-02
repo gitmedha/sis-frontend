@@ -153,9 +153,9 @@ const UpdateBatchDetails = (props) => {
               <div className="col-md-6 col-sm-12 mt-2">
                 {!loopUpIsLoading ? (
                   <Input
-                    label="Institution"
-                    name="institution"
                     control="lookup"
+                    name="institution"
+                    label="Institution"
                     placeholder="Institution"
                     className="form-control"
                     options={options?.instituteOptions}
@@ -167,6 +167,7 @@ const UpdateBatchDetails = (props) => {
               <div className="col-md-6 col-sm-12 mt-2">
                 {!loopUpIsLoading ? (
                   <Input
+                    icon="down"
                     name="status"
                     label="Status"
                     control="lookup"
@@ -194,8 +195,8 @@ const UpdateBatchDetails = (props) => {
                   min={0}
                   type="number"
                   control="input"
-                  className="form-control"
                   name="per_student_fees"
+                  className="form-control"
                   label="Per Student Fees"
                   placeholder="Per Student Fees"
                 />

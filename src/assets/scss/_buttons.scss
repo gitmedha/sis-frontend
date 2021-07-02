@@ -1,14 +1,28 @@
+button {
+  &:active,
+  &:focus {
+    outline: 0 !important;
+  }
+}
 .btn {
   border-radius: 5px !important;
   outline: none;
   border: none;
   &-regular {
     font-size: 16px;
+    margin: auto 10px;
     border-radius: 5px;
     font-family: Latto-Bold;
     padding: 5px 50px !important;
-    margin: auto 10px;
   }
+  outline: 0;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-primary,

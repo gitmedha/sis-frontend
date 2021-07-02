@@ -92,6 +92,7 @@ const Institutions = () => {
             <AgGridColumn
               sortable
               field="name"
+              width={100}
               cellRenderer="sno"
               headerName="S. No."
               cellStyle={cellStyle}

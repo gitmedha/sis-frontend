@@ -57,6 +57,7 @@ query GET_BATCH ($id:ID!) {
     }
     institution {
       id
+      name
     }
     per_student_fees
     name_in_current_sis

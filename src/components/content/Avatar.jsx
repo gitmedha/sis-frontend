@@ -1,4 +1,5 @@
 import api from "../../apis";
+import Tooltip from "./Tooltip";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
@@ -19,6 +20,7 @@ const Avatar = ({ logo, name }) => {
           <FaSchool size={25} />
         </div>
       )}
+
       <p className="mt-3 latto-regular">{name}</p>
     </div>
   );
@@ -48,23 +50,27 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
   return (
     <div className="d-flex align-items-center justify-content-start mb-2">
       {logo && (
-        <img
-          alt={`${title}-logo`}
-          src={urlPath(logo.url)}
-          style={{ cursor: "pointer" }}
-          className={"avatar img-fluid"}
-          onClick={() => setModalShow(true)}
-        />
+        <Tooltip title="Click Here to change logo">
+          <img
+            alt={`${title}-logo`}
+            src={urlPath(logo.url)}
+            style={{ cursor: "pointer" }}
+            className={"avatar img-fluid"}
+            onClick={() => setModalShow(true)}
+          />
+        </Tooltip>
       )}
 
       {!logo && (
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => setModalShow(true)}
-          className="flex-row-centered avatar avatar-default"
-        >
-          <FaSchool size={25} />
-        </div>
+        <Tooltip title="Click Here to change logo">
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setModalShow(true)}
+            className="flex-row-centered avatar avatar-default"
+          >
+            <FaSchool size={25} />
+          </div>
+        </Tooltip>
       )}
 
       <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">

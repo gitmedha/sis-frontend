@@ -1,5 +1,5 @@
 import InputErr from "./InputErr";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
 import Select, { components } from "react-select";
 
@@ -14,23 +14,36 @@ const style = {
   }),
 };
 
-const SearchIcon = () => {
-  return <FaSearch size={15} />;
+const IconRenderer = ({ icon }) => {
+  switch (icon) {
+    case "down":
+      return <FaAngleDown size={15} />;
+    default:
+      return <FaSearch size={15} />;
+  }
 };
 
 const DropdownIndicator = (props) => {
   return (
     <components.DropdownIndicator {...props}>
-      <SearchIcon />
+      <IconRenderer icon={props.selectProps.icon} />
     </components.DropdownIndicator>
   );
 };
 
 export const SelectField = (props) => {
-  const { options, field, form, placeholder, isSearchable = true } = props;
+  const {
+    icon,
+    form,
+    field,
+    options,
+    placeholder,
+    isSearchable = true,
+  } = props;
 
   return (
     <Select
+      icon={icon}
       styles={style}
       name={field.name}
       options={options}

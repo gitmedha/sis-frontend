@@ -87,6 +87,10 @@ const Details = ({ batch, done }) => {
           <p className="text-detail-title">Name in Current SIS</p>
           <p>{batch.name_in_current_sis}</p>
         </div>
+        <div className="col-md-4 col-sm-12 mb-3">
+          <p className="text-detail-title">Institution</p>
+          <p>{batch.institution.name}</p>
+        </div>
         <div className="col-md-6 col-sm-12 mb-3">
           <Table>
             <thead>

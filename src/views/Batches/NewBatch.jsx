@@ -161,13 +161,13 @@ const NewBatch = () => {
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
-                {!loopUpIsLoading ? (
+                {!loopUpIsLoading && options ? (
                   <Input
                     control="lookup"
                     name="institution"
                     label="Institution"
-                    placeholder="Institution"
                     className="form-control"
+                    placeholder="Institution"
                     options={options?.instituteOptions}
                   />
                 ) : (
@@ -177,11 +177,12 @@ const NewBatch = () => {
               <div className="col-md-6 col-sm-12 mt-2">
                 {!loopUpIsLoading ? (
                   <Input
+                    icon="down"
                     name="status"
                     label="Status"
                     control="lookup"
                     placeholder="Status"
-                    className="form-control"
+                    className="custom-select"
                     options={options?.statusOptions}
                   />
                 ) : (

@@ -12,7 +12,7 @@ const UpdateInstituteDetails = (props) => {
 
   const institutionTypeOpts = [
     { key: "Private", value: "private" },
-    { key: "Government", value: "governmnet" },
+    { key: "Government", value: "government" },
     { key: "ITI", value: "iti" },
   ];
 
@@ -210,7 +210,8 @@ const Details = (props) => {
         <div className="col-12 mt-3">
           <button
             onClick={() => setModalShow(true)}
-            className="btn btn-primary btn-regular"
+            style={{ marginLeft: "0px" }}
+            className="btn--primary"
           >
             EDIT
           </button>
