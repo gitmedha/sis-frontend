@@ -2,9 +2,9 @@
   button {
     img {
       border-radius: 50%;
-      width: 45px !important;
-      height: 45px !important;
-      border: 2px solid $custom-primary;
+      width: 50px !important;
+      height: 50px !important;
+      border: 2px solid rgba($custom-primary, 0.7);
     }
   }
   .dropdown-menu {

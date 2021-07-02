@@ -188,3 +188,17 @@ $green: #207b69;
   @extend.latto-bold;
   @extend.text--primary;
 }
+
+a.menu-item-link {
+  display: flex;
+  color: #808080;
+  font-size: 16px;
+  align-items: center;
+  text-decoration: none;
+  justify-content: center;
+  font-family: Latto-Regular;
+}
+
+a.sidebar-link-active {
+  color: $custom-primary;
+}

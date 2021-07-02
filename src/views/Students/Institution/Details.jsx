@@ -143,7 +143,7 @@ const Details = (props) => {
 
     nProgress.start();
     try {
-      let resp = await queryBuilder({
+      await queryBuilder({
         query: UPADTE_INSTITUTIONS,
         variables: {
           id: Number(id),
