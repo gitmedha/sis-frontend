@@ -263,3 +263,81 @@ mutation UPDATE_BATCH($id: ID!, $data: editBatchInput!){
     }
   }
 }`;
+
+export const GET_SESSION = `
+query GET_SESSION($id: ID!){
+  session(id: $id){
+    id
+    date
+    topics_covered
+    date
+    created_at
+    updated_at
+  }
+}
+`;
+
+export const GET_SESSION_ATTENDANCE = `
+query GET_SESSION_ATTENDANCE($sessionID: ID!){
+  attendances(where: { session: { id: $sessionID } }){
+    id
+    present
+    created_at
+    program_enrollment{
+      id
+      student{
+        first_name
+        last_name
+      }
+    }
+  }
+}
+`;
+
+export const UPDATE_SESSION_ATTENDANCE = `
+mutation UPDATE_ATTENDANCE(
+  $id: ID!,
+  $data: editAttendanceInput!
+) {
+  updateAttendance(
+    input:{ 
+      data: $data, 
+      where: { 
+        id: $id 
+      } 
+    }
+  ){
+    attendance{
+      id
+    }
+  }
+}
+`;
+/**
+ * Payload
+{
+  "id": 67,
+  "data": {
+    "present": false,
+  }
+}
+ */
+export const UPDATE_SESSION_QUERY = `
+mutation UPDATE_SESSION(
+    $id: ID!,
+    $data: editSessionInput!
+  ){
+  updateSession(
+    input: {
+      data: $data,
+      where: { 
+        id: $id 
+      }
+    }
+  ){
+    session {
+      id
+    }
+  }
+}
+`;

@@ -16,6 +16,7 @@ const NewBatch = () => {
   // eslint-disable-next-line
   const [isLoading, setLoading] = useState(null);
 
+  // LookUp Options
   const [options, setOptions] = useState(null);
   const [loopUpIsLoading, setLookUpLoading] = useState(false);
 
@@ -129,7 +130,7 @@ const NewBatch = () => {
                     options={options?.assigneesOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={58} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -143,7 +144,7 @@ const NewBatch = () => {
                     options={options?.programOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={58} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -157,7 +158,7 @@ const NewBatch = () => {
                     options={options?.grantOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={58} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -171,7 +172,7 @@ const NewBatch = () => {
                     options={options?.instituteOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={58} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -186,7 +187,7 @@ const NewBatch = () => {
                     options={options?.statusOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={58} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -207,7 +208,6 @@ const NewBatch = () => {
                   className="form-control"
                 />
               </div>
-
               <div className="col-md-6 col-sm-12 mt-2">
                 <Input
                   min={0}

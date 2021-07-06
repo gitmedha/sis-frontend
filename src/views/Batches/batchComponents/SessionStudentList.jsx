@@ -51,9 +51,7 @@ const SessionStudentList = ({ students, updateAttendance }) => {
             onGridReady={onGridReady}
             rowSelection={"multiple"}
             onRowSelected={getRowData}
-            // suppressRowClickSelection={true}
             rowMultiSelectWithClick={true}
-            // onSelectionChanged={getUnSelectedRowData}
           >
             <AgGridColumn
               sortable

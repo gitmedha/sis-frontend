@@ -119,7 +119,7 @@ const UpdateBatchDetails = (props) => {
                     options={options?.assigneesOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={60} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -133,7 +133,7 @@ const UpdateBatchDetails = (props) => {
                     options={options?.programOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={60} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -147,7 +147,7 @@ const UpdateBatchDetails = (props) => {
                     options={options?.grantOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={60} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -161,7 +161,7 @@ const UpdateBatchDetails = (props) => {
                     options={options?.instituteOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={60} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">
@@ -176,7 +176,7 @@ const UpdateBatchDetails = (props) => {
                     options={options?.statusOptions}
                   />
                 ) : (
-                  <Skeleton count={1} height={45} />
+                  <Skeleton count={1} height={60} />
                 )}
               </div>
               <div className="col-md-6 col-sm-12 mt-2">

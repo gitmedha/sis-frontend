@@ -41,14 +41,12 @@ const AddSession = (props) => {
   };
 
   const markAttendance = async (sessionID) => {
-    setLoading(true);
     await attendanceRecords.forEach(async (student) => {
       await attendanceApiCaller({
         ...student,
         session: sessionID,
       });
     });
-    setLoading(false);
     return;
   };
 

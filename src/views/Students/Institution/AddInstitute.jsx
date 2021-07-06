@@ -24,9 +24,9 @@ const AddNewInstitute = () => {
   ];
 
   const institutionTypeOpts = [
-    { key: "Private", value: "private" },
-    { key: "Government", value: "government" },
-    { key: "ITI", value: "iti" },
+    { label: "ITI", value: "iti" },
+    { label: "Private", value: "private" },
+    { label: "Government", value: "government" },
   ];
 
   const instituteData = {
@@ -185,7 +185,8 @@ const AddNewInstitute = () => {
               <div className="col-md-6 col-sm-12 mt-2">
                 <Input
                   name="type"
-                  control="radio"
+                  icon="down"
+                  control="lookup"
                   placeholder="Type"
                   label="College Type"
                   className="form-control"

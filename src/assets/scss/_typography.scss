@@ -196,9 +196,11 @@ a.menu-item-link {
   align-items: center;
   text-decoration: none;
   justify-content: center;
+  transition: 0.2s ease-in;
   font-family: Latto-Regular;
 }
 
 a.sidebar-link-active {
   color: $custom-primary;
+  font-family: Latto-Bold;
 }

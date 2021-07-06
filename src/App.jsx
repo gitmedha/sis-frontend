@@ -1,11 +1,12 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Session from "./views/Batches/sessions";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // Layout Components
 import Sidebar from "./components/layout/Sidenav";
 import Header from "./components/layout/AppHeader";
-import Container from "./components/layout/Container";
+import LayoutContainer from "./components/layout/Container";
 import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
@@ -17,6 +18,8 @@ import Institution from "./views/Students/Institution";
 import Institutions from "./views/Students/Institutions";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import AddNewInstitute from "./views/Students/Institution/AddInstitute";
+import TableView from "./views/Tables";
+import updateSession from "./views/Batches/sessions/updateSession";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -32,7 +35,7 @@ const App = () => {
     <Router>
       <AppContainer>
         <Sidebar isOpen={isOpen} />
-        <Container>
+        <LayoutContainer>
           <Header isOpen={isOpen} toggleMenu={toggleMenu} />
           <RouteContainer>
             <Switch>
@@ -52,9 +55,16 @@ const App = () => {
                 path="/new-session/:batchId"
               />
               <Route path="/add-new-batch" exact component={NewBatch} />
+              <Route path="/session/:sessionID" exact component={Session} />
+              <Route
+                exact
+                component={updateSession}
+                path="/update-session/:sessionID"
+              />
+              <Route path="/test" exact component={TableView} />
             </Switch>
           </RouteContainer>
-        </Container>
+        </LayoutContainer>
       </AppContainer>
     </Router>
   );

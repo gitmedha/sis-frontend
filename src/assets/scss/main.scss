@@ -1,13 +1,16 @@
 @import "../../../node_modules/nprogress/nprogress.css";
 @import "../../../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../../../node_modules/react-datepicker/dist/react-datepicker.min.css";
+// Table
+
+// Table
+
 @import "variables";
 @import "typography";
 @import "badge";
 @import "card";
 @import "accrodian";
-// @import "sidebar";
-@import "table";
+// @import "table";
 @import "utils";
 @import "section";
 @import "tab-picker";
@@ -20,6 +23,7 @@
 @import "image_uploader";
 @import "react_select";
 @import "userbox";
+@import "table-updated";
 
 body {
   font-family: Latto-Regular !important;

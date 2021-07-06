@@ -1,11 +1,11 @@
 import Auth from "./Auth";
-import Theme from "./Theme";
+import sessionAttendance from "./sessionAttendances";
 
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
   auth: Auth,
-  theme: Theme,
+  sessionAttendance,
 });
 
 export default rootReducer;
