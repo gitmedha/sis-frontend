@@ -10,7 +10,7 @@ import { ToastProvider } from "react-toast-notifications";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ToastProvider>
+      <ToastProvider placement="top-center">
         <App />
       </ToastProvider>
     </Provider>
