@@ -198,29 +198,6 @@ mutation CREATE_ATTENDANCE_RECORD (
 }
 `;
 
-// export const UPDATE_BATCH = `
-// mutation UPDATE_BATCH(
-//   $id: ID!
-//   $data: editBatchInput!
-// ) {
-//   updateBatch(
-//     input: {
-//       data: $data,
-//       where: { id: $id }
-//     }
-//   ) {
-//     batch {
-//       id
-//       name
-//       status
-//       logo {
-//         url
-//       }
-//     }
-//   }
-// }
-// `;
-
 export const CREATE_NEW_BATCH = `
 mutation CREATE_NEW_BATCH(
   $data: BatchInput!

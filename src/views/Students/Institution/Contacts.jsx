@@ -7,6 +7,8 @@ import { FaTrashAlt, FaEye } from "react-icons/fa";
 import Table from "../../../components/content/Table";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 
 const AddContactModal = (props) => {
   let { onHide, show } = props;
@@ -104,7 +106,7 @@ const AddContactModal = (props) => {
   );
 };
 
-const Contacts = ({ contacts, id, done }) => {
+const Contacts = ({ contacts, id, done, setAlert }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const hideUpdateContactModal = async (data) => {
@@ -125,8 +127,10 @@ const Contacts = ({ contacts, id, done }) => {
         },
       });
       console.log(resp, "CONATCT_UPDATE_RESPOSE");
+      setAlert("Institution contacts updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_CONTACT_ERR", err);
+      setAlert("Unable to  updated institution contacts.", "error");
     } finally {
       nProgress.done();
       done();
@@ -174,4 +178,9 @@ const Contacts = ({ contacts, id, done }) => {
   );
 };
 
-export default Contacts;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Contacts);

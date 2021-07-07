@@ -6,6 +6,9 @@ import { urlPath } from "../../constants";
 import { FaSchool } from "react-icons/fa";
 import ImageUploader from "./ImageUploader";
 
+import { connect } from "react-redux";
+import { setAlert } from "../../store/reducers/Notifications/actions";
+
 const Avatar = ({ logo, name }) => {
   return (
     <div className="d-flex align-items-center justify-content-start">
@@ -26,25 +29,37 @@ const Avatar = ({ logo, name }) => {
   );
 };
 
-export const TitleWithLogo = ({ logo, title, done, query, id }) => {
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export const TitleWithLogo = connect(
+  mapStateToProps,
+  mapActionsToProps
+)(({ logo, title, done, query, id, setAlert }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const modalCloseHandler = async (logoId) => {
-    if (typeof logoId === "object" || logoId === undefined) {
+    try {
+      if (typeof logoId === "object" || logoId === undefined) {
+        setModalShow(false);
+        return;
+      }
+
+      await api.post("/graphql", {
+        query,
+        variables: {
+          data: { logo: logoId },
+          id,
+        },
+      });
+      setAlert("Logo updated successfully.", "success");
       setModalShow(false);
-      return;
+      done();
+    } catch (err) {
+      setAlert("Unable to update the logo.", "error");
     }
-
-    await api.post("/graphql", {
-      query,
-      variables: {
-        data: { logo: logoId },
-        id,
-      },
-    });
-
-    setModalShow(false);
-    done();
   };
 
   return (
@@ -79,7 +94,7 @@ export const TitleWithLogo = ({ logo, title, done, query, id }) => {
       <ChangeAvatarModal show={modalShow} onHide={modalCloseHandler} />
     </div>
   );
-};
+});
 
 const ChangeAvatarModal = (props) => {
   let { onHide } = props;

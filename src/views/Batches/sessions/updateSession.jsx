@@ -1,7 +1,10 @@
+import {
+  UPDATE_SESSION_QUERY,
+  UPDATE_SESSION_ATTENDANCE,
+} from "../../../graphql";
 import moment from "moment";
 import { difference } from "lodash";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { queryBuilder } from "../../../apis";
 import Skeleton from "react-loading-skeleton";
@@ -10,16 +13,14 @@ import {
   SerialNumberRenderer,
 } from "../../../components/content/AgGridUtils";
 import { Form, Input } from "../../../utils/Form";
-import {
-  UPDATE_SESSION_QUERY,
-  UPDATE_SESSION_ATTENDANCE,
-} from "../../../graphql";
+import { Link, useHistory } from "react-router-dom";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import Collapsible from "../../../components/content/CollapsiblePanels";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { getSessions } from "../../../store/reducers/sessionAttendances/actions";
 
 const UpdateSession = (props) => {
-  const { session, loading, attendances, getSessions } = props;
+  const { session, loading, attendances, getSessions, setAlert } = props;
   const sessionID = props.match.params.sessionID;
 
   // eslint-disable-next-line
@@ -35,6 +36,8 @@ const UpdateSession = (props) => {
 
   // Update Flag
   const [updated, setUpdated] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     if (!session && !attendances.length) {
@@ -101,10 +104,13 @@ const UpdateSession = (props) => {
       }
 
       await apiCaller(queryVars);
+      setAlert("Session updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_SESSION_ERR", err);
+      setAlert("Unable to update the session.", "error");
     } finally {
       setUpdating(false);
+      history.goBack();
     }
   };
 
@@ -239,6 +245,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
+  setAlert,
   getSessions,
 };
 

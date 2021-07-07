@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { connect } from "react-redux";
 import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { queryBuilder } from "./instituteActions";
@@ -6,6 +7,7 @@ import { Form, Input } from "../../../utils/Form";
 import Badge from "../../../components/content/Badge";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const UpdateInstituteDetails = (props) => {
   let { onHide, show, logo, id, ...rest } = props;
@@ -125,8 +127,18 @@ const UpdateInstituteDetails = (props) => {
 };
 
 const Details = (props) => {
-  const { name, phone, assigned_to, website, email, status, type, done, id } =
-    props;
+  const {
+    name,
+    phone,
+    assigned_to,
+    website,
+    email,
+    status,
+    type,
+    done,
+    id,
+    setAlert,
+  } = props;
 
   const [modalShow, setModalShow] = useState(false);
 
@@ -152,8 +164,10 @@ const Details = (props) => {
       });
 
       // console.log(resp, "DETAILS_UPDATE_RESPOSE");
+      setAlert("Institution details updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update instition details.", "error");
     } finally {
       nProgress.done();
       done();
@@ -227,4 +241,10 @@ const Details = (props) => {
   );
 };
 
-export default Details;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Details);

@@ -1,10 +1,12 @@
 import np from "nprogress";
+import { connect } from "react-redux";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { AddressValidations } from "../../../validations";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const EditAddressModal = (props) => {
   let { onHide, show, data } = props;
@@ -92,7 +94,15 @@ const EditAddressModal = (props) => {
   );
 };
 
-const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
+const Address = ({
+  address_line,
+  medha_area,
+  pin_code,
+  state,
+  id,
+  done,
+  setAlert,
+}) => {
   const [modalShow, setModalShow] = useState(false);
 
   const hideModal = async (data) => {
@@ -113,8 +123,10 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
           },
         },
       });
+      setAlert("Institution address updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_ADDRESS_ERR", err);
+      setAlert("Unable to update instituion address.", "error");
     } finally {
       np.done();
       done();
@@ -157,4 +169,9 @@ const Address = ({ address_line, medha_area, pin_code, state, id, done }) => {
   );
 };
 
-export default Address;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Address);

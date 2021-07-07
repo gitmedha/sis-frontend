@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 import Session from "./views/Batches/sessions";
+import { useToasts } from "react-toast-notifications";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // Layout Components
@@ -18,8 +20,9 @@ import Institution from "./views/Students/Institution";
 import Institutions from "./views/Students/Institutions";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import AddNewInstitute from "./views/Students/Institution/AddInstitute";
-import TableView from "./views/Tables";
 import updateSession from "./views/Batches/sessions/updateSession";
+
+import TableView from "./views/Tables";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -27,9 +30,20 @@ const RouteContainer = styled.div`
   overflow: auto;
 `;
 
-const App = () => {
+const App = (props) => {
   const [isOpen, toggler] = useState(false);
   const toggleMenu = () => toggler(!isOpen);
+
+  const { addToast, removeAllToasts } = useToasts();
+
+  useEffect(() => {
+    if (props.alert.message && props.alert.variant) {
+      addToast(props.alert.message, { appearance: props.alert.variant });
+    } else {
+      removeAllToasts();
+    }
+    // eslint-disable-next-line
+  }, [props.alert]);
 
   return (
     <Router>
@@ -70,4 +84,8 @@ const App = () => {
   );
 };
 
-export default App;
+const mapStateToProps = (state) => ({
+  alert: state.notification,
+});
+
+export default connect(mapStateToProps, {})(App);

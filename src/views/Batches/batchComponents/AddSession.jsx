@@ -1,5 +1,6 @@
 import moment from "moment";
 import api from "../../../apis";
+import { connect } from "react-redux";
 import { useState, useEffect } from "react";
 import { Input, Form } from "../../../utils/Form";
 import { MARK_ATTENDANCE } from "../../../graphql";
@@ -7,6 +8,7 @@ import { Link, useHistory } from "react-router-dom";
 import SessionStudentList from "./SessionStudentList";
 import { sessionValidations } from "../../../validations";
 import { CREATE_SESSION, GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const AddSession = (props) => {
   const history = useHistory();
@@ -32,8 +34,10 @@ const AddSession = (props) => {
         },
       });
       await markAttendance(Number(data.data.createSession.session.id));
+      props.setAlert("Session added successfully.", "success");
     } catch (err) {
       console.log("SESSION_CREATE_ERR", err);
+      props.setAlert("Unable to add session.", "error");
     } finally {
       setLoading(false);
       history.goBack();
@@ -156,4 +160,9 @@ const AddSession = (props) => {
   );
 };
 
-export default AddSession;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(AddSession);

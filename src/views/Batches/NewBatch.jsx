@@ -1,4 +1,5 @@
 import moment from "moment";
+import { connect } from "react-redux";
 import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -8,8 +9,9 @@ import { CREATE_NEW_BATCH } from "../../graphql";
 import { batchValidations } from "../../validations";
 import ImageUploader from "../../components/content/ImageUploader";
 import { batchLookUpOptions } from "../../utils/function/lookupOptions";
+import { setAlert } from "../../store/reducers/Notifications/actions";
 
-const NewBatch = () => {
+const NewBatch = ({ setAlert }) => {
   const history = useHistory();
   const [logo, setLogo] = useState(null);
   const [addLogo, setAddLogo] = useState(null);
@@ -63,8 +65,10 @@ const NewBatch = () => {
         },
       });
       newBatchId = data.data.createBatch.batch.id;
+      setAlert("Batch addedd successfully.", "success");
     } catch (err) {
       console.log("BATCH_CREATE_ERR", err);
+      setAlert("Unable to add batch.", "error");
     } finally {
       setLoading(false);
       history.push(`/batch/${newBatchId}`);
@@ -290,4 +294,9 @@ const NewBatch = () => {
   );
 };
 
-export default NewBatch;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(NewBatch);

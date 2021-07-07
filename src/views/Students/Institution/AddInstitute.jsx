@@ -3,6 +3,7 @@ import {
   ContactValidations,
   NewInstituteValidations,
 } from "../../../validations";
+import { connect } from "react-redux";
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { Form, Input } from "../../../utils/Form";
@@ -10,8 +11,9 @@ import { queryBuilder } from "./instituteActions";
 import ImageUploader from "../../../components/content/ImageUploader";
 import { CREATE_NEW_INSTITUTE, GET_ASSIGNEES_LIST } from "../../../graphql";
 import Skeleton from "react-loading-skeleton";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
-const AddNewInstitute = () => {
+const AddNewInstitute = ({ setAlert }) => {
   const [logo, setLogo] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [assigneeOpts, setAssignees] = useState([]);
@@ -80,8 +82,10 @@ const AddNewInstitute = () => {
         variables: { ...payload, contacts },
       });
       console.log(resp);
+      setAlert("Instituion addedd successfully.", "success");
     } catch (err) {
       console.log("ERR_ADD", err);
+      setAlert("Unable to add instituion.", "error");
     } finally {
       // setLoading(false);
       NP.done();
@@ -349,4 +353,9 @@ const ContactModal = (props) => {
   );
 };
 
-export default AddNewInstitute;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(AddNewInstitute);

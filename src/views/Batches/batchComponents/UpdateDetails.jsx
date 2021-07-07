@@ -1,4 +1,5 @@
 import moment from "moment";
+import { connect } from "react-redux";
 import { Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { queryBuilder } from "../../../apis";
@@ -7,6 +8,7 @@ import { UPDATE_BATCH } from "../../../graphql";
 import { Form, Input } from "../../../utils/Form";
 import { batchValidations } from "../../../validations";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const UpdateBatchDetails = (props) => {
   const { onHide, show } = props;
@@ -57,8 +59,10 @@ const UpdateBatchDetails = (props) => {
           id: Number(props.batch.id),
         },
       });
+      props.setAlert("Batch details updated successfully.", "success");
     } catch (err) {
       console.log("BATCH_UPDATE_ERR", err);
+      props.setAlert("Unable to update batch details.", "error");
     } finally {
       setUpdating(false);
       onHide("updated");
@@ -246,4 +250,9 @@ const UpdateBatchDetails = (props) => {
   );
 };
 
-export default UpdateBatchDetails;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(UpdateBatchDetails);

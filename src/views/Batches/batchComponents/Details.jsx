@@ -1,16 +1,18 @@
 import NP from "nprogress";
 import { useState } from "react";
 import Moment from "react-moment";
+import { connect } from "react-redux";
 import { queryBuilder } from "../../../apis";
 import { useHistory } from "react-router-dom";
 import { DELETE_BATCH } from "../../../graphql";
+import UpdateBatchDetails from "./UpdateDetails";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Table from "../../../components/content/Table";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { BadgeRenderer } from "../../../components/content/AgGridUtils";
-import UpdateBatchDetails from "./UpdateDetails";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
-const Details = ({ batch, done }) => {
+const Details = ({ batch, done, setAlert }) => {
   const history = useHistory();
   const [showAlert, setAlertShow] = useState(false);
   const [showModal, setModalShow] = useState(false);
@@ -25,7 +27,9 @@ const Details = ({ batch, done }) => {
         },
       });
       console.log("BATCH_DELETED", data);
+      setAlert("Batch deleted successfully.", "success");
     } catch (err) {
+      setAlert("Unable to delete batch.", "error");
       console.log("BATCH_DELETE_ERR", err);
     } finally {
       setAlertShow(false);
@@ -170,4 +174,9 @@ const Details = ({ batch, done }) => {
   );
 };
 
-export default Details;
+const mapStateToProps = (state) => ({});
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Details);
