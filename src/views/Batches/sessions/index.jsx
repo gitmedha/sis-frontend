@@ -1,12 +1,26 @@
-import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
+import { useEffect, useState } from "react";
+import SweetAlert from "react-bootstrap-sweetalert";
+import {
+  getSessions,
+  deleteSession,
+} from "../../../store/reducers/sessionAttendances/actions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
-import { getSessions } from "../../../store/reducers/sessionAttendances/actions";
 
 const Sessions = (props) => {
   const sessionID = props.match.params.sessionID;
-  const { session, loading, attendances, getSessions } = props;
+  const { session, loading, attendances, getSessions, deleteSession } = props;
+  const history = useHistory();
+
+  const [showAlert, setAlertShow] = useState(false);
+
+  const handleDelete = () => {
+    deleteSession();
+    setAlertShow(false);
+    history.goBack();
+  };
 
   useEffect(() => {
     getSessions(sessionID);
@@ -27,21 +41,58 @@ const Sessions = (props) => {
       >
         UPDATE
       </Link>
-      <button className="btn btn-primary btn-regular" onClick={() => {}}>
+      <button
+        className="btn btn-primary btn-regular"
+        onClick={() => setAlertShow(true)}
+      >
         DELETE SESSION
       </button>
+      <SweetAlert
+        warning
+        showCancel
+        btnSize="md"
+        show={showAlert}
+        onConfirm={() => handleDelete()}
+        onCancel={() => setAlertShow(false)}
+        title={
+          <span className="text--primary latto-bold">Delete this session.</span>
+        }
+        customButtons={
+          <>
+            <button
+              onClick={() => setAlertShow(false)}
+              className="btn--secondary"
+            >
+              Cancel
+            </button>
+            <button onClick={() => handleDelete()} className="btn--primary">
+              Okay
+            </button>
+          </>
+        }
+      >
+        <div>
+          <p>
+            Please note you are going to delete{" "}
+            <span className="text--success">1 Session</span> and{" "}
+            <span className="text--primary">
+              {attendances.length} attendance
+            </span>{" "}
+            records.
+          </p>
+        </div>
+      </SweetAlert>
     </Collapsible>
   );
 };
 
 const mapStateToProps = (state) => ({
-  session: state.sessionAttendance.session,
-  loading: state.sessionAttendance.loading,
-  attendances: state.sessionAttendance.attendances,
+  ...state.sessionAttendance,
 });
 
 const mapActionsToProps = {
   getSessions,
+  deleteSession,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Sessions);

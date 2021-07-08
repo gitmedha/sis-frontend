@@ -349,3 +349,22 @@ query GET_SESSION_ATTENDANCE_TEST($id: ID!) {
   }
 }
 `;
+
+export const DELETE_ATTENDANCE_RECORD = `
+mutation DELETE_ATTENDANCE_RECORD($attendanceID: ID!) {
+  deleteAttendance(input: { where: { id: $attendanceID } }) {
+    attendance {
+      id
+    }
+  }
+}`;
+
+export const DELETE_SESSION_Q = `
+mutation DELETE_SESSION($sessionID: ID!) {
+  deleteSession(input: { where: { id: $sessionID } }) {
+    session {
+      id
+    }
+  }
+}
+`;

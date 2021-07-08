@@ -7,8 +7,8 @@ import {
 
 const initialState = {
   session: null,
-  attendances: [],
   loading: false,
+  attendances: [],
 };
 
 const sessionAttendanceReducer = (state = initialState, { type, payload }) => {
