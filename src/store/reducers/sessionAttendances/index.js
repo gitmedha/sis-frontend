@@ -1,5 +1,6 @@
 import {
   IS_LOADING,
+  DELETE_SESSION,
   GET_SESSION_DETAILS,
   GET_SESSION_ATTENDANCES,
 } from "./types";
@@ -26,6 +27,10 @@ const sessionAttendanceReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         attendances: payload,
+      };
+    case DELETE_SESSION:
+      return {
+        ...initialState,
       };
     default:
       return {

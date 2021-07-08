@@ -1,45 +1,47 @@
+import {
+  GET_BATCH,
+  GET_SESSIONS,
+  UPDATE_BATCH,
+  GET_BATCH_STUDENTS,
+  GET_SESSION_ATTENDANCE_STATS,
+} from "../../graphql";
 import NP from "nprogress";
-import api from "../../apis";
+import { queryBuilder } from "../../apis";
 import { useState, useEffect } from "react";
+import { merge, values, keyBy } from "lodash";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
 import Students from "./batchComponents/Students";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
-import {
-  GET_BATCH,
-  GET_SESSIONS,
-  UPDATE_BATCH,
-  GET_BATCH_STUDENTS,
-} from "../../graphql";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [students, setStudents] = useState([]);
-  const [isLoading, setLoading] = useState(false);
   const batchID = Number(props.match.params.id);
+  const [isLoading, setLoading] = useState(false);
 
   const init = async () => {
     setLoading(true);
     NP.start();
-    await getThisBatch();
     await getSessions();
+    await getThisBatch();
     await getStudents();
-    setLoading(false);
     NP.done();
+    setLoading(false);
   };
 
   const getThisBatch = async () => {
     try {
       const batchID = props.match.params.id;
-      let { data } = await api.post("/graphql", {
+      let { data } = await queryBuilder({
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
-      // console.log("GET_BATCH", data.data);
-      setBatch(data.data.batch);
+      // console.log("GET_BATCH", data);
+      setBatch(data.batch);
     } catch (err) {
       console.log("ERR", err);
     }
@@ -47,14 +49,13 @@ const Batch = (props) => {
 
   const getSessions = async () => {
     try {
-      let { data } = await api.post("/graphql", {
+      let { data } = await queryBuilder({
         query: GET_SESSIONS,
         variables: {
-          id: batchID,
+          id: Number(batchID),
         },
       });
-      // console.log("GET_BATCH", data.data);
-      setSessions(prepareDummySessionAttendanceAndStatus(data.data.sessions));
+      await getAttendanceStats(data.sessions);
     } catch (err) {
       console.log("ERR", err);
     }
@@ -63,25 +64,49 @@ const Batch = (props) => {
   const getStudents = async () => {
     try {
       const batchID = props.match.params.id;
-      let { data } = await api.post("/graphql", {
+      let { data } = await queryBuilder({
         query: GET_BATCH_STUDENTS,
         variables: {
-          id: batchID,
+          id: Number(batchID),
         },
       });
-      // console.log("GET_STUDENTS", data.data);
-      setStudents(data.data.programEnrollments);
+      // console.log("GET_STUDENTS", data);
+      setStudents(data.programEnrollments);
     } catch (err) {
       console.log("ERR", err);
     }
   };
 
-  const prepareDummySessionAttendanceAndStatus = (sessions) => {
-    return sessions.map((session) => ({
-      ...session,
-      attendance: 70,
-      status: "In Progress",
-    }));
+  const getAttendanceStats = async (sessionsList) => {
+    try {
+      let { data } = await queryBuilder({
+        query: GET_SESSION_ATTENDANCE_STATS,
+        variables: { id: Number(batchID) },
+      });
+
+      const totalStudents =
+        data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate
+          .studentsEnrolled;
+
+      let attPercentage = data.attendancesConnection.groupBy.session.map(
+        (sess) => ({
+          id: sess.sessionId,
+          present: sess.connection.aggregate.studentsPresent,
+          percent:
+            (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
+        })
+      );
+
+      let merged = values(
+        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
+      );
+      // Filtering out the records whose attendance is not available
+      // merged = await merged.filter((item) => item.percent !== undefined);
+
+      setSessions(merged);
+    } catch (err) {
+      console.log("ERR, Batch.jsx, 84", err);
+    }
   };
 
   const done = () => getThisBatch();

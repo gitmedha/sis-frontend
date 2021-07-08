@@ -238,11 +238,12 @@ export const SerialNumberRenderer = ({ node }) => {
 };
 
 export const ProgressRenderer = ({ value }) => (
-  <div style={{ marginTop: "10px" }}>
+  <div style={{ marginTop: "10px", paddingRight: "20px", paddingLeft: "20px" }}>
     <ProgressBar
-      completed={value}
       bgColor={"#5C4CBF"}
-      baseBgColor={"#EEEFF8"}
+      completed={value ? value : 0}
+      labelColor={value ? " #fff" : "#1C2833"}
+      baseBgColor={value ? "#EEEFF8" : "#909497"}
     />
   </div>
 );

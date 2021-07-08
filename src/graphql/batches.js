@@ -318,3 +318,34 @@ mutation UPDATE_SESSION(
   }
 }
 `;
+
+export const GET_SESSION_ATTENDANCE_STATS = `
+query GET_SESSION_ATTENDANCE_TEST($id: ID!) {
+  attendancesConnection(
+    where: { session: { batch: { id: $id } }, present: true }
+  ) {
+    groupBy {
+      session {
+        sessionId: key
+        connection {
+          aggregate {
+            studentsPresent: count
+          }
+        }
+      }
+    }
+  }
+  programEnrollmentsConnection(where: { batch: { id: $id } }) {
+    groupBy {
+      batch {
+        batchId: key
+        connection {
+          aggregate {
+            studentsEnrolled: count
+          }
+        }
+      }
+    }
+  }
+}
+`;

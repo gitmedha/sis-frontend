@@ -27,6 +27,9 @@ const Sessions = (props) => {
       >
         UPDATE
       </Link>
+      <button className="btn btn-primary btn-regular" onClick={() => {}}>
+        DELETE SESSION
+      </button>
     </Collapsible>
   );
 };

@@ -83,7 +83,7 @@ const Sessions = ({ sessions, batchID }) => {
               <AgGridColumn
                 sortable
                 width={300}
-                field="attendance"
+                field="percent"
                 cellRenderer="progress"
                 headerName="Attendance"
               />

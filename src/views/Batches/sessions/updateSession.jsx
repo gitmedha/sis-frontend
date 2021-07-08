@@ -83,8 +83,6 @@ const UpdateSession = (props) => {
   const onSubmit = async (values) => {
     setUpdating(true);
     try {
-      // let updated = false;
-
       const prevSessionVal = {
         topics_covered: session.topics_covered,
         date: session.date,
@@ -116,11 +114,12 @@ const UpdateSession = (props) => {
 
   const apiCaller = async (queryVars) => {
     if (updated) {
-      let { data } = await queryBuilder({
+      // let { data } =
+      await queryBuilder({
         variables: queryVars,
         query: UPDATE_SESSION_QUERY,
       });
-      console.log("RESP_DATA", data);
+      // console.log("RESP_DATA", data);
     }
     attendanceUpdated();
   };
@@ -144,7 +143,7 @@ const UpdateSession = (props) => {
           <Skeleton height={65} count={5} />
         </div>
       )}
-      {attendances.length ? (
+      {!loading && session ? (
         <div className="container">
           <Form
             onSubmit={onSubmit}
