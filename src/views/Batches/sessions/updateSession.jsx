@@ -121,7 +121,7 @@ const UpdateSession = (props) => {
         query: UPDATE_SESSION_QUERY,
       });
     }
-    attendanceUpdated();
+    await attendanceUpdated();
   };
 
   const attendanceUpdated = async () => {
@@ -150,7 +150,6 @@ const UpdateSession = (props) => {
         delete variables["program_enrollment"];
       }
 
-      console.log("VARS", variables);
       await queryBuilder({
         variables,
         query: att.id ? UPDATE_SESSION_ATTENDANCE : MARK_ATTENDANCE,
@@ -208,7 +207,6 @@ const UpdateSession = (props) => {
                     rowSelection={"multiple"}
                     onRowSelected={onRowSelect}
                     rowMultiSelectWithClick={true}
-                    // onSelectionChanged={updateAtt}
                   >
                     <AgGridColumn
                       sortable
