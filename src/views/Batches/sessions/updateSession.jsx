@@ -82,8 +82,6 @@ const UpdateSession = (props) => {
     );
   };
 
-  console.log("UPADTED", attendanceList);
-
   const onSubmit = async (values) => {
     setUpdating(true);
     try {
@@ -106,24 +104,22 @@ const UpdateSession = (props) => {
       }
 
       await apiCaller(queryVars);
-      // setAlert("Session updated successfully.", "success");
+      setAlert("Session updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update the session.", "error");
     } finally {
       setUpdating(false);
-      // history.goBack();
+      history.goBack();
     }
   };
 
   const apiCaller = async (queryVars) => {
     if (updated) {
-      // let { data } =
       await queryBuilder({
         variables: queryVars,
         query: UPDATE_SESSION_QUERY,
       });
-      // console.log("RESP_DATA", data);
     }
     attendanceUpdated();
   };
