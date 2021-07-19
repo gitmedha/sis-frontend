@@ -1,9 +1,9 @@
 import {
+  MARK_ATTENDANCE,
   UPDATE_SESSION_QUERY,
   UPDATE_SESSION_ATTENDANCE,
 } from "../../../graphql";
 import moment from "moment";
-import { difference } from "lodash";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { queryBuilder } from "../../../apis";
@@ -27,6 +27,7 @@ const UpdateSession = (props) => {
   const [gridApi, setGridApi] = useState(null);
   // eslint-disable-next-line
   const [gridColumnApi, setGridColumnApi] = useState([]);
+
   const [isUpdating, setUpdating] = useState(false);
   const [attendanceList, setAttendanceList] = useState([]);
   const [gridIntialized, setInitialized] = useState(false);
@@ -51,34 +52,37 @@ const UpdateSession = (props) => {
     params.api.forEachNode((node) => {
       node.setSelected(node.data.present);
       list.push({
-        id: Number(node.data.id),
-        data: { present: node.data.present },
+        ...node.data,
+        updated: false,
       });
     });
+
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-    setAttendanceList(list);
-    setOriAttendanceList(list);
+    setAttendanceList(JSON.parse(JSON.stringify(list)));
     setInitialized(true);
   };
 
-  const getRowData = async ({ node: { selected }, data: { id } }) => {
+  const onRowSelect = async ({ node, data }) => {
     if (!gridIntialized) {
       return;
     }
-    let updatedList = attendanceList.map((attendanceItem) => {
-      if (Number(id) === Number(attendanceItem.id)) {
-        return {
-          ...attendanceItem,
-          data: {
-            present: selected,
-          },
-        };
-      }
-      return attendanceItem;
-    });
-    setAttendanceList(updatedList);
+
+    setAttendanceList(
+      attendanceList.map((att) => {
+        if (att.program_enrollment.id === data.program_enrollment.id) {
+          return {
+            ...data,
+            updated: !att.updated,
+            present: node.selected,
+          };
+        }
+        return att;
+      })
+    );
   };
+
+  console.log("UPADTED", attendanceList);
 
   const onSubmit = async (values) => {
     setUpdating(true);
@@ -102,13 +106,13 @@ const UpdateSession = (props) => {
       }
 
       await apiCaller(queryVars);
-      setAlert("Session updated successfully.", "success");
+      // setAlert("Session updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update the session.", "error");
     } finally {
       setUpdating(false);
-      history.goBack();
+      // history.goBack();
     }
   };
 
@@ -125,12 +129,35 @@ const UpdateSession = (props) => {
   };
 
   const attendanceUpdated = async () => {
-    // New Need to check if the old data is updated or not
-    let updatedRec = difference(attendanceList, oriAttendanceList);
+    let updatedRec = JSON.parse(
+      JSON.stringify(attendanceList.filter((att) => att.updated))
+    );
+
+    console.log("UPDATED_RECS", updatedRec);
+
     await updatedRec.forEach(async (att) => {
+      let variables = att.id
+        ? {
+            id: att.id,
+            data: {
+              present: att.present,
+            },
+          }
+        : {
+            session: sessionID,
+            present: att.present,
+            program_enrollment_id: att.program_enrollment.id,
+          };
+
+      if (variables.id) {
+        delete variables["updated"];
+        delete variables["program_enrollment"];
+      }
+
+      console.log("VARS", variables);
       await queryBuilder({
-        variables: att,
-        query: UPDATE_SESSION_ATTENDANCE,
+        variables,
+        query: att.id ? UPDATE_SESSION_ATTENDANCE : MARK_ATTENDANCE,
       });
     });
     return;
@@ -183,13 +210,14 @@ const UpdateSession = (props) => {
                     }}
                     onGridReady={onGridReady}
                     rowSelection={"multiple"}
-                    onRowSelected={getRowData}
-                    // onSelectionChanged={updateAtt}
+                    onRowSelected={onRowSelect}
                     rowMultiSelectWithClick={true}
+                    // onSelectionChanged={updateAtt}
                   >
                     <AgGridColumn
                       sortable
                       field="id"
+                      width={100}
                       cellRenderer="sno"
                       headerName="S. No."
                       cellStyle={cellStyle}
@@ -202,6 +230,7 @@ const UpdateSession = (props) => {
                       field="program_enrollment"
                     />
                     <AgGridColumn
+                      width={140}
                       cellStyle={cellStyle}
                       checkboxSelection={true}
                       headerName="Mark Attendance"
@@ -238,9 +267,7 @@ const nameGetter = (params) =>
   `${params.data.program_enrollment.student.first_name} ${params.data.program_enrollment.student.last_name}`;
 
 const mapStateToProps = (state) => ({
-  session: state.sessionAttendance.session,
-  loading: state.sessionAttendance.loading,
-  attendances: state.sessionAttendance.attendances,
+  ...state.sessionAttendance,
 });
 
 const mapActionsToProps = {

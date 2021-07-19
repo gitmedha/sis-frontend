@@ -250,16 +250,23 @@ query GET_SESSION($id: ID!){
     date
     created_at
     updated_at
+    batch {
+      id
+    }
   }
 }
 `;
 
 export const GET_SESSION_ATTENDANCE = `
 query GET_SESSION_ATTENDANCE($sessionID: ID!){
-  attendances(where: { session: { id: $sessionID } }){
+  attendances(where: { 
+    session: { 
+      id: $sessionID 
+    } 
+  }
+  ){
     id
     present
-    created_at
     program_enrollment{
       id
       student{
@@ -368,3 +375,20 @@ mutation DELETE_SESSION($sessionID: ID!) {
   }
 }
 `;
+
+export const GET_BATCH_ENTROLLED_STUDENTS = `
+query GET_BATCH_ENTROLLED_STUDENTS ($id: ID!){
+  programEnrollments (
+      where: {
+      batch: {
+        id: $id
+      }
+    }
+  ) {
+    id
+    student { 
+      first_name
+      last_name
+    }
+  }
+}`;

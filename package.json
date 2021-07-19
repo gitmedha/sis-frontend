@@ -75,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "react-json-view": "^1.21.3",
     "redux-devtools-extension": "^2.13.9"
   }
 }

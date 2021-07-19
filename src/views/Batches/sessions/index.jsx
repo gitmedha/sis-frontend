@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import ReactJson from "react-json-view";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import { useEffect, useState } from "react";
@@ -10,8 +11,10 @@ import {
 import Collapsible from "../../../components/content/CollapsiblePanels";
 
 const Sessions = (props) => {
-  const sessionID = props.match.params.sessionID;
-  const { session, loading, attendances, getSessions, deleteSession } = props;
+  const { session, loading, attendances, getSessions, deleteSession, match } =
+    props;
+
+  const sessionID = match.params.sessionID;
   const history = useHistory();
 
   const [showAlert, setAlertShow] = useState(false);
@@ -29,12 +32,30 @@ const Sessions = (props) => {
 
   return (
     <Collapsible title="Session" type="plain" opened={true}>
-      <pre>
+      {/* <pre>
         <code>{JSON.stringify(session, null, 2)}</code>
       </pre>
       <pre>
         <code>{JSON.stringify(attendances, null, 2)}</code>
-      </pre>
+      </pre> */}
+      <ReactJson
+        name="Session"
+        iconStyle="square"
+        theme="google"
+        src={session}
+        collapsed={true}
+        indentWidth={2}
+      />
+      <br />
+      <ReactJson
+        name="Attendance"
+        indentWidth={2}
+        iconStyle="square"
+        theme="google"
+        collapsed={true}
+        src={attendances}
+      />
+      <br />
       <Link
         to={`/update-session/${sessionID}`}
         className="btn btn-primary btn-regular"

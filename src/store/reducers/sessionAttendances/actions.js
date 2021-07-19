@@ -4,51 +4,79 @@ import {
   GET_SESSION_DETAILS,
   GET_SESSION_ATTENDANCES,
 } from "./types";
+
 import {
   GET_SESSION,
   DELETE_SESSION_Q,
   GET_SESSION_ATTENDANCE,
   DELETE_ATTENDANCE_RECORD,
+  GET_BATCH_ENTROLLED_STUDENTS,
 } from "../../../graphql";
 
 import { queryBuilder } from "../../../apis";
 import { setAlert } from "../Notifications/actions";
 
+const gqlService = async (variables, query) => {
+  try {
+    let { data } = await queryBuilder({
+      query,
+      variables,
+    });
+    return data;
+  } catch (err) {
+    console.log(query, err);
+  }
+};
+
 export const getSessions = (sessionID) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    let { data } = await queryBuilder({
-      query: GET_SESSION,
-      variables: {
-        id: Number(sessionID),
-      },
-    });
+    let { session } = await gqlService({ id: Number(sessionID) }, GET_SESSION);
+
+    let { programEnrollments } = await gqlService(
+      { ...session.batch },
+      GET_BATCH_ENTROLLED_STUDENTS
+    );
+
+    let { attendances } = await gqlService(
+      { sessionID },
+      GET_SESSION_ATTENDANCE
+    );
+    // console.log("PROGRAM_ENROLLED", programEnrollments);
+    // console.log("SESSION_ATTENDANCE", attendances);
+    // Create Program Enrollement alike attendance records
+    let fakeAttendanceRec = programEnrollments
+      .map((student) => ({
+        id: null,
+        present: false,
+        program_enrollment: {
+          ...student,
+        },
+      }))
+      .map((fAtt) => {
+        let rec = attendances.find(
+          (att) => fAtt.program_enrollment.id === att.program_enrollment.id
+        );
+
+        if (rec) {
+          return rec;
+        }
+        return fAtt;
+      });
+
     dispatch({
       type: GET_SESSION_DETAILS,
-      payload: data.session,
+      payload: session,
     });
-    dispatch(getSessionAttendances(sessionID));
+
+    dispatch({
+      type: GET_SESSION_ATTENDANCES,
+      payload: fakeAttendanceRec,
+    });
   } catch (err) {
     console.log("GET_SESSION", err);
   } finally {
     dispatch(setLoading());
-  }
-};
-
-export const getSessionAttendances = (id) => async (dispatch) => {
-  try {
-    let { data } = await queryBuilder({
-      query: GET_SESSION_ATTENDANCE,
-      variables: {
-        sessionID: Number(id),
-      },
-    });
-    dispatch({
-      type: GET_SESSION_ATTENDANCES,
-      payload: data.attendances,
-    });
-  } catch (err) {
-    console.log("GET_SESSION_ATTENDANCE", err);
   }
 };
 
