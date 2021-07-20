@@ -98,12 +98,16 @@ const UpdateSession = (props) => {
         },
       };
 
-      // Check if the data is updated or not
+      // Check if the session details data is updated
       if (JSON.stringify(prevSessionVal) !== JSON.stringify(queryVars.data)) {
-        setUpdated(true);
+        await queryBuilder({
+          variables: queryVars,
+          query: UPDATE_SESSION_QUERY,
+        });
       }
 
-      await apiCaller(queryVars);
+      // Update or Create new Attencande Records
+      await attendanceUpdated();
       setAlert("Session updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_SESSION_ERR", err);
@@ -114,32 +118,22 @@ const UpdateSession = (props) => {
     }
   };
 
-  const apiCaller = async (queryVars) => {
-    if (updated) {
-      await queryBuilder({
-        variables: queryVars,
-        query: UPDATE_SESSION_QUERY,
-      });
-    }
-    await attendanceUpdated();
-  };
-
   const attendanceUpdated = async () => {
     let updatedRec = JSON.parse(
       JSON.stringify(attendanceList.filter((att) => att.updated))
     );
 
-    console.log("UPDATED_RECS", updatedRec);
-
     await updatedRec.forEach(async (att) => {
       let variables = att.id
-        ? {
+        ? // Payload for the session records which needs to be updated only
+          {
             id: att.id,
             data: {
               present: att.present,
             },
           }
-        : {
+        : // Payload for New Session Records which were initially not present
+          {
             session: sessionID,
             present: att.present,
             program_enrollment_id: att.program_enrollment.id,

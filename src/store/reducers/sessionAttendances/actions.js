@@ -42,9 +42,7 @@ export const getSessions = (sessionID) => async (dispatch) => {
       { sessionID },
       GET_SESSION_ATTENDANCE
     );
-    // console.log("PROGRAM_ENROLLED", programEnrollments);
-    // console.log("SESSION_ATTENDANCE", attendances);
-    // Create Program Enrollement alike attendance records
+
     let fakeAttendanceRec = programEnrollments
       .map((student) => ({
         id: null,

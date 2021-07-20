@@ -19,7 +19,8 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
         name
       }
     }
-}`;
+}
+`;
 
 /**
  {
@@ -239,7 +240,8 @@ mutation UPDATE_BATCH($id: ID!, $data: editBatchInput!){
       id
     }
   }
-}`;
+}
+`;
 
 export const GET_SESSION = `
 query GET_SESSION($id: ID!){
@@ -364,7 +366,8 @@ mutation DELETE_ATTENDANCE_RECORD($attendanceID: ID!) {
       id
     }
   }
-}`;
+}
+`;
 
 export const DELETE_SESSION_Q = `
 mutation DELETE_SESSION($sessionID: ID!) {
@@ -391,4 +394,5 @@ query GET_BATCH_ENTROLLED_STUDENTS ($id: ID!){
       last_name
     }
   }
-}`;
+}
+`;
