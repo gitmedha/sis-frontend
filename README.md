@@ -1,12 +1,19 @@
-# Getting Started with Create React App
-
-https://sis-staging.eastus.cloudapp.azure.com/
-
+# Getting Started with Medha Student Information System (SIS)
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Pre-requisites
+Install [NodeJS and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+1. node v14.x.x
+2. npm v6.x.x
 
+### Staging site
+https://sis-staging.eastus.cloudapp.azure.com/
+
+## Available Scripts
 In the project directory, you can run:
+
+### `npm install`
+Installs the project dependencies.
 
 ### `npm start`
 
