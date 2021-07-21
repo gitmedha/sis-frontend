@@ -30,7 +30,7 @@ const Header = ({ isOpen, toggleMenu }) => {
             initial={{ rotate: -90 }}
             transition={{ duration: 0.3 }}
           >
-            <MenuIcon style={{ color: "#207B69" }} onClick={toggleMenu} />
+            <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
           </motion.div>
         ) : (
           <motion.div
@@ -39,7 +39,7 @@ const Header = ({ isOpen, toggleMenu }) => {
             initial={{ rotate: -90 }}
             transition={{ duration: 1 }}
           >
-            <CloseIcon onClick={toggleMenu} style={{ color: "#207B69" }} />
+            <CloseIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
           </motion.div>
         )}
       </AnimatePresence>

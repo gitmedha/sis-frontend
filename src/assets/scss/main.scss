@@ -45,3 +45,13 @@ body {
   flex: 1;
   padding: 1rem;
 }
+
+.sidebar-link-active {
+    svg {
+        color: #257b69;
+    }
+}
+
+.c-pointer {
+    cursor: pointer;
+}

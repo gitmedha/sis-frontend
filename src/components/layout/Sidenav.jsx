@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaCircle } from "react-icons/fa";
 
 import MenuItem from "./MenuItem";
 
@@ -19,16 +19,36 @@ const iconStyle = {
 };
 
 const iconProps = {
-  size: 22,
-  color: "#808080",
+  size: 24,
   style: { iconStyle },
 };
+const childIconProps = {
+    size: 10,
+    style: { iconStyle },
+  };
 
 const routes = [
   {
     to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />,
+    subMenu: [
+        {
+            to: "/key-metrics",
+            title: "Key Metrics",
+            icon: <FaCircle {...childIconProps} />,
+        },
+        {
+            to: "/new-opportunities",
+            title: "New Opportunities",
+            icon: <FaCircle {...childIconProps} />,
+        },
+        {
+            to: "/new-students",
+            title: "Newly Certified Students",
+            icon: <FaCircle {...childIconProps} />,
+        }
+    ]
   },
   {
     to: "/institutions",
@@ -43,10 +63,12 @@ const routes = [
 ];
 
 const Sidebar = ({ isOpen }) => (
-  <SideNav isOpen={isOpen}>
+  <SideNav className="sidebar" isOpen={isOpen}>
     <>
       {routes.map((route) => (
-        <MenuItem {...route} key={route.title} isOpen={isOpen} />
+        <div>
+            <MenuItem {...route} key={route.title} isOpen={isOpen} />
+        </div>
       ))}
     </>
   </SideNav>
