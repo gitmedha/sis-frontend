@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
 import { FaUserGraduate, FaChalkboardTeacher, FaCircle } from "react-icons/fa";
-
 import MenuItem from "./MenuItem";
 
 const SideNav = styled.div`
@@ -11,7 +10,7 @@ const SideNav = styled.div`
   background-color: #fff;
   transition: 0.15s ease-in;
   border-right: 2px solid #f2f2f2;
-  width: ${(props) => (props.isOpen ? `250px` : "80px")};
+  width: ${(props) => (props.isOpen ? `275px` : "80px")};
 `;
 
 const iconStyle = {
@@ -64,6 +63,12 @@ const routes = [
 
 const Sidebar = ({ isOpen }) => (
   <SideNav className="sidebar" isOpen={isOpen}>
+    <img
+      src={require('../../assets/images/logo.png').default}
+      alt="Medha SIS"
+      className={isOpen ? '' : 'mx-auto d-block mt-3'}
+      style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
+    />
     <>
       {routes.map((route) => (
         <div>

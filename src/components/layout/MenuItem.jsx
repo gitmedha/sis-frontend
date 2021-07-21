@@ -6,8 +6,6 @@ import {BsChevronDown, BsChevronRight} from 'react-icons/bs';
 
 const MenuEl = styled.div`
   overflow: hidden;
-  padding-left: ${(props) => (props.isOpen ? `30px` : "")};
-  padding-right: ${(props) => (props.isOpen ? `30px` : "")};
   justify-content: ${(props) => (props.isOpen ? `start` : "center")};
 `;
 
@@ -19,14 +17,15 @@ const MenuItem = (props) => {
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
-      <div className={`d-flex align-items-center w-100 ${isOpen ? 'justify-content-between' : 'justify-content-center'}`}>
-        <NavLink
-          exact
-          to={to}
-          className="menu-item-link d-flex align-items-center"
-          activeClassName="sidebar-link-active"
-          style={{minHeight: '70px', fontSize: '18px'}}
-        >
+      <NavLink
+        exact
+        to={to}
+        className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
+        activeClassName="sidebar-link-active"
+        activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
+        style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
+      >
+        <div className={`d-flex align-items-center w-100 justify-content-start`}>
           {(level === 0 || isOpen) && icon}
           <AnimatePresence>
             {isOpen && (
@@ -41,34 +40,37 @@ const MenuItem = (props) => {
               </motion.div>
             )}
           </AnimatePresence>
-        </NavLink>
+        </div>
         {showSubMenuIcon && subMenuCollapsed && <BsChevronRight onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
         {showSubMenuIcon && !subMenuCollapsed && <BsChevronDown onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
-      </div>
-      <div className={`sub-menu d-flex flex-column align-items-start ${subMenuCollapsed ? 'd-none' : ''}`}>
+      </NavLink>
+      <div className={`sub-menu d-flex flex-column align-items-start w-100 ${subMenuCollapsed ? 'd-none' : ''}`}>
         {props.subMenu && props.subMenu.map((child) => (
           isOpen && (
             <NavLink
               exact
               to={child.to}
-              className="menu-item-link d-flex align-items-center"
+              className="menu-item-link d-flex align-items-center w-100"
               activeClassName="sidebar-link-active"
-              style={{minHeight: '40px', fontSize: '16px'}}
+              style={{paddingLeft: isOpen ? '40px' : ''}}
+              activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
             >
-              {(level === 0 || isOpen) && <span onClick={() => setSubMenuCollapsed(!subMenuCollapsed)}>{child.icon}</span>}
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    exit={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    transition={{ duration: 0 }}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <span>{child.title}</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className={`d-flex align-items-center w-100 justify-content-start`}>
+                {(level === 0 || isOpen) && child.icon}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      exit={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      transition={{ duration: 0 }}
+                      style={{ marginLeft: "15px" }}
+                    >
+                      <span>{child.title}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </NavLink>
           )
         ))}
