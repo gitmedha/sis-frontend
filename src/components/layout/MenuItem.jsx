@@ -11,9 +11,10 @@ const MenuEl = styled.div`
 
 const MenuItem = (props) => {
   const { icon, to, title, isOpen } = props;
-  const [subMenuCollapsed, setSubMenuCollapsed] = useState(true);
+  const isActiveParent = window.location.pathname === to || props.activeParent === props.title;
+  const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveParent);
   const level = props.level || 0;
-  const showSubMenuIcon = isOpen && level === 0 && props.subMenu?.length;
+  const showSubMenuIcon = isOpen && level === 0 && props.children?.length;
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
@@ -21,7 +22,7 @@ const MenuItem = (props) => {
         to={to}
         className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
         style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
-        isActive={() => props.activeParent === props.title}
+        isActive={() => isActiveParent}
         activeClassName="sidebar-link-active"
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
         onClick={() => props.setActiveParent(props.title)}
@@ -46,7 +47,7 @@ const MenuItem = (props) => {
         {showSubMenuIcon && !subMenuCollapsed && <BsChevronDown onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
       </NavLink>
       <div className={`sub-menu d-flex flex-column align-items-start w-100 ${subMenuCollapsed ? 'd-none' : ''}`}>
-        {props.subMenu && props.subMenu.map((child, index) => (
+        {props.children && props.children.map((child, index) => (
           isOpen && (
             <NavLink
               key={index}

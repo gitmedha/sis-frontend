@@ -32,7 +32,7 @@ const routes = [
     to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />,
-    subMenu: [
+    children: [
         {
           to: "/#keyMetrics",
           title: "Key Metrics",
@@ -54,7 +54,7 @@ const routes = [
     to: "/students",
     title: "Students",
     icon: <FaUserGraduate {...iconProps} />,
-    subMenu: [
+    children: [
       {
         to: "/institutions",
         title: "Institutions",
@@ -76,7 +76,7 @@ const routes = [
     to: "/employers",
     title: "Employers",
     icon: <FaUserTie {...iconProps} />,
-    subMenu: [
+    children: [
       {
         to: "/employers",
         title: "Employers",
@@ -97,7 +97,17 @@ const routes = [
 ];
 
 const Sidebar = ({ isOpen }) => {
-  const [activeParent, setActiveParent] = useState(null);
+  const [activeParent, setActiveParent] = useState(() => {
+    let activeRoute = routes.filter((route) => {
+      if (route.children && route.children.length) {
+        for (let i = 0; i < route.children.length; i++) {
+          if (route.children[i].to === window.location.pathname) return true;
+        }
+      }
+      return route.to === window.location.pathname;
+    });
+    return activeRoute.length ? activeRoute[0].title : "Dashboard";
+  });
   return (
     <SideNav className="sidebar" isOpen={isOpen}>
       <img
