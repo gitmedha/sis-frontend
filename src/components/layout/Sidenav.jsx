@@ -108,8 +108,9 @@ const Sidebar = ({ isOpen }) => {
     });
     return activeRoute.length ? activeRoute[0].title : "Dashboard";
   });
+  const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
-    <SideNav className="sidebar" isOpen={isOpen}>
+    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
       <img
         src={require('../../assets/images/logo.png').default}
         alt="Medha SIS"
