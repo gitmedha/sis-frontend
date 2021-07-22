@@ -98,8 +98,9 @@ const routes = [
 
 const Sidebar = ({ isOpen }) => {
   const [activeParent, setActiveParent] = useState(null);
+  const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
-    <SideNav className="sidebar" isOpen={isOpen}>
+    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
       <img
         src={require('../../assets/images/logo.png').default}
         alt="Medha SIS"
