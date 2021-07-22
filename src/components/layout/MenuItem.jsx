@@ -11,19 +11,20 @@ const MenuEl = styled.div`
 
 const MenuItem = (props) => {
   const { icon, to, title, isOpen } = props;
+  const [subMenuCollapsed, setSubMenuCollapsed] = useState(true);
   const level = props.level || 0;
-  const [subMenuCollapsed, setSubMenuCollapsed] = useState(false);
   const showSubMenuIcon = isOpen && level === 0 && props.subMenu?.length;
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
       <NavLink
-        exact
         to={to}
         className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
+        style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
+        isActive={() => props.activeParent === props.title}
         activeClassName="sidebar-link-active"
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
-        style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
+        onClick={() => props.setActiveParent(props.title)}
       >
         <div className={`d-flex align-items-center w-100 justify-content-start`}>
           {(level === 0 || isOpen) && icon}
@@ -45,15 +46,20 @@ const MenuItem = (props) => {
         {showSubMenuIcon && !subMenuCollapsed && <BsChevronDown onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
       </NavLink>
       <div className={`sub-menu d-flex flex-column align-items-start w-100 ${subMenuCollapsed ? 'd-none' : ''}`}>
-        {props.subMenu && props.subMenu.map((child) => (
+        {props.subMenu && props.subMenu.map((child, index) => (
           isOpen && (
             <NavLink
-              exact
+              key={index}
               to={child.to}
               className="menu-item-link d-flex align-items-center w-100"
-              activeClassName="sidebar-link-active"
               style={{paddingLeft: isOpen ? '40px' : ''}}
+              isActive={(match, location) =>{
+                if (!match) return false;
+                return location.hash.substr(1) === child.to.split('#')[1] || location.pathname === child.to;
+              }}
+              activeClassName="sidebar-link-active"
               activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
+              onClick={() => props.setActiveParent(props.title)}
             >
               <div className={`d-flex align-items-center w-100 justify-content-start`}>
                 {(level === 0 || isOpen) && child.icon}

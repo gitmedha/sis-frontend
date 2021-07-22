@@ -28,7 +28,7 @@ const Home = () => {
 
   return (
     <div className="container-fluid">
-      <Collapsible opened={true} title="Key Matrices">
+      <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <WidgetUtilTab />
@@ -71,7 +71,23 @@ const Home = () => {
           </div>
         </div>
       </Collapsible>
-      <Collapsible title="New Students" badge={180}>
+      <Collapsible opened={true} title="Charts">
+        <div className="row">
+          <div className="col-sm-12 col-md-6">
+            <div className="card">
+              <div className="card-body">
+                <BarCharts />
+              </div>
+            </div>
+          </div>
+          <div className="col-sm-12 col-md-6">
+            <div className="card">
+              <div className="card-body">hello World</div>
+            </div>
+          </div>
+        </div>
+      </Collapsible>
+      <Collapsible title="Students awaiting Internships/Employment Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
         <Table variant="primary">
           <thead>
             <tr>
@@ -101,22 +117,6 @@ const Home = () => {
             </tr>
           </tbody>
         </Table>
-      </Collapsible>
-      <Collapsible opened={true} title="Charts">
-        <div className="row">
-          <div className="col-sm-12 col-md-6">
-            <div className="card">
-              <div className="card-body">
-                <BarCharts />
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12 col-md-6">
-            <div className="card">
-              <div className="card-body">hello World</div>
-            </div>
-          </div>
-        </div>
       </Collapsible>
     </div>
   );
