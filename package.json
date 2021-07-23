@@ -40,6 +40,7 @@
     "react-redux": "^7.2.4",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",
+    "react-router-hash-link": "^2.4.3",
     "react-scripts": "4.0.3",
     "react-select": "^4.3.1",
     "react-toast-notifications": "^2.5.0",

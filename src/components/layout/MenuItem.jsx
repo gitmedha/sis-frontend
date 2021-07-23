@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavHashLink as NavLink } from 'react-router-hash-link';
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from 'react';
 import {BsChevronDown, BsChevronRight} from 'react-icons/bs';

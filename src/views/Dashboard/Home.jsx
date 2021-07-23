@@ -87,7 +87,7 @@ const Home = () => {
           </div>
         </div>
       </Collapsible>
-      <Collapsible title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
+      <Collapsible opened={true} title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
         <Table variant="primary">
           <thead>
             <tr>
