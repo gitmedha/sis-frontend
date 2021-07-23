@@ -82,12 +82,12 @@ const Home = () => {
           </div>
           <div className="col-sm-12 col-md-6">
             <div className="card">
-              <div className="card-body">hello World</div>
+              <div className="card-body">Hello World</div>
             </div>
           </div>
         </div>
       </Collapsible>
-      <Collapsible title="Students awaiting Internships/Employment Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
+      <Collapsible title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
         <Table variant="primary">
           <thead>
             <tr>

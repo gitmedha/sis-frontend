@@ -10,11 +10,12 @@ const CollapsiblePanels = ({
   opened = false,
   type = "default",
   titleContent = null,
+  id = '',
 }) => {
   const [isOpen, setOpen] = useState(opened);
 
   return (
-    <section className="no-border p-2 mt-2">
+    <section className="no-border p-2 mt-2" id={id}>
       <div
         className="section-header d-flex justify-content-between px-2"
         onClick={() => (type === "default" ? setOpen(!isOpen) : null)}
