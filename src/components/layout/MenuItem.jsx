@@ -26,7 +26,7 @@ const MenuItem = (props) => {
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
         onClick={() => props.setActiveFirstLevel(props.title)}
       >
-        <div className={`d-flex align-items-center w-100 justify-content-start`}>
+        <div className="d-flex align-items-center w-100 justify-content-start">
           {icon}
           <AnimatePresence>
             {isOpen && (
