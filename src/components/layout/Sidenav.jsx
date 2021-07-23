@@ -61,7 +61,7 @@ const routes = [
         icon: <FaCircle {...childIconProps} />,
       },
       {
-        to: "/students-alumni",
+        to: "/students",
         title: "Students & Alumni",
         icon: <FaCircle {...childIconProps} />,
       },
@@ -93,6 +93,33 @@ const routes = [
     to: "/admin",
     title: "Admin",
     icon: <FaUserCog {...iconProps} />,
+    children: [
+      {
+        to: "/admin/states",
+        title: "States",
+        icon: <FaCircle {...childIconProps} />,
+      },
+      {
+        to: "/admin/areas",
+        title: "Areas",
+        icon: <FaCircle {...childIconProps} />,
+      },
+      {
+        to: "/admin/programs",
+        title: "Programs",
+        icon: <FaCircle {...childIconProps} />,
+      },
+      {
+        to: "/admin/donors-and-grants",
+        title: "Donors & Grants",
+        icon: <FaCircle {...childIconProps} />,
+      },
+      {
+        to: "/admin/discount-codes",
+        title: "Discount Codes",
+        icon: <FaCircle {...childIconProps} />,
+      }
+    ]
   },
 ];
 
