@@ -27,6 +27,7 @@
 
 body {
   font-family: Latto-Regular !important;
+  -webkit-font-smoothing: antialiased;
 }
 
 .app {
@@ -44,4 +45,30 @@ body {
 .content {
   flex: 1;
   padding: 1rem;
+}
+
+.menu-item-link {
+    border-right: 5px solid transparent;
+    min-height: 70px;
+    font-size: 18px;
+}
+
+.sub-menu {
+    .menu-item-link {
+        border-right: 5px solid transparent;
+        min-height: 40px;
+        font-size: 16px;
+    }
+}
+
+.sidebar-link {
+    &.sidebar-link-active {
+        svg {
+            color: #257b69;
+        }
+    }
+}
+
+.c-pointer {
+    cursor: pointer;
 }
