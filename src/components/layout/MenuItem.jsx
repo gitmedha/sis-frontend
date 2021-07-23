@@ -13,8 +13,7 @@ const MenuItem = (props) => {
   const { icon, to, title, isOpen } = props;
   const isActiveParent = window.location.pathname === to || props.activeParent === props.title;
   const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveParent);
-  const level = props.level || 0;
-  const showSubMenuIcon = isOpen && level === 0 && props.children?.length;
+  const showSubMenuIcon = isOpen && props.children?.length;
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
@@ -28,7 +27,7 @@ const MenuItem = (props) => {
         onClick={() => props.setActiveParent(props.title)}
       >
         <div className={`d-flex align-items-center w-100 justify-content-start`}>
-          {(level === 0 || isOpen) && icon}
+          {icon}
           <AnimatePresence>
             {isOpen && (
               <motion.div
@@ -63,7 +62,7 @@ const MenuItem = (props) => {
               onClick={() => props.setActiveParent(props.title)}
             >
               <div className={`d-flex align-items-center w-100 justify-content-start`}>
-                {(level === 0 || isOpen) && child.icon}
+                {isOpen && child.icon}
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
