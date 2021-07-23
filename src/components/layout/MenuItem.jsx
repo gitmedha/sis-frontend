@@ -11,8 +11,8 @@ const MenuEl = styled.div`
 
 const MenuItem = (props) => {
   const { icon, to, title, isOpen } = props;
-  const isActiveParent = window.location.pathname === to || props.activeParent === props.title;
-  const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveParent);
+  const isActiveFirstLevel = window.location.pathname === to || props.activeFirstLevel === props.title;
+  const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveFirstLevel);
   const showSubMenuIcon = isOpen && props.children?.length;
 
   return (
@@ -21,10 +21,10 @@ const MenuItem = (props) => {
         to={to}
         className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
         style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
-        isActive={() => isActiveParent}
+        isActive={() => isActiveFirstLevel}
         activeClassName="sidebar-link-active"
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
-        onClick={() => props.setActiveParent(props.title)}
+        onClick={() => props.setActiveFirstLevel(props.title)}
       >
         <div className={`d-flex align-items-center w-100 justify-content-start`}>
           {icon}
@@ -59,7 +59,7 @@ const MenuItem = (props) => {
               }}
               activeClassName="sidebar-link-active"
               activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
-              onClick={() => props.setActiveParent(props.title)}
+              onClick={() => props.setActiveFirstLevel(props.title)}
             >
               <div className={`d-flex align-items-center w-100 justify-content-start`}>
                 {isOpen && child.icon}

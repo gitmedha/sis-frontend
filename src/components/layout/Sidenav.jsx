@@ -124,7 +124,7 @@ const routes = [
 ];
 
 const Sidebar = ({ isOpen }) => {
-  const [activeParent, setActiveParent] = useState(() => {
+  const [activeFirstLevel, setActiveFirstLevel] = useState(() => {
     let activeRoute = routes.filter((route) => {
       if (route.children && route.children.length) {
         for (let i = 0; i < route.children.length; i++) {
@@ -133,7 +133,7 @@ const Sidebar = ({ isOpen }) => {
       }
       return route.to === window.location.pathname;
     });
-    return activeRoute.length ? activeRoute[0].title : "Dashboard";
+    return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
   });
   const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
@@ -146,7 +146,7 @@ const Sidebar = ({ isOpen }) => {
       />
       <>
         {routes.map((route) => (
-          <MenuItem {...route} key={route.title} isOpen={isOpen} activeParent={activeParent} setActiveParent={setActiveParent} />
+          <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
         ))}
       </>
     </SideNav>
