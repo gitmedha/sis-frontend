@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
 import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
+import MenuIcon from "@material-ui/icons/Menu";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SideNav = styled.div`
   z-index: 1;
@@ -65,7 +68,7 @@ const routes = [
   },
 ];
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, toggleMenu }) => {
   const [activeFirstLevel, setActiveFirstLevel] = useState(() => {
     let activeRoute = routes.filter((route) => {
       if (route.children && route.children.length) {
@@ -79,11 +82,34 @@ const Sidebar = ({ isOpen }) => {
   });
   const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
-    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
+    <SideNav className={`sidebar position-relative ${sidenavClass}`} isOpen={isOpen}>
+      <div className={`d-flex align-items-center justify-content-center mt-3 ${isOpen ? 'position-absolute right-10' : ''}`}>
+        <AnimatePresence>
+          {!isOpen ? (
+            <motion.div
+              exit={{ rotate: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
+            </motion.div>
+          ) : (
+            <motion.div
+              exit={{ opacity: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 1 }}
+            >
+              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <img
         src={require('../../assets/images/logo.png').default}
         alt="Medha SIS"
-        className={isOpen ? '' : 'mx-auto d-block mt-3'}
+        className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
         style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
       />
       <>
