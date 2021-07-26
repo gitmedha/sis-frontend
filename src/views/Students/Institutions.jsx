@@ -88,6 +88,7 @@ const Institutions = () => {
         >
           <AgGridReact
             rowHeight={60}
+            rowClass='w-100'
             rowData={institutions}
             frameworkComponents={{
               link: TableLink,

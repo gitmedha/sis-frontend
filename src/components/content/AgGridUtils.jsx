@@ -246,7 +246,7 @@ export const TextRenderer = ({ value }) => {
 
 export const LinkRenderer = ({ value }) => {
     console.log(value);
-    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0">{ value.text }</a></div>;
+    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0" style={{color: '#00ADEF'}}>{ value.text }</a></div>;
 };
 
 export const ProgressRenderer = ({ value }) => (
