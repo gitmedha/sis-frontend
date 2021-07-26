@@ -10,9 +10,10 @@ import {
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
-import { GET_MY_INSTITUTES } from "../../graphql";
+import { GET_USER_INSTITUTES } from "../../graphql";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import TabPicker from "../../components/content/TabPicker";
+import Pagination from '../../components/content/Pagination';
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -33,6 +34,11 @@ const Institutions = () => {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
+  const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
+  const [currentPage, setCurrentPage] = useState(null);
+  const [currentInstitutions, setCurrentInstitutions] = useState([]);
+  const [totalPages, setTotalPages] = useState(null);
+
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   useEffect(() => {}, [activeTab]);
@@ -42,22 +48,21 @@ const Institutions = () => {
     NP.start();
     try {
       let { data } = await api.post("/graphql", {
-        query: GET_MY_INSTITUTES,
+        query: GET_USER_INSTITUTES,
         variables: {
-          limit: 10,
           // id: user.id,
           id: 2,
           sort: "created_at:desc",
         },
       });
-      let institutions = data.data.institutions;
-      institutions = data.data.institutions.map((institution) => {
+      let institutions = data.data.institutionsConnection.values;
+      institutions = institutions.map((institution) => {
         institution.assigned_to.text = institution.assigned_to.username;
         institution.assigned_to.to = '/user/' + institution.assigned_to.id;
         return institution;
       })
-      console.log(institutions);
       setInstitutions(institutions);
+      setInstitutionsAggregate(data?.data?.institutionsConnection?.aggregate);
     } catch (err) {
       console.log("INSTITUTIONS", err);
     } finally {
@@ -65,6 +70,17 @@ const Institutions = () => {
       NP.done();
     }
   };
+
+  const onPageChanged = (data) => {
+    const allInstitutions = institutions;
+    const { currentPage, totalPages, pageLimit } = data;
+
+    const offset = (currentPage - 1) * pageLimit;
+    const currentInstitutions = allInstitutions.slice(offset, offset + pageLimit);
+    setCurrentPage(currentPage);
+    setCurrentInstitutions(currentInstitutions);
+    setTotalPages(totalPages);
+  }
 
   useEffect(() => {
     getAllInstitutes();
@@ -90,6 +106,9 @@ const Institutions = () => {
             rowHeight={60}
             rowClass='w-100'
             rowData={institutions}
+            pagination={true}
+            paginationPageSize={3}
+            suppressPaginationPanel={true}
             frameworkComponents={{
               link: TableLink,
               sno: SerialNumberRenderer,
@@ -140,6 +159,7 @@ const Institutions = () => {
               cellRendererParams={{ to: "institution" }}
             />
           </AgGridReact>
+          {institutionsAggregate && <Pagination totalRecords={institutionsAggregate.count} pageLimit={1} pageNeighbours={2} onPageChanged={onPageChanged} />}
         </div>
       ) : (
         <Skeleton count={3} height={50} />

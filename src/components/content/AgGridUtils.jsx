@@ -109,7 +109,7 @@ export const AvatarRenderer = (props) => (
 
 export const TableLink = ({ value, to }) => {
   return (
-    <Link to={`/${to}/${value}`} class='d-flex align-items-center h-100'>
+    <Link to={`/${to}/${value}`} className='d-flex align-items-center h-100'>
       <FaAngleDoubleRight size={18} color={"#31B89D"} />
     </Link>
   );
@@ -244,7 +244,6 @@ export const TextRenderer = ({ value }) => {
 };
 
 export const LinkRenderer = ({ value }) => {
-    console.log(value);
     return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0" style={{color: '#00ADEF'}}>{ value.text }</a></div>;
 };
 
