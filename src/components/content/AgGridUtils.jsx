@@ -10,11 +10,10 @@ import { GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import ProgressBar from "@ramonak/react-progress-bar";
 
-const styleObject = {
+const badgeStyle = {
   height: "25px",
   display: "flex",
-  marginTop: "7px",
-  maxWidth: "200px",
+  width: "100%",
   paddingLeft: "5px",
   paddingRight: "5px",
   borderRadius: "5px",
@@ -90,19 +89,23 @@ const colorRenderer = (value) => {
 export const BadgeRenderer = ({ value }) => {
   return (
     <div
-      className="text--sm latto-bold"
-      style={{
-        ...styleObject,
-        ...colorRenderer(value),
-      }}
+      className="d-flex align-items-center h-100"
     >
-      {value}
+      <div
+        className="text--sm latto-bold"
+        style={{
+          ...badgeStyle,
+          ...colorRenderer(value),
+        }}
+      >
+        {value}
+      </div>
     </div>
   );
 };
 
 export const AvatarRenderer = (props) => (
-  <Avatar name={props.data.name} logo={props.data.logo} />
+  <Avatar name={props.data.name} logo={props.data.logo} style={{width: '35px', height: '35px'}} />
 );
 
 export const TableLink = ({ value, to }) => {
@@ -234,7 +237,16 @@ const StudentModal = (props) => {
 };
 
 export const SerialNumberRenderer = ({ node }) => {
-  return <p>{node.rowIndex + 1}</p>;
+  return <div className="h-100 d-flex align-items-center"><p className="mb-0">{node.rowIndex + 1}.</p></div>;
+};
+
+export const TextRenderer = ({ value }) => {
+    return <div className="h-100 d-flex align-items-center"><p className="mb-0">{ value }</p></div>;
+};
+
+export const LinkRenderer = ({ value }) => {
+    console.log(value);
+    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0">{ value.text }</a></div>;
 };
 
 export const ProgressRenderer = ({ value }) => (

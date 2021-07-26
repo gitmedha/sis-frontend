@@ -5,6 +5,7 @@ import {
   BadgeRenderer,
   AvatarRenderer,
   SerialNumberRenderer,
+  LinkRenderer,
 } from "../../components/content/AgGridUtils";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -49,8 +50,14 @@ const Institutions = () => {
           sort: "created_at:desc",
         },
       });
-      console.log("DATA", data);
-      setInstitutions(data.data.institutions);
+      let institutions = data.data.institutions;
+      institutions = data.data.institutions.map((institution) => {
+        institution.assigned_to.text = institution.assigned_to.username;
+        institution.assigned_to.to = '/user/' + institution.assigned_to.id;
+        return institution;
+      })
+      console.log(institutions);
+      setInstitutions(institutions);
     } catch (err) {
       console.log("INSTITUTIONS", err);
     } finally {
@@ -77,43 +84,43 @@ const Institutions = () => {
       {!isLoading ? (
         <div
           className="ag-theme-alpine"
-          style={{ height: "50vh", width: "100%" }}
+          style={{ height: "60vh", width: "100%" }}
         >
           <AgGridReact
-            rowHeight={80}
+            rowHeight={60}
             rowData={institutions}
             frameworkComponents={{
               link: TableLink,
               sno: SerialNumberRenderer,
               badgeRenderer: BadgeRenderer,
               avatarRenderer: AvatarRenderer,
+              linkRenderer: LinkRenderer,
             }}
           >
             <AgGridColumn
               sortable
-              field="name"
+              field="sno"
               width={100}
               cellRenderer="sno"
-              headerName="S. No."
-              cellStyle={cellStyle}
+              headerName="#"
             />
             <AgGridColumn
               sortable
               width={300}
-              field="name"
               headerName="Name"
+              field="name"
               cellRenderer="avatarRenderer"
             />
             <AgGridColumn
               sortable
               width={300}
-              cellStyle={cellStyle}
-              headerName="Assingned To"
-              field="assigned_to.username"
+              headerName="Assigned To"
+              field="assigned_to"
+              cellRenderer="linkRenderer"
             />
             <AgGridColumn
               sortable
-              width={240}
+              width={140}
               field="status"
               headerName="Status"
               cellRenderer="badgeRenderer"
