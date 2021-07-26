@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaCircle } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 
 const SideNav = styled.div`
@@ -31,41 +31,17 @@ const routes = [
   {
     to: "/",
     title: "Dashboard",
-    icon: <MdDashboard {...iconProps} />,
-    children: [
-        {
-          to: "/#keyMetrics",
-          title: "Key Metrics",
-          icon: <FaCircle {...childIconProps} />,
-        },
-        {
-          to: "/#newOpportunities",
-          title: "New Opportunities",
-          icon: <FaCircle {...childIconProps} />,
-        },
-        {
-          to: "/#newlyCertifiedStudents",
-          title: "Newly Certified Students",
-          icon: <FaCircle {...childIconProps} />,
-        }
-    ]
+    icon: <MdDashboard {...iconProps} />
   },
   {
     to: "/students",
     title: "Students",
-    icon: <FaUserGraduate {...iconProps} />,
-    children: [
-      {
-        to: "/institutions",
-        title: "Institutions",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/students",
-        title: "Students & Alumni",
-        icon: <FaCircle {...childIconProps} />,
-      },
-    ]
+    icon: <FaUserGraduate {...iconProps} />
+  },
+  {
+    to: "/institutions",
+    title: "Institutions",
+    icon: <FaSchool {...iconProps} />
   },
   {
     to: "/batches",
@@ -75,51 +51,17 @@ const routes = [
   {
     to: "/employers",
     title: "Employers",
-    icon: <FaUserTie {...iconProps} />,
-    children: [
-      {
-        to: "/employers",
-        title: "Employers",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/opportunities",
-        title: "Opportunities",
-        icon: <FaCircle {...childIconProps} />,
-      }
-    ]
+    icon: <FaUserTie {...iconProps} />
+  },
+  {
+    to: "/opportunities",
+    title: "Opportunities",
+    icon: <FaBriefcase {...iconProps} />
   },
   {
     to: "/admin",
     title: "Admin",
-    icon: <FaUserCog {...iconProps} />,
-    children: [
-      {
-        to: "/admin/states",
-        title: "States",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/areas",
-        title: "Areas",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/programs",
-        title: "Programs",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/donors-and-grants",
-        title: "Donors & Grants",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/discount-codes",
-        title: "Discount Codes",
-        icon: <FaCircle {...childIconProps} />,
-      }
-    ]
+    icon: <FaUserCog {...iconProps} />
   },
 ];
 
