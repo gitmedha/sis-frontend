@@ -73,9 +73,24 @@ body {
     cursor: pointer;
 }
 
-.ag-react-container {
-    height: 100%;
-}
-.ag-center-cols-container {
-    width: 100% !important;
+.ag-theme-alpine {
+
+    --ag-odd-row-background-color: null;
+
+    .ag-react-container {
+        height: 100%;
+    }
+    .ag-center-cols-container {
+        width: 100% !important;
+    }
+    .ag-header-cell-label {
+        color: #787B96;
+    }
+    .ag-root-wrapper {
+        border: 1.5px solid #D7D7E0;
+        border-radius: 5px;
+        box-shadow: none;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 }

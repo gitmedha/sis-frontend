@@ -25,7 +25,7 @@ const Avatar = ({ logo, name, style }) => {
         </div>
       )}
 
-      <p className="mb-0 latto-regular">{name}</p>
+      <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
     </div>
   );
 };

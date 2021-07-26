@@ -11,11 +11,10 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import ProgressBar from "@ramonak/react-progress-bar";
 
 const badgeStyle = {
-  height: "25px",
+  height: "22px",
   display: "flex",
-  width: "100%",
-  paddingLeft: "5px",
-  paddingRight: "5px",
+  paddingLeft: "12px",
+  paddingRight: "12px",
   borderRadius: "5px",
   alignItems: "center",
   letterSpacing: "0.5px",
@@ -110,8 +109,8 @@ export const AvatarRenderer = (props) => (
 
 export const TableLink = ({ value, to }) => {
   return (
-    <Link to={`/${to}/${value}`}>
-      <FaAngleDoubleRight size={18} color={"#257b69"} />
+    <Link to={`/${to}/${value}`} class='d-flex align-items-center h-100'>
+      <FaAngleDoubleRight size={18} color={"#31B89D"} />
     </Link>
   );
 };
@@ -237,7 +236,7 @@ const StudentModal = (props) => {
 };
 
 export const SerialNumberRenderer = ({ node }) => {
-  return <div className="h-100 d-flex align-items-center"><p className="mb-0">{node.rowIndex + 1}.</p></div>;
+  return <div className="h-100 d-flex align-items-center"><p className="mb-0" style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>{node.rowIndex + 1}.</p></div>;
 };
 
 export const TextRenderer = ({ value }) => {
