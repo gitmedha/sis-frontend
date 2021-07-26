@@ -48,9 +48,9 @@ const App = (props) => {
   return (
     <Router>
       <AppContainer>
-        <Sidebar isOpen={isOpen} />
+        <Sidebar isOpen={isOpen} toggleMenu={toggleMenu} />
         <LayoutContainer>
-          <Header isOpen={isOpen} toggleMenu={toggleMenu} />
+          <Header isOpen={isOpen} />
           <RouteContainer>
             <Switch>
               <Route path="/" exact component={Home} />

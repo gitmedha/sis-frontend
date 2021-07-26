@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaCircle } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
+import MenuIcon from "@material-ui/icons/Menu";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SideNav = styled.div`
   z-index: 1;
@@ -31,41 +34,17 @@ const routes = [
   {
     to: "/",
     title: "Dashboard",
-    icon: <MdDashboard {...iconProps} />,
-    children: [
-        {
-          to: "/#keyMetrics",
-          title: "Key Metrics",
-          icon: <FaCircle {...childIconProps} />,
-        },
-        {
-          to: "/#newOpportunities",
-          title: "New Opportunities",
-          icon: <FaCircle {...childIconProps} />,
-        },
-        {
-          to: "/#newlyCertifiedStudents",
-          title: "Newly Certified Students",
-          icon: <FaCircle {...childIconProps} />,
-        }
-    ]
+    icon: <MdDashboard {...iconProps} />
   },
   {
     to: "/students",
     title: "Students",
-    icon: <FaUserGraduate {...iconProps} />,
-    children: [
-      {
-        to: "/institutions",
-        title: "Institutions",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/students",
-        title: "Students & Alumni",
-        icon: <FaCircle {...childIconProps} />,
-      },
-    ]
+    icon: <FaUserGraduate {...iconProps} />
+  },
+  {
+    to: "/institutions",
+    title: "Institutions",
+    icon: <FaSchool {...iconProps} />
   },
   {
     to: "/batches",
@@ -75,55 +54,21 @@ const routes = [
   {
     to: "/employers",
     title: "Employers",
-    icon: <FaUserTie {...iconProps} />,
-    children: [
-      {
-        to: "/employers",
-        title: "Employers",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/opportunities",
-        title: "Opportunities",
-        icon: <FaCircle {...childIconProps} />,
-      }
-    ]
+    icon: <FaUserTie {...iconProps} />
+  },
+  {
+    to: "/opportunities",
+    title: "Opportunities",
+    icon: <FaBriefcase {...iconProps} />
   },
   {
     to: "/admin",
     title: "Admin",
-    icon: <FaUserCog {...iconProps} />,
-    children: [
-      {
-        to: "/admin/states",
-        title: "States",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/areas",
-        title: "Areas",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/programs",
-        title: "Programs",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/donors-and-grants",
-        title: "Donors & Grants",
-        icon: <FaCircle {...childIconProps} />,
-      },
-      {
-        to: "/admin/discount-codes",
-        title: "Discount Codes",
-        icon: <FaCircle {...childIconProps} />,
-      }
-    ]
+    icon: <FaUserCog {...iconProps} />
   },
 ];
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, toggleMenu }) => {
   const [activeFirstLevel, setActiveFirstLevel] = useState(() => {
     let activeRoute = routes.filter((route) => {
       if (route.children && route.children.length) {
@@ -137,11 +82,34 @@ const Sidebar = ({ isOpen }) => {
   });
   const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
-    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
+    <SideNav className={`sidebar position-relative ${sidenavClass}`} isOpen={isOpen}>
+      <div className={`d-flex align-items-center justify-content-center mt-3 ${isOpen ? 'position-absolute right-10' : ''}`}>
+        <AnimatePresence>
+          {!isOpen ? (
+            <motion.div
+              exit={{ rotate: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
+            </motion.div>
+          ) : (
+            <motion.div
+              exit={{ opacity: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 1 }}
+            >
+              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <img
         src={require('../../assets/images/logo.png').default}
         alt="Medha SIS"
-        className={isOpen ? '' : 'mx-auto d-block mt-3'}
+        className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
         style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
       />
       <>
