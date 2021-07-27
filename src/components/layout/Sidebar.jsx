@@ -7,14 +7,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
 
-const SideNav = styled.div`
-  z-index: 1;
-  height: 100%;
-  align-self: stretch;
-  background-color: #fff;
-  transition: 0.15s ease-in;
-`;
-
 const iconStyle = {
   marginRight: "5px",
 };
@@ -78,46 +70,45 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
     });
     return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
   });
-  const sidenavClass = isOpen ? "open" : "d-none d-md-block";
   return (
-    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`} style={{borderRight: '2px solid #f2f2f2'}}>
-    <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? 'position-absolute right-10' : 'position-absolute left-10 top-0 position-md-relative left-md-0'}`}>
-      <AnimatePresence>
-        {!isOpen ? (
-          <motion.div
-            exit={{ rotate: -90 }}
-            animate={{ rotate: 0 }}
-            initial={{ rotate: -90 }}
-            transition={{ duration: 0.3 }}
-          >
-            <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
-          </motion.div>
-        ) : (
-          <motion.div
-            exit={{ opacity: -90 }}
-            animate={{ rotate: 0 }}
-            initial={{ rotate: -90 }}
-            transition={{ duration: 1 }}
-          >
-            <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-
-    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
-      <img
-        src={require('../../assets/images/logo.png').default}
-        alt="Medha SIS"
-        className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
-        style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
-      />
-      <>
-        {routes.map((route) => (
-          <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
-        ))}
-      </>
-    </SideNav>
+    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`}>
+      {/* hamburger */}
+      <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? 'position-absolute right-10' : 'position-absolute left-10 top-0 position-md-relative left-md-0'}`}>
+        <AnimatePresence>
+          {!isOpen ? (
+            <motion.div
+              exit={{ rotate: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
+            </motion.div>
+          ) : (
+            <motion.div
+              exit={{ opacity: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 1 }}
+            >
+              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
+        <img
+          src={require('../../assets/images/logo.png').default}
+          alt="Medha SIS"
+          className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
+          style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
+        />
+        <>
+          {routes.map((route) => (
+            <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
+          ))}
+        </>
+      </div>
     </div>
   )};
 
