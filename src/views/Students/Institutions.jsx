@@ -13,8 +13,8 @@ import Skeleton from "react-loading-skeleton";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import TabPicker from "../../components/content/TabPicker";
-import Pagination from '../../components/content/Pagination';
 import Table from '../../components/content/Table';
+import React from 'react';
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -32,10 +32,6 @@ const Institutions = () => {
 
   const columns = useMemo(
     () => [
-      {
-        Header: '#',
-        accessor: 'sno',
-      },
       {
         Header: 'Name',
         accessor: 'avatar',
@@ -64,14 +60,15 @@ const Institutions = () => {
 
   const paginationPageSize = 10;
 
-  const getAllInstitutes = async () => {
-    console.log('getAllInstitutes');
+  const getInstitutions = async (limit = 10, offset = 0) => {
     NP.start();
-    setLoading(true);
+    // setLoading(true);
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
       variables: {
         // id: user.id,
+        limit: limit,
+        start: offset,
         id: 2,
         sort: "created_at:desc",
       },
@@ -81,7 +78,6 @@ const Institutions = () => {
       setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
     })
     .catch(error => {
-      console.log("INSTITUTIONS", error);
       return Promise.reject(error);
     })
     .finally(() => {
@@ -90,19 +86,30 @@ const Institutions = () => {
     });
   };
 
-  useEffect(() => {
-    getAllInstitutes();
+  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    console.log('pageIndex, pageSize', pageIndex, pageSize * (pageIndex));
+    // if (pageIndex > 0) {
+      getInstitutions(pageSize, pageSize * (pageIndex));
+    // }
   }, []);
+
+  // const fetchData = ({pageIndex, pageSize}) => {
+  //   console.log('pageIndex, pageSize', pageIndex, pageSize);
+  //   getInstitutions(pageSize, pageSize * (pageIndex + 1));
+  // }
+
+  // useEffect(() => {
+  //   getInstitutions();
+  // }, []);
 
   useEffect(() => {
     let data = institutions;
-    console.log('data', data);
+    console.log('institutions inside for table', data);
     data = data.map((institution, index) => {
       institution.assignedTo = <LinkRenderer value={{
         text: institution.assigned_to.username,
         to: '/user/' + institution.assigned_to.id
       }}/>
-      institution.sno = <SerialNumberRenderer node={{rowIndex: index}} />
       institution.avatar = <AvatarRenderer name={institution.name} logo={institution.logo} />
       institution.status = <BadgeRenderer value={institution.status} />
       institution.type = <BadgeRenderer value={institution.type} />
@@ -111,10 +118,6 @@ const Institutions = () => {
     });
     setInstitutionsTableData(data);
   }, [institutions]);
-
-  // const onPageChanged = (data) => {
-  //   const { currentPage } = data;
-  // }
 
   return (
     <div className="container py-3">
@@ -128,7 +131,7 @@ const Institutions = () => {
         </button>
       </div>
       {!isLoading ? (
-          <Table columns={columns} data={institutionsTableData} />
+          <Table columns={columns} data={institutionsTableData} pageCount={Math.ceil(institutionsAggregate.count/10)} fetchData={fetchData} />
       ) : (
         <Skeleton count={3} height={50} />
       )}

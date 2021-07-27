@@ -18,28 +18,8 @@ const range = (from, to, step = 1) => {
   return range;
 }
 
-const Pagination = (props) => {
-  const pageLimit = props?.pageLimit || 30;
-  const totalRecords = props?.totalRecords || 0;
-  const pageNeighbours = props?.pageNeighbours || 0;
-  const totalPages = Math.ceil(totalRecords / pageLimit);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    // action on update of movies
-    const paginationData = {
-      currentPage: currentPage - 1,
-      totalPages: totalPages,
-      pageLimit: pageLimit,
-      totalRecords: totalRecords
-    };
-    props.onPageChanged(paginationData);
-  }, [currentPage, totalPages, pageLimit, totalRecords, props]);
-
-  const goToPage = (page) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  }
+const Pagination = ({pageLimit, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex}) => {
+  const currentPage = pageIndex + 1;
 
   const fetchPageNumbers = () => {
     const totalNumbers = (pageNeighbours * 2) + 1;
@@ -54,7 +34,7 @@ const Pagination = (props) => {
     return range(1, totalPages);
   }
 
-  if (!totalRecords || totalPages === 1) return null;
+  if (totalPages === 1) return null;
 
   const pages = fetchPageNumbers();
   return (
@@ -62,29 +42,29 @@ const Pagination = (props) => {
       <nav>
         <ul className="pagination">
           <li key='first' className="pagination-link-wrapper">
-            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => goToPage(1)} disabled={currentPage <= 1}>
+            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => gotoPage(0)} disabled={currentPage <= 1}>
               <span className="sr-only"><FaAngleDoubleLeft /></span>
             </span>
           </li>
           <li key='previous' className="pagination-link-wrapper">
-            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1}>
+            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => previousPage()} disabled={currentPage <= 1}>
               <span className="sr-only"><FaAngleLeft /></span>
             </span>
           </li>
           { pages.map((page, index) => {
             return (
               <li key={index} className={`pagination-link-wrapper ${ currentPage === page ? 'active' : ''}`}>
-                <span className="pagination-link" href="#" onClick={() => goToPage(page)}>{ page }</span>
+                <span className="pagination-link" href="#" onClick={() => gotoPage(page - 1)}>{ page }</span>
               </li>
             );
           }) }
           <li key='next' className="pagination-link-wrapper">
-            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages}>
+            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => nextPage()} disabled={currentPage >= totalPages}>
               <span className="sr-only"><FaAngleRight /></span>
             </span>
           </li>
           <li key='last' className="pagination-link-wrapper">
-            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => goToPage(totalPages)} disabled={currentPage >= totalPages}>
+            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => gotoPage(totalPages - 1)} disabled={currentPage >= totalPages}>
               <span className="sr-only"><FaAngleDoubleRight /></span>
             </span>
           </li>
@@ -100,5 +80,7 @@ const Pagination = (props) => {
 //   pageNeighbours: PropTypes.number,
 //   onPageChanged: PropTypes.func
 // };
+
+
 
 export default Pagination;
