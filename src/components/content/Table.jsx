@@ -40,14 +40,14 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, pageCount: controlledPageCount }) => {
+const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords }) => {
   const tableInstance = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, pageSize: paginationPageSize },
       manualPagination: true,
-      pageCount: controlledPageCount,
+      pageCount: Math.ceil(totalRecords/paginationPageSize),
     },
     usePagination
   );
@@ -68,8 +68,6 @@ const Table = ({ columns, data, fetchData, pageCount: controlledPageCount }) => 
     setPageSize,
     state: { pageIndex, pageSize },
   } = tableInstance;
-
-  console.log('pageCount', pageCount)
 
   React.useEffect(() => {
     fetchData({ pageIndex, pageSize })
