@@ -7,13 +7,14 @@ import {
   SerialNumberRenderer,
   LinkRenderer,
 } from "../../components/content/AgGridUtils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useTable } from "react";
 import { useHistory } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import TabPicker from "../../components/content/TabPicker";
 import Pagination from '../../components/content/Pagination';
+import Table from '../../components/content/Table';
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -27,19 +28,46 @@ const Institutions = () => {
   const [isLoading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
+  const [institutionsTableData, setInstitutionsTableData] = useState([]);
 
-  const [gridApi, setGridApi] = useState(null);
-  const [gridColumnApi, setGridColumnApi] = useState(null);
+  const columns = useMemo(
+    () => [
+      {
+        Header: '#',
+        accessor: 'sno',
+      },
+      {
+        Header: 'Name',
+        accessor: 'avatar',
+      },
+      {
+        Header: 'Assigned To',
+        accessor: 'assignedTo',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
+        Header: 'Type',
+        accessor: 'type',
+      },
+      {
+        Header: '',
+        accessor: 'link',
+      },
+    ],
+    []
+  );
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const paginationPageSize = 10;
 
-  useEffect(() => {}, [activeTab, isLoading]);
-
   const getAllInstitutes = async () => {
+    console.log('getAllInstitutes');
     NP.start();
-    // setLoading(true);
+    setLoading(true);
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
       variables: {
@@ -49,15 +77,8 @@ const Institutions = () => {
       },
     })
     .then(data => {
-      let institutions = data?.data?.data?.institutionsConnection.values;
-      institutions = institutions.map((institution) => {
-        institution.assigned_to.text = institution.assigned_to.username;
-        institution.assigned_to.to = '/user/' + institution.assigned_to.id;
-        return institution;
-      })
-      setInstitutions(institutions);
+      setInstitutions(data?.data?.data?.institutionsConnection.values);
       setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
-      return institutions;
     })
     .catch(error => {
       console.log("INSTITUTIONS", error);
@@ -69,34 +90,31 @@ const Institutions = () => {
     });
   };
 
-  const onPageChanged = (data) => {
-    const { currentPage } = data;
-    if (gridApi) {
-      gridApi.paginationGoToPage(currentPage);
-    }
-  }
-
-  const onGridReady = (params) => {
-    setGridApi(params.api);
-    setGridColumnApi(params.columnApi);
+  useEffect(() => {
     getAllInstitutes();
-  };
+  }, []);
 
-  const gridOptions = {
-    rowHeight: 60,
-    rowClass: 'w-100',
-    pagination: true,
-    paginationPageSize: paginationPageSize,
-    suppressPaginationPanel: false,
-    onGridReady: onGridReady,
-    frameworkComponents: {
-      link: TableLink,
-      sno: SerialNumberRenderer,
-      badgeRenderer: BadgeRenderer,
-      avatarRenderer: AvatarRenderer,
-      linkRenderer: LinkRenderer,
-    }
-  };
+  useEffect(() => {
+    let data = institutions;
+    console.log('data', data);
+    data = data.map((institution, index) => {
+      institution.assignedTo = <LinkRenderer value={{
+        text: institution.assigned_to.username,
+        to: '/user/' + institution.assigned_to.id
+      }}/>
+      institution.sno = <SerialNumberRenderer node={{rowIndex: index}} />
+      institution.avatar = <AvatarRenderer name={institution.name} logo={institution.logo} />
+      institution.status = <BadgeRenderer value={institution.status} />
+      institution.type = <BadgeRenderer value={institution.type} />
+      institution.link = <TableLink value={institution.id} to={'institution'} />
+      return institution;
+    });
+    setInstitutionsTableData(data);
+  }, [institutions]);
+
+  // const onPageChanged = (data) => {
+  //   const { currentPage } = data;
+  // }
 
   return (
     <div className="container py-3">
@@ -110,58 +128,7 @@ const Institutions = () => {
         </button>
       </div>
       {!isLoading ? (
-        <div
-          className="ag-theme-alpine"
-          style={{ height: "60vh", width: "100%" }}
-        >
-          <AgGridReact
-            gridOptions={gridOptions}
-            rowData={institutions}
-          >
-            <AgGridColumn
-              sortable
-              field="sno"
-              width={100}
-              cellRenderer="sno"
-              headerName="#"
-            />
-            <AgGridColumn
-              sortable
-              width={300}
-              headerName="Name"
-              field="name"
-              cellRenderer="avatarRenderer"
-            />
-            <AgGridColumn
-              sortable
-              width={300}
-              headerName="Assigned To"
-              field="assigned_to"
-              cellRenderer="linkRenderer"
-            />
-            <AgGridColumn
-              sortable
-              width={140}
-              field="status"
-              headerName="Status"
-              cellRenderer="badgeRenderer"
-            />
-            <AgGridColumn
-              sortable
-              field="type"
-              headerName="Type"
-              cellRenderer="badgeRenderer"
-            />
-            <AgGridColumn
-              field="id"
-              width={70}
-              headerName=""
-              cellRenderer="link"
-              cellRendererParams={{ to: "institution" }}
-            />
-          </AgGridReact>
-          {institutionsAggregate && <Pagination totalRecords={institutionsAggregate.count} pageLimit={paginationPageSize} pageNeighbours={2} onPageChanged={onPageChanged} />}
-        </div>
+          <Table columns={columns} data={institutionsTableData} />
       ) : (
         <Skeleton count={3} height={50} />
       )}

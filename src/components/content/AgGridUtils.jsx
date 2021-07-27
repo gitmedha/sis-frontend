@@ -104,7 +104,7 @@ export const BadgeRenderer = ({ value }) => {
 };
 
 export const AvatarRenderer = (props) => (
-  <Avatar name={props.data.name} logo={props.data.logo} style={{width: '35px', height: '35px'}} />
+  <Avatar name={props.name} logo={props.logo} style={{width: '35px', height: '35px'}} />
 );
 
 export const TableLink = ({ value, to }) => {

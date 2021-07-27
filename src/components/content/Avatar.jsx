@@ -9,7 +9,7 @@ import ImageUploader from "./ImageUploader";
 import { connect } from "react-redux";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 
-const Avatar = ({ logo, name, style }) => {
+const Avatar = ({ logo, name, style = {} }) => {
   return (
     <div className="d-flex align-items-center justify-content-start h-100">
       {logo ? (
@@ -20,8 +20,8 @@ const Avatar = ({ logo, name, style }) => {
           style={style}
         />
       ) : (
-        <div className="flex-row-centered avatar avatar-default">
-          <FaSchool size={25} style={style} />
+        <div className="flex-row-centered avatar avatar-default" style={style}>
+          <FaSchool size={25} />
         </div>
       )}
 
