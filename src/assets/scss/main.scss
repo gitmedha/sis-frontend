@@ -42,7 +42,7 @@ body {
     z-index: 1;
     height: 100%;
     align-self: stretch;
-    background-color: #fff;
+    background-color: $white;
     transition: 0.15s ease-in;
   }
   &.open {

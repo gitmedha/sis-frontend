@@ -1,6 +1,6 @@
 @media screen and (min-width: 768px) {
   .sidebar-container {
-    border-right: 2px solid #f2f2f2;
+    border-right: 2px solid $custom-concrete;
     width: 80px;
 
     &.open {
