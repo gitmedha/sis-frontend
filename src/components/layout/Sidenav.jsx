@@ -14,7 +14,6 @@ const SideNav = styled.div`
   background-color: #fff;
   transition: 0.15s ease-in;
   border-right: 2px solid #f2f2f2;
-  width: ${(props) => (props.isOpen ? `275px` : "80px")};
 `;
 
 const iconStyle = {
@@ -80,8 +79,32 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
     });
     return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
   });
-  const sidenavClass = isOpen ? "" : "d-none d-md-block";
+  const sidenavClass = isOpen ? "open" : "d-none d-md-block";
   return (
+    <>
+      <div className={`align-items-center justify-content-center mt-3 position-absolute left-10 z-10 top-0 d-md-none ${isOpen ? 'd-none' : 'd-flex'}`}>
+        <AnimatePresence>
+          {!isOpen ? (
+            <motion.div
+              exit={{ rotate: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
+            </motion.div>
+          ) : (
+            <motion.div
+              exit={{ opacity: -90 }}
+              animate={{ rotate: 0 }}
+              initial={{ rotate: -90 }}
+              transition={{ duration: 1 }}
+            >
+              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     <SideNav className={`sidebar position-relative ${sidenavClass}`} isOpen={isOpen}>
       <div className={`d-flex align-items-center justify-content-center mt-3 ${isOpen ? 'position-absolute right-10' : ''}`}>
         <AnimatePresence>
@@ -118,6 +141,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
         ))}
       </>
     </SideNav>
+    </>
   )};
 
 export default Sidebar;
