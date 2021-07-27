@@ -82,7 +82,7 @@ const Institutions = () => {
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex }) => {
-    getInstitutions(pageSize, pageSize * (pageIndex));
+    getInstitutions(pageSize, pageSize * pageIndex);
   }, []);
 
   useEffect(() => {
