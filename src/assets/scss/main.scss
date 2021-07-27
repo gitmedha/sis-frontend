@@ -36,24 +36,19 @@ body {
   font-family: Latto-Regular !important;
 }
 
-.sidebar {
-  width: 80px;
-  flex-shrink: 0;
-  border-right: 1px solid #ddd;
-
+.sidebar-container {
   &.open {
-    width: 100%;
+    width: 100%
   }
 }
 
-@media screen and (min-width: 768px) {
-  .sidebar {
-    width: 80px;
+.sidebar {
+  // width: 80px;
+  flex-shrink: 0;
 
-    &.open {
-      width: 275px;
-    }
-  }
+  // &.open {
+  //   width: 100%;
+  // }
 }
 
 .content {
@@ -92,9 +87,20 @@ body {
 .right-10 {
   right: 10px;
 }
-.top-0 {
-  top: 0;
-}
 .z-10 {
   z-index: 10;
+}
+@media screen and (min-width: 768px) {
+  .sidebar-container {
+    width: 80px;
+    &.open {
+      width: 275px;
+    }
+  }
+  .position-md-relative {
+    position: relative !important;
+  }
+  .left-md-0 {
+    left: 0;
+  }
 }

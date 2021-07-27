@@ -13,7 +13,6 @@ const SideNav = styled.div`
   align-self: stretch;
   background-color: #fff;
   transition: 0.15s ease-in;
-  border-right: 2px solid #f2f2f2;
 `;
 
 const iconStyle = {
@@ -81,54 +80,32 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
   });
   const sidenavClass = isOpen ? "open" : "d-none d-md-block";
   return (
-    <>
-      <div className={`align-items-center justify-content-center mt-3 position-absolute left-10 z-10 top-0 d-md-none ${isOpen ? 'd-none' : 'd-flex'}`}>
-        <AnimatePresence>
-          {!isOpen ? (
-            <motion.div
-              exit={{ rotate: -90 }}
-              animate={{ rotate: 0 }}
-              initial={{ rotate: -90 }}
-              transition={{ duration: 0.3 }}
-            >
-              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
-            </motion.div>
-          ) : (
-            <motion.div
-              exit={{ opacity: -90 }}
-              animate={{ rotate: 0 }}
-              initial={{ rotate: -90 }}
-              transition={{ duration: 1 }}
-            >
-              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    <SideNav className={`sidebar position-relative ${sidenavClass}`} isOpen={isOpen}>
-      <div className={`d-flex align-items-center justify-content-center mt-3 ${isOpen ? 'position-absolute right-10' : ''}`}>
-        <AnimatePresence>
-          {!isOpen ? (
-            <motion.div
-              exit={{ rotate: -90 }}
-              animate={{ rotate: 0 }}
-              initial={{ rotate: -90 }}
-              transition={{ duration: 0.3 }}
-            >
-              <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
-            </motion.div>
-          ) : (
-            <motion.div
-              exit={{ opacity: -90 }}
-              animate={{ rotate: 0 }}
-              initial={{ rotate: -90 }}
-              transition={{ duration: 1 }}
-            >
-              <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`} style={{borderRight: '2px solid #f2f2f2'}}>
+    <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? 'position-absolute right-10' : 'position-absolute left-10 top-0 position-md-relative left-md-0'}`}>
+      <AnimatePresence>
+        {!isOpen ? (
+          <motion.div
+            exit={{ rotate: -90 }}
+            animate={{ rotate: 0 }}
+            initial={{ rotate: -90 }}
+            transition={{ duration: 0.3 }}
+          >
+            <MenuIcon className="c-pointer" style={{ color: "#207B69" }} onClick={toggleMenu} />
+          </motion.div>
+        ) : (
+          <motion.div
+            exit={{ opacity: -90 }}
+            animate={{ rotate: 0 }}
+            initial={{ rotate: -90 }}
+            transition={{ duration: 1 }}
+          >
+            <ArrowBackIcon className="c-pointer" onClick={toggleMenu} style={{ color: "#207B69" }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+
+    <SideNav className={`sidebar ${sidenavClass}`} isOpen={isOpen}>
       <img
         src={require('../../assets/images/logo.png').default}
         alt="Medha SIS"
@@ -141,7 +118,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
         ))}
       </>
     </SideNav>
-    </>
+    </div>
   )};
 
 export default Sidebar;
