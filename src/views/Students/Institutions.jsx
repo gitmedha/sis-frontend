@@ -30,7 +30,6 @@ const Institutions = () => {
 
   const [gridApi, setGridApi] = useState(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
-  const [rowData, setRowData] = useState(null);
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
@@ -58,7 +57,6 @@ const Institutions = () => {
       })
       setInstitutions(institutions);
       setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
-      setRowData(institutions); // setting the data for the table
       return institutions;
     })
     .catch(error => {
@@ -84,6 +82,22 @@ const Institutions = () => {
     getAllInstitutes();
   };
 
+  const gridOptions = {
+    rowHeight: 60,
+    rowClass: 'w-100',
+    pagination: true,
+    paginationPageSize: paginationPageSize,
+    suppressPaginationPanel: false,
+    onGridReady: onGridReady,
+    frameworkComponents: {
+      link: TableLink,
+      sno: SerialNumberRenderer,
+      badgeRenderer: BadgeRenderer,
+      avatarRenderer: AvatarRenderer,
+      linkRenderer: LinkRenderer,
+    }
+  };
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -101,20 +115,8 @@ const Institutions = () => {
           style={{ height: "60vh", width: "100%" }}
         >
           <AgGridReact
-            rowHeight={60}
-            rowClass='w-100'
-            pagination={true}
-            paginationPageSize={paginationPageSize}
-            suppressPaginationPanel={true}
-            onGridReady={onGridReady}
-            rowData={rowData}
-            frameworkComponents={{
-              link: TableLink,
-              sno: SerialNumberRenderer,
-              badgeRenderer: BadgeRenderer,
-              avatarRenderer: AvatarRenderer,
-              linkRenderer: LinkRenderer,
-            }}
+            gridOptions={gridOptions}
+            rowData={institutions}
           >
             <AgGridColumn
               sortable
