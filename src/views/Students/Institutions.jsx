@@ -39,36 +39,44 @@ const Institutions = () => {
   const [currentInstitutions, setCurrentInstitutions] = useState([]);
   const [totalPages, setTotalPages] = useState(null);
 
+  const [gridApi, setGridApi] = useState(null);
+  const [gridColumnApi, setGridColumnApi] = useState(null);
+  const [rowData, setRowData] = useState(null);
+
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   useEffect(() => {}, [activeTab]);
 
   const getAllInstitutes = async () => {
+    console.log('hello');
     setLoading(true);
     NP.start();
-    try {
-      let { data } = await api.post("/graphql", {
-        query: GET_USER_INSTITUTES,
-        variables: {
-          // id: user.id,
-          id: 2,
-          sort: "created_at:desc",
-        },
-      });
-      let institutions = data.data.institutionsConnection.values;
+    await api.post("/graphql", {
+      query: GET_USER_INSTITUTES,
+      variables: {
+        // id: user.id,
+        id: 2,
+        sort: "created_at:desc",
+      },
+    })
+    .then(data => {
+      let institutions = data?.data?.data?.institutionsConnection.values;
       institutions = institutions.map((institution) => {
         institution.assigned_to.text = institution.assigned_to.username;
         institution.assigned_to.to = '/user/' + institution.assigned_to.id;
         return institution;
       })
       setInstitutions(institutions);
-      setInstitutionsAggregate(data?.data?.institutionsConnection?.aggregate);
-    } catch (err) {
-      console.log("INSTITUTIONS", err);
-    } finally {
+      setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
+      setRowData(institutions);
       setLoading(false);
-      NP.done();
-    }
+      return institutions;
+    })
+    .catch(error => {
+      console.log("INSTITUTIONS", error);
+      setLoading(false);
+      return Promise.reject(error);
+    });
   };
 
   const onPageChanged = (data) => {
@@ -81,6 +89,29 @@ const Institutions = () => {
     setCurrentInstitutions(currentInstitutions);
     setTotalPages(totalPages);
   }
+
+  const onGridReady = (params) => {
+    console.log('onGridReady');
+    setGridApi(params.api);
+    setGridColumnApi(params.columnApi);
+
+    // // const updateData = (data) => {
+    // //   setRowData(data);
+    // // };
+    // getAllInstitutes();
+    // return;
+  };
+
+  const onPaginationChanged = () => {
+    console.log('onPaginationPageLoaded');
+    if (gridApi) {
+      // setText('#lbLastPageFound', gridApi.paginationIsLastPageFound());
+      // setText('#lbPageSize', gridApi.paginationGetPageSize());
+      // setText('#lbCurrentPage', gridApi.paginationGetCurrentPage() + 1);
+      // setText('#lbTotalPages', gridApi.paginationGetTotalPages());
+      // setLastButtonDisabled(!gridApi.paginationIsLastPageFound());
+    }
+  };
 
   useEffect(() => {
     getAllInstitutes();
@@ -105,10 +136,13 @@ const Institutions = () => {
           <AgGridReact
             rowHeight={60}
             rowClass='w-100'
-            rowData={institutions}
+            // rowData={institutions}
             pagination={true}
             paginationPageSize={3}
             suppressPaginationPanel={true}
+            onGridReady={onGridReady}
+            onPaginationChanged={onPaginationChanged}
+            rowData={rowData}
             frameworkComponents={{
               link: TableLink,
               sno: SerialNumberRenderer,
