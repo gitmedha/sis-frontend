@@ -1,0 +1,16 @@
+@media screen and (min-width: 768px) {
+  .sidebar-container {
+    border-right: 2px solid #f2f2f2;
+    width: 80px;
+
+    &.open {
+      width: 275px;
+    }
+  }
+  .position-md-relative {
+    position: relative !important;
+  }
+  .left-md-0 {
+    left: 0;
+  }
+}
