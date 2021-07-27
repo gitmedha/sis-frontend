@@ -129,30 +129,46 @@ $light-background: lighten(desaturate($base-color, 50%), 12.5%);
 
 // Override some Bootstrap pagination styles
 ul.pagination {
-  margin-top: 0;
-  margin-bottom: 0;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  li.page-item.active {
-    a.page-link {
-      color: saturate(darken($base-color, 50%), 5%) !important;
-      background-color: saturate(lighten($base-color, 7.5%), 2.5%) !important;
-      border-color: $base-color !important;
+  .pagination-link-wrapper {
+    margin: auto 5px;
+
+    &.active {
+      .pagination-link {
+        border-color: #207B69;
+        background-color: #207B69;
+        color: white;
+      }
     }
   }
 
-  a.page-link {
-    padding: 0.75rem 1rem;
-    min-width: 3.5rem;
+  .pagination-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Latto-Bold';
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
     text-align: center;
-    box-shadow: none !important;
-    border-color: $base-color !important;
-    color: saturate(darken($base-color, 30%), 10%);
-    font-weight: 900;
-    font-size: 1rem;
+    border-radius: 3px;
+    background-color: white;
+    border: 1px solid #EEEFF8;
+    box-sizing: border-box;
+    color: #207B69;
+    cursor: pointer;
 
-    &:hover {
-      background-color: $light-background;
+    &.disabled {
+      color: #D1D2DB;
+
+      &:hover {
+        cursor: not-allowed;
+        color: #D1D2DB;
+      }
     }
   }
 }

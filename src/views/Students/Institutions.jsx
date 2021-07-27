@@ -22,22 +22,11 @@ const tabPickerOptions = [
   { title: "All Area", key: "test-4" },
 ];
 
-const cellStyle = {
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  fontFamily: "Latto-Regular",
-};
-
 const Institutions = () => {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
-  const [currentPage, setCurrentPage] = useState(null);
-  const [currentInstitutions, setCurrentInstitutions] = useState([]);
-  const [totalPages, setTotalPages] = useState(null);
 
   const [gridApi, setGridApi] = useState(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -45,12 +34,13 @@ const Institutions = () => {
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  useEffect(() => {}, [activeTab]);
+  const paginationPageSize = 10;
+
+  useEffect(() => {}, [activeTab, isLoading]);
 
   const getAllInstitutes = async () => {
-    console.log('hello');
-    setLoading(true);
     NP.start();
+    // setLoading(true);
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
       variables: {
@@ -68,54 +58,31 @@ const Institutions = () => {
       })
       setInstitutions(institutions);
       setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
-      setRowData(institutions);
-      setLoading(false);
+      setRowData(institutions); // setting the data for the table
       return institutions;
     })
     .catch(error => {
       console.log("INSTITUTIONS", error);
-      setLoading(false);
       return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      NP.done();
     });
   };
 
   const onPageChanged = (data) => {
-    const allInstitutions = institutions;
-    const { currentPage, totalPages, pageLimit } = data;
-
-    const offset = (currentPage - 1) * pageLimit;
-    const currentInstitutions = allInstitutions.slice(offset, offset + pageLimit);
-    setCurrentPage(currentPage);
-    setCurrentInstitutions(currentInstitutions);
-    setTotalPages(totalPages);
+    const { currentPage } = data;
+    if (gridApi) {
+      gridApi.paginationGoToPage(currentPage);
+    }
   }
 
   const onGridReady = (params) => {
-    console.log('onGridReady');
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
-
-    // // const updateData = (data) => {
-    // //   setRowData(data);
-    // // };
-    // getAllInstitutes();
-    // return;
-  };
-
-  const onPaginationChanged = () => {
-    console.log('onPaginationPageLoaded');
-    if (gridApi) {
-      // setText('#lbLastPageFound', gridApi.paginationIsLastPageFound());
-      // setText('#lbPageSize', gridApi.paginationGetPageSize());
-      // setText('#lbCurrentPage', gridApi.paginationGetCurrentPage() + 1);
-      // setText('#lbTotalPages', gridApi.paginationGetTotalPages());
-      // setLastButtonDisabled(!gridApi.paginationIsLastPageFound());
-    }
-  };
-
-  useEffect(() => {
     getAllInstitutes();
-  }, []);
+  };
 
   return (
     <div className="container py-3">
@@ -136,12 +103,10 @@ const Institutions = () => {
           <AgGridReact
             rowHeight={60}
             rowClass='w-100'
-            // rowData={institutions}
             pagination={true}
-            paginationPageSize={3}
+            paginationPageSize={paginationPageSize}
             suppressPaginationPanel={true}
             onGridReady={onGridReady}
-            onPaginationChanged={onPaginationChanged}
             rowData={rowData}
             frameworkComponents={{
               link: TableLink,
@@ -193,7 +158,7 @@ const Institutions = () => {
               cellRendererParams={{ to: "institution" }}
             />
           </AgGridReact>
-          {institutionsAggregate && <Pagination totalRecords={institutionsAggregate.count} pageLimit={1} pageNeighbours={2} onPageChanged={onPageChanged} />}
+          {institutionsAggregate && <Pagination totalRecords={institutionsAggregate.count} pageLimit={paginationPageSize} pageNeighbours={2} onPageChanged={onPageChanged} />}
         </div>
       ) : (
         <Skeleton count={3} height={50} />

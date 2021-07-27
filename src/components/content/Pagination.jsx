@@ -1,5 +1,6 @@
 import React, { Component, Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 /**
  * Helper method for creating a range of numbers
@@ -24,16 +25,20 @@ const Pagination = (props) => {
   const totalPages = Math.ceil(totalRecords / pageLimit);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const gotoPage = (page) => {
-    setCurrentPage(Math.max(0, Math.min(page, totalPages)));
-
+  useEffect(() => {
+    // action on update of movies
     const paginationData = {
-      currentPage,
+      currentPage: currentPage - 1,
       totalPages: totalPages,
       pageLimit: pageLimit,
       totalRecords: totalRecords
     };
     props.onPageChanged(paginationData);
+  }, [currentPage, totalPages, pageLimit, totalRecords, props]);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   }
 
   const fetchPageNumbers = () => {
@@ -54,34 +59,34 @@ const Pagination = (props) => {
   const pages = fetchPageNumbers();
   return (
     <Fragment>
-      <nav aria-label="Countries Pagination">
-        <ul className="pagination mypagination">
-          <li key='first' className="page-item">
-            <a className="page-link" href="#" aria-label="Previous" onClick={() => gotoPage(1)}>
-              <span className="sr-only">{'<<'}</span>
-            </a>
+      <nav>
+        <ul className="pagination">
+          <li key='first' className="pagination-link-wrapper">
+            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => goToPage(1)} disabled={currentPage <= 1}>
+              <span className="sr-only"><FaAngleDoubleLeft /></span>
+            </span>
           </li>
-          <li key='previous' className="page-item">
-            <a className="page-link" href="#" aria-label="Previous" onClick={() => gotoPage(currentPage - 1)}>
-              <span className="sr-only">{'<'}</span>
-            </a>
+          <li key='previous' className="pagination-link-wrapper">
+            <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1}>
+              <span className="sr-only"><FaAngleLeft /></span>
+            </span>
           </li>
           { pages.map((page, index) => {
             return (
-              <li key={index} className={`page-item${ currentPage === page ? ' active' : ''}`}>
-                <a className="page-link" href="#" onClick={() => gotoPage(page)}>{ page }</a>
+              <li key={index} className={`pagination-link-wrapper ${ currentPage === page ? 'active' : ''}`}>
+                <span className="pagination-link" href="#" onClick={() => goToPage(page)}>{ page }</span>
               </li>
             );
           }) }
-          <li key='next' className="page-item">
-            <a className="page-link" href="#" aria-label="Next" onClick={() => gotoPage(currentPage + 1)}>
-              <span className="sr-only">{'>'}</span>
-            </a>
+          <li key='next' className="pagination-link-wrapper">
+            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages}>
+              <span className="sr-only"><FaAngleRight /></span>
+            </span>
           </li>
-          <li key='last' className="page-item">
-            <a className="page-link" href="#" aria-label="Next" onClick={() => gotoPage(totalPages)}>
-              <span className="sr-only">{'>>'}</span>
-            </a>
+          <li key='last' className="pagination-link-wrapper">
+            <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => goToPage(totalPages)} disabled={currentPage >= totalPages}>
+              <span className="sr-only"><FaAngleDoubleRight /></span>
+            </span>
           </li>
         </ul>
       </nav>
