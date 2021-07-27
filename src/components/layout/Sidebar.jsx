@@ -7,16 +7,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
 
-const SideNav = styled.div`
-  z-index: 1;
-  height: 100%;
-  align-self: stretch;
-  background-color: #fff;
-  transition: 0.15s ease-in;
-  border-right: 2px solid #f2f2f2;
-  width: ${(props) => (props.isOpen ? `275px` : "80px")};
-`;
-
 const iconStyle = {
   marginRight: "5px",
 };
@@ -80,10 +70,10 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
     });
     return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
   });
-  const sidenavClass = isOpen ? "" : "d-none d-md-block";
   return (
-    <SideNav className={`sidebar position-relative ${sidenavClass}`} isOpen={isOpen}>
-      <div className={`d-flex align-items-center justify-content-center mt-3 ${isOpen ? 'position-absolute right-10' : ''}`}>
+    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`}>
+      {/* hamburger */}
+      <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? 'position-absolute right-10' : 'position-absolute left-10 top-0 position-md-relative left-md-0'}`}>
         <AnimatePresence>
           {!isOpen ? (
             <motion.div
@@ -106,18 +96,20 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
           )}
         </AnimatePresence>
       </div>
-      <img
-        src={require('../../assets/images/logo.png').default}
-        alt="Medha SIS"
-        className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
-        style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
-      />
-      <>
-        {routes.map((route) => (
-          <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
-        ))}
-      </>
-    </SideNav>
+      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
+        <img
+          src={require('../../assets/images/logo.png').default}
+          alt="Medha SIS"
+          className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
+          style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
+        />
+        <>
+          {routes.map((route) => (
+            <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
+          ))}
+        </>
+      </div>
+    </div>
   )};
 
 export default Sidebar;

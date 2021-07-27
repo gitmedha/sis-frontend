@@ -27,7 +27,9 @@ const MenuItem = (props) => {
         onClick={() => props.setActiveFirstLevel(props.title)}
       >
         <div className="d-flex align-items-center w-100 justify-content-start">
-          {icon}
+          <div data-tip={isOpen ? '' : props.title}>
+            {icon}
+          </div>
           <AnimatePresence>
             {isOpen && (
               <motion.div

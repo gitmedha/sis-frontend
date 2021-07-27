@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Session from "./views/Batches/sessions";
 import { useToasts } from "react-toast-notifications";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import ReactTooltip from 'react-tooltip';
 
 // Layout Components
-import Sidebar from "./components/layout/Sidenav";
+import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/AppHeader";
 import LayoutContainer from "./components/layout/Container";
 import AppContainer from "./components/layout/AppContainer";
@@ -79,6 +80,7 @@ const App = (props) => {
             </Switch>
           </RouteContainer>
         </LayoutContainer>
+        <ReactTooltip />
       </AppContainer>
     </Router>
   );
