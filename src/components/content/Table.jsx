@@ -3,6 +3,7 @@ import React from "react";
 import { useTable, usePagination } from 'react-table'
 import styled from 'styled-components';
 import Pagination from './Pagination';
+import Skeleton from "react-loading-skeleton";
 
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;
@@ -40,7 +41,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords }) => {
+const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -58,14 +59,10 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords }) =
     headerGroups,
     prepareRow,
     page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
     pageCount,
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
     state: { pageIndex, pageSize },
   } = tableInstance;
 
@@ -78,58 +75,50 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords }) =
       <Styles>
         <table {...getTableProps()}>
           <thead>
-            {// Loop over the header rows
-            headerGroups.map(headerGroup => (
-              // Apply the header row props
+            {headerGroups.map(headerGroup => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 <th>#</th>
-                {// Loop over the headers in each row
-                headerGroup.headers.map(column => (
-                  // Apply the header cell props
+                {headerGroup.headers.map(column => (
                   <th {...column.getHeaderProps()}>
-                    {// Render the header
+                    {
                     column.render('Header')}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
-          {/* Apply the table body props */}
           <tbody {...getTableBodyProps()}>
-            {// Loop over the table rows
-            page.map((row, index) => {
-              // Prepare the row for display
-              prepareRow(row)
-              return (
-                // Apply the row props
-                <tr {...row.getRowProps()}>
-                  <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                    {pageIndex * pageSize + index + 1}.
-                  </td>
-                  {// Loop over the rows cells
-                  row.cells.map(cell => {
-                    // Apply the cell props
-                    return (
-                      <td {...cell.getCellProps()}>
-                        {// Render the cell contents
-                        cell.render('Cell')}
-                      </td>
-                    )
-                  })}
-                </tr>
-              )
-            })}
+            {loading ? (
+              <>
+                <tr><td colspan="5"><Skeleton height='100%' /></td></tr>
+                <tr><td colspan="5"><Skeleton height='100%' /></td></tr>
+                <tr><td colspan="5"><Skeleton height='100%' /></td></tr>
+              </>
+            ) : (
+              page.map((row, index) => {
+                prepareRow(row)
+                return (
+                  <tr {...row.getRowProps()}>
+                    <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                      {pageIndex * pageSize + index + 1}.
+                    </td>
+                    {row.cells.map(cell => {
+                      return (
+                        <td {...cell.getCellProps()}>
+                          {cell.render('Cell')}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })
+            )}
           </tbody>
         </table>
       </Styles>
       <Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />
     </>
   )
-  // return (
-  //   <div className="card px-2 pt-2">
-  //     <Table striped={striped}>{children}</Table>
-  //   </div>
-  // );
 };
 
 export default Table;

@@ -8,7 +8,6 @@ import {
 } from "../../components/content/AgGridUtils";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
@@ -23,7 +22,7 @@ const tabPickerOptions = [
 
 const Institutions = () => {
   const history = useHistory();
-  const [isLoading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
@@ -58,7 +57,7 @@ const Institutions = () => {
 
   const getInstitutions = async (limit = 10, offset = 0) => {
     NP.start();
-    // setLoading(true);
+    setLoading(true);
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
       variables: {
@@ -113,11 +112,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      {!isLoading ? (
-          <Table columns={columns} data={institutionsTableData} paginationPageSize={2} totalRecords={institutionsAggregate.count} fetchData={fetchData} />
-      ) : (
-        <Skeleton count={3} height={50} />
-      )}
+      <Table columns={columns} data={institutionsTableData} paginationPageSize={10} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} />
     </div>
   );
 };
