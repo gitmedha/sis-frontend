@@ -211,13 +211,13 @@ const Details = (props) => {
         </div>
         <div className="col-md-4">
           <p className="text-heading text--md">Status</p>
-          <Badge value={status} />
+          <Badge value={status} pickList={[]} />
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge value={type} />
+          <Badge value={type} pickList={[]} />
         </div>
       </div>
       <div className="row">

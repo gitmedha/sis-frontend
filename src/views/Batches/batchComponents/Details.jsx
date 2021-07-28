@@ -73,7 +73,7 @@ const Details = ({ batch, done, setAlert }) => {
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
           <p className="text-detail-title">Status</p>
-          <Badge value={batch.status} />
+          <Badge value={batch.status} pickList={[]} />
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
           <p className="text-detail-title">Start Date</p>
