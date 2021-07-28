@@ -6,7 +6,7 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import InfoCards from "./components/InfoCards";
-import Table from "../../components/content/Table";
+import { Table } from "react-bootstrap";
 import BarCharts from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";

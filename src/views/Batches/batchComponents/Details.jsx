@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { DELETE_BATCH } from "../../../graphql";
 import UpdateBatchDetails from "./UpdateDetails";
 import SweetAlert from "react-bootstrap-sweetalert";
-import Table from "../../../components/content/Table";
+import { Table } from "react-bootstrap";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { Badge } from "../../../components/content/Utils";
 import { setAlert } from "../../../store/reducers/Notifications/actions";

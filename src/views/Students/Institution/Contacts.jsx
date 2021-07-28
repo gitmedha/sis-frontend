@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
-import Table from "../../../components/content/Table";
+import { Table } from "react-bootstrap";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
