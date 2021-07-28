@@ -9,7 +9,7 @@ import UpdateBatchDetails from "./UpdateDetails";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Table from "../../../components/content/Table";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { BadgeRenderer } from "../../../components/content/AgGridUtils";
+import { Badge } from "../../../components/content/Utils";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Details = ({ batch, done, setAlert }) => {
@@ -73,7 +73,7 @@ const Details = ({ batch, done, setAlert }) => {
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
           <p className="text-detail-title">Status</p>
-          <BadgeRenderer value={batch.status} />
+          <Badge value={batch.status} />
         </div>
         <div className="col-md-4 col-sm-12 mb-3">
           <p className="text-detail-title">Start Date</p>

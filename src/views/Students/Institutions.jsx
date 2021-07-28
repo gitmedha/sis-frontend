@@ -1,11 +1,11 @@
 import NP from "nprogress";
 import api from "../../apis";
 import {
-  TableLink,
-  BadgeRenderer,
-  AvatarRenderer,
-  LinkRenderer,
-} from "../../components/content/AgGridUtils";
+  TableRowDetailLink,
+  Badge,
+  Anchor,
+} from "../../components/content/Utils";
+import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES } from "../../graphql";
@@ -112,14 +112,14 @@ const Institutions = () => {
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
-      institution.assignedTo = <LinkRenderer value={{
+      institution.assignedTo = <Anchor value={{
         text: institution.assigned_to.username,
         to: '/user/' + institution.assigned_to.id
       }}/>
-      institution.avatar = <AvatarRenderer name={institution.name} logo={institution.logo} />
-      institution.status = <BadgeRenderer value={institution.status} />
-      institution.type = <BadgeRenderer value={institution.type} />
-      institution.link = <TableLink value={institution.id} to={'institution'} />
+      institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
+      institution.status = <Badge value={institution.status} />
+      institution.type = <Badge value={institution.type} />
+      institution.link = <TableRowDetailLink value={institution.id} to={'institution'} />
       return institution;
     });
     setInstitutionsTableData(data);
