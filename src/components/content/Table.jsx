@@ -9,8 +9,6 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;
   background: #FFFFFF;
-  padding-left: 15px;
-  padding-right: 15px;
   border-radius: 5px;
   font-size: 14px;
 
@@ -39,6 +37,27 @@ const Styles = styled.div`
       border-bottom: 1px solid #BFBFBF;
       height: 60px;
     }
+  }
+
+  .mobile {
+    .row {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      margin: 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #BFBFBF;
+      }
+
+      .cell:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    padding-left: 15px;
+    padding-right: 15px;
   }
 `
 
@@ -76,54 +95,78 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
   return (
     <>
       <Styles>
-        <table {...getTableProps()}>
-          <thead>
-            {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                <th>#</th>
-                {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                    {column.render('Header')}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? <FaLongArrowAltDown />
-                          : <FaLongArrowAltUp />
-                        : ''}
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {loading ? (
-              <>
-                <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
-                <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
-                <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
-              </>
-            ) : (
-              page.map((row, index) => {
-                prepareRow(row)
-                return (
-                  <tr {...row.getRowProps()}>
-                    <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                      {pageIndex * pageSize + index + 1}.
-                    </td>
-                    {row.cells.map(cell => {
-                      return (
-                        <td {...cell.getCellProps()}>
-                          {cell.render('Cell')}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
+        <div className="d-none d-md-block">
+          <table {...getTableProps()}>
+            <thead>
+              {headerGroups.map(headerGroup => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  <th>#</th>
+                  {headerGroup.headers.map(column => (
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                      {column.render('Header')}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? <FaLongArrowAltDown />
+                            : <FaLongArrowAltUp />
+                          : ''}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {loading ? (
+                <>
+                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
+                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
+                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
+                </>
+              ) : (
+                page.map((row, index) => {
+                  prepareRow(row)
+                  return (
+                    <tr {...row.getRowProps()}>
+                      <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                        {pageIndex * pageSize + index + 1}.
+                      </td>
+                      {row.cells.map(cell => {
+                        return (
+                          <td {...cell.getCellProps()}>
+                            {cell.render('Cell')}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="d-md-none mobile">
+          {loading ? (
+            <>
+              <Skeleton count={3} height='60px' />
+            </>
+          ) : (
+            page.map((row, index) => {
+              prepareRow(row)
+              return (
+                <div className="row">
+                  {row.cells.map(cell => {
+                    return (
+                      <div key={cell} className="cell">
+                        {cell.render('Cell')}
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })
+          )}
+        </div>
       </Styles>
       <Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />
     </>

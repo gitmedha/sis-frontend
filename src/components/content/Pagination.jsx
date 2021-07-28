@@ -9,7 +9,7 @@ const Styles = styled.div`
     align-items: center;
 
     .pagination-link-wrapper {
-      margin: auto 5px;
+      margin: auto 3px;
 
       &.active {
         .pagination-link {
@@ -25,9 +25,9 @@ const Styles = styled.div`
       align-items: center;
       justify-content: center;
       font-family: 'Latto-Bold';
-      width: 36px;
-      height: 36px;
-      font-size: 14px;
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
       text-align: center;
       border-radius: 3px;
       background-color: white;
@@ -43,6 +43,21 @@ const Styles = styled.div`
           cursor: not-allowed;
           color: #D1D2DB;
         }
+      }
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    ul.pagination {
+
+      .pagination-link-wrapper {
+        margin: auto 5px;
+      }
+
+      .pagination-link {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
       }
     }
   }
