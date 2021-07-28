@@ -1,6 +1,52 @@
-import React, { Component, Fragment, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from "react-icons/fa";
+
+const Styles = styled.div`
+  ul.pagination {
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .pagination-link-wrapper {
+      margin: auto 5px;
+
+      &.active {
+        .pagination-link {
+          border-color: #207B69;
+          background-color: #207B69;
+          color: white;
+        }
+      }
+    }
+
+    .pagination-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Latto-Bold';
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      text-align: center;
+      border-radius: 3px;
+      background-color: white;
+      border: 1px solid #EEEFF8;
+      box-sizing: border-box;
+      color: #207B69;
+      cursor: pointer;
+
+      &.disabled {
+        color: #D1D2DB;
+
+        &:hover {
+          cursor: not-allowed;
+          color: #D1D2DB;
+        }
+      }
+    }
+  }
+`
 
 /**
  * Helper method for creating a range of numbers
@@ -38,7 +84,7 @@ const Pagination = ({pageLimit, totalPages, pageNeighbours = 2, gotoPage, nextPa
 
   const pages = fetchPageNumbers();
   return (
-    <Fragment>
+    <Styles>
       <nav>
         <ul className="pagination">
           <li key='first' className="pagination-link-wrapper">
@@ -70,17 +116,8 @@ const Pagination = ({pageLimit, totalPages, pageNeighbours = 2, gotoPage, nextPa
           </li>
         </ul>
       </nav>
-    </Fragment>
+    </Styles>
   );
 }
-
-// Pagination.propTypes = {
-//   totalRecords: PropTypes.number.isRequired,
-//   pageLimit: PropTypes.number,
-//   pageNeighbours: PropTypes.number,
-//   onPageChanged: PropTypes.func
-// };
-
-
 
 export default Pagination;
