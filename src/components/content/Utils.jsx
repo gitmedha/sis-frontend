@@ -257,7 +257,5 @@ export const cellStyle = {
   display: "flex",
   outline: "none",
   alignItems: "center",
-  // flexDirection: "column",
-  // justifyContent: "center",
   fontFamily: "Latto-Regular",
 };

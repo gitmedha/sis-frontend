@@ -10,11 +10,13 @@ import { GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import ProgressBar from "@ramonak/react-progress-bar";
 
-const badgeStyle = {
-  height: "22px",
+const styleObject = {
+  height: "25px",
   display: "flex",
-  paddingLeft: "12px",
-  paddingRight: "12px",
+  marginTop: "7px",
+  maxWidth: "200px",
+  paddingLeft: "5px",
+  paddingRight: "5px",
   borderRadius: "5px",
   alignItems: "center",
   letterSpacing: "0.5px",
@@ -88,29 +90,25 @@ const colorRenderer = (value) => {
 export const BadgeRenderer = ({ value }) => {
   return (
     <div
-      className="d-flex align-items-center h-100"
+      className="text--sm latto-bold"
+      style={{
+        ...styleObject,
+        ...colorRenderer(value),
+      }}
     >
-      <div
-        className="text--sm latto-bold"
-        style={{
-          ...badgeStyle,
-          ...colorRenderer(value),
-        }}
-      >
-        {value}
-      </div>
+      {value}
     </div>
   );
 };
 
 export const AvatarRenderer = (props) => (
-  <Avatar name={props.name} logo={props.logo} style={{width: '35px', height: '35px'}} />
+  <Avatar name={props.data.name} logo={props.data.logo} />
 );
 
 export const TableLink = ({ value, to }) => {
   return (
-    <Link to={`/${to}/${value}`} className='d-flex align-items-center h-100'>
-      <FaAngleDoubleRight size={18} color={"#31B89D"} />
+    <Link to={`/${to}/${value}`}>
+      <FaAngleDoubleRight size={18} color={"#257b69"} />
     </Link>
   );
 };
@@ -236,15 +234,7 @@ const StudentModal = (props) => {
 };
 
 export const SerialNumberRenderer = ({ node }) => {
-  return <div className="h-100 d-flex align-items-center"><p className="mb-0" style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>{node.rowIndex + 1}.</p></div>;
-};
-
-export const TextRenderer = ({ value }) => {
-    return <div className="h-100 d-flex align-items-center"><p className="mb-0">{ value }</p></div>;
-};
-
-export const LinkRenderer = ({ value }) => {
-    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0" style={{color: '#00ADEF'}}>{ value.text }</a></div>;
+  return <p>{node.rowIndex + 1}</p>;
 };
 
 export const ProgressRenderer = ({ value }) => (
