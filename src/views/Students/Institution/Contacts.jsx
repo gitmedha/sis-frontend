@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
-import { Table } from "react-bootstrap";
+import { Table as BTable } from "react-bootstrap";
+import Table from "../../../components/content/Table";
 import { UPDATE_INSTITUTION } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -109,6 +110,14 @@ const AddContactModal = (props) => {
 const Contacts = ({ contacts, id, done, setAlert }) => {
   const [modalShow, setModalShow] = useState(false);
 
+  contacts = contacts.map((contact) => {
+    contact.actions = <div className="d-flex">
+      <FaEye size={18} style={{cursor: 'pointer'}} />
+      <FaTrashAlt size={18} style={{marginLeft: '10px', cursor: 'pointer'}} />
+    </div>
+    return contact;
+  });
+
   const hideUpdateContactModal = async (data) => {
     if (data.isTrusted) {
       setModalShow(false);
@@ -117,7 +126,7 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
 
     nProgress.start();
     try {
-      let resp = await queryBuilder({
+      await queryBuilder({
         query: UPDATE_INSTITUTION,
         variables: {
           id,
@@ -126,48 +135,42 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
           },
         },
       });
-      console.log(resp, "CONATCT_UPDATE_RESPOSE");
       setAlert("Institution contacts updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_CONTACT_ERR", err);
-      setAlert("Unable to  updated institution contacts.", "error");
+      setAlert("Unable to update institution contacts.", "error");
     } finally {
       nProgress.done();
       done();
     }
   };
 
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Full Name',
+        accessor: 'full_name',
+      },
+      {
+        Header: 'Designation',
+        accessor: 'designation',
+      },
+      {
+        Header: 'Phone',
+        accessor: 'phone',
+      },
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        disableSortBy: true,
+      },
+    ],
+    []
+  );
+
   return (
     <div className="container-fluid my-3">
-      <Table>
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Full Name</th>
-            <th scope="col">Designation</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact, index) => (
-            <tr key={contact.id}>
-              <th scope="row">{index + 1}</th>
-              <td>{contact.full_name}</td>
-              <td>{contact.designation}</td>
-              <td>{contact.phone}</td>
-              <td className="d-flex">
-                <div className="mr-2">
-                  <FaTrashAlt size={18} />
-                </div>
-                <div>
-                  <FaEye size={18} />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Table columns={columns} data={contacts} paginationPageSize={1} totalRecords={4} fetchData={() => {}} loading={false} />
       <div className="mt-4">
         <button className="btn btn-primary" onClick={() => setModalShow(true)}>
           Add NEW CONTACT

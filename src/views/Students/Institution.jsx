@@ -60,11 +60,11 @@ const Institute = (props) => {
         >
           <Details {...rest} done={done} />
         </Collapsible>
-        <Collapsible title="Contacts">
-          <Contacts contacts={contacts} id={rest.id} done={done} />
-        </Collapsible>
         <Collapsible title="Address">
           <Address {...address} id={rest.id} done={done} />
+        </Collapsible>
+        <Collapsible title="Contacts">
+          <Contacts contacts={contacts} id={rest.id} done={done} />
         </Collapsible>
       </>
     );
