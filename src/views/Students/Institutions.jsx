@@ -142,8 +142,8 @@ const Institutions = () => {
         to: '/user/' + institution.assigned_to.id
       }}/>
       institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
-      institution.status = <Badge value={institution.status} pickList={pickList.status || {}} />
-      institution.type = <Badge value={institution.type} pickList={pickList.type || {}} />
+      institution.status = <Badge value={institution.status} pickList={pickList.status || []} />
+      institution.type = <Badge value={institution.type} pickList={pickList.type || []} />
       institution.link = <TableRowDetailLink value={institution.id} to={'institution'} />
       return institution;
     });
