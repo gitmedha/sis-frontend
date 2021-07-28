@@ -154,10 +154,10 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div className="row">
-                  {row.cells.map(cell => {
+                <div key={index} className="row">
+                  {row.cells.map((cell, cellIndex) => {
                     return (
-                      <div key={cell} className="cell">
+                      <div key={cellIndex} className="cell">
                         {cell.render('Cell')}
                       </div>
                     )
