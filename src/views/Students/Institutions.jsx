@@ -112,7 +112,7 @@ const Institutions = () => {
   }, []);
 
   useEffect(() => {
-    getInstitutionsPickList(setPickList);
+    getInstitutionsPickList().then(data => setPickList(data));
   }, [])
 
   useEffect(() => {

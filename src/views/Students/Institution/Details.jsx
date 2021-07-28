@@ -177,7 +177,9 @@ const Details = (props) => {
   };
 
   useEffect(() => {
-    getInstitutionsPickList(setPickList);
+    getInstitutionsPickList().then(data => {
+      setPickList(data);
+    });
   }, [])
 
   return (
@@ -222,7 +224,7 @@ const Details = (props) => {
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge value={type} pickList={[]} />
+          <Badge value={type} pickList={pickList.type} />
         </div>
       </div>
       <div className="row">

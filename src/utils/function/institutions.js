@@ -1,8 +1,8 @@
 import api from "../../apis";
 import { GET_PICKLIST } from "../../graphql";
 
-export const getInstitutionsPickList = async (successCallback) => {
-  await api.post("/graphql", {
+export const getInstitutionsPickList = async () => {
+  return await api.post("/graphql", {
     query: GET_PICKLIST,
     variables: {
       table: 'institutions'
@@ -13,8 +13,7 @@ export const getInstitutionsPickList = async (successCallback) => {
     data?.data?.data?.picklistFieldConfigs.forEach((item) => {
       pickList[item.field] = item.values;
     });
-    successCallback(pickList);
-    return data;
+    return pickList;
   })
   .catch(error => {
     return Promise.reject(error);

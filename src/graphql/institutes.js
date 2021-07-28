@@ -252,6 +252,7 @@ query INSTITUTION(
       phone
       status
       website
+      type
       address{
         pin_code
         state
