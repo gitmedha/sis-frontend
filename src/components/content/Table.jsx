@@ -42,7 +42,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, changeSort, paginationPageSize, totalRecords, loading }) => {
+const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -70,12 +70,8 @@ const Table = ({ columns, data, fetchData, changeSort, paginationPageSize, total
   } = tableInstance;
 
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize })
-  }, [fetchData, pageIndex, pageSize])
-
-  React.useEffect(() => {
-    changeSort(sortBy);
-  }, [changeSort, sortBy]);
+    fetchData({ pageIndex, pageSize, sortBy });
+  }, [fetchData, pageIndex, pageSize, sortBy]);
 
   return (
     <>

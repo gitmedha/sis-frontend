@@ -84,32 +84,28 @@ const Institutions = () => {
     });
   };
 
-  const fetchData = useCallback(({ pageSize, pageIndex }) => {
-    getInstitutions(pageSize, pageSize * pageIndex);
-  }, []);
-
-  const changeSort = useCallback(sort => {
-    if (sort.length) {
-      let sortBy = 'name';
-      let sortOrder = sort[0].desc === true ? 'desc' : 'asc';
-      switch (sort[0].id) {
+  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+    if (sortBy.length) {
+      let sortByField = 'name';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
         case 'status':
         case 'type':
-          sortBy = sort[0].id;
+          sortByField = sortBy[0].id;
           break;
 
         case 'assignedTo':
-          sortBy = 'assigned_to.username'
+          sortByField = 'assigned_to.username'
           break;
 
         case 'avatar':
         default:
-          sortBy = 'name';
+          sortByField = 'name';
           break;
       }
-      getInstitutions(paginationPageSize, 0, sortBy, sortOrder);
+      getInstitutions(pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getInstitutions(paginationPageSize, 0);
+      getInstitutions(pageSize, pageSize * pageIndex);
     }
   }, []);
 
@@ -140,7 +136,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} changeSort={changeSort} />
+      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} />
     </div>
   );
 };
