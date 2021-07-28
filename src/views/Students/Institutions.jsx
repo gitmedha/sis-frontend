@@ -48,6 +48,7 @@ const Institutions = () => {
       {
         Header: '',
         accessor: 'link',
+        disableSortBy: true,
       },
     ],
     []
@@ -55,7 +56,9 @@ const Institutions = () => {
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const getInstitutions = async (limit = 10, offset = 0) => {
+  const paginationPageSize = 10;
+
+  const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -65,7 +68,7 @@ const Institutions = () => {
         limit: limit,
         start: offset,
         id: 2,
-        sort: "created_at:desc",
+        sort: `${sortBy}:${sortOrder}`,
       },
     })
     .then(data => {
@@ -83,6 +86,31 @@ const Institutions = () => {
 
   const fetchData = useCallback(({ pageSize, pageIndex }) => {
     getInstitutions(pageSize, pageSize * pageIndex);
+  }, []);
+
+  const changeSort = useCallback(sort => {
+    if (sort.length) {
+      let sortBy = 'name';
+      let sortOrder = sort[0].desc === true ? 'desc' : 'asc';
+      switch (sort[0].id) {
+        case 'status':
+        case 'type':
+          sortBy = sort[0].id;
+          break;
+
+        case 'assignedTo':
+          sortBy = 'assigned_to.username'
+          break;
+
+        case 'avatar':
+        default:
+          sortBy = 'name';
+          break;
+      }
+      getInstitutions(paginationPageSize, 0, sortBy, sortOrder);
+    } else {
+      getInstitutions(paginationPageSize, 0);
+    }
   }, []);
 
   useEffect(() => {
@@ -112,7 +140,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      <Table columns={columns} data={institutionsTableData} paginationPageSize={10} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} />
+      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} changeSort={changeSort} />
     </div>
   );
 };

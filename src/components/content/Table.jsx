@@ -1,9 +1,10 @@
 // import { Table } from "react-bootstrap";
 import React from "react";
-import { useTable, usePagination } from 'react-table'
+import { useTable, usePagination, useSortBy } from 'react-table'
 import styled from 'styled-components';
 import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
+import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;
@@ -41,15 +42,17 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading }) => {
+const Table = ({ columns, data, fetchData, changeSort, paginationPageSize, totalRecords, loading }) => {
   const tableInstance = useTable(
     {
       columns,
       data,
       initialState: { pageIndex: 0, pageSize: paginationPageSize },
+      manualSortBy: true,
       manualPagination: true,
       pageCount: Math.ceil(totalRecords/paginationPageSize),
     },
+    useSortBy,
     usePagination
   );
 
@@ -63,12 +66,16 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
     gotoPage,
     nextPage,
     previousPage,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
   React.useEffect(() => {
     fetchData({ pageIndex, pageSize })
   }, [fetchData, pageIndex, pageSize])
+
+  React.useEffect(() => {
+    changeSort(sortBy);
+  }, [changeSort, sortBy]);
 
   return (
     <>
@@ -79,9 +86,15 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
               <tr {...headerGroup.getHeaderGroupProps()}>
                 <th>#</th>
                 {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>
-                    {
-                    column.render('Header')}
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? <FaLongArrowAltDown />
+                          : <FaLongArrowAltUp />
+                        : ''}
+                    </span>
                   </th>
                 ))}
               </tr>
