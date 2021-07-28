@@ -20,83 +20,29 @@ const badgeStyle = {
   justifyContent: "center",
 };
 
-const colorRenderer = (value) => {
-  const casedValue = value ? value.toLowerCase() : "";
+export const Badge = ({ value, pickList=[] }) => {
 
-  switch (casedValue) {
-    case "enrollment ongoing":
-      return {
-        color: "#0AC1B6",
-        backgroundColor: "#D2FFFC",
-      };
-    case "to be started":
-      return {
-        color: "#E9AD03",
-        backgroundColor: "#FFE69E",
-      };
-    case "in progress":
-      return {
-        color: "#A5BC18",
-        backgroundColor: "#E7FE5C",
-      };
-    case "completed":
-      return {
-        color: "#00ADEF",
-        backgroundColor: "#D6F4FF",
-      };
-    case "discontinued":
-      return {
-        color: "#F84A00",
-        backgroundColor: "#FFD2BF",
-      };
-    case "active":
-      return {
-        color: "#0EC62B",
-        backgroundColor: "#B2FFBF",
-        textTransform: "capitalize",
-      };
-    case "inactive":
-      return {
-        color: "#FF3737",
-        backgroundColor: "#FFCDCD",
-        textTransform: "capitalize",
-      };
-    case "government":
-      return {
-        color: "#3D29B6",
-        backgroundColor: "#E7E3FF",
-        textTransform: "capitalize",
-      };
-    case "iti":
-      return {
-        color: "#FCA600",
-        backgroundColor: "#FFEAC1",
-        textTransform: "capitalize",
-      };
-    case "private":
-      return {
-        color: "#62636C",
-        backgroundColor: "#DCDCDC",
-        textTransform: "capitalize",
-      };
-    default:
-      return {};
-  }
-};
-
-export const Badge = ({ value }) => {
+  const config = pickList.filter((item) => {
+    return item.value.toLowerCase() === (typeof value === 'string' ? value.toLowerCase() : value);
+  });
+  const badgeConfig = {
+    color: "#000000",
+    backgroundColor: config.length ? config[0]['highlight-color'] : '#FFFFFF',
+    text: config.length ? config[0]['value'] : '-',
+  };
   return (
-    <div
-      className="d-flex align-items-center h-100"
-    >
+    <div className="d-flex align-items-center h-100">
       <div
         className="text--sm latto-bold"
         style={{
           ...badgeStyle,
-          ...colorRenderer(value),
+          ...{
+            color: badgeConfig.color,
+            backgroundColor: badgeConfig.backgroundColor,
+          },
         }}
       >
-        {value}
+        {badgeConfig.text}
       </div>
     </div>
   );

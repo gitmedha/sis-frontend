@@ -8,7 +8,7 @@ import {
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_USER_INSTITUTES } from "../../graphql";
+import { GET_USER_INSTITUTES, GET_PICKLIST } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import React from 'react';
@@ -26,6 +26,7 @@ const Institutions = () => {
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
+  const [pickList, setPickList] = useState({});
 
   const columns = useMemo(
     () => [
@@ -57,6 +58,26 @@ const Institutions = () => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const paginationPageSize = 10;
+
+  const getInstitutionsPickList = async () => {
+    await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'institutions'
+      },
+    })
+    .then(data => {
+      let pickList = {};
+      data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+        pickList[item.field] = item.values;
+      });
+      setPickList(pickList);
+      return data;
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
+  };
 
   const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
@@ -110,6 +131,10 @@ const Institutions = () => {
   }, []);
 
   useEffect(() => {
+    getInstitutionsPickList();
+  }, [])
+
+  useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
       institution.assignedTo = <Anchor value={{
@@ -117,13 +142,13 @@ const Institutions = () => {
         to: '/user/' + institution.assigned_to.id
       }}/>
       institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
-      institution.status = <Badge value={institution.status} />
-      institution.type = <Badge value={institution.type} />
+      institution.status = <Badge value={institution.status} pickList={pickList.status || {}} />
+      institution.type = <Badge value={institution.type} pickList={pickList.type || {}} />
       institution.link = <TableRowDetailLink value={institution.id} to={'institution'} />
       return institution;
     });
     setInstitutionsTableData(data);
-  }, [institutions]);
+  }, [institutions, pickList]);
 
   return (
     <div className="container py-3">
