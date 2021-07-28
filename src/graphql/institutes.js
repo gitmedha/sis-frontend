@@ -155,7 +155,7 @@ mutation CREATE_INSTITUTIONS(
 }
 */
 
-export const UPADTE_INSTITUTIONS = `
+export const UPDATE_INSTITUTION = `
 mutation UPDATE_INSTITUTIONS(
     $data: editInstitutionInput!
     $id: ID!

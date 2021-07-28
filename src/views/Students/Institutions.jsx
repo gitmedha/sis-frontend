@@ -8,10 +8,11 @@ import {
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_USER_INSTITUTES, GET_PICKLIST } from "../../graphql";
+import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import React from 'react';
+import { getInstitutionsPickList } from "../../utils/function/institutions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -26,7 +27,7 @@ const Institutions = () => {
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
-  const [pickList, setPickList] = useState({});
+  const [pickList, setPickList] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -58,26 +59,6 @@ const Institutions = () => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const paginationPageSize = 10;
-
-  const getInstitutionsPickList = async () => {
-    await api.post("/graphql", {
-      query: GET_PICKLIST,
-      variables: {
-        table: 'institutions'
-      },
-    })
-    .then(data => {
-      let pickList = {};
-      data?.data?.data?.picklistFieldConfigs.forEach((item) => {
-        pickList[item.field] = item.values;
-      });
-      setPickList(pickList);
-      return data;
-    })
-    .catch(error => {
-      return Promise.reject(error);
-    });
-  };
 
   const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
@@ -131,7 +112,7 @@ const Institutions = () => {
   }, []);
 
   useEffect(() => {
-    getInstitutionsPickList();
+    getInstitutionsPickList(setPickList);
   }, [])
 
   useEffect(() => {

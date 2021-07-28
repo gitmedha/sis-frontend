@@ -5,7 +5,7 @@ import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
 import { Table } from "react-bootstrap";
-import { UPADTE_INSTITUTIONS } from "../../../graphql";
+import { UPDATE_INSTITUTION } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
@@ -118,7 +118,7 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
     nProgress.start();
     try {
       let resp = await queryBuilder({
-        query: UPADTE_INSTITUTIONS,
+        query: UPDATE_INSTITUTION,
         variables: {
           id,
           data: {

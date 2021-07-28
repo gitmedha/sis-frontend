@@ -5,7 +5,7 @@ import Details from "./Institution/Details";
 import Address from "./Institution/Address";
 import { GET_INSTITUTE } from "../../graphql";
 import Contacts from "./Institution/Contacts";
-import { UPADTE_INSTITUTIONS } from "../../graphql";
+import { UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -54,7 +54,7 @@ const Institute = (props) => {
               id={rest.id}
               logo={rest.logo}
               title={rest.name}
-              query={UPADTE_INSTITUTIONS}
+              query={UPDATE_INSTITUTION}
             />
           }
         >
