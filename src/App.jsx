@@ -32,8 +32,8 @@ const RouteContainer = styled.div`
 `;
 
 const App = (props) => {
-  const [isOpen, toggler] = useState(false);
-  const toggleMenu = () => toggler(!isOpen);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   const { addToast, removeAllToasts } = useToasts();
 
