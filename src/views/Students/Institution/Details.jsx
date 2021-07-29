@@ -4,7 +4,7 @@ import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
-import Badge from "../../../components/content/Badge";
+import { Badge } from "../../../components/content/Utils";
 import { UPADTE_INSTITUTIONS } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -211,13 +211,13 @@ const Details = (props) => {
         </div>
         <div className="col-md-4">
           <p className="text-heading text--md">Status</p>
-          <Badge type={status} text={status} />
+          <Badge value={status} pickList={[]} />
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge type={type} text={type} />
+          <Badge value={type} pickList={[]} />
         </div>
       </div>
       <div className="row">

@@ -1,17 +1,17 @@
 import NP from "nprogress";
 import api from "../../apis";
 import {
-  TableLink,
-  BadgeRenderer,
-  AvatarRenderer,
-  SerialNumberRenderer,
-} from "../../components/content/AgGridUtils";
-import { useState, useEffect } from "react";
+  TableRowDetailLink,
+  Badge,
+  Anchor,
+} from "../../components/content/Utils";
+import Avatar from "../../components/content/Avatar";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
-import { GET_MY_INSTITUTES } from "../../graphql";
-import { AgGridColumn, AgGridReact } from "ag-grid-react";
+import { GET_USER_INSTITUTES, GET_PICKLIST } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
+import Table from '../../components/content/Table';
+import React from 'react';
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -20,48 +20,135 @@ const tabPickerOptions = [
   { title: "All Area", key: "test-4" },
 ];
 
-const cellStyle = {
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "column",
-  justifyContent: "center",
-  fontFamily: "Latto-Regular",
-};
-
 const Institutions = () => {
   const history = useHistory();
-  const [isLoading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
+  const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
+  const [institutionsTableData, setInstitutionsTableData] = useState([]);
+  const [pickList, setPickList] = useState({});
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'avatar',
+      },
+      {
+        Header: 'Assigned To',
+        accessor: 'assignedTo',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
+        Header: 'Type',
+        accessor: 'type',
+      },
+      {
+        Header: '',
+        accessor: 'link',
+        disableSortBy: true,
+      },
+    ],
+    []
+  );
+
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  useEffect(() => {}, [activeTab]);
+  const paginationPageSize = 10;
 
-  const getAllInstitutes = async () => {
-    setLoading(true);
-    NP.start();
-    try {
-      let { data } = await api.post("/graphql", {
-        query: GET_MY_INSTITUTES,
-        variables: {
-          limit: 10,
-          // id: user.id,
-          id: 2,
-          sort: "created_at:desc",
-        },
+  const getInstitutionsPickList = async () => {
+    await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'institutions'
+      },
+    })
+    .then(data => {
+      let pickList = {};
+      data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+        pickList[item.field] = item.values;
       });
-      console.log("DATA", data);
-      setInstitutions(data.data.institutions);
-    } catch (err) {
-      console.log("INSTITUTIONS", err);
-    } finally {
-      setLoading(false);
-      NP.done();
-    }
+      setPickList(pickList);
+      return data;
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    });
   };
 
-  useEffect(() => {
-    getAllInstitutes();
+  const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+    NP.start();
+    setLoading(true);
+    await api.post("/graphql", {
+      query: GET_USER_INSTITUTES,
+      variables: {
+        // id: user.id,
+        limit: limit,
+        start: offset,
+        id: 2,
+        sort: `${sortBy}:${sortOrder}`,
+      },
+    })
+    .then(data => {
+      setInstitutions(data?.data?.data?.institutionsConnection.values);
+      setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      NP.done();
+    });
+  };
+
+  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+    if (sortBy.length) {
+      let sortByField = 'name';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'status':
+        case 'type':
+          sortByField = sortBy[0].id;
+          break;
+
+        case 'assignedTo':
+          sortByField = 'assigned_to.username'
+          break;
+
+        case 'avatar':
+        default:
+          sortByField = 'name';
+          break;
+      }
+      getInstitutions(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+    } else {
+      getInstitutions(pageSize, pageSize * pageIndex);
+    }
   }, []);
+
+  useEffect(() => {
+    getInstitutionsPickList();
+  }, [])
+
+  useEffect(() => {
+    let data = institutions;
+    data = data.map((institution, index) => {
+      institution.assignedTo = <Anchor value={{
+        text: institution.assigned_to.username,
+        to: '/user/' + institution.assigned_to.id
+      }}/>
+      institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
+      institution.status = <Badge value={institution.status} pickList={pickList.status || []} />
+      institution.type = <Badge value={institution.type} pickList={pickList.type || []} />
+      institution.link = <TableRowDetailLink value={institution.id} to={'institution'} />
+      return institution;
+    });
+    setInstitutionsTableData(data);
+  }, [institutions, pickList]);
 
   return (
     <div className="container py-3">
@@ -74,68 +161,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      {!isLoading ? (
-        <div
-          className="ag-theme-alpine"
-          style={{ height: "50vh", width: "100%" }}
-        >
-          <AgGridReact
-            rowHeight={80}
-            rowData={institutions}
-            frameworkComponents={{
-              link: TableLink,
-              sno: SerialNumberRenderer,
-              badgeRenderer: BadgeRenderer,
-              avatarRenderer: AvatarRenderer,
-            }}
-          >
-            <AgGridColumn
-              sortable
-              field="name"
-              width={100}
-              cellRenderer="sno"
-              headerName="S. No."
-              cellStyle={cellStyle}
-            />
-            <AgGridColumn
-              sortable
-              width={300}
-              field="name"
-              headerName="Name"
-              cellRenderer="avatarRenderer"
-            />
-            <AgGridColumn
-              sortable
-              width={300}
-              cellStyle={cellStyle}
-              headerName="Assingned To"
-              field="assigned_to.username"
-            />
-            <AgGridColumn
-              sortable
-              width={240}
-              field="status"
-              headerName="Status"
-              cellRenderer="badgeRenderer"
-            />
-            <AgGridColumn
-              sortable
-              field="type"
-              headerName="Type"
-              cellRenderer="badgeRenderer"
-            />
-            <AgGridColumn
-              field="id"
-              width={70}
-              headerName=""
-              cellRenderer="link"
-              cellRendererParams={{ to: "institution" }}
-            />
-          </AgGridReact>
-        </div>
-      ) : (
-        <Skeleton count={3} height={50} />
-      )}
+      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} />
     </div>
   );
 };

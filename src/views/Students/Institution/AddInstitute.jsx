@@ -82,7 +82,7 @@ const AddNewInstitute = ({ setAlert }) => {
         variables: { ...payload, contacts },
       });
       console.log(resp);
-      setAlert("Instituion addedd successfully.", "success");
+      setAlert("Institution added successfully.", "success");
     } catch (err) {
       console.log("ERR_ADD", err);
       setAlert("Unable to add instituion.", "error");

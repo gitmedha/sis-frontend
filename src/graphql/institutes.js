@@ -5,7 +5,7 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
     start: $start
     limit: $limit
     where: {
-      assigned_to: { 
+      assigned_to: {
         id: $id
       }
     }
@@ -30,41 +30,43 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
 }
 `;
 
-export const GET_MY_INSTITUTE = `
+export const GET_USER_INSTITUTES = `
 query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
-  institutions(
+  institutionsConnection(
     sort: $sort
     start: $start
     limit: $limit
     where: {
-      assigned_to: { 
+      assigned_to: {
         id: $id
       }
     }
   ) {
-    id
-    name
-    contacts{
+    values {
       id
-      email
-      phone
-      full_name
-      designation
+      name
+      contacts{
+        id
+        email
+        phone
+        full_name
+        designation
+      }
+      logo{
+        url
+      }
+      assigned_to{
+        id
+        username
+        email
+      }
+      status
+      type
+      created_at
     }
-    logo{
-      url
+    aggregate {
+      count
     }
-    assigned_to{
-      id
-      username
-    }
-    status
-    assigned_to {
-      id
-      email
-    }
-    type
-    created_at
   }
 }
 `;
@@ -198,8 +200,8 @@ mutation UPDATE_INSTITUTIONS(
     "status": "active",
     assigned_to: 4,
     "contacts": [
-      { 
-        "first_name": "Narendra", 
+      {
+        "first_name": "Narendra",
         "last_name": "Maurya",
         "email": "mauryanarendra09@gmail.com",
         "phone": "6360535414",
@@ -230,7 +232,7 @@ mutation DELETE_INSTITUTION(
         id
       }
     }
-}  
+}
 `;
 /**
  * SAMPLE PLAYLOAD TO DELETE AN INSTITUTE
@@ -271,7 +273,7 @@ query INSTITUTION(
         designation
       }
     }
-}  
+}
 `;
 /**
  * SAMPLE PLAYLOAD TO AN INSTITUTE DETAILS
