@@ -112,10 +112,10 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
   const [modalShow, setModalShow] = useState(false);
 
   contacts = contacts.map((contact) => {
-    contact.email = <Anchor text={contact.email} href={'mailto:' + contact.email} />
+    contact.email_id = <Anchor text={contact.email} href={'mailto:' + contact.email} />;
     contact.actions = <div className="d-flex">
       <FaPen size={18} style={{cursor: 'pointer'}} />
-    </div>
+    </div>;
     return contact;
   });
 
@@ -158,7 +158,7 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
       },
       {
         Header: 'Email',
-        accessor: 'email',
+        accessor: 'email_id',
       },
       {
         Header: 'Phone',
@@ -175,7 +175,7 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
 
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={contacts} paginationPageSize={1} totalRecords={contacts.length} fetchData={() => {}} loading={false} />
+      <Table columns={columns} data={contacts} paginationPageSize={contacts.length} totalRecords={contacts.length} fetchData={() => {}} loading={false} />
       <div className="mt-4">
         <button className="btn btn-primary" onClick={() => setModalShow(true)}>
           Add NEW CONTACT
