@@ -184,8 +184,8 @@ export const TextRenderer = ({ value }) => {
     return <div className="h-100 d-flex align-items-center"><p className="mb-0">{ value }</p></div>;
 };
 
-export const Anchor = ({ value }) => {
-    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0" style={{color: '#00ADEF'}}>{ value.text }</a></div>;
+export const Anchor = ({ text, href }) => {
+    return <div className="h-100 d-flex align-items-center"><a href={href} className="mb-0" style={{color: '#00ADEF'}}>{ text }</a></div>;
 };
 
 export const ProgressRenderer = ({ value }) => (

@@ -3,13 +3,14 @@ import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { Form, Input } from "../../../utils/Form";
 import { queryBuilder } from "./instituteActions";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 import { Table as BTable } from "react-bootstrap";
 import Table from "../../../components/content/Table";
 import { UPDATE_INSTITUTION } from "../../../graphql";
 import { ContactValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
+import { Anchor } from "../../../components/content/Utils";
 
 const AddContactModal = (props) => {
   let { onHide, show } = props;
@@ -111,9 +112,9 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
   const [modalShow, setModalShow] = useState(false);
 
   contacts = contacts.map((contact) => {
+    contact.email = <Anchor text={contact.email} href={'mailto:' + contact.email} />
     contact.actions = <div className="d-flex">
-      <FaEye size={18} style={{cursor: 'pointer'}} />
-      <FaTrashAlt size={18} style={{marginLeft: '10px', cursor: 'pointer'}} />
+      <FaPen size={18} style={{cursor: 'pointer'}} />
     </div>
     return contact;
   });
@@ -156,11 +157,15 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
         accessor: 'designation',
       },
       {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
         Header: 'Phone',
         accessor: 'phone',
       },
       {
-        Header: 'Actions',
+        Header: '',
         accessor: 'actions',
         disableSortBy: true,
       },

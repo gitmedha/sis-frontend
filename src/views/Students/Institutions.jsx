@@ -118,10 +118,7 @@ const Institutions = () => {
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
-      institution.assignedTo = <Anchor value={{
-        text: institution.assigned_to.username,
-        to: '/user/' + institution.assigned_to.id
-      }}/>
+      institution.assignedTo = <Anchor text={institution.assigned_to.username} href={'/user/' + institution.assigned_to.id} />
       institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
       institution.status = <Badge value={institution.status} pickList={pickList.status || []} />
       institution.type = <Badge value={institution.type} pickList={pickList.type || []} />
