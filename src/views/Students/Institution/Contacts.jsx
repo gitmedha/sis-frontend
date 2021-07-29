@@ -170,7 +170,7 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
 
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={contacts} paginationPageSize={1} totalRecords={4} fetchData={() => {}} loading={false} />
+      <Table columns={columns} data={contacts} paginationPageSize={1} totalRecords={contacts.length} fetchData={() => {}} loading={false} />
       <div className="mt-4">
         <button className="btn btn-primary" onClick={() => setModalShow(true)}>
           Add NEW CONTACT

@@ -28,7 +28,7 @@ export const Badge = ({ value, pickList=[] }) => {
   const badgeConfig = {
     color: "#000000",
     backgroundColor: config.length ? config[0]['highlight-color'] : '#FFFFFF',
-    text: config.length ? config[0]['value'] : '-',
+    text: config.length ? config[0]['value'] : value,
   };
   return (
     <div className="d-flex align-items-center h-100">
