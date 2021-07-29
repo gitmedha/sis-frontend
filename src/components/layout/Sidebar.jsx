@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from "styled-components";
 import { MdDashboard } from "react-icons/md";
 import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
@@ -15,10 +14,6 @@ const iconProps = {
   size: 24,
   style: { iconStyle },
 };
-const childIconProps = {
-    size: 10,
-    style: { iconStyle },
-  };
 
 const routes = [
   {
