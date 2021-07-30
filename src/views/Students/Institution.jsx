@@ -24,10 +24,10 @@ const UpdateInstituteDetails = (props) => {
   let { onHide, show } = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
+  const [instituteContacts, setInstituteContacts] = useState(props.contacts || []);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
-      console.log('data', data);
       setInstitutionTypeOpts(data.type.map((item) => {
         return {
           key: item.value,
@@ -44,6 +44,24 @@ const UpdateInstituteDetails = (props) => {
   }, []);
 
   const onSubmit = (data) => onHide(data);
+
+  const addContact = () => {
+    const newContact = {
+      name: "",
+      email: "",
+      phone: "",
+      type: "",
+    };
+    setInstituteContacts([
+      ...instituteContacts,
+      newContact,
+    ]);
+  }
+
+  const deleteContact = (index) => {
+    instituteContacts.splice(index, 1);
+    setInstituteContacts([...instituteContacts]);
+  }
 
   const Section = styled.div`
     padding-top: 30px;
@@ -74,7 +92,7 @@ const UpdateInstituteDetails = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
     >
-      <Modal.Header className="bg-light">
+      <Modal.Header className="bg-modal">
         <Modal.Title
           id="contained-modal-title-vcenter"
           className="text--primary latto-bold"
@@ -82,7 +100,7 @@ const UpdateInstituteDetails = (props) => {
           Update Institute
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-light">
+      <Modal.Body className="bg-modal">
         <Form
           onSubmit={onSubmit}
           initialValues={props}
@@ -191,7 +209,7 @@ const UpdateInstituteDetails = (props) => {
           </Section>
           <Section>
             <h3 className="section-header">Contacts</h3>
-            {props.contacts && props.contacts.length && props.contacts.map((contact, index) => (
+            {instituteContacts.length && instituteContacts.map((contact, index) => (
               <div key={index} className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded">
                 <div className="col-md-6 col-sm-12 mb-2">
                   <Input
@@ -229,8 +247,18 @@ const UpdateInstituteDetails = (props) => {
                     placeholder="Designation"
                   />
                 </div>
+                <div className="col-md-6 col-sm-12 mb-2">
+                  <button className="btn btn-danger btn-sm" onClick={() => deleteContact(index)}>
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
+            <div className="mt-2">
+              <button className="btn btn-primary btn-sm" onClick={() => addContact()}>
+                Add Contact
+              </button>
+            </div>
           </Section>
           <div className="row mt-3 py-3">
             <div className="d-flex justify-content-end">
@@ -269,11 +297,17 @@ const Institute = (props) => {
       return;
     }
 
+    console.log('before Quering');
     const id = data['id'];
-    delete data["id"];
-    delete data["show"];
+    console.log('data id', data['id']);
+    console.log(typeof data);
+
+    delete data['id'];
+    delete data['show'];
     delete data["logo"];
     delete data["assigned_to"];
+
+    console.log('Quering');
 
     nProgress.start();
     try {
