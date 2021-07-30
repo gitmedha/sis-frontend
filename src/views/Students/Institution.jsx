@@ -48,8 +48,9 @@ const UpdateInstituteDetails = (props) => {
       font-family: 'Latto-Regular';
       font-style: normal;
       font-weight: bold;
-      font-size: 18px;
-      line-height: 22px;
+      font-size: 14px;
+      line-height: 18px;
+      margin-bottom: 15px;
     }
   `;
 
@@ -80,7 +81,7 @@ const UpdateInstituteDetails = (props) => {
           <Section>
             <h3 className="section-header">Details</h3>
             <div className="row">
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="name"
                   label="Name"
@@ -89,7 +90,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="phone"
                   label="Phone"
@@ -98,7 +99,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   type="email"
                   name="email"
@@ -108,7 +109,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="website"
                   control="input"
@@ -117,7 +118,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="status"
                   label="Status"
@@ -126,7 +127,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="type"
                   label="Type"
@@ -140,7 +141,7 @@ const UpdateInstituteDetails = (props) => {
           <Section>
             <h3 className="section-header">Address</h3>
             <div className="row">
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   control="input"
                   label="Address"
@@ -149,7 +150,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   name="address[state]"
                   label="State"
@@ -158,7 +159,7 @@ const UpdateInstituteDetails = (props) => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   control="input"
                   name="address[medha_area]"
@@ -167,7 +168,7 @@ const UpdateInstituteDetails = (props) => {
                   placeholder="Medha Area"
                 />
               </div>
-              <div className="col-md-6 col-sm-12 mt-2">
+              <div className="col-md-6 col-sm-12 mb-2">
                 <Input
                   control="input"
                   name="address[pin_code]"
@@ -181,8 +182,8 @@ const UpdateInstituteDetails = (props) => {
           <Section>
             <h3 className="section-header">Contacts</h3>
             {props.contacts && props.contacts.length && props.contacts.map((contact, index) => (
-              <div key={index} className="row mb-4">
-                <div className="col-md-6 col-sm-12 mt-2">
+              <div key={index} className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded">
+                <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                     control="input"
                     name={`contacts[${index}][full_name]`}
@@ -191,7 +192,7 @@ const UpdateInstituteDetails = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="col-md-6 col-sm-12 mt-2">
+                <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                     name={`contacts[${index}][email]`}
                     label="Email"
@@ -200,7 +201,7 @@ const UpdateInstituteDetails = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="col-md-6 col-sm-12 mt-2">
+                <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                     name={`contacts[${index}][phone]`}
                     control="input"
@@ -209,7 +210,7 @@ const UpdateInstituteDetails = (props) => {
                     placeholder="Phone Number"
                   />
                 </div>
-                <div className="col-md-6 col-sm-12 mt-2">
+                <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                     name={`contacts[${index}][designation]`}
                     control="input"
