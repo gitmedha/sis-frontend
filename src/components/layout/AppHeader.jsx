@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
 import Userbox from "./Userbox";
+import SearchBar from "./Search/SearchBar";
 
 const AppHeader = styled.div`
   z-index: 3;
   width: 100%;
   display: flex;
-  positon: sticky;
+  position: sticky;
   padding-left: 15px;
   padding-right: 15px;
   align-items: center;
@@ -19,6 +20,7 @@ const AppHeader = styled.div`
 const Header = ({ isOpen, toggleMenu }) => {
   return (
     <AppHeader>
+      <SearchBar />
       <Userbox />
     </AppHeader>
   );
