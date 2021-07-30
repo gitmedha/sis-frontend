@@ -24,7 +24,7 @@ const MenuItem = (props) => {
         isActive={() => isActiveFirstLevel}
         activeClassName="sidebar-link-active"
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
-        onClick={() => props.setActiveFirstLevel(props.title)}
+        onClick={() => props.menuItemClickHandler(props.title)}
       >
         <div className="d-flex align-items-center w-100 justify-content-start">
           <div data-tip={isOpen ? '' : props.title}>
@@ -61,7 +61,7 @@ const MenuItem = (props) => {
               }}
               activeClassName="sidebar-link-active"
               activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
-              onClick={() => props.setActiveFirstLevel(props.title)}
+              onClick={() => props.menuItemClickHandler(props.title)}
             >
               <div className={`d-flex align-items-center w-100 justify-content-start`}>
                 {isOpen && child.icon}
