@@ -11,7 +11,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 
 import { Modal } from "react-bootstrap";
-import { Form, Input } from "../../utils/Form";
+import { Input } from "../../utils/Form";
 import { InstituteValidations } from "../../validations";
 import nProgress from "nprogress";
 import { queryBuilder } from "./Institution/instituteActions";
@@ -19,12 +19,31 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { getInstitutionsPickList } from "./Institution/instituteActions";
+import { Formik, FieldArray, Form } from 'formik';
+
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #C4C4C4;
+  }
+
+  .section-header {
+    color: #207B69;
+    font-family: 'Latto-Regular';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
 
 const UpdateInstituteDetails = (props) => {
   let { onHide, show } = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
-  const [instituteContacts, setInstituteContacts] = useState(props.contacts || []);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -43,44 +62,9 @@ const UpdateInstituteDetails = (props) => {
     });
   }, []);
 
-  const onSubmit = (data) => onHide(data);
-
-  const addContact = () => {
-    const newContact = {
-      name: "",
-      email: "",
-      phone: "",
-      type: "",
-    };
-    setInstituteContacts([
-      ...instituteContacts,
-      newContact,
-    ]);
-  }
-
-  const deleteContact = (index) => {
-    instituteContacts.splice(index, 1);
-    setInstituteContacts([...instituteContacts]);
-  }
-
-  const Section = styled.div`
-    padding-top: 30px;
-    padding-bottom: 30px;
-
-    &:not(:first-child) {
-      border-top: 1px solid #C4C4C4;
-    }
-
-    .section-header {
-      color: #207B69;
-      font-family: 'Latto-Regular';
-      font-style: normal;
-      font-weight: bold;
-      font-size: 14px;
-      line-height: 18px;
-      margin-bottom: 15px;
-    }
-  `;
+  const onSubmit = async (values) => {
+    onHide(values);
+  };
 
   return (
     <Modal
@@ -101,181 +85,198 @@ const UpdateInstituteDetails = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-modal">
-        <Form
+        <Formik
           onSubmit={onSubmit}
           initialValues={props}
           validationSchema={InstituteValidations}
         >
-          <Section>
-            <h3 className="section-header">Details</h3>
-            <div className="row">
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="name"
-                  label="Name"
-                  control="input"
-                  placeholder="Name"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="phone"
-                  label="Phone"
-                  control="input"
-                  placeholder="Phone"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  type="email"
-                  name="email"
-                  label="Email"
-                  control="input"
-                  placeholder="Email"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="website"
-                  control="input"
-                  label="Website"
-                  placeholder="Website"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="status"
-                  label="Status"
-                  control="radio"
-                  options={statusOpts}
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="type"
-                  label="Type"
-                  control="radio"
-                  className="form-control"
-                  options={institutionTypeOpts}
-                />
-              </div>
-            </div>
-          </Section>
-          <Section>
-            <h3 className="section-header">Address</h3>
-            <div className="row">
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  control="input"
-                  label="Address"
-                  name="address[address_line]"
-                  placeholder="Address"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  name="address[state]"
-                  label="State"
-                  control="input"
-                  placeholder="State"
-                  className="form-control"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  control="input"
-                  name="address[medha_area]"
-                  label="Medha Area"
-                  className="form-control"
-                  placeholder="Medha Area"
-                />
-              </div>
-              <div className="col-md-6 col-sm-12 mb-2">
-                <Input
-                  control="input"
-                  name="address[pin_code]"
-                  label="Pin Code"
-                  placeholder="Pin Code"
-                  className="form-control"
-                />
-              </div>
-            </div>
-          </Section>
-          <Section>
-            <h3 className="section-header">Contacts</h3>
-            {instituteContacts.length && instituteContacts.map((contact, index) => (
-              <div key={index} className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded">
-                <div className="col-md-6 col-sm-12 mb-2">
-                  <Input
-                    control="input"
-                    name={`contacts[${index}][full_name]`}
-                    label="Name"
-                    placeholder="Name"
-                    className="form-control"
-                  />
+          {({ values }) => (
+            <Form>
+              <Section>
+                <h3 className="section-header">Details</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="name"
+                      label="Name"
+                      control="input"
+                      placeholder="Name"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="phone"
+                      label="Phone"
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      type="email"
+                      name="email"
+                      label="Email"
+                      control="input"
+                      placeholder="Email"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="website"
+                      control="input"
+                      label="Website"
+                      placeholder="Website"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      control="radio"
+                      options={statusOpts}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="type"
+                      label="Type"
+                      control="radio"
+                      className="form-control"
+                      options={institutionTypeOpts}
+                    />
+                  </div>
                 </div>
-                <div className="col-md-6 col-sm-12 mb-2">
-                  <Input
-                    name={`contacts[${index}][email]`}
-                    label="Email"
-                    control="input"
-                    placeholder="Email"
-                    className="form-control"
-                  />
+              </Section>
+              <Section>
+                <h3 className="section-header">Address</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      label="Address"
+                      name="address[address_line]"
+                      placeholder="Address"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="address[state]"
+                      label="State"
+                      control="input"
+                      placeholder="State"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="address[medha_area]"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="address[pin_code]"
+                      label="Pin Code"
+                      placeholder="Pin Code"
+                      className="form-control"
+                    />
+                  </div>
                 </div>
-                <div className="col-md-6 col-sm-12 mb-2">
-                  <Input
-                    name={`contacts[${index}][phone]`}
-                    control="input"
-                    label="Phone Number"
-                    className="form-control"
-                    placeholder="Phone Number"
-                  />
-                </div>
-                <div className="col-md-6 col-sm-12 mb-2">
-                  <Input
-                    name={`contacts[${index}][designation]`}
-                    control="input"
-                    label="Designation"
-                    className="form-control"
-                    placeholder="Designation"
-                  />
-                </div>
-                <div className="col-md-6 col-sm-12 mb-2">
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteContact(index)}>
-                    Remove
+              </Section>
+              <Section>
+                <h3 className="section-header">Contacts</h3>
+                <FieldArray name="contacts">
+                  {({ insert, remove, push }) => (
+                    <div>
+                      {values.contacts && values.contacts.length > 0 && values.contacts.map((contact, index) => (
+                        <div key={index} className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded">
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              control="input"
+                              name={`contacts.${index}.full_name`}
+                              label="Name"
+                              placeholder="Name"
+                              className="form-control"
+                            />
+                          </div>
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              name={`contacts.${index}.email`}
+                              label="Email"
+                              control="input"
+                              placeholder="Email"
+                              className="form-control"
+                            />
+                          </div>
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              name={`contacts.${index}.phone`}
+                              control="input"
+                              label="Phone Number"
+                              className="form-control"
+                              placeholder="Phone Number"
+                            />
+                          </div>
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              name={`contacts.${index}.designation`}
+                              control="input"
+                              label="Designation"
+                              className="form-control"
+                              placeholder="Designation"
+                            />
+                          </div>
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <button className="btn btn-danger btn-sm" type="button" onClick={() => remove(index)}>
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="mt-2">
+                        <button className="btn btn-primary btn-sm" type="button" onClick={() => {
+                          push({
+                            full_name: "",
+                            email: "",
+                            phone: "",
+                            designation: "",
+                          })
+                        }}>
+                          Add Contact
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </FieldArray>
+              </Section>
+              <div className="row mt-3 py-3">
+                <div className="d-flex justify-content-end">
+                  <button
+                    type="button"
+                    onClick={onHide}
+                    className="btn btn-secondary btn-regular mr-2"
+                  >
+                    CLOSE
+                  </button>
+                  <div style={{ width: "20px" }} />
+                  <button className="btn btn-primary btn-regular" type="submit">
+                    UPDATE INSTITUTION
                   </button>
                 </div>
               </div>
-            ))}
-            <div className="mt-2">
-              <button className="btn btn-primary btn-sm" onClick={() => addContact()}>
-                Add Contact
-              </button>
-            </div>
-          </Section>
-          <div className="row mt-3 py-3">
-            <div className="d-flex justify-content-end">
-              <button
-                type="button"
-                onClick={onHide}
-                className="btn btn-secondary btn-regular mr-2"
-              >
-                CLOSE
-              </button>
-              <div style={{ width: "20px" }} />
-              <button className="btn btn-primary btn-regular" type="submit">
-                UPDATE INSTITUTION
-              </button>
-            </div>
-          </div>
-        </Form>
+            </Form>
+          )}
+        </Formik>
       </Modal.Body>
     </Modal>
   );
@@ -297,17 +298,8 @@ const Institute = (props) => {
       return;
     }
 
-    console.log('before Quering');
-    const id = data['id'];
-    console.log('data id', data['id']);
-    console.log(typeof data);
-
-    delete data['id'];
-    delete data['show'];
-    delete data["logo"];
-    delete data["assigned_to"];
-
-    console.log('Quering');
+    // need to remove id, show, logo, assigned_to from the payload
+    let {id, show, logo, assigned_to, ...dataToSave} = data;
 
     nProgress.start();
     try {
@@ -315,13 +307,13 @@ const Institute = (props) => {
         query: UPDATE_INSTITUTION,
         variables: {
           id: Number(id),
-          data,
+          data: dataToSave,
         },
       });
-      setAlert("Institution details updated successfully.", "success");
+      setAlert("Institution updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
-      setAlert("Unable to update instition details.", "error");
+      setAlert("Unable to update institution.", "error");
     } finally {
       nProgress.done();
       done();
