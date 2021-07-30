@@ -18,22 +18,32 @@ import { queryBuilder } from "./Institution/instituteActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { getInstitutionsPickList } from "./Institution/instituteActions";
 
 const UpdateInstituteDetails = (props) => {
   let { onHide, show } = props;
+  const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
+  const [statusOpts, setStatusOpts] = useState([]);
 
-  const institutionTypeOpts = [
-    { key: "Private", value: "private" },
-    { key: "Government", value: "government" },
-    { key: "ITI", value: "iti" },
-  ];
+  useEffect(() => {
+    getInstitutionsPickList().then(data => {
+      console.log('data', data);
+      setInstitutionTypeOpts(data.type.map((item) => {
+        return {
+          key: item.value,
+          value: item.value,
+        };
+      }));
+      setStatusOpts(data.status.map((item) => {
+        return {
+          key: item.value,
+          value: item.value,
+        };
+      }));
+    });
+  }, []);
 
   const onSubmit = (data) => onHide(data);
-
-  const statusOpts = [
-    { key: "Active", value: "active" },
-    { key: "Inactive", value: "inactive" },
-  ];
 
   const Section = styled.div`
     padding-top: 30px;

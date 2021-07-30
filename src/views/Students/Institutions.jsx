@@ -12,7 +12,7 @@ import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import React from 'react';
-import { getInstitutionsPickList } from "../../utils/function/institutions";
+import { getInstitutionsPickList } from "./Institution/instituteActions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },

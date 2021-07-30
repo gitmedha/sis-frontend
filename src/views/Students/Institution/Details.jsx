@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Badge } from "../../../components/content/Utils";
-import { getInstitutionsPickList } from "../../../utils/function/institutions";
+import { getInstitutionsPickList } from "./instituteActions";
 import DetailField from "../../../components/content/DetailField";
 
 const Details = (props) => {

@@ -12,7 +12,7 @@ const Radio = (props) => {
         <Field name={name} {...rest}>
           {({ field }) => {
             return options.map((opt) => (
-              <div className="custom-control custom-radio mr-4" key={opt.key}>
+              <div className="custom-control custom-radio mr-3" key={opt.key}>
                 <input
                   {...field}
                   type="radio"
@@ -23,7 +23,7 @@ const Radio = (props) => {
                 />
                 <label
                   htmlFor={opt.value}
-                  className="px-5 pt-1 custom-control-label text--md"
+                  className="custom-control-label text--md pt-1"
                 >
                   {opt.key}
                 </label>
