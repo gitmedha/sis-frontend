@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
-import { UPADTE_INSTITUTIONS } from "../../../graphql";
+import { UPDATE_INSTITUTION } from "../../../graphql";
 import { AddressValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 
@@ -115,7 +115,7 @@ const Address = ({
     np.start();
     try {
       await queryBuilder({
-        query: UPADTE_INSTITUTIONS,
+        query: UPDATE_INSTITUTION,
         variables: {
           id,
           data: {

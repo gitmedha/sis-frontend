@@ -155,7 +155,7 @@ mutation CREATE_INSTITUTIONS(
 }
 */
 
-export const UPADTE_INSTITUTIONS = `
+export const UPDATE_INSTITUTION = `
 mutation UPDATE_INSTITUTIONS(
     $data: editInstitutionInput!
     $id: ID!
@@ -252,6 +252,7 @@ query INSTITUTION(
       phone
       status
       website
+      type
       address{
         pin_code
         state
