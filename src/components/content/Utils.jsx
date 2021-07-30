@@ -26,7 +26,7 @@ export const Badge = ({ value, pickList=[] }) => {
     return item.value.toLowerCase() === (typeof value === 'string' ? value.toLowerCase() : value);
   });
   const badgeConfig = {
-    color: "#000000",
+    color: config.length ? config[0]['text-color'] : '#000000',
     backgroundColor: config.length ? config[0]['highlight-color'] : '#FFFFFF',
     text: config.length ? config[0]['value'] : '-',
   };
