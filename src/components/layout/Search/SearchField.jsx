@@ -34,8 +34,6 @@ const SearchField = ({ currentRefinement, isSearchStalled, refine }) => (
         value={currentRefinement}
         onChange={event => refine(event.currentTarget.value)}
       />
-      {/* <button onClick={() => refine('')}>Reset</button> */}
-      {/* {isSearchStalled ? 'Loading...' : ''} */}
     </form>
   </SearchInput>
 );
