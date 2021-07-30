@@ -11,7 +11,6 @@ import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES, GET_PICKLIST } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
-import React from 'react';
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -150,6 +149,10 @@ const Institutions = () => {
     setInstitutionsTableData(data);
   }, [institutions, pickList]);
 
+  const onRowClick = (row) => {
+    history.push(`/institution/${row.id}`)
+  }
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -161,7 +164,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} />
+      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
     </div>
   );
 };

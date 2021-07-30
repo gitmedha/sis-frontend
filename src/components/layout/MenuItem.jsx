@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { NavHashLink as NavLink } from 'react-router-hash-link';
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {BsChevronDown, BsChevronRight} from 'react-icons/bs';
+import { useLocation } from 'react-router-dom';
 
 const MenuEl = styled.div`
   overflow: hidden;
@@ -10,10 +11,28 @@ const MenuEl = styled.div`
 `;
 
 const MenuItem = (props) => {
-  const { icon, to, title, isOpen } = props;
-  const isActiveFirstLevel = window.location.pathname === to || props.activeFirstLevel === props.title;
+  const location = useLocation();
+
+  const { icon, to, title, isOpen, aliases=[] } = props;
+  const [isActiveFirstLevel, setIsActiveFirstLevel] = useState(location.pathname === to || props.activeFirstLevel === props.title);
   const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveFirstLevel);
   const showSubMenuIcon = isOpen && props.children?.length;
+
+  useEffect(() => {
+    if (location.pathname === to) {
+      setIsActiveFirstLevel(true);
+    } else if (aliases.length) {
+      let aliasMatched = false;
+      aliases.forEach(alias => {
+        if (location.pathname.includes(alias)) {
+          aliasMatched = true;
+        }
+      });
+      setIsActiveFirstLevel(aliasMatched);
+    } else {
+      setIsActiveFirstLevel(false);
+    }
+  }, [location, to, aliases])
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">

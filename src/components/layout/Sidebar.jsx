@@ -34,11 +34,13 @@ const routes = [
   {
     to: "/institutions",
     title: "Institutions",
+    aliases: ['institution'],
     icon: <FaSchool {...iconProps} />
   },
   {
     to: "/batches",
     title: "Batches",
+    aliases: ['batch'],
     icon: <FaChalkboardTeacher {...iconProps} />,
   },
   {
