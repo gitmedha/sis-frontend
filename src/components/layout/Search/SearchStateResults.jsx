@@ -13,7 +13,6 @@ const SearchStateResults = (props) => {
       <div hidden={!hasResults || !hasQuery}>
         <SearchHits hitComponent={Hit} />
       </div>
-      <div hidden={hasResults}>There is no results</div>
     </div>
   );
 };

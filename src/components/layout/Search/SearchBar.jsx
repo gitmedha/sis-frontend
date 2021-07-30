@@ -18,7 +18,7 @@ const SearchContainer = styled.div`
 const SearchBar = () => (
   <SearchContainer className="mr-auto">
     <InstantSearch
-      indexName="steam-video-games"
+      indexName="sis-medha"
       searchClient={searchClient}
     >
       <SearchField />
