@@ -35,10 +35,10 @@ const Institute = (props) => {
   const done = () => getThisInstitute();
 
   const { address, contacts, ...rest } = instituteData;
+  console.log('instituteData', instituteData);
 
   useEffect(() => {
     getThisInstitute();
-    // eslint-disable-next-line
   }, []);
 
   if (isLoading) {
@@ -58,7 +58,7 @@ const Institute = (props) => {
             />
           }
         >
-          <Details {...rest} done={done} />
+          <Details {...instituteData} done={done} />
         </Collapsible>
         <Collapsible title="Address">
           <Address {...address} id={rest.id} done={done} />

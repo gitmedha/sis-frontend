@@ -9,9 +9,11 @@ import { UPDATE_INSTITUTION } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { getInstitutionsPickList } from "../../../utils/function/institutions";
+import styled from "styled-components";
 
 const UpdateInstituteDetails = (props) => {
-  let { onHide, show, logo, id, ...rest } = props;
+  console.log('all values', props);
+  let { onHide, show } = props;
 
   const institutionTypeOpts = [
     { key: "Private", value: "private" },
@@ -26,6 +28,24 @@ const UpdateInstituteDetails = (props) => {
     { key: "Inactive", value: "inactive" },
   ];
 
+  const Section = styled.div`
+    padding-top: 30px;
+    padding-bottom: 30px;
+
+    &:not(:first-child) {
+      border-top: 1px solid #C4C4C4;
+    }
+
+    .section-header {
+      color: #207B69;
+      font-family: 'Latto-Regular';
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 22px;
+    }
+  `;
+
   return (
     <Modal
       centered
@@ -34,6 +54,7 @@ const UpdateInstituteDetails = (props) => {
       onHide={onHide}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
+      className="form-modal"
     >
       <Modal.Header className="bg-light">
         <Modal.Title
@@ -46,66 +67,110 @@ const UpdateInstituteDetails = (props) => {
       <Modal.Body className="bg-light">
         <Form
           onSubmit={onSubmit}
-          initialValues={rest}
+          initialValues={props}
           validationSchema={InstituteValidations}
         >
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="name"
-                label="Name"
-                control="input"
-                placeholder="Name"
-                className="form-control"
-              />
+          <Section>
+            <h3 className="section-header">Details</h3>
+            <div className="row">
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="name"
+                  label="Name"
+                  control="input"
+                  placeholder="Name"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="phone"
+                  label="Phone"
+                  control="input"
+                  placeholder="Phone"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  type="email"
+                  name="email"
+                  label="Email"
+                  control="input"
+                  placeholder="Email"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="website"
+                  control="input"
+                  label="Website"
+                  placeholder="Website"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="status"
+                  label="Status"
+                  control="radio"
+                  options={statusOpts}
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="type"
+                  label="Type"
+                  control="radio"
+                  className="form-control"
+                  options={institutionTypeOpts}
+                />
+              </div>
             </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="phone"
-                label="Phone"
-                control="input"
-                placeholder="Phone"
-                className="form-control"
-              />
+          </Section>
+          <Section>
+            <h3 className="section-header">Address</h3>
+            <div className="row">
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  label="Address"
+                  name="address[address_line]"
+                  placeholder="Address"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  name="address[state]"
+                  label="State"
+                  control="input"
+                  placeholder="State"
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  name="address[medha_area]"
+                  label="Medha Area"
+                  className="form-control"
+                  placeholder="Medha Area"
+                />
+              </div>
+              <div className="col-md-6 col-sm-12 mt-2">
+                <Input
+                  control="input"
+                  name="address[pin_code]"
+                  label="Pin Code"
+                  placeholder="Pin Code"
+                  className="form-control"
+                />
+              </div>
             </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                type="email"
-                name="email"
-                label="Email"
-                control="input"
-                placeholder="Email"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="website"
-                control="input"
-                label="Website"
-                placeholder="Website"
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="status"
-                label="Status"
-                control="radio"
-                options={statusOpts}
-                className="form-control"
-              />
-            </div>
-            <div className="col-md-6 col-sm-12 mt-2">
-              <Input
-                name="type"
-                label="Type"
-                control="radio"
-                className="form-control"
-                options={institutionTypeOpts}
-              />
-            </div>
-          </div>
+          </Section>
           <div className="row mt-3 py-3">
             <div className="d-flex justify-content-end">
               <button
@@ -140,6 +205,7 @@ const Details = (props) => {
     id,
     setAlert,
   } = props;
+  console.log('details props', props);
 
   const [modalShow, setModalShow] = useState(false);
   const [pickList, setPickList] = useState([]);
@@ -152,6 +218,8 @@ const Details = (props) => {
       return;
     }
 
+    delete data["id"];
+    delete data["show"];
     delete data["logo"];
     delete data["assigned_to"];
 
