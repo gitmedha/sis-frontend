@@ -1,0 +1,25 @@
+import styled from "styled-components";
+
+const Detail = styled.div`
+  margin-bottom: 15px;
+  font-family: 'Latto-Regular';
+  font-size: 14px;
+  line-height: 1.2;
+
+  .detail-label {
+    color: #787B96;
+  }
+
+  .detail-value {
+    color: #424141;
+  }
+`;
+
+const DetailField = ({ label, value }) => (
+  <Detail className="row">
+    <div className="col-md-6 detail-label">{label}</div>
+    <div className="col-md-6 detail-value">{value}</div>
+  </Detail>
+)
+
+export default DetailField;

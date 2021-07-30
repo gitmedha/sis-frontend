@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import nProgress from "nprogress";
@@ -9,7 +10,7 @@ import { UPDATE_INSTITUTION } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { getInstitutionsPickList } from "../../../utils/function/institutions";
-import styled from "styled-components";
+import DetailField from "../../../components/content/DetailField";
 
 const UpdateInstituteDetails = (props) => {
   console.log('all values', props);
@@ -276,7 +277,6 @@ const Details = (props) => {
           data,
         },
       });
-
       setAlert("Institution details updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
@@ -298,45 +298,15 @@ const Details = (props) => {
     <div className="container-fluid my-3">
       <div className="row latto-regular">
         <div className="col-md-4">
-          <p className="text-heading text--md">Name</p>
-          <p className="latto-regular">{name}</p>
+          <DetailField label="Name" value={name} />
+          <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
+          <DetailField label="Phone number" value={phone} />
+          <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
         </div>
-        <div className="col-md-4">
-          <p className="text-heading text--md">Phone</p>
-          <p className="latto-regular">{phone}</p>
-        </div>
-        <div className="col-md-4">
-          <p className="text-heading text--md">Assigned To</p>
-          <p className="latto-regular">{assigned_to?.username}</p>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-4">
-          <p className="text-heading text--md">Website</p>
-          <a
-            href={website}
-            target="_blank"
-            rel="noreferrer"
-            className="latto-regular"
-          >
-            {website}
-          </a>
-        </div>
-        <div className="col-md-4">
-          <p className="text-heading text--md">Email</p>
-          <a target="_blank" href={`mailto:${email}`} rel="noreferrer">
-            {email}
-          </a>
-        </div>
-        <div className="col-md-4">
-          <p className="text-heading text--md">Status</p>
-          <Badge value={status} pickList={pickList.status} />
-        </div>
-      </div>
-      <div className="row mt-3">
-        <div className="col-md-4">
-          <p className="text-heading text--md">Type</p>
-          <Badge value={type} pickList={pickList.type} />
+        <div className="offset-md-2 col-md-4">
+          <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+          <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
+          <DetailField label="Assigned To" value={assigned_to?.username} />
         </div>
       </div>
       <div className="row">
