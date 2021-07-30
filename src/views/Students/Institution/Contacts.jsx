@@ -113,9 +113,6 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
 
   contacts = contacts.map((contact) => {
     contact.email_id = <Anchor text={contact.email} href={'mailto:' + contact.email} />;
-    contact.actions = <div className="d-flex">
-      <FaPen size={18} style={{cursor: 'pointer'}} />
-    </div>;
     return contact;
   });
 
@@ -163,11 +160,6 @@ const Contacts = ({ contacts, id, done, setAlert }) => {
       {
         Header: 'Phone',
         accessor: 'phone',
-      },
-      {
-        Header: '',
-        accessor: 'actions',
-        disableSortBy: true,
       },
     ],
     []
