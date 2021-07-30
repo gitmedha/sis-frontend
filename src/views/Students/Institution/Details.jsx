@@ -13,6 +13,7 @@ import styled from "styled-components";
 
 const UpdateInstituteDetails = (props) => {
   console.log('all values', props);
+  console.log('all contacts', props.contacts);
   let { onHide, show } = props;
 
   const institutionTypeOpts = [
@@ -170,6 +171,49 @@ const UpdateInstituteDetails = (props) => {
                 />
               </div>
             </div>
+          </Section>
+          <Section>
+            <h3 className="section-header">Contacts</h3>
+            {props.contacts && props.contacts.length && props.contacts.map((contact, index) => (
+              <div className="row mb-4">
+                <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
+                    control="input"
+                    name={`contacts[${index}][full_name]`}
+                    label="Name"
+                    placeholder="Name"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
+                    name={`contacts[${index}][email]`}
+                    label="Email"
+                    control="input"
+                    placeholder="Email"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
+                    name={`contacts[${index}][phone]`}
+                    control="input"
+                    label="Phone Number"
+                    className="form-control"
+                    placeholder="Phone Number"
+                  />
+                </div>
+                <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
+                    name={`contacts[${index}][designation]`}
+                    control="input"
+                    label="Designation"
+                    className="form-control"
+                    placeholder="Designation"
+                  />
+                </div>
+              </div>
+            ))}
           </Section>
           <div className="row mt-3 py-3">
             <div className="d-flex justify-content-end">
