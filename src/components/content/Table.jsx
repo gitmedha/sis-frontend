@@ -1,6 +1,6 @@
 // import { Table } from "react-bootstrap";
 import React from "react";
-import { useTable, usePagination, useSortBy } from 'react-table'
+import { useTable, usePagination, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
@@ -11,6 +11,11 @@ const Styles = styled.div`
   background: #FFFFFF;
   border-radius: 5px;
   font-size: 14px;
+
+  .clickable:hover {
+    cursor: pointer;
+    background-color: #f8f9fa;
+  }
 
   table {
     box-sizing: border-box;
@@ -61,7 +66,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading }) => {
+const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -91,6 +96,14 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
   React.useEffect(() => {
     fetchData({ pageIndex, pageSize, sortBy });
   }, [fetchData, pageIndex, pageSize, sortBy]);
+
+  const isRowClickable = typeof onRowClick === 'function';
+
+  const handleRowClick = (row) => {
+    if (typeof onRowClick === 'function') {
+      onRowClick(row.original);
+    }
+  }
 
   return (
     <>
@@ -127,7 +140,7 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
                 page.map((row, index) => {
                   prepareRow(row)
                   return (
-                    <tr {...row.getRowProps()}>
+                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
                       <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
                         {pageIndex * pageSize + index + 1}.
                       </td>
@@ -154,7 +167,7 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div key={index} className="row">
+                <div key={index} className={`row ${isRowClickable ? 'clickable' : ''}`} onClick={() => handleRowClick(row)}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
                       <div key={cellIndex} className="cell">
