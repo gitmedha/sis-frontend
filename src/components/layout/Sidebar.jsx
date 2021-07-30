@@ -72,6 +72,15 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
     });
     return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
   });
+
+  const menuItemClickHandler = (menuItemTitle) => {
+    setActiveFirstLevel(menuItemTitle);
+    // close the menu in the mobile
+    if (window.innerWidth < 768) {
+      toggleMenu();
+    }
+  };
+
   return (
     <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`}>
       {/* hamburger */}
@@ -107,7 +116,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
         />
         <>
           {routes.map((route) => (
-            <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} />
+            <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} menuItemClickHandler={menuItemClickHandler}  />
           ))}
         </>
       </div>

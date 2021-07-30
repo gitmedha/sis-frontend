@@ -28,7 +28,7 @@ export const Badge = ({ value, pickList=[] }) => {
   const badgeConfig = {
     color: config.length ? config[0]['text-color'] : '#000000',
     backgroundColor: config.length ? config[0]['highlight-color'] : '#FFFFFF',
-    text: config.length ? config[0]['value'] : '-',
+    text: config.length ? config[0]['value'] : value,
   };
   return (
     <div className="d-flex align-items-center h-100">
@@ -184,8 +184,10 @@ export const TextRenderer = ({ value }) => {
     return <div className="h-100 d-flex align-items-center"><p className="mb-0">{ value }</p></div>;
 };
 
-export const Anchor = ({ value }) => {
-    return <div className="h-100 d-flex align-items-center"><a href={value.to} className="mb-0" style={{color: '#00ADEF'}}>{ value.text }</a></div>;
+export const Anchor = ({ text, href }) => {
+    return <div className="h-100 d-flex align-items-center">
+      <a href={href} className="mb-0" style={{color: '#00ADEF'}}>{ text }</a>
+    </div>;
 };
 
 export const ProgressRenderer = ({ value }) => (

@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import nProgress from "nprogress";
 import { Modal } from "react-bootstrap";
 import { queryBuilder } from "./instituteActions";
 import { Form, Input } from "../../../utils/Form";
 import { Badge } from "../../../components/content/Utils";
-import { UPADTE_INSTITUTIONS } from "../../../graphql";
+import { UPDATE_INSTITUTION } from "../../../graphql";
 import { InstituteValidations } from "../../../validations";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { getInstitutionsPickList } from "../../../utils/function/institutions";
 
 const UpdateInstituteDetails = (props) => {
   let { onHide, show, logo, id, ...rest } = props;
@@ -141,6 +142,7 @@ const Details = (props) => {
   } = props;
 
   const [modalShow, setModalShow] = useState(false);
+  const [pickList, setPickList] = useState([]);
 
   const hideUpdateModal = async (data) => {
     console.log("PAYLOAD", data);
@@ -156,14 +158,13 @@ const Details = (props) => {
     nProgress.start();
     try {
       await queryBuilder({
-        query: UPADTE_INSTITUTIONS,
+        query: UPDATE_INSTITUTION,
         variables: {
           id: Number(id),
           data,
         },
       });
 
-      // console.log(resp, "DETAILS_UPDATE_RESPOSE");
       setAlert("Institution details updated successfully.", "success");
     } catch (err) {
       console.log("UPDATE_DETAILS_ERR", err);
@@ -174,6 +175,12 @@ const Details = (props) => {
     }
     setModalShow(false);
   };
+
+  useEffect(() => {
+    getInstitutionsPickList().then(data => {
+      setPickList(data);
+    });
+  }, [])
 
   return (
     <div className="container-fluid my-3">
@@ -211,13 +218,13 @@ const Details = (props) => {
         </div>
         <div className="col-md-4">
           <p className="text-heading text--md">Status</p>
-          <Badge value={status} pickList={[]} />
+          <Badge value={status} pickList={pickList.status} />
         </div>
       </div>
       <div className="row mt-3">
         <div className="col-md-4">
           <p className="text-heading text--md">Type</p>
-          <Badge value={type} pickList={[]} />
+          <Badge value={type} pickList={pickList.type} />
         </div>
       </div>
       <div className="row">
