@@ -1,25 +1,24 @@
-import NP from "nprogress";
-import api from "../../apis";
+import nProgress from "nprogress";
 import { useState, useEffect } from "react";
-import Details from "./Institution/Details";
+import { useHistory } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { Formik, FieldArray, Form } from 'formik';
+import SweetAlert from "react-bootstrap-sweetalert";
+
+import api from "../../apis";
 import Address from "./Institution/Address";
-import { GET_INSTITUTE } from "../../graphql";
 import Contacts from "./Institution/Contacts";
-import { UPDATE_INSTITUTION } from "../../graphql";
+import Details from "./Institution/Details";
+import { GET_INSTITUTE, UPDATE_INSTITUTION, DELETE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
-
-import { Modal } from "react-bootstrap";
 import { Input } from "../../utils/Form";
 import { InstituteValidations } from "../../validations";
-import nProgress from "nprogress";
-import { queryBuilder } from "./Institution/instituteActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { getInstitutionsPickList } from "./Institution/instituteActions";
-import { Formik, FieldArray, Form } from 'formik';
+import { queryBuilder, getInstitutionsPickList } from "./Institution/instituteActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -287,6 +286,8 @@ const Institute = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [instituteData, setInstituteData] = useState({});
   const [modalShow, setModalShow] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = instituteData;
 
@@ -321,9 +322,30 @@ const Institute = (props) => {
     setModalShow(false);
   };
 
+  const handleDelete = async () => {
+    nProgress.start();
+    try {
+      let data = await queryBuilder({
+        query: DELETE_INSTITUTION,
+        variables: {
+          id: instituteData.id,
+        },
+      });
+      console.log("INSTITUTION_DELETED", data);
+      setAlert("Institution deleted successfully.", "success");
+    } catch (err) {
+      console.log("INSTITUTION_DELETE_ERR", err);
+      setAlert("Unable to delete institution.", "error");
+    } finally {
+      setShowDeleteAlert(false);
+      nProgress.done();
+      history.push("/institutions");
+    }
+  };
+
   const getThisInstitute = async () => {
     setLoading(true);
-    NP.start();
+    nProgress.start();
     try {
       const instituteID = props.match.params.id;
       let { data } = await api.post("/graphql", {
@@ -335,7 +357,7 @@ const Institute = (props) => {
       console.log("ERR", err);
     } finally {
       setLoading(false);
-      NP.done();
+      nProgress.done();
     }
   };
 
@@ -373,6 +395,9 @@ const Institute = (props) => {
             >
               EDIT
             </button>
+            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+              DELETE
+            </button>
           </div>
         </div>
         <Collapsible title="Address">
@@ -386,6 +411,32 @@ const Institute = (props) => {
           show={modalShow}
           onHide={hideUpdateModal}
         />
+        <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          onConfirm={() => handleDelete()}
+          onCancel={() => setShowDeleteAlert(false)}
+          title={
+            <span className="text--primary latto-bold">Delete {instituteData.name}?</span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Cancel
+              </button>
+              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                Delete
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure, you want to delete this institution?</p>
+        </SweetAlert>
       </>
     );
   }
