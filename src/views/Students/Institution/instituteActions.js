@@ -53,17 +53,6 @@ export const createInstitution = async (data) => {
   });
 }
 
-export const getInstitution = async (id) => {
-  return await api.post('/graphql', {
-    query: GET_INSTITUTE,
-    variables: { id },
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-}
-
 export const updateInstitution = async (id, data) => {
   return await api.post('/graphql', {
     query: UPDATE_INSTITUTION,

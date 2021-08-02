@@ -144,11 +144,9 @@ const Institutions = () => {
 
     // need to remove id, show, logo from the payload
     let {show, logo, ...dataToSave} = data;
-    console.log('dataToSave', dataToSave);
 
     nProgress.start();
     createInstitution(dataToSave).then(data => {
-      console.log('craeted data',data);
       setAlert("Institution created successfully.", "success");
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
