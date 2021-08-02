@@ -142,8 +142,8 @@ const Institutions = () => {
       return;
     }
 
-    // need to remove id, show, logo from the payload
-    let {show, logo, ...dataToSave} = data;
+    // need to remove `show` from the payload
+    let {show, ...dataToSave} = data;
 
     nProgress.start();
     createInstitution(dataToSave).then(data => {

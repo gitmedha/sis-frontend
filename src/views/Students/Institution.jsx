@@ -33,8 +33,11 @@ const Institute = (props) => {
       return;
     }
 
-    // need to remove id, show, logo from the payload
-    let {id, show, logo, ...dataToSave} = data;
+    // need to remove id and show from the payload
+    let {id, show, ...dataToSave} = data;
+    if (typeof data.logo === 'object') {
+      dataToSave['logo'] = data.logo.id;
+    }
 
     NP.start();
     updateInstitution(Number(id), dataToSave).then(data => {

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
+import ImageUploader from "../../../components/content/ImageUploader";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -32,6 +33,7 @@ const InstitutionForm = (props) => {
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [logo, setLogo] = useState(null);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -59,19 +61,19 @@ const InstitutionForm = (props) => {
   }, []);
 
   const onSubmit = async (values) => {
+    if (logo) {
+      values.logo = logo;
+    }
     onHide(values);
   };
 
+  const logoUploadHandler = ({ id }) => setLogo(id);
+
   let initialValues = {...props};
   initialValues['assigned_to'] = props?.assigned_to?.id;
-  if (!props.contacts || !props.contacts.length) {
+  if (!props.contacts) {
     // create an empty contact if no contacts are present
-    initialValues['contacts'] = [{
-      full_name: '',
-      email: '',
-      phone: '',
-      designation: '',
-    }];
+    initialValues['contacts'] = [];
   }
 
   return (
@@ -102,6 +104,11 @@ const InstitutionForm = (props) => {
             <Form>
               <Section>
                 <h3 className="section-header">Details</h3>
+                <div className="row">
+                  <div className="col-12 mb-2">
+                    <ImageUploader handler={logoUploadHandler} initialValue={props.id ? props.logo : {}} />
+                  </div>
+                </div>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
@@ -258,7 +265,7 @@ const InstitutionForm = (props) => {
                               placeholder="Designation"
                             />
                           </div>
-                          <div className={`col-md-6 col-sm-12 mb-2 ${values.contacts.length > 1 ? '' : 'd-none'}`}>
+                          <div className="col-md-6 col-sm-12 mb-2">
                             <button className="btn btn-danger btn-sm" type="button" onClick={() => remove(index)}>
                               Remove
                             </button>
