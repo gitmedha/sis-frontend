@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST } from "../../../graphql";
+import { GET_PICKLIST, GET_ASSIGNEES_LIST } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -28,6 +28,16 @@ export const getInstitutionsPickList = async () => {
     return pickList;
   })
   .catch(error => {
+    return Promise.reject(error);
+  });
+};
+
+export const getAssigneeOptions = async () => {
+  return await api.post('/graphql', {
+    query: GET_ASSIGNEES_LIST,
+  }).then(data => {
+    return data;
+  }).catch(error => {
     return Promise.reject(error);
   });
 };

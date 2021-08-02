@@ -34,7 +34,7 @@ export const InstituteValidations = Yup.object({
   phone,
   status,
   website,
-  // assigned_to,
+  assigned_to,
   address,
 });
 

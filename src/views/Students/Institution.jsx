@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { Formik, FieldArray, Form } from 'formik';
 import SweetAlert from "react-bootstrap-sweetalert";
+import Skeleton from "react-loading-skeleton";
 
 import api from "../../apis";
 import Address from "./Institution/Address";
@@ -18,7 +19,7 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { Input } from "../../utils/Form";
 import { InstituteValidations } from "../../validations";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { queryBuilder, getInstitutionsPickList } from "./Institution/instituteActions";
+import { queryBuilder, getInstitutionsPickList, getAssigneeOptions } from "./Institution/instituteActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -43,6 +44,7 @@ const UpdateInstituteDetails = (props) => {
   let { onHide, show } = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -59,11 +61,22 @@ const UpdateInstituteDetails = (props) => {
         };
       }));
     });
+
+    getAssigneeOptions().then(data => {
+      setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
+          key: assignee.username,
+          label: assignee.username,
+          value: assignee.id,
+      })));
+    });
   }, []);
 
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  let initialValues = {...props};
+  initialValues['assigned_to'] = props?.assigned_to?.id;
 
   return (
     <Modal
@@ -86,7 +99,7 @@ const UpdateInstituteDetails = (props) => {
       <Modal.Body className="bg-modal">
         <Formik
           onSubmit={onSubmit}
-          initialValues={props}
+          initialValues={initialValues}
           validationSchema={InstituteValidations}
         >
           {({ values }) => (
@@ -130,6 +143,20 @@ const UpdateInstituteDetails = (props) => {
                       placeholder="Website"
                       className="form-control"
                     />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {assigneeOptions.length ? (
+                      <Input
+                        control="lookup"
+                        name="assigned_to"
+                        label="Assigned To"
+                        options={assigneeOptions}
+                        className="form-control"
+                        placeholder="Assigned To"
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
@@ -300,7 +327,7 @@ const Institute = (props) => {
     }
 
     // need to remove id, show, logo, assigned_to from the payload
-    let {id, show, logo, assigned_to, ...dataToSave} = data;
+    let {id, show, logo, ...dataToSave} = data;
 
     nProgress.start();
     try {

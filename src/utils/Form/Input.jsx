@@ -6,7 +6,7 @@ const InputField = styled.div`
   label {
     color: #787B96;
   }
-`
+`;
 
 const Input = (props) => {
   let { label, name, ...rest } = props;
