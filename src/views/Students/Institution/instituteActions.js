@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_ASSIGNEES_LIST } from "../../../graphql";
+import { GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTE, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -41,3 +41,53 @@ export const getAssigneeOptions = async () => {
     return Promise.reject(error);
   });
 };
+
+export const createInstitution = async (data) => {
+  return await api.post('/graphql', {
+    query: CREATE_NEW_INSTITUTE,
+    variables: {...data},
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getInstitution = async (id) => {
+  return await api.post('/graphql', {
+    query: GET_INSTITUTE,
+    variables: { id },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const updateInstitution = async (id, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_INSTITUTION,
+    variables: {
+      id,
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+
+export const deleteInstitution = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_INSTITUTION,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
