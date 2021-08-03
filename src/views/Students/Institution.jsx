@@ -26,8 +26,6 @@ const Institute = (props) => {
   const { address, contacts, ...rest } = instituteData;
 
   const hideUpdateModal = async (data) => {
-    console.log("PAYLOAD", data);
-
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
@@ -55,7 +53,6 @@ const Institute = (props) => {
   const handleDelete = async () => {
     NP.start();
     deleteInstitution(instituteData.id).then(data => {
-      console.log("INSTITUTION_DELETED", data);
       setAlert("Institution deleted successfully.", "success");
     }).catch(err => {
       console.log("INSTITUTION_DELETE_ERR", err);
@@ -98,7 +95,7 @@ const Institute = (props) => {
           opened={true}
           titleContent={
             <TitleWithLogo
-              // done={done}
+              done={() => getThisInstitution()}
               id={rest.id}
               logo={rest.logo}
               title={rest.name}

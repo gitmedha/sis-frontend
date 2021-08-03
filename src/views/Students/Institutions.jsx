@@ -135,8 +135,6 @@ const Institutions = () => {
   }
 
   const hideCreateModal = async (data) => {
-    console.log("PAYLOAD", data);
-
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
