@@ -1,4 +1,4 @@
-import NP from "nprogress";
+import nProgress from "nprogress";
 import api from "../../apis";
 import {
   TableRowDetailLink,
@@ -11,7 +11,9 @@ import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
-import { getInstitutionsPickList } from "../../utils/function/institutions";
+import { getInstitutionsPickList, createInstitution } from "./Institution/instituteActions";
+import InstitutionForm from "./Institution/InstitutionForm";
+import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -27,6 +29,7 @@ const Institutions = () => {
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
   const [pickList, setPickList] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -60,7 +63,7 @@ const Institutions = () => {
   const paginationPageSize = 10;
 
   const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
-    NP.start();
+    nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
@@ -81,7 +84,7 @@ const Institutions = () => {
     })
     .finally(() => {
       setLoading(false);
-      NP.done();
+      nProgress.done();
     });
   };
 
@@ -131,18 +134,44 @@ const Institutions = () => {
     history.push(`/institution/${row.id}`)
   }
 
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, ...dataToSave} = data;
+
+    nProgress.start();
+    createInstitution(dataToSave).then(data => {
+      setAlert("Institution created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create institution.", "error");
+    }).finally(() => {
+      nProgress.done();
+      getInstitutions();
+    });
+    setModalShow(false);
+  };
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
         <button
           className="btn btn-primary"
-          onClick={() => history.push("/institution/new")}
+          onClick={() => setModalShow(true)}
         >
           Add New Institution
         </button>
       </div>
       <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <InstitutionForm
+        show={modalShow}
+        onHide={hideCreateModal}
+      />
     </div>
   );
 };

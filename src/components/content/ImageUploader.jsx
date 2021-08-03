@@ -9,8 +9,10 @@ const ImageUploader = ({
   handler,
   id = "file_uploader",
   label = "Upload Logo",
+  initialValue = {},
 }) => {
-  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(initialValue.url ? urlPath(initialValue.url.substring(1)) : null);
+  const [imageId, setImageId] = useState(initialValue.id || null);
   const [uploadProgress, setProgress] = useState(0);
   const [isUploading, setUploading] = useState(false);
 
@@ -45,11 +47,12 @@ const ImageUploader = ({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await setImage(urlPath(data.data.upload.url.substring(1)));
+      await setImageUrl(urlPath(data.data.upload.url.substring(1)));
+      await setImageId(Number(data.data.upload.id));
 
       handler({
-        id: Number(data.data.upload.id),
-        path: urlPath(data.data.upload.url.substring(1)),
+        id: imageId || Number(data.data.upload.id),
+        path: imageUrl || urlPath(data.data.upload.url.substring(1)),
       });
     } catch (err) {
       console.log("UPLOAD_ERR", err);
@@ -60,7 +63,7 @@ const ImageUploader = ({
 
   return (
     <div>
-      {!isUploading && !image && (
+      {!isUploading && !imageUrl && (
         <div className="uploader-container">
           <div className="imageUploader">
             <p className="upload-helper-text">Click Here To Upload Image</p>
@@ -81,11 +84,11 @@ const ImageUploader = ({
           </label>
         </div>
       )}
-      {isUploading && !image && (
+      {isUploading && !imageUrl && (
         <ProgressBar variant="success" now={uploadProgress} />
       )}
-      {image && (
-        <img src={image} className="uploaded-img" alt={"uploaded-pic"} />
+      {imageUrl && (
+        <img src={imageUrl} className="uploaded-img" alt={"uploaded-pic"} />
       )}
     </div>
   );

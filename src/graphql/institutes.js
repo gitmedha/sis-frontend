@@ -253,6 +253,10 @@ query INSTITUTION(
       status
       website
       type
+      logo {
+        id
+        url
+      }
       address{
         pin_code
         state
@@ -260,6 +264,7 @@ query INSTITUTION(
         address_line
       }
       assigned_to{
+        id
         username
         email
       }
