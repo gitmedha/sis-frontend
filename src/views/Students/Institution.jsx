@@ -91,6 +91,20 @@ const Institute = (props) => {
   } else {
     return (
       <>
+        <div className="row" style={{padding: '0 15px', marginTop: '30px'}}>
+          <div className="col-12">
+            <button
+              onClick={() => setModalShow(true)}
+              style={{ marginLeft: "0px" }}
+              className="btn--primary"
+            >
+              EDIT
+            </button>
+            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+              DELETE
+            </button>
+          </div>
+        </div>
         <Collapsible
           opened={true}
           titleContent={
@@ -105,20 +119,6 @@ const Institute = (props) => {
         >
           <Details {...instituteData} />
         </Collapsible>
-        <div className="row" style={{padding: '0 30px', marginBottom: '30px'}}>
-          <div className="col-12">
-            <button
-              onClick={() => setModalShow(true)}
-              style={{ marginLeft: "0px" }}
-              className="btn--primary"
-            >
-              EDIT
-            </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
-              DELETE
-            </button>
-          </div>
-        </div>
         <Collapsible title="Address">
           <Address {...address} id={rest.id} />
         </Collapsible>
