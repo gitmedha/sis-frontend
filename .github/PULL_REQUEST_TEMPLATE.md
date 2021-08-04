@@ -11,7 +11,7 @@
 
 -->
 
-Fixes #{issue_id}
+Targets #{issueid}
 
 ## Summary
 
