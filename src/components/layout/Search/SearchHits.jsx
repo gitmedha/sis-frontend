@@ -76,7 +76,6 @@ const SearchHitsContainer = styled.div`
 `;
 
 const SearchHits = (props) => {
-  console.log("search hits props", props); // debugging on UAT
   let { hits } = props;
   return (
     <SearchHitsContainer>

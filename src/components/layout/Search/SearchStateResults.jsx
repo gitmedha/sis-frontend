@@ -98,7 +98,6 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  console.log('search state results', props); // debugging on UAT
   let { searchState, searchResults } = props;
   const hasResults = searchResults && searchResults.nbHits !== 0;
   const hasQuery = searchState && searchState.query;
