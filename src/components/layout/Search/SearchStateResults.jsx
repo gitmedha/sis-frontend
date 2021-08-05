@@ -10,20 +10,21 @@ const SearchStateContainer = styled.div`
   box-sizing: border-box;
   box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
-  width: 800px;
+  width: calc(100% - 10px);
   position: absolute;
   margin-top: 5px;
   font-size: 14px;
   line-height: 18px;
+  left: 5px;
 
   .header {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 15px 5px 5px;
     display: flex;
     align-items: center;
   }
 
   .filter-by-text {
+    display: none;
     font-family: 'Latto-Bold';
     color: #C4C4C4;
     margin-right: 15px;
@@ -34,17 +35,19 @@ const SearchStateContainer = styled.div`
     align-items: center;
 
     .badge {
-      height: 30px;
-      padding-left: 20px;
-      padding-right: 20px;
-      margin-right: 15px;
+      height: 25px;
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+      margin-right: 5px;
       color: white;
       border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      min-width: auto;
+      min-width: 0;
+      font-size: 12px;
+      line-height: 18px;
 
       &.badge-institutions {
         background-color: #FC636B;
@@ -64,7 +67,33 @@ const SearchStateContainer = styled.div`
     }
   }
   .no-results {
-    padding: 15px;
+    padding: 5px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .header {
+      padding: 15px 15px 10px;
+    }
+    .filter-by-text {
+      display: flex;
+    }
+    .badges {
+      .badge {
+        height: 30px;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        margin-right: 15px;
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+    .no-results {
+      padding: 15px;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    width: 800px;
+    left: auto;
   }
 `;
 
@@ -76,7 +105,7 @@ const SearchStateResults = (props) => {
 
   return (
     <SearchStateContainer hidden={!hasQuery}>
-      <div className="header pt-4 pb-2">
+      <div className="header">
         <div className="filter-by-text">Filter by</div>
         <div className="badges">
           <div className="badge badge-institutions">
