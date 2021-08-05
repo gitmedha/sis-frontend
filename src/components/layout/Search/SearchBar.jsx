@@ -5,8 +5,8 @@ import SearchField from './SearchField';
 import SearchStateResults from './SearchStateResults';
 
 const searchClient = instantMeiliSearch(
-  "http://127.0.0.1:7700",
-  "sis-medha-meilisearch"
+  process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  process.env.REACT_APP_MEILISEARCH_API_KEY,
 );
 
 const SearchContainer = styled.div`
@@ -18,7 +18,7 @@ const SearchContainer = styled.div`
 const SearchBar = () => (
   <SearchContainer className="mr-auto">
     <InstantSearch
-      indexName="sis-medha"
+      indexName="institutions"
       searchClient={searchClient}
     >
       <SearchField />

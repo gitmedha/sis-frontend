@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { connectSearchBox } from 'react-instantsearch-dom';
+import { FaSearch } from "react-icons/fa";
 
 const SearchInput = styled.div`
   width: 100%;
@@ -10,6 +11,17 @@ const SearchInput = styled.div`
 
   form {
     display: flex;
+  }
+
+  .input-group {
+    position: relative;
+
+    .icon {
+      position: absolute;
+      top: 5px;
+      right: 25px;
+      color: #C4C4C4;
+    }
   }
 
   input {
@@ -28,12 +40,17 @@ const SearchInput = styled.div`
 const SearchField = ({ currentRefinement, isSearchStalled, refine }) => (
   <SearchInput>
     <form noValidate action="" role="search">
-      <input
-        type="search"
-        placeholder="search for..."
-        value={currentRefinement}
-        onChange={event => refine(event.currentTarget.value)}
-      />
+      <div className="input-group">
+        <input
+          type="search"
+          placeholder="search for..."
+          value={currentRefinement}
+          onChange={event => refine(event.currentTarget.value)}
+        />
+        <div className="icon" hidden={currentRefinement}>
+          <FaSearch size="20" />
+        </div>
+      </div>
     </form>
   </SearchInput>
 );

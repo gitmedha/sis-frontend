@@ -1,2 +1,2 @@
-export const baseURL = "https://sis-staging.eastus.cloudapp.azure.com/api/";
+export const baseURL = process.env.REACT_APP_STRAPI_API_BASEURL;
 export const urlPath = (url) => baseURL + url;
