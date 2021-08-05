@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
-import ImageUploader from "../../../components/content/ImageUploader";
+import { urlPath } from "../../../constants";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -86,15 +86,18 @@ const InstitutionForm = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
     >
-      <Modal.Header className="bg-modal">
+      <Modal.Header className="bg-white">
         <Modal.Title
           id="contained-modal-title-vcenter"
-          className="text--primary latto-bold"
+          className="text--primary latto-bold d-flex align-items-center"
         >
-          {props.id ? 'Update' : 'Add New'} Institute
+          <img src={urlPath(props.logo.url)} className="avatar mr-2" />
+          <h1 className="bebas-thick mb-0">
+            {props.id ? props.name : 'Add New Institute'}
+          </h1>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-modal">
+      <Modal.Body className="bg-white">
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
@@ -104,11 +107,6 @@ const InstitutionForm = (props) => {
             <Form>
               <Section>
                 <h3 className="section-header">Details</h3>
-                <div className="row">
-                  <div className="col-12 mb-2">
-                    <ImageUploader handler={logoUploadHandler} initialValue={props.id ? props.logo : {}} />
-                  </div>
-                </div>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
