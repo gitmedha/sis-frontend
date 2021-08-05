@@ -1,40 +1,53 @@
 import styled from "styled-components";
 import { connectHits } from 'react-instantsearch-dom';
 
+import SearchHighlight from './SearchHighlight';
+
 const SearchHitsContainer = styled.div`
+  height: 320px;
+  overflow-y: scroll;
+
   table {
     width: 100%;
     font-size: 14px;
     line-height: 18px;
 
     thead {
-      background-color: #FAFAFE;
-      border-top: 1.5px solid #D7D7E0;
-      border-bottom: 1.5px solid #D7D7E0;
 
+      th {
+        position: sticky;
+        top: 0;
+        padding: 0;
+
+        div {
+          height: 40px;
+          padding-left: 15px;
+          padding-right: 15px;
+          background-color: #FAFAFE;
+          color: #787B96;
+          border-top: 1.5px solid #D7D7E0;
+          border-bottom: 1.5px solid #D7D7E0;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    tbody {
       tr {
-        background: #FAFAFE;
-        border-top: 1.5px solid #D7D7E0;
-        border-bottom: 1.5px solid #D7D7E0;
-      }
+        height: 40px;
 
-      th, td {
-        color: #787B96;
-      }
-    }
+        td {
+          padding-left: 15px;
+          padding-right: 15px;
+        }
 
-    tr {
-      height: 40px;
-
-      th, td {
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-
-      &:not(:last-child) {
-        border-bottom: 1.5px solid #D7D7E0;
+        &:not(:last-child) {
+          border-bottom: 1.5px solid #D7D7E0;
+        }
       }
     }
+
   }
   .badge {
     height: 24px;
@@ -70,10 +83,10 @@ const SearchHits = (props) => {
       <table>
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Area</th>
-            <th>Assigned To</th>
+            <th><div>Type</div></th>
+            <th><div>Name</div></th>
+            <th><div>Area</div></th>
+            <th><div>Assigned To</div></th>
           </tr>
         </thead>
         <tbody>
@@ -82,9 +95,15 @@ const SearchHits = (props) => {
               <td>
                 <div className="badge badge-institutions">Inst.</div>
               </td>
-              <td>{hit.name}</td>
-              <td>{hit?.address?.medha_area}</td>
-              <td>{hit?.assigned_to?.username}</td>
+              <td>
+                <SearchHighlight hit={hit} attribute="name" />
+              </td>
+              <td>
+                {hit?.address?.medha_area}
+              </td>
+              <td>
+                {hit?.assigned_to?.username}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { connectStateResults } from 'react-instantsearch-dom';
 import SearchHits from './SearchHits';
-import { Highlight } from 'react-instantsearch-dom';
 
 const SearchStateContainer = styled.div`
   display: flex;
@@ -29,6 +28,7 @@ const SearchStateContainer = styled.div`
     color: #C4C4C4;
     margin-right: 15px;
   }
+
   .badges {
     display: flex;
     align-items: center;
@@ -94,7 +94,7 @@ const SearchStateResults = (props) => {
         </div>
       </div>
       {hasResults ? (
-        <SearchHits hitComponent={Hit} />
+        <SearchHits />
       ) : (
         <div className="no-results">
           No results found
@@ -104,9 +104,5 @@ const SearchStateResults = (props) => {
     </SearchStateContainer>
   );
 };
-
-function Hit(props) {
-  return <Highlight attribute="name" hit={props.hit} />;
-}
 
 export default connectStateResults(SearchStateResults);
