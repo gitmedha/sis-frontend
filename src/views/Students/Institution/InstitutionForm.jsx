@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { FaSchool } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
@@ -89,10 +90,16 @@ const InstitutionForm = (props) => {
       <Modal.Header className="bg-white">
         <Modal.Title
           id="contained-modal-title-vcenter"
-          className="text--primary latto-bold d-flex align-items-center"
+          className="d-flex align-items-center"
         >
-          <img src={urlPath(props.logo.url)} className="avatar mr-2" />
-          <h1 className="bebas-thick mb-0">
+          {props.id && props.logo ? (
+            <img src={urlPath(props.logo.url)} className="avatar mr-2" alt="Institution Logo" />
+          ) : (
+          <div className="flex-row-centered avatar avatar-default mr-2">
+            <FaSchool size={25} />
+          </div>
+          )}
+          <h1 className="text--primary bebas-thick mb-0">
             {props.id ? props.name : 'Add New Institute'}
           </h1>
         </Modal.Title>
