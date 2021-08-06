@@ -34,7 +34,7 @@ const Institute = (props) => {
     // need to remove id and show from the payload
     let {id, show, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
-      dataToSave['logo'] = data.logo.id;
+      dataToSave['logo'] = data.logo?.id;
     }
 
     NP.start();
