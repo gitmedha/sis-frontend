@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTE, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import { GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -67,7 +67,6 @@ export const updateInstitution = async (id, data) => {
   });
 }
 
-
 export const deleteInstitution = async (id) => {
   return await api.post('/graphql', {
     query: DELETE_INSTITUTION,
@@ -80,3 +79,38 @@ export const deleteInstitution = async (id) => {
     return Promise.reject(error);
   });
 }
+
+export const getInstitutionStudents = async (institutionId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_INSTITUTION_STUDENTS,
+    variables: {
+      id: Number(institutionId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getProgramEnrollmentsPickList = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'program_enrollments'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};

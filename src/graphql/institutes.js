@@ -297,3 +297,45 @@ query TO_GET_ALL_INSTITUTES {
   }
 }
 `;
+
+
+export const GET_INSTITUTION_STUDENTS = `
+query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: String){
+  programEnrollmentsConnection (
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      institution: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      id
+      status
+      course_year
+      year_of_course_completion
+      institution {
+        id
+        name
+      }
+      student {
+        id
+        phone
+        last_name
+        first_name
+        logo {
+          url
+        }
+        address {
+          city
+        }
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
