@@ -41,13 +41,13 @@ const InstitutionForm = (props) => {
       setInstitutionTypeOpts(data.type.map((item) => {
         return {
           key: item.value,
-          value: item.value,
+          value: item.value.toLowerCase(),
         };
       }));
       setStatusOpts(data.status.map((item) => {
         return {
           key: item.value,
-          value: item.value,
+          value: item.value.toLowerCase(),
         };
       }));
     });
