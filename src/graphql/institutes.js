@@ -315,6 +315,7 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
       id
       status
       course_year
+      year_of_course_completion
       institution {
         id
         name
@@ -324,6 +325,9 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
         phone
         last_name
         first_name
+        logo {
+          url
+        }
         address {
           city
         }

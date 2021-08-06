@@ -4,8 +4,8 @@ import { getInstitutionStudents } from "./instituteActions";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
 } from "../../../components/content/Utils";
+import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 
 const Students = ({ id }) => {
@@ -47,10 +47,10 @@ const Students = ({ id }) => {
       let studentList = programEnrollments.map((programEnrollment) => {
         return {
           id: programEnrollment.student.id,
-          student: programEnrollment.student.first_name + ' ' + programEnrollment.student.last_name,
+          student: <Avatar logo={programEnrollment.student.logo} name={programEnrollment.student.first_name + ' ' + programEnrollment.student.last_name} icon='student' />,
           area: programEnrollment.student.address.city,
           status: programEnrollment.status,
-          year_of_course_completion: programEnrollment.course_year,
+          year_of_course_completion: programEnrollment.year_of_course_completion,
           link: <TableRowDetailLink value={programEnrollment.student.id} to={'student'} />
         }
       });

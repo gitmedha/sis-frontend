@@ -39,6 +39,7 @@ const Styles = styled.div`
       margin: 0;
       padding-top: 0;
       padding-bottom: 0;
+      color: #787B96;
       border-bottom: 1px solid #BFBFBF;
       height: 60px;
     }

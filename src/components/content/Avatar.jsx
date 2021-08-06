@@ -3,13 +3,13 @@ import Tooltip from "./Tooltip";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
-import { FaSchool } from "react-icons/fa";
+import { FaSchool, FaUserGraduate } from "react-icons/fa";
 import ImageUploader from "./ImageUploader";
 
 import { connect } from "react-redux";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 
-const Avatar = ({ logo, name, style = {} }) => {
+const Avatar = ({ logo, name, style = {width: '35px', height: '35px'}, icon = 'school' }) => {
   return (
     <div className="d-flex align-items-center justify-content-start h-100">
       {logo ? (
@@ -21,7 +21,8 @@ const Avatar = ({ logo, name, style = {} }) => {
         />
       ) : (
         <div className="flex-row-centered avatar avatar-default" style={style}>
-          <FaSchool size={25} />
+          {icon === 'school' && (<FaSchool size={20} />)}
+          {icon === 'student' && (<FaUserGraduate size={20} />)}
         </div>
       )}
 
