@@ -95,3 +95,22 @@ export const getInstitutionStudents = async (institutionId, limit=10, offset=0, 
     return Promise.reject(error);
   });
 }
+
+export const getProgramEnrollmentsPickList = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'program_enrollments'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};

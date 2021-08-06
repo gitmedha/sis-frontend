@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState  } from "react";
 import Table from "../../../components/content/Table";
-import { getInstitutionStudents } from "./instituteActions";
+import { getProgramEnrollmentsPickList, getInstitutionStudents } from "./instituteActions";
 import {
   TableRowDetailLink,
   Badge,
@@ -9,9 +9,11 @@ import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 
 const Students = ({ id }) => {
-  const [students, setStudents] = useState([]);
+  const [programEnrollments, setProgramEnrollments] = useState([]);
   const [institutionStudentsAggregate, setInstitutionStudentsAggregate] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pickList, setPickList] = useState([]);
+  const [studentsTableData, setStudentsTableData] = useState([]);
   const history = useHistory();
   const paginationPageSize = 10;
 
@@ -41,25 +43,33 @@ const Students = ({ id }) => {
     }
 
     getInstitutionStudents(id, pageSize, pageSize * pageIndex, sortByField, sortOrder).then(data => {
-      console.log('data', data);
-      let programEnrollments = data?.data?.data?.programEnrollmentsConnection?.values;
-      // cleanup student data for rendering
-      let studentList = programEnrollments.map((programEnrollment) => {
-        return {
-          id: programEnrollment.student.id,
-          student: <Avatar logo={programEnrollment.student.logo} name={programEnrollment.student.first_name + ' ' + programEnrollment.student.last_name} icon='student' />,
-          area: programEnrollment.student.address.city,
-          status: programEnrollment.status,
-          year_of_course_completion: programEnrollment.year_of_course_completion,
-          link: <TableRowDetailLink value={programEnrollment.student.id} to={'student'} />
-        }
-      });
-      setStudents(studentList);
+      setProgramEnrollments(data?.data?.data?.programEnrollmentsConnection?.values);
       setInstitutionStudentsAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate.count);
     }).finally(() => {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    getProgramEnrollmentsPickList().then(data => {
+      setPickList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    let data = programEnrollments;
+    data = data.map((programEnrollment, index) => {
+      return {
+        id: programEnrollment.student.id,
+        student: <Avatar logo={programEnrollment.student.logo} name={programEnrollment.student.first_name + ' ' + programEnrollment.student.last_name} icon='student' />,
+        area: programEnrollment.student.address.city,
+        status: <Badge value={programEnrollment.status} pickList={pickList.status || []} />,
+        year_of_course_completion: programEnrollment.year_of_course_completion,
+        link: <TableRowDetailLink value={programEnrollment.student.id} to={'student'} />
+      }
+    });
+    setStudentsTableData(data);
+  }, [programEnrollments, pickList]);
 
   const columns = useMemo(
     () => [
@@ -91,7 +101,7 @@ const Students = ({ id }) => {
 
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={students} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
     </div>
   );
 };
