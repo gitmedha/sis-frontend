@@ -37,7 +37,7 @@ const SearchInput = styled.div`
 `;
 
 
-const SearchField = ({ currentRefinement, isSearchStalled, refine }) => (
+const SearchField = ({ currentRefinement, refine }) => (
   <SearchInput>
     <form noValidate action="" role="search">
       <div className="input-group">

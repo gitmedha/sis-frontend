@@ -98,9 +98,9 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  let { searchState, searchResults } = props;
+  let { searchState, setSearchState, searchResults } = props;
   const hasResults = searchResults && searchResults.nbHits !== 0;
-  const hasQuery = searchState && searchState.query;
+  const hasQuery = props.searchState && props.searchState.query;
 
   return (
     <SearchStateContainer hidden={!hasQuery}>
@@ -122,7 +122,7 @@ const SearchStateResults = (props) => {
         </div>
       </div>
       {hasResults ? (
-        <SearchHits />
+        <SearchHits searchState={searchState} setSearchState={setSearchState} />
       ) : (
         <div className="no-results">
           No results found

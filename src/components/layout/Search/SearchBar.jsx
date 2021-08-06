@@ -3,6 +3,7 @@ import { InstantSearch } from 'react-instantsearch-dom';
 import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
 import SearchField from './SearchField';
 import SearchStateResults from './SearchStateResults';
+import { useState } from "react";
 
 const searchClient = instantMeiliSearch(
   process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -15,17 +16,23 @@ const SearchContainer = styled.div`
   width: 100%;
 `;
 
-const SearchBar = () => (
-  <SearchContainer className="mr-auto">
-    <InstantSearch
-      indexName="institutions"
-      searchClient={searchClient}
-    >
-      <SearchField />
-      <SearchStateResults />
-    </InstantSearch>
-  </SearchContainer>
-);
+const SearchBar = () => {
+  const [searchState, setSearchState] = useState({});
+
+  return (
+    <SearchContainer className="mr-auto">
+      <InstantSearch
+        searchClient={searchClient}
+        indexName="institutions"
+        searchState={searchState}
+        onSearchStateChange={setSearchState}
+      >
+        <SearchField />
+        <SearchStateResults searchState={searchState} setSearchState={setSearchState} />
+      </InstantSearch>
+    </SearchContainer>
+  );
+}
 
 
 export default SearchBar;

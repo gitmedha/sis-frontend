@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { connectHits } from 'react-instantsearch-dom';
+import { useHistory } from "react-router-dom";
 
 import SearchHighlight from './SearchHighlight';
 
@@ -36,6 +37,11 @@ const SearchHitsContainer = styled.div`
     tbody {
       tr {
         height: 40px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #F8F9FA;
+        }
 
         td {
           padding-left: 15px;
@@ -75,8 +81,18 @@ const SearchHitsContainer = styled.div`
   }
 `;
 
-const SearchHits = (props) => {
+const SearchHits = props => {
   let { hits } = props;
+  const history = useHistory();
+
+  const clickHandler = hit => {
+    props.setSearchState({
+      ...props.searchState,
+      query: '',
+    });
+    history.push(`/institution/${hit.id}`);
+  };
+
   return (
     <SearchHitsContainer>
       <table>
@@ -90,7 +106,7 @@ const SearchHits = (props) => {
         </thead>
         <tbody>
           {hits.map(hit => (
-            <tr key={hit.id} className="hit">
+            <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
               <td>
                 <div className="badge badge-institutions">Inst.</div>
               </td>
