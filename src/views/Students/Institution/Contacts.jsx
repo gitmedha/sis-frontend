@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import Table from "../../../components/content/Table";
 import { Anchor } from "../../../components/content/Utils";
 
-const Contacts = ({ contacts, id, done, setAlert }) => {
+const Contacts = ({ contacts }) => {
   contacts = contacts.map((contact) => {
     contact.email_id = <Anchor text={contact.email} href={'mailto:' + contact.email} />;
     return contact;

@@ -8,6 +8,7 @@ import api from "../../apis";
 import Address from "./Institution/Address";
 import Contacts from "./Institution/Contacts";
 import Details from "./Institution/Details";
+import Students from "./Institution/Students";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
@@ -124,6 +125,9 @@ const Institute = (props) => {
         </Collapsible>
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />
+        </Collapsible>
+        <Collapsible title="Students">
+          <Students id={rest.id} />
         </Collapsible>
         <InstitutionForm
           {...instituteData}
