@@ -13,7 +13,7 @@ import LayoutContainer from "./components/layout/Container";
 import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
-import Batches from "./views/Batches";
+import Batches from "./views/Batches/Batches";
 import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
 import NewBatch from "./views/Batches/NewBatch";
