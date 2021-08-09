@@ -133,9 +133,9 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
             <tbody {...getTableBodyProps()}>
               {loading ? (
                 <>
-                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
-                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
-                  <tr><td colSpan="5"><Skeleton height='100%' /></td></tr>
+                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
+                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
+                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
                 </>
               ) : (
                 page.map((row, index) => {
