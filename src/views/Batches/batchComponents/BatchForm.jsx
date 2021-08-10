@@ -30,48 +30,26 @@ const Section = styled.div`
 
 const BatchForm = (props) => {
   let { onHide, show } = props;
-  const [statusOpts, setStatusOpts] = useState([]);
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
 
-  console.log('props', props);
   let initialValues = {...props};
-  initialValues['grant'] = Number(props?.grant?.id);
-  initialValues['program'] = Number(props?.program?.id);
-  initialValues['institution'] = Number(props?.institution?.id);
-  initialValues['assigned_to'] = Number(props?.assigned_to?.id);
-  initialValues['start_date'] = new Date(props?.start_date);
-  initialValues['end_date'] = new Date(props?.end_date);
-  console.log('initialValues', initialValues);
-  console.log('options?.grantOptions', options?.grantOptions);
+  initialValues['grant'] = props.id ? Number(props?.grant?.id) : null;
+  initialValues['program'] = props.id ? Number(props?.program?.id): null;
+  initialValues['institution'] = props.id ? Number(props?.institution?.id): null;
+  initialValues['assigned_to'] = props.id ? Number(props?.assigned_to?.id): null;
+  initialValues['start_date'] = props.id ? new Date(props?.start_date) : null;
+  initialValues['end_date'] = props.id ? new Date(props?.end_date) : null;
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
-    console.log('here');
-    console.log('lookUpOpts', lookUpOpts);
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
 
   useEffect(() => {
-    getBatchesPickList().then(data => {
-      setStatusOpts(data.status.map((item) => {
-        return {
-          key: item.value,
-          value: item.value.toLowerCase(),
-        };
-      }));
-    });
-
-    // getAssigneeOptions().then(data => {
-    //   setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-    //       key: assignee.username,
-    //       label: assignee.username,
-    //       value: assignee.id,
-    //   })));
-    // });
+    getBatchesPickList();
   }, []);
 
   useEffect(() => {
@@ -233,6 +211,7 @@ const BatchForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       placeholder="Start Date"
+                      autoComplete="off"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -242,6 +221,7 @@ const BatchForm = (props) => {
                       control="datepicker"
                       placeholder="End Date"
                       className="form-control"
+                      autoComplete="off"
                     />
                   </div>
                 </div>

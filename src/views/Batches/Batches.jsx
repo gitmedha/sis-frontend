@@ -1,7 +1,6 @@
 import NP from "nprogress";
 import moment from "moment";
 import api from "../../apis";
-import { Link } from "react-router-dom";
 import { useCallback, useState, useEffect, useMemo } from "react";
 import { GET_BATCHES } from "../../graphql";
 import Collapse from "../../components/content/CollapsiblePanels";
@@ -11,7 +10,9 @@ import {
   Badge,
 } from "../../components/content/Utils";
 import { useHistory } from "react-router-dom";
-import { getBatchesPickList } from "./batchActions";
+import { createBatch, getBatchesPickList } from "./batchActions";
+import BatchForm from "./batchComponents/BatchForm";
+import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const Batches = () => {
   const [batches, setBatches] = useState([]);
@@ -19,6 +20,7 @@ const Batches = () => {
   const [batchesTableData, setBatchesTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pickList, setPickList] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
   const history = useHistory();
   const paginationPageSize = 10;
 
@@ -127,16 +129,47 @@ const Batches = () => {
     history.push(`/batch/${row.id}`)
   }
 
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, ...dataToSave} = data;
+    dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
+    dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
+
+    NP.start();
+    createBatch(dataToSave).then(data => {
+      setAlert("Batch created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create batch.", "error");
+    }).finally(() => {
+      NP.done();
+      getBatches();
+    });
+    setModalShow(false);
+  };
+
   return (
     <Collapse title="All Batches" type="plain" opened={true}>
       <div className="row my-4">
         <div className="col-md-6 col-sm-12 ml-auto">
-          <Link to="/add-new-batch" className="btn btn-primary btn-regular">
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalShow(true)}
+          >
             Add New Batch
-          </Link>
+          </button>
         </div>
       </div>
       <Table columns={columns} data={batchesTableData} paginationPageSize={paginationPageSize} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <BatchForm
+        show={modalShow}
+        onHide={hideCreateModal}
+      />
     </Collapse>
   );
 };

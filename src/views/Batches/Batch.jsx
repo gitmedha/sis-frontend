@@ -143,9 +143,6 @@ const Batch = (props) => {
     dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
     dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
 
-    console.log('data',data);
-    console.log('dataToSave',dataToSave);
-
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
       setAlert("Batch updated successfully.", "success");
