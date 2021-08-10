@@ -15,6 +15,9 @@ import Students from "./batchComponents/Students";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
+import BatchForm from "./batchComponents/BatchForm";
+import { setAlert } from "../../store/reducers/Notifications/actions";
+import { updateBatch } from "./batchActions";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -22,6 +25,8 @@ const Batch = (props) => {
   const [students, setStudents] = useState([]);
   const batchID = Number(props.match.params.id);
   const [isLoading, setLoading] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   const init = async () => {
     setLoading(true);
@@ -111,9 +116,39 @@ const Batch = (props) => {
 
   const done = () => getThisBatch();
 
+  const hideUpdateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // // need to remove id and show from the payload
+    let {id, show, logo, created_at, updated_at, ...dataToSave} = data;
+    if (typeof data.institution === 'object') {
+      dataToSave['institution'] = Number(data.institution?.id);
+    }
+    if (typeof data.program === 'object') {
+      dataToSave['program'] = Number(data.program?.id);
+    }
+    if (typeof data.grant === 'object') {
+      dataToSave['grant'] = Number(data.grant?.id);
+    }
+
+    NP.start();
+    updateBatch(Number(id), dataToSave).then(data => {
+      setAlert("Institution updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update institution.", "error");
+    }).finally(() => {
+      NP.done();
+      getThisBatch();
+    });
+    setModalShow(false);
+  };
+
   useEffect(() => {
     init();
-    // eslint-disable-next-line
   }, []);
 
   if (isLoading) {
@@ -121,6 +156,20 @@ const Batch = (props) => {
   } else {
     return (
       <div>
+        <div className="row" style={{padding: '0 15px', marginTop: '30px'}}>
+          <div className="col-12">
+            <button
+              onClick={() => setModalShow(true)}
+              style={{ marginLeft: "0px" }}
+              className="btn--primary"
+            >
+              EDIT
+            </button>
+            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+              DELETE
+            </button>
+          </div>
+        </div>
         {batch && (
           <Collapsible
             titleContent={
@@ -143,6 +192,11 @@ const Batch = (props) => {
         <Collapsible title="Students" badge={students.length.toString()}>
           <Students students={students} />
         </Collapsible>
+        {batch && <BatchForm
+          {...batch}
+          show={modalShow}
+          onHide={hideUpdateModal}
+        />}
       </div>
     );
   }

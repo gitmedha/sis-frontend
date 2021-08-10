@@ -82,8 +82,8 @@ const Details = ({ batch, done, setAlert }) => {
 
   const batchTableData = [
     {
-      sessions_planned: 20,
-      per_student_fees: 400,
+      sessions_planned: batch.number_of_sessions_planned,
+      per_student_fees: batch.per_student_fees,
       seats_available: 50,
     }
   ];
@@ -121,78 +121,7 @@ const Details = ({ batch, done, setAlert }) => {
 
   return (
     <div className="py-2 px-3">
-      {/* <pre>
-        <code>{JSON.stringify(batch, null, 2)}</code>
-      </pre> */}
       <div className="row">
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Batch Name</p>
-          <p>{batch.name}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Assigned To</p>
-          <p>{batch.assigned_to?.username}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Program</p>
-          <p>{batch.program?.name}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Area</p>
-          <p>{"Shaheed Path"}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Status</p>
-          <Badge value={batch.status} pickList={[]} />
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Start Date</p>
-          <p>
-            <Moment date={batch.start_date} format={"DD-MMM-YYYY"} />
-          </p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">End Date</p>
-          <p>
-            <Moment date={batch.end_date} format={"DD-MMM-YYYY"} />
-          </p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Name in Current SIS</p>
-          <p>{batch.name_in_current_sis}</p>
-        </div>
-        <div className="col-md-4 col-sm-12 mb-3">
-          <p className="text-detail-title">Institution</p>
-          <p>{batch.institution.name}</p>
-        </div>
-        <div className="col-md-6 col-sm-12 mb-3">
-          <Table>
-            <thead>
-              <tr>
-                <th scope="col">Sessions Planned</th>
-                <th scope="col">Per-student fees</th>
-                <th scope="col">Seats Available</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{batch.number_of_sessions_planned}</td>
-                <td>{batch.per_student_fees}</td>
-                <td>50</td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-        <div className="col-md-6 col-sm-12 mb-3 pr-4">
-          <p className="text--primary latto-bold pb-3 mb-0">
-            Average Attendance Across All Sessions
-          </p>
-          <ProgressBar
-            completed={60}
-            bgColor={"#5C4CBF"}
-            baseBgColor={"#EEEFF8"}
-          />
-        </div>
         <div className="col-12">
           <button
             onClick={openModal}
