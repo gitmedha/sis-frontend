@@ -64,6 +64,7 @@ query GET_BATCH ($id:ID!) {
     }
     grant {
       id
+      name
     }
     institution {
       id

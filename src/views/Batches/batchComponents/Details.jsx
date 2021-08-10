@@ -55,7 +55,8 @@ const Details = ({ batch, done, setAlert }) => {
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
           <DetailField label="Institution" value={batch.institution.name} />
           <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} />
-          <div className="mt-5">
+          <DetailField label="Grant" value={batch.grant.name} />
+          <div className="mt-2">
             <div style={{color: '#787B96', fontFamily: 'Latto-Regular', fontSize: '14px', lineHeight: 1.2, marginBottom: '10px'}}>
               Average Attendance Across All Sessions
             </div>
