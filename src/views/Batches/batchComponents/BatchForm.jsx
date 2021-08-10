@@ -35,6 +35,25 @@ const BatchForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
 
+  console.log('props', props);
+  let initialValues = {...props};
+  initialValues['grant'] = Number(props?.grant?.id);
+  initialValues['program'] = Number(props?.program?.id);
+  initialValues['institution'] = Number(props?.institution?.id);
+  initialValues['assigned_to'] = Number(props?.assigned_to?.id);
+  console.log('initialValues', initialValues);
+  console.log('options?.grantOptions', options?.grantOptions);
+
+  // const originalVal = {
+  //   ...JSON.parse(JSON.stringify(props.batch)),
+  //   grant: Number(props.batch.grant.id),
+  //   program: Number(props.batch.program.id),
+  //   end_date: new Date(props.batch.end_date),
+  //   start_date: new Date(props.batch.start_date),
+  //   institution: Number(props.batch.institution.id),
+  //   assigned_to: Number(props.batch.assigned_to.id),
+  // };
+
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -72,9 +91,6 @@ const BatchForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
-
-  let initialValues = {...props};
-  initialValues['assigned_to'] = props?.assigned_to?.id;
 
   return (
     <Modal

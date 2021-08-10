@@ -133,6 +133,9 @@ const Batch = (props) => {
     if (typeof data.grant === 'object') {
       dataToSave['grant'] = Number(data.grant?.id);
     }
+    if (typeof data.assigned_to === 'object') {
+      dataToSave['assigned_to'] = Number(data.assigned_to?.id);
+    }
 
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
