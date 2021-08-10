@@ -182,7 +182,7 @@ const Batch = (props) => {
   } else {
     return (
       <>
-        <div className="row" style={{padding: '0 15px', marginTop: '30px'}}>
+        <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
