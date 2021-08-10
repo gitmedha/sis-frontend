@@ -8,6 +8,7 @@ import { Modal } from "react-bootstrap";
 import SkeletonLoader from "../../../components/content/SkeletonLoader";
 import { GET_STUDENT_DETAILS } from "../../../graphql";
 import api from "../../../apis";
+import DetailField from '../../../components/content/DetailField';
 
 const Students = ({ students }) => {
   const [pickList, setPickList] = useState([]);
@@ -115,47 +116,25 @@ const StudentModal = (props) => {
           id="contained-modal-title-vcenter"
           className="text--primary latto-bold"
         >
-          {props.student.name}
+          <h1 className="text--primary bebas-thick mb-0">{props.student.name}</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-light">
         {isLoading ? (
           <SkeletonLoader />
         ) : (
-          <div className="row px-3">
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Parents Name</p>
-              <p>{details.name_of_parent_or_guardian}</p>
+          <div className="row">
+            <div className="col-md-5 col-sm-12">
+              <DetailField label="Parents Name" value={details.name_of_parent_or_guardian} />
+              <DetailField label="Status" value={details.status} />
+              <DetailField label="Category" value={details.category} />
+              <DetailField label="Gender" value={details.gender} />
             </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Phone Number</p>
-              <p>{details.phone}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Status</p>
-              <p>{details.status}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">
-                Date Of Birth
-              </p>
-              <p>{moment(details.date_of_birth).format("DD MMM YYYY")}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Category</p>
-              <p>{details.category}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Email</p>
-              <p>{details.email}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Gender</p>
-              <p className="text-capitalize">{details.gender}</p>
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <p className="text--primary latto-bold pb-0 mb-0">Institution</p>
-              <p className="text-capitalize">{props.student.institution}</p>
+            <div className="offset-md-1 col-md-5 col-sm-12">
+              <DetailField label="Phone Number" value={details.phone} />
+              <DetailField label="Date Of Birth" value={moment(details.date_of_birth).format("DD MMM YYYY")} />
+              <DetailField label="Email" value={details.email} />
+              <DetailField label="Institution" value={props.student.institution} />
             </div>
           </div>
         )}

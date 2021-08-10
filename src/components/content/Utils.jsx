@@ -50,7 +50,7 @@ export const Badge = ({ value, pickList=[] }) => {
 
 export const TableRowDetailLink = ({ value, to }) => {
   return (
-    <Link to={`/${to}/${value}`} className='d-flex align-items-center h-100'>
+    <Link to={`/${to}/${value}`} className="d-flex align-items-center h-100">
       <FaAngleDoubleRight size={18} color={"#31B89D"} />
     </Link>
   );

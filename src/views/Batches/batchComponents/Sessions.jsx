@@ -1,11 +1,21 @@
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useMemo } from "react";
+import styled from "styled-components";
+
 import Table from '../../../components/content/Table';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { TableRowDetailLink } from "../../../components/content/Utils";
 
+const SessionLink = styled.div`
+  @media screen and (min-width: 768px) {
+    margin-left: 30px;
+  }
+`
+
 const Sessions = ({ sessions, batchID }) => {
+  const history = useHistory();
+
   const columns = useMemo(
     () => [
       {
@@ -31,12 +41,17 @@ const Sessions = ({ sessions, batchID }) => {
 
   const sessionTableData = sessions.map(session => {
     return {
+      id: session.id,
       topics_covered: session.topics_covered,
       date: moment(session.date).format('DD MMM YYYY'),
       attendance: <ProgressBar completed={session.percent} bgColor={"#5C4CBF"} baseBgColor={"#EEEFF8"} />,
-      link: <TableRowDetailLink value={session.id} to={'session'} />
+      link: <SessionLink><TableRowDetailLink value={session.id} to={'session'} /></SessionLink>
     }
   });
+
+  const handleRowClick = session => {
+    history.push(`/sesssion/${session.id}`)
+  }
 
   return (
     <div className="py-2 px-3">
@@ -51,7 +66,7 @@ const Sessions = ({ sessions, batchID }) => {
           </Link>
         </div>
         <div className="col-12 mt-3">
-          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} />
+          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
         </div>
       </div>
     </div>
