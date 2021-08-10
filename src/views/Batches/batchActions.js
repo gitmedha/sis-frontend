@@ -1,5 +1,5 @@
 import api from "../../apis";
-import { GET_PICKLIST, UPDATE_BATCH } from "../../graphql";
+import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH } from "../../graphql";
 
 export const getBatchesPickList = async () => {
   return await api.post("/graphql", {
@@ -35,3 +35,16 @@ export const updateBatch = async (id, data) => {
     return Promise.reject(error);
   });
 };
+
+export const deleteBatch = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_BATCH,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}

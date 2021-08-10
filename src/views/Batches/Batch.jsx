@@ -18,7 +18,9 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { updateBatch } from "./batchActions";
+import { deleteBatch, updateBatch } from "./batchActions";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { useHistory } from "react-router-dom";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -28,6 +30,7 @@ const Batch = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const history = useHistory();
 
   const init = async () => {
     setLoading(true);
@@ -145,15 +148,29 @@ const Batch = (props) => {
 
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
-      setAlert("Institution updated successfully.", "success");
+      setAlert("Batch updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_DETAILS_ERR", err);
-      setAlert("Unable to update institution.", "error");
+      setAlert("Unable to update batch.", "error");
     }).finally(() => {
       NP.done();
       getThisBatch();
     });
     setModalShow(false);
+  };
+
+  const handleDelete = async () => {
+    NP.start();
+    deleteBatch(batch.id).then(data => {
+      setAlert("Batch deleted successfully.", "success");
+    }).catch(err => {
+      console.log("BATCH_DELETE_ERR", err);
+      setAlert("Unable to delete batch.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      NP.done();
+      history.push("/batches");
+    });
   };
 
   useEffect(() => {
@@ -164,7 +181,7 @@ const Batch = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
-      <div>
+      <>
         <div className="row" style={{padding: '0 15px', marginTop: '30px'}}>
           <div className="col-12">
             <button
@@ -177,6 +194,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
             </button>
+            <button className="btn--secondary">MARK AS COMPLETE</button>
           </div>
         </div>
         {batch && (
@@ -206,7 +224,35 @@ const Batch = (props) => {
           show={modalShow}
           onHide={hideUpdateModal}
         />}
-      </div>
+        {batch &&
+        <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          onConfirm={() => handleDelete()}
+          onCancel={() => setShowDeleteAlert(false)}
+          title={
+            <span className="text--primary latto-bold">Delete {batch.name}?</span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Cancel
+              </button>
+              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                Delete
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure, you want to delete this batch?</p>
+        </SweetAlert>
+        }
+      </>
     );
   }
 };
