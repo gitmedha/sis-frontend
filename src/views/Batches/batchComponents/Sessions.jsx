@@ -1,14 +1,6 @@
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import {
-  cellStyle,
-  TableLink,
-  BadgeRenderer,
-  ProgressRenderer,
-  SerialNumberRenderer,
-} from "../../../components/content/AgGridUtils";
-import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import Table from '../../../components/content/Table';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { TableRowDetailLink } from "../../../components/content/Utils";
