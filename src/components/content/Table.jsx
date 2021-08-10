@@ -67,7 +67,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null }) => {
+const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -114,7 +114,7 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
             <thead>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  <th>#</th>
+                  {indexes && <th>#</th>}
                   {headerGroup.headers.map(column => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
@@ -142,9 +142,11 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
                   prepareRow(row)
                   return (
                     <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
-                      <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                        {pageIndex * pageSize + index + 1}.
-                      </td>
+                      {indexes &&
+                        <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                          {pageIndex * pageSize + index + 1}.
+                        </td>
+                      }
                       {row.cells.map(cell => {
                         return (
                           <td {...cell.getCellProps()}>
