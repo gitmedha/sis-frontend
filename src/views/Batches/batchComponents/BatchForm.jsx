@@ -41,18 +41,10 @@ const BatchForm = (props) => {
   initialValues['program'] = Number(props?.program?.id);
   initialValues['institution'] = Number(props?.institution?.id);
   initialValues['assigned_to'] = Number(props?.assigned_to?.id);
+  initialValues['start_date'] = new Date(props?.start_date);
+  initialValues['end_date'] = new Date(props?.end_date);
   console.log('initialValues', initialValues);
   console.log('options?.grantOptions', options?.grantOptions);
-
-  // const originalVal = {
-  //   ...JSON.parse(JSON.stringify(props.batch)),
-  //   grant: Number(props.batch.grant.id),
-  //   program: Number(props.batch.program.id),
-  //   end_date: new Date(props.batch.end_date),
-  //   start_date: new Date(props.batch.start_date),
-  //   institution: Number(props.batch.institution.id),
-  //   assigned_to: Number(props.batch.assigned_to.id),
-  // };
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -234,7 +226,7 @@ const BatchForm = (props) => {
                       placeholder="Per Student Fees"
                     />
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mt-2">
+                  <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"
                       label="Start Date"
@@ -251,7 +243,7 @@ const BatchForm = (props) => {
                       placeholder="End Date"
                       className="form-control"
                     />
-                  </div> */}
+                  </div>
                 </div>
               </Section>
               <div className="row mt-3 py-3">

@@ -1,3 +1,4 @@
+import moment from "moment";
 import {
   GET_BATCH,
   GET_SESSIONS,
@@ -136,6 +137,11 @@ const Batch = (props) => {
     if (typeof data.assigned_to === 'object') {
       dataToSave['assigned_to'] = Number(data.assigned_to?.id);
     }
+    dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
+    dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
+
+    console.log('data',data);
+    console.log('dataToSave',dataToSave);
 
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
