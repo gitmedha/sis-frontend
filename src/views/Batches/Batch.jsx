@@ -1,4 +1,10 @@
 import moment from "moment";
+import NP from "nprogress";
+import { useState, useEffect } from "react";
+import { merge, values, keyBy } from "lodash";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { useHistory } from "react-router-dom";
+
 import {
   GET_BATCH,
   GET_SESSIONS,
@@ -6,10 +12,7 @@ import {
   GET_BATCH_STUDENTS,
   GET_SESSION_ATTENDANCE_STATS,
 } from "../../graphql";
-import NP from "nprogress";
 import { queryBuilder } from "../../apis";
-import { useState, useEffect } from "react";
-import { merge, values, keyBy } from "lodash";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
 import Students from "./batchComponents/Students";
@@ -19,8 +22,6 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteBatch, updateBatch } from "./batchActions";
-import SweetAlert from "react-bootstrap-sweetalert";
-import { useHistory } from "react-router-dom";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -49,7 +50,6 @@ const Batch = (props) => {
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
-      // console.log("GET_BATCH", data);
       setBatch(data.batch);
     } catch (err) {
       console.log("ERR", err);
