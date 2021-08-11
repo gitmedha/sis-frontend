@@ -4,8 +4,7 @@ import { useMemo } from "react";
 import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
-import ProgressBar from "@ramonak/react-progress-bar";
-import { TableRowDetailLink } from "../../../components/content/Utils";
+import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
 
 const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
@@ -44,7 +43,7 @@ const Sessions = ({ sessions, batchID }) => {
       id: session.id,
       topics_covered: session.topics_covered,
       date: moment(session.date).format('DD MMM YYYY'),
-      attendance: <ProgressBar completed={session.percent} bgColor={"#5C4CBF"} baseBgColor={"#EEEFF8"} />,
+      attendance: <ProgressBarField value={session.percent} />,
       link: <SessionLink><TableRowDetailLink value={session.id} to={'session'} /></SessionLink>
     }
   });

@@ -207,7 +207,7 @@ const Batch = (props) => {
             }
             opened={true}
           >
-            <Details batch={batch} done={done} />
+            <Details batch={batch} sessions={sessions} />
           </Collapsible>
         )}
         <Collapsible title="Sessions" badge={sessions.length.toString()}>

@@ -2,7 +2,7 @@ import Table from '../../../components/content/Table';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { useEffect, useMemo, useState } from "react";
 import { getBatchesPickList } from "../batchActions";
-import { Badge } from "../../../components/content/Utils";
+import { Badge, ProgressBarField } from "../../../components/content/Utils";
 import moment from 'moment';
 import { Modal } from "react-bootstrap";
 import SkeletonLoader from "../../../components/content/SkeletonLoader";
@@ -57,7 +57,7 @@ const Students = ({ students }) => {
       phone: student.student.phone,
       enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
       institution: student.institution.name,
-      attendance: <ProgressBar completed={student.percent ? student.percent : 0} bgColor={"#5C4CBF"} labelColor={student.percent ? " #fff" : "#1C2833"} baseBgColor={"#EEEFF8"} />,
+      attendance: <ProgressBarField value={student.percent ? student.percent : 0} />,
     };
   });
   console.log('studentsTableData', studentsTableData);

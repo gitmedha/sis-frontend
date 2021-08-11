@@ -206,6 +206,17 @@ const BatchForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      min={0}
+                      type="number"
+                      control="input"
+                      name="seats_available"
+                      className="form-control"
+                      label="Seats Available"
+                      placeholder="Seats Available"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       name="start_date"
                       label="Start Date"
                       control="datepicker"
