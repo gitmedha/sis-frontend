@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-import { InstituteValidations } from "../../../validations";
+import { BatchValidations } from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
@@ -33,13 +33,30 @@ const BatchForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
 
-  let initialValues = {...props};
-  initialValues['grant'] = props.id ? Number(props?.grant?.id) : null;
-  initialValues['program'] = props.id ? Number(props?.program?.id): null;
-  initialValues['institution'] = props.id ? Number(props?.institution?.id): null;
-  initialValues['assigned_to'] = props.id ? Number(props?.assigned_to?.id): null;
-  initialValues['start_date'] = props.id ? new Date(props?.start_date) : null;
-  initialValues['end_date'] = props.id ? new Date(props?.end_date) : null;
+  let initialValues = {
+    name: '',
+    name_in_current_sis: '',
+    assigned_to: '',
+    program: '',
+    grant: '',
+    institution: '',
+    status: '',
+    number_of_sessions_planned: '',
+    per_student_fees: '',
+    seats_available: '',
+    start_date: '',
+    end_date: '',
+  };
+  if (props.id) {
+    initialValues = {...props}
+    initialValues['grant'] = Number(props.grant.id);
+    initialValues['program'] = Number(props.program.id);
+    initialValues['institution'] = Number(props.institution.id);
+    initialValues['assigned_to'] = Number(props.assigned_to.id);
+    initialValues['start_date'] = new Date(props.start_date);
+    initialValues['end_date'] = new Date(props.end_date);
+  }
+
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -86,7 +103,7 @@ const BatchForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={InstituteValidations}
+          validationSchema={BatchValidations}
         >
           {({ values }) => (
             <Form>

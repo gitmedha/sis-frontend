@@ -25,7 +25,7 @@ export const sessionValidations = Yup.object({
   topics,
 });
 
-export const batchValidations = Yup.object({
+export const BatchValidations = Yup.object({
   name,
   grant,
   status,
