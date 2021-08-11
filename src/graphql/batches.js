@@ -1,22 +1,31 @@
 export const GET_BATCHES = `
 query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
-    batches(
+    batchesConnection(
       sort: $sort
       start: $start
       limit: $limit
-      where: { assigned_to: { id: $id } }
-    ){
-      id
-      name
-      start_date
-      end_date
-      status
-      logo{
-        url
+      where: {
+        assigned_to: {
+          id: $id
+        }
       }
-      number_of_sessions_planned
-      program{
+    ) {
+      values {
+        id
         name
+        start_date
+        end_date
+        status
+        logo {
+          url
+        }
+        number_of_sessions_planned
+        program {
+          name
+        }
+      }
+      aggregate {
+        count
       }
     }
 }
@@ -55,6 +64,7 @@ query GET_BATCH ($id:ID!) {
     }
     grant {
       id
+      name
     }
     institution {
       id
@@ -63,6 +73,7 @@ query GET_BATCH ($id:ID!) {
     per_student_fees
     name_in_current_sis
     number_of_sessions_planned
+    seats_available
   }
 }
 `;
@@ -91,7 +102,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
     id
     status
     batch {
-      id 
+      id
       name
     }
     institution {
@@ -99,7 +110,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
       name
     }
     student {
-      id 
+      id
       phone
       last_name
       first_name
@@ -113,7 +124,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
   programEnrollments (where: {batch: {id: $id}}) {
     id
     student {
-      id 
+      id
       last_name
       first_name
     }
@@ -141,11 +152,11 @@ query GET_STUDENT ($id: ID!){
 export const CREATE_SESSION = `
 mutation CREATE_SESSION($batchID: ID!, $date: Date!, $topics: String!) {
   createSession(
-    input: { 
-      data: { 
-        date: $date, 
-        batch: $batchID, 
-        topics_covered: $topics 
+    input: {
+      data: {
+        date: $date,
+        batch: $batchID,
+        topics_covered: $topics
       }
     }
   ) {
@@ -261,10 +272,10 @@ query GET_SESSION($id: ID!){
 
 export const GET_SESSION_ATTENDANCE = `
 query GET_SESSION_ATTENDANCE($sessionID: ID!){
-  attendances(where: { 
-    session: { 
-      id: $sessionID 
-    } 
+  attendances(where: {
+    session: {
+      id: $sessionID
+    }
   }
   ){
     id
@@ -286,11 +297,11 @@ mutation UPDATE_ATTENDANCE(
   $data: editAttendanceInput!
 ) {
   updateAttendance(
-    input:{ 
-      data: $data, 
-      where: { 
-        id: $id 
-      } 
+    input:{
+      data: $data,
+      where: {
+        id: $id
+      }
     }
   ){
     attendance{
@@ -316,8 +327,8 @@ mutation UPDATE_SESSION(
   updateSession(
     input: {
       data: $data,
-      where: { 
-        id: $id 
+      where: {
+        id: $id
       }
     }
   ){
@@ -389,7 +400,7 @@ query GET_BATCH_ENTROLLED_STUDENTS ($id: ID!){
     }
   ) {
     id
-    student { 
+    student {
       first_name
       last_name
     }

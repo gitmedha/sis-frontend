@@ -1,13 +1,21 @@
 import moment from "moment";
-import api from "../../apis";
+import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import ProgressBar from "@ramonak/react-progress-bar";
+
+import api from "../../apis";
 import SkeletonLoader from "./SkeletonLoader";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
-import ProgressBar from "@ramonak/react-progress-bar";
+
+const ProgressBarContainer = styled.div`
+  span {
+    font-size: 12px !important;
+  }
+`
 
 const badgeStyle = {
   height: "22px",
@@ -50,7 +58,7 @@ export const Badge = ({ value, pickList=[] }) => {
 
 export const TableRowDetailLink = ({ value, to }) => {
   return (
-    <Link to={`/${to}/${value}`} className='d-flex align-items-center h-100'>
+    <Link to={`/${to}/${value}`} className="d-flex align-items-center h-100">
       <FaAngleDoubleRight size={18} color={"#31B89D"} />
     </Link>
   );
@@ -190,15 +198,15 @@ export const Anchor = ({ text, href }) => {
     </div>;
 };
 
-export const ProgressRenderer = ({ value }) => (
-  <div style={{ marginTop: "10px", paddingRight: "20px", paddingLeft: "20px" }}>
+export const ProgressBarField = ({ value, failBelow=30 }) => (
+  <ProgressBarContainer>
     <ProgressBar
-      bgColor={"#5C4CBF"}
+      bgColor={value > failBelow ? "#31B89D" : '#FF3A3A'}
       completed={value ? value : 0}
       labelColor={value ? " #fff" : "#1C2833"}
-      baseBgColor={value ? "#EEEFF8" : "#909497"}
+      baseBgColor={"#EEEFF8"}
     />
-  </div>
+  </ProgressBarContainer>
 );
 
 export const cellStyle = {

@@ -1,15 +1,57 @@
 import moment from "moment";
-import { Link } from "react-router-dom";
-import {
-  cellStyle,
-  TableLink,
-  BadgeRenderer,
-  ProgressRenderer,
-  SerialNumberRenderer,
-} from "../../../components/content/AgGridUtils";
-import { AgGridColumn, AgGridReact } from "ag-grid-react";
+import { Link, useHistory } from "react-router-dom";
+import { useMemo } from "react";
+import styled from "styled-components";
+
+import Table from '../../../components/content/Table';
+import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
+
+const SessionLink = styled.div`
+  @media screen and (min-width: 768px) {
+    margin-left: 30px;
+  }
+`
 
 const Sessions = ({ sessions, batchID }) => {
+  const history = useHistory();
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Topics covered',
+        accessor: 'topics_covered',
+      },
+      {
+        Header: 'Date',
+        accessor: 'date',
+      },
+      {
+        Header: 'Attendance',
+        accessor: 'attendance',
+      },
+      {
+        Header: '',
+        accessor: 'link',
+        disableSortBy: true,
+      },
+    ],
+    []
+  );
+
+  const sessionTableData = sessions.map(session => {
+    return {
+      id: session.id,
+      topics_covered: session.topics_covered,
+      date: moment(session.date).format('DD MMM YYYY'),
+      attendance: <ProgressBarField value={session.percent} />,
+      link: <SessionLink><TableRowDetailLink value={session.id} to={'session'} /></SessionLink>
+    }
+  });
+
+  const handleRowClick = session => {
+    history.push(`/sesssion/${session.id}`)
+  }
+
   return (
     <div className="py-2 px-3">
       <div className="row">
@@ -23,84 +65,9 @@ const Sessions = ({ sessions, batchID }) => {
           </Link>
         </div>
         <div className="col-12 mt-3">
-          <div
-            className="ag-theme-alpine"
-            style={{ height: "50vh", width: "100%" }}
-          >
-            <AgGridReact
-              rowData={sessions}
-              rowHeight={70}
-              frameworkComponents={{
-                link: TableLink,
-                badge: BadgeRenderer,
-                sno: SerialNumberRenderer,
-                progress: ProgressRenderer,
-              }}
-            >
-              {/* <AgGridColumn
-                sortable
-                field="session_number"
-                cellStyle={cellStyle}
-                headerName="Session No."
-              /> */}
-              <AgGridColumn
-                sortable
-                width={90}
-                headerName="#"
-                cellRenderer="sno"
-                cellStyle={cellStyle}
-                field="name"
-              />
-              {/* <AgGridColumn
-                sortable
-                field="session_number"
-                cellStyle={cellStyle}
-                headerName="Session No."
-              /> */}
-              <AgGridColumn
-                sortable
-                cellStyle={cellStyle}
-                field="topics_covered"
-                headerName="Topics Covered"
-              />
-              <AgGridColumn
-                sortable
-                width={210}
-                field="date"
-                headerName="Date"
-                cellStyle={cellStyle}
-                cellRenderer={({ value }) =>
-                  moment(value).format("DD MMM YYYY")
-                }
-              />
-              {/* <AgGridColumn
-                sortable
-                field="status"
-                headerName="Status"
-                cellRenderer="badge"
-                cellStyle={cellStyle}
-              /> */}
-              <AgGridColumn
-                sortable
-                width={300}
-                field="percent"
-                cellRenderer="progress"
-                headerName="Attendance"
-              />
-              <AgGridColumn
-                field="id"
-                width={70}
-                headerName=""
-                cellRenderer="link"
-                cellRendererParams={{ to: "session" }}
-              />
-            </AgGridReact>
-          </div>
+          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
         </div>
       </div>
-      {/* <pre>
-        <code>{JSON.stringify(sessions, null, 2)}</code>
-      </pre> */}
     </div>
   );
 };

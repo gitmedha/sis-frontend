@@ -13,10 +13,9 @@ import LayoutContainer from "./components/layout/Container";
 import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
-import Batches from "./views/Batches";
+import Batches from "./views/Batches/Batches";
 import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
-import NewBatch from "./views/Batches/NewBatch";
 import Institution from "./views/Students/Institution";
 import Institutions from "./views/Students/Institutions";
 import AddSession from "./views/Batches/batchComponents/AddSession";
@@ -63,7 +62,6 @@ const App = (props) => {
                 component={AddSession}
                 path="/new-session/:batchId"
               />
-              <Route path="/add-new-batch" exact component={NewBatch} />
               <Route path="/session/:sessionID" exact component={Session} />
               <Route
                 exact
