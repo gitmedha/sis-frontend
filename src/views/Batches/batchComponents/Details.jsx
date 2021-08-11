@@ -44,13 +44,12 @@ const Details = ({ batch, sessions={} }) => {
       seats_available: batch.seats_available || 0,
     }
   ];
+
   let totalSessionAttendancePercentages = 0;
   sessions.map(session => {
     return totalSessionAttendancePercentages += session.percent;
   });
-
   const averageAttendancePercent = Math.ceil(totalSessionAttendancePercentages / sessions.length);
-  console.log('averageAttendancePercent', averageAttendancePercent);
 
   return (
     <div className="container-fluid my-3">
