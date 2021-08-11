@@ -68,6 +68,7 @@ const Styles = styled.div`
 `
 
 const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
+  paginationPageSize = paginationPageSize || 1;
   const tableInstance = useTable(
     {
       columns,
@@ -160,10 +161,10 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
                   })
                 ) : (
                   <tr>
-                    <td colspan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
+                    <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
                       <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
                     </td>
-                </tr>
+                  </tr>
                 )
               )}
             </tbody>
