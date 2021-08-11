@@ -138,25 +138,33 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
                   <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
                 </>
               ) : (
-                page.map((row, index) => {
-                  prepareRow(row)
-                  return (
-                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
-                      {indexes &&
-                        <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                          {pageIndex * pageSize + index + 1}.
-                        </td>
-                      }
-                      {row.cells.map(cell => {
-                        return (
-                          <td {...cell.getCellProps()}>
-                            {cell.render('Cell')}
+                page.length ? (
+                  page.map((row, index) => {
+                    prepareRow(row)
+                    return (
+                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
+                        {indexes &&
+                          <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                            {pageIndex * pageSize + index + 1}.
                           </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })
+                        }
+                        {row.cells.map(cell => {
+                          return (
+                            <td {...cell.getCellProps()}>
+                              {cell.render('Cell')}
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    )
+                  })
+                ) : (
+                  <tr>
+                    <td colspan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
+                      <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
+                    </td>
+                </tr>
+                )
               )}
             </tbody>
           </table>
