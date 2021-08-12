@@ -46,12 +46,9 @@ const Details = ({ batch, sessions=[] }) => {
   ];
 
   let totalSessionAttendancePercentages = 0;
-  console.log('sessions',sessions);
   sessions.map(session => {
-    console.log('session.percent', session.percent);
     return totalSessionAttendancePercentages += session.percent;
   });
-  console.log('totalSessionAttendancePercentages', totalSessionAttendancePercentages);
   const averageAttendancePercent = Math.ceil(totalSessionAttendancePercentages / sessions.length);
 
   return (
