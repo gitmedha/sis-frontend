@@ -1,4 +1,3 @@
-// import { Table } from "react-bootstrap";
 import React from "react";
 import { useTable, useRowSelect } from 'react-table';
 import styled from 'styled-components';
@@ -7,13 +6,10 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 const StyledCheckbox = styled.div`
   display: flex;
-  input {
-
-  }
 `
 
 const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
+  ({ indeterminate, id="", ...rest }, ref) => {
     const defaultRef = React.useRef();
     const resolvedRef = ref || defaultRef;
 
@@ -23,7 +19,7 @@ const IndeterminateCheckbox = React.forwardRef(
 
     return (
       <StyledCheckbox>
-        <input type="checkbox" id="selectAllRows" ref={resolvedRef} {...rest} />
+        <input type="checkbox" id={id} ref={resolvedRef} {...rest} />
       </StyledCheckbox>
     )
   }
@@ -108,7 +104,7 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
           // to render a checkbox
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <label htmlFor="selectAllRows" className="d-flex align-items-center justify-content-start mb-0">
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              <IndeterminateCheckbox id="selectAllRows" {...getToggleAllRowsSelectedProps()} />
               <span style={{marginLeft: '5px'}}>{selectAllHeader}</span>
             </label>
           ),
