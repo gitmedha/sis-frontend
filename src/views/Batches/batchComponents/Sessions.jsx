@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
 import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
-import AddBatchSessionForm from "./AddBatchSessionForm";
+import BatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { createBatchSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
@@ -117,7 +117,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
           <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
         </div>
       </div>
-      <AddBatchSessionForm
+      <BatchSessionForm
         show={modalShow}
         onHide={hideCreateModal}
         batchId={batchID}

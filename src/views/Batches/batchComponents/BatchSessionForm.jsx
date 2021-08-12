@@ -31,7 +31,7 @@ const Section = styled.div`
   }
 `;
 
-const AddBatchSessionForm = (props) => {
+const BatchSessionForm = (props) => {
   let { onHide, show, batchId } = props;
   const [students, setStudents] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -174,4 +174,4 @@ const AddBatchSessionForm = (props) => {
   );
 };
 
-export default AddBatchSessionForm;
+export default BatchSessionForm;
