@@ -7,7 +7,7 @@ import DetailField from "../../../components/content/DetailField";
 import { getBatchesPickList } from "../batchActions";
 import Table from '../../../components/content/Table';
 
-const Details = ({ batch, sessions={} }) => {
+const Details = ({ batch, sessions=[] }) => {
   const [pickList, setPickList] = useState([]);
 
   useEffect(() => {

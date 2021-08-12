@@ -6,11 +6,10 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 import api from "../../../apis";
 
-import { MARK_ATTENDANCE } from "../../../graphql";
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
 // import { BatchValidations } from "../../../validations";
-import { CREATE_SESSION, GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
+import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
 import Table from '../../../components/content/Table';
 import TableWithSelection from '../../../components/content/TableWithSelection';
 
@@ -37,73 +36,24 @@ const AddBatchSessionForm = (props) => {
   let { onHide, show, batchId } = props;
   const [students, setStudents] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   let initialValues = {
-    name: '',
-    name_in_current_sis: '',
-    assigned_to: '',
-    program: '',
-    grant: '',
-    institution: '',
-    status: '',
-    number_of_sessions_planned: '',
-    per_student_fees: '',
-    seats_available: '',
-    start_date: '',
-    end_date: '',
+    topics: '',
+    date: '',
   };
-  if (props.id) {
-    initialValues = {...props}
-    initialValues['grant'] = Number(props.grant.id);
-    initialValues['program'] = Number(props.program.id);
-    initialValues['institution'] = Number(props.institution.id);
-    initialValues['assigned_to'] = Number(props.assigned_to.id);
-    initialValues['start_date'] = new Date(props.start_date);
-    initialValues['end_date'] = new Date(props.end_date);
-  }
 
   const onSubmit = async (values) => {
-    setLoading(true);
-    try {
-      let { data } = await api.post("/graphql", {
-        query: CREATE_SESSION,
-        variables: {
-          batchID: batchId,
-          ...values,
-          date: moment(values.date).format("YYYY-MM-DD"),
-        },
-      });
-      await markAttendance(Number(data.data.createSession.session.id));
-      props.setAlert("Session added successfully.", "success");
-    } catch (err) {
-      console.log("SESSION_CREATE_ERR", err);
-      props.setAlert("Unable to add session.", "error");
-    } finally {
-      setLoading(false);
-      // history.goBack();
-    }
-  };
-
-  const markAttendance = async (sessionID) => {
-    await attendanceRecords.forEach(async (student) => {
-      await attendanceApiCaller({
-        ...student,
-        session: sessionID,
-      });
+    let selectedStudentIds = selectedStudents.map(student => student.id);
+    onHide({
+      ...values,
+      selectedStudents: students.map(student => {
+        return {
+          ...student,
+          present: selectedStudentIds.includes(student.id),
+        };
+      }),
     });
-    return;
-  };
-
-  const attendanceApiCaller = async (params) => {
-    try {
-      await api.post("/graphql", {
-        variables: params,
-        query: MARK_ATTENDANCE,
-      });
-    } catch (err) {
-      console.log("MARK_ATTENDANCE_ERR", err);
-    }
   };
 
   const getStudents = async () => {
@@ -133,6 +83,7 @@ const AddBatchSessionForm = (props) => {
   };
 
   useEffect(() => {
+    console.log('useffect');
     getStudents();
   }, []);
 
@@ -141,11 +92,6 @@ const AddBatchSessionForm = (props) => {
       {
         Header: 'Name',
         accessor: 'name',
-        disableSortBy: true,
-      },
-      {
-        Header: 'Mark Attendance',
-        accessor: 'mark_attendance',
         disableSortBy: true,
       },
     ],
@@ -201,8 +147,8 @@ const AddBatchSessionForm = (props) => {
                       placeholder="Topics Covered"
                     />
                   </div>
-                  <div className="col-12 mt-2">
-                    <TableWithSelection columns={columns} data={students} paginationPageSize={1} totalRecords={1} fetchData={() => {}} />
+                  <div className="col-12 mt-5">
+                    <TableWithSelection columns={columns} data={students} paginationPageSize={1} totalRecords={1} fetchData={() => {}} selectAllHeader="Mark Attendance" selectedRows={selectedStudents} setSelectedRows={setSelectedStudents} />
                   </div>
                 </div>
               </Section>

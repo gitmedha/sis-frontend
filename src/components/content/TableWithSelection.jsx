@@ -1,24 +1,30 @@
 // import { Table } from "react-bootstrap";
 import React from "react";
-import { useTable, usePagination, useSortBy, useRowSelect } from 'react-table';
+import { useTable, useRowSelect } from 'react-table';
 import styled from 'styled-components';
-import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
+const StyledCheckbox = styled.div`
+  display: flex;
+  input {
+
+  }
+`
+
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
 
     React.useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
+    }, [resolvedRef, indeterminate]);
 
     return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
+      <StyledCheckbox>
+        <input type="checkbox" id="selectAllRows" ref={resolvedRef} {...rest} />
+      </StyledCheckbox>
     )
   }
 )
@@ -84,7 +90,7 @@ const Styles = styled.div`
   }
 `
 
-const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
+const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true, selectAllHeader="", selectedRows=[], setSelectedRows = () => {} }) => {
   paginationPageSize = paginationPageSize || 1;
   const tableInstance = useTable(
     {
@@ -94,15 +100,17 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
     useRowSelect,
     hooks => {
       hooks.visibleColumns.push(columns => [
+        ...columns,
         // Let's make a column for selection
         {
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
           Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
+            <label htmlFor="selectAllRows" className="d-flex align-items-center justify-content-start mb-0">
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
+              <span style={{marginLeft: '5px'}}>{selectAllHeader}</span>
+            </label>
           ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
@@ -112,7 +120,6 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
             </div>
           ),
         },
-        ...columns,
       ])
     }
   );
@@ -127,10 +134,6 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
     state: { selectedRowIds },
   } = tableInstance;
 
-  // React.useEffect(() => {
-  //   fetchData({ pageIndex, pageSize, sortBy });
-  // }, [fetchData, pageIndex, pageSize, sortBy]);
-
   const isRowClickable = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -139,6 +142,10 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
     }
   }
 
+  React.useEffect(() => {
+    console.log('selectedFlatRows', selectedFlatRows);
+    setSelectedRows(selectedFlatRows.map(row => row.original));
+  }, [selectedFlatRows, setSelectedRows]);
 
   return (
     <>
