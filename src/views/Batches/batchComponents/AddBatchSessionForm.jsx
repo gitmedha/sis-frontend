@@ -8,7 +8,6 @@ import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
-// import { BatchValidations } from "../../../validations";
 import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
 import Table from '../../../components/content/Table';
 import TableWithSelection from '../../../components/content/TableWithSelection';

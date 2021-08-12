@@ -1,6 +1,6 @@
 import moment from "moment";
-import { Link, useHistory } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useState, useMemo } from "react";
 import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
@@ -8,10 +8,8 @@ import { ProgressBarField, TableRowDetailLink } from "../../../components/conten
 import AddBatchSessionForm from "./AddBatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { createBatchSession } from "../batchActions";
-import { MARK_ATTENDANCE, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS } from "../../../graphql";
+import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
-import { queryBuilder } from "../../../apis";
-import { merge, values, keyBy } from "lodash";
 
 const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
@@ -19,10 +17,9 @@ const SessionLink = styled.div`
   }
 `
 
-const Sessions = ({ batchID }) => {
+const Sessions = ({ sessions, batchID, onDataUpdate }) => {
   const history = useHistory();
   const [modalShow, setModalShow] = useState(false);
-  const [sessions, setSessions] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -46,56 +43,6 @@ const Sessions = ({ batchID }) => {
     ],
     []
   );
-
-  const getSessions = async () => {
-    try {
-      let { data } = await queryBuilder({
-        query: GET_SESSIONS,
-        variables: {
-          id: Number(batchID),
-        },
-      });
-      await getAttendanceStats(data.sessions);
-    } catch (err) {
-      console.log("ERR", err);
-    }
-  };
-
-  const getAttendanceStats = async (sessionsList) => {
-    try {
-      let { data } = await queryBuilder({
-        query: GET_SESSION_ATTENDANCE_STATS,
-        variables: { id: Number(batchID) },
-      });
-
-      const totalStudents =
-        data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate
-          .studentsEnrolled;
-
-      let attPercentage = data.attendancesConnection.groupBy.session.map(
-        (sess) => ({
-          id: sess.sessionId,
-          present: sess.connection.aggregate.studentsPresent,
-          percent:
-            (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
-        })
-      );
-
-      let merged = values(
-        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
-      );
-      // Filtering out the records whose attendance is not available
-      // merged = await merged.filter((item) => item.percent !== undefined);
-
-      setSessions(merged);
-    } catch (err) {
-      console.log("ERR, Batch.jsx, 84", err);
-    }
-  };
-
-  useEffect(() => {
-    getSessions();
-  }, []);
 
   const sessionTableData = sessions.map(session => {
     return {
@@ -121,9 +68,6 @@ const Sessions = ({ batchID }) => {
     let {show, selectedStudents, ...dataToSave} = data;
     dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
 
-    console.log('data', data);
-    console.log('dataToSave', dataToSave);
-
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
       await markAttendance(Number(data.data.data.createSession.session.id), selectedStudents);
@@ -131,15 +75,13 @@ const Sessions = ({ batchID }) => {
       console.log("CREATE_SESSION_ERR", err);
       setAlert("Unable to create session.", "error");
     }).finally(() => {
-      getSessions();
+      onDataUpdate();
+      setModalShow(false);
     });
-    setModalShow(false);
   };
 
   const markAttendance = async (sessionId, students) => {
-    console.log('students', students);
     await students.forEach(async (student) => {
-      console.log('forEach student', student);
       await attendanceApiCaller({
         ...student,
         session: sessionId,
@@ -149,7 +91,6 @@ const Sessions = ({ batchID }) => {
   };
 
   const attendanceApiCaller = async (params) => {
-    console.log('params', params);
     try {
       await api.post("/graphql", {
         variables: params,

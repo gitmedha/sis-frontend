@@ -1,5 +1,5 @@
 import api from "../../apis";
-import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION } from "../../graphql";
+import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS } from "../../graphql";
 
 export const getBatchesPickList = async () => {
   return await api.post("/graphql", {
@@ -61,20 +61,37 @@ export const deleteBatch = async (id) => {
 }
 
 export const createBatchSession = async (batchId, data) => {
-  // let { data } = await api.post("/graphql", {
-  //   query: CREATE_SESSION,
-  //   variables: {
-  //     batchID: batchId,
-  //     ...values,
-  //     date: moment(values.date).format("YYYY-MM-DD"),
-  //   },
-  // });
-  //await markAttendance(Number(data.data.createSession.session.id));
   return await api.post('/graphql', {
     query: CREATE_SESSION,
     variables: {
       batchID: batchId,
       ...data,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getBatchSessions = async (batchId) => {
+  return await api.post('/graphql', {
+    query: GET_SESSIONS,
+    variables: {
+      id: batchId,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getBatchSessionAttendanceStats = async (batchId) => {
+  return await api.post('/graphql', {
+    query: GET_SESSION_ATTENDANCE_STATS,
+    variables: {
+      id: batchId,
     },
   }).then(data => {
     return data;

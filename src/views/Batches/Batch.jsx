@@ -19,7 +19,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteBatch, updateBatch } from "./batchActions";
+import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats } from "./batchActions";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -28,12 +28,14 @@ const Batch = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [sessions, setSessions] = useState([]);
   const history = useHistory();
 
   const init = async () => {
     setLoading(true);
     NP.start();
     await getThisBatch();
+    await getSessions();
     await getStudents();
     NP.done();
     setLoading(false);
@@ -50,6 +52,39 @@ const Batch = (props) => {
     } catch (err) {
       console.log("ERR", err);
     }
+  };
+
+  const getSessions = async () => {
+    getBatchSessions(batchID).then(async data => {
+      await getAttendanceStats(data.data.data.sessions);
+    }).catch(err => {
+      console.log("GET_SESSIONS_ERR", err);
+    });
+  };
+
+  const getAttendanceStats = async (sessionsList) => {
+    getBatchSessionAttendanceStats(Number(batchID)).then(data => {
+      const totalStudents = data.data.data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate.studentsEnrolled;
+
+      let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
+        (sess) => ({
+          id: sess.sessionId,
+          present: sess.connection.aggregate.studentsPresent,
+          percent: (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
+        })
+      );
+
+      let merged = values(
+        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
+      );
+
+      // Filtering out the records whose attendance is not available
+      merged = merged.filter((item) => item.percent !== undefined);
+
+      setSessions(merged);
+    }).catch(err => {
+      console.log("ERR getBatchSessionAttendanceStats", err);
+    });
   };
 
   const getStudents = async () => {
@@ -157,12 +192,11 @@ const Batch = (props) => {
             }
             opened={true}
           >
-            <Details batch={batch} />
+            <Details batch={batch} sessions={sessions} />
           </Collapsible>
         )}
-        {/* <Collapsible title="Sessions" badge={sessions.length.toString()}> */}
-        <Collapsible title="Sessions">
-          <Sessions batchID={props.match.params.id} />
+        <Collapsible title="Sessions" badge={sessions.length.toString()}>
+          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={getSessions} />
         </Collapsible>
         <Collapsible title="Students" badge={students.length.toString()}>
           <Students students={students} />
