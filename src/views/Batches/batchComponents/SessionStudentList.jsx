@@ -7,9 +7,7 @@ import {
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 
 const SessionStudentList = ({ students, updateAttendance }) => {
-  // eslint-disable-next-line
   const [gridApi, setGridApi] = useState(null);
-  // eslint-disable-next-line
   const [gridColumnApi, setGridColumnApi] = useState([]);
 
   const getRowData = async ({
@@ -79,7 +77,3 @@ const SessionStudentList = ({ students, updateAttendance }) => {
 };
 
 export default SessionStudentList;
-
-/**
- 
- */

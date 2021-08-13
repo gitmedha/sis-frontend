@@ -7,10 +7,8 @@ import { useHistory } from "react-router-dom";
 
 import {
   GET_BATCH,
-  GET_SESSIONS,
   UPDATE_BATCH,
   GET_BATCH_STUDENTS,
-  GET_SESSION_ATTENDANCE_STATS,
 } from "../../graphql";
 import { queryBuilder } from "../../apis";
 import Details from "./batchComponents/Details";
@@ -21,23 +19,23 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteBatch, updateBatch } from "./batchActions";
+import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats } from "./batchActions";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
-  const [sessions, setSessions] = useState([]);
   const [students, setStudents] = useState([]);
   const batchID = Number(props.match.params.id);
   const [isLoading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [sessions, setSessions] = useState([]);
   const history = useHistory();
 
   const init = async () => {
     setLoading(true);
     NP.start();
-    await getSessions();
     await getThisBatch();
+    await getSessions();
     await getStudents();
     NP.done();
     setLoading(false);
@@ -57,17 +55,36 @@ const Batch = (props) => {
   };
 
   const getSessions = async () => {
-    try {
-      let { data } = await queryBuilder({
-        query: GET_SESSIONS,
-        variables: {
-          id: Number(batchID),
-        },
-      });
-      await getAttendanceStats(data.sessions);
-    } catch (err) {
-      console.log("ERR", err);
-    }
+    getBatchSessions(batchID).then(async data => {
+      await getAttendanceStats(data.data.data.sessions);
+    }).catch(err => {
+      console.log("GET_SESSIONS_ERR", err);
+    });
+  };
+
+  const getAttendanceStats = async (sessionsList) => {
+    getBatchSessionAttendanceStats(Number(batchID)).then(data => {
+      const totalStudents = data.data.data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate.studentsEnrolled;
+
+      let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
+        (sess) => ({
+          id: sess.sessionId,
+          present: sess.connection.aggregate.studentsPresent,
+          percent: (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
+        })
+      );
+
+      let merged = values(
+        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
+      );
+
+      // Filtering out the records whose attendance is not available
+      merged = merged.filter((item) => item.percent !== undefined);
+
+      setSessions(merged);
+    }).catch(err => {
+      console.log("ERR getBatchSessionAttendanceStats", err);
+    });
   };
 
   const getStudents = async () => {
@@ -83,38 +100,6 @@ const Batch = (props) => {
       setStudents(data.programEnrollments);
     } catch (err) {
       console.log("ERR", err);
-    }
-  };
-
-  const getAttendanceStats = async (sessionsList) => {
-    try {
-      let { data } = await queryBuilder({
-        query: GET_SESSION_ATTENDANCE_STATS,
-        variables: { id: Number(batchID) },
-      });
-
-      const totalStudents =
-        data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate
-          .studentsEnrolled;
-
-      let attPercentage = data.attendancesConnection.groupBy.session.map(
-        (sess) => ({
-          id: sess.sessionId,
-          present: sess.connection.aggregate.studentsPresent,
-          percent:
-            (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
-        })
-      );
-
-      let merged = values(
-        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
-      );
-      // Filtering out the records whose attendance is not available
-      // merged = await merged.filter((item) => item.percent !== undefined);
-
-      setSessions(merged);
-    } catch (err) {
-      console.log("ERR, Batch.jsx, 84", err);
     }
   };
 
@@ -211,7 +196,7 @@ const Batch = (props) => {
           </Collapsible>
         )}
         <Collapsible title="Sessions" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={getSessions} />
         </Collapsible>
         <Collapsible title="Students" badge={students.length.toString()}>
           <Students students={students} />
