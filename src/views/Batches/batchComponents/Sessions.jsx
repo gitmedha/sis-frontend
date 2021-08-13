@@ -105,12 +105,21 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
       // map session attendance id to program enrollment id to connect student with their attendance
       let sessionAttendanceIds = {};
       sessionAttendance.map(attendance => {
-        return sessionAttendanceIds[Number(attendance.program_enrollment.id)] = Number(attendance.id);
+        if (attendance.program_enrollment) {
+          return sessionAttendanceIds[Number(attendance.program_enrollment.id)] = Number(attendance.id);
+        }
+        return attendance;
       });
 
       // update attendance corresponding to the student in the session/batch
       await students.forEach(async (student) => {
-        updateAttendance(sessionAttendanceIds[student.program_enrollment_id], {present: student.present});
+        // if session attendance id is present for that student, then update
+        // otherwise create new attendance for that student
+        if (sessionAttendanceIds[student.program_enrollment_id] !== undefined) {
+          updateAttendance(sessionAttendanceIds[student.program_enrollment_id], {present: student.present});
+        } else {
+          createSessionAttendance(batchSessionAttendanceFormData.id, {present: student.present});
+        }
       });
     }).catch(err => {
       console.log("UPDATE_SESSION_ERR", err);
