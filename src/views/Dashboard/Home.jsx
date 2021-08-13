@@ -71,7 +71,7 @@ const Home = () => {
           </div>
         </div>
       </Collapsible>
-      <Collapsible opened={true} title="Charts">
+      {/* <Collapsible opened={true} title="Charts">
         <div className="row">
           <div className="col-sm-12 col-md-6">
             <div className="card">
@@ -86,8 +86,8 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </Collapsible>
-      <Collapsible opened={true} title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
+      </Collapsible> */}
+      {/* <Collapsible opened={true} title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
         <Table variant="primary">
           <thead>
             <tr>
@@ -117,7 +117,7 @@ const Home = () => {
             </tr>
           </tbody>
         </Table>
-      </Collapsible>
+      </Collapsible> */}
     </div>
   );
 };

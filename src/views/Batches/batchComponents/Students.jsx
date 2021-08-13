@@ -59,7 +59,6 @@ const Students = ({ students }) => {
       attendance: <ProgressBarField value={student.percent ? student.percent : 0} />,
     };
   });
-  console.log('studentsTableData', studentsTableData);
 
   return (
     <div className="px-3 py-2">
