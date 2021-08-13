@@ -48,7 +48,6 @@ const Batches = () => {
             students_count: batchStudentsCount[batch.id],
           }
         });
-        console.log('batches', batches);
         setBatches(batches);
         setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
       });
