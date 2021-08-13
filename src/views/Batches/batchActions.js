@@ -128,8 +128,6 @@ export const getSessionAttendance = async (sessionId) => {
 }
 
 export const createSessionAttendance = async (sessionId, data) => {
-  console.log('createSessionAttendance sessionId', sessionId);
-  console.log('createSessionAttendance data', data);
   return await api.post('/graphql', {
     query: MARK_ATTENDANCE,
     variables: {
