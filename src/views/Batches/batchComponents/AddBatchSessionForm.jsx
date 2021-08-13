@@ -82,7 +82,6 @@ const AddBatchSessionForm = (props) => {
   };
 
   useEffect(() => {
-    console.log('useffect');
     getStudents();
   }, []);
 
