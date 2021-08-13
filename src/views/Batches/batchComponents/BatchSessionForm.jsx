@@ -100,7 +100,7 @@ const BatchSessionForm = (props) => {
         console.log('data.data.data.attendances', data.data.data.attendances);
         setSessionAttendance(data.data.data.attendances); // saving session attendance records
         let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
-          return attendance.present;
+          return attendance.program_enrollment && attendance.present;
         }).map(attendance => {
           return Number(attendance.program_enrollment.id);
         });
