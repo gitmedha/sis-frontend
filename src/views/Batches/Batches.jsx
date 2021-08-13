@@ -154,7 +154,7 @@ const Batches = () => {
   };
 
   return (
-    <Collapse title="All Batches" type="plain" opened={true}>
+    <Collapse title="My Batches" type="plain" opened={true}>
       <div className="row my-4">
         <div className="col-md-6 col-sm-12 ml-auto">
           <button
