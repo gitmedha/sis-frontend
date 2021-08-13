@@ -37,6 +37,7 @@ const BatchSessionForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedRows, setSelectedRows] = useState({});
+  const [sessionAttendance, setSessionAttendance] = useState([]);
 
   let initialValues = {
     topics: '',
@@ -51,7 +52,8 @@ const BatchSessionForm = (props) => {
     let selectedStudentIds = selectedStudents.map(student => student.id);
     onHide({
       ...values,
-      selectedStudents: students.map(student => {
+      sessionAttendance,
+      students: students.map(student => {
         return {
           ...student,
           present: selectedStudentIds.includes(student.id),
@@ -91,9 +93,11 @@ const BatchSessionForm = (props) => {
   }, []);
 
   useEffect(() => {
+    // setting the rows that needs to be checked if an existing session is being updated.
     if (props.session && props.session.id) {
       setLoading(true);
       getSessionAttendance(props.session.id).then(async data => {
+        setSessionAttendance(data.data.data.attendances); // saving session attendance records
         let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
           return attendance.present;
         }).map(attendance => {

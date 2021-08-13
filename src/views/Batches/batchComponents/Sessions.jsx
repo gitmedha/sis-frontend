@@ -8,7 +8,7 @@ import { ProgressBarField, TableRowDetailLink } from "../../../components/conten
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession, createSessionAttendance, updateSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
 
@@ -69,13 +69,13 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
     }
 
     // need to remove 'show' and 'students' from the payload
-    let {show, selectedStudents, ...dataToSave} = data;
+    let {show, students, ...dataToSave} = data;
     dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
 
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
       let sessionId = Number(data.data.data.createSession.session.id);
-      await selectedStudents.forEach(async (student) => {
+      await students.forEach(async (student) => {
         createSessionAttendance(sessionId, student);
       });
     }).catch(err => {
@@ -93,22 +93,27 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
       return;
     }
 
-    // need to remove 'show' and 'students' from the payload
-    let {show, selectedStudents} = data;
+    // need to remove some data from the payload that's not accepted by the API
+    let {show, students, sessionAttendance} = data;
     let dataToSave = {};
     dataToSave['topics_covered'] = data.topics;
     dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
 
-    console.log('data', data);
-    console.log('dataToSave', dataToSave);
-
-    // console.log('batchSessionAttendanceFormData', batchSessionAttendanceFormData);
-
     updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
-      // await markAttendance(Number(data.data.data.createSession.session.id), selectedStudents);
+
+      // map session attendance id to program enrollment id to connect student with their attendance
+      let sessionAttendanceIds = {};
+      sessionAttendance.map(attendance => {
+        return sessionAttendanceIds[Number(attendance.program_enrollment.id)] = Number(attendance.id);
+      });
+
+      // update attendance corresponding to the student in the session/batch
+      await students.forEach(async (student) => {
+        updateAttendance(sessionAttendanceIds[student.program_enrollment_id], {present: student.present});
+      });
     }).catch(err => {
-      console.log("CREATE_SESSION_ERR", err);
+      console.log("UPDATE_SESSION_ERR", err);
       setAlert("Unable to create session.", "error");
     }).finally(() => {
       onDataUpdate();
