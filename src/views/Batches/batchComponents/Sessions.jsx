@@ -118,7 +118,10 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
         if (sessionAttendanceIds[student.program_enrollment_id] !== undefined) {
           updateAttendance(sessionAttendanceIds[student.program_enrollment_id], {present: student.present});
         } else {
-          createSessionAttendance(batchSessionAttendanceFormData.id, {present: student.present});
+          createSessionAttendance(batchSessionAttendanceFormData.id, {
+            present: student.present,
+            program_enrollment_id: student.program_enrollment_id,
+          });
         }
       });
     }).catch(err => {

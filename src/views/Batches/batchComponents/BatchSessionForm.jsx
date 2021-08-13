@@ -97,6 +97,7 @@ const BatchSessionForm = (props) => {
     if (props.session && props.session.id) {
       setLoading(true);
       getSessionAttendance(props.session.id).then(async data => {
+        console.log('data.data.data.attendances', data.data.data.attendances);
         setSessionAttendance(data.data.data.attendances); // saving session attendance records
         let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
           return attendance.present;
