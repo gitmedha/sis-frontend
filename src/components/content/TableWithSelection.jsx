@@ -1,7 +1,6 @@
 import React from "react";
 import { useTable, useRowSelect } from 'react-table';
 import styled from 'styled-components';
-import Skeleton from "react-loading-skeleton";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 const StyledCheckbox = styled.div`
@@ -86,12 +85,12 @@ const Styles = styled.div`
   }
 `
 
-const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true, selectAllHeader="", selectedRows=[], setSelectedRows = () => {} }) => {
-  paginationPageSize = paginationPageSize || 1;
+const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=true, selectAllHeader="", setSelectedRows = () => {}, selectedRows = {} }) => {
   const tableInstance = useTable(
     {
       columns,
       data,
+      initialState: { selectedRowIds: selectedRows },
     },
     useRowSelect,
     hooks => {
@@ -139,7 +138,6 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
   }
 
   React.useEffect(() => {
-    console.log('selectedFlatRows', selectedFlatRows);
     setSelectedRows(selectedFlatRows.map(row => row.original));
   }, [selectedFlatRows, setSelectedRows]);
 
@@ -168,68 +166,53 @@ const TableWithSelection = ({ columns, data, fetchData, paginationPageSize, tota
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {loading ? (
-                <>
-                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
-                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
-                  <tr><td colSpan={columns.length}><Skeleton height='100%' /></td></tr>
-                </>
-              ) : (
-                rows.length ? (
-                  rows.map((row, index) => {
-                    prepareRow(row)
-                    return (
-                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
-                        {indexes &&
-                          <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                            {index + 1}.
+              {rows.length ? (
+                rows.map((row, index) => {
+                  prepareRow(row)
+                  return (
+                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
+                      {indexes &&
+                        <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                          {index + 1}.
+                        </td>
+                      }
+                      {row.cells.map(cell => {
+                        return (
+                          <td {...cell.getCellProps()}>
+                            {cell.render('Cell')}
                           </td>
-                        }
-                        {row.cells.map(cell => {
-                          return (
-                            <td {...cell.getCellProps()}>
-                              {cell.render('Cell')}
-                            </td>
-                          )
-                        })}
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
-                      <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
-                    </td>
-                  </tr>
-                )
+                        )
+                      })}
+                    </tr>
+                  )
+                })
+              ) : (
+                <tr>
+                  <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
+                    <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
         <div className="d-md-none mobile">
-          {loading ? (
-            <>
-              <Skeleton count={3} height='60px' />
-            </>
-          ) : (
-            rows.map((row, index) => {
-              prepareRow(row)
-              return (
-                <div key={index} className={`row ${isRowClickable ? 'clickable' : ''}`} onClick={() => handleRowClick(row)}>
-                  {row.cells.map((cell, cellIndex) => {
-                    return (
-                      <div key={cellIndex} className="cell">
-                        {cell.render('Cell')}
-                      </div>
-                    )
-                  })}
-                </div>
-              )
-            })
-          )}
+          {rows.map((row, index) => {
+            prepareRow(row)
+            return (
+              <div key={index} className={`row ${isRowClickable ? 'clickable' : ''}`} onClick={() => handleRowClick(row)}>
+                {row.cells.map((cell, cellIndex) => {
+                  return (
+                    <div key={cellIndex} className="cell">
+                      {cell.render('Cell')}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })}
         </div>
       </Styles>
-      {/* <Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} /> */}
     </>
   )
 };

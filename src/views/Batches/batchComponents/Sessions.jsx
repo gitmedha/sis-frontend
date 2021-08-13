@@ -5,9 +5,10 @@ import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
 import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
-import BatchSessionForm from "./BatchSessionForm";
+import CreateBatchSessionForm from "./BatchSessionForm";
+import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, updateSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
 
@@ -19,7 +20,9 @@ const SessionLink = styled.div`
 
 const Sessions = ({ sessions, batchID, onDataUpdate }) => {
   const history = useHistory();
-  const [modalShow, setModalShow] = useState(false);
+  const [createModalShow, setCreateModalShow] = useState(false);
+  const [updateModalShow, setUpdateModalShow] = useState(false);
+  const [batchSessionAttendanceFormData, setBatchSessionAttendanceFormData] = useState({});
 
   const columns = useMemo(
     () => [
@@ -55,12 +58,13 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
   });
 
   const handleRowClick = session => {
-    history.push(`/session/${session.id}`)
+    setBatchSessionAttendanceFormData(session);
+    setUpdateModalShow(true);
   }
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
-      setModalShow(false);
+      setCreateModalShow(false);
       return;
     }
 
@@ -70,35 +74,46 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
 
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
-      await markAttendance(Number(data.data.data.createSession.session.id), selectedStudents);
+      let sessionId = Number(data.data.data.createSession.session.id);
+      await selectedStudents.forEach(async (student) => {
+        createSessionAttendance(sessionId, student);
+      });
     }).catch(err => {
       console.log("CREATE_SESSION_ERR", err);
       setAlert("Unable to create session.", "error");
     }).finally(() => {
       onDataUpdate();
-      setModalShow(false);
+      setCreateModalShow(false);
     });
   };
 
-  const markAttendance = async (sessionId, students) => {
-    await students.forEach(async (student) => {
-      await attendanceApiCaller({
-        ...student,
-        session: sessionId,
-      });
-    });
-    return;
-  };
-
-  const attendanceApiCaller = async (params) => {
-    try {
-      await api.post("/graphql", {
-        variables: params,
-        query: MARK_ATTENDANCE,
-      });
-    } catch (err) {
-      console.log("MARK_ATTENDANCE_ERR", err);
+  const hideUpdateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setUpdateModalShow(false);
+      return;
     }
+
+    // need to remove 'show' and 'students' from the payload
+    let {show, selectedStudents} = data;
+    let dataToSave = {};
+    dataToSave['topics_covered'] = data.topics;
+    dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
+
+    console.log('data', data);
+    console.log('dataToSave', dataToSave);
+
+    // console.log('batchSessionAttendanceFormData', batchSessionAttendanceFormData);
+
+    updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
+      setAlert("Session created successfully.", "success");
+      // await markAttendance(Number(data.data.data.createSession.session.id), selectedStudents);
+    }).catch(err => {
+      console.log("CREATE_SESSION_ERR", err);
+      setAlert("Unable to create session.", "error");
+    }).finally(() => {
+      onDataUpdate();
+      setUpdateModalShow(false);
+    });
   };
 
   return (
@@ -108,7 +123,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
         <div className="col-md-6 col-sm-12 d-flex justify-content-end">
           <button
             className="btn btn-primary"
-            onClick={() => setModalShow(true)}
+            onClick={() => setCreateModalShow(true)}
           >
             Add Session & Attendance
           </button>
@@ -117,10 +132,16 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
           <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
         </div>
       </div>
-      <BatchSessionForm
-        show={modalShow}
+      <CreateBatchSessionForm
+        show={createModalShow}
         onHide={hideCreateModal}
         batchId={batchID}
+      />
+      <UpdateBatchSessionForm
+        show={updateModalShow}
+        onHide={hideUpdateModal}
+        batchId={batchID}
+        session={batchSessionAttendanceFormData}
       />
     </div>
   );

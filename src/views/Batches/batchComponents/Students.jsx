@@ -45,7 +45,6 @@ const Students = ({ students }) => {
   );
 
   const showStudentDetails = (student) => {
-    console.log('student', student);
     setStudentInModal(student);
     setShowModal(true);
   }
