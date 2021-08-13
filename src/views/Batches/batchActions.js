@@ -1,5 +1,5 @@
 import api from "../../apis";
-import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS } from "../../graphql";
+import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS, GET_SESSION_ATTENDANCE, UPDATE_SESSION_QUERY, UPDATE_SESSION_ATTENDANCE, MARK_ATTENDANCE, GET_STUDENT_COUNT_BY_BATCH } from "../../graphql";
 
 export const getBatchesPickList = async () => {
   return await api.post("/graphql", {
@@ -74,6 +74,20 @@ export const createBatchSession = async (batchId, data) => {
   });
 }
 
+export const updateSession = async (sessionId, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_SESSION_QUERY,
+    variables: {
+      id: sessionId,
+      data,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
 export const getBatchSessions = async (batchId) => {
   return await api.post('/graphql', {
     query: GET_SESSIONS,
@@ -93,6 +107,57 @@ export const getBatchSessionAttendanceStats = async (batchId) => {
     variables: {
       id: batchId,
     },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getSessionAttendance = async (sessionId) => {
+  return await api.post('/graphql', {
+    query: GET_SESSION_ATTENDANCE,
+    variables: {
+      sessionID: sessionId,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const createSessionAttendance = async (sessionId, data) => {
+  return await api.post('/graphql', {
+    query: MARK_ATTENDANCE,
+    variables: {
+      session: sessionId,
+      ...data,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const updateAttendance = async (attendanceId, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_SESSION_ATTENDANCE,
+    variables: {
+      id: attendanceId,
+      data,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getStudentCountByBatch = async () => {
+  return await api.post('/graphql', {
+    query: GET_STUDENT_COUNT_BY_BATCH,
   }).then(data => {
     return data;
   }).catch(error => {

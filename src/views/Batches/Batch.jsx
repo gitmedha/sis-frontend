@@ -78,8 +78,17 @@ const Batch = (props) => {
         merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
       );
 
-      // Filtering out the records whose attendance is not available
-      merged = merged.filter((item) => item.percent !== undefined);
+      // Cleaning up data in merged that's not there in sessionsList
+      merged = merged.map((item) => {
+        if (item.percent === undefined) {
+          return {
+            ...item,
+            present: 0,
+            percent: 0,
+          }
+        }
+        return item;
+      });
 
       setSessions(merged);
     }).catch(err => {
@@ -96,7 +105,6 @@ const Batch = (props) => {
           id: Number(batchID),
         },
       });
-      // console.log("GET_STUDENTS", data);
       setStudents(data.programEnrollments);
     } catch (err) {
       console.log("ERR", err);

@@ -5,9 +5,10 @@ import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
 import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
-import AddBatchSessionForm from "./AddBatchSessionForm";
+import CreateBatchSessionForm from "./BatchSessionForm";
+import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
 
@@ -19,7 +20,9 @@ const SessionLink = styled.div`
 
 const Sessions = ({ sessions, batchID, onDataUpdate }) => {
   const history = useHistory();
-  const [modalShow, setModalShow] = useState(false);
+  const [createModalShow, setCreateModalShow] = useState(false);
+  const [updateModalShow, setUpdateModalShow] = useState(false);
+  const [batchSessionAttendanceFormData, setBatchSessionAttendanceFormData] = useState({});
 
   const columns = useMemo(
     () => [
@@ -55,50 +58,79 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
   });
 
   const handleRowClick = session => {
-    history.push(`/session/${session.id}`)
+    setBatchSessionAttendanceFormData(session);
+    setUpdateModalShow(true);
   }
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
-      setModalShow(false);
+      setCreateModalShow(false);
       return;
     }
 
     // need to remove 'show' and 'students' from the payload
-    let {show, selectedStudents, ...dataToSave} = data;
+    let {show, students, ...dataToSave} = data;
     dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
 
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
-      await markAttendance(Number(data.data.data.createSession.session.id), selectedStudents);
+      let sessionId = Number(data.data.data.createSession.session.id);
+      await students.forEach(async (student) => {
+        createSessionAttendance(sessionId, student);
+      });
     }).catch(err => {
       console.log("CREATE_SESSION_ERR", err);
       setAlert("Unable to create session.", "error");
     }).finally(() => {
       onDataUpdate();
-      setModalShow(false);
+      setCreateModalShow(false);
     });
   };
 
-  const markAttendance = async (sessionId, students) => {
-    await students.forEach(async (student) => {
-      await attendanceApiCaller({
-        ...student,
-        session: sessionId,
-      });
-    });
-    return;
-  };
-
-  const attendanceApiCaller = async (params) => {
-    try {
-      await api.post("/graphql", {
-        variables: params,
-        query: MARK_ATTENDANCE,
-      });
-    } catch (err) {
-      console.log("MARK_ATTENDANCE_ERR", err);
+  const hideUpdateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setUpdateModalShow(false);
+      return;
     }
+
+    // need to remove some data from the payload that's not accepted by the API
+    let {show, students, sessionAttendance} = data;
+    let dataToSave = {};
+    dataToSave['topics_covered'] = data.topics;
+    dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
+
+    updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
+      setAlert("Session created successfully.", "success");
+
+      // map session attendance id to program enrollment id to connect student with their attendance
+      let sessionAttendanceIds = {};
+      sessionAttendance.map(attendance => {
+        if (attendance.program_enrollment) {
+          return sessionAttendanceIds[Number(attendance.program_enrollment.id)] = Number(attendance.id);
+        }
+        return attendance;
+      });
+
+      // update attendance corresponding to the student in the session/batch
+      await students.forEach(async (student) => {
+        // if session attendance id is present for that student, then update
+        // otherwise create new attendance for that student
+        if (sessionAttendanceIds[student.program_enrollment_id] !== undefined) {
+          updateAttendance(sessionAttendanceIds[student.program_enrollment_id], {present: student.present});
+        } else {
+          createSessionAttendance(batchSessionAttendanceFormData.id, {
+            present: student.present,
+            program_enrollment_id: student.program_enrollment_id,
+          });
+        }
+      });
+    }).catch(err => {
+      console.log("UPDATE_SESSION_ERR", err);
+      setAlert("Unable to create session.", "error");
+    }).finally(() => {
+      onDataUpdate();
+      setUpdateModalShow(false);
+    });
   };
 
   return (
@@ -108,7 +140,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
         <div className="col-md-6 col-sm-12 d-flex justify-content-end">
           <button
             className="btn btn-primary"
-            onClick={() => setModalShow(true)}
+            onClick={() => setCreateModalShow(true)}
           >
             Add Session & Attendance
           </button>
@@ -117,10 +149,16 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
           <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
         </div>
       </div>
-      <AddBatchSessionForm
-        show={modalShow}
+      <CreateBatchSessionForm
+        show={createModalShow}
         onHide={hideCreateModal}
         batchId={batchID}
+      />
+      <UpdateBatchSessionForm
+        show={updateModalShow}
+        onHide={hideUpdateModal}
+        batchId={batchID}
+        session={batchSessionAttendanceFormData}
       />
     </div>
   );

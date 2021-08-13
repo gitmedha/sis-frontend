@@ -10,7 +10,7 @@ import {
   Badge,
 } from "../../components/content/Utils";
 import { useHistory } from "react-router-dom";
-import { createBatch, getBatchesPickList } from "./batchActions";
+import { createBatch, getBatchesPickList, getStudentCountByBatch } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 
@@ -37,9 +37,20 @@ const Batches = () => {
         sort: `${sortBy}:${sortOrder}`,
       },
     })
-    .then(data => {
-      setBatches(data?.data?.data?.batchesConnection.values);
-      setBatchesAggregate(data?.data?.data?.batchesConnection?.aggregate);
+    .then(batchesData => {
+      getStudentCountByBatch().then(data => {
+        let batchStudentsCount = {};
+        data.data.data.programEnrollmentsConnection.groupBy.batch.map(item => batchStudentsCount[item.key] = item.connection.aggregate.count);
+        // adding batch students count to batches data
+        let batches = batchesData?.data?.data?.batchesConnection.values.map(batch => {
+          return {
+            ...batch,
+            students_count: batchStudentsCount[batch.id],
+          }
+        });
+        setBatches(batches);
+        setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
+      });
     })
     .catch(error => {
       return Promise.reject(error);
@@ -60,6 +71,7 @@ const Batches = () => {
       return {
         id: batch.id,
         name: batch.name,
+        students_count: batch.students_count,
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
         program: batch.program.name,
@@ -81,7 +93,7 @@ const Batches = () => {
       },
       {
         Header: 'Students',
-        accessor: 'students',
+        accessor: 'students_count',
       },
       {
         Header: 'Status',
@@ -154,7 +166,7 @@ const Batches = () => {
   };
 
   return (
-    <Collapse title="All Batches" type="plain" opened={true}>
+    <Collapse title="My Batches" type="plain" opened={true}>
       <div className="row my-4">
         <div className="col-md-6 col-sm-12 ml-auto">
           <button

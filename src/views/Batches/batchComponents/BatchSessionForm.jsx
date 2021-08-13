@@ -8,9 +8,9 @@ import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
-import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
-import Table from '../../../components/content/Table';
+import { GET_BATCH_STUDENTS_ONLY, UPDATE_SESSION_ATTENDANCE } from "../../../graphql";
 import TableWithSelection from '../../../components/content/TableWithSelection';
+import { getSessionAttendance } from "../batchActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -31,22 +31,29 @@ const Section = styled.div`
   }
 `;
 
-const AddBatchSessionForm = (props) => {
+const BatchSessionForm = (props) => {
   let { onHide, show, batchId } = props;
   const [students, setStudents] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedRows, setSelectedRows] = useState({});
+  const [sessionAttendance, setSessionAttendance] = useState([]);
 
   let initialValues = {
     topics: '',
     date: '',
   };
+  if (props.session) {
+    initialValues['topics'] = props.session.topics_covered;
+    initialValues['date'] = new Date(props.session.date);
+  }
 
   const onSubmit = async (values) => {
     let selectedStudentIds = selectedStudents.map(student => student.id);
     onHide({
       ...values,
-      selectedStudents: students.map(student => {
+      sessionAttendance,
+      students: students.map(student => {
         return {
           ...student,
           present: selectedStudentIds.includes(student.id),
@@ -85,6 +92,31 @@ const AddBatchSessionForm = (props) => {
     getStudents();
   }, []);
 
+  useEffect(() => {
+    // setting the rows that needs to be checked if an existing session is being updated.
+    if (props.session && props.session.id) {
+      setLoading(true);
+      getSessionAttendance(props.session.id).then(async data => {
+        setSessionAttendance(data.data.data.attendances); // saving session attendance records
+        let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
+          return attendance.program_enrollment && attendance.present;
+        }).map(attendance => {
+          return Number(attendance.program_enrollment.id);
+        });
+        const checkedRows = {};
+        students.map((student, index) => {
+          if (selectedStudentProgramEnrollmentIds.includes(student.program_enrollment_id)) {
+            checkedRows[index] = true;
+          }
+          return student;
+        });
+        setSelectedRows(checkedRows);
+      }).finally(() => {
+        setLoading(false);
+      })
+    }
+  }, [props.session]);
+
   const columns = useMemo(
     () => [
       {
@@ -112,7 +144,7 @@ const AddBatchSessionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            Add New Session and Attendance
+            {props.session && props.session.id ? 'Update' : 'Add New'} Session and Attendance
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -146,7 +178,15 @@ const AddBatchSessionForm = (props) => {
                     />
                   </div>
                   <div className="col-12 mt-5">
-                    <TableWithSelection columns={columns} data={students} paginationPageSize={1} totalRecords={1} fetchData={() => {}} selectAllHeader="Mark Attendance" selectedRows={selectedStudents} setSelectedRows={setSelectedStudents} />
+                    {loading ? (
+                      <>
+                        <Skeleton width="100%" height="50px" />
+                        <Skeleton width="100%" height="50px" />
+                        <Skeleton width="100%" height="50px" />
+                      </>
+                    ) : (
+                      <TableWithSelection columns={columns} data={students} selectAllHeader="Mark Attendance" selectedRows={selectedRows} setSelectedRows={setSelectedStudents} />
+                    )}
                   </div>
                 </div>
               </Section>
@@ -173,4 +213,4 @@ const AddBatchSessionForm = (props) => {
   );
 };
 
-export default AddBatchSessionForm;
+export default BatchSessionForm;

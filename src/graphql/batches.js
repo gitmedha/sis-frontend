@@ -407,3 +407,20 @@ query GET_BATCH_ENTROLLED_STUDENTS ($id: ID!){
   }
 }
 `;
+
+export const GET_STUDENT_COUNT_BY_BATCH = `
+query GET_STUDENT_COUNT_BY_BATCH {
+  programEnrollmentsConnection {
+    groupBy {
+      batch {
+        key
+        connection {
+          aggregate {
+            count
+          }
+        }
+      }
+    }
+  }
+}
+`;
