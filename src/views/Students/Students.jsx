@@ -16,6 +16,7 @@ import Table from '../../components/content/Table';
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
+import Grid from "../../components/content/Grid";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -30,9 +31,10 @@ const Students = () => {
   const [students, setStudents] = useState([]);
   const [studentsAggregate, setStudentsAggregate] = useState([]);
   const [studentsTableData, setStudentsTableData] = useState([]);
+  const [studentsGridData, setStudentsGridData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [layout, setLayout] = useState('list');
+  const [layout, setLayout] = useState('grid');
 
   const columns = useMemo(
     () => [
@@ -96,6 +98,8 @@ const Students = () => {
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+    console.log("pageSize, pageIndex, sortBy");
+    console.log(pageSize, pageIndex, sortBy);
     if (sortBy.length) {
       let sortByField = 'name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -122,12 +126,18 @@ const Students = () => {
 
   useEffect(() => {
     // getStudentsPickList().then(data => setPickList(data));
+    fetchData({
+      pageSize: 10,
+      pageIndex: 0,
+      sortBy: [],
+      // sortBy: [{id: 'created_at', 'desc': true}],
+    });
   }, [])
 
   useEffect(() => {
     let data = students;
     data = data.map((student, index) => {
-      console.log('student', student);
+      console.log('student table', student);
       return {
         avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
         phone: student.phone,
@@ -137,6 +147,16 @@ const Students = () => {
       }
     });
     setStudentsTableData(data);
+
+    let gridData = students.map(student => {
+      console.log('student grid', student);
+      return {
+        title: `${student.first_name} ${student.last_name}`,
+        logo: student.logo,
+        icon: "student",
+      }
+    });
+    setStudentsGridData(gridData);
   }, [students, pickList]);
 
   const onRowClick = (row) => {
@@ -170,13 +190,16 @@ const Students = () => {
       <div className="d-flex justify-content-between align-items-center mb-2">
         <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
         <div>
-          <div>{layout}</div>
-          <FaThLarge size={30} color={"#257b69"} />
+          <FaThLarge size={22} color={"#257b69"} />
           <Switch checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} />
-          <FaListUl size={30} color={"#257b69"} />
+          <FaListUl size={22} color={"#257b69"} />
         </div>
       </div>
-      <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      {layout === 'list' ? (
+        <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      ) : (
+        <Grid data={studentsGridData} />
+      )}
       {/* <StudentForm
         show={modalShow}
         onHide={hideCreateModal}
