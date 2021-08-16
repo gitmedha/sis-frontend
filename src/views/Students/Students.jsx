@@ -1,4 +1,5 @@
 import nProgress from "nprogress";
+import styled from 'styled-components';
 import api from "../../apis";
 import {
   TableRowDetailLink,
@@ -24,6 +25,22 @@ const tabPickerOptions = [
   { title: "My State", key: "test-3" },
   { title: "All Area", key: "test-4" },
 ];
+
+const Styled = styled.div`
+
+  .MuiSwitch-root { // material switch
+    margin-left: 5px;
+    margin-right: 5px;
+
+    .MuiSwitch-switchBase {
+      color: #207B69;
+    }
+    .MuiSwitch-track {
+      background-color: #C4C4C4;
+      opacity: 1;
+    }
+  }
+`;
 
 const Students = () => {
   const history = useHistory();
@@ -186,25 +203,27 @@ const Students = () => {
   // };
 
   return (
-    <div className="container py-3">
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-        <div>
-          <FaThLarge size={22} color={"#257b69"} />
-          <Switch checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} />
-          <FaListUl size={22} color={"#257b69"} />
+    <Styled>
+      <div className="container py-3">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+          <div>
+            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} />
+            <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
+            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} />
+          </div>
         </div>
+        {layout === 'list' ? (
+          <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+        ) : (
+          <Grid data={studentsGridData} />
+        )}
+        {/* <StudentForm
+          show={modalShow}
+          onHide={hideCreateModal}
+        /> */}
       </div>
-      {layout === 'list' ? (
-        <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
-      ) : (
-        <Grid data={studentsGridData} />
-      )}
-      {/* <StudentForm
-        show={modalShow}
-        onHide={hideCreateModal}
-      /> */}
-    </div>
+    </Styled>
   );
 };
 
