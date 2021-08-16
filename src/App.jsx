@@ -16,8 +16,8 @@ import AppContainer from "./components/layout/AppContainer";
 import Batches from "./views/Batches/Batches";
 import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
-import Institution from "./views/Students/Institution";
-import Institutions from "./views/Students/Institutions";
+import Institution from "./views/Institutions/Institution";
+import Institutions from "./views/Institutions/Institutions";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
 

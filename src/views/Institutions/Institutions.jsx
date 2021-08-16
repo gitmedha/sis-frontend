@@ -11,8 +11,8 @@ import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
-import { getInstitutionsPickList, createInstitution } from "./Institution/instituteActions";
-import InstitutionForm from "./Institution/InstitutionForm";
+import { getInstitutionsPickList, createInstitution } from "./InstitutionComponents/instituteActions";
+import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const tabPickerOptions = [
