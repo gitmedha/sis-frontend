@@ -18,6 +18,8 @@ import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
 import Institution from "./views/Institutions/Institution";
 import Institutions from "./views/Institutions/Institutions";
+import Student from "./views/Students/Student";
+import Students from "./views/Students/Students";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
 
@@ -53,6 +55,8 @@ const App = (props) => {
           <RouteContainer>
             <Switch>
               <Route path="/" exact component={Home} />
+              <Route path="/students" exact component={Students} />
+              <Route path="/student/:id" exact component={Student} />
               <Route path="/institutions" exact component={Institutions} />
               <Route path="/institution/:id" exact component={Institution} />
               <Route path="/batches" exact component={Batches} />
