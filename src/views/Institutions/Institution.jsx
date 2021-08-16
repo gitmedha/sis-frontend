@@ -5,17 +5,17 @@ import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 import api from "../../apis";
-import Address from "./Institution/Address";
-import Contacts from "./Institution/Contacts";
-import Details from "./Institution/Details";
-import Students from "./Institution/Students";
+import Address from "./InstitutionComponents/Address";
+import Contacts from "./InstitutionComponents/Contacts";
+import Details from "./InstitutionComponents/Details";
+import Students from "./InstitutionComponents/Students";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteInstitution, updateInstitution } from "./Institution/instituteActions";
-import InstitutionForm from "./Institution/InstitutionForm";
+import { deleteInstitution, updateInstitution } from "./InstitutionComponents/instituteActions";
+import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 
 const Institute = (props) => {
   const [isLoading, setLoading] = useState(false);
