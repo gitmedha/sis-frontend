@@ -42,7 +42,8 @@ const Styled = styled.div`
   }
 `;
 
-const Students = () => {
+const Students = ({ isSidebarOpen }) => {
+  console.log('isSidebarOpen', isSidebarOpen);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
@@ -216,7 +217,7 @@ const Students = () => {
         {layout === 'list' ? (
           <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
         ) : (
-          <Grid data={studentsGridData} />
+          <Grid data={studentsGridData} isSidebarOpen={isSidebarOpen} />
         )}
         {/* <StudentForm
           show={modalShow}

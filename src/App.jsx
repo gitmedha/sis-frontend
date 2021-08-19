@@ -55,7 +55,7 @@ const App = (props) => {
           <RouteContainer>
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/students" exact component={Students} />
+              <Route path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
               <Route path="/student/:id" exact component={Student} />
               <Route path="/institutions" exact component={Institutions} />
               <Route path="/institution/:id" exact component={Institution} />

@@ -116,11 +116,14 @@ const Styles = styled.div`
   }
 `
 
-const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
+const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
   paginationPageSize = paginationPageSize || 1;
   const [activeBoxRow, setActiveBoxRow] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState({});
   const [activeBox, setActiveBox] = React.useState(0);
+  const [boxesInRow, setBoxesInRow] = React.useState(0);
+  const [isOpen, setIsOpen] = React.useState(isSidebarOpen);
+
   const history = useHistory();
   // const tableInstance = useTable(
   //   {
@@ -160,7 +163,30 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
   //   }
   // }
 
-  const boxesInRow = 8;
+  React.useLayoutEffect(() => {
+    function updateSize() {
+      handleResetActive();
+      if (!isSidebarOpen) {
+        if (window.innerWidth >= 1400) { setBoxesInRow(8); }
+        else if (window.innerWidth >= 1200) { setBoxesInRow(7); }
+        else if (window.innerWidth >= 1034) { setBoxesInRow(6); }
+        else if (window.innerWidth >= 992) { setBoxesInRow(5); }
+        else if (window.innerWidth >= 768) { setBoxesInRow(4); }
+        else if (window.innerWidth >= 489) { setBoxesInRow(3); }
+        else { setBoxesInRow(2); }
+      } else {
+        if (window.innerWidth >= 1539) { setBoxesInRow(8); }
+        else if (window.innerWidth >= 1384) { setBoxesInRow(7); }
+        else if (window.innerWidth >= 1229) { setBoxesInRow(6); }
+        else if (window.innerWidth >= 1074) { setBoxesInRow(5); }
+        else if (window.innerWidth >= 919) { setBoxesInRow(4); }
+        else if (window.innerWidth >= 768) { setBoxesInRow(3); }
+        else { setBoxesInRow(2); }
+      }
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+  }, []);
 
   const handleBoxClick = boxNumber => {
     if (boxNumber > Math.floor(data.length/boxesInRow)*boxesInRow) {
@@ -226,7 +252,7 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
                 <DetailField label="Category" value={activeItem.category} />
                 <DetailField label="Institute Name" value={activeItem.phone} />
               </div>
-              <div className="col-md-3 d-flex flex-column justify-content-between align-items-end pb-3">
+              <div className="col-md-3 d-flex flex-md-column justify-content-between align-items-end pb-3">
                 <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />
                 <button
                   onClick={() => history.push(activeItem.link)}
