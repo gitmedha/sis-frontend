@@ -250,7 +250,7 @@ const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, tot
                 <DetailField label="Email" value={activeItem.email} />
                 <DetailField label="Phone No." value={activeItem.phone} />
                 <DetailField label="Category" value={activeItem.category} />
-                <DetailField label="Institute Name" value={activeItem.phone} />
+                <DetailField label="Institute Name" value={''} />
               </div>
               <div className="col-md-3 d-flex flex-md-column justify-content-between align-items-end pb-3">
                 <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />

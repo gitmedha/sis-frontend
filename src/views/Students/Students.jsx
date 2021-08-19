@@ -43,7 +43,6 @@ const Styled = styled.div`
 `;
 
 const Students = ({ isSidebarOpen }) => {
-  console.log('isSidebarOpen', isSidebarOpen);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
@@ -209,9 +208,9 @@ const Students = ({ isSidebarOpen }) => {
         <div className="d-flex justify-content-between align-items-center mb-2">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div>
-            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} />
+            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
             <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
-            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} />
+            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
           </div>
         </div>
         {layout === 'list' ? (
