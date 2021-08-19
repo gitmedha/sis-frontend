@@ -17,7 +17,7 @@ import Table from '../../components/content/Table';
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
-import Grid from "../../components/content/Grid";
+import StudentGrid from "./StudentComponents/StudentGrid";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -168,7 +168,6 @@ const Students = ({ isSidebarOpen }) => {
       return {
         ...student,
         title: `${student.first_name} ${student.last_name}`,
-        icon: "student",
         link: `/student/${student.id}`,
         // status: <Badge value={student.status} pickList={pickList.status || []} />,
       }
@@ -216,7 +215,7 @@ const Students = ({ isSidebarOpen }) => {
         {layout === 'list' ? (
           <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
         ) : (
-          <Grid data={studentsGridData} isSidebarOpen={isSidebarOpen} />
+          <StudentGrid data={studentsGridData} isSidebarOpen={isSidebarOpen} />
         )}
         {/* <StudentForm
           show={modalShow}

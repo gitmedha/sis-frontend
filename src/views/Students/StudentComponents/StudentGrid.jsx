@@ -1,13 +1,13 @@
-// import { Table } from "react-bootstrap";
 import React from "react";
 import styled from 'styled-components';
-import Pagination from './Pagination';
-import Skeleton from "react-loading-skeleton";
-import { FaAngleDoubleUp, FaLongArrowAltDown, FaLongArrowAltUp, FaAngleDoubleDown, FaDownload, FaEye } from "react-icons/fa";
-import { urlPath } from "../../constants";
-import DetailField from "../../components/content/DetailField";
-import { Link, useHistory } from "react-router-dom";
 import moment from "moment";
+import Skeleton from "react-loading-skeleton";
+import { Link, useHistory } from "react-router-dom";
+
+// import Pagination from './Pagination';
+import { FaAngleDoubleUp, FaAngleDoubleDown, FaDownload, FaEye } from "react-icons/fa";
+import { urlPath } from "../../../constants";
+import DetailField from "../../../components/content/DetailField";
 
 const Styles = styled.div`
   display: flex;
@@ -116,7 +116,7 @@ const Styles = styled.div`
   }
 `
 
-const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
+const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
   paginationPageSize = paginationPageSize || 1;
   const [activeBoxRow, setActiveBoxRow] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState({});
@@ -125,31 +125,6 @@ const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, tot
   const [isOpen, setIsOpen] = React.useState(isSidebarOpen);
 
   const history = useHistory();
-  // const tableInstance = useTable(
-  //   {
-  //     columns,
-  //     data,
-  //     initialState: { pageIndex: 0, pageSize: paginationPageSize },
-  //     manualSortBy: true,
-  //     manualPagination: true,
-  //     pageCount: Math.ceil(totalRecords/paginationPageSize),
-  //   },
-  //   useSortBy,
-  //   usePagination
-  // );
-
-  // const {
-  //   getTableProps,
-  //   getTableBodyProps,
-  //   headerGroups,
-  //   prepareRow,
-  //   page,
-  //   pageCount,
-  //   gotoPage,
-  //   nextPage,
-  //   previousPage,
-  //   state: { pageIndex, pageSize, sortBy },
-  // } = tableInstance;
 
   // React.useEffect(() => {
   //   fetchData({ pageIndex, pageSize, sortBy });
@@ -270,4 +245,4 @@ const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, tot
   )
 };
 
-export default Grid;
+export default StudentGrid;
