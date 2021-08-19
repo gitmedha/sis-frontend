@@ -168,8 +168,8 @@ const Students = () => {
     let gridData = students.map(student => {
       console.log('student grid', student);
       return {
+        ...student,
         title: `${student.first_name} ${student.last_name}`,
-        logo: student.logo,
         icon: "student",
       }
     });

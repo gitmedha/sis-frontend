@@ -12,9 +12,17 @@ query GET_STUDENTS($limit: Int, $start: Int, $sort: String) {
       email
       phone
       status
+      name_of_parent_or_guardian
+      date_of_birth
+      category
+      gender
       logo {
         id
         url
+      }
+      CV {
+        url
+        previewUrl
       }
     }
     aggregate {
