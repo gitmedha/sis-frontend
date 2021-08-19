@@ -86,9 +86,10 @@ const Students = () => {
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const paginationPageSize = 2;
+  const tablePaginationPageSize = 10;
+  const gridPaginationPageSize = 24;
 
-  const getStudents = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (limit = tablePaginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -115,8 +116,6 @@ const Students = () => {
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
-    console.log("pageSize, pageIndex, sortBy");
-    console.log(pageSize, pageIndex, sortBy);
     if (sortBy.length) {
       let sortByField = 'name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -143,22 +142,22 @@ const Students = () => {
 
   useEffect(() => {
     // getStudentsPickList().then(data => setPickList(data));
-    fetchData({
-      pageSize: 24,
-      pageIndex: 0,
-      sortBy: [],
-      // sortBy: [{id: 'created_at', 'desc': true}],
-    });
-  }, [])
+    if (layout === 'grid') {
+      fetchData({
+        pageSize: gridPaginationPageSize,
+        pageIndex: 0,
+        sortBy: [],
+        // sortBy: [{id: 'created_at', 'desc': true}],
+      });
+    }
+  }, [layout]);
 
   useEffect(() => {
     let data = students;
-    data = data.map((student, index) => {
-      console.log('student table', student);
+    data = data.map(student => {
       return {
+        ...student,
         avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
-        phone: student.phone,
-        status: student.status,
         link: <TableRowDetailLink value={student.id} to={'student'} />,
         // status: <Badge value={student.status} pickList={pickList.status || []} />,
       }
@@ -166,12 +165,12 @@ const Students = () => {
     setStudentsTableData(data);
 
     let gridData = students.map(student => {
-      console.log('student grid', student);
       return {
         ...student,
         title: `${student.first_name} ${student.last_name}`,
         icon: "student",
-        link: `/student/${student.id}`
+        link: `/student/${student.id}`,
+        // status: <Badge value={student.status} pickList={pickList.status || []} />,
       }
     });
     setStudentsGridData(gridData);
@@ -215,7 +214,7 @@ const Students = () => {
           </div>
         </div>
         {layout === 'list' ? (
-          <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+          <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
         ) : (
           <Grid data={studentsGridData} />
         )}
