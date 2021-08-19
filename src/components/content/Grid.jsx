@@ -213,7 +213,7 @@ const Grid = ({ isSidebarOpen, columns, data, fetchData, paginationPageSize, tot
         {data.map((item, index) => (
           <>
             <div className={`box-wrapper ${activeBox === index + 1 ? 'active' : ''}`} onClick={() => handleBoxClick(index+1)}>
-              <div className={`box`} style={{backgroundImage: item.logo ? `url(${urlPath(item.logo?.url)})` : `url(https://sis-api.medha.org.in/uploads/student_image_1fa52148c6.png)`}}>
+              <div className={`box`} style={{backgroundImage: item.logo ? `url(${urlPath(item.logo?.url)})` : `url(/graduate-default.png)`}}>
                 <div className="title-box">
                   <div className="title">{item.title}</div>
                 </div>
