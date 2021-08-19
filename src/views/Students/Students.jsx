@@ -144,7 +144,7 @@ const Students = () => {
   useEffect(() => {
     // getStudentsPickList().then(data => setPickList(data));
     fetchData({
-      pageSize: 10,
+      pageSize: 24,
       pageIndex: 0,
       sortBy: [],
       // sortBy: [{id: 'created_at', 'desc': true}],

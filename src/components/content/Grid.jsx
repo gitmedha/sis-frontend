@@ -98,20 +98,6 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
             </div>
           </div>
         ))}
-        {data.map(item => (
-          <div className="box" style={{backgroundImage: `url(${urlPath(item.logo?.url)})`}}>
-            <div className="title-box">
-              <div className="title">{item.title}</div>
-            </div>
-          </div>
-        ))}
-        {data.map(item => (
-          <div className="box" style={{backgroundImage: `url(${urlPath(item.logo?.url)})`}}>
-            <div className="title-box">
-              <div className="title">{item.title}</div>
-            </div>
-          </div>
-        ))}
       </Styles>
       {/*<Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />*/}
     </>
