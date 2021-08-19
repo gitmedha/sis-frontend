@@ -171,6 +171,7 @@ const Students = () => {
         ...student,
         title: `${student.first_name} ${student.last_name}`,
         icon: "student",
+        link: `/student/${student.id}`
       }
     });
     setStudentsGridData(gridData);

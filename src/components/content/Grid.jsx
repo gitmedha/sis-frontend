@@ -3,10 +3,11 @@ import React from "react";
 import styled from 'styled-components';
 import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import { FaAngleDoubleUp, FaLongArrowAltDown, FaLongArrowAltUp, FaAngleDoubleDown, FaDownload, FaEye } from "react-icons/fa";
 import { urlPath } from "../../constants";
 import DetailField from "../../components/content/DetailField";
-import { FaAngleDoubleDown } from "react-icons/fa";
+import { Link, useHistory } from "react-router-dom";
+import moment from "moment";
 
 const Styles = styled.div`
   display: flex;
@@ -95,6 +96,20 @@ const Styles = styled.div`
     width: 100%;
     margin-bottom: 30px;
   }
+  .btn-view-more {
+    background-color: #31B89D;
+    font-family: 'Latto-Bold';
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .cv-updated-on {
+    font-family: 'Latto-Italic';
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.25;
+    color: #787B96;
+  }
 
   @media screen and (min-width: 768px) {
     //
@@ -106,6 +121,7 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
   const [activeBoxRow, setActiveBoxRow] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState({});
   const [activeBox, setActiveBox] = React.useState(0);
+  const history = useHistory();
   // const tableInstance = useTable(
   //   {
   //     columns,
@@ -159,6 +175,12 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
     setActiveBox(boxNumber);
   }
 
+  const handleResetActive = () => {
+    setActiveBox(0);
+    setActiveBoxRow(0);
+    setActiveItem([]);
+  }
+
   return (
     <>
       <Styles>
@@ -180,22 +202,38 @@ const Grid = ({ columns, data, fetchData, paginationPageSize, totalRecords, load
             </div>
             {activeBoxRow === index + 1 &&
             <div className="box-details row">
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <DetailField label="Full Name" value={activeItem.title} />
                 <DetailField label="Parents Name" value={activeItem.name_of_parent_or_guardian} />
                 <DetailField label="Status" value={activeItem.status} />
                 <DetailField label="Gender" value={activeItem.gender} />
-                {/* <DetailField label="CV" value={activeItem.CV?.url} /> */}
+                <DetailField label="CV" value={
+                  activeItem.CV ? (
+                    <div className="d-flex flex-column">
+                      <div>
+                        <a href={urlPath(activeItem.CV.url)} target="_blank" className="mr-3"><FaEye size="25" color="#6C6D78" /></a>
+                        <a href={urlPath(activeItem.CV.url)} download className="mr-3"><FaDownload size="25" color="#6C6D78" /></a>
+                      </div>
+                      <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format('DD MMM YYYY')})</div>
+                    </div>
+                    ) : ''
+                } />
               </div>
-              <div className="offset-md-2 col-md-3">
+              <div className="offset-md-1 col-md-4">
                 <DetailField label="Date of Birth" value={activeItem.date_of_birth} />
                 <DetailField label="Email" value={activeItem.email} />
                 <DetailField label="Phone No." value={activeItem.phone} />
                 <DetailField label="Category" value={activeItem.category} />
                 <DetailField label="Institute Name" value={activeItem.phone} />
               </div>
-              <div className="col-md-4 d-flex justify-content-end">
-
+              <div className="col-md-3 d-flex flex-column justify-content-between align-items-end pb-3">
+                <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />
+                <button
+                  onClick={() => history.push(activeItem.link)}
+                  className="btn-view-more btn btn-sm text-white"
+                >
+                  View More+
+                </button>
               </div>
             </div>}
           </>
