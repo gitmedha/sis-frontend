@@ -13,11 +13,11 @@ export const queryBuilder = async (params) => {
   }
 };
 
-export const getInstitutionsPickList = async () => {
+export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
     query: GET_PICKLIST,
     variables: {
-      table: 'institutions'
+      table: 'students'
     },
   })
   .then(data => {

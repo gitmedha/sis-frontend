@@ -13,7 +13,7 @@ import { GET_STUDENTS, GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
-// import { getStudentsPickList, createStudent } from "./StudentComponents/instituteActions";
+import { getStudentsPickList } from "./StudentComponents/StudentActions";
 // import StudentForm from "./StudentComponents/StudentForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap } from "react-icons/fa";
@@ -161,7 +161,12 @@ const Students = ({ isSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    // getStudentsPickList().then(data => setPickList(data));
+    getStudentsPickList().then(data => {
+      setPickList(data);
+    });
+  }, [])
+
+  useEffect(() => {
     if (layout === 'grid') {
       fetchData({
         pageSize: gridPaginationPageSize,
@@ -178,7 +183,7 @@ const Students = ({ isSidebarOpen }) => {
         ...student,
         avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
         link: <TableRowDetailLink value={student.id} to={'student'} />,
-        // status: <Badge value={student.status} pickList={pickList.status || []} />,
+        status: <Badge value={student.status} pickList={pickList.status || []} />,
       }
     });
     setStudentsTableData(data);
@@ -188,7 +193,9 @@ const Students = ({ isSidebarOpen }) => {
         ...student,
         title: `${student.first_name} ${student.last_name}`,
         link: `/student/${student.id}`,
-        // status: <Badge value={student.status} pickList={pickList.status || []} />,
+        status: <Badge value={student.status} pickList={pickList.status || []} />,
+        category: <Badge value={student.category} pickList={pickList.category || []} />,
+        gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
       }
     });
     setStudentsGridData(gridData);
