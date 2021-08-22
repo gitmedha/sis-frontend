@@ -89,6 +89,12 @@ const Styles = styled.div`
     }
   }
 
+  .btn-cv-view {
+    font-size: 14px;
+    line-height: 1.25;
+    padding: 5px 8px;
+  }
+
   .box-details {
     border-top: 4px solid #31B89D;
     border-bottom: 4px solid #31B89D;
@@ -204,28 +210,26 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
             {activeBoxRow === index + 1 &&
             <div className="box-details row">
               <div className="col-md-4">
-                <DetailField label="Full Name" value={activeItem.title} />
-                <DetailField label="Parents Name" value={activeItem.name_of_parent_or_guardian} />
-                <DetailField label="Status" value={activeItem.status} />
-                <DetailField label="Gender" value={activeItem.gender} />
+                <DetailField label="Full Name" value={activeItem.title || '(Not entered)'} />
+                <DetailField label="Parents Name" value={activeItem.name_of_parent_or_guardian || '(Not entered)'} />
+                <DetailField label="Status" value={activeItem.status || '(Not entered)'} />
+                <DetailField label="Gender" value={activeItem.gender || '(Not entered)'} />
                 <DetailField label="CV" value={
                   activeItem.CV ? (
                     <div className="d-flex flex-column">
                       <div>
-                        <a href={urlPath(activeItem.CV.url)} target="_blank" className="mr-3"><FaEye size="25" color="#6C6D78" /></a>
-                        <a href={urlPath(activeItem.CV.url)} download className="mr-3"><FaDownload size="25" color="#6C6D78" /></a>
+                        <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view">View</a>
                       </div>
                       <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format('DD MMM YYYY')})</div>
                     </div>
-                    ) : ''
+                    ) : '(Not uploaded)'
                 } />
               </div>
               <div className="offset-md-1 col-md-4">
-                <DetailField label="Date of Birth" value={activeItem.date_of_birth} />
-                <DetailField label="Email" value={activeItem.email} />
-                <DetailField label="Phone No." value={activeItem.phone} />
-                <DetailField label="Category" value={activeItem.category} />
-                <DetailField label="Institute Name" value={''} />
+                <DetailField label="Date of Birth" value={activeItem.date_of_birth || '(Not entered)'} />
+                <DetailField label="Email" value={activeItem.email || '(Not entered)'} />
+                <DetailField label="Phone No." value={activeItem.phone || '(Not entered)'} />
+                <DetailField label="Category" value={activeItem.category || '(Not entered)'} />
               </div>
               <div className="col-md-3 d-flex flex-md-column justify-content-between align-items-end pb-3">
                 <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />
