@@ -11,11 +11,12 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS, GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
+import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
 // import { getStudentsPickList, createStudent } from "./StudentComponents/instituteActions";
 // import StudentForm from "./StudentComponents/StudentForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaListUl, FaThLarge } from "react-icons/fa";
+import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
 import StudentGrid from "./StudentComponents/StudentGrid";
 
@@ -25,6 +26,25 @@ const tabPickerOptions = [
   { title: "My State", key: "test-3" },
   { title: "All Area", key: "test-4" },
 ];
+
+const studentStatusTabOptions = [
+  {
+    icon: <FaClipboardCheck size={20} color="#31B89D" />,
+    title: 'Registered',
+  },
+  {
+    icon: <FaGraduationCap size={20} color="#31B89D" />,
+    title: 'Certified',
+  },
+  {
+    icon: <FaBlackTie size={20} color="#31B89D" />,
+    title: 'Interned',
+  },
+  {
+    icon: <FaBriefcase size={20} color="#31B89D" />,
+    title: 'Placed',
+  },
+]
 
 const Styled = styled.div`
 
@@ -87,7 +107,7 @@ const Students = ({ isSidebarOpen }) => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const tablePaginationPageSize = 10;
-  const gridPaginationPageSize = 2;
+  const gridPaginationPageSize = 24;
 
   const getStudents = async (limit = tablePaginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
@@ -178,6 +198,10 @@ const Students = ({ isSidebarOpen }) => {
     history.push(`/student/${row.id}`)
   }
 
+  const handleStudentStatusTabChange = (activeTab) => {
+    console.log('activeTab', activeTab);
+  }
+
   // const hideCreateModal = async (data) => {
   //   if (!data || data.isTrusted) {
   //     setModalShow(false);
@@ -203,13 +227,14 @@ const Students = ({ isSidebarOpen }) => {
   return (
     <Styled>
       <div className="container py-3">
-        <div className="d-flex justify-content-between align-items-center mb-2">
+        <div className="d-flex justify-content-end py-2">
+          <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
+          <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
+          <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
+        </div>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <div>
-            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
-            <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
-            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
-          </div>
+          <Tabs options={studentStatusTabOptions} onTabChange={handleStudentStatusTabChange} />
         </div>
         {layout === 'list' ? (
           <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
