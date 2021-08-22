@@ -4,7 +4,7 @@ import moment from "moment";
 import Skeleton from "react-loading-skeleton";
 import { Link, useHistory } from "react-router-dom";
 
-// import Pagination from './Pagination';
+import Pagination from "../../../components/content/Pagination";
 import { FaAngleDoubleUp, FaAngleDoubleDown, FaDownload, FaEye } from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import DetailField from "../../../components/content/DetailField";
@@ -129,20 +129,9 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
   const [activeBox, setActiveBox] = React.useState(0);
   const [boxesInRow, setBoxesInRow] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(isSidebarOpen);
+  const [pageIndex, setPageIndex] = React.useState(0);
 
   const history = useHistory();
-
-  // React.useEffect(() => {
-  //   fetchData({ pageIndex, pageSize, sortBy });
-  // }, [fetchData, pageIndex, pageSize, sortBy]);
-
-  // const isRowClickable = typeof onRowClick === 'function';
-
-  // const handleRowClick = (row) => {
-  //   if (typeof onRowClick === 'function') {
-  //     onRowClick(row.original);
-  //   }
-  // }
 
   React.useLayoutEffect(() => {
     function updateSize() {
@@ -186,6 +175,28 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
     setActiveBox(0);
     setActiveBoxRow(0);
     setActiveItem([]);
+  }
+
+  React.useEffect(() => {
+    fetchData({ pageIndex, pageSize: paginationPageSize, sortBy: [] });
+  }, [fetchData, pageIndex, paginationPageSize]);
+
+  const previousPage = () => {
+    if (pageIndex > 0) {
+      gotoPage(pageIndex - 1);
+    }
+  }
+
+  const nextPage = () => {
+    if (pageIndex < Math.floor(totalRecords/paginationPageSize) - 1) {
+      gotoPage(pageIndex + 1);
+    }
+  }
+
+  const gotoPage = (page) => {
+    if (page !== pageIndex) {
+      setPageIndex(page);
+    }
   }
 
   return (
@@ -244,7 +255,9 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
           </>
         ))}
       </Styles>
-      {/*<Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />*/}
+      <div>
+        <Pagination pageLimit={totalRecords} totalPages={Math.ceil(totalRecords/paginationPageSize)} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />
+      </div>
     </>
   )
 };

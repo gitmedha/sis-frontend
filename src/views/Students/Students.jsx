@@ -87,7 +87,7 @@ const Students = ({ isSidebarOpen }) => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const tablePaginationPageSize = 10;
-  const gridPaginationPageSize = 24;
+  const gridPaginationPageSize = 2;
 
   const getStudents = async (limit = tablePaginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
@@ -147,7 +147,6 @@ const Students = ({ isSidebarOpen }) => {
         pageSize: gridPaginationPageSize,
         pageIndex: 0,
         sortBy: [],
-        // sortBy: [{id: 'created_at', 'desc': true}],
       });
     }
   }, [layout]);
@@ -215,7 +214,7 @@ const Students = ({ isSidebarOpen }) => {
         {layout === 'list' ? (
           <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
         ) : (
-          <StudentGrid data={studentsGridData} isSidebarOpen={isSidebarOpen} />
+          <StudentGrid data={studentsGridData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} paginationPageSize={gridPaginationPageSize} fetchData={fetchData} />
         )}
         {/* <StudentForm
           show={modalShow}

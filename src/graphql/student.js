@@ -16,6 +16,10 @@ query GET_STUDENTS($limit: Int, $start: Int, $sort: String) {
       date_of_birth
       category
       gender
+      registration_date_latest
+      certification_date_latest
+      internship_date_latest
+      placement_date_latest
       logo {
         id
         url
