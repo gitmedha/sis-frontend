@@ -196,6 +196,7 @@ const Students = ({ isSidebarOpen }) => {
         status: <Badge value={student.status} pickList={pickList.status || []} />,
         category: <Badge value={student.category} pickList={pickList.category || []} />,
         gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
+        statusIcon: studentStatusTabOptions.find(status => status.title.toLowerCase() === student?.status.toLowerCase())?.icon,
       }
     });
     setStudentsGridData(gridData);

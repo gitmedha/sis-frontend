@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { Link, useHistory } from "react-router-dom";
 
 import Pagination from "../../../components/content/Pagination";
-import { FaAngleDoubleUp, FaAngleDoubleDown, FaDownload, FaEye } from "react-icons/fa";
+import { FaAngleDoubleUp, FaAngleDoubleDown, FaDownload, FaEye, FaUserGraduate } from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import DetailField from "../../../components/content/DetailField";
 
@@ -40,6 +40,14 @@ const Styles = styled.div`
         line-height: 1.25;
       }
     }
+  }
+
+  .box-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 2px 5px 5px;
+    background: linear-gradient(211.97deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 33.4%);
   }
 
   .box-line-active {
@@ -206,6 +214,9 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
           <>
             <div className={`box-wrapper ${activeBox === index + 1 ? 'active' : ''}`} onClick={() => handleBoxClick(index+1)}>
               <div className={`box`} style={{backgroundImage: item.logo ? `url(${urlPath(item.logo?.url)})` : `url(/graduate-default.png)`}}>
+                <div className="box-icon">
+                  {item.statusIcon}
+                </div>
                 <div className="title-box">
                   <div className="title">{item.title}</div>
                 </div>
@@ -229,7 +240,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
                   activeItem.CV ? (
                     <div className="d-flex flex-column">
                       <div>
-                        <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view">View</a>
+                        <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
                       </div>
                       <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format('DD MMM YYYY')})</div>
                     </div>
