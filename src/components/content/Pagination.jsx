@@ -79,7 +79,7 @@ const range = (from, to, step = 1) => {
   return range;
 }
 
-const Pagination = ({pageLimit, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex}) => {
+const Pagination = ({totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit}) => {
   const currentPage = pageIndex + 1;
 
   const fetchPageNumbers = () => {
@@ -95,11 +95,21 @@ const Pagination = ({pageLimit, totalPages, pageNeighbours = 2, gotoPage, nextPa
     return range(1, totalPages);
   }
 
-  if (totalPages === 1) return null;
-
   const pages = fetchPageNumbers();
   return (
     <Styles>
+      <select
+        value={pageLimit}
+        onChange={e => {
+          setPageLimit(Number(e.target.value))
+        }}
+      >
+        {[2, 5, 10, 25, 50, 100].map(pageSize => (
+          <option key={pageSize} value={pageSize}>
+            Show {pageSize}
+          </option>
+        ))}
+      </select>
       <nav>
         <ul className="pagination">
           <li key='first' className="pagination-link-wrapper">

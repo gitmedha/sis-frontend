@@ -130,14 +130,14 @@ const Styles = styled.div`
   }
 `
 
-const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
-  paginationPageSize = paginationPageSize || 1;
+const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize, onPageSizeChange, paginationPageIndex, onPageIndexChange }) => {
   const [activeBoxRow, setActiveBoxRow] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState({});
   const [activeBox, setActiveBox] = React.useState(0);
   const [boxesInRow, setBoxesInRow] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(isSidebarOpen);
   const [pageIndex, setPageIndex] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(paginationPageSize);
 
   const history = useHistory();
 
@@ -186,8 +186,8 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
   }
 
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize: paginationPageSize, sortBy: [] });
-  }, [fetchData, pageIndex, paginationPageSize]);
+    fetchData(pageIndex, pageSize, []);
+  }, [fetchData, pageIndex, pageSize]);
 
   const previousPage = () => {
     if (pageIndex > 0) {
@@ -196,7 +196,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
   }
 
   const nextPage = () => {
-    if (pageIndex < Math.floor(totalRecords/paginationPageSize) - 1) {
+    if (pageIndex < Math.floor(totalRecords/pageSize) - 1) {
       gotoPage(pageIndex + 1);
     }
   }
@@ -206,6 +206,22 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
       setPageIndex(page);
     }
   }
+
+  React.useEffect(() => {
+    onPageSizeChange(pageSize);
+  }, [pageSize]);
+
+  React.useEffect(() => {
+    setPageSize(paginationPageSize);
+  }, [paginationPageSize]);
+
+  React.useEffect(() => {
+    onPageIndexChange(pageIndex);
+  }, [pageIndex]);
+
+  React.useEffect(() => {
+    setPageIndex(paginationPageIndex);
+  }, [paginationPageIndex]);
 
   return (
     <>
@@ -267,7 +283,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, paginationPageSize, total
         ))}
       </Styles>
       <div>
-        <Pagination pageLimit={totalRecords} totalPages={Math.ceil(totalRecords/paginationPageSize)} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />
+        <Pagination totalPages={Math.ceil(totalRecords/pageSize)} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />
       </div>
     </>
   )

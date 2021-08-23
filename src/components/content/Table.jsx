@@ -67,8 +67,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loading, onRowClick=null, indexes=true }) => {
-  paginationPageSize = paginationPageSize || 1;
+const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize, onPageSizeChange, paginationPageIndex, onPageIndexChange }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -82,6 +81,8 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
     usePagination
   );
 
+  console.log('tableInstance', tableInstance);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -92,11 +93,12 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
     gotoPage,
     nextPage,
     previousPage,
+    setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize, sortBy });
+    fetchData(pageIndex, pageSize, sortBy);
   }, [fetchData, pageIndex, pageSize, sortBy]);
 
   const isRowClickable = typeof onRowClick === 'function';
@@ -106,6 +108,22 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
       onRowClick(row.original);
     }
   }
+
+  React.useEffect(() => {
+    onPageSizeChange(pageSize);
+  }, [pageSize]);
+
+  React.useEffect(() => {
+    setPageSize(paginationPageSize);
+  }, [paginationPageSize]);
+
+  React.useEffect(() => {
+    onPageIndexChange(pageIndex);
+  }, [pageIndex]);
+
+  React.useEffect(() => {
+    gotoPage(paginationPageIndex);
+  }, [paginationPageIndex]);
 
   return (
     <>
@@ -193,7 +211,7 @@ const Table = ({ columns, data, fetchData, paginationPageSize, totalRecords, loa
           )}
         </div>
       </Styles>
-      <Pagination pageLimit={pageSize} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} />
+      <Pagination totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />
     </>
   )
 };

@@ -67,11 +67,13 @@ const Students = ({ isSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [studentsAggregate, setStudentsAggregate] = useState([]);
-  const [studentsTableData, setStudentsTableData] = useState([]);
-  const [studentsGridData, setStudentsGridData] = useState([]);
+  const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [layout, setLayout] = useState('grid');
+  const [layout, setLayout] = useState('list');
+  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [paginationPageIndex, setPaginationPageIndex] = useState(0);
 
   const columns = useMemo(
     () => [
@@ -104,12 +106,7 @@ const Students = ({ isSidebarOpen }) => {
     []
   );
 
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-
-  const tablePaginationPageSize = 10;
-  const gridPaginationPageSize = 24;
-
-  const getStudents = async (limit = tablePaginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -135,7 +132,7 @@ const Students = ({ isSidebarOpen }) => {
     });
   };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -167,14 +164,8 @@ const Students = ({ isSidebarOpen }) => {
   }, [])
 
   useEffect(() => {
-    if (layout === 'grid') {
-      fetchData({
-        pageSize: gridPaginationPageSize,
-        pageIndex: 0,
-        sortBy: [],
-      });
-    }
-  }, [layout]);
+    fetchData(0, paginationPageSize, []);
+  }, []);
 
   useEffect(() => {
     let data = students;
@@ -183,23 +174,15 @@ const Students = ({ isSidebarOpen }) => {
         ...student,
         avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
         link: <TableRowDetailLink value={student.id} to={'student'} />,
-        status: <Badge value={student.status} pickList={pickList.status || []} />,
-      }
-    });
-    setStudentsTableData(data);
-
-    let gridData = students.map(student => {
-      return {
-        ...student,
-        title: `${student.first_name} ${student.last_name}`,
-        link: `/student/${student.id}`,
+        gridLink: `/student/${student.id}`,
         status: <Badge value={student.status} pickList={pickList.status || []} />,
         category: <Badge value={student.category} pickList={pickList.category || []} />,
         gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
         statusIcon: studentStatusTabOptions.find(status => status.title.toLowerCase() === student?.status.toLowerCase())?.icon,
+        title: `${student.first_name} ${student.last_name}`,
       }
     });
-    setStudentsGridData(gridData);
+    setStudentsData(data);
   }, [students, pickList]);
 
   const onRowClick = (row) => {
@@ -232,6 +215,10 @@ const Students = ({ isSidebarOpen }) => {
   //   setModalShow(false);
   // };
 
+  useEffect(() => {
+    console.log('outermost paginationPageSize changed', paginationPageSize);
+  }, [paginationPageSize]);
+
   return (
     <Styled>
       <div className="container py-3">
@@ -244,11 +231,12 @@ const Students = ({ isSidebarOpen }) => {
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <Tabs options={studentStatusTabOptions} onTabChange={handleStudentStatusTabChange} />
         </div>
-        {layout === 'list' ? (
-          <Table columns={columns} data={studentsTableData} paginationPageSize={tablePaginationPageSize} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
-        ) : (
-          <StudentGrid data={studentsGridData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} paginationPageSize={gridPaginationPageSize} fetchData={fetchData} />
-        )}
+        <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
+          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+        </div>
+        <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
+          <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+        </div>
         {/* <StudentForm
           show={modalShow}
           onHide={hideCreateModal}
