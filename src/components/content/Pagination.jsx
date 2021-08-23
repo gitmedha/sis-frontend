@@ -113,7 +113,7 @@ const Pagination = ({totalPages, pageNeighbours = 2, gotoPage, nextPage, previou
     <Styled>
       <div className="row d-flex align-items-center w-100">
         <div className="col-md-3">
-            <select
+          <select
             value={pageLimit}
             onChange={e => {
               setPageLimit(Number(e.target.value))
