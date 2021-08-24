@@ -81,8 +81,6 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=nul
     usePagination
   );
 
-  console.log('tableInstance', tableInstance);
-
   const {
     getTableProps,
     getTableBodyProps,
