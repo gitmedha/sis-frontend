@@ -30,26 +30,31 @@ const studentStatusTabOptions = [
   {
     icon: <FaUserGraduate size={20} color="#31B89D" />,
     title: 'All',
+    picklistMatch: '',
   },
   {
     icon: <FaClipboardCheck size={20} color="#31B89D" />,
     title: 'Registered',
     progress: '25%',
+    picklistMatch: 'Registered',
   },
   {
     icon: <FaGraduationCap size={20} color="#31B89D" />,
     title: 'Certified',
     progress: '50%',
+    picklistMatch: 'Certified',
   },
   {
     icon: <FaBlackTie size={20} color="#31B89D" />,
-    title: 'Interned',
+    title: 'Internships',
     progress: '75%',
+    picklistMatch: 'Internship Complete',
   },
   {
     icon: <FaBriefcase size={20} color="#31B89D" />,
     title: 'Placed',
     progress: '100%',
+    picklistMatch: 'Placement Complete',
   },
 ]
 
@@ -121,7 +126,7 @@ const Students = ({ isSidebarOpen }) => {
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
-      variables.status = status;
+      variables.status = studentStatusTabOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
     }
     await api.post("/graphql", {
       query: GET_STUDENTS,
@@ -173,10 +178,10 @@ const Students = ({ isSidebarOpen }) => {
   useEffect(() => {
     let data = students;
     data = data.map(student => {
-      let studentStatusData = studentStatusTabOptions.find(status => status.title.toLowerCase() === student?.status.toLowerCase());
+      let studentStatusData = studentStatusTabOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
       return {
         ...student,
-        avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
+        avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
         link: <TableRowDetailLink value={student.id} to={'student'} />,
         gridLink: `/student/${student.id}`,
         status: <Badge value={student.status} pickList={pickList.status || []} />,
