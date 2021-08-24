@@ -14,7 +14,6 @@ import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
 import { getStudentsPickList } from "./StudentComponents/StudentActions";
-// import StudentForm from "./StudentComponents/StudentForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap, FaUserGraduate } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
@@ -200,28 +199,6 @@ const Students = ({ isSidebarOpen }) => {
     getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex);
   }
 
-  // const hideCreateModal = async (data) => {
-  //   if (!data || data.isTrusted) {
-  //     setModalShow(false);
-  //     return;
-  //   }
-
-  //   // need to remove `show` from the payload
-  //   let {show, ...dataToSave} = data;
-
-  //   nProgress.start();
-  //   createStudent(dataToSave).then(data => {
-  //     setAlert("Student created successfully.", "success");
-  //   }).catch(err => {
-  //     console.log("CREATE_DETAILS_ERR", err);
-  //     setAlert("Unable to create student.", "error");
-  //   }).finally(() => {
-  //     nProgress.done();
-  //     getStudents();
-  //   });
-  //   setModalShow(false);
-  // };
-
   return (
     <Styled>
       <div className="container py-3">
@@ -240,10 +217,6 @@ const Students = ({ isSidebarOpen }) => {
         <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
           <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
         </div>
-        {/* <StudentForm
-          show={modalShow}
-          onHide={hideCreateModal}
-        /> */}
       </div>
     </Styled>
   );
