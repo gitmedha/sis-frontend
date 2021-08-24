@@ -9,14 +9,14 @@ import {
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_STUDENTS, GET_USER_INSTITUTES } from "../../graphql";
+import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
 import { getStudentsPickList } from "./StudentComponents/StudentActions";
 // import StudentForm from "./StudentComponents/StudentForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap } from "react-icons/fa";
+import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap, FaUserGraduate } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
 import StudentGrid from "./StudentComponents/StudentGrid";
 
@@ -29,23 +29,28 @@ const tabPickerOptions = [
 
 const studentStatusTabOptions = [
   {
+    icon: <FaUserGraduate size={20} color="#31B89D" />,
     title: 'All',
   },
   {
     icon: <FaClipboardCheck size={20} color="#31B89D" />,
     title: 'Registered',
+    progress: '25%',
   },
   {
     icon: <FaGraduationCap size={20} color="#31B89D" />,
     title: 'Certified',
+    progress: '50%',
   },
   {
     icon: <FaBlackTie size={20} color="#31B89D" />,
     title: 'Interned',
+    progress: '75%',
   },
   {
     icon: <FaBriefcase size={20} color="#31B89D" />,
     title: 'Placed',
+    progress: '100%',
   },
 ]
 
@@ -92,10 +97,6 @@ const Students = ({ isSidebarOpen }) => {
       {
         Header: 'Status',
         accessor: 'status',
-      },
-      {
-        Header: 'Latest Enrollment Status',
-        accessor: 'latest_enrollment_status',
       },
       {
         Header: 'Latest Course Type',
@@ -173,6 +174,7 @@ const Students = ({ isSidebarOpen }) => {
   useEffect(() => {
     let data = students;
     data = data.map(student => {
+      let studentStatusData = studentStatusTabOptions.find(status => status.title.toLowerCase() === student?.status.toLowerCase());
       return {
         ...student,
         avatar: <Avatar name={student.first_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
@@ -181,8 +183,9 @@ const Students = ({ isSidebarOpen }) => {
         status: <Badge value={student.status} pickList={pickList.status || []} />,
         category: <Badge value={student.category} pickList={pickList.category || []} />,
         gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
-        statusIcon: studentStatusTabOptions.find(status => status.title.toLowerCase() === student?.status.toLowerCase())?.icon,
+        statusIcon: studentStatusData?.icon,
         title: `${student.first_name} ${student.last_name}`,
+        progressPercent: studentStatusData?.progress,
       }
     });
     setStudentsData(data);
