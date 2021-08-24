@@ -29,6 +29,9 @@ const tabPickerOptions = [
 
 const studentStatusTabOptions = [
   {
+    title: 'All',
+  },
+  {
     icon: <FaClipboardCheck size={20} color="#31B89D" />,
     title: 'Registered',
   },
@@ -72,6 +75,7 @@ const Students = ({ isSidebarOpen }) => {
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState('list');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [activeStatus, setActiveStatus] = useState('All');
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
 
@@ -106,18 +110,22 @@ const Students = ({ isSidebarOpen }) => {
     []
   );
 
-  const getStudents = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
+    let variables = {
+      limit,
+      start: offset,
+      // id: user.id,
+      id: 2,
+      sort: `${sortBy}:${sortOrder}`,
+    }
+    if (status !== 'All') {
+      variables.status = status;
+    }
     await api.post("/graphql", {
       query: GET_STUDENTS,
-      variables: {
-        // id: user.id,
-        limit: limit,
-        start: offset,
-        id: 2,
-        sort: `${sortBy}:${sortOrder}`,
-      },
+      variables,
     })
     .then(data => {
       setStudents(data?.data?.data?.studentsConnection.values);
@@ -151,19 +159,14 @@ const Students = ({ isSidebarOpen }) => {
           sortByField = 'name';
           break;
       }
-      getStudents(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getStudents(pageSize, pageSize * pageIndex);
+      getStudents(activeStatus, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeStatus]);
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      setPickList(data);
-    });
-  }, [])
-
-  useEffect(() => {
+    getStudentsPickList().then(data => setPickList(data));
     fetchData(0, paginationPageSize, []);
   }, []);
 
@@ -190,7 +193,8 @@ const Students = ({ isSidebarOpen }) => {
   }
 
   const handleStudentStatusTabChange = (activeTab) => {
-    console.log('activeTab', activeTab);
+    setActiveStatus(activeTab.title);
+    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex);
   }
 
   // const hideCreateModal = async (data) => {
@@ -214,10 +218,6 @@ const Students = ({ isSidebarOpen }) => {
   //   });
   //   setModalShow(false);
   // };
-
-  useEffect(() => {
-    console.log('outermost paginationPageSize changed', paginationPageSize);
-  }, [paginationPageSize]);
 
   return (
     <Styled>

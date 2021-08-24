@@ -12,8 +12,11 @@ const Styled = styled.div`
     padding: 7px;
     border-radius: 5px;
 
-    span {
-      margin-left: 5px;
+    .icon {
+      margin-right: 5px;
+    }
+
+    .title {
       font-size: 14px;
       line-height: 1.25;
     }
@@ -37,8 +40,8 @@ const Tabs = ({ options, onTabChange }) => {
       <div className="d-flex justify-content-center align-items-center">
         {options.map((tab, key) => (
           <div className={`tab ${activeTab === key ? 'active' : ''}`} onClick={() => handleClick(key)}>
-            {tab?.icon}
-            <span>{tab.title}</span>
+            {tab.icon && <span className="icon">{tab.icon}</span>}
+            <span className="title">{tab.title}</span>
           </div>
         ))}
       </div>

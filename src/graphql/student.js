@@ -1,9 +1,12 @@
 export const GET_STUDENTS = `
-query GET_STUDENTS($limit: Int, $start: Int, $sort: String) {
+query GET_STUDENTS($limit: Int, $start: Int, $sort: String, $status: String) {
   studentsConnection (
     sort: $sort
     start: $start
     limit: $limit
+    where: {
+      status: $status
+    }
   ) {
     values {
       id
