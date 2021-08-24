@@ -30,6 +30,8 @@ const Institutions = () => {
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
 
   const columns = useMemo(
     () => [
@@ -58,10 +60,6 @@ const Institutions = () => {
     []
   );
 
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-
-  const paginationPageSize = 10;
-
   const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
@@ -88,7 +86,7 @@ const Institutions = () => {
     });
   };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -167,7 +165,7 @@ const Institutions = () => {
           Add New Institution
         </button>
       </div>
-      <Table columns={columns} data={institutionsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <Table columns={columns} data={institutionsTableData} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
       <InstitutionForm
         show={modalShow}
         onHide={hideCreateModal}

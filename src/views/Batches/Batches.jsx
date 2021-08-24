@@ -22,7 +22,7 @@ const Batches = () => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const history = useHistory();
-  const paginationPageSize = 10;
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
 
   const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
@@ -112,7 +112,7 @@ const Batches = () => {
     []
   );
 
-  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'created_at';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -177,7 +177,7 @@ const Batches = () => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={batchesTableData} paginationPageSize={paginationPageSize} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
       <BatchForm
         show={modalShow}
         onHide={hideCreateModal}
