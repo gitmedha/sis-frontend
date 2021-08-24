@@ -67,7 +67,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize, onPageSizeChange, paginationPageIndex, onPageIndexChange }) => {
+const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
