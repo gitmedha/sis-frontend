@@ -1,7 +1,5 @@
 import Table from '../../../components/content/Table';
-import ProgressBar from "@ramonak/react-progress-bar";
-import { useEffect, useMemo, useState } from "react";
-import { getBatchesPickList } from "../batchActions";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Badge, ProgressBarField } from "../../../components/content/Utils";
 import moment from 'moment';
 import { Modal } from "react-bootstrap";
@@ -9,15 +7,16 @@ import SkeletonLoader from "../../../components/content/SkeletonLoader";
 import { GET_STUDENT_DETAILS } from "../../../graphql";
 import api from "../../../apis";
 import DetailField from '../../../components/content/DetailField';
+import { getProgramEnrollmentsPickList } from '../../Institutions/InstitutionComponents/instituteActions';
 
-const Students = ({ students }) => {
+const Students = ({ students, fetchData }) => {
   const [pickList, setPickList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [studentInModal, setStudentInModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
 
   useEffect(() => {
-    getBatchesPickList().then(data => {
+    getProgramEnrollmentsPickList().then(data => {
       setPickList(data);
     });
   }, []);
@@ -60,11 +59,38 @@ const Students = ({ students }) => {
     };
   });
 
+  const refetchStudents = useCallback((pageIndex, pageSize, sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'student.first_name';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'name':
+          sortByField = 'student.first_name'
+          break;
+
+        case 'phone':
+          sortByField = 'student.phone'
+          break;
+
+        case 'enrollment_status':
+          sortByField = 'status'
+          break;
+
+        default:
+          sortByField = 'student.first_name';
+          break;
+      }
+      fetchData(sortByField, sortOrder);
+    } else {
+      fetchData();
+    }
+  }, []);
+
   return (
     <div className="px-3 py-2">
       <div className="row">
         <div className="col-12 mt-3">
-          <Table columns={columns} data={studentsTableData} paginationPageSize={studentsTableData.length} totalRecords={studentsTableData.length} fetchData={() => {}} onRowClick={showStudentDetails} />
+          <Table columns={columns} data={studentsTableData} paginationPageSize={studentsTableData.length} totalRecords={studentsTableData.length} fetchData={refetchStudents} onRowClick={showStudentDetails} showPagination={false} />
         </div>
       </div>
       {showModal && (

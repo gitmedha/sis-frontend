@@ -54,16 +54,16 @@ const Batch = (props) => {
     }
   };
 
-  const getSessions = async () => {
-    getBatchSessions(batchID).then(async data => {
-      await getAttendanceStats(data.data.data.sessions);
+  const getSessions = async (sortBy = 'created_at', sortOrder = 'desc') => {
+    getBatchSessions(batchID, sortBy, sortOrder).then(async data => {
+      await getAttendanceStats(data.data.data.sessionsConnection.values);
     }).catch(err => {
       console.log("GET_SESSIONS_ERR", err);
     });
   };
 
   const getAttendanceStats = async (sessionsList) => {
-    getBatchSessionAttendanceStats(Number(batchID)).then(data => {
+    getBatchSessionAttendanceStats(Number(batchID)).then(async data => {
       const totalStudents = data.data.data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate.studentsEnrolled;
 
       let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
@@ -74,38 +74,32 @@ const Batch = (props) => {
         })
       );
 
-      let merged = values(
-        merge(keyBy(attPercentage, "id"), keyBy(sessionsList, "id"))
-      );
+      sessionsList = sessionsList.map(session => {
+        let matchedAttPercentage = attPercentage.find(att => att.id === session.id);
+        return {
+          ...session,
+          present: matchedAttPercentage?.present,
+          percent: matchedAttPercentage?.percent,
+        };
+      })
 
-      // Cleaning up data in merged that's not there in sessionsList
-      merged = merged.map((item) => {
-        if (item.percent === undefined) {
-          return {
-            ...item,
-            present: 0,
-            percent: 0,
-          }
-        }
-        return item;
-      });
-
-      setSessions(merged);
+      await setSessions(sessionsList);
     }).catch(err => {
       console.log("ERR getBatchSessionAttendanceStats", err);
     });
   };
 
-  const getStudents = async () => {
+  const getStudents = async (sortBy = 'student.first_name', sortOrder = 'desc') => {
     try {
       const batchID = props.match.params.id;
       let { data } = await queryBuilder({
         query: GET_BATCH_STUDENTS,
         variables: {
           id: Number(batchID),
+          sort: `${sortBy}:${sortOrder}`
         },
       });
-      setStudents(data.programEnrollments);
+      setStudents(data.programEnrollmentsConnection.values);
     } catch (err) {
       console.log("ERR", err);
     }
@@ -204,10 +198,10 @@ const Batch = (props) => {
           </Collapsible>
         )}
         <Collapsible title="Sessions" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={getSessions} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={getSessions} fetchData={getSessions} />
         </Collapsible>
         <Collapsible title="Students" badge={students.length.toString()}>
-          <Students students={students} />
+          <Students students={students} fetchData={getStudents} />
         </Collapsible>
         {batch && <BatchForm
           {...batch}

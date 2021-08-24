@@ -73,7 +73,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Area" value={"HARDCODED"} />
           <DetailField label="Start Date" value={<Moment date={batch.start_date} format={"DD MMM YYYY"} />} />
           <DetailField label="End Date" value={<Moment date={batch.end_date} format={"DD MMM YYYY"} />} />
-          <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} />
+          <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} />
         </div>
       </div>
     </div>

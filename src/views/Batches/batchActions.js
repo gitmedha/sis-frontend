@@ -88,11 +88,12 @@ export const updateSession = async (sessionId, data) => {
   });
 }
 
-export const getBatchSessions = async (batchId) => {
+export const getBatchSessions = async (batchId, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_SESSIONS,
     variables: {
       id: batchId,
+      sort: `${sortBy}:${sortOrder}`,
     },
   }).then(data => {
     return data;

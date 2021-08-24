@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useHistory } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
@@ -8,7 +8,7 @@ import { ProgressBarField, TableRowDetailLink } from "../../../components/conten
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, getBatchSessions, updateAttendance, updateSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
 import { FaRegEdit } from "react-icons/fa";
@@ -19,7 +19,8 @@ const SessionLink = styled.div`
   }
 `
 
-const Sessions = ({ sessions, batchID, onDataUpdate }) => {
+const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
+
   const history = useHistory();
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
@@ -38,6 +39,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
       {
         Header: 'Attendance',
         accessor: 'attendance',
+        disableSortBy: true,
       },
       {
         Header: '',
@@ -134,6 +136,30 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
     });
   };
 
+  const refetchSessions = useCallback((pageIndex, pageSize, sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'topics_covered';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'topics_covered':
+        case 'date':
+          sortByField = sortBy[0].id;
+          break;
+
+        case 'attendance':
+          sortByField = 'percent'
+          break;
+
+        default:
+          sortByField = 'topics_covered';
+          break;
+      }
+      fetchData(sortByField, sortOrder);
+    } else {
+      fetchData();
+    }
+  }, []);
+
   return (
     <div className="py-2 px-3">
       <div className="row">
@@ -147,7 +173,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
           </button>
         </div>
         <div className="col-12 mt-3">
-          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={() => {}} onRowClick={handleRowClick} />
+          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={handleRowClick} showPagination={false} />
         </div>
       </div>
       <CreateBatchSessionForm

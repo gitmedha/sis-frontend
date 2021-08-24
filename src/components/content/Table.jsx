@@ -67,7 +67,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -209,7 +209,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, onRowClick=nul
           )}
         </div>
       </Styles>
-      <Pagination totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />
+      {showPagination && <Pagination totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />}
     </>
   )
 };
