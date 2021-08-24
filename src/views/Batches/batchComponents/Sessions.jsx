@@ -11,6 +11,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { MARK_ATTENDANCE } from "../../../graphql";
 import api from "../../../apis";
+import { FaRegEdit } from "react-icons/fa";
 
 const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
@@ -53,7 +54,7 @@ const Sessions = ({ sessions, batchID, onDataUpdate }) => {
       topics_covered: session.topics_covered,
       date: moment(session.date).format('DD MMM YYYY'),
       attendance: <ProgressBarField value={Number.parseInt(session.percent)} />,
-      link: <SessionLink><TableRowDetailLink value={session.id} to={'session'} /></SessionLink>
+      link: <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>
     }
   });
 
