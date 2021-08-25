@@ -58,7 +58,9 @@ query GET_STUDENT($id: ID!) {
     certification_date_latest
     internship_date_latest
     placement_date_latest
+    course_type_latest
     income_level
+    old_sis_id
     logo {
       id
       url

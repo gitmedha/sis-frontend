@@ -32,7 +32,7 @@ const Contacts = ({ contacts }) => {
 
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={contacts} paginationPageSize={contacts.length} totalRecords={contacts.length} fetchData={() => {}} loading={false} />
+      <Table columns={columns} data={contacts} paginationPageSize={contacts.length} totalRecords={contacts.length} fetchData={() => {}} loading={false} showPagination={false} />
     </div>
   );
 };

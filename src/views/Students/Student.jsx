@@ -97,7 +97,7 @@ const Student = (props) => {
   } else {
     return (
       <>
-        <div className="row" style={{margin: '30px 0 0'}}>
+        <div className="row" style={{margin: '30px 15px 0 15px'}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
@@ -111,20 +111,7 @@ const Student = (props) => {
             </button>
           </div>
         </div>
-        <Collapsible
-          opened={true}
-          // titleContent={
-          //   <TitleWithLogo
-          //     done={() => getThisInstitution()}
-          //     id={rest.id}
-          //     logo={rest.logo}
-          //     title={rest.name}
-          //     query={UPDATE_STUDENT}
-          //   />
-          // }
-        >
-          <Details {...studentData} />
-        </Collapsible>
+        <Details {...studentData} />
         {/* <InstitutionForm
           {...studentData}
           show={modalShow}

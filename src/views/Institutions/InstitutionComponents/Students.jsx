@@ -24,7 +24,7 @@ const Students = ({ id }) => {
   const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
     setLoading(true);
     let sortByField = 'created_at', sortOrder = 'desc'; // default
-    if (sortBy.length) {
+    if (sortBy && sortBy.length) {
       sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'student':
@@ -101,7 +101,7 @@ const Students = ({ id }) => {
 
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} fetchData={fetchData} loading={loading} onRowClick={onRowClick} />
+      <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} fetchData={fetchData} loading={loading} onRowClick={onRowClick} showPagination={false} />
     </div>
   );
 };

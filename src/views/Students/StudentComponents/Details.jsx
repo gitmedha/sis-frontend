@@ -20,10 +20,17 @@ const Styled = styled.div`
       margin-left: auto;
     }
   }
+  .separator {
+    background-color: #C4C4C4;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  hr {
+    height: 1px;
+  }
 `;
 
 const Details = (props) => {
-  console.log('props', props);
   const {
     first_name,
     last_name,
@@ -36,6 +43,8 @@ const Details = (props) => {
     date_of_birth,
     income_level,
     logo,
+    old_sis_id,
+    course_type_latest
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -49,7 +58,8 @@ const Details = (props) => {
 
   return (
     <Styled>
-      <div className="container-fluid my-3">
+      <div className="container my-3">
+        <hr className="separator" />
         <div className="row latto-regular">
           <div className="col-md-4">
             <DetailField label="First Name" value={first_name} />
@@ -70,6 +80,17 @@ const Details = (props) => {
               <div className="status-icon">{studentStatusData?.icon}</div>
               <img className="img-profile" src={urlPath(logo?.url)} alt={`${first_name} ${last_name}`} />
             </div>
+          </div>
+        </div>
+        <hr className="separator" />
+        <div className="row">
+          <div className="col-md-6">
+            <DetailField label="Medha Champion" value={''} />
+            <DetailField label="Interested in Employment Opportunities" value={''} />
+            <DetailField label="ID in SIS 2.0" value={old_sis_id} />
+            <DetailField label="Latest Course Type" value={course_type_latest} />
+          </div>
+          <div className="col-md-6">
           </div>
         </div>
       </div>
