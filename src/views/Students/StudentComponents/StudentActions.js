@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST } from "../../../graphql";
+import { GET_PICKLIST, GET_STUDENT } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -14,6 +14,21 @@ export const getStudentsPickList = async () => {
       pickList[item.field] = item.values;
     });
     return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};
+
+export const getStudent = async (id) => {
+  return await api.post("/graphql", {
+    query: GET_STUDENT,
+    variables: {
+      id
+    },
+  })
+  .then(data => {
+    return data;
   })
   .catch(error => {
     return Promise.reject(error);

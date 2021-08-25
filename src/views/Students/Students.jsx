@@ -15,9 +15,10 @@ import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
 import { getStudentsPickList } from "./StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaClipboardCheck, FaBlackTie, FaListUl, FaThLarge, FaBriefcase, FaGraduationCap, FaUserGraduate } from "react-icons/fa";
+import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
 import StudentGrid from "./StudentComponents/StudentGrid";
+import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -25,38 +26,6 @@ const tabPickerOptions = [
   { title: "My State", key: "test-3" },
   { title: "All Area", key: "test-4" },
 ];
-
-const studentStatusTabOptions = [
-  {
-    icon: <FaUserGraduate size={20} color="#31B89D" />,
-    title: 'All',
-    picklistMatch: '',
-  },
-  {
-    icon: <FaClipboardCheck size={20} color="#31B89D" />,
-    title: 'Registered',
-    progress: '25%',
-    picklistMatch: 'Registered',
-  },
-  {
-    icon: <FaGraduationCap size={20} color="#31B89D" />,
-    title: 'Certified',
-    progress: '50%',
-    picklistMatch: 'Certified',
-  },
-  {
-    icon: <FaBlackTie size={20} color="#31B89D" />,
-    title: 'Internships',
-    progress: '75%',
-    picklistMatch: 'Internship Complete',
-  },
-  {
-    icon: <FaBriefcase size={20} color="#31B89D" />,
-    title: 'Placed',
-    progress: '100%',
-    picklistMatch: 'Placement Complete',
-  },
-]
 
 const Styled = styled.div`
 
@@ -126,7 +95,7 @@ const Students = ({ isSidebarOpen }) => {
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
-      variables.status = studentStatusTabOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
+      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
     }
     await api.post("/graphql", {
       query: GET_STUDENTS,
@@ -178,7 +147,7 @@ const Students = ({ isSidebarOpen }) => {
   useEffect(() => {
     let data = students;
     data = data.map(student => {
-      let studentStatusData = studentStatusTabOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
+      let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
       return {
         ...student,
         avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
@@ -214,7 +183,7 @@ const Students = ({ isSidebarOpen }) => {
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <Tabs options={studentStatusTabOptions} onTabChange={handleStudentStatusTabChange} />
+          <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
         </div>
         <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
           <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
