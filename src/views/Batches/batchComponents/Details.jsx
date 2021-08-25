@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Moment from "react-moment";
 import { connect } from "react-redux";
-import { Badge, ProgressBarField } from "../../../components/content/Utils";
+import { Anchor, Badge, ProgressBarField } from "../../../components/content/Utils";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import DetailField from "../../../components/content/DetailField";
 import { getBatchesPickList } from "../batchActions";
@@ -58,7 +58,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Name" value={batch.name} />
           <DetailField label="Program Name" value={batch.program?.name} />
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
-          <DetailField label="Institution" value={batch.institution.name} />
+          <DetailField label="Institution" value={<Anchor text={batch.institution.name} href={`/institution/${batch.institution.id}`} />} />
           <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} />
           <DetailField label="Grant" value={batch.grant.name} />
           <div className="mt-2">
@@ -73,7 +73,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Area" value={"HARDCODED"} />
           <DetailField label="Start Date" value={<Moment date={batch.start_date} format={"DD MMM YYYY"} />} />
           <DetailField label="End Date" value={<Moment date={batch.end_date} format={"DD MMM YYYY"} />} />
-          <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} />
+          <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} />
         </div>
       </div>
     </div>

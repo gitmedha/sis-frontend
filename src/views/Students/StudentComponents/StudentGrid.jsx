@@ -47,7 +47,6 @@ const Styles = styled.div`
     top: 0;
     right: 0;
     padding: 1px 5px 5px 5px;
-    background: linear-gradient(211.97deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 33.4%);
   }
 
   .box-line-active {

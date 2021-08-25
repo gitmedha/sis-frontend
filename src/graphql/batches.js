@@ -79,41 +79,48 @@ query GET_BATCH ($id:ID!) {
 `;
 
 export const GET_SESSIONS = `
-query GET_SESSIONS($id: ID!) {
-  sessions (
+query GET_SESSIONS($id: ID!, $sort: String) {
+  sessionsConnection (
     where: {batch: { id: $id }},
-    sort: "date:desc"
+    sort: $sort
   ) {
-    id
-    date
-    batch {
+    values{
       id
+      date
+      batch {
+        id
+      }
+      created_at
+      updated_at
+      topics_covered
     }
-    created_at
-    updated_at
-    topics_covered
   }
 }
 `;
 
 export const GET_BATCH_STUDENTS = `
-query GET_STUDENTS_IN_BATCH ($id: ID!){
-  programEnrollments (where: {batch: {id: $id}}) {
-    id
-    status
-    batch {
+query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
+  programEnrollmentsConnection (
+    where: {batch: {id: $id}}
+    sort: $sort
+  ) {
+    values {
       id
-      name
-    }
-    institution {
-      id
-      name
-    }
-    student {
-      id
-      phone
-      last_name
-      first_name
+      status
+      batch {
+        id
+        name
+      }
+      institution {
+        id
+        name
+      }
+      student {
+        id
+        phone
+        last_name
+        first_name
+      }
     }
   }
 }
