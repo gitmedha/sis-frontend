@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import moment from 'moment';
 import { Badge } from "../../../components/content/Utils";
 import DetailField from "../../../components/content/DetailField";
 import { getStudentsPickList } from "./StudentActions";
@@ -28,9 +29,24 @@ const Styled = styled.div`
   hr {
     height: 1px;
   }
+  .section-cv {
+    color: #787B96;
+    label {
+      font-size: 14px;
+      line-height: 1.25;
+    }
+    p {
+      font-size: 12px;
+      line-height: 1.25;
+      margin-bottom: 0;
+      margin-left: 15px;
+      font-family: 'Latto-Italic';
+    }
+  }
 `;
 
 const Details = (props) => {
+  console.log('props', props);
   const {
     first_name,
     last_name,
@@ -44,7 +60,10 @@ const Details = (props) => {
     income_level,
     logo,
     old_sis_id,
-    course_type_latest
+    course_type_latest,
+    medha_champion,
+    interested_in_employment_opportunities,
+    CV
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -71,7 +90,7 @@ const Details = (props) => {
           <div className="col-md-4">
             <DetailField label="Phone number" value={phone} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
-            <DetailField label="Date of Birth" value={date_of_birth} />
+            <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
             <DetailField label="Income Level (INR)" value={income_level} />
           </div>
@@ -85,13 +104,22 @@ const Details = (props) => {
         <hr className="separator" />
         <div className="row">
           <div className="col-md-6">
-            <DetailField label="Medha Champion" value={''} />
-            <DetailField label="Interested in Employment Opportunities" value={''} />
+            <DetailField label="Medha Champion" value={medha_champion ? 'true' : 'false'} />
+            <DetailField label="Interested in Employment Opportunities" value={interested_in_employment_opportunities ? 'true' : 'false'} />
             <DetailField label="ID in SIS 2.0" value={old_sis_id} />
             <DetailField label="Latest Course Type" value={course_type_latest} />
           </div>
-          <div className="col-md-6">
-          </div>
+          {CV &&
+            <div className="offset-md-3 col-md-3 d-flex flex-column section-cv">
+              <div className="d-flex align-items-end mb-2">
+                <label>CV</label>
+                <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
+              </div>
+              <div className="d-flex align-items-start">
+                <a href={urlPath(CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </Styled>

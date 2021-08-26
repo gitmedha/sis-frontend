@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import moment from 'moment';
 import { useMemo } from "react";
 import Table from "../../../components/content/Table";
 import { Anchor } from "../../../components/content/Utils";
+import { FaDownload } from "react-icons/fa";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -28,13 +30,13 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = ({ programEnrollments }) => {
-  console.log('programEnrollments component', programEnrollments);
   programEnrollments = programEnrollments.map((programEnrollment) => {
     return {
       ...programEnrollment,
+      registration_date: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
       batch_name: programEnrollment.batch.name,
       institution_name: programEnrollment.institution.name,
-      // email_id: <Anchor text={programEnrollment.email} href={'mailto:' + programEnrollment.email} />,
+      medha_program_certificate: <FaDownload size="20" color="#31B89D" />,
     };
   });
 
@@ -79,6 +81,16 @@ const ProgramEnrollments = ({ programEnrollments }) => {
 
   return (
     <div className="container-fluid my-3">
+      <div className="row">
+        <div className="col-md-6 col-sm-12 mb-4">
+          <button
+            className="btn btn-primary"
+            onClick={() => {}}
+          >
+            + Add More
+          </button>
+        </div>
+      </div>
       <Table columns={columns} data={programEnrollments} paginationPageSize={programEnrollments.length} totalRecords={programEnrollments.length} fetchData={() => {}} loading={false} showPagination={false} />
     </div>
   );

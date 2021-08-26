@@ -61,6 +61,8 @@ query GET_STUDENT($id: ID!) {
     course_type_latest
     income_level
     old_sis_id
+    medha_champion
+    interested_in_employment_opportunities
     logo {
       id
       url
@@ -68,6 +70,7 @@ query GET_STUDENT($id: ID!) {
     CV {
       url
       previewUrl
+      updated_at
     }
   }
 }
