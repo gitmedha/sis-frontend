@@ -6,24 +6,27 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 import api from "../../apis";
 import Details from "./StudentComponents/Details";
+import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 // import { GET_STUDENT } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getStudent } from "./StudentComponents/StudentActions";
+import { getStudent, getStudentProgramEnrollments } from "./StudentComponents/StudentActions";
+import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 // import { deleteInstitution, updateInstitution } from "./InstitutionComponents/instituteActions";
 // import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
   const [isLoading, setLoading] = useState(false);
-  const [studentData, setStudentData] = useState({});
+  const [student, setStudent] = useState({});
+  const [studentProgramEnrollments, setStudentProgramEnrollments] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
   const {setAlert} = props;
-  const { address, contacts, ...rest } = studentData;
+  const { address, contacts, ...rest } = student;
 
   const hideUpdateModal = async (data) => {
     // if (!data || data.isTrusted) {
@@ -45,14 +48,14 @@ const Student = (props) => {
     //   setAlert("Unable to update institution.", "error");
     // }).finally(() => {
     //   NP.done();
-    //   getThisInstitution();
+    //   getThisStudent();
     // });
     // setModalShow(false);
   };
 
   const handleDelete = async () => {
     // NP.start();
-    // deleteInstitution(studentData.id).then(data => {
+    // deleteInstitution(student.id).then(data => {
     //   setAlert("Institution deleted successfully.", "success");
     // }).catch(err => {
     //   console.log("INSTITUTION_DELETE_ERR", err);
@@ -64,32 +67,20 @@ const Student = (props) => {
     // });
   };
 
-  const getThisInstitution = async () => {
+  useEffect(() => {
+    // get student details
     getStudent(studentId).then(data => {
-      console.log('data', data);
-      setStudentData(data.data.data.student);
+      setStudent(data.data.data.student);
     }).catch(err => {
       console.log("getStudent Error", err);
-    })
-    // setLoading(true);
-    // NP.start();
-    // try {
-    //   const studentId = props.match.params.id;
-    //   let { data } = await api.post("/graphql", {
-    //     query: GET_STUDENT,
-    //     variables: { id: studentId },
-    //   });
-    //   setStudentData(data.data.student);
-    // } catch (err) {
-    //   console.log("ERR", err);
-    // } finally {
-    //   setLoading(false);
-    //   NP.done();
-    // }
-  };
+    });
 
-  useEffect(() => {
-    getThisInstitution();
+    getStudentProgramEnrollments(studentId).then(data => {
+      console.log('setStudentProgramEnrollments', data);
+      setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+    }).catch(err => {
+      console.log("getStudentProgramEnrollments Error", err);
+    });
   }, []);
 
   if (isLoading) {
@@ -111,9 +102,15 @@ const Student = (props) => {
             </button>
           </div>
         </div>
-        <Details {...studentData} />
+        <Details {...student} />
+        <Collapsible title="Program Enrollments">
+          <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} />
+        </Collapsible>
+        <Collapsible title="Employment Connections">
+          <EmploymentConnections employmentConnections={[]} student={student} />
+        </Collapsible>
         {/* <InstitutionForm
-          {...studentData}
+          {...student}
           show={modalShow}
           onHide={hideUpdateModal}
         /> */}
@@ -125,7 +122,7 @@ const Student = (props) => {
           onConfirm={() => handleDelete()}
           onCancel={() => setShowDeleteAlert(false)}
           title={
-            <span className="text--primary latto-bold">Delete {`${studentData.first_name} ${studentData.last_name}`}?</span>
+            <span className="text--primary latto-bold">Delete {`${student.first_name} ${student.last_name}`}?</span>
           }
           customButtons={
             <>

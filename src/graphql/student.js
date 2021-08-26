@@ -72,3 +72,50 @@ query GET_STUDENT($id: ID!) {
   }
 }
 `;
+
+export const GET_STUDENT_PROGRAM_ENROLLMENTS = `
+query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
+  programEnrollmentsConnection (
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      student: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      id
+      status
+      course_year
+      year_of_course_completion
+      fee_status
+      registration_date
+      institution {
+        id
+        name
+      }
+      batch {
+        id
+        name
+      }
+      student {
+        id
+        phone
+        last_name
+        first_name
+        logo {
+          url
+        }
+        address {
+          city
+        }
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
