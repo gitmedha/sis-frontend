@@ -46,7 +46,6 @@ const Styled = styled.div`
 `;
 
 const Details = (props) => {
-  console.log('props', props);
   const {
     first_name,
     last_name,
