@@ -66,7 +66,6 @@ const Student = (props) => {
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
-      console.log('getStudentProgramEnrollments data', data);
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
     }).catch(err => {
       console.log("getStudentProgramEnrollments Error", err);
