@@ -24,6 +24,7 @@ const routes = [
   {
     to: "/students",
     title: "Students",
+    aliases: ['student'],
     icon: <FaUserGraduate {...iconProps} />
   },
   {

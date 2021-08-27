@@ -275,7 +275,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                   } />
                 </div>
                 <div className="offset-md-1 col-md-4">
-                  <DetailField label="Date of Birth" value={activeItem.date_of_birth || '(Not entered)'} />
+                  <DetailField label="Date of Birth" value={activeItem.date_of_birth ? moment(activeItem.date_of_birth).format('DD MMM YYYY') : '(Not entered)'} />
                   <DetailField label="Email" value={activeItem.email || '(Not entered)'} />
                   <DetailField label="Phone No." value={activeItem.phone || '(Not entered)'} />
                   <DetailField label="Category" value={activeItem.category || '(Not entered)'} />

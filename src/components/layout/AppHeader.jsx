@@ -8,7 +8,7 @@ const AppHeader = styled.div`
   width: 100%;
   display: flex;
   position: sticky;
-  padding-left: 15px;
+  padding-left: 30px;
   padding-right: 15px;
   align-items: center;
   background-color: white;
