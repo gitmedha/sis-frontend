@@ -92,9 +92,17 @@ query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort
       id
       status
       course_year
+      course_type
+      course_level
       year_of_course_completion
-      fee_status
       registration_date
+      certification_date
+      fee_status
+      fee_payment_date
+      fee_amount
+      fee_transaction_id
+      fee_refund_status
+      fee_refund_date
       institution {
         id
         name
@@ -121,4 +129,80 @@ query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort
     }
   }
 }
+`;
+
+export const CREATE_PROGRAM_ENROLLMENT = `
+  mutation CREATE_PROGRAM_ENROLLMENT (
+    $data: ProgramEnrollmentInput!
+  ) {
+    createProgramEnrollment (
+      input: {
+        data: $data
+      }
+    ) {
+      programEnrollment {
+        id
+        status
+        course_year
+        course_type
+        course_level
+        year_of_course_completion
+        registration_date
+        certification_date
+        fee_status
+        fee_payment_date
+        fee_amount
+        fee_transaction_id
+        fee_refund_status
+        fee_refund_date
+        institution {
+          id
+          name
+        }
+        batch {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROGRAM_ENROLLMENT = `
+  mutation UPDATE_PROGRAM_ENROLLMENT (
+    $data: editProgramEnrollmentInput!
+    $id: ID!
+  ) {
+    updateProgramEnrollment(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      programEnrollment {
+        id
+        status
+        course_year
+        course_type
+        course_level
+        year_of_course_completion
+        registration_date
+        certification_date
+        fee_status
+        fee_payment_date
+        fee_amount
+        fee_transaction_id
+        fee_refund_status
+        fee_refund_date
+        institution {
+          id
+          name
+        }
+        batch {
+          id
+          name
+        }
+      }
+    }
+  }
 `;

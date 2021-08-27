@@ -67,7 +67,16 @@ const Student = (props) => {
     // });
   };
 
-  useEffect(() => {
+  const getProgramEnrollments = async () => {
+    getStudentProgramEnrollments(studentId).then(data => {
+      console.log('getStudentProgramEnrollments data', data);
+      setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+    }).catch(err => {
+      console.log("getStudentProgramEnrollments Error", err);
+    });
+  }
+
+  useEffect(async () => {
     // get student details
     getStudent(studentId).then(data => {
       setStudent(data.data.data.student);
@@ -75,12 +84,7 @@ const Student = (props) => {
       console.log("getStudent Error", err);
     });
 
-    getStudentProgramEnrollments(studentId).then(data => {
-      console.log('setStudentProgramEnrollments', data);
-      setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
-    }).catch(err => {
-      console.log("getStudentProgramEnrollments Error", err);
-    });
+    await getProgramEnrollments();
   }, []);
 
   if (isLoading) {
@@ -104,7 +108,7 @@ const Student = (props) => {
         </div>
         <Details {...student} />
         <Collapsible title="Program Enrollments">
-          <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} />
+          <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
         <Collapsible title="Employment Connections">
           <EmploymentConnections employmentConnections={[]} student={student} />
