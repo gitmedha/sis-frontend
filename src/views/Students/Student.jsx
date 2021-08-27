@@ -4,18 +4,15 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-import api from "../../apis";
 import Details from "./StudentComponents/Details";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
-// import { GET_STUDENT } from "../../graphql";
-import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getStudent, getStudentProgramEnrollments } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
-// import { deleteInstitution, updateInstitution } from "./InstitutionComponents/instituteActions";
-// import InstitutionForm from "./InstitutionComponents/InstitutionForm";
+// import { deleteStudent, updateStudent } from "./StudentComponents/StudentActions";
+// import StudentForm from "./StudentComponents/StudentForm";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -113,7 +110,7 @@ const Student = (props) => {
         <Collapsible title="Employment Connections">
           <EmploymentConnections employmentConnections={[]} student={student} />
         </Collapsible>
-        {/* <InstitutionForm
+        {/* <StudentForm
           {...student}
           show={modalShow}
           onHide={hideUpdateModal}

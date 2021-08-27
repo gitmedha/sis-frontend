@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
-// import { sessionValidations } from "../../../validations";
+// import { ProgramEnrollmentValidations } from "../../../validations";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -62,15 +62,6 @@ const ProgramEnrollmentForm = (props) => {
 
   const onSubmit = async (values) => {
     onHide(values);
-  };
-
-  const clubStudentRecords = (records) => {
-    // return records.map((rec) => ({
-    //   present: false,
-    //   id: rec.student.id,
-    //   program_enrollment_id: Number(rec.id),
-    //   name: `${rec.student.first_name} ${rec.student.last_name}`,
-    // }));
   };
 
   useEffect(() => {

@@ -28,12 +28,6 @@ const Styled = styled.div`
 `;
 
 const EmploymentConnections = ({ employmentConnections }) => {
-  employmentConnections = employmentConnections.map((employmentConnection) => {
-    return {
-      ...employmentConnection,
-      // email_id: <Anchor text={employmentConnection.email} href={'mailto:' + employmentConnection.email} />,
-    };
-  });
 
   const columns = useMemo(
     () => [

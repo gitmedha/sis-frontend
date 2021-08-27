@@ -109,7 +109,6 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       // NP.done();
-      console.log('onDataUpdate');
       onDataUpdate();
     });
     setCreateModalShow(false);
