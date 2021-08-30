@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import moment from 'moment';
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import { createProgramEnrollment, updateProgramEnrollment } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { Badge } from "../../../components/content/Utils";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -35,17 +37,30 @@ const Styled = styled.div`
 const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
+  const [pickList, setPickList] = useState([]);
+  const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
   const [programEnrollmentUpdateFormData, setProgramEnrollmentUpdateFormData] = useState({});
 
-  programEnrollments = programEnrollments.map((programEnrollment) => {
-    return {
-      ...programEnrollment,
-      registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-      batch_name: programEnrollment.batch.name,
-      institution_name: programEnrollment.institution.name,
-      medha_program_certificate: <FaDownload size="20" color="#31B89D" />,
-    };
-  });
+  useEffect(() => {
+    getProgramEnrollmentsPickList().then(data => {
+      setPickList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    let data = programEnrollments.map(programEnrollment => {
+      return {
+        ...programEnrollment,
+        registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+        batch_name: programEnrollment.batch.name,
+        institution_name: programEnrollment.institution.name,
+        status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
+        fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
+        medha_program_certificate: <FaDownload size="20" color="#31B89D" />,
+      };
+    });
+    setProgramEnrollmentsTableData(data);
+  }, [programEnrollments, pickList]);
 
   const columns = useMemo(
     () => [
@@ -59,7 +74,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
       },
       {
         Header: 'Status',
-        accessor: 'status',
+        accessor: 'status_badge',
       },
       {
         Header: 'Registration Date',
@@ -67,7 +82,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
       },
       {
         Header: 'Fees Status',
-        accessor: 'fee_status',
+        accessor: 'fee_status_badge',
       },
       {
         Header: 'Medha Program Certificate',
@@ -94,7 +109,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, ...dataToSave} = data;
+    let {id, student, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
@@ -121,7 +136,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, student, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, ...dataToSave} = data;
+    let {id, student, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : '';
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : '';
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : '';
@@ -152,7 +167,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={programEnrollments} paginationPageSize={programEnrollments.length} totalRecords={programEnrollments.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <Table columns={columns} data={programEnrollmentsTableData} paginationPageSize={programEnrollmentsTableData.length} totalRecords={programEnrollmentsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
       <CreateProgramEnrollmentForm
         show={createModalShow}
         onHide={hideCreateModal}
