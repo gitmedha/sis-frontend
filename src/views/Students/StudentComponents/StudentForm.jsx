@@ -51,7 +51,6 @@ const StudentForm = (props) => {
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      console.log('data', data);
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -75,7 +74,6 @@ const StudentForm = (props) => {
   };
 
   let initialValues = {...props};
-  console.log('initialValues', initialValues);
   initialValues['date_of_birth'] = new Date(props?.date_of_birth);
   // initialValues['assigned_to'] = props?.assigned_to?.id;
 

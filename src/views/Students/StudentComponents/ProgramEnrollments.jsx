@@ -5,10 +5,13 @@ import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
-import { createProgramEnrollment, updateProgramEnrollment } from "./StudentActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import ProgramEnrollment from "./ProgramEnrollment";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { urlPath } from "../../../constants";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -37,6 +40,8 @@ const Styled = styled.div`
 const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
+  const [viewModalShow, setViewModalShow] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
   const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
   const [programEnrollmentUpdateFormData, setProgramEnrollmentUpdateFormData] = useState({});
@@ -56,7 +61,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         institution_name: programEnrollment.institution.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        medha_program_certificate: <FaDownload size="20" color="#31B89D" />,
+        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
       };
     });
     setProgramEnrollmentsTableData(data);
@@ -86,7 +91,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
       },
       {
         Header: 'Medha Program Certificate',
-        accessor: 'medha_program_certificate',
+        accessor: 'medha_program_certificate_icon',
       },
       {
         Header: '',
@@ -99,7 +104,21 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
 
   const handleRowClick = programEnrollment => {
     setProgramEnrollmentUpdateFormData(programEnrollment);
+    setViewModalShow(true);
+  }
+
+  const hideViewModal = () => {
+    setViewModalShow(false);
+  }
+
+  const handleViewEdit = () => {
+    setViewModalShow(false);
     setUpdateModalShow(true);
+  }
+
+  const handleViewDelete = () => {
+    setViewModalShow(false);
+    setShowDeleteAlert(true);
   }
 
   const hideCreateModal = async (data) => {
@@ -109,11 +128,12 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, student, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
 
     // NP.start();
@@ -136,11 +156,12 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, student, medha_program_certificate, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
-    dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : '';
-    dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : '';
-    dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : '';
-    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : '';
+    let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
+    dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
 
     // NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
@@ -153,6 +174,21 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
       onDataUpdate();
     });
     setUpdateModalShow(false);
+  };
+
+  const handleDelete = async () => {
+    // NP.start();
+    deleteProgramEnrollment(programEnrollmentUpdateFormData.id).then(data => {
+      setAlert("Program Enrollment deleted successfully.", "success");
+    }).catch(err => {
+      console.log("STUDENT_DELETE_ERR", err);
+      setAlert("Unable to delete program enrollment.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      onDataUpdate();
+      // NP.done();
+      // history.push("/students");
+    });
   };
 
   return (
@@ -168,6 +204,14 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         </div>
       </div>
       <Table columns={columns} data={programEnrollmentsTableData} paginationPageSize={programEnrollmentsTableData.length} totalRecords={programEnrollmentsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <ProgramEnrollment
+        show={viewModalShow}
+        onHide={hideViewModal}
+        handleEdit={handleViewEdit}
+        handleDelete={handleViewDelete}
+        student={student}
+        programEnrollment={programEnrollmentUpdateFormData}
+      />
       <CreateProgramEnrollmentForm
         show={createModalShow}
         onHide={hideCreateModal}
@@ -179,6 +223,32 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         student={student}
         programEnrollment={programEnrollmentUpdateFormData}
       />
+      <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          onConfirm={() => handleDelete()}
+          onCancel={() => setShowDeleteAlert(false)}
+          title={
+            <span className="text--primary latto-bold">Delete Program Enrollment?</span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Cancel
+              </button>
+              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                Delete
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure, you want to delete this program enrollment?</p>
+        </SweetAlert>
     </div>
   );
 };

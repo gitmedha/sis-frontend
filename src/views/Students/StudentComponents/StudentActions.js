@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { CREATE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_INSTITUTES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
+import { CREATE_PROGRAM_ENROLLMENT, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_INSTITUTES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -117,6 +117,19 @@ export const updateProgramEnrollment = async (id, data) => {
     variables: {
       id,
       data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const deleteProgramEnrollment = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_PROGRAM_ENROLLMENT,
+    variables: {
+      id
     },
   }).then(data => {
     return data;
