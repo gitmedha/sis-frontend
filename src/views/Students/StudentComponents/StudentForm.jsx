@@ -160,7 +160,7 @@ const StudentForm = (props) => {
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
+                    {/* {genderOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -290,16 +290,6 @@ const StudentForm = (props) => {
                       control="input"
                       placeholder="ID in SIS 2.0"
                       className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="randomized_uid"
-                      label="Randomized UID"
-                      control="input"
-                      placeholder="Randomized UID"
-                      className="form-control"
-                      disabled={true}
                     />
                   </div>
                 </div>

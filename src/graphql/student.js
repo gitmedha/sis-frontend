@@ -120,6 +120,7 @@ query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort
       fee_transaction_id
       fee_refund_status
       fee_refund_date
+      course_name_in_current_sis
       institution {
         id
         name
