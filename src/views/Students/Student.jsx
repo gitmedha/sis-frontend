@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
+import moment from "moment";
 
 import Details from "./StudentComponents/Details";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getStudent, getStudentProgramEnrollments } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
-// import { deleteStudent, updateStudent } from "./StudentComponents/StudentActions";
-// import StudentForm from "./StudentComponents/StudentForm";
+import StudentForm from "./StudentComponents/StudentForm";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -26,43 +26,49 @@ const Student = (props) => {
   const { address, contacts, ...rest } = student;
 
   const hideUpdateModal = async (data) => {
-    // if (!data || data.isTrusted) {
-    //   setModalShow(false);
-    //   return;
-    // }
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
 
-    // // need to remove id and show from the payload
-    // let {id, show, ...dataToSave} = data;
-    // if (typeof data.logo === 'object') {
-    //   dataToSave['logo'] = data.logo?.id;
-    // }
+    // need to remove some data from payload
+    let {id, show, CV, logo, ...dataToSave} = data;
+    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
 
-    // NP.start();
-    // updateInstitution(Number(id), dataToSave).then(data => {
-    //   setAlert("Institution updated successfully.", "success");
-    // }).catch(err => {
-    //   console.log("UPDATE_DETAILS_ERR", err);
-    //   setAlert("Unable to update institution.", "error");
-    // }).finally(() => {
-    //   NP.done();
-    //   getThisStudent();
-    // });
-    // setModalShow(false);
+    NP.start();
+    updateStudent(Number(id), dataToSave).then(data => {
+      setAlert("Student updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_STUDENT_ERR", err);
+      setAlert("Unable to update student.", "error");
+    }).finally(() => {
+      NP.done();
+      fetchStudent();
+    });
+    setModalShow(false);
   };
 
   const handleDelete = async () => {
-    // NP.start();
-    // deleteInstitution(student.id).then(data => {
-    //   setAlert("Institution deleted successfully.", "success");
-    // }).catch(err => {
-    //   console.log("INSTITUTION_DELETE_ERR", err);
-    //   setAlert("Unable to delete institution.", "error");
-    // }).finally(() => {
-    //   setShowDeleteAlert(false);
-    //   NP.done();
-    //   history.push("/institutions");
-    // });
+    NP.start();
+    deleteStudent(student.id).then(data => {
+      setAlert("Student deleted successfully.", "success");
+    }).catch(err => {
+      console.log("STUDENT_DELETE_ERR", err);
+      setAlert("Unable to delete student.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      NP.done();
+      history.push("/students");
+    });
   };
+
+  const fetchStudent = async () => {
+    getStudent(studentId).then(data => {
+      setStudent(data.data.data.student);
+    }).catch(err => {
+      console.log("getStudent Error", err);
+    });
+  }
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
@@ -73,13 +79,7 @@ const Student = (props) => {
   }
 
   useEffect(async () => {
-    // get student details
-    getStudent(studentId).then(data => {
-      setStudent(data.data.data.student);
-    }).catch(err => {
-      console.log("getStudent Error", err);
-    });
-
+    await fetchStudent();
     await getProgramEnrollments();
   }, []);
 
@@ -103,17 +103,17 @@ const Student = (props) => {
           </div>
         </div>
         <Details {...student} />
-        <Collapsible title="Program Enrollments">
+        <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
-        <Collapsible title="Employment Connections">
+        <Collapsible title="Employment Connections" badge={[].length.toString()}>
           <EmploymentConnections employmentConnections={[]} student={student} />
         </Collapsible>
-        {/* <StudentForm
+        <StudentForm
           {...student}
           show={modalShow}
           onHide={hideUpdateModal}
-        /> */}
+        />
         <SweetAlert
           danger
           showCancel

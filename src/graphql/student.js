@@ -1,79 +1,96 @@
+const studentFields = `
+  id
+  first_name
+  last_name
+  email
+  phone
+  status
+  name_of_parent_or_guardian
+  date_of_birth
+  category
+  gender
+  registration_date_latest
+  certification_date_latest
+  internship_date_latest
+  placement_date_latest
+  course_type_latest
+  income_level
+  old_sis_id
+  medha_champion
+  interested_in_employment_opportunities
+  logo {
+    id
+    url
+  }
+  CV {
+    url
+    previewUrl
+    updated_at
+  }
+`;
+
 export const GET_STUDENTS = `
-query GET_STUDENTS($limit: Int, $start: Int, $sort: String, $status: String) {
-  studentsConnection (
-    sort: $sort
-    start: $start
-    limit: $limit
-    where: {
-      status: $status
-    }
-  ) {
-    values {
-      id
-      first_name
-      last_name
-      email
-      phone
-      status
-      name_of_parent_or_guardian
-      date_of_birth
-      category
-      gender
-      registration_date_latest
-      certification_date_latest
-      internship_date_latest
-      placement_date_latest
-      logo {
-        id
-        url
+  query GET_STUDENTS($limit: Int, $start: Int, $sort: String, $status: String) {
+    studentsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit
+      where: {
+        status: $status
       }
-      CV {
-        url
-        previewUrl
+    ) {
+      values {
+        ${studentFields}
       }
-    }
-    aggregate {
-      count
+      aggregate {
+        count
+      }
     }
   }
-}
 `;
 
 export const GET_STUDENT = `
-query GET_STUDENT($id: ID!) {
-  student (
-    id: $id
-  ) {
-    id
-    first_name
-    last_name
-    email
-    phone
-    status
-    name_of_parent_or_guardian
-    date_of_birth
-    category
-    gender
-    registration_date_latest
-    certification_date_latest
-    internship_date_latest
-    placement_date_latest
-    course_type_latest
-    income_level
-    old_sis_id
-    medha_champion
-    interested_in_employment_opportunities
-    logo {
-      id
-      url
-    }
-    CV {
-      url
-      previewUrl
-      updated_at
+  query GET_STUDENT($id: ID!) {
+    student (
+      id: $id
+    ) {
+      ${studentFields}
     }
   }
-}
+`;
+
+export const UPDATE_STUDENT = `
+  mutation UPDATE_STUDENT (
+      $data: editStudentInput!
+      $id: ID!
+    ) {
+      updateStudent(
+        input: {
+          data: $data,
+          where: { id: $id }
+        }
+      ) {
+        student {
+          ${studentFields}
+        }
+    }
+  }
+`;
+
+export const DELETE_STUDENT = `
+  mutation DELETE_STUDENT(
+    $id: ID!
+  ) {
+    deleteStudent(
+      input:{
+        where: { id: $id }
+      }
+    ){
+      student {
+        id
+      }
+    }
+  }
 `;
 
 export const GET_STUDENT_PROGRAM_ENROLLMENTS = `
@@ -103,6 +120,7 @@ query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort
       fee_transaction_id
       fee_refund_status
       fee_refund_date
+      course_name_in_current_sis
       institution {
         id
         name

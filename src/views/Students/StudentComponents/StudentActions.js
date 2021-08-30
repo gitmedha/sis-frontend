@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { CREATE_PROGRAM_ENROLLMENT, GET_ALL_BATCHES, GET_ALL_INSTITUTES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
+import { CREATE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_INSTITUTES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -34,6 +34,33 @@ export const getStudent = async (id) => {
     return Promise.reject(error);
   });
 };
+
+export const updateStudent = async (id, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_STUDENT,
+    variables: {
+      id,
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const deleteStudent = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_STUDENT,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
 
 export const getStudentProgramEnrollments = async (studentId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {

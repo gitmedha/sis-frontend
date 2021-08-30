@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
-// import { ProgramEnrollmentValidations } from "../../../validations";
+import { ProgramEnrollmentValidations } from "../../../validations";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -49,15 +49,21 @@ const ProgramEnrollmentForm = (props) => {
     certification_date: '',
     fee_payment_date: '',
     fee_refund_date: '',
+    course_name_in_current_sis: '',
+    fee_transaction_id: '',
+    registration_date: null,
+    certification_date: null,
+    fee_payment_date: null,
+    fee_refund_date: null,
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = props.programEnrollment.batch?.id;
     initialValues['institution'] = props.programEnrollment.institution?.id;
-    initialValues['registration_date'] = new Date(props.programEnrollment?.registration_date);
-    initialValues['certification_date'] = new Date(props.programEnrollment?.certification_date);
-    initialValues['fee_payment_date'] = new Date(props.programEnrollment?.fee_payment_date);
-    initialValues['fee_refund_date'] = new Date(props.programEnrollment?.fee_refund_date);
+    initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
+    initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
+    initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
+    initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
   }
 
   const onSubmit = async (values) => {
@@ -115,7 +121,7 @@ const ProgramEnrollmentForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={ProgramEnrollmentValidations}
+          validationSchema={ProgramEnrollmentValidations}
         >
           {({ values }) => (
             <Form>
@@ -145,7 +151,6 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      icon="down"
                       control="lookup"
                       name="batch"
                       label="Batch"
@@ -166,7 +171,6 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      icon="down"
                       control="lookup"
                       name="institution"
                       label="Institution"
@@ -183,6 +187,74 @@ const ProgramEnrollmentForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Course Details</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_level"
+                      label="Course Level"
+                      options={courseLevelOptions}
+                      className="form-control"
+                      placeholder="Course Level"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="year_of_course_completion"
+                      label="Year of Completion"
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Completion"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_type"
+                      label="Course Type"
+                      options={courseTypeOptions}
+                      className="form-control"
+                      placeholder="Course Type"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="program_enrollment_id"
+                      control="input"
+                      label="Program Enrollment ID"
+                      className="form-control"
+                      placeholder="To be decided"
+                      disabled={true}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_year"
+                      label="Current Course Year"
+                      options={currentCourseYearOptions}
+                      className="form-control"
+                      placeholder="Current Course Year"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="course_name_in_current_sis"
+                      control="input"
+                      label="Course Name"
+                      className="form-control"
+                      placeholder="Course Name"
                     />
                   </div>
                 </div>
@@ -222,11 +294,11 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="receipt_no"
+                      name="fee_transaction_id"
                       control="input"
-                      label="Receipt No."
+                      label="Fee Transaction ID / Receipt No."
                       className="form-control"
-                      placeholder="Receipt No."
+                      placeholder="Fee Transaction ID / Receipt No."
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -246,73 +318,6 @@ const ProgramEnrollmentForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                    />
-                  </div>
-                </div>
-              </Section>
-              <Section>
-                <h3 className="section-header">Course Details</h3>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="course_type"
-                      label="Course Type"
-                      options={courseTypeOptions}
-                      className="form-control"
-                      placeholder="Course Type"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="year_of_course_completion"
-                      label="Year of Completion"
-                      options={yearOfCompletionOptions}
-                      className="form-control"
-                      placeholder="Year of Completion"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="course_year"
-                      label="Current Course Year"
-                      options={currentCourseYearOptions}
-                      className="form-control"
-                      placeholder="Current Course Year"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="program_enrollment_id"
-                      control="input"
-                      label="Program Enrollment ID"
-                      className="form-control"
-                      placeholder="Program Enrollment ID"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="course_name"
-                      control="input"
-                      label="Course Name"
-                      className="form-control"
-                      placeholder="Course Name"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="course_level"
-                      label="Course Level"
-                      options={courseLevelOptions}
-                      className="form-control"
-                      placeholder="Course Level"
                     />
                   </div>
                 </div>
