@@ -106,10 +106,10 @@ const Student = (props) => {
           </div>
         </div>
         <Details {...student} />
-        <Collapsible title="Program Enrollments">
+        <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
-        <Collapsible title="Employment Connections">
+        <Collapsible title="Employment Connections" badge={[].length.toString()}>
           <EmploymentConnections employmentConnections={[]} student={student} />
         </Collapsible>
         <StudentForm

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
-// import { ProgramEnrollmentValidations } from "../../../validations";
+import { ProgramEnrollmentValidations } from "../../../validations";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -121,7 +121,7 @@ const ProgramEnrollmentForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={ProgramEnrollmentValidations}
+          validationSchema={ProgramEnrollmentValidations}
         >
           {({ values }) => (
             <Form>
