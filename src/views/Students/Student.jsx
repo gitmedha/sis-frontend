@@ -31,8 +31,6 @@ const Student = (props) => {
       return;
     }
 
-    console.log('submit data', data);
-
     // need to remove some data from payload
     let {id, show, CV, logo, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
@@ -74,7 +72,6 @@ const Student = (props) => {
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
-      console.log('getStudentProgramEnrollments data', data);
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
     }).catch(err => {
       console.log("getStudentProgramEnrollments Error", err);
