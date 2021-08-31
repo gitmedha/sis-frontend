@@ -51,7 +51,7 @@ const ProgramEnrollment = (props) => {
             <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
           </div>
         </div>
-        <hr className="mb-4" style={{color: '#C4C4C4'}} />
+        <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
         <div className="row">
           <div className="col-md-6 col-sm-12">
             <DetailField label="Course Level" value={<Badge value={programEnrollment.course_level} pickList={pickList.course_level} />} />
@@ -64,7 +64,7 @@ const ProgramEnrollment = (props) => {
             <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
           </div>
         </div>
-        <hr className="mb-4" style={{color: '#C4C4C4'}} />
+        <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
         <div className="row">
           <div className="col-md-6 col-sm-12">
             <DetailField label="Fee Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
@@ -77,7 +77,7 @@ const ProgramEnrollment = (props) => {
             <DetailField label="Fee Refund Date" value={programEnrollment.fee_refund_date ? moment(programEnrollment.fee_refund_date).format("DD MMM YYYY") : ''} />
           </div>
         </div>
-        <hr className="mb-4" style={{color: '#C4C4C4'}} />
+        <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
         <div className="row">
           <div className="col-md-6 col-sm-12">
             <DetailField label="Certification Date" value={programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY") : ''} />
