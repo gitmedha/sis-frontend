@@ -8,30 +8,35 @@ import { Badge } from "../../../components/content/Utils";
 import SweetAlert from "react-bootstrap-sweetalert";
 import EmploymentConnection from "./EmploymentConnection";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
-const Styled = styled.div`
-  .img-profile-container {
-    position: relative;
-    .status-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1px 5px 5px 5px;
-    }
-    .img-profile {
-      width: 160px;
-      margin-left: auto;
-    }
-  }
-  .separator {
-    background-color: #C4C4C4;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  hr {
-    height: 1px;
-  }
+const StyledOpportunityIcon = styled.div`
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+
+const OpportunityIcon = ({employmentConnection}) => {
+  let bgColor = '#FF9700';
+  let icon = <FaBriefcase color="#ffffff" size="16" />;
+  switch (employmentConnection.type) {
+    case 'job':
+      bgColor = '#FF9700';
+      icon = <FaBriefcase color="#ffffff" size="16" />;
+      break;
+
+    case 'internship':
+      bgColor = '#12314C';
+      icon = <FaBlackTie color="#ffffff" size="16" />;
+      break;
+  }
+  return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
+    {icon}
+  </StyledOpportunityIcon>;
+};
 
 const EmploymentConnections = ({ employmentConnections, student, onDataUpdate }) => {
   const [createModalShow, setCreateModalShow] = useState(false);
@@ -53,7 +58,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
       return {
         ...employmentConnection,
         employer_name: employmentConnection.opportunity.employer.name,
-        opportunity_icon: employmentConnection.opportunity.employer.name,
+        opportunity_icon: <OpportunityIcon employmentConnection={employmentConnection} />,
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity.role_or_designation,
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
@@ -184,7 +189,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            + Add More
+            + Map Students
           </button>
         </div>
       </div>
