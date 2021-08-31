@@ -1,7 +1,13 @@
 import styled from "styled-components";
-import { useMemo } from "react";
+import moment from 'moment';
+import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { Anchor } from "../../../components/content/Utils";
+import { deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { Badge } from "../../../components/content/Utils";
+import SweetAlert from "react-bootstrap-sweetalert";
+import EmploymentConnection from "./EmploymentConnection";
+import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -27,33 +33,207 @@ const Styled = styled.div`
   }
 `;
 
-const EmploymentConnections = ({ employmentConnections }) => {
+const EmploymentConnections = ({ employmentConnections, student, onDataUpdate }) => {
+  const [createModalShow, setCreateModalShow] = useState(false);
+  const [updateModalShow, setUpdateModalShow] = useState(false);
+  const [viewModalShow, setViewModalShow] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [pickList, setPickList] = useState([]);
+  const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
+  const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
+
+  useEffect(() => {
+    getEmploymentConnectionsPickList().then(data => {
+      setPickList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    let data = employmentConnections.map(employmentConnection => {
+      return {
+        ...employmentConnection,
+        employer_name: employmentConnection.opportunity.employer.name,
+        opportunity_icon: employmentConnection.opportunity.employer.name,
+        status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
+        role_or_designation: employmentConnection.opportunity.role_or_designation,
+        registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
+      };
+    });
+    setEmploymentConnectionsTableData(data);
+  }, [employmentConnections, pickList]);
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Full Name',
-        accessor: 'full_name',
+        Header: 'Employer',
+        accessor: 'employer_name',
       },
       {
-        Header: 'Designation',
-        accessor: 'designation',
+        Header: 'Opportunity',
+        accessor: 'opportunity_icon',
       },
       {
-        Header: 'Email',
-        accessor: 'email_id',
+        Header: 'Status',
+        accessor: 'status_badge',
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
+        Header: 'Role/Designation',
+        accessor: 'role_or_designation',
+      },
+      {
+        Header: 'Registration Date',
+        accessor: 'registration_date_formatted',
+      },
+      {
+        Header: '',
+        accessor: 'link',
+        disableSortBy: true,
       },
     ],
     []
   );
 
+  const handleRowClick = programEnrollment => {
+    setSelectedEmploymentConnection(programEnrollment);
+    setViewModalShow(true);
+  }
+
+  const hideViewModal = () => {
+    setViewModalShow(false);
+  }
+
+  const handleViewEdit = () => {
+    setViewModalShow(false);
+    setUpdateModalShow(true);
+  }
+
+  const handleViewDelete = () => {
+    setViewModalShow(false);
+    setShowDeleteAlert(true);
+  }
+
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setCreateModalShow(false);
+      return;
+    }
+
+    // // need to remove some data from the payload that's not accepted by the API
+    // let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    // dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
+    // dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
+    // dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
+    // dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    // dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
+    // dataToSave['student'] = student.id;
+
+    // // NP.start();
+    // createProgramEnrollment(dataToSave).then(data => {
+    //   setAlert("Program Enrollment created successfully.", "success");
+    // }).catch(err => {
+    //   console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
+    //   setAlert("Unable to create program Enrollment.", "error");
+    // }).finally(() => {
+    //   // NP.done();
+    //   onDataUpdate();
+    // });
+    // setCreateModalShow(false);
+  };
+
+  const hideUpdateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setUpdateModalShow(false);
+      return;
+    }
+
+    // need to remove some data from the payload that's not accepted by the API
+    let {id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, opportunity, role_or_designation, opportunity_icon, employer_name, assigned_to, ...dataToSave} = data;
+    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+
+    // NP.start();
+    updateEmploymentConnection(Number(id), dataToSave).then(data => {
+      setAlert("Employment Connection updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
+      setAlert("Unable to update Employment Connection.", "error");
+    }).finally(() => {
+      // NP.done();
+      onDataUpdate();
+    });
+    setUpdateModalShow(false);
+  };
+
+  const handleDelete = async () => {
+    deleteEmploymentConnection(selectedEmploymentConnection.id).then(data => {
+      setAlert("Employment Connection deleted successfully.", "success");
+    }).catch(err => {
+      console.log("EMPLOYMENT_CONNECTION_DELETE_ERR", err);
+      setAlert("Unable to delete Employment Connection.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      onDataUpdate();
+    });
+  };
+
   return (
     <div className="container-fluid my-3">
-      <Table columns={columns} data={employmentConnections} paginationPageSize={employmentConnections.length} totalRecords={employmentConnections.length} fetchData={() => {}} loading={false} showPagination={false} />
+      <div className="row">
+        <div className="col-md-6 col-sm-12 mb-4">
+          <button
+            className="btn btn-primary"
+            onClick={() => setCreateModalShow(true)}
+          >
+            + Add More
+          </button>
+        </div>
+      </div>
+      <Table columns={columns} data={employmentConnectionsTableData} paginationPageSize={employmentConnectionsTableData.length} totalRecords={employmentConnectionsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <EmploymentConnection
+        show={viewModalShow}
+        onHide={hideViewModal}
+        handleEdit={handleViewEdit}
+        handleDelete={handleViewDelete}
+        student={student}
+        employmentConnection={selectedEmploymentConnection}
+      />
+      {/* <CreateEmploymentConnectionForm
+        show={createModalShow}
+        onHide={hideCreateModal}
+        student={student}
+      /> */}
+      <UpdateEmploymentConnectionForm
+        show={updateModalShow}
+        onHide={hideUpdateModal}
+        student={student}
+        employmentConnection={selectedEmploymentConnection}
+      />
+      <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          onConfirm={() => handleDelete()}
+          onCancel={() => setShowDeleteAlert(false)}
+          title={
+            <span className="text--primary latto-bold">Delete Employment Connection?</span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Cancel
+              </button>
+              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                Delete
+              </button>
+            </>
+          }
+        >
+          <p>Are you sure?</p>
+        </SweetAlert>
     </div>
   );
 };
