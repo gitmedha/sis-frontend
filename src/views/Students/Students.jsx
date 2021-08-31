@@ -24,7 +24,7 @@ const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
   { title: "My Area", key: "test-2" },
   { title: "My State", key: "test-3" },
-  { title: "All Area", key: "test-4" },
+  { title: "All Medha", key: "test-4" },
 ];
 
 const Styled = styled.div`
