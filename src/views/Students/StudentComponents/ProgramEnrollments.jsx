@@ -44,7 +44,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
   const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
-  const [programEnrollmentUpdateFormData, setProgramEnrollmentUpdateFormData] = useState({});
+  const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -103,7 +103,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
   );
 
   const handleRowClick = programEnrollment => {
-    setProgramEnrollmentUpdateFormData(programEnrollment);
+    setSelectedProgramEnrollment(programEnrollment);
     setViewModalShow(true);
   }
 
@@ -178,7 +178,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
 
   const handleDelete = async () => {
     // NP.start();
-    deleteProgramEnrollment(programEnrollmentUpdateFormData.id).then(data => {
+    deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
       console.log("STUDENT_DELETE_ERR", err);
@@ -210,7 +210,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
         student={student}
-        programEnrollment={programEnrollmentUpdateFormData}
+        programEnrollment={selectedProgramEnrollment}
       />
       <CreateProgramEnrollmentForm
         show={createModalShow}
@@ -221,7 +221,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         show={updateModalShow}
         onHide={hideUpdateModal}
         student={student}
-        programEnrollment={programEnrollmentUpdateFormData}
+        programEnrollment={selectedProgramEnrollment}
       />
       <SweetAlert
           danger
@@ -247,7 +247,8 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
             </>
           }
         >
-          <p>Are you sure, you want to delete this program enrollment?</p>
+          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.name}</p>
+          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program.name}</p>
         </SweetAlert>
     </div>
   );

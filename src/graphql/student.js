@@ -57,6 +57,9 @@ const programEnrollmentFields = `
   batch {
     id
     name
+    program {
+      name
+    }
   }
 `;
 
