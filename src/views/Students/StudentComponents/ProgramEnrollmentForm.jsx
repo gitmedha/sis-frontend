@@ -290,6 +290,7 @@ const ProgramEnrollmentForm = (props) => {
                       label="Discount Code ID"
                       className="form-control"
                       placeholder="Discount Code ID"
+                      disabled={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

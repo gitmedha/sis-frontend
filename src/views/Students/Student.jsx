@@ -138,7 +138,7 @@ const Student = (props) => {
             </>
           }
         >
-          <p>Are you sure, you want to delete this institution?</p>
+          <p>Are you sure, you want to delete this student?</p>
         </SweetAlert>
       </>
     );

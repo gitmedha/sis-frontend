@@ -29,6 +29,40 @@ const studentFields = `
   }
 `;
 
+const programEnrollmentFields = `
+  id
+  status
+  course_year
+  course_type
+  course_level
+  year_of_course_completion
+  registration_date
+  certification_date
+  fee_status
+  fee_payment_date
+  fee_amount
+  fee_transaction_id
+  fee_refund_status
+  fee_refund_date
+  course_name_in_current_sis
+  medha_program_certificate {
+    id
+    url
+    created_at
+  }
+  institution {
+    id
+    name
+  }
+  batch {
+    id
+    name
+    program {
+      name
+    }
+  }
+`;
+
 export const GET_STUDENTS = `
   query GET_STUDENTS($limit: Int, $start: Int, $sort: String, $status: String) {
     studentsConnection (
@@ -106,41 +140,7 @@ query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort
     }
   ) {
     values {
-      id
-      status
-      course_year
-      course_type
-      course_level
-      year_of_course_completion
-      registration_date
-      certification_date
-      fee_status
-      fee_payment_date
-      fee_amount
-      fee_transaction_id
-      fee_refund_status
-      fee_refund_date
-      course_name_in_current_sis
-      institution {
-        id
-        name
-      }
-      batch {
-        id
-        name
-      }
-      student {
-        id
-        phone
-        last_name
-        first_name
-        logo {
-          url
-        }
-        address {
-          city
-        }
-      }
+      ${programEnrollmentFields}
     }
     aggregate {
       count
@@ -159,28 +159,7 @@ export const CREATE_PROGRAM_ENROLLMENT = `
       }
     ) {
       programEnrollment {
-        id
-        status
-        course_year
-        course_type
-        course_level
-        year_of_course_completion
-        registration_date
-        certification_date
-        fee_status
-        fee_payment_date
-        fee_amount
-        fee_transaction_id
-        fee_refund_status
-        fee_refund_date
-        institution {
-          id
-          name
-        }
-        batch {
-          id
-          name
-        }
+        ${programEnrollmentFields}
       }
     }
   }
@@ -198,28 +177,23 @@ export const UPDATE_PROGRAM_ENROLLMENT = `
       }
     ) {
       programEnrollment {
+        ${programEnrollmentFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_PROGRAM_ENROLLMENT = `
+  mutation DELETE_PROGRAM_ENROLLMENT(
+    $id: ID!
+  ) {
+    deleteProgramEnrollment (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      programEnrollment {
         id
-        status
-        course_year
-        course_type
-        course_level
-        year_of_course_completion
-        registration_date
-        certification_date
-        fee_status
-        fee_payment_date
-        fee_amount
-        fee_transaction_id
-        fee_refund_status
-        fee_refund_date
-        institution {
-          id
-          name
-        }
-        batch {
-          id
-          name
-        }
       }
     }
   }
