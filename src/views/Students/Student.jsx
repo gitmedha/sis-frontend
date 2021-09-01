@@ -92,8 +92,8 @@ const Student = (props) => {
   }
 
   const updateEmploymentConnectionsBadge = (employmentConnections) => {
-    let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.type === 'job');
-    let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.type === 'internship');
+    let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity.type === 'Job');
+    let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity.type === 'Internship');
     setEmploymentConnectionsBadge(
       <>
         <FaBriefcase width="15" color="#D7D7E0" />

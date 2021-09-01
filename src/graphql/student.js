@@ -68,13 +68,14 @@ const employmentConnectionFields = `
   status
   start_date
   end_date
-  type
+  source
   reason_if_rejected
-  salary_in_inr
+  salary_offered
   opportunity {
     id
     role_description
     role_or_designation
+    type
     employer {
       id
       name

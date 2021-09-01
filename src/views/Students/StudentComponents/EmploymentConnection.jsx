@@ -3,15 +3,19 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from '../../../components/content/DetailField';
 import { Badge } from "../../../components/content/Utils";
-import { getEmploymentConnectionsPickList } from "./StudentActions";
+import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "./StudentActions";
 
 const EmploymentConnection = (props) => {
   let { onHide, show, handleEdit, handleDelete, student, employmentConnection } = props;
-  const [pickList, setPickList] = useState([]);
+  const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
+  const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
-      setPickList(data);
+      setEmploymentConnectionsPickList(data);
+    });
+    getOpportunitiesPickList().then(data => {
+      setOpportunitiesPickList(data);
     });
   }, []);
 
@@ -39,15 +43,17 @@ const EmploymentConnection = (props) => {
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Student" value={`${student.first_name} ${student.last_name}`} />
-              <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.employer.name : ''} />
-              <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={pickList.status} />} />
-              <DetailField label="Type" value={employmentConnection.type} />
+              <DetailField label="Employer" value={employmentConnection.opportunity ? employmentConnection.opportunity.employer.name : ''} />
+              <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
+              <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
+              <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
               <DetailField label="End Date" value={employmentConnection.end_date ? moment(employmentConnection.end_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
-              <DetailField label="Salary range" value={employmentConnection.salary_in_inr} />
+              <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
+              <DetailField label="Source" value={employmentConnection.source} />
             </div>
           </div>
           <div className="row mt-4">

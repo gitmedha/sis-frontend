@@ -19,23 +19,26 @@ const StyledOpportunityIcon = styled.div`
   justify-content: center;
 `;
 
-const OpportunityIcon = ({employmentConnection}) => {
+const OpportunityIcon = ({opportunity}) => {
   let bgColor = '#FF9700';
-  let icon = <FaBriefcase color="#ffffff" size="16" />;
-  switch (employmentConnection.type) {
-    case 'job':
+  let icon = null;
+  switch (opportunity.type) {
+    case 'Job':
       bgColor = '#FF9700';
       icon = <FaBriefcase color="#ffffff" size="16" />;
       break;
 
-    case 'internship':
+    case 'Internship':
       bgColor = '#12314C';
       icon = <FaBlackTie color="#ffffff" size="16" />;
       break;
   }
-  return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
-    {icon}
-  </StyledOpportunityIcon>;
+  if (icon) {
+    return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
+      {icon}
+    </StyledOpportunityIcon>;
+  }
+  return <></>;
 };
 
 const EmploymentConnections = ({ employmentConnections, student, onDataUpdate }) => {
@@ -58,7 +61,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
       return {
         ...employmentConnection,
         employer_name: employmentConnection.opportunity.employer.name,
-        opportunity_icon: <OpportunityIcon employmentConnection={employmentConnection} />,
+        opportunity_icon: <OpportunityIcon opportunity={employmentConnection.opportunity} />,
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity.role_or_designation,
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
@@ -74,7 +77,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
         accessor: 'employer_name',
       },
       {
-        Header: 'Opportunity',
+        Header: 'Opportunity Type',
         accessor: 'opportunity_icon',
       },
       {
@@ -155,6 +158,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
     let {id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, opportunity, role_or_designation, opportunity_icon, employer_name, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
 
     // NP.start();
     updateEmploymentConnection(Number(id), dataToSave).then(data => {

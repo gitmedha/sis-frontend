@@ -199,3 +199,22 @@ export const deleteEmploymentConnection = async (id) => {
     return Promise.reject(error);
   });
 }
+
+export const getOpportunitiesPickList = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'opportunities'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};

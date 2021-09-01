@@ -147,6 +147,24 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      name="salary_offered"
+                      control="input"
+                      label="Salary Offered"
+                      className="form-control"
+                      placeholder="Salary Offered"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="source"
+                      control="input"
+                      label="Source"
+                      className="form-control"
+                      placeholder="Source"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       name="certificate"
                       control="input"
                       label="Upload Internship Certificate"
