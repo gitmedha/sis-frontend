@@ -9,7 +9,6 @@ import { urlPath } from "../../../constants";
 
 const ProgramEnrollment = (props) => {
   let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
-  console.log('programEnrollment', programEnrollment);
   const [pickList, setPickList] = useState([]);
 
   useEffect(() => {
