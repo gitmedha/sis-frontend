@@ -251,27 +251,26 @@ query INSTITUTION(
       email
       phone
       status
-      website
+      website 
       type
+      address 
+      state
+      pin_code
+      medha_area
+      city
       logo {
         id
         url
       }
-      address{
-        pin_code
-        state
-        medha_area
-        address_line
-      }
-      assigned_to{
+      assigned_to {
         id
         username
         email
       }
-      logo{
+      logo {
         url
       }
-      contacts{
+      contacts {
         id
         email
         phone
@@ -279,7 +278,7 @@ query INSTITUTION(
         designation
       }
     }
-}
+  }
 `;
 /**
  * SAMPLE PLAYLOAD TO AN INSTITUTE DETAILS
