@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import Select from '../../utils/Form/Select';
+import Select from 'react-select'
 
 const Styled = styled.div`
   display: flex;
@@ -109,24 +109,28 @@ const Pagination = ({totalPages, pageNeighbours = 2, gotoPage, nextPage, previou
   }
 
   const pages = fetchPageNumbers();
+
+  const pageSizeOptions = [
+    { value: 10, label: 'Show 10' },
+    { value: 25, label: 'Show 25' },
+    { value: 50, label: 'Show 50' },
+    { value: 100, label: 'Show 100' },
+  ];
+
   return (
     <Styled>
       <div className="row d-flex align-items-center w-100">
-        <div className="col-md-3">
-          <select
-            value={pageLimit}
+        <div className="col-md-2">
+          <Select
+            value = {pageSizeOptions.filter(option => option.value === pageLimit)}
+            options={pageSizeOptions}
+            isSearchable={false}
             onChange={e => {
-              setPageLimit(Number(e.target.value))
+              setPageLimit(Number(e.value))
             }}
-          >
-            {[10, 25, 50, 100].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
+          />
         </div>
-        <div className="col-md-6">
+        <div className="col-md-8">
           <nav>
             <ul className="pagination">
               <li key='first' className="pagination-link-wrapper">
