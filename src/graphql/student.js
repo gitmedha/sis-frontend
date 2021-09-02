@@ -246,6 +246,22 @@ export const GET_STUDENT_EMPLOYMENT_CONNECTIONS = `
   }
 `
 
+export const CREATE_EMPLOYMENT_CONNECTION = `
+  mutation CREATE_EMPLOYMENT_CONNECTION (
+    $data: EmploymentConnectionInput!
+  ) {
+    createEmploymentConnection (
+      input: {
+        data: $data
+      }
+    ) {
+      employmentConnection {
+        ${employmentConnectionFields}
+      }
+    }
+  }
+`;
+
 export const UPDATE_EMPLOYMENT_CONNECTION = `
   mutation UPDATE_EMPLOYMENT_CONNECTION (
     $data: editEmploymentConnectionInput!

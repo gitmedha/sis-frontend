@@ -161,15 +161,19 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="opportunity_id"
-                      label="Opportunity"
-                      options={employerOpportunityOptions}
-                      className="form-control"
-                      placeholder="Opportunity"
-                    />
+                    {employerOpportunityOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity"
+                        options={employerOpportunityOptions}
+                        className="form-control"
+                        placeholder="Opportunity"
+                      />
+                    ) : (
+                        <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

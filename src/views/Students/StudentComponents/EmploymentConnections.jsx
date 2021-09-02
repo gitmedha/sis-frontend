@@ -2,7 +2,7 @@ import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -127,26 +127,23 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
       return;
     }
 
-    // // need to remove some data from the payload that's not accepted by the API
-    // let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
-    // dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
-    // dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
-    // dataToSave['student'] = student.id;
+    // need to remove some data from the payload that's not accepted by the API
+    let {id, employer, employer_id, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, assigned_to, ...dataToSave} = data;
+    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
+    dataToSave['opportunity'] = data.opportunity_id;
+    dataToSave['student'] = student.id;
 
-    // // NP.start();
-    // createProgramEnrollment(dataToSave).then(data => {
-    //   setAlert("Program Enrollment created successfully.", "success");
-    // }).catch(err => {
-    //   console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
-    //   setAlert("Unable to create program Enrollment.", "error");
-    // }).finally(() => {
-    //   // NP.done();
-    //   onDataUpdate();
-    // });
-    // setCreateModalShow(false);
+    createEmploymentConnection(dataToSave).then(data => {
+      setAlert("Employment Connection created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_EMPLOYMENT_CONNECTION_ERR", err);
+      setAlert("Unable to create Employment Connection.", "error");
+    }).finally(() => {
+      onDataUpdate();
+    });
+    setCreateModalShow(false);
   };
 
   const hideUpdateModal = async (data) => {
