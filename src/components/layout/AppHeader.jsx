@@ -15,11 +15,16 @@ const AppHeader = styled.div`
   height: 70px !important;
   justify-content: flex-end;
   border-bottom: 2px solid #f2f2f2;
+  position: fixed;
+
+  @media (max-width: 767px) {
+    width: 100vw !important;
+  }
 `;
 
 const Header = ({ isOpen, toggleMenu }) => {
   return (
-    <AppHeader>
+    <AppHeader style={{width: isOpen ? 'calc(100vw - 275px)' : 'calc(100vw - 80px)'}}>
       <SearchBar />
       <Userbox />
     </AppHeader>

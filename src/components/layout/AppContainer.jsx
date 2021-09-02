@@ -7,5 +7,6 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
+  position: relative;
 `;
 export default AppContainer;

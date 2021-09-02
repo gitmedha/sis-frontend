@@ -29,6 +29,7 @@ const RouteContainer = styled.div`
   flex: 1;
   z-index: 2;
   overflow: auto;
+  margin-top: 70px;
 `;
 
 const App = (props) => {
