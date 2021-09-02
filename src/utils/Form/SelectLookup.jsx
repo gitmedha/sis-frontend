@@ -19,6 +19,17 @@ const style = {
       borderColor: "#ced4da",
     },
   }),
+  singleValue: (provided, state) => {
+    if (state.selectProps.icon === 'down') {
+      // don't do anything if it's a dropdown
+      return {};
+    }
+    // when the menu is open, remove the text displayed in the input
+    // this is done to make lookup field as type & search
+    return {
+      display: state.selectProps.menuIsOpen ? 'none' : 'block',
+    }
+  }
 };
 
 const IconRenderer = ({ icon }) => {
