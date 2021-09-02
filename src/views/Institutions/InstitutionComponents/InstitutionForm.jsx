@@ -193,14 +193,14 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       label="Address"
-                      name="address[address_line]"
+                      name="address"
                       placeholder="Address"
                       className="form-control"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="address[state]"
+                      name="state"
                       label="State"
                       control="input"
                       placeholder="State"
@@ -210,7 +210,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      name="address[medha_area]"
+                      name="medha_area"
                       label="Medha Area"
                       className="form-control"
                       placeholder="Medha Area"
@@ -219,9 +219,18 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      name="address[pin_code]"
+                      name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      placeholder="City"
                       className="form-control"
                     />
                   </div>
