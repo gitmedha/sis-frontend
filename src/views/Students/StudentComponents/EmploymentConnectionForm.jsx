@@ -2,10 +2,11 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { Input } from "../../../utils/Form";
-import { ProgramEnrollmentValidations } from "../../../validations";
-import { getEmploymentConnectionsPickList } from "./StudentActions";
+// import { EmploymentConnectionValidations } from "../../../validations";
+import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from "./StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -29,18 +30,22 @@ const Section = styled.div`
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
   const [loading, setLoading] = useState(false);
+  const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
-    employment_connection_opportunity: '',
+    employer_id: null,
+    opportunity_id: null,
     status: '',
     start_date: null,
     end_date: null,
   };
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['employment_connection_opportunity'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : '';
+    initialValues['employer_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.employer.id : null;
+    initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
@@ -53,7 +58,31 @@ const EnrollmentConnectionForm = (props) => {
     getEmploymentConnectionsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
-  }, []);
+    getAllEmployers().then(data => {
+      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
+        key: employer.name,
+        label: employer.name,
+        value: employer.id,
+      })));
+      if (props.employmentConnection && props.employmentConnection.opportunity) {
+        updateEmployerOpportunityOptions({
+          value: Number(props.employmentConnection.opportunity.employer.id),
+        });
+      }
+    });
+  }, [props]);
+
+
+  const updateEmployerOpportunityOptions = employer => {
+    setEmployerOpportunityOptions([]);
+    getEmployerOpportunities(Number(employer.value)).then(data => {
+      setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
+        key: opportunity.role_or_designation,
+        label: opportunity.role_or_designation,
+        value: opportunity.id,
+      })));
+    });
+  }
 
   return (
     <Modal
@@ -81,7 +110,7 @@ const EnrollmentConnectionForm = (props) => {
           initialValues={initialValues}
           // validationSchema={EmploymentConnectionValidations}
         >
-          {({ values }) => (
+          {({ setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -106,14 +135,20 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="employment_connection_opportunity"
-                      control="input"
-                      label="Student"
-                      className="form-control"
-                      placeholder="Student"
-                      disabled={true}
-                    />
+                    {employerOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="employer_id"
+                        label="Employer"
+                        options={employerOptions}
+                        className="form-control"
+                        placeholder="Employer"
+                        onChange={updateEmployerOpportunityOptions}
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -123,6 +158,17 @@ const EnrollmentConnectionForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="opportunity_id"
+                      label="Opportunity"
+                      options={employerOpportunityOptions}
+                      className="form-control"
+                      placeholder="Opportunity"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
