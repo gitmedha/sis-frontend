@@ -10,15 +10,18 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getStudent, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getEmploymentConnectionsPickList, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
   const [isLoading, setLoading] = useState(false);
   const [student, setStudent] = useState({});
   const [studentProgramEnrollments, setStudentProgramEnrollments] = useState([]);
+  const [studentEmploymentConnections, setStudentEmploymentConnections] = useState([]);
+  const [employmentConnectionsBadge, setEmploymentConnectionsBadge] = useState(<></>);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
@@ -78,9 +81,33 @@ const Student = (props) => {
     });
   }
 
+  const getEmploymentConnections = async () => {
+    getStudentEmploymentConnections(studentId).then(data => {
+      let employmentConnections = data.data.data.employmentConnectionsConnection.values;
+      setStudentEmploymentConnections(employmentConnections);
+      updateEmploymentConnectionsBadge(employmentConnections);
+    }).catch(err => {
+      console.log("getStudentEmploymentConnections Error", err);
+    });
+  }
+
+  const updateEmploymentConnectionsBadge = (employmentConnections) => {
+    let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity.type === 'Job');
+    let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity.type === 'Internship');
+    setEmploymentConnectionsBadge(
+      <>
+        <FaBriefcase width="15" color="#D7D7E0" />
+        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobEmploymentConnections.length}</span>
+        <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipEmploymentConnections.length}</span>
+      </>
+    );
+  }
+
   useEffect(async () => {
     await fetchStudent();
     await getProgramEnrollments();
+    await getEmploymentConnections();
   }, []);
 
   if (isLoading) {
@@ -106,8 +133,8 @@ const Student = (props) => {
         <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
-        <Collapsible title="Employment Connections" badge={[].length.toString()}>
-          <EmploymentConnections employmentConnections={[]} student={student} />
+        <Collapsible title="Employment Connections" badge={employmentConnectionsBadge}>
+          <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
         </Collapsible>
         <StudentForm
           {...student}

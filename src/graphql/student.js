@@ -63,6 +63,31 @@ const programEnrollmentFields = `
   }
 `;
 
+const employmentConnectionFields = `
+  id
+  status
+  start_date
+  end_date
+  source
+  reason_if_rejected
+  salary_offered
+  opportunity {
+    id
+    role_description
+    role_or_designation
+    type
+    employer {
+      id
+      name
+    }
+  }
+  assigned_to {
+    id
+    username
+    email
+  }
+`;
+
 export const GET_STUDENTS = `
   query GET_STUDENTS($limit: Int, $start: Int, $sort: String, $status: String) {
     studentsConnection (
@@ -193,6 +218,78 @@ export const DELETE_PROGRAM_ENROLLMENT = `
       }
     ){
       programEnrollment {
+        id
+      }
+    }
+  }
+`;
+
+export const GET_STUDENT_EMPLOYMENT_CONNECTIONS = `
+  query GET_STUDENT_EMPLOYMENT_CONNECTIONS ($id: Int, $limit: Int, $start: Int, $sort: String){
+    employmentConnectionsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit
+      where: {
+        student: {
+          id: $id
+        }
+      }
+    ) {
+      values {
+        ${employmentConnectionFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+export const CREATE_EMPLOYMENT_CONNECTION = `
+  mutation CREATE_EMPLOYMENT_CONNECTION (
+    $data: EmploymentConnectionInput!
+  ) {
+    createEmploymentConnection (
+      input: {
+        data: $data
+      }
+    ) {
+      employmentConnection {
+        ${employmentConnectionFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_EMPLOYMENT_CONNECTION = `
+  mutation UPDATE_EMPLOYMENT_CONNECTION (
+    $data: editEmploymentConnectionInput!
+    $id: ID!
+  ) {
+    updateEmploymentConnection (
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      employmentConnection {
+        ${employmentConnectionFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_EMPLOYMENT_CONNECTION = `
+  mutation DELETE_EMPLOYMENT_CONNECTION(
+    $id: ID!
+  ) {
+    deleteEmploymentConnection (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      employmentConnection {
         id
       }
     }

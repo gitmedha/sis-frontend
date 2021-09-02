@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { CREATE_PROGRAM_ENROLLMENT, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_INSTITUTES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
+import { CREATE_EMPLOYMENT_CONNECTION, CREATE_PROGRAM_ENROLLMENT, DELETE_EMPLOYMENT_CONNECTION, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_EMPLOYERS, GET_ALL_INSTITUTES, GET_EMPLOYER_OPPORTUNITIES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_EMPLOYMENT_CONNECTIONS, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_EMPLOYMENT_CONNECTION, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -131,6 +131,123 @@ export const deleteProgramEnrollment = async (id) => {
     variables: {
       id
     },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getEmploymentConnectionsPickList = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'employment_connections'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};
+
+export const getStudentEmploymentConnections = async (studentId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_STUDENT_EMPLOYMENT_CONNECTIONS,
+    variables: {
+      id: Number(studentId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const createEmploymentConnection = async (data) => {
+  return await api.post('/graphql', {
+    query: CREATE_EMPLOYMENT_CONNECTION,
+    variables: {
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const updateEmploymentConnection = async (id, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_EMPLOYMENT_CONNECTION,
+    variables: {
+      id,
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const deleteEmploymentConnection = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_EMPLOYMENT_CONNECTION,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getOpportunitiesPickList = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'opportunities'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};
+
+export const getAllEmployers = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_EMPLOYERS,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getEmployerOpportunities = async (employerId) => {
+  return await api.post('/graphql', {
+    query: GET_EMPLOYER_OPPORTUNITIES,
+    variables: {
+      id: employerId
+    }
   }).then(data => {
     return data;
   }).catch(error => {
