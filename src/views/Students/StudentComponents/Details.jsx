@@ -8,6 +8,11 @@ import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 
 const Styled = styled.div`
+  .container-fluid {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
   .img-profile-container {
     position: relative;
     .status-icon {
@@ -76,7 +81,7 @@ const Details = (props) => {
 
   return (
     <Styled>
-      <div className="container my-3">
+      <div className="container-fluid my-3">
         <hr className="separator" />
         <div className="row latto-regular">
           <div className="col-md-4">
