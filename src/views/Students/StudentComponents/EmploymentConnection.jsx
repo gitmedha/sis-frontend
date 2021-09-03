@@ -53,7 +53,7 @@ const EmploymentConnection = (props) => {
               <DetailField label="End Date" value={employmentConnection.end_date ? moment(employmentConnection.end_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
-              <DetailField label="Source" value={employmentConnection.source} />
+              <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
             </div>
           </div>
           <div className="row mt-4">

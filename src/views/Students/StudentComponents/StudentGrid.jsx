@@ -283,7 +283,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                 <div className="col-md-3 d-flex flex-md-column justify-content-between align-items-end pb-3">
                   <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />
                   <button
-                    onClick={() => history.push(activeItem.link)}
+                    onClick={() => history.push(`/student/${activeItem.id}`)}
                     className="btn-view-more btn btn-sm text-white"
                   >
                     View More+

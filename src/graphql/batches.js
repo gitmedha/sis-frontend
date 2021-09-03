@@ -128,12 +128,13 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
 
 export const GET_BATCH_STUDENTS_ONLY = `
 query GET_STUDENTS_IN_BATCH ($id: ID!){
-  programEnrollments (where: {batch: {id: $id}}) {
+  programEnrollments (where: {batch: {id: $id}}, sort: "student.first_name:asc") {
     id
     student {
       id
       last_name
       first_name
+      phone
     }
   }
 }
@@ -440,4 +441,28 @@ query GET_ALL_BATCHES {
     status
   }
 }
+`;
+
+export const GET_BATCH_STUDENTS_ATTENDANCE = `
+  query GET_BATCH_STUDENTS_ATTENDANCE ($id: ID!) {
+    attendancesConnection (where: {present: true, program_enrollment: {batch: { id: $id }}}) {
+      groupBy {
+        program_enrollment {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+
+    sessionsConnection (where: {batch: {id: $id}}) {
+      aggregate {
+        count
+      }
+    }
+  }
+
 `;

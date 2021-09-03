@@ -43,7 +43,7 @@ const Styled = styled.div`
   }
 `;
 
-const Students = ({ isSidebarOpen }) => {
+const Students = ({ isSidebarOpen, batch }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
@@ -51,7 +51,7 @@ const Students = ({ isSidebarOpen }) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [layout, setLayout] = useState('list');
+  const [layout, setLayout] = useState('grid');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState('All');
   const [paginationPageSize, setPaginationPageSize] = useState(10);
@@ -73,7 +73,7 @@ const Students = ({ isSidebarOpen }) => {
       },
       {
         Header: 'Latest Course Type',
-        accessor: 'latest_course_type',
+        accessor: 'course_type_latest',
       },
       {
         Header: '',

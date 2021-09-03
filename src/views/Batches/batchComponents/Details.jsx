@@ -47,9 +47,9 @@ const Details = ({ batch, sessions=[] }) => {
 
   let totalSessionAttendancePercentages = 0;
   sessions.map(session => {
-    return totalSessionAttendancePercentages += session.percent;
+    return totalSessionAttendancePercentages += session.percent || 0;
   });
-  const averageAttendancePercent = Math.ceil(totalSessionAttendancePercentages / sessions.length);
+  const averageAttendancePercent = Math.floor(totalSessionAttendancePercentages / sessions.length);
 
   return (
     <div className="container-fluid my-3">

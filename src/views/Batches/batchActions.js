@@ -1,5 +1,5 @@
 import api from "../../apis";
-import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS, GET_SESSION_ATTENDANCE, UPDATE_SESSION_QUERY, UPDATE_SESSION_ATTENDANCE, MARK_ATTENDANCE, GET_STUDENT_COUNT_BY_BATCH } from "../../graphql";
+import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS, GET_SESSION_ATTENDANCE, UPDATE_SESSION_QUERY, UPDATE_SESSION_ATTENDANCE, MARK_ATTENDANCE, GET_STUDENT_COUNT_BY_BATCH, GET_BATCH_STUDENTS_ATTENDANCE } from "../../graphql";
 
 export const getBatchesPickList = async () => {
   return await api.post("/graphql", {
@@ -159,6 +159,19 @@ export const updateAttendance = async (attendanceId, data) => {
 export const getStudentCountByBatch = async () => {
   return await api.post('/graphql', {
     query: GET_STUDENT_COUNT_BY_BATCH,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getBatchStudentAttendances = async (batchId) => {
+  return await api.post('/graphql', {
+    query: GET_BATCH_STUDENTS_ATTENDANCE,
+    variables: {
+      id: batchId,
+    },
   }).then(data => {
     return data;
   }).catch(error => {

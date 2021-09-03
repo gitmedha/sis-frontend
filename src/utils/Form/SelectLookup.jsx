@@ -19,6 +19,17 @@ const style = {
       borderColor: "#ced4da",
     },
   }),
+  singleValue: (provided, state) => {
+    if (state.selectProps.icon === 'down') {
+      // don't do anything if it's a dropdown
+      return {};
+    }
+    // when the menu is open, remove the text displayed in the input
+    // this is done to make lookup field as type & search
+    return {
+      display: state.selectProps.menuIsOpen ? 'none' : 'block',
+    }
+  }
 };
 
 const IconRenderer = ({ icon }) => {
@@ -46,7 +57,7 @@ export const SelectField = (props) => {
     options,
     placeholder,
     onChange = () => {},
-    isSearchable = true,
+    isSearchable = false,
   } = props;
 
   return (
@@ -57,7 +68,7 @@ export const SelectField = (props) => {
       options={options}
       onBlur={field.onBlur}
       placeholder={placeholder}
-      isSearchable={isSearchable}
+      isSearchable={isSearchable || icon !== 'down'}
       components={{ DropdownIndicator }}
       onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
       value={

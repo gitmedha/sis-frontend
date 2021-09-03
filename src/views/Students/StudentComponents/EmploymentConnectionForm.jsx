@@ -32,6 +32,7 @@ const EnrollmentConnectionForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
 
   let initialValues = {
@@ -50,6 +51,13 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
 
+  const onModalClose = () => {
+    if (!props.employmentConnection) {
+      setEmployerOpportunityOptions([]);
+    }
+    onHide();
+  }
+
   const onSubmit = async (values) => {
     onHide(values);
   };
@@ -57,6 +65,7 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllEmployers().then(data => {
       setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
@@ -169,10 +178,13 @@ const EnrollmentConnectionForm = (props) => {
                         label="Opportunity"
                         options={employerOpportunityOptions}
                         className="form-control"
-                        placeholder="Opportunity"
+                        placeholder={'Opportunity'}
                       />
                     ) : (
-                        <Skeleton count={1} height={45} />
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Opportunity (select an employer first)</label>
+                        <Skeleton count={1} height={35} />
+                      </>
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -206,9 +218,11 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="source"
-                      control="input"
                       label="Source"
+                      options={sourceOptions}
                       className="form-control"
                       placeholder="Source"
                     />
@@ -229,7 +243,7 @@ const EnrollmentConnectionForm = (props) => {
                 <div className="d-flex justify-content-end">
                   <button
                     type="button"
-                    onClick={onHide}
+                    onClick={onModalClose}
                     className="btn btn-secondary btn-regular mr-2"
                   >
                     CLOSE

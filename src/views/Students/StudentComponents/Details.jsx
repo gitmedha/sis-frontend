@@ -6,6 +6,7 @@ import { getStudentsPickList } from "./StudentActions";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
+import { FaCheckCircle } from "react-icons/fa";
 
 const Styled = styled.div`
   .container-fluid {
@@ -108,8 +109,8 @@ const Details = (props) => {
         <hr className="separator" />
         <div className="row">
           <div className="col-md-6">
-            <DetailField label="Medha Champion" value={medha_champion ? 'true' : 'false'} />
-            <DetailField label="Interested in Employment Opportunities" value={interested_in_employment_opportunities ? 'true' : 'false'} />
+            <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="ID in SIS 2.0" value={old_sis_id} />
             <DetailField label="Latest Course Type" value={course_type_latest} />
           </div>

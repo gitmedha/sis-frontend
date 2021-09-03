@@ -1,16 +1,13 @@
 import moment from "moment";
-import { useHistory } from "react-router-dom";
 import { useState, useMemo, useCallback } from "react";
 import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
-import { ProgressBarField, TableRowDetailLink } from "../../../components/content/Utils";
+import { ProgressBarField } from "../../../components/content/Utils";
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession, createSessionAttendance, getBatchSessions, updateAttendance, updateSession } from "../batchActions";
-import { MARK_ATTENDANCE } from "../../../graphql";
-import api from "../../../apis";
+import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { FaRegEdit } from "react-icons/fa";
 
 const SessionLink = styled.div`
@@ -21,7 +18,6 @@ const SessionLink = styled.div`
 
 const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
 
-  const history = useHistory();
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [batchSessionAttendanceFormData, setBatchSessionAttendanceFormData] = useState({});

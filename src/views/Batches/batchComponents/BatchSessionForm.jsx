@@ -85,6 +85,7 @@ const BatchSessionForm = (props) => {
       id: rec.student.id,
       program_enrollment_id: Number(rec.id),
       name: `${rec.student.first_name} ${rec.student.last_name}`,
+      phone: rec.student.phone,
     }));
   };
 
@@ -122,6 +123,11 @@ const BatchSessionForm = (props) => {
       {
         Header: 'Name',
         accessor: 'name',
+        disableSortBy: true,
+      },
+      {
+        Header: 'Phone',
+        accessor: 'phone',
         disableSortBy: true,
       },
     ],
