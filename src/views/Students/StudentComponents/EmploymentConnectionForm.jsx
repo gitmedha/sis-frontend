@@ -32,6 +32,7 @@ const EnrollmentConnectionForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
 
   let initialValues = {
@@ -57,6 +58,7 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllEmployers().then(data => {
       setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
@@ -206,9 +208,11 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="source"
-                      control="input"
                       label="Source"
+                      options={sourceOptions}
                       className="form-control"
                       placeholder="Source"
                     />
