@@ -62,6 +62,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        program_name: programEnrollment.batch.program.name,
       };
     });
     setProgramEnrollmentsTableData(data);
@@ -74,8 +75,8 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         accessor: 'batch_name',
       },
       {
-        Header: 'Institute',
-        accessor: 'institution_name',
+        Header: 'Program Name',
+        accessor: 'program_name',
       },
       {
         Header: 'Status',
@@ -97,6 +98,10 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
+      },
+      {
+        Header: 'Institute',
+        accessor: 'institution_name',
       },
     ],
     []
