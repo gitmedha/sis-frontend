@@ -128,12 +128,13 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
 
 export const GET_BATCH_STUDENTS_ONLY = `
 query GET_STUDENTS_IN_BATCH ($id: ID!){
-  programEnrollments (where: {batch: {id: $id}}) {
+  programEnrollments (where: {batch: {id: $id}}, sort: "student.first_name:asc") {
     id
     student {
       id
       last_name
       first_name
+      phone
     }
   }
 }
