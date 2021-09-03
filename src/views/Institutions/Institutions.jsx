@@ -131,7 +131,7 @@ const Institutions = () => {
   const onRowClick = (row) => {
     history.push(`/institution/${row.id}`);
   };
-  
+
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
       setModalShow(false);

@@ -256,7 +256,7 @@ query INSTITUTION(
       email
       phone
       status
-      website 
+      website
       type
       address 
       state

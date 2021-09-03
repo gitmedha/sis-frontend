@@ -70,5 +70,4 @@ export const NewInstituteValidations = Yup.object({
   assigned_to,
   address,
   city,
-  
 });
