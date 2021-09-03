@@ -13,6 +13,7 @@ import LayoutContainer from "./components/layout/Container";
 import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
+import Login from "./views/Login";
 import Batches from "./views/Batches/Batches";
 import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
@@ -34,6 +35,7 @@ const RouteContainer = styled.div`
 
 const App = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const { addToast, removeAllToasts } = useToasts();
@@ -47,15 +49,20 @@ const App = (props) => {
     // eslint-disable-next-line
   }, [props.alert]);
 
+  if (!user) {
+    return <Login />
+  }
+
   return (
     <Router>
+      <Route path="/login" exact component={Login} />
       <AppContainer>
         <Sidebar isOpen={isOpen} toggleMenu={toggleMenu} />
         <LayoutContainer>
           <Header isOpen={isOpen} />
           <RouteContainer>
             <Switch>
-              <Route path="/" exact component={Home} />
+              <Route path="/dashboard" exact component={Home} />
               <Route path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
               <Route path="/student/:id" exact component={Student} />
               <Route path="/institutions" exact component={Institutions} />
