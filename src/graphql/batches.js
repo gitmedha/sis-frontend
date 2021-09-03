@@ -441,3 +441,27 @@ query GET_ALL_BATCHES {
   }
 }
 `;
+
+export const GET_BATCH_STUDENTS_ATTENDANCE = `
+  query GET_BATCH_STUDENTS_ATTENDANCE ($id: ID!) {
+    attendancesConnection (where: {present: true, program_enrollment: {batch: { id: $id }}}) {
+      groupBy {
+        program_enrollment {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+
+    sessionsConnection (where: {batch: {id: $id}}) {
+      aggregate {
+        count
+      }
+    }
+  }
+
+`;

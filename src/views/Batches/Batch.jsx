@@ -19,7 +19,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats } from "./batchActions";
+import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -99,7 +99,19 @@ const Batch = (props) => {
           sort: `${sortBy}:${sortOrder}`
         },
       });
-      setStudents(data.programEnrollmentsConnection.values);
+      let studentsData = data.programEnrollmentsConnection.values;
+      getBatchStudentAttendances(batchID).then(data => {
+        let totalSessions = data.data.data.sessionsConnection.aggregate.count;
+        let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
+        let studentsWithAttendance = studentsData.map(student => {
+          let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
+          return {
+            ...student,
+            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/totalSessions) * 100) : 0,
+          }
+        });
+        setStudents(studentsWithAttendance);
+      });
     } catch (err) {
       console.log("ERR", err);
     }
@@ -161,6 +173,11 @@ const Batch = (props) => {
     init();
   }, []);
 
+  const handleSessionDataUpdate = async () => {
+    await getSessions();
+    await getStudents();
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -198,10 +215,10 @@ const Batch = (props) => {
           </Collapsible>
         )}
         <Collapsible title="Sessions" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={getSessions} fetchData={getSessions} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
         </Collapsible>
         <Collapsible title="Students" badge={students.length.toString()}>
-          <Students students={students} fetchData={getStudents} />
+          <Students students={students} fetchData={getStudents} batch={batch} />
         </Collapsible>
         {batch && <BatchForm
           {...batch}

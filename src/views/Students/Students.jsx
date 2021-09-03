@@ -43,7 +43,7 @@ const Styled = styled.div`
   }
 `;
 
-const Students = ({ isSidebarOpen }) => {
+const Students = ({ isSidebarOpen, batch }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);

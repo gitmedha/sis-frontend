@@ -9,7 +9,7 @@ import api from "../../../apis";
 import DetailField from '../../../components/content/DetailField';
 import { getProgramEnrollmentsPickList } from '../../Institutions/InstitutionComponents/instituteActions';
 
-const Students = ({ students, fetchData }) => {
+const Students = ({ students, batch, fetchData }) => {
   const [pickList, setPickList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [studentInModal, setStudentInModal] = useState(false);
@@ -49,13 +49,14 @@ const Students = ({ students, fetchData }) => {
   }
 
   const studentsTableData = students.map(student => {
+    console.log('student.attendancePercent', student.attendancePercent)
     return {
       id: student.id,
       name: `${student.student.first_name} ${student.student.last_name}`,
       phone: student.student.phone,
       enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
       institution: student.institution.name,
-      attendance: <ProgressBarField value={student.percent ? student.percent : 0} />,
+      attendance: <ProgressBarField value={student.attendancePercent || 0} />,
     };
   });
 
