@@ -1,11 +1,5 @@
-import {
-  FaBlackTie,
-  FaBriefcase,
-  FaGraduationCap,
-  FaClipboardCheck,
-} from "react-icons/fa";
-import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { urlPath } from "../constants";
 
 const Styled = styled.div`
   .content-wrapper {
@@ -40,6 +34,7 @@ const Styled = styled.div`
     padding: 20px 45px;
     color: #787B96;
     font-family: 'Latto-Bold';
+    text-decoration: none;
 
     img {
       width: 30px;
@@ -63,14 +58,14 @@ const Login = () => {
           </div>
           <div className="col-md-6">
             <p className="app-name">Student Information System</p>
-            <button type="button" className="btn-ms-login d-flex">
+            <a type="button" href={urlPath('/connect/microsoft')} className="btn-ms-login d-flex">
               <img
                 src={require('../assets/images/logo-microsoft.svg').default}
                 alt="Microsoft"
                 className={`mr-5`}
               />
               <span>Login using Microsoft account</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
