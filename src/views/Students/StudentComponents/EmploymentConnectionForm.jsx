@@ -51,6 +51,13 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
 
+  const onModalClose = () => {
+    if (!props.employmentConnection) {
+      setEmployerOpportunityOptions([]);
+    }
+    onHide();
+  }
+
   const onSubmit = async (values) => {
     onHide(values);
   };
@@ -171,10 +178,13 @@ const EnrollmentConnectionForm = (props) => {
                         label="Opportunity"
                         options={employerOpportunityOptions}
                         className="form-control"
-                        placeholder="Opportunity"
+                        placeholder={'Opportunity'}
                       />
                     ) : (
-                        <Skeleton count={1} height={45} />
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Opportunity (select an employer first)</label>
+                        <Skeleton count={1} height={35} />
+                      </>
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -233,7 +243,7 @@ const EnrollmentConnectionForm = (props) => {
                 <div className="d-flex justify-content-end">
                   <button
                     type="button"
-                    onClick={onHide}
+                    onClick={onModalClose}
                     className="btn btn-secondary btn-regular mr-2"
                   >
                     CLOSE
