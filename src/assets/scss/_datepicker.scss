@@ -71,6 +71,9 @@
     border-radius: 0;
     background-color: $custom-success;
   }
+  .react-datepicker__navigation {
+    top: 15px;
+  }
   .react-datepicker__navigation--previous {
     left: 10px;
     border-right-color: #fff !important;
@@ -78,6 +81,15 @@
   .react-datepicker__navigation--next {
     right: 10px;
     border-left-color: #fff !important;
+  }
+  .react-datepicker__day-name {
+    color: white;
+  }
+  .react-datepicker__day--today {
+    color: #257b69;
+    &.react-datepicker__day--selected {
+      color: white;
+    }
   }
 }
 
