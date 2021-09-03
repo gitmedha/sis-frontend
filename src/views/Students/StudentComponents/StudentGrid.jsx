@@ -174,6 +174,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
   }, []);
 
   const handleBoxClick = boxNumber => {
+    if(activeBox!= boxNumber){
     if (boxNumber > Math.floor(data.length/boxesInRow)*boxesInRow) {
       // box is in last row
       // set active box row to the last box index
@@ -184,7 +185,12 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
     }
     setActiveItem(data[boxNumber-1]);
     setActiveBox(boxNumber);
+  } else{
+    setActiveBox(0);
+    setActiveBoxRow(0);
+    setActiveItem([]);
   }
+}
 
   const handleResetActive = () => {
     setActiveBox(0);
