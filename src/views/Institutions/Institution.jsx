@@ -121,7 +121,7 @@ const Institute = (props) => {
           <Details {...instituteData} />
         </Collapsible>
         <Collapsible title="Address">
-          <Address {...address} id={rest.id} />
+          <Address {...instituteData}  id={rest.id} />
         </Collapsible>
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />

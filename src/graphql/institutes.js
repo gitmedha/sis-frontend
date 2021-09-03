@@ -82,7 +82,11 @@ mutation CREATE_INSTITUTIONS(
   $website: String!
   $assigned_to: ID!
   $contacts: [ComponentCommonContactInput!]!
-  $address: ComponentCommonAddressInput!
+  $address: String!
+  $city:String!
+  $pin_code: String!
+  $state:String!
+  $medha_area:String!
 ) {
   createInstitution(
     input: {
@@ -97,9 +101,14 @@ mutation CREATE_INSTITUTIONS(
         address: $address
         contacts: $contacts
         assigned_to: $assigned_to
+        city: $city
+        pin_code: $pin_code
+        state:$state
+        medha_area: $medha_area
       }
     }
-  ) {
+  ) 
+  {
     institution {
       id
       name
@@ -108,15 +117,13 @@ mutation CREATE_INSTITUTIONS(
       email
       status
       website
+      address 
+      pin_code
+      state
+      medha_area
+      city
       logo{
         url
-      }
-      address {
-        id
-        pin_code
-        address_line
-        state
-        medha_area
       }
       contacts {
         full_name
@@ -173,13 +180,11 @@ mutation UPDATE_INSTITUTIONS(
         phone
         status
         email
-        address {
-          id
-          pin_code
-          address_line
-          state
-          medha_area
-        }
+        pin_code
+        address
+        state
+        medha_area
+        city
         contacts {
           full_name
           email
@@ -253,25 +258,24 @@ query INSTITUTION(
       status
       website
       type
+      address 
+      state
+      pin_code
+      medha_area
+      city
       logo {
         id
         url
       }
-      address{
-        pin_code
-        state
-        medha_area
-        address_line
-      }
-      assigned_to{
+      assigned_to {
         id
         username
         email
       }
-      logo{
+      logo {
         url
       }
-      contacts{
+      contacts {
         id
         email
         phone
@@ -279,7 +283,7 @@ query INSTITUTION(
         designation
       }
     }
-}
+  }
 `;
 /**
  * SAMPLE PLAYLOAD TO AN INSTITUTE DETAILS

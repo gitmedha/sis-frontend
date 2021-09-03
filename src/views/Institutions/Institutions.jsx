@@ -129,8 +129,8 @@ const Institutions = () => {
   }, [institutions, pickList]);
 
   const onRowClick = (row) => {
-    history.push(`/institution/${row.id}`)
-  }
+    history.push(`/institution/${row.id}`);
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
