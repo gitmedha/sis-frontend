@@ -1,4 +1,8 @@
 .date-picker-ui {
+  .react-datepicker-wrapper {
+    @extend .w-100;
+  }
+
   .react-datepicker {
     color: #000;
     font-size: 1rem;
@@ -138,5 +142,5 @@
 }
 
 .react-datepicker__input-container {
-  @extend .input-group;
+  @extend .input-group, .w-100;
 }
