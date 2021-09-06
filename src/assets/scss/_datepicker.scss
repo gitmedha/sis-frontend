@@ -91,6 +91,50 @@
       color: white;
     }
   }
+  .react-datepicker__header__dropdown {
+    color: white;
+  }
+  .react-datepicker__year-read-view--down-arrow {
+    top: 5px;
+  }
+  .react-datepicker__year-dropdown {
+    background-color: white;
+    color: black;
+  }
+  .react-datepicker__year-option--selected_year {
+    color: #257b69;
+  }
+  .react-datepicker__navigation--years {
+    text-indent: 0;
+    text-decoration: none;
+    color: black;
+    top: 0;
+
+    &.react-datepicker__navigation--years-upcoming {
+
+      &:before {
+        content: "\25BE";
+        transform: rotate(180deg);
+        font-size: 14px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    &.react-datepicker__navigation--years-previous {
+
+      &:before {
+        content: "\25BE";
+        font-size: 14px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
 }
 
 .react-datepicker__input-container {

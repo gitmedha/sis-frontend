@@ -25,6 +25,7 @@ const DatePicker = (props) => {
             return (
               <DateView
                 dateFormat="dd MMM yyyy"
+                showYearDropdown
                 id={name}
                 {...field}
                 {...rest}
