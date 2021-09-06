@@ -82,15 +82,117 @@ const SearchHitsContainer = styled.div`
 `;
 
 const SearchHits = props => {
-  let { hits } = props;
+  let { hits, searchIndex } = props;
   const history = useHistory();
+  let columns = [];
+  let tableData = <></>;
+
+  switch (searchIndex) {
+    case 'employers':
+      columns = ['Type', 'Name', 'Website'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <div className="badge badge-employers">Emp.</div>
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="website" />
+          </td>
+        </tr>
+      ))
+      break;
+
+    case 'students':
+      columns = ['Type', 'First Name', 'Last Name', 'Email'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <div className="badge badge-students">Stu.</div>
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="first_name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="last_name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="email" />
+          </td>
+        </tr>
+      ));
+      break;
+
+    case 'batches':
+      columns = ['Type', 'Name', 'Start Date', 'End Date', 'Assigned To'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <div className="badge badge-batches">Batch.</div>
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="start_date" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="end_date" />
+          </td>
+          <td>
+            {hit?.assigned_to?.username}
+          </td>
+        </tr>
+      ));
+      break;
+
+    case 'institutions':
+    default:
+      columns = ['Type', 'Name', 'Area', 'Assigned To'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <div className="badge badge-institutions">Inst.</div>
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="name" />
+          </td>
+          <td>
+            {hit?.address?.medha_area}
+          </td>
+          <td>
+            {hit?.assigned_to?.username}
+          </td>
+        </tr>
+      ))
+      break;
+  }
 
   const clickHandler = hit => {
     props.setSearchState({
       ...props.searchState,
       query: '',
     });
-    history.push(`/institution/${hit.id}`);
+    switch (searchIndex) {
+      case 'employers':
+        history.push(`/employer/${hit.id}`);
+        break;
+
+      case 'students':
+        history.push(`/student/${hit.id}`);
+        break;
+
+      case 'batches':
+        history.push(`/batch/${hit.id}`);
+        break;
+
+      case 'institutions':
+      default:
+        history.push(`/institution/${hit.id}`);
+        break;
+    }
   };
 
   return (
@@ -98,29 +200,11 @@ const SearchHits = props => {
       <table>
         <thead>
           <tr>
-            <th><div>Type</div></th>
-            <th><div>Name</div></th>
-            <th><div>Area</div></th>
-            <th><div>Assigned To</div></th>
+            {columns.map(column => <th><div>{column}</div></th>)}
           </tr>
         </thead>
         <tbody>
-          {hits.map(hit => (
-            <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-              <td>
-                <div className="badge badge-institutions">Inst.</div>
-              </td>
-              <td>
-                <SearchHighlight hit={hit} attribute="name" />
-              </td>
-              <td>
-                {hit?.address?.medha_area}
-              </td>
-              <td>
-                {hit?.assigned_to?.username}
-              </td>
-            </tr>
-          ))}
+          {tableData}
         </tbody>
       </table>
     </SearchHitsContainer>
