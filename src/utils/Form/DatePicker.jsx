@@ -24,6 +24,7 @@ const DatePicker = (props) => {
             const { setFieldValue } = form;
             return (
               <DateView
+                dateFormat="dd MMM yyyy"
                 id={name}
                 {...field}
                 {...rest}
