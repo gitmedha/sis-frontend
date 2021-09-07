@@ -186,9 +186,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
     setActiveItem(data[boxNumber-1]);
     setActiveBox(boxNumber);
   } else{
-    setActiveBox(0);
-    setActiveBoxRow(0);
-    setActiveItem([]);
+    handleResetActive();
   }
 }
 
