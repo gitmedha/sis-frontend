@@ -18,17 +18,18 @@ const SearchContainer = styled.div`
 
 const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
+  const [searchIndexName, setSearchIndexName] = useState('institutions');
 
   return (
     <SearchContainer className="mr-auto">
       <InstantSearch
         searchClient={searchClient}
-        indexName="institutions"
+        indexName={searchIndexName}
         searchState={searchState}
         onSearchStateChange={setSearchState}
       >
         <SearchField />
-        <SearchStateResults searchState={searchState} setSearchState={setSearchState} />
+        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} />
       </InstantSearch>
     </SearchContainer>
   );

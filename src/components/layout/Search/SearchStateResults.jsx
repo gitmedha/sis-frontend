@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { connectStateResults } from 'react-instantsearch-dom';
 import SearchHits from './SearchHits';
+import { useState } from "react";
 
 const SearchStateContainer = styled.div`
   display: flex;
@@ -98,31 +99,37 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  let { searchState, setSearchState, searchResults } = props;
+  let { searchState, setSearchState, searchResults, onSearchIndexUpdate } = props;
   const hasResults = searchResults && searchResults.nbHits !== 0;
   const hasQuery = props.searchState && props.searchState.query;
+  const [activeFilterBy, setActiveFilterBy] = useState(props.searchIndex || 'institutions');
+
+  const handleFilterBy = (indexName) => {
+    setActiveFilterBy(indexName);
+    onSearchIndexUpdate(indexName);
+  }
 
   return (
     <SearchStateContainer hidden={!hasQuery}>
       <div className="header">
         <div className="filter-by-text">Filter by</div>
         <div className="badges">
-          <div className="badge badge-institutions">
+          <div className={`badge badge-institutions ${activeFilterBy === 'institutions' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('institutions')}>
             Institutions
           </div>
-          <div className="badge badge-students badge-disabled">
+          <div className={`badge badge-students ${activeFilterBy === 'students' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('students')}>
             Students
           </div>
-          <div className="badge badge-employers badge-disabled">
+          <div className={`badge badge-employers ${activeFilterBy === 'employers' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('employers')}>
             Employers
           </div>
-          <div className="badge badge-batches badge-disabled">
+          <div className={`badge badge-batches ${activeFilterBy === 'batches' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('batches')}>
             Batches
           </div>
         </div>
       </div>
       {hasResults ? (
-        <SearchHits searchState={searchState} setSearchState={setSearchState} />
+        <SearchHits searchState={searchState} setSearchState={setSearchState} searchIndex={activeFilterBy} />
       ) : (
         <div className="no-results">
           No results found
