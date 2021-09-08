@@ -67,7 +67,7 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-     onHide(values);
+    onHide(values);
   };
 
   useEffect(() => {
