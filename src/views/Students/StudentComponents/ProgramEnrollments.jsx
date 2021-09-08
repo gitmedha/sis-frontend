@@ -62,6 +62,7 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        program_name: programEnrollment.batch.program.name,
       };
     });
     setProgramEnrollmentsTableData(data);
@@ -74,8 +75,8 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         accessor: 'batch_name',
       },
       {
-        Header: 'Institute',
-        accessor: 'institution_name',
+        Header: 'Program Name',
+        accessor: 'program_name',
       },
       {
         Header: 'Status',
@@ -97,6 +98,10 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
+      },
+      {
+        Header: 'Institute',
+        accessor: 'institution_name',
       },
     ],
     []
@@ -128,13 +133,14 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
+   
 
     // NP.start();
     createProgramEnrollment(dataToSave).then(data => {
@@ -156,12 +162,13 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
+  
 
     // NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {

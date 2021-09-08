@@ -57,7 +57,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Current Course Year" value={<Badge value={programEnrollment.course_year} pickList={pickList.current_course_year} />} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Year of Completion" value={<Badge value={programEnrollment.course_year} pickList={pickList.year_of_completion} />} />
+              <DetailField label="Year of Completion" value={<Badge value={programEnrollment.year_of_course_completion} pickList={pickList.year_of_completion} />} />
               <DetailField label="Program Enrollment ID" value={`To Be Decided`} />
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
