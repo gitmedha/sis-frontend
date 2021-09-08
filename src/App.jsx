@@ -19,6 +19,7 @@ import Home from "./views/Dashboard/Home";
 import Batch from "./views/Batches/Batch";
 import Institution from "./views/Institutions/Institution";
 import Institutions from "./views/Institutions/Institutions";
+import Opportunities from "./views/Opportunities/Opportunities";
 import Student from "./views/Students/Student";
 import Students from "./views/Students/Students";
 import AddSession from "./views/Batches/batchComponents/AddSession";
@@ -122,6 +123,7 @@ const App = (props) => {
                   <PrivateRoute path="/institution/:id" exact component={Institution} />
                   <PrivateRoute path="/batches" exact component={Batches} />
                   <PrivateRoute path="/batch/:id" exact component={Batch} />
+                  <PrivateRoute path="/opportunities" exact component={Opportunities} />
                   <PrivateRoute
                     exact
                     component={AddSession}
