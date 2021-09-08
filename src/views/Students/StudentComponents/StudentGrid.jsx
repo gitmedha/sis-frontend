@@ -174,21 +174,21 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
   }, []);
 
   const handleBoxClick = boxNumber => {
-    if(activeBox!= boxNumber){
-    if (boxNumber > Math.floor(data.length/boxesInRow)*boxesInRow) {
-      // box is in last row
-      // set active box row to the last box index
-      setActiveBoxRow(data.length);
-    } else {
-      // set active box row to the last box index in that row
-      setActiveBoxRow(Math.ceil(boxNumber/boxesInRow) * boxesInRow);
+    if(activeBox!= boxNumber) {
+      if (boxNumber > Math.floor(data.length/boxesInRow)*boxesInRow) {
+        // box is in last row
+        // set active box row to the last box index
+        setActiveBoxRow(data.length);
+      } else {
+        // set active box row to the last box index in that row
+        setActiveBoxRow(Math.ceil(boxNumber/boxesInRow) * boxesInRow);
+      }
+      setActiveItem(data[boxNumber-1]);
+      setActiveBox(boxNumber);
+    } else{
+      handleResetActive();
     }
-    setActiveItem(data[boxNumber-1]);
-    setActiveBox(boxNumber);
-  } else{
-    handleResetActive();
   }
-}
 
   const handleResetActive = () => {
     setActiveBox(0);
