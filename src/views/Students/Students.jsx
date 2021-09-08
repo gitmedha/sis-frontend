@@ -116,21 +116,18 @@ const Students = ({ isSidebarOpen, batch }) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'name';
+      let sortByField = 'first_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'status':
-        case 'type':
+        case 'phone':
+        case 'course_type_latest':
           sortByField = sortBy[0].id;
-          break;
-
-        case 'assignedTo':
-          sortByField = 'assigned_to.username'
           break;
 
         case 'avatar':
         default:
-          sortByField = 'name';
+          sortByField = 'first_name';
           break;
       }
       getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -145,23 +142,25 @@ const Students = ({ isSidebarOpen, batch }) => {
   }, []);
 
   useEffect(() => {
-    let data = students;
-    data = data.map(student => {
-      let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
-      return {
-        ...student,
-        avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
-        link: <TableRowDetailLink value={student.id} to={'student'} />,
-        gridLink: `/student/${student.id}`,
-        status: <Badge value={student.status} pickList={pickList.status || []} />,
-        category: <Badge value={student.category} pickList={pickList.category || []} />,
-        gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
-        statusIcon: studentStatusData?.icon,
-        title: `${student.first_name} ${student.last_name}`,
-        progressPercent: studentStatusData?.progress,
-      }
-    });
-    setStudentsData(data);
+    if (students) {
+      let data = students;
+      data = data.map(student => {
+        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
+        return {
+          ...student,
+          avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
+          link: <TableRowDetailLink value={student.id} to={'student'} />,
+          gridLink: `/student/${student.id}`,
+          status: <Badge value={student.status} pickList={pickList.status || []} />,
+          category: <Badge value={student.category} pickList={pickList.category || []} />,
+          gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
+          statusIcon: studentStatusData?.icon,
+          title: `${student.first_name} ${student.last_name}`,
+          progressPercent: studentStatusData?.progress,
+        }
+      });
+      setStudentsData(data);
+    }
   }, [students, pickList]);
 
   const onRowClick = (row) => {
