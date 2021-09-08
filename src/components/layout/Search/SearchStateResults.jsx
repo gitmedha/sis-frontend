@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { connectStateResults } from 'react-instantsearch-dom';
 import SearchHits from './SearchHits';
 import { useState } from "react";
+import onClickOutside from "react-onclickoutside";
 
 const SearchStateContainer = styled.div`
   display: flex;
@@ -121,6 +122,15 @@ const SearchStateResults = (props) => {
     onSearchIndexUpdate(indexName);
   }
 
+  SearchStateResults.handleClickOutside = (event) => {
+    if (event.target.id !== 'input-meilisearch') {
+      setSearchState({
+        ...searchState,
+        query: '',
+      });
+    }
+  }
+
   return (
     <SearchStateContainer hidden={!hasQuery}>
       <div className="header">
@@ -152,4 +162,9 @@ const SearchStateResults = (props) => {
   );
 };
 
-export default connectStateResults(SearchStateResults);
+const clickOutsideConfig = {
+  excludeScrollbar: true,
+  handleClickOutside: () => SearchStateResults.handleClickOutside,
+};
+
+export default onClickOutside(connectStateResults(SearchStateResults), clickOutsideConfig);

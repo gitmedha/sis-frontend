@@ -4,7 +4,6 @@ import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
 import SearchField from './SearchField';
 import SearchStateResults from './SearchStateResults';
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { MeiliSearch } from 'meilisearch'
 
 const searchClient = instantMeiliSearch(
@@ -64,6 +63,5 @@ const SearchBar = () => {
     </SearchContainer>
   );
 }
-
 
 export default SearchBar;
