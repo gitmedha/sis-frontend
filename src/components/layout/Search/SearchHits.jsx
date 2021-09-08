@@ -200,7 +200,7 @@ const SearchHits = props => {
       <table>
         <thead>
           <tr>
-            {columns.map(column => <th><div>{column}</div></th>)}
+            {columns.map(column => <th key={column}><div>{column}</div></th>)}
           </tr>
         </thead>
         <tbody>
