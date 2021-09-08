@@ -44,6 +44,7 @@ const SearchField = ({ currentRefinement, refine }) => (
         <input
           type="search"
           placeholder="search for..."
+          id="input-meilisearch"
           value={currentRefinement}
           onChange={event => refine(event.currentTarget.value)}
         />

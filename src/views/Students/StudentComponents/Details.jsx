@@ -102,7 +102,7 @@ const Details = (props) => {
           <div className="col-md-4 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
-              <img className="img-profile" src={urlPath(logo?.url)} alt={`${first_name} ${last_name}`} />
+              {logo && <img className="img-profile" src={urlPath(logo.url)} alt={`${first_name} ${last_name}`} />}
             </div>
           </div>
         </div>

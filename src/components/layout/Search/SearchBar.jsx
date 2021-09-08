@@ -3,12 +3,18 @@ import { InstantSearch } from 'react-instantsearch-dom';
 import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
 import SearchField from './SearchField';
 import SearchStateResults from './SearchStateResults';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 const searchClient = instantMeiliSearch(
   process.env.REACT_APP_MEILISEARCH_HOST_URL,
   process.env.REACT_APP_MEILISEARCH_API_KEY,
 );
+
+const client = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 
 const SearchContainer = styled.div`
   font-family: 'Latto-Regular';
@@ -18,7 +24,30 @@ const SearchContainer = styled.div`
 
 const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
-  const [searchIndexName, setSearchIndexName] = useState('institutions');
+  const [searchIndexName, setSearchIndexName] = useState('students');
+  const [hitsData, setHitsData] = useState({});
+
+  useEffect(async () => {
+    let apiHitsData = {};
+
+    // make api call to students
+    await client.index('students').search(searchState.query).then(async data => {
+      apiHitsData['students'] = data;
+    });
+    // make api call to institutions
+    await client.index('institutions').search(searchState.query).then(async data => {
+      apiHitsData['institutions'] = data;
+    });
+    // make api call to batches
+    await client.index('batches').search(searchState.query).then(async data => {
+      apiHitsData['batches'] = data;
+    });
+    // make api call to employers
+    await client.index('employers').search(searchState.query).then(async data => {
+      apiHitsData['employers'] = data;
+    });
+    setHitsData(apiHitsData);
+  }, [searchState])
 
   return (
     <SearchContainer className="mr-auto">
@@ -29,11 +58,10 @@ const SearchBar = () => {
         onSearchStateChange={setSearchState}
       >
         <SearchField />
-        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} />
+        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} hitsData={hitsData} />
       </InstantSearch>
     </SearchContainer>
   );
 }
-
 
 export default SearchBar;
