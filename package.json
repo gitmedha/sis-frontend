@@ -21,6 +21,7 @@
     "google-map-react": "^2.1.9",
     "lodash": "^4.17.21",
     "material-ui": "^0.20.2",
+    "meilisearch": "^0.20.0",
     "moment": "^2.29.1",
     "node-sass": "^4.14.0",
     "nprogress": "^0.2.0",

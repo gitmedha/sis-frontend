@@ -114,11 +114,11 @@ const SearchStateResults = (props) => {
       <div className="header">
         <div className="filter-by-text">Filter by</div>
         <div className="badges">
-          <div className={`badge badge-institutions ${activeFilterBy === 'institutions' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('institutions')}>
-            Institutions
-          </div>
           <div className={`badge badge-students ${activeFilterBy === 'students' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('students')}>
             Students
+          </div>
+          <div className={`badge badge-institutions ${activeFilterBy === 'institutions' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('institutions')}>
+            Institutions
           </div>
           <div className={`badge badge-employers ${activeFilterBy === 'employers' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('employers')}>
             Employers

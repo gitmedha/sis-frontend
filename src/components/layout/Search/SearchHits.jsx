@@ -105,26 +105,6 @@ const SearchHits = props => {
       ))
       break;
 
-    case 'students':
-      columns = ['Type', 'First Name', 'Last Name', 'Email'];
-      tableData = hits.map(hit => (
-        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-          <td>
-            <div className="badge badge-students">Stu.</div>
-          </td>
-          <td>
-            <SearchHighlight hit={hit} attribute="first_name" />
-          </td>
-          <td>
-            <SearchHighlight hit={hit} attribute="last_name" />
-          </td>
-          <td>
-            <SearchHighlight hit={hit} attribute="email" />
-          </td>
-        </tr>
-      ));
-      break;
-
     case 'batches':
       columns = ['Type', 'Name', 'Start Date', 'End Date', 'Assigned To'];
       tableData = hits.map(hit => (
@@ -149,7 +129,6 @@ const SearchHits = props => {
       break;
 
     case 'institutions':
-    default:
       columns = ['Type', 'Name', 'Area', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
@@ -168,6 +147,27 @@ const SearchHits = props => {
         </tr>
       ))
       break;
+
+    case 'students':
+    default:
+      columns = ['Type', 'First Name', 'Last Name', 'Email'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <div className="badge badge-students">Stu.</div>
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="first_name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="last_name" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="email" />
+          </td>
+        </tr>
+      ));
+      break;
   }
 
   const clickHandler = hit => {
@@ -180,17 +180,17 @@ const SearchHits = props => {
         history.push(`/employer/${hit.id}`);
         break;
 
-      case 'students':
-        history.push(`/student/${hit.id}`);
-        break;
-
       case 'batches':
         history.push(`/batch/${hit.id}`);
         break;
 
       case 'institutions':
-      default:
         history.push(`/institution/${hit.id}`);
+        break;
+
+      case 'students':
+      default:
+        history.push(`/student/${hit.id}`);
         break;
     }
   };
