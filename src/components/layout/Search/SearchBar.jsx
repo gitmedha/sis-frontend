@@ -12,6 +12,11 @@ const searchClient = instantMeiliSearch(
   process.env.REACT_APP_MEILISEARCH_API_KEY,
 );
 
+const client = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const SearchContainer = styled.div`
   font-family: 'Latto-Regular';
   margin-right: auto;
@@ -22,11 +27,6 @@ const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
   const [searchIndexName, setSearchIndexName] = useState('students');
   const [hitsData, setHitsData] = useState({});
-
-  const client = new MeiliSearch({
-    host: 'https://sis-meilisearch.medha.org.in',
-    apiKey: 'sis-medha-meilisearch',
-  });
 
   useEffect(async () => {
     let apiHitsData = {};
