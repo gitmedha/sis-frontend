@@ -63,6 +63,7 @@ const programEnrollmentFields = `
   }
 `;
 
+
 const employmentConnectionFields = `
   id
   status
@@ -207,6 +208,7 @@ export const UPDATE_PROGRAM_ENROLLMENT = `
     }
   }
 `;
+
 
 export const DELETE_PROGRAM_ENROLLMENT = `
   mutation DELETE_PROGRAM_ENROLLMENT(
