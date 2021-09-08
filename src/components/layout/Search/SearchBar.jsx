@@ -21,35 +21,34 @@ const SearchContainer = styled.div`
 const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
   const [searchIndexName, setSearchIndexName] = useState('students');
+  const [hitsData, setHitsData] = useState({});
 
   const client = new MeiliSearch({
     host: 'https://sis-meilisearch.medha.org.in',
     apiKey: 'sis-medha-meilisearch',
-  })
+  });
 
-
-
-  useEffect(() => {
-    console.log('search index name changed', searchIndexName);
-    console.log('searchStateChanged', searchState);
+  useEffect(async () => {
+    let apiHitsData = {};
 
     // make api call to students
-    client.index('students').search(searchState.query).then(data => {
-      console.log('data', data);
+    await client.index('students').search(searchState.query).then(async data => {
+      apiHitsData['students'] = data;
     });
     // make api call to institutions
-    client.index('institutions').search(searchState.query).then(data => {
-      console.log('data', data);
+    await client.index('institutions').search(searchState.query).then(async data => {
+      apiHitsData['institutions'] = data;
     });
     // make api call to batches
-    client.index('batches').search(searchState.query).then(data => {
-      console.log('data', data);
+    await client.index('batches').search(searchState.query).then(async data => {
+      apiHitsData['batches'] = data;
     });
     // make api call to employers
-    client.index('employers').search(searchState.query).then(data => {
-      console.log('data', data);
+    await client.index('employers').search(searchState.query).then(async data => {
+      apiHitsData['employers'] = data;
     });
-  }, [searchIndexName, searchState])
+    setHitsData(apiHitsData);
+  }, [searchState])
 
   return (
     <SearchContainer className="mr-auto">
@@ -60,7 +59,7 @@ const SearchBar = () => {
         onSearchStateChange={setSearchState}
       >
         <SearchField />
-        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} />
+        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} hitsData={hitsData} />
       </InstantSearch>
     </SearchContainer>
   );

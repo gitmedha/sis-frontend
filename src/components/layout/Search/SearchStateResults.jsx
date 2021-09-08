@@ -62,6 +62,18 @@ const SearchStateContainer = styled.div`
       &.badge-batches {
         background-color: #AA223C;
       }
+      &.badge-institutions-light {
+        background-color: #FC636B66;
+      }
+      &.badge-students-light {
+        background-color: #FF970066;
+      }
+      &.badge-employers-light {
+        background-color: #1AAFD066;
+      }
+      &.badge-batches-light {
+        background-color: #AA223C66;
+      }
       &.badge-disabled {
         background-color: #C4C4C4;
       }
@@ -99,7 +111,7 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  let { searchState, setSearchState, searchResults, onSearchIndexUpdate } = props;
+  let { searchState, setSearchState, searchResults, onSearchIndexUpdate, hitsData } = props;
   const hasResults = searchResults && searchResults.nbHits !== 0;
   const hasQuery = props.searchState && props.searchState.query;
   const [activeFilterBy, setActiveFilterBy] = useState(props.searchIndex || 'institutions');
@@ -114,17 +126,17 @@ const SearchStateResults = (props) => {
       <div className="header">
         <div className="filter-by-text">Filter by</div>
         <div className="badges">
-          <div className={`badge badge-students ${activeFilterBy === 'students' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('students')}>
-            Students
+          <div className={`badge ${activeFilterBy === 'students' ? 'badge-students' : (hitsData.students && hitsData.students.nbHits ? 'badge-students-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('students')}>
+            Students {hitsData.students ? `(${hitsData.students.nbHits})` : ''}
           </div>
-          <div className={`badge badge-institutions ${activeFilterBy === 'institutions' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('institutions')}>
-            Institutions
+          <div className={`badge ${activeFilterBy === 'institutions' ? 'badge-institutions' : (hitsData.institutions && hitsData.institutions.nbHits ? 'badge-institutions-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('institutions')}>
+            Institutions {hitsData.institutions ? `(${hitsData.institutions.nbHits})` : ''}
           </div>
-          <div className={`badge badge-employers ${activeFilterBy === 'employers' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('employers')}>
-            Employers
+          <div className={`badge ${activeFilterBy === 'employers' ? 'badge-employers' : (hitsData.employers && hitsData.employers.nbHits ? 'badge-employers-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('employers')}>
+            Employers {hitsData.employers ? `(${hitsData.employers.nbHits})` : ''}
           </div>
-          <div className={`badge badge-batches ${activeFilterBy === 'batches' ? '' : 'badge-disabled'}`} onClick={() => handleFilterBy('batches')}>
-            Batches
+          <div className={`badge ${activeFilterBy === 'batches' ? 'badge-batches' : (hitsData.batches && hitsData.batches.nbHits ? 'badge-batches-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('batches')}>
+            Batches {hitsData.batches ? `(${hitsData.batches.nbHits})` : ''}
           </div>
         </div>
       </div>
