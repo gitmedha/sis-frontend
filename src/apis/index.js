@@ -20,6 +20,26 @@ api.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
+// Add a response interceptor
+api.interceptors.response.use(function (response) {
+  // Do something after response is received
+  if (response.data.errors) {
+    let errors = response.data.errors;
+    errors.map(error => {
+      if (error.message === "Invalid token.") {
+        // clear token and push to login
+        localStorage.removeItem('token');
+        // setAlert
+        window.location.href = '/login';
+      }
+    })
+  }
+  return response;
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error);
+});
+
 export const setToken = (token) => {
   if (!token) {
     delete api.defaults.headers["Authorization"];
