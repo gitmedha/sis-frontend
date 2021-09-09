@@ -25,7 +25,12 @@ const SearchContainer = styled.div`
 const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
   const [searchIndexName, setSearchIndexName] = useState('students');
-  const [hitsData, setHitsData] = useState({});
+  const [hitsData, setHitsData] = useState({
+    students: [],
+    institutions: [],
+    employers: [],
+    batches: [],
+  });
 
   useEffect(async () => {
     let apiHitsData = {};

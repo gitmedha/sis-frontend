@@ -139,7 +139,7 @@ const SearchHits = props => {
             <SearchHighlight hit={hit} attribute="name" />
           </td>
           <td>
-            {hit?.address?.medha_area}
+            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ''}
           </td>
           <td>
             {hit?.assigned_to?.username}

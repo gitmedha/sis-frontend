@@ -1,7 +1,6 @@
 import moment from "moment";
 import NP from "nprogress";
 import { useState, useEffect } from "react";
-import { merge, values, keyBy } from "lodash";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 
@@ -171,7 +170,7 @@ const Batch = (props) => {
 
   useEffect(() => {
     init();
-  }, []);
+  }, [batchID]);
 
   const handleSessionDataUpdate = async () => {
     await getSessions();

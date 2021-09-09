@@ -25,6 +25,7 @@ const Institute = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = instituteData;
+  const instituteID = props.match.params.id;
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -69,7 +70,6 @@ const Institute = (props) => {
     setLoading(true);
     NP.start();
     try {
-      const instituteID = props.match.params.id;
       let { data } = await api.post("/graphql", {
         query: GET_INSTITUTE,
         variables: { id: instituteID },
@@ -85,7 +85,7 @@ const Institute = (props) => {
 
   useEffect(() => {
     getThisInstitution();
-  }, []);
+  }, [instituteID]);
 
   if (isLoading) {
     return <SkeletonLoader />;
