@@ -108,7 +108,7 @@ const Student = (props) => {
     await fetchStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
-  }, []);
+  }, [studentId]);
 
   if (isLoading) {
     return <SkeletonLoader />;
