@@ -142,6 +142,10 @@ const Students = ({ isSidebarOpen, batch }) => {
   }, []);
 
   useEffect(() => {
+    setPaginationPageIndex(0);
+  }, [activeTab, activeStatus]);
+
+  useEffect(() => {
     if (students) {
       let data = students;
       data = data.map(student => {
