@@ -23,5 +23,3 @@ export const ProgramEnrollmentValidations = Yup.object({
   registration_date,
   fee_status
 });
-
-
