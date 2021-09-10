@@ -70,8 +70,25 @@ const InstitutionForm = (props) => {
 
   const logoUploadHandler = ({ id }) => setLogo(id);
 
-  let initialValues = {...props};
-  initialValues['assigned_to'] = props?.assigned_to?.id;
+  let initialValues = {
+    name: '',
+    type:'',
+    email:'',
+    phone:'',
+    status:'',
+    address:'',
+    assigned_to:'',
+    state:'',
+    pin_code:'',
+    city:'',
+    medha_area:'',
+  };
+
+  if (props.id) {
+    initialValues = {...props}
+    initialValues['assigned_to'] = props?.assigned_to?.id;
+  }
+
   if (!props.contacts) {
     // create an empty contact if no contacts are present
     initialValues['contacts'] = [];

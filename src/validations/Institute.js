@@ -1,5 +1,6 @@
 import * as Yup from "yup";
 
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 const name = Yup.string().required("Name is required.");
 const status = Yup.string().required("Status is required.");
 const type = Yup.string().required("College type is required.");
@@ -10,14 +11,19 @@ const website = Yup.string().required("Website of college is required.");
 const email = Yup.string()
   .email("Please enter a valid email.")
   .required("Email is required.");
-const phone = Yup.string().required("Phone Number is required.");
+const phone = Yup.string()
+  .matches(phoneRegExp, 'Phone number is not valid')
+  .min(10, "Number is too short")
+  .max(10, "Number is too long")
+  .required("Phone Number is required.");
 const state = Yup.string().required("State is required.");
 const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const city = Yup.string().required("City is required.");
-const pin_code = Yup.number("Should be a number.").required(
-  "Pincode is required."
-);
+const pin_code = Yup.string("Should be a number.")
+  .matches(phoneRegExp, 'Pincode is not valid')
+  .max(6, "Number is too long")
+  .required("Pincode is required.");
 const address_line = Yup.object({
   state,
   medha_area,
@@ -25,6 +31,7 @@ const address_line = Yup.object({
   pin_code,
   city
 });
+
 const contacts = Yup.array().of(
   Yup.object({
     full_name,
@@ -40,14 +47,13 @@ export const InstituteValidations = Yup.object({
   email,
   phone,
   status,
-  website,
   assigned_to,
   address,
-  contacts,
   state,
   pin_code,
   city,
-  medha_area
+  medha_area,
+  contacts,
 });
 
 export const ContactValidations = Yup.object({
@@ -55,19 +61,4 @@ export const ContactValidations = Yup.object({
   phone,
   full_name,
   designation,
-});
-
-export const NewInstituteValidations = Yup.object({
-  name,
-  type,
-  email,
-  phone,
-  state,
-  status,
-  website,
-  pin_code,
-  medha_area,
-  assigned_to,
-  address,
-  city,
 });
