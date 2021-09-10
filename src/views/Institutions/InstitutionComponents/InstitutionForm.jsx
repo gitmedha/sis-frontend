@@ -41,12 +41,14 @@ const InstitutionForm = (props) => {
       setInstitutionTypeOpts(data.type.map((item) => {
         return {
           key: item.value,
+          label: item.value,
           value: item.value.toLowerCase(),
         };
       }));
       setStatusOpts(data.status.map((item) => {
         return {
           key: item.value,
+          label: item.value,
           value: item.value.toLowerCase(),
         };
       }));
@@ -167,22 +169,34 @@ const InstitutionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="status"
-                      label="Status"
-                      control="radio"
-                      options={statusOpts}
-                      className="form-control"
-                    />
+                    {statusOpts.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="status"
+                        label="Status"
+                        options={statusOpts}
+                        className="form-control"
+                        placeholder="Status"
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="type"
-                      label="Type"
-                      control="radio"
-                      className="form-control"
-                      options={institutionTypeOpts}
-                    />
+                    {institutionTypeOpts.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="type"
+                        label="Type"
+                        options={institutionTypeOpts}
+                        className="form-control"
+                        placeholder="Type"
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                 </div>
               </Section>
