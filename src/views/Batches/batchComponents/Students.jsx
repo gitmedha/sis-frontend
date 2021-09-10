@@ -49,7 +49,6 @@ const Students = ({ students, batch, fetchData }) => {
   }
 
   const studentsTableData = students.map(student => {
-    console.log('student.attendancePercent', student.attendancePercent)
     return {
       id: student.id,
       name: `${student.student.first_name} ${student.student.last_name}`,

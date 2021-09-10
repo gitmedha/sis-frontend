@@ -100,13 +100,12 @@ const Batch = (props) => {
       });
       let studentsData = data.programEnrollmentsConnection.values;
       getBatchStudentAttendances(batchID).then(data => {
-        let totalSessions = data.data.data.sessionsConnection.aggregate.count;
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
           return {
             ...student,
-            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/totalSessions) * 100) : 0,
+            attendancePercent: studentAttendancePercent && batch ? Math.floor((studentAttendancePercent.connection.aggregate.count/batch.number_of_sessions_planned) * 100) : 0,
           }
         });
         setStudents(studentsWithAttendance);
