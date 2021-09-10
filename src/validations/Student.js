@@ -2,21 +2,6 @@ import * as Yup from "yup";
 
 const institution = Yup.string().required("Institution is required.");
 const batch = Yup.string().required("Batch is required.");
-const first_name  = Yup.string().required("First Name is required.");
-const last_name  = Yup.string().required("Last Name is required.");
-const phone  = Yup.string().required("Phone is required.");
-const name_of_parent_or_guardian = Yup.string().required("Parent Name or Guardian Name is required.");
-const category  = Yup.string().required("Category is required.");
-const email  = Yup.string().required("Email is required.");
-const gender  = Yup.string().required("Gender is required.");
-const date_of_birth  = Yup.string().required("DOB is required.");
-const income_level  = Yup.string().required("Batch is required.");
-const logo  = Yup.string().required("Batch is required.");
-const old_sis_id  = Yup.string().required("Batch is required.");
-const course_type_latest  = Yup.string().required("Batch is required.");
-const medha_champion  = Yup.string().required("Batch is required.");
-const interested_in_employment_opportunities  = Yup.string().required("Batch is required.");
-const CV  = Yup.string().required("Batch is required.");
 const status  = Yup.string().required("Status is required.");
 const course_level  = Yup.string().required("Course Level is required.");
 const year_of_course_completion = Yup.string().required("Year of Completion is required.");
@@ -39,21 +24,4 @@ export const ProgramEnrollmentValidations = Yup.object({
   fee_status
 });
 
-export const StudentValidations =Yup.object({
-  first_name,
-  last_name,
-  phone,
-  name_of_parent_or_guardian,
-  category,
-  email,
-  gender,
-  date_of_birth,
-  income_level,
-  logo,
-  old_sis_id,
-  course_type_latest,
-  medha_champion,
-  interested_in_employment_opportunities,
-  CV
-});
 
