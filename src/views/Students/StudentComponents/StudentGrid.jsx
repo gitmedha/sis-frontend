@@ -2,10 +2,10 @@ import React from "react";
 import styled from 'styled-components';
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import Pagination from "../../../components/content/Pagination";
-import { FaAngleDoubleUp, FaAngleDoubleDown, FaDownload, FaEye, FaUserGraduate } from "react-icons/fa";
+import { FaAngleDoubleDown} from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import DetailField from "../../../components/content/DetailField";
 
@@ -284,8 +284,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                   <DetailField label="Phone No." value={activeItem.phone || '(Not entered)'} />
                   <DetailField label="Category" value={activeItem.category || '(Not entered)'} />
                 </div>
-                <div className="col-md-3 d-flex flex-md-column justify-content-between align-items-end pb-3">
-                  <FaAngleDoubleUp size="20" color="#31B89D" className="c-pointer" onClick={() => handleResetActive()} />
+                <div className="col-md-3 d-flex flex-md-column justify-content-end align-items-end pb-3">
                   <button
                     onClick={() => history.push(`/student/${activeItem.id}`)}
                     className="btn-view-more btn btn-sm text-white"

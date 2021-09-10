@@ -264,9 +264,7 @@ const BatchForm = (props) => {
                     CLOSE
                   </button>
                   <div style={{ width: "20px" }} />
-                  <button className="btn btn-primary btn-regular" type="submit">
-                    {props.id ? 'UPDATE' : 'ADD NEW'} BATCH
-                  </button>
+                  <button className="btn btn-primary btn-regular" type="submit">SAVE</button>
                 </div>
               </div>
             </Form>

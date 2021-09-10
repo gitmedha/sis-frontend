@@ -23,7 +23,7 @@ const routes = [
   },
   {
     to: "/students",
-    title: "Students",
+    title: "Students & Alumni",
     aliases: ['student'],
     icon: <FaUserGraduate {...iconProps} />
   },
