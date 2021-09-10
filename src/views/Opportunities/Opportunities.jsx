@@ -8,6 +8,7 @@ import {
   Anchor,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
+import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
@@ -32,6 +33,7 @@ const tabPickerOptions = [
   ];
 
   const Opportunities = () => {
+    const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [opportunities, setOpportunities] = useState([]);
     const [pickList, setPickList] = useState([]);
@@ -40,7 +42,6 @@ const tabPickerOptions = [
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
 
     const OpportunityIcon = ({opportunity}) => {
-      console.log(opportunity)
       let bgColor = '#FF9700';
       let icon = null;
       switch (opportunity.type) {
@@ -154,6 +155,7 @@ const tabPickerOptions = [
     let data = opportunities;
     data = data.map((opportunitydata, index) => {
       return {
+      ...opportunitydata,
        avatar: <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" />,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_icon: <OpportunityIcon opportunity={opportunitydata} />,
@@ -166,13 +168,17 @@ const tabPickerOptions = [
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
 
+  const onRowClick = (row) => {
+    history.push(`/opportunity/${row.id}`);
+  };
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <TabPicker options={tabPickerOptions}/>
         <WidgetUtilTab />
         </div>
-        <Table columns={columns} data={opportunitiesTableData} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       </div>
   );
 };

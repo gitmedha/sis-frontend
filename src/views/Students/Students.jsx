@@ -165,6 +165,7 @@ const Students = ({ isSidebarOpen, batch }) => {
   }, [students, pickList]);
 
   const onRowClick = (row) => {
+    console.log(row.id)
     history.push(`/student/${row.id}`)
   }
 
