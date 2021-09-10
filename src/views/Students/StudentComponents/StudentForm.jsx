@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
-// import { StudentValidations } from "../../../validations";
+import { StudentValidations } from "../../../validations";
 // import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
@@ -73,10 +73,26 @@ const StudentForm = (props) => {
     onHide(values);
   };
 
-  let initialValues = {...props};
-  initialValues['date_of_birth'] = new Date(props?.date_of_birth);
-  // initialValues['assigned_to'] = props?.assigned_to?.id;
-
+  let initialValues = {
+    institution:'',
+    batch:'',
+    first_name:'',
+    last_name:'',
+    phone:'',
+    name_of_parent_or_guardian:'',
+    category:'',
+    email:'',
+    gender:'',
+    assigned_to:'',
+    status:'',
+    income_level:'',
+  };
+  if (props.id) {
+    initialValues = {...props};
+    initialValues['date_of_birth'] = new Date(props?.date_of_birth);
+    initialValues['assigned_to'] = props?.assigned_to?.id;
+  }
+  
   return (
     <Modal
       centered
@@ -108,7 +124,7 @@ const StudentForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={StudentValidations}
+          validationSchema={StudentValidations}
         >
           {({ values }) => (
             <Form>
