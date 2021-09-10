@@ -55,7 +55,6 @@ const ProgramEnrollmentForm = (props) => {
     course_level:'',
     course_year:'',
     year_of_course_completion:'',
-    registration_date:'',
     fee_status:'',
     certification_date: null,
     fee_payment_date: null,
