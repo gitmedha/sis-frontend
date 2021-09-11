@@ -1,23 +1,29 @@
 import * as Yup from "yup";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+// Program Enrollment form fields.
 const institution = Yup.string().required("Institution is required.");
 const batch = Yup.string().required("Batch is required.");
-const program_enrollment_status  = Yup.string().required("Status is required.");
-const student_status  = Yup.string().required("Status is required.");
-const course_level  = Yup.string().nullable().required("Course Level is required.");
-const year_of_course_completion = Yup.string().nullable().required("Year of Completion is required.");
+const program_enrollment_status = Yup.string().required("Status is required.");
 const course_year = Yup.string().nullable().required("Course Year is required.");
 const course_name_in_current_sis = Yup.string().nullable().required("Course Name is required.");
+const course_level = Yup.string().nullable().required("Course Level is required.");
 const course_type = Yup.string().nullable().required("Course Type is required.");
+const year_of_course_completion = Yup.string().nullable().required("Year of Completion is required.");
 const registration_date = Yup.date().nullable().required("Registration Date is required.");
 const fee_status = Yup.string().required("Fee Status is required.");
+
+// Employment Connection form fields.
 const start_date = Yup.date().nullable().required("Start Date is required.");
 const end_date = Yup.date().nullable().required("End Date is required.");
+const employment_connection_status = Yup.date().nullable().required("Employment Connection status is required.");
 const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
 const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.string().required("Salary Offered is required.");
+
+// Student form fields.
 const first_name  = Yup.string().required("First Name is required.");
 const last_name  = Yup.string().required("Last Name is required.");
 const phone = Yup.string()
@@ -26,33 +32,38 @@ const phone = Yup.string()
   .max(10, "Number is too long")
   .required("Phone Number is required.");
 const name_of_parent_or_guardian = Yup.string().nullable().required("Parent Name or Guardian Name is required.");
-const category  = Yup.string().nullable().required("Category is required.");
 const email  = Yup.string().required("Email is required.");
 const gender  = Yup.string().nullable().required("Gender is required.");
 const date_of_birth  = Yup.date().nullable().required("DOB is required.");
-const income_level  = Yup.string().nullable().required("Income Level is required.");
+const category  = Yup.string().nullable().required("Category is required.");
 const assigned_to = Yup.string().required("Assigned To is required.");
+const student_status  = Yup.string().required("Status is required.");
+const income_level  = Yup.string().nullable().required("Income Level is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
   batch,
-  status:program_enrollment_status,
+  status: program_enrollment_status,
   course_year,
   course_name_in_current_sis,
   course_level,
   course_type,
   year_of_course_completion,
   registration_date,
-  fee_status
+  fee_status,
 });
 
 export const EmploymentConnectionValidations = Yup.object({
   start_date,
   end_date,
+  status: employment_connection_status,
   employer_id,
   opportunity_id,
   source,
   salary_offered,
+});
+
+export const StudentValidations = Yup.object({
   first_name,
   last_name,
   phone,
