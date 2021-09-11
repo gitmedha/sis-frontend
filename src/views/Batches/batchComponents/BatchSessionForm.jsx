@@ -158,7 +158,7 @@ const BatchSessionForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={BatchValidations}
+          validationSchema={sessionValidations}
         >
           {({ values }) => (
             <Form>

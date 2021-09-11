@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { Input } from "../../../utils/Form";
-// import { EmploymentConnectionValidations } from "../../../validations";
+import { EmploymentConnectionValidations } from "../../../validations";
 import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from "./StudentActions";
 
 const Section = styled.div`
@@ -37,11 +37,13 @@ const EnrollmentConnectionForm = (props) => {
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
-    employer_id: null,
-    opportunity_id: null,
+    employer_id:'',
+    opportunity_id:'',
     status: '',
-    start_date: null,
-    end_date: null,
+    start_date:'',
+    end_date:'',
+    source:'',
+    salary_offered:'',
   };
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
@@ -117,7 +119,7 @@ const EnrollmentConnectionForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={EmploymentConnectionValidations}
+          validationSchema={EmploymentConnectionValidations}
         >
           {({ setFieldValue }) => (
             <Form>
