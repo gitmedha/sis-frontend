@@ -20,7 +20,7 @@ const Select = (props) => {
       <div className="form-group">
         <label className="text-heading" htmlFor={name}>
           {label}
-          {required && <span class="required">*</span>}
+          {required && <span className="required">*</span>}
         </label>
         <Field as="select" id={name} name={name} {...rest}>
           {options.map((opt) => (
