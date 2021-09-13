@@ -6,6 +6,11 @@ const SelectField = styled.div`
   label {
     color: #787B96;
   }
+  label > sup {
+    color: red;
+    font-size:20px; 
+    vertical-align:-13px;
+    }
 `;
 
 const Select = (props) => {

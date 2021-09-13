@@ -147,7 +147,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="status"
-                      label="Status"
+                      label={<>Status <sup>*</sup></>}
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
@@ -157,7 +157,7 @@ const ProgramEnrollmentForm = (props) => {
                     <Input
                       control="lookup"
                       name="batch"
-                      label="Batch"
+                      label={<>Batch<sup>*</sup></>}
                       options={batchOptions}
                       className="form-control"
                       placeholder="Batch"
@@ -166,7 +166,7 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="registration_date"
-                      label="Registration Date"
+                      label={<>Registration Date<sup>*</sup></>}
                       placeholder="Registration Date"
                       control="datepicker"
                       className="form-control"
@@ -177,7 +177,7 @@ const ProgramEnrollmentForm = (props) => {
                     <Input
                       control="lookup"
                       name="institution"
-                      label="Institution"
+                      label={<>Institution<sup>*</sup></>}
                       options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
@@ -203,7 +203,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="course_level"
-                      label="Course Level"
+                      label={<>Course Level <sup>*</sup></>}
                       options={courseLevelOptions}
                       className="form-control"
                       placeholder="Course Level"
@@ -214,7 +214,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="year_of_course_completion"
-                      label="Year of Completion"
+                      label={<>Year of Completion<sup>*</sup></>}
                       options={yearOfCompletionOptions}
                       className="form-control"
                       placeholder="Year of Completion"
@@ -225,7 +225,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="course_type"
-                      label="Course Type"
+                      label={<>Course Type <sup>*</sup></>}
                       options={courseTypeOptions}
                       className="form-control"
                       placeholder="Course Type"
@@ -246,7 +246,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="course_year"
-                      label="Current Course Year"
+                      label={<>Current Course Year <sup>*</sup></>}
                       options={currentCourseYearOptions}
                       className="form-control"
                       placeholder="Current Course Year"
@@ -256,7 +256,7 @@ const ProgramEnrollmentForm = (props) => {
                     <Input
                       name="course_name_in_current_sis"
                       control="input"
-                      label="Course Name"
+                      label={<>Course Name <sup>*</sup></>}
                       className="form-control"
                       placeholder="Course Name"
                     />
@@ -271,7 +271,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="fee_status"
-                      label="Fees Status"
+                      label={<>Fees Status<sup>*</sup></>}
                       options={feeStatusOptions}
                       className="form-control"
                       placeholder="Fees Status"

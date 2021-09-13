@@ -137,7 +137,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="name"
-                      label="Name"
+                      label={<>Name<sup>*</sup></>}
                       control="input"
                       placeholder="Name"
                       className="form-control"
@@ -146,7 +146,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="phone"
-                      label="Phone"
+                      label={<>Phone<sup>*</sup></>}
                       control="input"
                       placeholder="Phone"
                       className="form-control"
@@ -156,7 +156,7 @@ const InstitutionForm = (props) => {
                     <Input
                       type="email"
                       name="email"
-                      label="Email"
+                      label={<>Email<sup>*</sup></>}
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -176,7 +176,7 @@ const InstitutionForm = (props) => {
                       <Input
                         control="lookup"
                         name="assigned_to"
-                        label="Assigned To"
+                        label={<>Assigned To<sup>*</sup></>}
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
@@ -191,7 +191,7 @@ const InstitutionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="status"
-                        label="Status"
+                        label={<>Status<sup>*</sup></>}
                         options={statusOpts}
                         className="form-control"
                         placeholder="Status"
@@ -206,7 +206,7 @@ const InstitutionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="type"
-                        label="Type"
+                        label={<>Type<sup>*</sup></>}
                         options={institutionTypeOpts}
                         className="form-control"
                         placeholder="Type"
@@ -223,7 +223,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      label="Address"
+                      label={<>Address<sup>*</sup></>}
                       name="address"
                       placeholder="Address"
                       className="form-control"
@@ -232,7 +232,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="state"
-                      label="State"
+                      label={<>State<sup>*</sup></>}
                       control="input"
                       placeholder="State"
                       className="form-control"
@@ -242,7 +242,7 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="medha_area"
-                      label="Medha Area"
+                      label={<>Medha Area<sup>*</sup></>}
                       className="form-control"
                       placeholder="Medha Area"
                     />
@@ -251,7 +251,7 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="pin_code"
-                      label="Pin Code"
+                      label={<>Pin Code<sup>*</sup></>}
                       placeholder="Pin Code"
                       className="form-control"
                     />
@@ -260,7 +260,7 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="city"
-                      label="City"
+                      label={<>City<sup>*</sup></>}
                       placeholder="City"
                       className="form-control"
                     />
@@ -278,7 +278,7 @@ const InstitutionForm = (props) => {
                             <Input
                               control="input"
                               name={`contacts.${index}.full_name`}
-                              label="Name"
+                              label={<>Name<sup>*</sup></>}
                               placeholder="Name"
                               className="form-control"
                             />
@@ -286,7 +286,7 @@ const InstitutionForm = (props) => {
                           <div className="col-md-6 col-sm-12 mb-2">
                             <Input
                               name={`contacts.${index}.email`}
-                              label="Email"
+                              label={<>Email<sup>*</sup></>}
                               control="input"
                               placeholder="Email"
                               className="form-control"
@@ -296,7 +296,7 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.phone`}
                               control="input"
-                              label="Phone Number"
+                              label={<>Phone Number<sup>*</sup></>}
                               className="form-control"
                               placeholder="Phone Number"
                             />
@@ -305,7 +305,7 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.designation`}
                               control="input"
-                              label="Designation"
+                              label={<>Designationr<sup>*</sup></>}
                               className="form-control"
                               placeholder="Designation"
                             />

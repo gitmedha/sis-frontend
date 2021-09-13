@@ -29,6 +29,7 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+  
 `;
 
 const StudentForm = (props) => {
@@ -134,7 +135,7 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="first_name"
-                      label="First Name"
+                      label={<>First Name<sup>*</sup></>}
                       control="input"
                       placeholder="First Name"
                       className="form-control"
@@ -143,7 +144,7 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="last_name"
-                      label="Last Name"
+                      label={<>Last Name<sup>*</sup></>}
                       control="input"
                       placeholder="Last Name"
                       className="form-control"
@@ -152,7 +153,7 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="name_of_parent_or_guardian"
-                      label="Parents Name"
+                      label={<>Parents Name<sup>*</sup></>}
                       control="input"
                       placeholder="Parents Name"
                       className="form-control"
@@ -164,7 +165,7 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="status"
-                        label="Status"
+                        label={<>Status<sup>*</sup></>}
                         options={statusOptions}
                         className="form-control"
                         placeholder="Status"
@@ -179,7 +180,7 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="gender"
-                        label="Gender"
+                        label={<>Gender<sup>*</sup></>}
                         options={genderOptions}
                         className="form-control"
                         placeholder="Gender"
@@ -191,7 +192,7 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="phone"
-                      label="Phone"
+                      label={<>Phone<sup>*</sup></>}
                       control="input"
                       placeholder="Phone"
                       className="form-control"
@@ -201,7 +202,7 @@ const StudentForm = (props) => {
                     <Input
                       type="email"
                       name="email"
-                      label="Email"
+                      label={<>Email<sup>*</sup></>}
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -210,7 +211,7 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="date_of_birth"
-                      label="Date of Birth"
+                      label={<>Date of Birth<sup>*</sup></>}
                       placeholder="Date of Birth"
                       control="datepicker"
                       className="form-control"
@@ -223,7 +224,7 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="assigned_to"
-                        label="Assigned To"
+                        label={<>Assigned To<sup>*</sup></>}
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
@@ -238,7 +239,7 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="category"
-                        label="Category"
+                        label={<>Category<sup>*</sup></>}
                         options={categoryOptions}
                         className="form-control"
                         placeholder="Category"
@@ -253,7 +254,7 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="income_level"
-                        label="Income Level (INR)"
+                        label={<>Income Level (INR) <sup>*</sup></>}
                         options={incomeLevelOptions}
                         className="form-control"
                         placeholder="Income Level (INR)"

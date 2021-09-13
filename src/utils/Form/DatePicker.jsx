@@ -26,6 +26,11 @@ const DatePickerField = styled.div`
       z-index: 100;
     }
   }
+  label > sup {
+    color: red;
+    font-size:20px; 
+    vertical-align:-13px;
+    }
 `;
 
 const DatePicker = (props) => {
