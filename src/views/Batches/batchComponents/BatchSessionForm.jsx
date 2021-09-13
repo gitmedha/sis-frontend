@@ -167,8 +167,9 @@ const BatchSessionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="date"
-                      label={<>Date<sup>*</sup></>}
+                      label="Date"
                       placeholder="Date"
+                      required
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -178,7 +179,8 @@ const BatchSessionForm = (props) => {
                     <Input
                       name="topics"
                       control="input"
-                      label={<>Topics Covered<sup>*</sup></>}
+                      label="Topics Covered"
+                      required
                       className="form-control"
                       placeholder="Topics Covered"
                     />

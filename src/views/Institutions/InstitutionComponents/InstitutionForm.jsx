@@ -137,7 +137,8 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="name"
-                      label={<>Name<sup>*</sup></>}
+                      label="Name"
+                      required
                       control="input"
                       placeholder="Name"
                       className="form-control"
@@ -146,7 +147,8 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="phone"
-                      label={<>Phone<sup>*</sup></>}
+                      label="Phone"
+                      required
                       control="input"
                       placeholder="Phone"
                       className="form-control"
@@ -156,7 +158,8 @@ const InstitutionForm = (props) => {
                     <Input
                       type="email"
                       name="email"
-                      label={<>Email<sup>*</sup></>}
+                      label="Email"
+                      required
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -176,7 +179,8 @@ const InstitutionForm = (props) => {
                       <Input
                         control="lookup"
                         name="assigned_to"
-                        label={<>Assigned To<sup>*</sup></>}
+                        label="Assigned To"
+                        required
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
@@ -191,7 +195,8 @@ const InstitutionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="status"
-                        label={<>Status<sup>*</sup></>}
+                        label="Status"
+                        required
                         options={statusOpts}
                         className="form-control"
                         placeholder="Status"
@@ -206,7 +211,8 @@ const InstitutionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="type"
-                        label={<>Type<sup>*</sup></>}
+                        label="Type"
+                        required
                         options={institutionTypeOpts}
                         className="form-control"
                         placeholder="Type"
@@ -223,7 +229,8 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      label={<>Address<sup>*</sup></>}
+                      label="Address"
+                      required
                       name="address"
                       placeholder="Address"
                       className="form-control"
@@ -232,7 +239,8 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="state"
-                      label={<>State<sup>*</sup></>}
+                      label="State"
+                      required
                       control="input"
                       placeholder="State"
                       className="form-control"
@@ -242,7 +250,8 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="medha_area"
-                      label={<>Medha Area<sup>*</sup></>}
+                      label="Medha Area"
+                      required
                       className="form-control"
                       placeholder="Medha Area"
                     />
@@ -251,7 +260,8 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="pin_code"
-                      label={<>Pin Code<sup>*</sup></>}
+                      label="Pin Code"
+                      required
                       placeholder="Pin Code"
                       className="form-control"
                     />
@@ -260,7 +270,8 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       name="city"
-                      label={<>City<sup>*</sup></>}
+                      label="City"
+                      required
                       placeholder="City"
                       className="form-control"
                     />

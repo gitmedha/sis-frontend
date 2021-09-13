@@ -138,7 +138,8 @@ const EnrollmentConnectionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"
-                      label={<>Start Date<sup>*</sup></>}
+                      label="Start Date"
+                      required
                       placeholder="Start Date"
                       control="datepicker"
                       className="form-control"
@@ -151,7 +152,8 @@ const EnrollmentConnectionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="employer_id"
-                        label={<>Employer<sup>*</sup></>}
+                        label="Employer"
+                        required
                         options={employerOptions}
                         className="form-control"
                         placeholder="Employer"
@@ -164,7 +166,8 @@ const EnrollmentConnectionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="end_date"
-                      label={<>End Date<sup>*</sup></>}
+                      label="End Date"
+                      required={true}
                       placeholder="End Date"
                       control="datepicker"
                       className="form-control"
@@ -177,7 +180,8 @@ const EnrollmentConnectionForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="opportunity_id"
-                        label={<>Opportunity<sup>*</sup></>}
+                        label="Opportunity"
+                        required
                         options={employerOpportunityOptions}
                         className="form-control"
                         placeholder={'Opportunity'}
@@ -194,7 +198,8 @@ const EnrollmentConnectionForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="status"
-                      label={<>Status<sup>*</sup></>}
+                      label="Status"
+                      required
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
@@ -213,7 +218,8 @@ const EnrollmentConnectionForm = (props) => {
                     <Input
                       name="salary_offered"
                       control="input"
-                      label={<>Salary Offered<sup>*</sup></>}
+                      label="Salary Offered"
+                      required
                       className="form-control"
                       placeholder="Salary Offered"
                     />
@@ -223,7 +229,8 @@ const EnrollmentConnectionForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="source"
-                      label={<>Source<sup>*</sup></>}
+                      label="Source"
+                      required
                       options={sourceOptions}
                       className="form-control"
                       placeholder="Source"

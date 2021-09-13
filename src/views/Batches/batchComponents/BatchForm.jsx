@@ -112,7 +112,8 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="name"
-                      label={<>Name<sup>*</sup></>}
+                      label="Name"
+                      required
                       control="input"
                       placeholder="Name"
                       className="form-control"
@@ -123,7 +124,8 @@ const BatchForm = (props) => {
                       control="input"
                       className="form-control"
                       name="name_in_current_sis"
-                      label={<>Name in Current SIS<sup>*</sup></>}
+                      label="Name in Current SIS"
+                      required
                       placeholder="Name in Current SIS"
                     />
                   </div>
@@ -132,7 +134,8 @@ const BatchForm = (props) => {
                       <Input
                         control="lookup"
                         name="assigned_to"
-                        label={<>Assigned To<sup>*</sup></>}
+                        label="Assigned To"
+                        required
                         className="form-control"
                         placeholder="Assigned To"
                         options={options?.assigneesOptions}
@@ -145,7 +148,8 @@ const BatchForm = (props) => {
                     {!lookUpLoading ? (
                       <Input
                         name="program"
-                        label={<>Program<sup>*</sup></>}
+                        label="Program"
+                        required
                         control="lookup"
                         placeholder="Program"
                         className="form-control"
@@ -159,7 +163,8 @@ const BatchForm = (props) => {
                     {!lookUpLoading ? (
                       <Input
                         name="grant"
-                        label={<>Grant<sup>*</sup></>}
+                        label="Grant"
+                        required
                         control="lookup"
                         placeholder="Grant"
                         className="form-control"
@@ -174,7 +179,8 @@ const BatchForm = (props) => {
                       <Input
                         control="lookup"
                         name="institution"
-                        label={<>Institution<sup>*</sup></>}
+                        label="Institution"
+                        required
                         placeholder="Institution"
                         className="form-control"
                         options={options?.instituteOptions}
@@ -188,7 +194,8 @@ const BatchForm = (props) => {
                       <Input
                         icon="down"
                         name="status"
-                        label={<>Status<sup>*</sup></>}
+                        label="Status"
+                        required
                         control="lookup"
                         placeholder="Status"
                         className="form-control"
@@ -206,7 +213,8 @@ const BatchForm = (props) => {
                       control="input"
                       className="form-control"
                       name="number_of_sessions_planned"
-                      label={<>Number of sessions planned<sup>*</sup></>}
+                      label="Number of sessions planned"
+                      required
                       placeholder="Number of sessions planned"
                     />
                   </div>
@@ -217,7 +225,8 @@ const BatchForm = (props) => {
                       control="input"
                       name="per_student_fees"
                       className="form-control"
-                      label={<>Per Student Fees<sup>*</sup></>}
+                      label="Per Student Fees"
+                      required
                       placeholder="Per Student Fees"
                     />
                   </div>
@@ -228,14 +237,16 @@ const BatchForm = (props) => {
                       control="input"
                       name="seats_available"
                       className="form-control"
-                      label={<>Seats Available<sup>*</sup></>}
+                      label="Seats Available"
+                      required
                       placeholder="Seats Available"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"
-                      label={<>Start Date<sup>*</sup></>}
+                      label="Start Date"
+                      required
                       control="datepicker"
                       className="form-control"
                       placeholder="Start Date"
@@ -245,7 +256,8 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="end_date"
-                      label={<>End Date<sup>*</sup></>}
+                      label="End Date"
+                      required
                       control="datepicker"
                       placeholder="End Date"
                       className="form-control"
