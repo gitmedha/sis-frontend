@@ -113,6 +113,7 @@ const BatchForm = (props) => {
                     <Input
                       name="name"
                       label="Name"
+                      required
                       control="input"
                       placeholder="Name"
                       className="form-control"
@@ -124,6 +125,7 @@ const BatchForm = (props) => {
                       className="form-control"
                       name="name_in_current_sis"
                       label="Name in Current SIS"
+                      required
                       placeholder="Name in Current SIS"
                     />
                   </div>
@@ -133,6 +135,7 @@ const BatchForm = (props) => {
                         control="lookup"
                         name="assigned_to"
                         label="Assigned To"
+                        required
                         className="form-control"
                         placeholder="Assigned To"
                         options={options?.assigneesOptions}
@@ -146,6 +149,7 @@ const BatchForm = (props) => {
                       <Input
                         name="program"
                         label="Program"
+                        required
                         control="lookup"
                         placeholder="Program"
                         className="form-control"
@@ -160,6 +164,7 @@ const BatchForm = (props) => {
                       <Input
                         name="grant"
                         label="Grant"
+                        required
                         control="lookup"
                         placeholder="Grant"
                         className="form-control"
@@ -175,6 +180,7 @@ const BatchForm = (props) => {
                         control="lookup"
                         name="institution"
                         label="Institution"
+                        required
                         placeholder="Institution"
                         className="form-control"
                         options={options?.instituteOptions}
@@ -189,6 +195,7 @@ const BatchForm = (props) => {
                         icon="down"
                         name="status"
                         label="Status"
+                        required
                         control="lookup"
                         placeholder="Status"
                         className="form-control"
@@ -207,6 +214,7 @@ const BatchForm = (props) => {
                       className="form-control"
                       name="number_of_sessions_planned"
                       label="Number of sessions planned"
+                      required
                       placeholder="Number of sessions planned"
                     />
                   </div>
@@ -218,6 +226,7 @@ const BatchForm = (props) => {
                       name="per_student_fees"
                       className="form-control"
                       label="Per Student Fees"
+                      required
                       placeholder="Per Student Fees"
                     />
                   </div>
@@ -229,6 +238,7 @@ const BatchForm = (props) => {
                       name="seats_available"
                       className="form-control"
                       label="Seats Available"
+                      required
                       placeholder="Seats Available"
                     />
                   </div>
@@ -236,6 +246,7 @@ const BatchForm = (props) => {
                     <Input
                       name="start_date"
                       label="Start Date"
+                      required
                       control="datepicker"
                       className="form-control"
                       placeholder="Start Date"
@@ -246,6 +257,7 @@ const BatchForm = (props) => {
                     <Input
                       name="end_date"
                       label="End Date"
+                      required
                       control="datepicker"
                       placeholder="End Date"
                       className="form-control"

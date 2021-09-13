@@ -26,16 +26,21 @@ const DatePickerField = styled.div`
       z-index: 100;
     }
   }
+  .required {
+    color: red;
+    font-size: 16px;
+  }
 `;
 
 const DatePicker = (props) => {
-  const { name, label, ...rest } = props;
+  const { name, label, required, ...rest } = props;
 
   return (
     <DatePickerField>
       <div className="form-group d-flex flex-column date-picker-ui">
         <label htmlFor={name} className="text-heading pb-1">
           {label}
+          {required && <span class="required">*</span>}
         </label>
         <Field name={name}>
           {({ form, field }) => {

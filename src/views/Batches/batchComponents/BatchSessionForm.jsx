@@ -169,6 +169,7 @@ const BatchSessionForm = (props) => {
                       name="date"
                       label="Date"
                       placeholder="Date"
+                      required
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -179,6 +180,7 @@ const BatchSessionForm = (props) => {
                       name="topics"
                       control="input"
                       label="Topics Covered"
+                      required
                       className="form-control"
                       placeholder="Topics Covered"
                     />

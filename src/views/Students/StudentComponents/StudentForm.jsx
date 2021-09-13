@@ -135,6 +135,7 @@ const StudentForm = (props) => {
                     <Input
                       name="first_name"
                       label="First Name"
+                      required
                       control="input"
                       placeholder="First Name"
                       className="form-control"
@@ -144,6 +145,7 @@ const StudentForm = (props) => {
                     <Input
                       name="last_name"
                       label="Last Name"
+                      required
                       control="input"
                       placeholder="Last Name"
                       className="form-control"
@@ -153,6 +155,7 @@ const StudentForm = (props) => {
                     <Input
                       name="name_of_parent_or_guardian"
                       label="Parents Name"
+                      required
                       control="input"
                       placeholder="Parents Name"
                       className="form-control"
@@ -165,6 +168,7 @@ const StudentForm = (props) => {
                         control="lookup"
                         name="status"
                         label="Status"
+                        required
                         options={statusOptions}
                         className="form-control"
                         placeholder="Status"
@@ -180,6 +184,7 @@ const StudentForm = (props) => {
                         control="lookup"
                         name="gender"
                         label="Gender"
+                        required
                         options={genderOptions}
                         className="form-control"
                         placeholder="Gender"
@@ -192,6 +197,7 @@ const StudentForm = (props) => {
                     <Input
                       name="phone"
                       label="Phone"
+                      required
                       control="input"
                       placeholder="Phone"
                       className="form-control"
@@ -202,6 +208,7 @@ const StudentForm = (props) => {
                       type="email"
                       name="email"
                       label="Email"
+                      required
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -211,6 +218,7 @@ const StudentForm = (props) => {
                     <Input
                       name="date_of_birth"
                       label="Date of Birth"
+                      required
                       placeholder="Date of Birth"
                       control="datepicker"
                       className="form-control"
@@ -224,6 +232,7 @@ const StudentForm = (props) => {
                         control="lookup"
                         name="assigned_to"
                         label="Assigned To"
+                        required
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
@@ -239,6 +248,7 @@ const StudentForm = (props) => {
                         control="lookup"
                         name="category"
                         label="Category"
+                        required
                         options={categoryOptions}
                         className="form-control"
                         placeholder="Category"
@@ -254,6 +264,7 @@ const StudentForm = (props) => {
                         control="lookup"
                         name="income_level"
                         label="Income Level (INR)"
+                        required
                         options={incomeLevelOptions}
                         className="form-control"
                         placeholder="Income Level (INR)"

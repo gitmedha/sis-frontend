@@ -138,6 +138,7 @@ const InstitutionForm = (props) => {
                     <Input
                       name="name"
                       label="Name"
+                      required
                       control="input"
                       placeholder="Name"
                       className="form-control"
@@ -147,6 +148,7 @@ const InstitutionForm = (props) => {
                     <Input
                       name="phone"
                       label="Phone"
+                      required
                       control="input"
                       placeholder="Phone"
                       className="form-control"
@@ -157,6 +159,7 @@ const InstitutionForm = (props) => {
                       type="email"
                       name="email"
                       label="Email"
+                      required
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -177,6 +180,7 @@ const InstitutionForm = (props) => {
                         control="lookup"
                         name="assigned_to"
                         label="Assigned To"
+                        required
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
@@ -192,6 +196,7 @@ const InstitutionForm = (props) => {
                         control="lookup"
                         name="status"
                         label="Status"
+                        required
                         options={statusOpts}
                         className="form-control"
                         placeholder="Status"
@@ -207,6 +212,7 @@ const InstitutionForm = (props) => {
                         control="lookup"
                         name="type"
                         label="Type"
+                        required
                         options={institutionTypeOpts}
                         className="form-control"
                         placeholder="Type"
@@ -224,6 +230,7 @@ const InstitutionForm = (props) => {
                     <Input
                       control="input"
                       label="Address"
+                      required
                       name="address"
                       placeholder="Address"
                       className="form-control"
@@ -233,6 +240,7 @@ const InstitutionForm = (props) => {
                     <Input
                       name="state"
                       label="State"
+                      required
                       control="input"
                       placeholder="State"
                       className="form-control"
@@ -243,6 +251,7 @@ const InstitutionForm = (props) => {
                       control="input"
                       name="medha_area"
                       label="Medha Area"
+                      required
                       className="form-control"
                       placeholder="Medha Area"
                     />
@@ -252,6 +261,7 @@ const InstitutionForm = (props) => {
                       control="input"
                       name="pin_code"
                       label="Pin Code"
+                      required
                       placeholder="Pin Code"
                       className="form-control"
                     />
@@ -261,6 +271,7 @@ const InstitutionForm = (props) => {
                       control="input"
                       name="city"
                       label="City"
+                      required
                       placeholder="City"
                       className="form-control"
                     />
@@ -279,6 +290,7 @@ const InstitutionForm = (props) => {
                               control="input"
                               name={`contacts.${index}.full_name`}
                               label="Name"
+                              required
                               placeholder="Name"
                               className="form-control"
                             />
@@ -287,6 +299,7 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.email`}
                               label="Email"
+                              required
                               control="input"
                               placeholder="Email"
                               className="form-control"
@@ -297,6 +310,7 @@ const InstitutionForm = (props) => {
                               name={`contacts.${index}.phone`}
                               control="input"
                               label="Phone Number"
+                              required
                               className="form-control"
                               placeholder="Phone Number"
                             />
@@ -306,6 +320,7 @@ const InstitutionForm = (props) => {
                               name={`contacts.${index}.designation`}
                               control="input"
                               label="Designation"
+                              required
                               className="form-control"
                               placeholder="Designation"
                             />

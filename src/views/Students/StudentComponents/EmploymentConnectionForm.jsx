@@ -139,6 +139,7 @@ const EnrollmentConnectionForm = (props) => {
                     <Input
                       name="start_date"
                       label="Start Date"
+                      required
                       placeholder="Start Date"
                       control="datepicker"
                       className="form-control"
@@ -152,6 +153,7 @@ const EnrollmentConnectionForm = (props) => {
                         control="lookup"
                         name="employer_id"
                         label="Employer"
+                        required
                         options={employerOptions}
                         className="form-control"
                         placeholder="Employer"
@@ -165,6 +167,7 @@ const EnrollmentConnectionForm = (props) => {
                     <Input
                       name="end_date"
                       label="End Date"
+                      required={true}
                       placeholder="End Date"
                       control="datepicker"
                       className="form-control"
@@ -178,6 +181,7 @@ const EnrollmentConnectionForm = (props) => {
                         control="lookup"
                         name="opportunity_id"
                         label="Opportunity"
+                        required
                         options={employerOpportunityOptions}
                         className="form-control"
                         placeholder={'Opportunity'}
@@ -195,6 +199,7 @@ const EnrollmentConnectionForm = (props) => {
                       control="lookup"
                       name="status"
                       label="Status"
+                      required
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
@@ -214,6 +219,7 @@ const EnrollmentConnectionForm = (props) => {
                       name="salary_offered"
                       control="input"
                       label="Salary Offered"
+                      required
                       className="form-control"
                       placeholder="Salary Offered"
                     />
@@ -224,6 +230,7 @@ const EnrollmentConnectionForm = (props) => {
                       control="lookup"
                       name="source"
                       label="Source"
+                      required
                       options={sourceOptions}
                       className="form-control"
                       placeholder="Source"
