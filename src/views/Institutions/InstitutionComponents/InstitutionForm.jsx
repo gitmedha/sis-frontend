@@ -289,7 +289,8 @@ const InstitutionForm = (props) => {
                             <Input
                               control="input"
                               name={`contacts.${index}.full_name`}
-                              label={<>Name<sup>*</sup></>}
+                              label="Name"
+                              required
                               placeholder="Name"
                               className="form-control"
                             />
@@ -297,7 +298,8 @@ const InstitutionForm = (props) => {
                           <div className="col-md-6 col-sm-12 mb-2">
                             <Input
                               name={`contacts.${index}.email`}
-                              label={<>Email<sup>*</sup></>}
+                              label="Email"
+                              required
                               control="input"
                               placeholder="Email"
                               className="form-control"
@@ -307,7 +309,8 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.phone`}
                               control="input"
-                              label={<>Phone Number<sup>*</sup></>}
+                              label="Phone Number"
+                              required
                               className="form-control"
                               placeholder="Phone Number"
                             />
@@ -316,7 +319,8 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.designation`}
                               control="input"
-                              label={<>Designationr<sup>*</sup></>}
+                              label="Designationr"
+                              required
                               className="form-control"
                               placeholder="Designation"
                             />
