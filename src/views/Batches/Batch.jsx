@@ -30,16 +30,6 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
 
-  const init = async () => {
-    setLoading(true);
-    NP.start();
-    await getThisBatch();
-    await getSessions();
-    await getStudents();
-    NP.done();
-    setLoading(false);
-  };
-
   const getThisBatch = async () => {
     try {
       const batchID = props.match.params.id;
@@ -146,7 +136,7 @@ const Batch = (props) => {
     }).catch(err => {
       console.log("UPDATE_DETAILS_ERR", err);
       setAlert("Unable to update batch.", "error");
-    }).finally(() => {
+    }).finally(async () => {
       NP.done();
       getThisBatch();
     });
@@ -167,9 +157,18 @@ const Batch = (props) => {
     });
   };
 
-  useEffect(() => {
-    init();
+  useEffect(async () => {
+    setLoading(true);
+    NP.start();
+    await getThisBatch();
+    NP.done();
+    setLoading(false);
   }, [batchID]);
+
+  useEffect(async () => {
+    await getSessions();
+    await getStudents();
+  }, [batch]);
 
   const handleSessionDataUpdate = async () => {
     await getSessions();

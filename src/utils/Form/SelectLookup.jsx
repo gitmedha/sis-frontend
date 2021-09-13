@@ -89,7 +89,7 @@ const SelectLookup = (props) => {
       <div className="form-group">
         <label className="text-heading" htmlFor={name}>
           {label}
-          {required && <span class="required">*</span>}
+          {required && <span className="required">*</span>}
         </label>
         <Field id={name} name={name} component={SelectField} {...rest} />
         <ErrorMessage name={name} component={InputErr} />
