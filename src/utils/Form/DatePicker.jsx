@@ -28,7 +28,7 @@ const DatePickerField = styled.div`
   }
   .required {
     color: red;
-    font-size:20px;
+    font-size: 16px;
   }
 `;
 
