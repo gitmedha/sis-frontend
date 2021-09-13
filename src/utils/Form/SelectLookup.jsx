@@ -11,7 +11,7 @@ const SelectLookupField = styled.div`
   .required {
     color: red;
     font-size:20px; 
-    }
+  }
 `;
 
 const style = {

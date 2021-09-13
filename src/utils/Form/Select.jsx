@@ -9,7 +9,7 @@ const SelectField = styled.div`
   .required {
     color: red;
     font-size:20px; 
-    }
+  }
 `;
 
 const Select = (props) => {

@@ -319,7 +319,7 @@ const InstitutionForm = (props) => {
                             <Input
                               name={`contacts.${index}.designation`}
                               control="input"
-                              label="Designationr"
+                              label="Designation"
                               required
                               className="form-control"
                               placeholder="Designation"

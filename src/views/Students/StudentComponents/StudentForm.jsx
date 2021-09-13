@@ -29,7 +29,6 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
-  
 `;
 
 const StudentForm = (props) => {
