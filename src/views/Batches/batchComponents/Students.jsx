@@ -12,7 +12,6 @@ import { getProgramEnrollmentsPickList } from '../../Institutions/InstitutionCom
 const Students = ({ students, batch, fetchData }) => {
   const [pickList, setPickList] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  // const [studentsTableData, setStudentsTableData] = useState([]);
   const [studentInModal, setStudentInModal] = useState(false);
   const toggleModal = () => setShowModal(!showModal);
 
@@ -49,22 +48,16 @@ const Students = ({ students, batch, fetchData }) => {
     setShowModal(true);
   }
 
-  // useEffect(() => {
-    // let data = students.map(student => {
-    const studentsTableData = students.map(student => {
-      return {
-        id: student.id,
-        name: `${student.student.first_name} ${student.student.last_name}`,
-        phone: student.student.phone,
-        enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
-        institution: student.institution.name,
-        attendance: <ProgressBarField value={student.attendancePercent || 0} />,
-      };
-    });
-    // console.log('studentsTableData[0]', studentsTableData[0]);
-    // console.log('students', students);
-    // setStudentsTableData(data);
-  // }, [batch, students])
+  const studentsTableData = students.map(student => {
+    return {
+      id: student.id,
+      name: `${student.student.first_name} ${student.student.last_name}`,
+      phone: student.student.phone,
+      enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
+      institution: student.institution.name,
+      attendance: <ProgressBarField value={student.attendancePercent || 0} />,
+    };
+  });
 
   const refetchStudents = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
