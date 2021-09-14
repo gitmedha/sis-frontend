@@ -268,8 +268,7 @@ const BatchForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                  <div style={{ width: "20px" }} />
-                    <button className="btn btn-primary btn-regular" type="submit">SAVE</button>
+                    <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
                     <button
                       type="button"
                       onClick={onHide}
