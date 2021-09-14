@@ -19,6 +19,7 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
+import { groupBy } from "lodash";
 
 const Batch = (props) => {
   const [batch, setBatch] = useState(null);
@@ -53,7 +54,11 @@ const Batch = (props) => {
 
   const getAttendanceStats = async (sessionsList) => {
     getBatchSessionAttendanceStats(Number(batchID)).then(async data => {
-      const totalStudents = data.data.data.programEnrollmentsConnection.groupBy.batch[0].connection.aggregate.studentsEnrolled;
+      let groupByBatch = data.data.data.programEnrollmentsConnection.groupBy.batch;
+      if (!groupByBatch.length) {
+        return;
+      }
+      const totalStudents = groupByBatch[0].connection.aggregate.studentsEnrolled;
 
       let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
         (sess) => ({

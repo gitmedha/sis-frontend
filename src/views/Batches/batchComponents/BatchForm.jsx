@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
@@ -28,10 +29,16 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const BatchForm = (props) => {
   let { onHide, show } = props;
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
+  const [institutionOptions, setInstitutionOptions] = useState(null);
 
   let initialValues = {
     name: '',
@@ -57,7 +64,6 @@ const BatchForm = (props) => {
     initialValues['end_date'] = new Date(props.end_date);
   }
 
-
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -70,6 +76,14 @@ const BatchForm = (props) => {
   }, []);
 
   useEffect(() => {
+    if (props.institution) {
+      filterInstitution(props.institution.name).then(data => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, [props])
+
+  useEffect(() => {
     if (show && !options) {
       prepareLookUpFields();
     }
@@ -78,6 +92,21 @@ const BatchForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  const filterInstitution = async (filterValue) => {
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(institution => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+    });
+  }
 
   return (
     <Modal
@@ -177,13 +206,14 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="institution"
                         label="Institution"
+                        filterData={filterInstitution}
+                        defaultOptions={props.id ? institutionOptions : true}
                         required
                         placeholder="Institution"
                         className="form-control"
-                        options={options?.instituteOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
