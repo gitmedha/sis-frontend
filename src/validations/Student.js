@@ -17,7 +17,7 @@ const fee_status = Yup.string().required("Fee Status is required.");
 // Employment Connection form fields.
 const start_date = Yup.date().nullable().required("Start Date is required.");
 const end_date = Yup.date().nullable().required("End Date is required.");
-const employment_connection_status = Yup.date().nullable().required("Employment Connection status is required.");
+const employment_connection_status = Yup.string().nullable().required("Employment Connection status is required.");
 const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
 const source = Yup.string().required("Source is required.");
