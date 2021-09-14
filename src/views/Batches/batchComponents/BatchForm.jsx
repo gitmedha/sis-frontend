@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
@@ -27,6 +28,11 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 
 const BatchForm = (props) => {
   let { onHide, show } = props;
@@ -78,6 +84,23 @@ const BatchForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  const filterInstitution = async (filterValue) => {
+    console.log('filterValue', filterValue);
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['name']
+    }).then(data => {
+      return data.hits.map(institution => {
+        return {
+          ...institution,
+          key: institution.name,
+          label: institution.name,
+          value: institution.name,
+        }
+      });
+    });
+  }
 
   return (
     <Modal
@@ -180,10 +203,10 @@ const BatchForm = (props) => {
                         control="lookupAsync"
                         name="institution"
                         label="Institution"
+                        filterData={filterInstitution}
                         required
                         placeholder="Institution"
                         className="form-control"
-                        options={options?.instituteOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
