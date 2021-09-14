@@ -38,6 +38,7 @@ const BatchForm = (props) => {
   let { onHide, show } = props;
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
+  const [institutionOptions, setInstitutionOptions] = useState(null);
 
   let initialValues = {
     name: '',
@@ -63,7 +64,6 @@ const BatchForm = (props) => {
     initialValues['end_date'] = new Date(props.end_date);
   }
 
-
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -74,6 +74,14 @@ const BatchForm = (props) => {
   useEffect(() => {
     getBatchesPickList();
   }, []);
+
+  useEffect(() => {
+    if (props.institution) {
+      filterInstitution(props.institution.name).then(data => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, [props])
 
   useEffect(() => {
     if (show && !options) {
@@ -202,6 +210,7 @@ const BatchForm = (props) => {
                         name="institution"
                         label="Institution"
                         filterData={filterInstitution}
+                        defaultOptions={props.id ? institutionOptions : true}
                         required
                         placeholder="Institution"
                         className="form-control"

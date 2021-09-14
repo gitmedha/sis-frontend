@@ -63,10 +63,11 @@ const SelectField = (props) => {
     placeholder,
     onChange = () => {},
     isSearchable = false,
-    filterData
+    filterData,
+    defaultOptions
   } = props;
   const [inputValue, setInputValue] = useState('');
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
@@ -95,8 +96,8 @@ const SelectField = (props) => {
         value={
           options ? options.find((option) => option.value === field.value) : null
         }
+        defaultOptions={defaultOptions}
         cacheOptions
-        defaultOptions
       />
   );
 };
