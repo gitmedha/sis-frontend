@@ -86,7 +86,6 @@ const BatchForm = (props) => {
   };
 
   const filterInstitution = async (filterValue) => {
-    console.log('filterValue', filterValue);
     return await meilisearchClient.index('institutions').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'name']

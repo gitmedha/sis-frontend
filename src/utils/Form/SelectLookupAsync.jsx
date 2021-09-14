@@ -70,7 +70,6 @@ const SelectField = (props) => {
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
-      console.log('data here', data);
       setOptions(data);
       callback(data);
     });
@@ -92,7 +91,7 @@ const SelectField = (props) => {
         placeholder={placeholder}
         isSearchable={isSearchable || icon !== 'down'}
         components={{ DropdownIndicator }}
-        onChange={(option) => {console.log('changed', field); form.setFieldValue(field.name, option.value); onChange(option);}}
+        onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
         value={
           options ? options.find((option) => option.value === field.value) : null
         }
