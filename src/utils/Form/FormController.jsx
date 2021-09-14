@@ -5,6 +5,7 @@ import Textarea from "./Textarea";
 import PropTypes from "prop-types";
 import DatePicker from "./DatePicker";
 import SelectLookup from "./SelectLookup";
+import SelectLookupAsync from "./SelectLookupAsync";
 import CheckboxGroup from "./CheckboxGroup";
 
 const FormController = (props) => {
@@ -25,6 +26,8 @@ const FormController = (props) => {
       return <DatePicker {...rest} />;
     case "lookup":
       return <SelectLookup {...rest} />;
+    case "lookupAsync":
+      return <SelectLookupAsync {...rest} />;
     default:
       return null;
   }

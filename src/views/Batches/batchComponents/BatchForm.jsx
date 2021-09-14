@@ -177,7 +177,7 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="institution"
                         label="Institution"
                         required
