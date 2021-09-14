@@ -216,6 +216,8 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      min={0}
+                      type="number"
                       name="salary_offered"
                       control="input"
                       label="Salary Offered"

@@ -318,6 +318,8 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      min={0}
+                      type="number"
                       name="fee_amount"
                       control="input"
                       label="Fee Amount (INR)"
