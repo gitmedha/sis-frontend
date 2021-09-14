@@ -89,14 +89,13 @@ const BatchForm = (props) => {
     console.log('filterValue', filterValue);
     return await meilisearchClient.index('institutions').search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['name']
+      attributesToRetrieve: ['id', 'name']
     }).then(data => {
       return data.hits.map(institution => {
         return {
           ...institution,
-          key: institution.name,
           label: institution.name,
-          value: institution.name,
+          value: Number(institution.id),
         }
       });
     });
