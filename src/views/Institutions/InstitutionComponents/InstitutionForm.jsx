@@ -72,7 +72,6 @@ const InstitutionForm = (props) => {
 
   const logoUploadHandler = ({ id }) => setLogo(id);
 
-  //initial values
   let initialValues = {
     name: '',
     type:'',
