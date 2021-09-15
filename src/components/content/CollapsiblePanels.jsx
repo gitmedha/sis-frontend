@@ -14,11 +14,19 @@ const CollapsiblePanels = ({
 }) => {
   const [isOpen, setOpen] = useState(opened);
 
+  const clicked = (e) => {
+    if (!isOpen) {
+      const mainContent = document.getElementById('main-content');
+      setTimeout(() => { mainContent.scroll(mainContent.scrollLeft, mainContent.scrollTop + 200) }, 100);
+    }
+    return type === "default" ? setOpen(!isOpen) : null;
+  }
+
   return (
     <section className="no-border p-2 mt-2" id={id}>
       <div
         className="section-header d-flex justify-content-between px-2"
-        onClick={() => (type === "default" ? setOpen(!isOpen) : null)}
+        onClick={clicked}
       >
         <div className="flex-row-centered">
           {titleContent ? (
