@@ -113,7 +113,7 @@ const App = (props) => {
             <Sidebar isOpen={isOpen} toggleMenu={toggleMenu} />
             <LayoutContainer>
               <Header isOpen={isOpen} />
-              <RouteContainer>
+              <RouteContainer id="main-content">
                 <Switch>
                   <PrivateRoute path="/" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
