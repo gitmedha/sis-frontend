@@ -17,9 +17,9 @@ const DatePickerField = styled.div`
 .react-datepicker__month {
   margin: 1em 1em;
 }
+
 .react-datepicker__day-name, .react-datepicker__day {
   width: 2.2em;
-  line-height: 1.9em;
   margin: 0.3em;
 }
 
@@ -27,9 +27,9 @@ const DatePickerField = styled.div`
   font-size: 1em;
 }
 
-.react-datepicker__navigation {
+.react-datepicker__navigation--next--with-time {
   top: 13px !important;
-  right: 90px
+  right: 100px;
 }
 
 .react-datepicker__day{
@@ -43,6 +43,7 @@ const DatePickerField = styled.div`
 label {
     color: #787B96;
   }
+
 .datepicker-wrapper {
   position: relative;
   .datepicker-icon {
@@ -59,6 +60,7 @@ label {
     z-index: 0;
   }
 }
+
 .required {
   color: red;
   font-size: 16px;
@@ -66,7 +68,8 @@ label {
 `;
 
 const DatePicker = (props) => {
-  const { name, label, required, ...rest } = props;
+  const { name, showtime, label, required, ...rest } = props;
+
   const datepickerRef = useRef(null); 
   function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
@@ -87,8 +90,8 @@ const DatePicker = (props) => {
             return (
               <div className="datepicker-wrapper">
                 <DateView
-                  dateFormat="dd MMM yyyy h:mm aa"
-                  showTimeSelect
+                  dateFormat={showtime? "dd MMM yyyy EE hh:mm a" : "dd MMM yyyy"}
+                  showTimeSelect={showtime}
                   showYearDropdown
                   id={name}
                   {...field}

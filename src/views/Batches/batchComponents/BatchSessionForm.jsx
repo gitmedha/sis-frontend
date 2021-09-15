@@ -172,6 +172,7 @@ const BatchSessionForm = (props) => {
                       required
                       control="datepicker"
                       className="form-control"
+                      showtime
                       autoComplete="off"
                     />
                   </div>
