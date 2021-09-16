@@ -211,7 +211,6 @@ const EnrollmentConnectionForm = (props) => {
                         className="form-control"
                         placeholder="Opportunity Type"
                         required
-                        disabled={true}
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
