@@ -34,7 +34,7 @@ const EnrollmentConnectionForm = (props) => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
-  const [opportunityTypeOptions, setEmployerOpportunityTypeOptions] = useState([]);
+  const [employerOpportunityTypeOptions, setEmployerOpportunityTypeOptions] = useState([]);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
@@ -201,16 +201,17 @@ const EnrollmentConnectionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {opportunityTypeOptions.length ? (
+                    {employerOpportunityTypeOptions.length ? (
                       <Input
                         icon="down"
                         control="lookup"
-                        name="opportunity_type"
+                        name="opportunity_id"
                         label="Opportunity Type"
-                        options={opportunityTypeOptions}
+                        options={employerOpportunityTypeOptions}
                         className="form-control"
                         placeholder="Opportunity Type"
                         required
+                        disabled={true}
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
