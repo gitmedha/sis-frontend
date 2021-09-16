@@ -39,6 +39,7 @@ const category  = Yup.string().nullable().required("Category is required.");
 const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
+const opportunity_type = Yup.string().required("Opportunity Type is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -61,6 +62,7 @@ export const EmploymentConnectionValidations = Yup.object({
   opportunity_id,
   source,
   salary_offered,
+  opportunity_type
 });
 
 export const StudentValidations = Yup.object({

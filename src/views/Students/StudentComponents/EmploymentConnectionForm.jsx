@@ -45,6 +45,7 @@ const EnrollmentConnectionForm = (props) => {
     end_date:'',
     source:'',
     salary_offered:'',
+    opportunity_type:'',
   };
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
@@ -200,15 +201,16 @@ const EnrollmentConnectionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {opportunityType.length ? (
+                    {opportunityTypeOptions.length ? (
                       <Input
                         icon="down"
                         control="lookup"
-                        name="opportunity_id"
+                        name="opportunity_type"
                         label="Opportunity Type"
                         options={opportunityTypeOptions}
                         className="form-control"
                         placeholder="Opportunity Type"
+                        required
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
