@@ -23,6 +23,9 @@ import Student from "./views/Students/Student";
 import Students from "./views/Students/Students";
 import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
+import Employer from "./views/Employers/Employer";
+import Employers from "./views/Employers/Employers";
+import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -133,6 +136,8 @@ const App = (props) => {
                     component={updateSession}
                     path="/update-session/:sessionID"
                   />
+                  <PrivateRoute path="/employers" exact component={Employers} />
+                  <PrivateRoute path="/employer/:id" exact component={Employer} />
                   <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} />} />
                 </Switch>
               </RouteContainer>
