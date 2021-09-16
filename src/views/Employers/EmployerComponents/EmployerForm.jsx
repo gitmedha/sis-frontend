@@ -41,6 +41,7 @@ const EmployerForm = (props) => {
       setStatusOpts(data.status.map((item) => {
         return {
           key: item.value,
+          label: item.value,
           value: item.value.toLowerCase(),
         };
       }));
@@ -115,6 +116,7 @@ const EmployerForm = (props) => {
                       control="input"
                       placeholder="Name"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -124,6 +126,7 @@ const EmployerForm = (props) => {
                       control="input"
                       placeholder="Phone"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -142,6 +145,7 @@ const EmployerForm = (props) => {
                       label="Industry"
                       placeholder="Industry"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -151,6 +155,7 @@ const EmployerForm = (props) => {
                       label="Type"
                       placeholder="Type"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -162,6 +167,7 @@ const EmployerForm = (props) => {
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
+                        required
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
@@ -171,9 +177,10 @@ const EmployerForm = (props) => {
                     <Input
                       name="status"
                       label="Status"
-                      control="radio"
+                      control="lookup"
                       options={statusOpts}
                       className="form-control"
+                      required
                     />
                   </div>
                 </div>
@@ -188,6 +195,7 @@ const EmployerForm = (props) => {
                       name="address"
                       placeholder="Address"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -197,6 +205,7 @@ const EmployerForm = (props) => {
                       control="input"
                       placeholder="State"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -206,6 +215,7 @@ const EmployerForm = (props) => {
                       label="Medha Area"
                       className="form-control"
                       placeholder="Medha Area"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -215,6 +225,7 @@ const EmployerForm = (props) => {
                       label="City"
                       className="form-control"
                       placeholder="City"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -224,6 +235,7 @@ const EmployerForm = (props) => {
                       label="Pin Code"
                       placeholder="Pin Code"
                       className="form-control"
+                      required
                     />
                   </div>
                 </div>
@@ -243,7 +255,8 @@ const EmployerForm = (props) => {
                               label="Name"
                               placeholder="Name"
                               className="form-control"
-                            />
+                              required
+                              />
                           </div>
                           <div className="col-md-6 col-sm-12 mb-2">
                             <Input
@@ -252,6 +265,7 @@ const EmployerForm = (props) => {
                               control="input"
                               placeholder="Email"
                               className="form-control"
+                              required
                             />
                           </div>
                           <div className="col-md-6 col-sm-12 mb-2">
@@ -261,6 +275,7 @@ const EmployerForm = (props) => {
                               label="Phone Number"
                               className="form-control"
                               placeholder="Phone Number"
+                              required
                             />
                           </div>
                           <div className="col-md-6 col-sm-12 mb-2">
@@ -270,6 +285,7 @@ const EmployerForm = (props) => {
                               label="Designation"
                               className="form-control"
                               placeholder="Designation"
+                              required
                             />
                           </div>
                           <div className="col-md-6 col-sm-12 mb-2">
