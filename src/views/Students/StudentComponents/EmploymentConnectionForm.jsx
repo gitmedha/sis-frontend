@@ -34,6 +34,7 @@ const EnrollmentConnectionForm = (props) => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [employerOpportunityTypeOptions, setEmployerOpportunityTypeOptions] = useState([]);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
@@ -44,6 +45,7 @@ const EnrollmentConnectionForm = (props) => {
     end_date:'',
     source:'',
     salary_offered:'',
+    opportunity_type:'',
   };
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
@@ -90,6 +92,11 @@ const EnrollmentConnectionForm = (props) => {
       setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
         key: opportunity.role_or_designation,
         label: opportunity.role_or_designation,
+        value: opportunity.id,
+      })));
+      setEmployerOpportunityTypeOptions(data?.data?.data?.opportunities.map((opportunity) => ({
+        key: opportunity.type,
+        label: opportunity.type,
         value: opportunity.id,
       })));
     });
@@ -191,6 +198,22 @@ const EnrollmentConnectionForm = (props) => {
                         <label className="text-heading" style={{color: '#787B96'}}>Opportunity (select an employer first)</label>
                         <Skeleton count={1} height={35} />
                       </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {employerOpportunityTypeOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity Type"
+                        options={employerOpportunityTypeOptions}
+                        className="form-control"
+                        placeholder="Opportunity Type"
+                        required
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
