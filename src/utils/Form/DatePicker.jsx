@@ -90,7 +90,7 @@ const DatePicker = (props) => {
             return (
               <div className="datepicker-wrapper">
                 <DateView
-                  dateFormat={showtime? "dd MMM yyyy EE  hh:mm a" : "dd MMM yyyy"}
+                  dateFormat={showtime? "dd MMM yyyy hh:mm a" : "dd MMM yyyy"}
                   showTimeSelect={showtime}
                   showYearDropdown
                   id={name}
