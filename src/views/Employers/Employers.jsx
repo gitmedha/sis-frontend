@@ -100,7 +100,7 @@ const Employers = () => {
   };
 
   const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
-      if (sortBy.length) {
+      if (sortBy && sortBy.length) {
         let sortByField = 'name';
         let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
         switch (sortBy[0].id) {
