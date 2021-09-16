@@ -69,7 +69,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
 
     // need to remove 'show' and 'students' from the payload
     let {show, students, ...dataToSave} = data;
-    dataToSave['date'] = moment(data.date).format("DD MMM YYYY, hh:mm a");
+    dataToSave['date'] = new Date(data.date).toISOString();
 
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
