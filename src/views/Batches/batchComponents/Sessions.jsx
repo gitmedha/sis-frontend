@@ -96,7 +96,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
     let {show, students, sessionAttendance} = data;
     let dataToSave = {};
     dataToSave['topics_covered'] = data.topics;
-    dataToSave['date'] = moment(data.date).format("DD MMM YYYY, hh:mm a");
+    dataToSave['date'] = new Date(data.date).toISOString();
 
     updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
