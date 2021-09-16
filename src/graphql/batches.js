@@ -158,7 +158,7 @@ query GET_STUDENT ($id: ID!){
 `;
 
 export const CREATE_SESSION = `
-mutation CREATE_SESSION($batchID: ID!, $date: Date!, $topics: String!) {
+mutation CREATE_SESSION($batchID: ID!, $date: DateTime!, $topics: String!) {
   createSession(
     input: {
       data: {

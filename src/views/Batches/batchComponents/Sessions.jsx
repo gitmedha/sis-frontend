@@ -50,7 +50,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
     return {
       id: session.id,
       topics_covered: session.topics_covered,
-      date: moment(session.date).format('DD MMM YYYY'),
+      date: moment(session.date).format('DD MMM YYYY, hh:mm a'),
       attendance: <ProgressBarField value={Number.parseInt(session.percent)} />,
       link: <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>
     }
@@ -69,7 +69,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
 
     // need to remove 'show' and 'students' from the payload
     let {show, students, ...dataToSave} = data;
-    dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
+    dataToSave['date'] = new Date(data.date).toISOString();
 
     createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
@@ -96,7 +96,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
     let {show, students, sessionAttendance} = data;
     let dataToSave = {};
     dataToSave['topics_covered'] = data.topics;
-    dataToSave['date'] = moment(data.date).format("YYYY-MM-DD");
+    dataToSave['date'] = new Date(data.date).toISOString();
 
     updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
