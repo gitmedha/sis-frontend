@@ -34,6 +34,7 @@ const EnrollmentConnectionForm = (props) => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [opportunityTypeOptions, setEmployerOpportunityTypeOptions] = useState([]);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
@@ -90,6 +91,11 @@ const EnrollmentConnectionForm = (props) => {
       setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
         key: opportunity.role_or_designation,
         label: opportunity.role_or_designation,
+        value: opportunity.id,
+      })));
+      setEmployerOpportunityTypeOptions(data?.data?.data?.opportunities.map((opportunity) => ({
+        key: opportunity.type,
+        label: opportunity.type,
         value: opportunity.id,
       })));
     });
@@ -191,6 +197,21 @@ const EnrollmentConnectionForm = (props) => {
                         <label className="text-heading" style={{color: '#787B96'}}>Opportunity (select an employer first)</label>
                         <Skeleton count={1} height={35} />
                       </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {opportunityType.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity Type"
+                        options={opportunityTypeOptions}
+                        className="form-control"
+                        placeholder="Opportunity Type"
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
