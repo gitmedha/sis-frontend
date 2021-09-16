@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { getEmployersPickList } from "./employerAction";
 
 const Details = (props) => {
-  const { name, phone, assigned_to, website, email, status, type } = props;
+  const { name, phone, assigned_to, website, email, status, type, industry } = props;
 
   const [pickList, setPickList] = useState([]);
 
@@ -53,6 +53,7 @@ useEffect(() => {
             value={<Badge value={type} pickList={pickList.type} />}
           />
           <DetailField label="Assigned To" value={assigned_to?.username} />
+          <DetailField label="Industry" value={industry} />
         </div>
       </div>
     </div>
