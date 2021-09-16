@@ -6,12 +6,14 @@ import TabPicker from "../../components/content/TabPicker";
 import api from "../../apis";
 import { GET_USER_EMPLOYERS } from "../../graphql";
 import Avatar from "../../components/content/Avatar";
-import { getEmployersPickList } from "./EmployerComponents/employerAction";
+import { createEmployer, getEmployersPickList } from "./EmployerComponents/employerAction";
 import {
   TableRowDetailLink,
   Badge,
   Anchor,
 } from "../../components/content/Utils";
+import { setAlert } from "../../store/reducers/Notifications/actions";
+import EmployerForm from "./EmployerComponents/EmployerForm";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -26,6 +28,7 @@ const Employers = () => {
   const [employersAggregate, setEmployersAggregate] = useState([]);
   const [employers, setEmployers] = useState([]);
   const [pickList, setPickList] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
 
   const columns = useMemo(
@@ -119,10 +122,38 @@ const Employers = () => {
     }
   }, []);
 
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, ...dataToSave} = data;
+
+    nProgress.start();
+    createEmployer(dataToSave).then(data => {
+      setAlert("Employer created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create employer.", "error");
+    }).finally(() => {
+      nProgress.done();
+      getEmployers();
+    });
+    setModalShow(false);
+  };
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+        <button
+          className="btn btn-primary"
+          onClick={() => setModalShow(true)}
+        >
+          Add New Employer
+        </button>
       </div>
       <Table
         columns={columns}
@@ -132,6 +163,10 @@ const Employers = () => {
         fetchData={fetchData}
         loading={loading}
         onRowClick={onRowClick}
+      />
+      <EmployerForm
+        show={modalShow}
+        onHide={hideCreateModal}
       />
     </div>
   );

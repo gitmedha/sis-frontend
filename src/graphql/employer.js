@@ -134,40 +134,76 @@ export const GET_EMPLOYER = `
   }
 `;
 
+export const CREATE_EMPLOYER = `
+  mutation CREATE_EMPLOYER(
+    $data: EmployerInput!
+  ) {
+    createEmployer(
+      input: {
+        data: $data,
+      }
+    ) {
+      employer {
+        id
+        name
+        website
+        type
+        phone
+        status
+        industry
+        address
+        pin_code
+        city
+        state
+        medha_area
+        assigned_to{
+          username
+        }
+        contacts {
+          full_name
+          email
+          phone
+          designation
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_EMPLOYER = `
   mutation UPDATE_EMPLOYER(
-      $data: editEmployerInput!
-      $id: ID!
+    $data: editEmployerInput!
+    $id: ID!
+  ) {
+    updateEmployer(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
     ) {
-      updateEmployer(
-        input: {
-          data: $data,
-          where: { id: $id }
+      employer{
+        id
+        name
+        website
+        type
+        phone
+        status
+        industry
+        address
+        pin_code
+        city
+        state
+        medha_area
+        assigned_to{
+          username
         }
-      ) {
-        employer{
-          id
-          name
-          website
-          type
+        contacts {
+          full_name
+          email
           phone
-          status
-          industry
-          address
-          pin_code
-          city
-          state
-          medha_area
-          assigned_to{
-            username
-          }
-          contacts {
-            full_name
-            email
-            phone
-            designation
-          }
+          designation
         }
+      }
     }
   }
 `;

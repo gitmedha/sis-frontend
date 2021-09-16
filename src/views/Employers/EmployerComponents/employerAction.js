@@ -3,7 +3,8 @@ import {
   GET_PICKLIST,
   GET_ASSIGNEES_LIST,
   UPDATE_EMPLOYER,
-  DELETE_EMPLOYER
+  DELETE_EMPLOYER,
+  CREATE_EMPLOYER
 } from "../../../graphql";
 
 export const getEmployersPickList = async () => {
@@ -38,6 +39,17 @@ export const getAssigneeOptions = async () => {
     .catch((error) => {
       return Promise.reject(error);
     });
+};
+
+export const createEmployer = async (data) => {
+  return await api.post('/graphql', {
+    query: CREATE_EMPLOYER,
+    variables: {data},
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
 };
 
 export const updateEmployer = async (id, data) => {
