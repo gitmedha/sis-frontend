@@ -15,7 +15,6 @@ export const getEmployersPickList = async () => {
         table: "employers",
       },
     })
-
     .then((data) => {
       let pickList = {};
       data?.data?.data?.picklistFieldConfigs.forEach((item) => {
