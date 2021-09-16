@@ -18,6 +18,11 @@ const studentFields = `
   old_sis_id
   medha_champion
   interested_in_employment_opportunities
+  assigned_to{
+    id
+    username
+    email
+  }
   logo {
     id
     url
