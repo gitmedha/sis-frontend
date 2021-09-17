@@ -19,6 +19,7 @@ const start_date = Yup.date().nullable().required("Start Date is required.");
 const end_date = Yup.date().nullable().required("End Date is required.");
 const employment_connection_status = Yup.string().nullable().required("Employment Connection status is required.");
 const employer_id = Yup.string().required("Employer is required.");
+const opportunity_id = Yup.string().required("Opportunity is required.");
 const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.string().required("Salary Offered is required.");
 
@@ -38,7 +39,6 @@ const category  = Yup.string().nullable().required("Category is required.");
 const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
-const opportunity_type = Yup.string().required("Opportunity Type is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -58,9 +58,9 @@ export const EmploymentConnectionValidations = Yup.object({
   end_date,
   status: employment_connection_status,
   employer_id,
+  opportunity_id,
   source,
   salary_offered,
-  opportunity_type
 });
 
 export const StudentValidations = Yup.object({

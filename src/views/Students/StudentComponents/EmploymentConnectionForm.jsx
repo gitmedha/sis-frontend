@@ -44,7 +44,6 @@ const EnrollmentConnectionForm = (props) => {
     end_date:'',
     source:'',
     salary_offered:'',
-    opportunity_type:'',
   };
 
   if (props.employmentConnection) {
