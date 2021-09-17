@@ -27,6 +27,10 @@ const DatePickerField = styled.div`
   font-size: 1em;
 }
 
+.react-datepicker__navigation {
+  overflow: visible;
+}
+
 .react-datepicker__navigation--next--with-time {
   top: 13px !important;
   right: 100px;
