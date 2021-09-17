@@ -130,7 +130,7 @@ const ProgramEnrollmentForm = (props) => {
           {({ values }) => (
             <Form>
               <Section>
-                <h3 className="section-header">Details</h3>
+                <h3 className="section-header">Enrollment Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

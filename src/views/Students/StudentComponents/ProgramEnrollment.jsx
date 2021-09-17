@@ -6,6 +6,27 @@ import DetailField from '../../../components/content/DetailField';
 import { Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
 import { urlPath } from "../../../constants";
+import styled from "styled-components";
+
+const Section = styled.div`
+  padding-top: 11px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #C4C4C4;
+  }
+
+  .section-header {
+    color: #207B69;
+    font-family: 'Latto-Regular';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+    margin-top: px;
+  }
+`;
 
 const ProgramEnrollment = (props) => {
   let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
@@ -38,6 +59,8 @@ const ProgramEnrollment = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-white">
+        <Section>
+        <h2 className="section-header">Enrollment Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Name" value={`${student.first_name} ${student.last_name}`} />
@@ -50,6 +73,7 @@ const ProgramEnrollment = (props) => {
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <h2 className="section-header">Course Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Course Level" value={<Badge value={programEnrollment.course_level} pickList={pickList.course_level} />} />
@@ -63,6 +87,7 @@ const ProgramEnrollment = (props) => {
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <h2 className="section-header">Fee Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Fee Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
@@ -91,6 +116,7 @@ const ProgramEnrollment = (props) => {
               <button type="button" className="btn btn-primary px-4 mx-4" onClick={() => {}}>REGENERATE CERTIFICATE</button>
             </div>
           </div>
+          </Section>
         </Modal.Body>
       </Modal>
   );
