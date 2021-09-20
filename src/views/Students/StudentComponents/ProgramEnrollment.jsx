@@ -60,7 +60,7 @@ const ProgramEnrollment = (props) => {
         </Modal.Header>
         <Modal.Body className="bg-white">
         <Section>
-         <h2 className="section-header">Enrollment Details</h2>
+          <h2 className="section-header">Enrollment Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Name" value={`${student.first_name} ${student.last_name}`} />
