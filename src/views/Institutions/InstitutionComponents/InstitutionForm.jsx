@@ -356,7 +356,7 @@ const InstitutionForm = (props) => {
                       onClick={onHide}
                       className="btn btn-secondary btn-regular mr-2"
                     >
-                      CLOSE
+                      CANCEL
                     </button>
                 </div>
               </div>

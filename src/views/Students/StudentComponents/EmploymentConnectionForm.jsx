@@ -260,7 +260,7 @@ const EnrollmentConnectionForm = (props) => {
                       onClick={onModalClose}
                       className="btn btn-secondary btn-regular mr-2"
                     >
-                      CLOSE
+                      CANCEL
                     </button>
                 </div>
               </div>

@@ -312,17 +312,14 @@ const EmployerForm = (props) => {
                 </FieldArray>
               </Section>
               <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-end">
+                <div className="d-flex justify-content-start">
+                <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
                   <button
                     type="button"
                     onClick={onHide}
                     className="btn btn-secondary btn-regular mr-2"
                   >
-                    CLOSE
-                  </button>
-                  <div style={{ width: "20px" }} />
-                  <button className="btn btn-primary btn-regular" type="submit">
-                    {props.id ? 'UPDATE' : 'ADD NEW'} Employer
+                    CANCEL
                   </button>
                 </div>
               </div>
