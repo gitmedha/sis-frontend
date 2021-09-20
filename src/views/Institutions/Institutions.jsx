@@ -127,7 +127,6 @@ const Institutions = () => {
     });
     setInstitutionsTableData(data);
   }, [institutions, pickList]);
-  console.log(pickList)
 
   const onRowClick = (row) => {
     history.push(`/institution/${row.id}`);

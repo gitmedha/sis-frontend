@@ -35,7 +35,6 @@ const EmployerForm = (props) => {
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [industryOptions, setIndustryOptions] = useState([]);
   const [logo, setLogo] = useState(null);
 
   useEffect(() => {
