@@ -89,12 +89,9 @@ const SearchHits = props => {
 
   switch (searchIndex) {
     case 'employers':
-      columns = ['Type', 'Name', 'Website'];
+      columns = ['Name', 'Website'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-          <td>
-            <div className="badge badge-employers">Emp.</div>
-          </td>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
@@ -106,12 +103,9 @@ const SearchHits = props => {
       break;
 
     case 'batches':
-      columns = ['Type', 'Name', 'Start Date', 'End Date', 'Assigned To'];
+      columns = ['Name', 'Start Date', 'End Date', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-          <td>
-            <div className="badge badge-batches">Batch.</div>
-          </td>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
@@ -129,12 +123,9 @@ const SearchHits = props => {
       break;
 
     case 'institutions':
-      columns = ['Type', 'Name', 'Area', 'Assigned To'];
+      columns = ['Name', 'Area', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-          <td>
-            <div className="badge badge-institutions">Inst.</div>
-          </td>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
@@ -150,12 +141,9 @@ const SearchHits = props => {
 
     case 'students':
     default:
-      columns = ['Type', 'First Name', 'Last Name', 'Email'];
+      columns = ['First Name', 'Last Name', 'Email'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
-          <td>
-            <div className="badge badge-students">Stu.</div>
-          </td>
           <td>
             <SearchHighlight hit={hit} attribute="first_name" />
           </td>
