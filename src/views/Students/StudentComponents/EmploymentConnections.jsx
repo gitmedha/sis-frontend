@@ -190,7 +190,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            + Map Students
+            + Add More
           </button>
         </div>
       </div>

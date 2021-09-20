@@ -42,8 +42,12 @@ const Employers = () => {
         accessor: "industry",
       },
       {
-        Header: "Location",
+        Header: "District",
         accessor: "city",
+      },
+      {
+        Header: "State",
+        accessor: "state",
       },
       {
         Header: "",
@@ -90,8 +94,7 @@ const Employers = () => {
     let data = employers;
     data = data.map((employer, index) => {
       employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} />
-      employer.industry = <Badge value={employer.industry} />;
-      employer.city = <Badge value={employer.city} />;
+      employer.industry = <Badge value={employer.industry} pickList={pickList.industry || []} />;
       employer.link =  <TableRowDetailLink value={employer.id} to={"employer"} />
       return employer;
     });

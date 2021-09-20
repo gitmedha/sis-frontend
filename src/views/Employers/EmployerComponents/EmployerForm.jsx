@@ -31,14 +31,24 @@ const Section = styled.div`
 
 const EmployerForm = (props) => {
   let { onHide, show } = props;
+  const [industryOpts, setIndustryOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [industryOptions, setIndustryOptions] = useState([]);
   const [logo, setLogo] = useState(null);
 
   useEffect(() => {
     getEmployersPickList().then(data => {
       setStatusOpts(data.status.map((item) => {
+        return {
+          key: item.value,
+          label: item.value,
+          value: item.value.toLowerCase(),
+        };
+      }));
+
+      setIndustryOpts(data.industry.map((item) => {
         return {
           key: item.value,
           label: item.value,
@@ -54,6 +64,7 @@ const EmployerForm = (props) => {
           value: assignee.id,
       })));
     });
+
   }, []);
 
   const onSubmit = async (values) => {
@@ -141,14 +152,14 @@ const EmployerForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="industry"
-                      control="input"
                       label="Industry"
-                      placeholder="Industry"
+                      control="lookup"
+                      options={industryOpts}
                       className="form-control"
                       required
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  {/* <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="type"
                       control="input"
@@ -157,7 +168,7 @@ const EmployerForm = (props) => {
                       className="form-control"
                       required
                     />
-                  </div>
+                  </div> */}
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
