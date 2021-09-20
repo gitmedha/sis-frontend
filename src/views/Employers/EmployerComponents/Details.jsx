@@ -48,12 +48,15 @@ useEffect(() => {
             label="Status"
             value={<Badge value={status} pickList={pickList.status} />}
           />
-          <DetailField
+          {/* <DetailField
             label="Type"
             value={<Badge value={type} pickList={pickList.type} />}
-          />
+          /> */}
           <DetailField label="Assigned To" value={assigned_to?.username} />
-          <DetailField label="Industry" value={industry} />
+          <DetailField
+            label="Industry"
+            value={<Badge value={industry} pickList={pickList.industry} />}
+          /> 
         </div>
       </div>
     </div>

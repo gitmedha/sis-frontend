@@ -131,6 +131,11 @@ const BatchSessionForm = (props) => {
         accessor: 'student_id',
         disableSortBy: true,
       },
+      {
+        Header: 'Phone',
+        accessor: 'phone',
+        disableSortBy: true,
+      },
     ],
     []
   );
