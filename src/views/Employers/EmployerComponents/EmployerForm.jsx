@@ -31,7 +31,7 @@ const Section = styled.div`
 
 const EmployerForm = (props) => {
   let { onHide, show } = props;
-  const [industryOpts, setIndustryOpts] = useState([]);
+  const [industryOptions, setIndustryOptions] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -47,7 +47,7 @@ const EmployerForm = (props) => {
         };
       }));
 
-      setIndustryOpts(data.industry.map((item) => {
+      setIndustryOptions(data.industry.map((item) => {
         return {
           key: item.value,
           label: item.value,
@@ -153,7 +153,7 @@ const EmployerForm = (props) => {
                       name="industry"
                       label="Industry"
                       control="lookup"
-                      options={industryOpts}
+                      options={industryOptions}
                       className="form-control"
                       required
                     />
