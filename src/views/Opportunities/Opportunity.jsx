@@ -45,20 +45,19 @@ const Opportunity = (props) => {
     } else {
         return (
         <>
-        <Collapsible
-        opened={true}
-        titleContent={
-        <TitleWithLogo
-        done={() => getThisOpportunity()}
-        id={rest.id}
-        logo={rest.logo}
-        title={rest.name}
-
-        />
-        }
-        >
-        <Details {...opportunityData}  id={rest.id} />
-        </Collapsible>
+            <Collapsible
+                opened={true}
+                titleContent={
+                    <TitleWithLogo
+                        done={() => getThisOpportunity()}
+                        id={rest.id}
+                        logo={rest.logo}
+                        title={rest.name}
+                    />
+                }
+            >
+                <Details {...opportunityData}  id={rest.id} />
+            </Collapsible>
         </>
         );
     }
