@@ -89,7 +89,7 @@ const EmployerForm = (props) => {
   };
 
   if (props.id) {
-    initialValues = {...props}
+    initialValues = {...props};
     initialValues['assigned_to'] = props?.assigned_to?.id;
   }
 
