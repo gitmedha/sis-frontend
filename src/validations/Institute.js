@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+const pincodeRegExp = /^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$/
 const name = Yup.string().required("Name is required.");
 const status = Yup.string().required("Status is required.");
 const type = Yup.string().required("College type is required.");
@@ -21,7 +22,7 @@ const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const city = Yup.string().required("City is required.");
 const pin_code = Yup.string("Should be a number.")
-  .matches(phoneRegExp, 'Pincode is not valid')
+  .matches(pincodeRegExp, 'Pincode is not valid')
   .max(6, "Number is too long")
   .required("Pincode is required.");
 const address_line = Yup.object({
