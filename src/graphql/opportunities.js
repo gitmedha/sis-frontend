@@ -4,7 +4,12 @@ type
 role_or_designation
 number_of_opportunities
 created_at
+assigned_to {
+  id
+  username
+}
 employer{
+  id
   name
   address
   logo{
@@ -19,7 +24,7 @@ opportunitiesConnection(
   sort: $sort
   start: $start
   limit: $limit
-  where: {  
+  where: {
     status: $status
   }
 ) {
@@ -27,7 +32,7 @@ opportunitiesConnection(
     ${opportunitiesFields}
   }
   aggregate {
-    count 
+    count
   }
  }
 }`
@@ -52,6 +57,7 @@ query OPPORTUNITY($id:ID!) {
       username
     }
     employer {
+      id
       name
       address
       logo {
@@ -61,5 +67,55 @@ query OPPORTUNITY($id:ID!) {
   }
 }
 `;
+
+export const CREATE_OPPORTUNITY = `
+  mutation CREATE_OPPORTUNITY(
+    $data: OpportunityInput!
+  ) {
+    createOpportunity(
+      input: {
+        data: $data,
+      }
+    ) {
+      opportunity {
+        ${opportunitiesFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_OPPORTUNITY = `
+  mutation UPDATE_OPPORTUNITY(
+    $data: editOpportunityInput!
+    $id: ID!
+  ) {
+    updateOpportunity(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      opportunity {
+        ${opportunitiesFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_OPPORTUNITY = `
+  mutation DELETE_OPPORTUNITY(
+    $id: ID!
+  ){
+    deleteOpportunity(
+      input:{
+        where: { id: $id }
+      }
+    ){
+      opportunity {
+        id
+      }
+    }
+  }
+`
 
 
