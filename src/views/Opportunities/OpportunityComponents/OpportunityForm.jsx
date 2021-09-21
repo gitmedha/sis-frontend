@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-// import { EmployerValidations } from "../../../validations";
+import { OpportunityValidations } from "../../../validations";
 import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
 import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
 
@@ -85,9 +85,25 @@ const OpportunityForm = (props) => {
     onHide(values);
   };
 
-  let initialValues = {...props};
-  initialValues['assigned_to'] = props?.assigned_to?.id;
-  initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
+  let initialValues = {
+    employer: '',
+    assigned_to: '',
+    role_or_designation: '',
+    type: '',
+    compensation_type: '',
+    number_of_opportunities: '',
+    status: '',
+    department_or_team: '',
+    salary: '',
+    role_description: '',
+    skills_required: '',
+  };
+  if (props.id) {
+    initialValues = {...props}
+    initialValues['assigned_to'] = props.assigned_to ? props.assigned_to.id : '';
+    initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
+  }
+
 
   return (
     <Modal
@@ -113,7 +129,7 @@ const OpportunityForm = (props) => {
         <Formik
          onSubmit={onSubmit}
          initialValues={initialValues}
-        //  validationSchema={EmployerValidations}
+         validationSchema={OpportunityValidations}
         >
           {({ values }) => (
             <Form>
