@@ -42,11 +42,13 @@ const routes = [
   {
     to: "/employers",
     title: "Employers",
+    aliases: ['employer'],
     icon: <FaUserTie {...iconProps} />
   },
   {
     to: "/opportunities",
     title: "Opportunities",
+    aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />
   },
   {

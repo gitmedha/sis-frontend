@@ -2,11 +2,6 @@ import nProgress from "nprogress";
 import api from "../../apis";
 import moment from "moment";
 import styled from "styled-components";
-import {
-  TableRowDetailLink,
-  Badge,
-  Anchor,
-} from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -15,6 +10,9 @@ import Table from '../../components/content/Table';
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import OpportunityForm from "./OpportunityComponents/OpportunityForm";
+import { createOpportunity } from "./OpportunityComponents/opportunityAction";
+import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -40,17 +38,18 @@ const tabPickerOptions = [
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
     const [paginationPageSize, setPaginationPageSize] = useState(10);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
 
     const OpportunityIcon = ({opportunity}) => {
       let bgColor = '#FF9700';
       let icon = null;
-      switch (opportunity.type) {
-        case 'Job':
+      switch (opportunity.type.toLowerCase()) {
+        case 'job':
           bgColor = '#FF9700';
           icon = <FaBriefcase color="#ffffff" size="16" />;
           break;
-    
-        case 'Internship':
+
+        case 'internship':
           bgColor = '#12314C';
           icon = <FaBlackTie color="#ffffff" size="16" />;
           break;
@@ -122,7 +121,7 @@ const tabPickerOptions = [
       setLoading(false);
       nProgress.done();
     });
-  };  
+  };
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
@@ -143,7 +142,7 @@ const tabPickerOptions = [
         case 'avatar':
         default:
           sortByField = 'role_or_designation';
-          break;  
+          break;
       }
       getOpportunities(pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
@@ -160,7 +159,7 @@ const tabPickerOptions = [
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_icon: <OpportunityIcon opportunity={opportunitydata} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
-       address: opportunitydata.employer.address, 
+       address: opportunitydata.employer.address,
        employer: opportunitydata.employer.name,
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
       }
@@ -172,14 +171,49 @@ const tabPickerOptions = [
     history.push(`/opportunity/${row.id}`);
   };
 
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, ...dataToSave} = data;
+
+    nProgress.start();
+    createOpportunity(dataToSave).then(data => {
+      setAlert("Opportunity created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create opportunity.", "error");
+    }).finally(() => {
+      nProgress.done();
+      getOpportunities();
+    });
+    setModalShow(false);
+  };
+
   return (
     <div className="container py-3">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <TabPicker options={tabPickerOptions}/>
-        <WidgetUtilTab />
+        <div className="d-flex justify-content-center align-items-center">
+          <WidgetUtilTab />
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalShow(true)}
+            style={{marginLeft: '15px'}}
+          >
+            Add New Opportunity
+          </button>
         </div>
-        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       </div>
+      <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+      <OpportunityForm
+        show={modalShow}
+        onHide={hideCreateModal}
+      />
+    </div>
   );
 };
 
