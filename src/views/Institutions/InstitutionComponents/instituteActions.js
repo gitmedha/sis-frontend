@@ -45,7 +45,7 @@ export const getAssigneeOptions = async () => {
 export const createInstitution = async (data) => {
   return await api.post('/graphql', {
     query: CREATE_NEW_INSTITUTE,
-    variables: {...data},
+    variables: {data},
   }).then(data => {
     return data;
   }).catch(error => {

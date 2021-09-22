@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-const name = Yup.string().required("Name is required.");
 const status = Yup.string().required("Status is required.");
 const assigned_to = Yup.string().required("Assignee is required.");
 const type = Yup.string().required("Type is required.");
@@ -15,7 +14,6 @@ const role_description = Yup.string().required("Description is required.");
 
 
 export const OpportunityValidations = Yup.object({
-  name,
   status,
   assigned_to,
   type,

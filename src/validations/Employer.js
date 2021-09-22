@@ -22,7 +22,6 @@ const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
   .max(6, "Pincode is too long")
   .required("Pincode is required.");
-const type = Yup.string().required("Type is required.");
 const industry = Yup.string().required("Industry is required.");
 const city = Yup.string().required("City is required.");
 
@@ -37,7 +36,6 @@ const contacts = Yup.array().of(
 
 export const EmployerValidations = Yup.object({
     name,
-    type,
     status,
     phone,
     assigned_to,
