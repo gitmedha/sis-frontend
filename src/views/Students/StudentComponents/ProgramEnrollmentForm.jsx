@@ -290,10 +290,10 @@ const ProgramEnrollmentForm = (props) => {
                         (e) => {
                           if (e.value.toLowerCase() === 'free') {
                             return setrequiresFee(true);
-                            }
-                            setrequiresFee(false)
-                            }
-                            }
+                          }
+                          setrequiresFee(false)
+                        }
+                      }
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
