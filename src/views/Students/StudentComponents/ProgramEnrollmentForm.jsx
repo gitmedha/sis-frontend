@@ -39,7 +39,7 @@ const ProgramEnrollmentForm = (props) => {
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [courseLevelOptions, setCourseLevelOptions] = useState([]);
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
-  const [requiresFee, setrequiresFee] = useState(true); // Not free by default.
+  const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
 
   let initialValues = {
     program_enrollment_student: student.first_name + ' ' + student.last_name,
@@ -286,12 +286,10 @@ const ProgramEnrollmentForm = (props) => {
                       options={feeStatusOptions}
                       className="form-control"
                       placeholder="Fees Status"
-                      onChange = {
-                        (e) => {
-                          if (e.value.toLowerCase() === 'free') {
-                            return setrequiresFee(true);
+                      onChange = {(e) => {if (e.value.toLowerCase() !== 'free') {
+                            return setRequiresFee(true);
                           }
-                          setrequiresFee(false)
+                          setRequiresFee(false)
                         }
                       }
                     />
@@ -304,7 +302,7 @@ const ProgramEnrollmentForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                      disabled={requiresFee}
+                      disabled={!requiresFee}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -324,7 +322,7 @@ const ProgramEnrollmentForm = (props) => {
                       label="Fee Transaction ID / Receipt No."
                       className="form-control"
                       placeholder="Fee Transaction ID / Receipt No."
-                      disabled={requiresFee}
+                      disabled={!requiresFee}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -336,7 +334,7 @@ const ProgramEnrollmentForm = (props) => {
                       label="Fee Amount (INR)"
                       className="form-control"
                       placeholder="Fee Amount"
-                      disabled={requiresFee}
+                      disabled={!requiresFee}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -347,7 +345,7 @@ const ProgramEnrollmentForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                      disabled={requiresFee}
+                      disabled={!requiresFee}
                     />
                   </div>
                 </div>
