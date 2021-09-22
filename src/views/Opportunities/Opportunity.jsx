@@ -12,15 +12,18 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { deleteOpportunity, updateOpportunity } from "./OpportunityComponents/opportunityAction";
+import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
+import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [opportunityData, setOpportunityData] = useState({});
     const [modalShow, setModalShow] = useState(false);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [opportunityEmploymentConnections, setOpportunityEmploymentConnections] = useState([]);
     const {setAlert} = props;
     const history = useHistory();
+    const opportunityId = props.match.params.id;
 
     const hideUpdateModal = async (data) => {
       if (!data || data.isTrusted) {
@@ -60,10 +63,9 @@ const Opportunity = (props) => {
         setLoading(true);
         NP.start();
         try {
-          const opportunityID = props.match.params.id;
           let { data } = await api.post("/graphql", {
             query: GET_OPPORTUNITY,
-            variables: { id: opportunityID },
+            variables: { id: opportunityId },
           });
           setOpportunityData(data.data.opportunity);
         }catch (err) {
@@ -74,8 +76,19 @@ const Opportunity = (props) => {
         }
     };
 
+    const getEmploymentConnections = async () => {
+      getOpportunityEmploymentConnections(opportunityId).then(data => {
+        let employmentConnections = data.data.data.employmentConnectionsConnection.values;
+        setOpportunityEmploymentConnections(employmentConnections);
+        // updateEmploymentConnectionsBadge(employmentConnections);
+      }).catch(err => {
+        console.log("getStudentEmploymentConnections Error", err);
+      });
+    }
+
     useEffect(() => {
         getThisOpportunity();
+        getEmploymentConnections();
     }, []);
 
     if (isLoading) {
@@ -109,6 +122,10 @@ const Opportunity = (props) => {
               }
           >
               <Details {...opportunityData}  id={opportunityData.id} />
+          </Collapsible>
+          {/* <Collapsible title="Employment Connections" badge={employmentConnectionsBadge}> */}
+          <Collapsible title="Employment Connections">
+            <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />
           </Collapsible>
           <OpportunityForm
             {...opportunityData}

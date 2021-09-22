@@ -27,6 +27,7 @@ const Employer = (props) => {
   const { address, contacts, location, ...rest } = employerData;
   const {setAlert} = props;
   const history = useHistory();
+  const employerId = props.match.params.id;
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -69,10 +70,9 @@ const Employer = (props) => {
     setLoading(true);
     NP.start();
     try {
-      const employerID = props.match.params.id;
       let { data } = await api.post("/graphql", {
         query: GET_EMPLOYER,
-        variables: { id: employerID },
+        variables: { id: employerId },
       });
       setEmployerData(data.data.employer);
     } catch (err) {
@@ -85,7 +85,7 @@ const Employer = (props) => {
 
   useEffect(() => {
     getThisEmployer();
-    getEmployerOpportunities(props.match.params.id).then(data => {
+    getEmployerOpportunities(employerId).then(data => {
       setEmployerOpportunities(data.data.data.opportunities);
     });
   }, []);
