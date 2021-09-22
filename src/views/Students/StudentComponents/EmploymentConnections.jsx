@@ -61,7 +61,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        employer_name: employmentConnection.opportunity ? employmentConnection.opportunity.employer.name : '',
+        employer_name: employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : '',
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
