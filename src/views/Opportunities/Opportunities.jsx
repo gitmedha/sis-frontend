@@ -155,12 +155,12 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       avatar: <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" />,
+       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_icon: <OpportunityIcon opportunity={opportunitydata} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
-       address: opportunitydata.employer.address,
-       employer: opportunitydata.employer.name,
+       address: opportunitydata.employer ? opportunitydata.employer.address : '',
+       employer: opportunitydata.employer ? opportunitydata.employer.name : '',
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
       }
     });
