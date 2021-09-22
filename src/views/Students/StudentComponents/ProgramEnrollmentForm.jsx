@@ -349,7 +349,7 @@ const ProgramEnrollmentForm = (props) => {
                       disabled={freeFee}
                     />
                   </div>
-                 </div>
+                </div>
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
