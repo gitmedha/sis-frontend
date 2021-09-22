@@ -286,13 +286,14 @@ const ProgramEnrollmentForm = (props) => {
                       options={feeStatusOptions}
                       className="form-control"
                       placeholder="Fees Status"
-                      onChange={(e) => {
-                        if (e.value.toLowerCase() === 'free'){
-                          return setrequiresFee(true);
-                          }
-                          setrequiresFee(false);
-                          }
-                        }
+                      onChange = {
+                        (e) => {
+                          if (e.value.toLowerCase() === 'free') {
+                            return setrequiresFee(true);
+                            }
+                            setrequiresFee(false)
+                            }
+                            }
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
