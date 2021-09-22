@@ -73,41 +73,13 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
 
 export const CREATE_NEW_INSTITUTE = `
 mutation CREATE_INSTITUTIONS(
-  $logo: ID
-  $name: String!
-  $type: String!
-  $phone: String!
-  $email: String!
-  $status: String!
-  $website: String!
-  $assigned_to: ID!
-  $contacts: [ComponentCommonContactInput!]!
-  $address: String!
-  $city:String!
-  $pin_code: String!
-  $state:String!
-  $medha_area:String!
+  $data: InstitutionInput!
 ) {
   createInstitution(
     input: {
-      data: {
-        name: $name
-        logo: $logo
-        type: $type
-        phone: $phone
-        email: $email
-        status: $status
-        website: $website
-        address: $address
-        contacts: $contacts
-        assigned_to: $assigned_to
-        city: $city
-        pin_code: $pin_code
-        state:$state
-        medha_area: $medha_area
-      }
+      data: $data,
     }
-  ) 
+  )
   {
     institution {
       id
@@ -117,7 +89,7 @@ mutation CREATE_INSTITUTIONS(
       email
       status
       website
-      address 
+      address
       pin_code
       state
       medha_area
@@ -258,7 +230,7 @@ query INSTITUTION(
       status
       website
       type
-      address 
+      address
       state
       pin_code
       medha_area
