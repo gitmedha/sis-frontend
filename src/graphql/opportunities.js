@@ -117,5 +117,3 @@ export const DELETE_OPPORTUNITY = `
     }
   }
 `
-
-

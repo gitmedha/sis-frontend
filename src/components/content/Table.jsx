@@ -162,7 +162,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                       <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
                         {indexes &&
                           <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                            {pageIndex * pageSize + index + 1}.
+                            { pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1 }.
                           </td>
                         }
                         {row.cells.map(cell => {

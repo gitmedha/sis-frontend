@@ -15,12 +15,15 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { GET_EMPLOYER, UPDATE_EMPLOYER } from "../../graphql";
 import { deleteEmployer, updateEmployer } from "./EmployerComponents/employerAction";
 import EmployerForm from "./EmployerComponents/EmployerForm";
+import Opportunities from "./EmployerComponents/Opportunities";
+import { getEmployerOpportunities, getOpportunitiesPickList } from "../Students/StudentComponents/StudentActions";
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [employerOpportunities, setEmployerOpportunities] = useState([]);
   const { address, contacts, location, ...rest } = employerData;
   const {setAlert} = props;
   const history = useHistory();
@@ -82,6 +85,9 @@ const Employer = (props) => {
 
   useEffect(() => {
     getThisEmployer();
+    getEmployerOpportunities(props.match.params.id).then(data => {
+      setEmployerOpportunities(data.data.data.opportunities);
+    });
   }, []);
 
   if (isLoading) {
@@ -125,6 +131,9 @@ const Employer = (props) => {
         </Collapsible>
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />
+        </Collapsible>
+        <Collapsible title="Opportunities">
+          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getEmployerOpportunities} />
         </Collapsible>
         <EmployerForm
           {...employerData}
