@@ -123,7 +123,8 @@ const SearchStateResults = (props) => {
   }
 
   SearchStateResults.handleClickOutside = (event) => {
-    if (event.target.id !== 'input-meilisearch') {
+    let element = document.getElementById('search-state-container');
+    if (!element.hasAttribute('hidden') && event.target.id !== 'input-meilisearch') {
       setSearchState({
         ...searchState,
         query: '',
@@ -132,7 +133,7 @@ const SearchStateResults = (props) => {
   }
 
   return (
-    <SearchStateContainer hidden={!hasQuery}>
+    <SearchStateContainer id="search-state-container" hidden={!hasQuery}>
       <div className="header">
         <div className="filter-by-text">Filter by</div>
         <div className="badges">

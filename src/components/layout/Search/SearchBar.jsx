@@ -35,6 +35,10 @@ const SearchBar = () => {
   useEffect(async () => {
     let apiHitsData = {};
 
+    if (searchState.query === '') {
+      return;
+    }
+
     // make api call to students
     await client.index('students').search(searchState.query).then(async data => {
       apiHitsData['students'] = data;
