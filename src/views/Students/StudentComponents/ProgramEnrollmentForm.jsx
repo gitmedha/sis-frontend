@@ -294,7 +294,7 @@ const ProgramEnrollmentForm = (props) => {
                           }
                         }
                     />
-                  </div>                 
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="fee_payment_date"
@@ -350,7 +350,6 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                  </div>
-                  
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
