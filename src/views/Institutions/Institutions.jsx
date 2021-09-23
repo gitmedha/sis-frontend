@@ -143,14 +143,14 @@ const Institutions = (props) => {
     // need to remove `show` from the payload
     let {show, ...dataToSave} = data;
 
-    NP.start();
+    nProgress.start();
     createInstitution(dataToSave).then(data => {
       setAlert("Institution created successfully.", "success");
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create institution.", "error");
     }).finally(() => {
-      NP.done();
+      nProgress.done();
       getInstitutions();
     });
     setModalShow(false);
