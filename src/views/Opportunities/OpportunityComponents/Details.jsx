@@ -44,7 +44,7 @@ const Details = (props) => {
           <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
           <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ''} />
           <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
-          <DetailField label="Department/Team" value={department_or_team} />
+          <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
           <DetailField label="Skills Required" value={skills_required} />
         </div>
       </div>

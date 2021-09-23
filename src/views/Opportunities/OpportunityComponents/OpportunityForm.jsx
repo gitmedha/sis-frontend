@@ -35,6 +35,7 @@ const OpportunityForm = (props) => {
   const [compensationTypeOptions, setCompensationTypeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState([]);
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -47,6 +48,14 @@ const OpportunityForm = (props) => {
       }));
 
       setTypeOptions(data.type.map((item) => {
+        return {
+          key: item.value,
+          label: item.value,
+          value: item.value.toLowerCase(),
+        };
+      }));
+
+      setDepartmentOptions(data.department.map((item) => {
         return {
           key: item.value,
           label: item.value,
@@ -207,11 +216,12 @@ const OpportunityForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="department_or_team"
-                      control="input"
+                      control="lookup"
                       label="Department/Team"
                       placeholder="Department/Team"
                       className="form-control"
                       required
+                      options={departmentOptions}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
