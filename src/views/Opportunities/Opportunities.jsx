@@ -13,6 +13,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -24,43 +25,44 @@ const StyledOpportunityIcon = styled.div`
 `;
 
 const tabPickerOptions = [
-  { title: "My Data", key: "test-1" },
-  { title: "My Area", key: "test-2" },
-  { title: "My State", key: "test-3" },
-  { title: "All Medha", key: "test-4" },
-];
+    { title: "My Data", key: "test-1" },
+    { title: "My Area", key: "test-2" },
+    { title: "My State", key: "test-3" },
+    { title: "All Medha", key: "test-4" },
+  ];
 
-const Opportunities = () => {
-  const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const [opportunities, setOpportunities] = useState([]);
-  const [pickList, setPickList] = useState([]);
-  const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
-  const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
+  const Opportunities = (props) => {
+    const history = useHistory();
+    const [loading, setLoading] = useState(false);
+    const [opportunities, setOpportunities] = useState([]);
+    const [pickList, setPickList] = useState([]);
+    const {setAlert} = props;
+    const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
+    const [paginationPageSize, setPaginationPageSize] = useState(10);
+    const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
 
-  const OpportunityIcon = ({opportunity}) => {
-    let bgColor = '#FF9700';
-    let icon = null;
-    switch (opportunity.type.toLowerCase()) {
-      case 'job':
-        bgColor = '#FF9700';
-        icon = <FaBriefcase color="#ffffff" size="16" />;
-        break;
+    const OpportunityIcon = ({opportunity}) => {
+      let bgColor = '#FF9700';
+      let icon = null;
+      switch (opportunity.type.toLowerCase()) {
+        case 'job':
+          bgColor = '#FF9700';
+          icon = <FaBriefcase color="#ffffff" size="16" />;
+          break;
 
-      case 'internship':
-        bgColor = '#12314C';
-        icon = <FaBlackTie color="#ffffff" size="16" />;
-        break;
-    }
-    if (icon) {
-      return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
-        {icon}
-      </StyledOpportunityIcon>;
-    }
-    return <></>;
-  };
+        case 'internship':
+          bgColor = '#12314C';
+          icon = <FaBlackTie color="#ffffff" size="16" />;
+          break;
+      }
+      if (icon) {
+        return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
+          {icon}
+        </StyledOpportunityIcon>;
+      }
+      return <></>;
+    };
 
   const columns = useMemo(
     () => [
@@ -217,4 +219,10 @@ const Opportunities = () => {
   );
 };
 
-export default Opportunities;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+    setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Opportunities);

@@ -13,8 +13,9 @@ import { useHistory } from "react-router-dom";
 import { createBatch, getBatchesPickList, getStudentCountByBatch } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 
-const Batches = () => {
+const Batches = (props) => {
   const [batches, setBatches] = useState([]);
   const [batchesAggregate, setBatchesAggregate] = useState([]);
   const [batchesTableData, setBatchesTableData] = useState([]);
@@ -22,6 +23,7 @@ const Batches = () => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const history = useHistory();
+  const {setAlert} = props;
   const [paginationPageSize, setPaginationPageSize] = useState(10);
 
   const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
@@ -186,4 +188,10 @@ const Batches = () => {
   );
 };
 
-export default Batches;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Batches);

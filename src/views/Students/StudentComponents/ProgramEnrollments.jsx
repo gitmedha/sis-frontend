@@ -12,6 +12,9 @@ import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionCom
 import ProgramEnrollment from "./ProgramEnrollment";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { urlPath } from "../../../constants";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
+import NP from "nprogress";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -37,12 +40,15 @@ const Styled = styled.div`
   }
 `;
 
-const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
+const ProgramEnrollments = (props) => {
+  let { programEnrollments, student, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
+  const {setAlert} = props;
+  const history = useHistory();
   const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
   const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
 
@@ -142,14 +148,14 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     dataToSave['student'] = student.id;
    
 
-    // NP.start();
-    createProgramEnrollment(dataToSave).then(data => {
+     NP.start();
+     createProgramEnrollment(dataToSave).then(data => {
       setAlert("Program Enrollment created successfully.", "success");
     }).catch(err => {
       console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
-      // NP.done();
+      NP.done();
       onDataUpdate();
     });
     setCreateModalShow(false);
@@ -170,21 +176,21 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
   
 
-    // NP.start();
+     NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
-      // NP.done();
+       NP.done();
       onDataUpdate();
     });
     setUpdateModalShow(false);
   };
 
   const handleDelete = async () => {
-    // NP.start();
+     NP.start();
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
@@ -193,8 +199,8 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
     }).finally(() => {
       setShowDeleteAlert(false);
       onDataUpdate();
-      // NP.done();
-      // history.push("/students");
+       NP.done();
+       history.push("/students");
     });
   };
 
@@ -261,4 +267,10 @@ const ProgramEnrollments = ({ programEnrollments, student, onDataUpdate }) => {
   );
 };
 
-export default ProgramEnrollments;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(ProgramEnrollments);

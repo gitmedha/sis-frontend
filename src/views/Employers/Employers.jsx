@@ -14,6 +14,7 @@ import {
 } from "../../components/content/Utils";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import EmployerForm from "./EmployerComponents/EmployerForm";
+import { connect } from "react-redux";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -22,7 +23,7 @@ const tabPickerOptions = [
   { title: "All Area", key: "test-4" },
 ];
 
-const Employers = () => {
+const Employers = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [employersAggregate, setEmployersAggregate] = useState([]);
@@ -30,6 +31,7 @@ const Employers = () => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
+  const {setAlert} = props;
 
   const columns = useMemo(
     () => [
@@ -175,4 +177,10 @@ const Employers = () => {
   );
 };
 
-export default Employers;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Employers);

@@ -10,6 +10,7 @@ import EmploymentConnection from "./EmploymentConnection";
 import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -42,12 +43,14 @@ const OpportunityIcon = ({opportunity}) => {
   return <></>;
 };
 
-const EmploymentConnections = ({ employmentConnections, student, onDataUpdate }) => {
+const EmploymentConnections = (props) => {
+  let { employmentConnections, student, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
+  const {setAlert} = props;
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
 
@@ -244,4 +247,10 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
   );
 };
 
-export default EmploymentConnections;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(EmploymentConnections);

@@ -9,6 +9,7 @@ import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { FaRegEdit } from "react-icons/fa";
+import { connect } from "react-redux";
 
 const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
@@ -16,8 +17,9 @@ const SessionLink = styled.div`
   }
 `
 
-const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
-
+const Sessions = (props) => {
+  let {sessions, batchID, fetchData, onDataUpdate } = props;
+  const {setAlert} = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [batchSessionAttendanceFormData, setBatchSessionAttendanceFormData] = useState({});
@@ -99,7 +101,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
     dataToSave['date'] = new Date(data.date).toISOString();
 
     updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
-      setAlert("Session created successfully.", "success");
+      setAlert("Session updated successfully.", "success");
 
       // map session attendance id to program enrollment id to connect student with their attendance
       let sessionAttendanceIds = {};
@@ -125,7 +127,7 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
       });
     }).catch(err => {
       console.log("UPDATE_SESSION_ERR", err);
-      setAlert("Unable to create session.", "error");
+      setAlert("Unable to update session.", "error");
     }).finally(() => {
       onDataUpdate();
       setUpdateModalShow(false);
@@ -187,4 +189,10 @@ const Sessions = ({ sessions, batchID, fetchData, onDataUpdate }) => {
   );
 };
 
-export default Sessions;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Sessions);

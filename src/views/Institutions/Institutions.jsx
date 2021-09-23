@@ -14,6 +14,8 @@ import Table from '../../components/content/Table';
 import { getInstitutionsPickList, createInstitution } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
+import NP from "nprogress";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -22,17 +24,17 @@ const tabPickerOptions = [
   { title: "All Medha", key: "test-4" },
 ];
 
-const Institutions = () => {
+const Institutions = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [institutions, setInstitutions] = useState([]);
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
   const [pickList, setPickList] = useState([]);
+  const {setAlert} = props;
   const [modalShow, setModalShow] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
-
   const columns = useMemo(
     () => [
       {
@@ -174,4 +176,10 @@ const Institutions = () => {
   );
 };
 
-export default Institutions;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Institutions);
