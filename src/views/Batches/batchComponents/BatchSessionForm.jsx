@@ -173,8 +173,8 @@ const BatchSessionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="date"
-                      label="Date"
-                      placeholder="Date"
+                      label="Date & Time"
+                      placeholder="Date & Time"
                       required
                       control="datepicker"
                       className="form-control"
