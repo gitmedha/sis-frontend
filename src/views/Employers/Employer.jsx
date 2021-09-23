@@ -17,6 +17,7 @@ import { deleteEmployer, updateEmployer } from "./EmployerComponents/employerAct
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities, getOpportunitiesPickList } from "../Students/StudentComponents/StudentActions";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ const Employer = (props) => {
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [employerOpportunities, setEmployerOpportunities] = useState([]);
+  const [opportunitiesBadge, setOpportunitiesBadge] = useState(<></>);
   const { address, contacts, location, ...rest } = employerData;
   const {setAlert} = props;
   const history = useHistory();
@@ -83,10 +85,24 @@ const Employer = (props) => {
     }
   };
 
+  const updateOpportunitiesBadge = (opportunities) => {
+    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
+    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    setOpportunitiesBadge(
+      <>
+        <FaBriefcase width="15" color="#D7D7E0" />
+        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+        <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
+      </>
+    );
+  }
+
   useEffect(() => {
     getThisEmployer();
     getEmployerOpportunities(employerId).then(data => {
       setEmployerOpportunities(data.data.data.opportunities);
+      updateOpportunitiesBadge(data.data.data.opportunities);
     });
   }, []);
 
@@ -132,7 +148,7 @@ const Employer = (props) => {
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
-        <Collapsible title="Opportunities">
+        <Collapsible title="Opportunities" badge={opportunitiesBadge}>
           <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getEmployerOpportunities} />
         </Collapsible>
         <EmployerForm

@@ -14,6 +14,7 @@ import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -80,7 +81,6 @@ const Opportunity = (props) => {
       getOpportunityEmploymentConnections(opportunityId).then(data => {
         let employmentConnections = data.data.data.employmentConnectionsConnection.values;
         setOpportunityEmploymentConnections(employmentConnections);
-        // updateEmploymentConnectionsBadge(employmentConnections);
       }).catch(err => {
         console.log("getStudentEmploymentConnections Error", err);
       });
@@ -123,8 +123,7 @@ const Opportunity = (props) => {
           >
               <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
-          {/* <Collapsible title="Employment Connections" badge={employmentConnectionsBadge}> */}
-          <Collapsible title="Employment Connections">
+          <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />
           </Collapsible>
           <OpportunityForm

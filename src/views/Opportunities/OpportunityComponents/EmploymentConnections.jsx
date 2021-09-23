@@ -52,11 +52,12 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
       return {
         ...employmentConnection,
         student_name: employmentConnection.student ? `${employmentConnection.student.first_name} ${employmentConnection.student.last_name}` : '',
-        institution_name: employmentConnection.institution ? employmentConnection.institution.name : '',
+        institution_name: 'To be added',
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
+        date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);

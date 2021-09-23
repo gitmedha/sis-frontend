@@ -104,11 +104,9 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
 
-  const onRowClick = (row) => {
+  const handleRowClick = (row) => {
     history.push(`/opportunity/${row.id}`);
   };
-
-  const handleRowClick = (row) => {}
 
   return (
     <div className="container py-3">
