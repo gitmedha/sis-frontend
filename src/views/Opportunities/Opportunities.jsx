@@ -13,6 +13,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -30,11 +31,12 @@ const tabPickerOptions = [
     { title: "All Medha", key: "test-4" },
   ];
 
-  const Opportunities = () => {
+  const Opportunities = (props) => {
     const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [opportunities, setOpportunities] = useState([]);
     const [pickList, setPickList] = useState([]);
+    const {setAlert} = props;
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
     const [paginationPageSize, setPaginationPageSize] = useState(10);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
@@ -217,4 +219,10 @@ const tabPickerOptions = [
   );
 };
 
-export default Opportunities;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+    setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Opportunities);

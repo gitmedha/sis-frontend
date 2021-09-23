@@ -3,6 +3,7 @@ import NP from "nprogress";
 import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
 import {
   GET_BATCH,
@@ -30,6 +31,7 @@ const Batch = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
+  const {setAlert} = props;
 
   const getThisBatch = async () => {
     try {
@@ -260,4 +262,10 @@ const Batch = (props) => {
   }
 };
 
-export default Batch;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Batch);
