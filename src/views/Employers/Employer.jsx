@@ -15,15 +15,21 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { GET_EMPLOYER, UPDATE_EMPLOYER } from "../../graphql";
 import { deleteEmployer, updateEmployer } from "./EmployerComponents/employerAction";
 import EmployerForm from "./EmployerComponents/EmployerForm";
+import Opportunities from "./EmployerComponents/Opportunities";
+import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [employerOpportunities, setEmployerOpportunities] = useState([]);
+  const [opportunitiesBadge, setOpportunitiesBadge] = useState(<></>);
   const { address, contacts, location, ...rest } = employerData;
   const {setAlert} = props;
   const history = useHistory();
+  const employerId = props.match.params.id;
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -66,10 +72,9 @@ const Employer = (props) => {
     setLoading(true);
     NP.start();
     try {
-      const employerID = props.match.params.id;
       let { data } = await api.post("/graphql", {
         query: GET_EMPLOYER,
-        variables: { id: employerID },
+        variables: { id: employerId },
       });
       setEmployerData(data.data.employer);
     } catch (err) {
@@ -80,8 +85,25 @@ const Employer = (props) => {
     }
   };
 
+  const updateOpportunitiesBadge = (opportunities) => {
+    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
+    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    setOpportunitiesBadge(
+      <>
+        <FaBriefcase width="15" color="#D7D7E0" />
+        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+        <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
+      </>
+    );
+  }
+
   useEffect(() => {
     getThisEmployer();
+    getEmployerOpportunities(employerId).then(data => {
+      setEmployerOpportunities(data.data.data.opportunities);
+      updateOpportunitiesBadge(data.data.data.opportunities);
+    });
   }, []);
 
   if (isLoading) {
@@ -125,6 +147,9 @@ const Employer = (props) => {
         </Collapsible>
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />
+        </Collapsible>
+        <Collapsible title="Opportunities" badge={opportunitiesBadge}>
+          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getEmployerOpportunities} />
         </Collapsible>
         <EmployerForm
           {...employerData}

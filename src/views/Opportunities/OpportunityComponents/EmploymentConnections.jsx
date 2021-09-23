@@ -2,14 +2,13 @@ import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
-import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
-import SweetAlert from "react-bootstrap-sweetalert";
-import EmploymentConnection from "./EmploymentConnection";
-import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
-import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
+import CreateEmploymentConnectionForm from "../../Students/StudentComponents/EmploymentConnectionForm";
+import UpdateEmploymentConnectionForm from "../../Students/StudentComponents/EmploymentConnectionForm";
+import EmploymentConnection from "./EmploymentConnection";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -42,14 +41,16 @@ const OpportunityIcon = ({opportunity}) => {
   return <></>;
 };
 
-const EmploymentConnections = ({ employmentConnections, student, onDataUpdate }) => {
+const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdate }) => {
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
-  const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
+  const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({
+    student: {},
+  });
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
@@ -61,11 +62,13 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        employer_name: employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : '',
+        student_name: employmentConnection.student ? `${employmentConnection.student.first_name} ${employmentConnection.student.last_name}` : '',
+        institution_name: 'To be added',
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
+        date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -74,24 +77,20 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
   const columns = useMemo(
     () => [
       {
-        Header: 'Employer',
-        accessor: 'employer_name',
+        Header: 'Student',
+        accessor: 'student_name',
       },
       {
-        Header: 'Opportunity Type',
-        accessor: 'opportunity_icon',
+        Header: 'Institution',
+        accessor: 'institution_name',
       },
       {
         Header: 'Status',
         accessor: 'status_badge',
       },
       {
-        Header: 'Role/Designation',
-        accessor: 'role_or_designation',
-      },
-      {
-        Header: 'Registration Date',
-        accessor: 'registration_date_formatted',
+        Header: 'Date',
+        accessor: 'date',
       },
       {
         Header: '',
@@ -102,8 +101,8 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
     []
   );
 
-  const handleRowClick = programEnrollment => {
-    setSelectedEmploymentConnection(programEnrollment);
+  const handleRowClick = employmentConnection => {
+    setSelectedEmploymentConnection(employmentConnection);
     setViewModalShow(true);
   }
 
@@ -133,7 +132,7 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['student'] = student.id;
+    dataToSave['student'] = selectedEmploymentConnection.student.id;
 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
@@ -184,62 +183,26 @@ const EmploymentConnections = ({ employmentConnections, student, onDataUpdate })
 
   return (
     <div className="container-fluid my-3">
-      <div className="row">
-        <div className="col-md-6 col-sm-12 mb-4">
-          <button
-            className="btn btn-primary"
-            onClick={() => setCreateModalShow(true)}
-          >
-            + Add More
-          </button>
-        </div>
-      </div>
       <Table columns={columns} data={employmentConnectionsTableData} paginationPageSize={employmentConnectionsTableData.length} totalRecords={employmentConnectionsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
       <EmploymentConnection
         show={viewModalShow}
         onHide={hideViewModal}
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
-        student={student}
+        student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}
         onHide={hideCreateModal}
-        student={student}
+        student={selectedEmploymentConnection.student}
       />
       <UpdateEmploymentConnectionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
-        student={student}
+        student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
       />
-      <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete Employment Connection?</span>
-          }
-          customButtons={
-            <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
-          }
-        >
-          <p>Are you sure?</p>
-        </SweetAlert>
     </div>
   );
 };

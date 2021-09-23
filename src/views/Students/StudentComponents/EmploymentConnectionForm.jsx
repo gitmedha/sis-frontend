@@ -48,7 +48,7 @@ const EnrollmentConnectionForm = (props) => {
 
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['employer_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.employer.id : null;
+    initialValues['employer_id'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.id : null;
     initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
@@ -76,7 +76,7 @@ const EnrollmentConnectionForm = (props) => {
         label: employer.name,
         value: employer.id,
       })));
-      if (props.employmentConnection && props.employmentConnection.opportunity) {
+      if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
         updateEmployerOpportunityOptions({
           value: Number(props.employmentConnection.opportunity.employer.id),
         });
