@@ -6,11 +6,7 @@ import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Table from '../../../components/content/Table';
-// import { GET_OPPORTUNITIES } from "../../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-// import OpportunityForm from "./OpportunityComponents/OpportunityForm";
-// import { createOpportunity } from "./OpportunityComponents/opportunityAction";
-// import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -23,12 +19,7 @@ const StyledOpportunityIcon = styled.div`
 
 const Opportunities = ({employer, opportunities, onDataUpdate}) => {
   const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const [pickList, setPickList] = useState([]);
-  const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
 
   const OpportunityIcon = ({opportunity}) => {
     let bgColor = '#FF9700';
@@ -102,7 +93,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
       }
     });
     setOpportunitiesTableData(data);
-  }, [opportunities, pickList]);
+  }, [opportunities]);
 
   const handleRowClick = (row) => {
     history.push(`/opportunity/${row.id}`);

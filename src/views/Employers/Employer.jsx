@@ -16,7 +16,7 @@ import { GET_EMPLOYER, UPDATE_EMPLOYER } from "../../graphql";
 import { deleteEmployer, updateEmployer } from "./EmployerComponents/employerAction";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
-import { getEmployerOpportunities, getOpportunitiesPickList } from "../Students/StudentComponents/StudentActions";
+import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 
 const Employer = (props) => {

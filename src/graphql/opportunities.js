@@ -26,6 +26,16 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
+  opportunity {
+    id
+    role_description
+    role_or_designation
+    type
+    employer {
+      id
+      name
+    }
+  }
   student {
     id
     first_name
