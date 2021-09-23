@@ -18,6 +18,36 @@ employer{
 }
 `;
 
+const employmentConnectionFields = `
+  id
+  status
+  start_date
+  end_date
+  source
+  reason_if_rejected
+  salary_offered
+  opportunity {
+    id
+    role_description
+    role_or_designation
+    type
+    employer {
+      id
+      name
+    }
+  }
+  student {
+    id
+    first_name
+    last_name
+  }
+  assigned_to {
+    id
+    username
+    email
+  }
+`;
+
 export const GET_OPPORTUNITIES = `
 query GET_OPPORTUNITIES($limit: Int, $start: Int, $sort: String, $status: String) {
 opportunitiesConnection(
@@ -118,4 +148,24 @@ export const DELETE_OPPORTUNITY = `
   }
 `
 
-
+export const GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS = `
+  query GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS ($id: Int, $limit: Int, $start: Int, $sort: String){
+    employmentConnectionsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit
+      where: {
+        opportunity: {
+          id: $id
+        }
+      }
+    ) {
+      values {
+        ${employmentConnectionFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`

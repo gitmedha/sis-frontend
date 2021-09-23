@@ -4,7 +4,8 @@ import {
   GET_ASSIGNEES_LIST,
   UPDATE_OPPORTUNITY,
   DELETE_OPPORTUNITY,
-  CREATE_OPPORTUNITY
+  CREATE_OPPORTUNITY,
+  GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS
 } from "../../../graphql";
 
 export const getOpportunitiesPickList = async () => {
@@ -83,3 +84,19 @@ export const deleteOpportunity = async (id) => {
       return Promise.reject(error);
     });
 };
+
+export const getOpportunityEmploymentConnections = async (opportunityId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS,
+    variables: {
+      id: Number(opportunityId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
