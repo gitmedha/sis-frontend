@@ -41,6 +41,10 @@ const ProgramEnrollmentForm = (props) => {
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
 
+  useEffect(() => {
+    setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
+  }, [props.programEnrollment]);
+
   let initialValues = {
     program_enrollment_student: student.first_name + ' ' + student.last_name,
     status: '',
