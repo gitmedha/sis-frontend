@@ -5,6 +5,8 @@ import Table from "../../../components/content/Table";
 import { Badge } from "../../../components/content/Utils";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
+import CreateEmploymentConnectionForm from "../../Students/StudentComponents/EmploymentConnectionForm";
+import UpdateEmploymentConnectionForm from "../../Students/StudentComponents/EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 
@@ -187,6 +189,17 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         onHide={hideViewModal}
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
+        student={selectedEmploymentConnection.student}
+        employmentConnection={selectedEmploymentConnection}
+      />
+      <CreateEmploymentConnectionForm
+        show={createModalShow}
+        onHide={hideCreateModal}
+        student={selectedEmploymentConnection.student}
+      />
+      <UpdateEmploymentConnectionForm
+        show={updateModalShow}
+        onHide={hideUpdateModal}
         student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
       />
