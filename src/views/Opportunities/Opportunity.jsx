@@ -2,7 +2,6 @@ import NP from "nprogress";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-
 import api from "../../apis";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
@@ -111,17 +110,7 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible
-            opened={true}
-            titleContent={
-                <TitleWithLogo
-                    done={() => getThisOpportunity()}
-                    id={opportunityData.id}
-                    logo={opportunityData.logo}
-                    title={opportunityData.name}
-                />
-            }
-          >
+          <Collapsible opened={true}>
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
           <Collapsible title="Address">
