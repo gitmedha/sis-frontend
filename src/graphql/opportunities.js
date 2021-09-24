@@ -4,6 +4,17 @@ type
 role_or_designation
 number_of_opportunities
 created_at
+status
+department_or_team
+role_description
+skills_required
+compensation_type
+salary
+address
+city
+state
+pin_code
+medha_area
 assigned_to {
   id
   username
@@ -71,29 +82,7 @@ opportunitiesConnection(
 export const GET_OPPORTUNITY=`
 query OPPORTUNITY($id:ID!) {
   opportunity(id: $id) {
-    id
-    type
-    role_or_designation
-    number_of_opportunities
-    created_at
-    status
-    department_or_team
-    role_description
-    skills_required
-    compensation_type
-    salary
-    assigned_to {
-      id
-      username
-    }
-    employer {
-      id
-      name
-      address
-      logo {
-        url
-      }
-    }
+    ${opportunitiesFields}
   }
 }
 `;

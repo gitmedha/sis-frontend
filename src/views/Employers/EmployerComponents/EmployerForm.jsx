@@ -267,7 +267,6 @@ const EmployerForm = (props) => {
                   </div>
                 </div>
               </Section>
-
               <Section>
                 <h3 className="section-header">Contacts</h3>
                 <FieldArray name="contacts">

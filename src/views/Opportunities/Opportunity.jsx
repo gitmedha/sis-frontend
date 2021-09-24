@@ -15,6 +15,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import Address from "./OpportunityComponents/Address";
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ const Opportunity = (props) => {
         setModalShow(false);
         return;
       }
-      let {id, show, created_at,  ...dataToSave} = data;
+      let {id, show, created_at, ...dataToSave} = data;
 
       NP.start();
       updateOpportunity(Number(id), dataToSave).then(data => {
@@ -122,6 +123,9 @@ const Opportunity = (props) => {
               }
           >
               <Details {...opportunityData}  id={opportunityData.id} />
+          </Collapsible>
+          <Collapsible title="Address">
+            <Address {...opportunityData} />
           </Collapsible>
           <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />

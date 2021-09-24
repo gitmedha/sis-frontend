@@ -34,7 +34,7 @@ const CollapsiblePanels = ({
           ) : (
             <h1 className="bebas-thick text--primary mr-3">{title}</h1>
           )}
-          {badge && (
+          {badge !== undefined && (
             <div className="section-badge flex-row-centered">{badge}</div>
           )}
         </div>

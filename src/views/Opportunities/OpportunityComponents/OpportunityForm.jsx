@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, Form, useFormikContext } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -26,6 +26,16 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+
+  .section-disclaimer {
+    color: #5B6369;
+    font-family: 'Latto-Regular';
+    font-style: italic;
+    font-size: 14px;
+    line-height: 18px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
 `;
 
 const OpportunityForm = (props) => {
@@ -36,6 +46,32 @@ const OpportunityForm = (props) => {
   const [employerOptions, setEmployerOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [initialValues, setInitialValues] = useState({
+    employer: '',
+    assigned_to: '',
+    role_or_designation: '',
+    type: '',
+    compensation_type: '',
+    number_of_opportunities: '',
+    status: '',
+    department_or_team: '',
+    salary: '',
+    role_description: '',
+    skills_required: '',
+    address: '',
+    city: '',
+    state: '',
+    pin_code: '',
+    medha_area: '',
+  });
+
+  if (props.id) {
+    setInitialValues({
+      ...props,
+      assigned_to: props.assigned_to ? props.assigned_to.id : '',
+      employer: props.employer ? Number(props.employer.id) : '',
+    });
+  }
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -85,34 +121,25 @@ const OpportunityForm = (props) => {
         key: employer.name,
         label: employer.name,
         value: Number(employer.id),
+        details: employer,
       })));
     });
-
   }, []);
 
   const onSubmit = async (values) => {
     onHide(values);
   };
 
-  let initialValues = {
-    employer: '',
-    assigned_to: '',
-    role_or_designation: '',
-    type: '',
-    compensation_type: '',
-    number_of_opportunities: '',
-    status: '',
-    department_or_team: '',
-    salary: '',
-    role_description: '',
-    skills_required: '',
-  };
-  if (props.id) {
-    initialValues = {...props}
-    initialValues['assigned_to'] = props.assigned_to ? props.assigned_to.id : '';
-    initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
+  const handleEmployerChange = (employer) => {
+    setInitialValues({
+      ...initialValues,
+      address: employer.details.address,
+      city: employer.details.city,
+      state: employer.details.state,
+      pin_code: employer.details.pin_code,
+      medha_area: employer.details.medha_area,
+    });
   }
-
 
   return (
     <Modal
@@ -139,6 +166,7 @@ const OpportunityForm = (props) => {
          onSubmit={onSubmit}
          initialValues={initialValues}
          validationSchema={OpportunityValidations}
+         enableReinitialize={true}
         >
           {({ values }) => (
             <Form>
@@ -153,6 +181,7 @@ const OpportunityForm = (props) => {
                       placeholder="Employer"
                       className="form-control"
                       options={employerOptions}
+                      onChange={handleEmployerChange}
                       required
                     />
                   </div>
@@ -262,6 +291,62 @@ const OpportunityForm = (props) => {
                       control="textarea"
                       label="Description"
                       placeholder="Description"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Address</h3>
+                <h4 className="section-disclaimer">Defaults to Employer Address</h4>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      label="Address"
+                      name="address"
+                      placeholder="Address"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="state"
+                      label="State"
+                      control="input"
+                      placeholder="State"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      className="form-control"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
                       className="form-control"
                       required
                     />

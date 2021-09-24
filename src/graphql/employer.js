@@ -3,6 +3,11 @@ export const GET_ALL_EMPLOYERS = `
     employers {
       id
       name
+      address
+      medha_area
+      city
+      state
+      pin_code
     }
   }
 `;

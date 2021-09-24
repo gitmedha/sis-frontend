@@ -259,6 +259,61 @@ const OpportunityForm = (props) => {
                   </div>
                 </div>
               </Section>
+              <Section>
+                <h3 className="section-header">Address</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      label="Address"
+                      name="address"
+                      placeholder="Address"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="state"
+                      label="State"
+                      control="input"
+                      placeholder="State"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      className="form-control"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+              </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
