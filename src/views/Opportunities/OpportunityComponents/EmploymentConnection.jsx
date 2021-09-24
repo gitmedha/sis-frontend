@@ -58,8 +58,8 @@ const EmploymentConnection = (props) => {
         </div>
         <div className="row mt-4">
           <div className="col-md-12 d-flex justify-content-center">
-            {/* <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button> */}
-            {/* <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button> */}
+            <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button>
+            <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button>
           </div>
         </div>
       </Modal.Body>
