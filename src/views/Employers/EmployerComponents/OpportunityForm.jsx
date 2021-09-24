@@ -25,6 +25,16 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+
+  .section-disclaimer {
+    color: #5B6369;
+    font-family: 'Latto-Regular';
+    font-style: italic;
+    font-size: 14px;
+    line-height: 18px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
 `;
 
 const OpportunityForm = (props) => {
@@ -96,6 +106,11 @@ const OpportunityForm = (props) => {
     salary: '',
     role_description: '',
     skills_required: '',
+    address: employer.address,
+    city: employer.city,
+    state: employer.state,
+    pin_code: employer.pin_code,
+    medha_area: employer.medha_area,
   };
   if (props.id) {
     initialValues = {...props}
@@ -261,6 +276,7 @@ const OpportunityForm = (props) => {
               </Section>
               <Section>
                 <h3 className="section-header">Address</h3>
+                <h4 className="section-disclaimer">Defaults to Employer Address</h4>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
