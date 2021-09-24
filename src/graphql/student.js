@@ -18,6 +18,11 @@ const studentFields = `
   old_sis_id
   medha_champion
   interested_in_employment_opportunities
+  city
+  pin_code
+  medha_area
+  address
+  state
   assigned_to{
     id
     username
@@ -122,6 +127,22 @@ export const GET_STUDENT = `
     }
   }
 `;
+
+export const CREATE_STUDENT = `
+  mutation CREATE_STUDENT(
+    $data: StudentInput!
+  ) {
+    createStudent(
+      input: {
+        data: $data,
+      }
+    ) {
+      student {
+        ${studentFields}
+      }
+    }
+  }
+  `;
 
 export const UPDATE_STUDENT = `
   mutation UPDATE_STUDENT (

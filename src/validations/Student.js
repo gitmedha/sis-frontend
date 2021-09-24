@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+const pincodeRegExp = /^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$/
 
 // Program Enrollment form fields.
 const institution = Yup.string().required("Institution is required.");
@@ -46,6 +47,14 @@ const category  = Yup.string().nullable().required("Category is required.");
 const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
+const state = Yup.string().required("State is required.");
+const medha_area = Yup.string().required("Medha area is required.");
+const address = Yup.string().required("Address is required.");
+const pin_code = Yup.string("Should be a number.")
+  .matches(pincodeRegExp, 'Pincode is not valid')
+  .max(6, "Pincode is too long")
+  .required("Pincode is required.");
+const city = Yup.string().required("City is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -91,4 +100,9 @@ export const StudentValidations = Yup.object({
   assigned_to,
   status: student_status,
   income_level,
+  city,
+  pin_code,
+  medha_area,
+  address,
+  state,
 });

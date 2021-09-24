@@ -6,6 +6,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import moment from "moment";
 
 import Details from "./StudentComponents/Details";
+import Address from "./StudentComponents/Address";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -130,6 +131,9 @@ const Student = (props) => {
           </div>
         </div>
         <Details {...student} />
+        <Collapsible title="Address">
+          <Address {...student} />
+        </Collapsible>
         <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
