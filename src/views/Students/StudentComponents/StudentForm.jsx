@@ -48,7 +48,6 @@ const StudentForm = (props) => {
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
   ];
-   
 
   useEffect(() => {
     getStudentsPickList().then(data => {
@@ -94,12 +93,13 @@ const StudentForm = (props) => {
     address:'',
     state:'',
   };
+
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
     initialValues['assigned_to'] = props?.assigned_to?.id;
   }
-
+  
   return (
     <Modal
       centered
