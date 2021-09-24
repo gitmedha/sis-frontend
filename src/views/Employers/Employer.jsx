@@ -98,12 +98,16 @@ const Employer = (props) => {
     );
   }
 
-  useEffect(() => {
-    getThisEmployer();
+  const getOpportunities = () => {
     getEmployerOpportunities(employerId).then(data => {
       setEmployerOpportunities(data.data.data.opportunities);
       updateOpportunitiesBadge(data.data.data.opportunities);
     });
+  }
+
+  useEffect(() => {
+    getThisEmployer();
+    getOpportunities();
   }, []);
 
   if (isLoading) {
@@ -149,7 +153,7 @@ const Employer = (props) => {
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
         <Collapsible title="Opportunities" badge={opportunitiesBadge}>
-          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getEmployerOpportunities} />
+          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
         </Collapsible>
         <EmployerForm
           {...employerData}

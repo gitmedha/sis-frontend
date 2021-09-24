@@ -2,7 +2,6 @@ import NP from "nprogress";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-
 import api from "../../apis";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
@@ -15,6 +14,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import Address from "./OpportunityComponents/Address";
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ const Opportunity = (props) => {
         setModalShow(false);
         return;
       }
-      let {id, show, created_at,  ...dataToSave} = data;
+      let {id, show, created_at, ...dataToSave} = data;
 
       NP.start();
       updateOpportunity(Number(id), dataToSave).then(data => {
@@ -61,20 +61,20 @@ const Opportunity = (props) => {
     }
 
     const getThisOpportunity = async () => {
-        setLoading(true);
-        NP.start();
-        try {
-          let { data } = await api.post("/graphql", {
-            query: GET_OPPORTUNITY,
-            variables: { id: opportunityId },
-          });
-          setOpportunityData(data.data.opportunity);
-        }catch (err) {
-            console.log("ERR", err);
-        } finally {
-          setLoading(false);
-          NP.done();
-        }
+      setLoading(true);
+      NP.start();
+      try {
+        let { data } = await api.post("/graphql", {
+          query: GET_OPPORTUNITY,
+          variables: { id: opportunityId },
+        });
+        setOpportunityData(data.data.opportunity);
+      } catch (err) {
+        console.log("ERR", err);
+      } finally {
+        NP.done();
+        setLoading(false);
+      }
     };
 
     const getEmploymentConnections = async () => {
@@ -110,10 +110,11 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible
-              opened={true}
-          >
-              <Details {...opportunityData}  id={opportunityData.id} />
+          <Collapsible opened={true}>
+            <Details {...opportunityData}  id={opportunityData.id} />
+          </Collapsible>
+          <Collapsible title="Address">
+            <Address {...opportunityData} />
           </Collapsible>
           <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />

@@ -1,13 +1,11 @@
-import { Formik, Form } from 'formik';
+import { Formik, FieldArray, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-
 import { Input } from "../../../utils/Form";
-import { OpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
-import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
+import { EmployerOpportunityValidations } from "../../../validations";
+import { getOpportunitiesPickList, getAssigneeOptions } from "../../Opportunities/OpportunityComponents/opportunityAction";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,31 +37,12 @@ const Section = styled.div`
 `;
 
 const OpportunityForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show, employer } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [compensationTypeOptions, setCompensationTypeOptions] = useState([]);
-  const [employerOptions, setEmployerOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
-  const [initialValues, setInitialValues] = useState({
-    employer: '',
-    assigned_to: '',
-    role_or_designation: '',
-    type: '',
-    compensation_type: '',
-    number_of_opportunities: '',
-    status: '',
-    department_or_team: '',
-    salary: '',
-    role_description: '',
-    skills_required: '',
-    address: '',
-    city: '',
-    state: '',
-    pin_code: '',
-    medha_area: '',
-  });
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -107,38 +86,36 @@ const OpportunityForm = (props) => {
           value: assignee.id,
       })));
     });
-
-    getAllEmployers().then(data => {
-      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
-        key: employer.name,
-        label: employer.name,
-        value: Number(employer.id),
-        details: employer,
-      })));
-    });
-
-    if (props.id) {
-      setInitialValues({
-        ...props,
-        assigned_to: props.assigned_to ? props.assigned_to.id : '',
-        employer: props.employer ? Number(props.employer.id) : '',
-      });
-    }
   }, []);
 
   const onSubmit = async (values) => {
     onHide(values);
   };
 
-  const handleEmployerChange = (employer) => {
-    setInitialValues({
-      ...initialValues,
-      address: employer.details.address,
-      city: employer.details.city,
-      state: employer.details.state,
-      pin_code: employer.details.pin_code,
-      medha_area: employer.details.medha_area,
-    });
+  let initialValues = {
+    employer: employer,
+    employer_name: employer.name,
+    assigned_to: '',
+    role_or_designation: '',
+    type: '',
+    compensation_type: '',
+    number_of_opportunities: '',
+    status: '',
+    department_or_team: '',
+    salary: '',
+    role_description: '',
+    skills_required: '',
+    address: employer.address,
+    city: employer.city,
+    state: employer.state,
+    pin_code: employer.pin_code,
+    medha_area: employer.medha_area,
+  };
+
+  if (props.id) {
+    initialValues = {...props}
+    initialValues['assigned_to'] = props.assigned_to ? props.assigned_to.id : '';
+    initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
   }
 
   return (
@@ -165,8 +142,7 @@ const OpportunityForm = (props) => {
         <Formik
          onSubmit={onSubmit}
          initialValues={initialValues}
-         validationSchema={OpportunityValidations}
-         enableReinitialize={true}
+         validationSchema={EmployerOpportunityValidations}
         >
           {({ values }) => (
             <Form>
@@ -175,14 +151,14 @@ const OpportunityForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="employer"
-                      control="lookup"
+                      name="employer_name"
+                      control="input"
                       label="Employer"
                       placeholder="Employer"
                       className="form-control"
-                      options={employerOptions}
-                      onChange={handleEmployerChange}
-                      required
+                      // options={employerOptions}
+                      disabled={true}
+                      required={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
