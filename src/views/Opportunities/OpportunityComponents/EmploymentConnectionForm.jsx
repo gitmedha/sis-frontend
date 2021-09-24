@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
-import { EmploymentConnectionValidations } from "../../../validations";
+import { OpportunityEmploymentConnectionValidations } from "../../../validations";
 import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 
 const Section = styled.div`
@@ -34,17 +34,15 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, student } = props;
-  const [loading, setLoading] = useState(false);
-  const [employerOptions, setEmployerOptions] = useState([]);
+  let { onHide, show, opportunity } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
 
   let initialValues = {
     student: '',
-    employer_name:'',
-    opportunity_name:'',
+    employer_name: opportunity.employer.name,
+    opportunity_name: opportunity.role_or_designation,
     status: '',
     start_date:'',
     end_date:'',
@@ -54,7 +52,7 @@ const EnrollmentConnectionForm = (props) => {
 
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['student'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+    initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
     initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
@@ -70,16 +68,12 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
-
-  }, [props])
-
-  useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
-    if (props.student) {
-      filterStudent(props.student.name).then(data => {
+    if (props.employmentConnection && props.employmentConnection.student) {
+      filterStudent(props.employmentConnection.student.name).then(data => {
         setStudentOptions(data);
       });
     }
@@ -124,7 +118,7 @@ const EnrollmentConnectionForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={EmploymentConnectionValidations}
+          validationSchema={OpportunityEmploymentConnectionValidations}
         >
           {({ setFieldValue }) => (
             <Form>
@@ -132,12 +126,13 @@ const EnrollmentConnectionForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="student"
-                      control="lookup"
+                      name="student_id"
+                      control="lookupAsync"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      options={studentOptions}
+                      filterData={filterStudent}
+                      defaultOptions={props.employmentConnection ? studentOptions : true}
                       required={true}
                     />
                   </div>
@@ -157,7 +152,6 @@ const EnrollmentConnectionForm = (props) => {
                       control="input"
                       name="employer_name"
                       label="Employer"
-                      options={employerOptions}
                       className="form-control"
                       placeholder="Employer"
                       disabled={true}

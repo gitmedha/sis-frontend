@@ -24,6 +24,7 @@ const end_date = Yup.date().nullable().required("End Date is required.")
 const employment_connection_status = Yup.string().nullable().required("Employment Connection status is required.");
 const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
+const student_id = Yup.string().required("Student is required.");
 const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.number().nullable().required("Salary Offered is required.")
                           .min(0, 'Min value 0.')
@@ -65,6 +66,15 @@ export const EmploymentConnectionValidations = Yup.object({
   status: employment_connection_status,
   employer_id,
   opportunity_id,
+  source,
+  salary_offered,
+});
+
+export const OpportunityEmploymentConnectionValidations = Yup.object({
+  start_date,
+  end_date,
+  status: employment_connection_status,
+  student_id,
   source,
   salary_offered,
 });

@@ -128,12 +128,12 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, employer_id, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, assigned_to, ...dataToSave} = data;
+    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['student'] = selectedEmploymentConnection.student.id;
+    dataToSave['opportunity'] = opportunity.id;
+    dataToSave['student'] = student_id;
 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
@@ -153,11 +153,12 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
+    dataToSave['student'] = student_id;
 
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
@@ -184,6 +185,16 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
 
   return (
     <div className="container-fluid my-3">
+      <div className="row">
+        <div className="col-md-6 col-sm-12 mb-4">
+          <button
+            className="btn btn-primary"
+            onClick={() => setCreateModalShow(true)}
+          >
+            + Add More
+          </button>
+        </div>
+      </div>
       <Table columns={columns} data={employmentConnectionsTableData} paginationPageSize={employmentConnectionsTableData.length} totalRecords={employmentConnectionsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
       <EmploymentConnection
         show={viewModalShow}
@@ -196,12 +207,12 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
       <CreateEmploymentConnectionForm
         show={createModalShow}
         onHide={hideCreateModal}
-        student={selectedEmploymentConnection.student}
+        opportunity={opportunity}
       />
       <UpdateEmploymentConnectionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
-        student={selectedEmploymentConnection.student}
+        opportunity={opportunity}
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert
