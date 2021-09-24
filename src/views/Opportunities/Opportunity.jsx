@@ -112,14 +112,6 @@ const Opportunity = (props) => {
           </div>
           <Collapsible
               opened={true}
-              titleContent={
-                  <TitleWithLogo
-                      done={() => getThisOpportunity()}
-                      id={opportunityData.id}
-                      logo={opportunityData.logo}
-                      title={opportunityData.name}
-                  />
-              }
           >
               <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
