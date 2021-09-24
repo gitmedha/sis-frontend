@@ -3,10 +3,9 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-
 import { Input } from "../../../utils/Form";
 import { EmployerOpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "../../Opportunities/OpportunityComponents/opportunityAction"
+import { getOpportunitiesPickList, getAssigneeOptions } from "../../Opportunities/OpportunityComponents/opportunityAction";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -112,12 +111,12 @@ const OpportunityForm = (props) => {
     pin_code: employer.pin_code,
     medha_area: employer.medha_area,
   };
+
   if (props.id) {
     initialValues = {...props}
     initialValues['assigned_to'] = props.assigned_to ? props.assigned_to.id : '';
     initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
   }
-
 
   return (
     <Modal
