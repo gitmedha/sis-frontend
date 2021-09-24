@@ -26,3 +26,16 @@ export const OpportunityValidations = Yup.object({
   skills_required,
   role_description,
 });
+
+export const EmployerOpportunityValidations = Yup.object({
+  status,
+  assigned_to,
+  type,
+  role_or_designation,
+  number_of_opportunities,
+  department_or_team,
+  salary,
+  compensation_type,
+  skills_required,
+  role_description,
+});

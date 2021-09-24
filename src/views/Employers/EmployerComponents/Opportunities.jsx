@@ -7,6 +7,9 @@ import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Table from '../../../components/content/Table';
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import OpportunityForm from "./OpportunityForm";
+import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -20,6 +23,7 @@ const StyledOpportunityIcon = styled.div`
 const Opportunities = ({employer, opportunities, onDataUpdate}) => {
   const history = useHistory();
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+  const [createOpportunityModalShow, setCreateOpportunityModalShow] = useState(false);
 
   const OpportunityIcon = ({opportunity}) => {
     let bgColor = '#FF9700';
@@ -99,9 +103,47 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
     history.push(`/opportunity/${row.id}`);
   };
 
+  const hideCreateOpportunityModal = (data) => {
+    if (!data || data.isTrusted) {
+      setCreateOpportunityModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, employer_name, ...dataToSave} = data;
+    dataToSave['employer'] = data.employer.id;
+
+    nProgress.start();
+    createOpportunity(dataToSave).then(data => {
+      setAlert("Opportunity created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create opportunity.", "error");
+    }).finally(() => {
+      nProgress.done();
+      onDataUpdate();
+    });
+    setCreateOpportunityModalShow(false);
+  }
+
   return (
     <div className="container py-3">
+      <div className="row">
+        <div className="col-md-6 col-sm-12 mb-4">
+          <button
+            className="btn btn-primary"
+            onClick={() => setCreateOpportunityModalShow(true)}
+          >
+            + Add More
+          </button>
+        </div>
+      </div>
       <Table columns={columns} data={opportunitiesTableData} paginationPageSize={opportunitiesTableData.length} totalRecords={opportunitiesTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <OpportunityForm
+        show={createOpportunityModalShow}
+        onHide={hideCreateOpportunityModal}
+        employer={employer}
+      />
     </div>
   );
 };
