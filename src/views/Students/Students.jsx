@@ -185,14 +185,12 @@ const Students = (props) => {
     // need to remove `show` from the payload
     let {show, institution, batch, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
-    console.log(dataToSave.CV)
     if (typeof data.CV === 'object') {
       dataToSave['CV'] = data.CV?.url;
     }
 
     nProgress.start();
     createStudent(dataToSave).then(data => {
-      console.log(dataToSave)
       setAlert("Student created successfully.", "success");
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
