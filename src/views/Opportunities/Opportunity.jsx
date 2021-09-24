@@ -62,20 +62,20 @@ const Opportunity = (props) => {
     }
 
     const getThisOpportunity = async () => {
-        setLoading(true);
-        NP.start();
-        try {
-          let { data } = await api.post("/graphql", {
-            query: GET_OPPORTUNITY,
-            variables: { id: opportunityId },
-          });
-          setOpportunityData(data.data.opportunity);
-        }catch (err) {
-            console.log("ERR", err);
-        } finally {
-          setLoading(false);
-          NP.done();
-        }
+      setLoading(true);
+      NP.start();
+      try {
+        let { data } = await api.post("/graphql", {
+          query: GET_OPPORTUNITY,
+          variables: { id: opportunityId },
+        });
+        setOpportunityData(data.data.opportunity);
+      } catch (err) {
+        console.log("ERR", err);
+      } finally {
+        NP.done();
+        setLoading(false);
+      }
     };
 
     const getEmploymentConnections = async () => {
@@ -112,17 +112,17 @@ const Opportunity = (props) => {
             </div>
           </div>
           <Collapsible
-              opened={true}
-              titleContent={
-                  <TitleWithLogo
-                      done={() => getThisOpportunity()}
-                      id={opportunityData.id}
-                      logo={opportunityData.logo}
-                      title={opportunityData.name}
-                  />
-              }
+            opened={true}
+            titleContent={
+                <TitleWithLogo
+                    done={() => getThisOpportunity()}
+                    id={opportunityData.id}
+                    logo={opportunityData.logo}
+                    title={opportunityData.name}
+                />
+            }
           >
-              <Details {...opportunityData}  id={opportunityData.id} />
+            <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
           <Collapsible title="Address">
             <Address {...opportunityData} />

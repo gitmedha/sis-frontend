@@ -65,14 +65,6 @@ const OpportunityForm = (props) => {
     medha_area: '',
   });
 
-  if (props.id) {
-    setInitialValues({
-      ...props,
-      assigned_to: props.assigned_to ? props.assigned_to.id : '',
-      employer: props.employer ? Number(props.employer.id) : '',
-    });
-  }
-
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
       setStatusOptions(data.status.map((item) => {
@@ -124,6 +116,14 @@ const OpportunityForm = (props) => {
         details: employer,
       })));
     });
+
+    if (props.id) {
+      setInitialValues({
+        ...props,
+        assigned_to: props.assigned_to ? props.assigned_to.id : '',
+        employer: props.employer ? Number(props.employer.id) : '',
+      });
+    }
   }, []);
 
   const onSubmit = async (values) => {
