@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { CREATE_EMPLOYMENT_CONNECTION, CREATE_PROGRAM_ENROLLMENT, DELETE_EMPLOYMENT_CONNECTION, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_EMPLOYERS, GET_ALL_INSTITUTES, GET_EMPLOYER_OPPORTUNITIES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_EMPLOYMENT_CONNECTIONS, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_EMPLOYMENT_CONNECTION, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
+import { CREATE_STUDENT, CREATE_EMPLOYMENT_CONNECTION, CREATE_PROGRAM_ENROLLMENT, DELETE_EMPLOYMENT_CONNECTION, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_EMPLOYERS, GET_ALL_INSTITUTES, GET_EMPLOYER_OPPORTUNITIES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_EMPLOYMENT_CONNECTIONS, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_EMPLOYMENT_CONNECTION, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -31,6 +31,17 @@ export const getStudent = async (id) => {
     return data;
   })
   .catch(error => {
+    return Promise.reject(error);
+  });
+};
+
+export const createStudent = async (data) => {
+  return await api.post('/graphql', {
+    query: CREATE_STUDENT,
+    variables: {data},
+  }).then(data => {
+    return data;
+  }).catch(error => {
     return Promise.reject(error);
   });
 };

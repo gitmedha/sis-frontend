@@ -6,6 +6,8 @@ import {
   Badge,
   Anchor,
 } from "../../components/content/Utils";
+import moment from "moment";
+import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
@@ -13,12 +15,13 @@ import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
-import { getStudentsPickList } from "./StudentComponents/StudentActions";
+import { getStudentsPickList, createStudent } from "./StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
 import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
+import StudentForm from "./StudentComponents/StudentForm";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -43,7 +46,9 @@ const Styled = styled.div`
   }
 `;
 
-const Students = ({ isSidebarOpen, batch }) => {
+const Students = (props) => {
+  let { isSidebarOpen, batch  } = props;
+  const {setAlert} = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
@@ -171,6 +176,35 @@ const Students = ({ isSidebarOpen, batch }) => {
     history.push(`/student/${row.id}`)
   }
 
+  const hideCreateModal = async (data) => {
+    if (!data || data.isTrusted) {
+      setModalShow(false);
+      return;
+    }
+
+    // need to remove `show` from the payload
+    let {show, institution, batch, ...dataToSave} = data;
+    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+    console.log(dataToSave.CV)
+    if (typeof data.CV === 'object') {
+      dataToSave['CV'] = data.CV?.url;
+    }
+
+    nProgress.start();
+    createStudent(dataToSave).then(data => {
+      console.log(dataToSave)
+      setAlert("Student created successfully.", "success");
+    }).catch(err => {
+      console.log("CREATE_DETAILS_ERR", err);
+      setAlert("Unable to create student.", "error");
+    }).finally(() => {
+      nProgress.done();
+      setStudents();
+    });
+    setModalShow(false);
+  };
+
+
   const handleStudentStatusTabChange = (activeTab) => {
     setActiveStatus(activeTab.title);
     getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex);
@@ -187,6 +221,13 @@ const Students = ({ isSidebarOpen, batch }) => {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalShow(true)}
+            style={{marginLeft: '15px'}}
+          >
+            Add New Student
+          </button>
         </div>
         <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
           <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
@@ -194,9 +235,19 @@ const Students = ({ isSidebarOpen, batch }) => {
         <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
           <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
         </div>
+        <StudentForm
+        show={modalShow}
+        onHide={hideCreateModal}
+      />
       </div>
     </Styled>
   );
 };
 
-export default Students;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Students);

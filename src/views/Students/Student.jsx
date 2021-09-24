@@ -6,6 +6,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import moment from "moment";
 
 import Details from "./StudentComponents/Details";
+import Address from "./StudentComponents/Address";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -35,8 +36,11 @@ const Student = (props) => {
     }
 
     // need to remove some data from payload
-    let {id, show, CV, logo, ...dataToSave} = data;
+    let {id, show, logo, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+    if (typeof data.CV === 'object') {
+      dataToSave['CV'] = data.CV?.url;
+    }
 
     NP.start();
     updateStudent(Number(id), dataToSave).then(data => {
@@ -130,6 +134,9 @@ const Student = (props) => {
           </div>
         </div>
         <Details {...student} />
+        <Collapsible title="Address">
+          <Address {...student} />
+        </Collapsible>
         <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>

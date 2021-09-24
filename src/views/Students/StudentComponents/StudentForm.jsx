@@ -39,6 +39,7 @@ const StudentForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
+  const [logo, setLogo] = useState(null);
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -47,7 +48,7 @@ const StudentForm = (props) => {
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
   ];
-  // const [logo, setLogo] = useState(null);
+   
 
   useEffect(() => {
     getStudentsPickList().then(data => {
@@ -67,9 +68,9 @@ const StudentForm = (props) => {
   }, []);
 
   const onSubmit = async (values) => {
-    // if (logo) {
-    //   values.logo = logo;
-    // }
+    if (logo) {
+      values.logo = logo;
+    }
     onHide(values);
   };
 
@@ -86,13 +87,19 @@ const StudentForm = (props) => {
     assigned_to:'',
     status:'',
     income_level:'',
+    date_of_birth:'',
+    city:'',
+    pin_code:'',
+    medha_area:'',
+    address:'',
+    state:'',
   };
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
     initialValues['assigned_to'] = props?.assigned_to?.id;
   }
-  
+
   return (
     <Modal
       centered
@@ -272,6 +279,61 @@ const StudentForm = (props) => {
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Address</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      label="Address"
+                      name="address"
+                      placeholder="Address"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="state"
+                      label="State"
+                      control="input"
+                      placeholder="State"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      className="form-control"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
+                      className="form-control"
+                      required
+                    />
                   </div>
                 </div>
               </Section>
