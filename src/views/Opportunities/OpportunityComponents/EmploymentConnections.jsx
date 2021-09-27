@@ -70,6 +70,7 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
+        start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -90,8 +91,8 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         accessor: 'status_badge',
       },
       {
-        Header: 'Date',
-        accessor: 'date',
+        Header: 'Start Date',
+        accessor: 'start_date',
       },
       {
         Header: '',

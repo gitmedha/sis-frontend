@@ -46,6 +46,7 @@ export const EmployerValidations = Yup.object({
     city,
     pin_code,
     contacts,
+    email,
 });
 
 export const ContactValidations = Yup.object({

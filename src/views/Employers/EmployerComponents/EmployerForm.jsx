@@ -148,6 +148,16 @@ const EmployerForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      name="email"
+                      label="Email"
+                      control="input"
+                      placeholder="Email"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
                       name="phone"
                       label="Phone"
                       control="input"
