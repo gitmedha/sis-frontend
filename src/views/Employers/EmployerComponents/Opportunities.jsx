@@ -127,7 +127,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
   }
 
   return (
-    <div className="container py-3">
+    <div className="container-fluid my-3">
       <div className="row">
         <div className="col-md-6 col-sm-12 mb-4">
           <button

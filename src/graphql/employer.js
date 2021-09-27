@@ -109,6 +109,7 @@ export const GET_EMPLOYER = `
       phone
       status
       website
+      email
       type
       industry
       logo {
