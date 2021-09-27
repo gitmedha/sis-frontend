@@ -167,6 +167,7 @@ const EmployerForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="industry"
                       label="Industry"
                       control="lookup"
@@ -202,6 +203,7 @@ const EmployerForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="status"
                       label="Status"
                       control="lookup"
