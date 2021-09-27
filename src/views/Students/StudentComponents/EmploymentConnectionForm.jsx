@@ -149,7 +149,6 @@ const EnrollmentConnectionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOptions.length ? (
                       <Input
-                        icon="down"
                         control="lookup"
                         name="employer_id"
                         label="Employer"

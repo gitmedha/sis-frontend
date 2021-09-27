@@ -235,7 +235,6 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
                       <Input
-                        icon="down"
                         control="lookup"
                         name="assigned_to"
                         label="Assigned To"

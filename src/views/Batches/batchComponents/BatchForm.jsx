@@ -191,6 +191,7 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
+                        icon="down"
                         name="grant"
                         label="Grant"
                         required
