@@ -25,28 +25,6 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
   const [createOpportunityModalShow, setCreateOpportunityModalShow] = useState(false);
 
-  const OpportunityIcon = ({opportunity}) => {
-    let bgColor = '#FF9700';
-    let icon = null;
-    switch (opportunity.type.toLowerCase()) {
-      case 'job':
-        bgColor = '#FF9700';
-        icon = <FaBriefcase color="#ffffff" size="16" />;
-        break;
-
-      case 'internship':
-        bgColor = '#12314C';
-        icon = <FaBlackTie color="#ffffff" size="16" />;
-        break;
-    }
-    if (icon) {
-      return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
-        {icon}
-      </StyledOpportunityIcon>;
-    }
-    return <></>;
-  };
-
   const columns = useMemo(
     () => [
       {
@@ -63,7 +41,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
       },
       {
         Header: 'Type',
-        accessor: 'opportunity_icon',
+        accessor: 'opportunity_type',
       },
       {
         Header: 'Status',
@@ -89,7 +67,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
         id: opportunity.id,
         avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
         role_or_designation: opportunity.role_or_designation,
-        opportunity_icon: <OpportunityIcon opportunity={opportunity} />,
+        opportunity_type: opportunity.type,
         number_of_opportunities: opportunity.number_of_opportunities,
         address: employer ? employer.address : '',
         employer: employer ? employer.name : '',

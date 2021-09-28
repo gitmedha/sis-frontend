@@ -42,28 +42,6 @@ const tabPickerOptions = [
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
 
-    const OpportunityIcon = ({opportunity}) => {
-      let bgColor = '#FF9700';
-      let icon = null;
-      switch (opportunity.type.toLowerCase()) {
-        case 'job':
-          bgColor = '#FF9700';
-          icon = <FaBriefcase color="#ffffff" size="16" />;
-          break;
-
-        case 'internship':
-          bgColor = '#12314C';
-          icon = <FaBlackTie color="#ffffff" size="16" />;
-          break;
-      }
-      if (icon) {
-        return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
-          {icon}
-        </StyledOpportunityIcon>;
-      }
-      return <></>;
-    };
-
   const columns = useMemo(
     () => [
       {
@@ -76,7 +54,7 @@ const tabPickerOptions = [
       },
       {
         Header: 'Type',
-        accessor: 'opportunity_icon',
+        accessor: 'opportunity_type',
       },
       {
         Header: 'Openings',
@@ -159,7 +137,7 @@ const tabPickerOptions = [
       ...opportunitydata,
        avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
-       opportunity_icon: <OpportunityIcon opportunity={opportunitydata} />,
+       opportunity_type: opportunitydata.type,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',

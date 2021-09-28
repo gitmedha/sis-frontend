@@ -68,7 +68,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Institution" value={programEnrollment.institution?.name} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
+              <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
               <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
             </div>
           </div>

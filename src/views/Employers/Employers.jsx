@@ -31,6 +31,7 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
   const {setAlert} = props;
 
   const columns = useMemo(
@@ -61,8 +62,6 @@ const Employers = (props) => {
   );
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-
-  const paginationPageSize = 10;
 
   const getEmployers = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
