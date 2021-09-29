@@ -38,7 +38,6 @@ export const BatchValidations = Yup.object({
   end_date,
   start_date,
   assigned_to,
-  institution,
   per_student_fees,
   name_in_current_sis,
   number_of_sessions_planned,

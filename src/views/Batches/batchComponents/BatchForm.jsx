@@ -212,7 +212,6 @@ const BatchForm = (props) => {
                         label="Institution"
                         filterData={filterInstitution}
                         defaultOptions={props.id ? institutionOptions : true}
-                        required
                         placeholder="Institution"
                         className="form-control"
                       />

@@ -73,6 +73,14 @@ const Students = (props) => {
         accessor: 'phone',
       },
       {
+        Header: 'Student ID',
+        accessor: 'id',
+      },
+      {
+        Header: 'Area',
+        accessor: 'city',
+      },
+      {
         Header: 'Status',
         accessor: 'status',
       },
@@ -95,8 +103,8 @@ const Students = (props) => {
     let variables = {
       limit,
       start: offset,
-      // id: user.id,
-      id: 2,
+      //id: user.id,
+      // id: 2,
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
@@ -126,6 +134,8 @@ const Students = (props) => {
       switch (sortBy[0].id) {
         case 'status':
         case 'phone':
+        case 'city':
+        case 'id':
         case 'course_type_latest':
           sortByField = sortBy[0].id;
           break;
