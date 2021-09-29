@@ -15,6 +15,7 @@ import {
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
+import Collapse from "../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -150,30 +151,32 @@ const Employers = (props) => {
   };
 
   return (
-    <div className="container py-3">
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-        <button
-          className="btn btn-primary"
-          onClick={() => setModalShow(true)}
-        >
-          Add New Employer
-        </button>
+    <Collapse title="EMPLOYERS" type="plain" opened={true}>
+      <div className="row m-3">
+        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalShow(true)}
+          >
+            Add New Employer
+          </button>
+        </div>
+        <Table
+          columns={columns}
+          data={employersTableData}
+          paginationPageSize={paginationPageSize}
+          totalRecords={employersAggregate.count}
+          fetchData={fetchData}
+          loading={loading}
+          onRowClick={onRowClick}
+        />
+        <EmployerForm
+          show={modalShow}
+          onHide={hideCreateModal}
+        />
       </div>
-      <Table
-        columns={columns}
-        data={employersTableData}
-        paginationPageSize={paginationPageSize}
-        totalRecords={employersAggregate.count}
-        fetchData={fetchData}
-        loading={loading}
-        onRowClick={onRowClick}
-      />
-      <EmployerForm
-        show={modalShow}
-        onHide={hideCreateModal}
-      />
-    </div>
+    </Collapse>
   );
 };
 
