@@ -14,6 +14,14 @@ import { createBatch, getBatchesPickList, getStudentCountByBatch } from "./batch
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
+import TabPicker from "../../components/content/TabPicker";
+
+const tabPickerOptions = [
+  { title: "My Data", key: "test-1" },
+  { title: "My Area", key: "test-2" },
+  { title: "My State", key: "test-3" },
+  { title: "All Area", key: "test-4" },
+];
 
 const Batches = (props) => {
   const [batches, setBatches] = useState([]);
@@ -25,6 +33,7 @@ const Batches = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
@@ -168,22 +177,23 @@ const Batches = (props) => {
   };
 
   return (
-    <Collapse title="My Batches" type="plain" opened={true}>
-      <div className="row my-4">
-        <div className="col-md-6 col-sm-12 ml-auto">
-          <button
-            className="btn btn-primary"
-            onClick={() => setModalShow(true)}
-          >
-            Add New Batch
-          </button>
+    <Collapse title="Batches" type="plain" opened={true}>
+      <div className="row m-3 ">
+        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+            <button
+              className="btn btn-primary"
+              onClick={() => setModalShow(true)}
+            >
+              Add New Batch
+            </button>
         </div>
-      </div>
       <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
       <BatchForm
         show={modalShow}
         onHide={hideCreateModal}
       />
+      </div>
     </Collapse>
   );
 };

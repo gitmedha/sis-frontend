@@ -22,6 +22,7 @@ import Switch from '@material-ui/core/Switch';
 import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
+import Collapse from "../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -209,36 +210,40 @@ const Students = (props) => {
   }
 
   return (
-    <Styled>
-      <div className="container py-3">
-        <div className="d-flex justify-content-end py-2">
-          <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
-          <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
-          <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
+    <Collapse title="STUDENTS" type="plain" opened={true}>
+      <Styled>
+        <div className="row m-1">
+          <div className="d-flex justify-content-end py-2">
+            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
+            <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
+            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
+          </div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+            <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
+            <button
+              className="btn btn-primary"
+              onClick={() => setModalShow(true)}
+              style={{marginLeft: '15px'}}
+            >
+              Add New Student
+            </button>
+          </div>
+          <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
+            <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+          </div>
+          </div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
+          <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
+            <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+          </div>
+          <StudentForm
+          show={modalShow}
+          onHide={hideCreateModal}
+        />
         </div>
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
-          <button
-            className="btn btn-primary"
-            onClick={() => setModalShow(true)}
-            style={{marginLeft: '15px'}}
-          >
-            Add New Student
-          </button>
-        </div>
-        <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
-        </div>
-        <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
-          <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
-        </div>
-        <StudentForm
-        show={modalShow}
-        onHide={hideCreateModal}
-      />
-      </div>
-    </Styled>
+      </Styled>
+    </Collapse>
   );
 };
 

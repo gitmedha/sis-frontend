@@ -14,6 +14,7 @@ import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
+import Collapse from "../../components/content/CollapsiblePanels";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -174,26 +175,28 @@ const tabPickerOptions = [
   };
 
   return (
-    <div className="container py-3">
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <TabPicker options={tabPickerOptions}/>
-        <div className="d-flex justify-content-center align-items-center">
-          <WidgetUtilTab />
-          <button
-            className="btn btn-primary"
-            onClick={() => setModalShow(true)}
-            style={{marginLeft: '15px'}}
-          >
-            Add New Opportunity
-          </button>
+    <Collapse title="OPPORTUNITIES" type="plain" opened={true}>
+      <div className="row m-3">
+        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+          <TabPicker options={tabPickerOptions}/>
+          <div className="d-flex justify-content-center align-items-center">
+            <WidgetUtilTab />
+            <button
+              className="btn btn-primary"
+              onClick={() => setModalShow(true)}
+              style={{marginLeft: '15px'}}
+            >
+              Add New Opportunity
+            </button>
+          </div>
         </div>
+        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <OpportunityForm
+          show={modalShow}
+          onHide={hideCreateModal}
+        />
       </div>
-      <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-      <OpportunityForm
-        show={modalShow}
-        onHide={hideCreateModal}
-      />
-    </div>
+    </Collapse>
   );
 };
 
