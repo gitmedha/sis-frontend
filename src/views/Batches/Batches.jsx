@@ -114,11 +114,6 @@ const Batches = (props) => {
         Header: 'Start Date',
         accessor: 'start_date',
       },
-      {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
-      },
     ],
     []
   );

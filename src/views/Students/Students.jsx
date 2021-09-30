@@ -89,11 +89,6 @@ const Students = (props) => {
         Header: 'Latest Course Type',
         accessor: 'course_type_latest',
       },
-      {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
-      },
     ],
     []
   );
