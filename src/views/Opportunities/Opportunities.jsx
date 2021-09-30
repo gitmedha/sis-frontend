@@ -69,11 +69,6 @@ const tabPickerOptions = [
         Header: 'Date Added',
         accessor: 'created_at',
       },
-      {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
-      },
     ],
     []
   );

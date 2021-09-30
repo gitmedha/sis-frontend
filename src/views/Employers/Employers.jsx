@@ -53,11 +53,6 @@ const Employers = (props) => {
         Header: "State",
         accessor: "state",
       },
-      {
-        Header: "",
-        accessor: "link",
-        disableSortBy: true,
-      },
     ],
     []
   );

@@ -54,11 +54,6 @@ const Institutions = (props) => {
         Header: 'Type',
         accessor: 'type',
       },
-      {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
-      },
     ],
     []
   );
