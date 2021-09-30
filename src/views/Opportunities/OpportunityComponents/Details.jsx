@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Badge } from "../../../components/content/Utils";
+import { Anchor, Badge } from "../../../components/content/Utils";
 import DetailField from "../../../components/content/DetailField";
 import { FaCheckCircle } from "react-icons/fa";
 import  {getOpportunitiesPickList} from "./opportunityAction"
@@ -33,7 +33,7 @@ const Details = (props) => {
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
           <DetailField label="Role/Designation" value={role_or_designation} />
-          <DetailField label="Employer" value={employer ? employer.name : ''} />
+          <DetailField label="Employer" value={<Anchor text={employer ? employer.name : ''} href={`/employer/${employer?.id}`}  />} />
           <DetailField label="Location" value={employer ? employer.address : ''} />
           <DetailField label="No. of openings" value={number_of_opportunities} />
           <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == 'yes' ? '#207B69' : '#E0E0E8'} />} />
