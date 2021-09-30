@@ -15,6 +15,7 @@ import { deleteStudent, getEmploymentConnectionsPickList, getStudent, getStudent
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import Tooltip from "../../components/content/Tooltip";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -97,9 +98,13 @@ const Student = (props) => {
     let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship');
     setEmploymentConnectionsBadge(
       <>
-        <FaBriefcase width="15" color="#D7D7E0" />
+        <Tooltip placement="top" title="Placed">
+          <FaBriefcase width="15" color="#D7D7E0" />
+        </Tooltip>
         <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobEmploymentConnections.length}</span>
-        <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        <Tooltip  placement="top" title="Internship">
+          <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        </Tooltip>
         <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipEmploymentConnections.length}</span>
       </>
     );

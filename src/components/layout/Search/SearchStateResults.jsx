@@ -105,10 +105,6 @@ const SearchStateContainer = styled.div`
       padding: 15px;
     }
   }
-  @media screen and (min-width: 1200px) {
-    width: 800px;
-    left: auto;
-  }
 `;
 
 const SearchStateResults = (props) => {

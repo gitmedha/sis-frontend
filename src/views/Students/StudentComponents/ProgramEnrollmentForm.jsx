@@ -152,11 +152,11 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       control="lookup"
                       name="status"
-                      label="Status"
+                      label="Program Status"
                       required
                       options={statusOptions}
                       className="form-control"
-                      placeholder="Status"
+                      placeholder="Program Status"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

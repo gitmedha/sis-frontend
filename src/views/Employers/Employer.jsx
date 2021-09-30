@@ -26,7 +26,7 @@ const Employer = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [employerOpportunities, setEmployerOpportunities] = useState([]);
   const [opportunitiesBadge, setOpportunitiesBadge] = useState(<></>);
-  const { address, contacts, location, ...rest } = employerData;
+  const { address, contacts, ...rest } = employerData;
   const {setAlert} = props;
   const history = useHistory();
   const employerId = props.match.params.id;
@@ -145,9 +145,6 @@ const Employer = (props) => {
         </Collapsible>
         <Collapsible title="Address">
           <Address {...employerData} />
-        </Collapsible>
-        <Collapsible title="Location">
-          <Location location={location} id={rest.id} />
         </Collapsible>
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />

@@ -21,28 +21,6 @@ const StyledOpportunityIcon = styled.div`
   justify-content: center;
 `;
 
-const OpportunityIcon = ({opportunity}) => {
-  let bgColor = '#FF9700';
-  let icon = null;
-  switch (opportunity.type) {
-    case 'Job':
-      bgColor = '#FF9700';
-      icon = <FaBriefcase color="#ffffff" size="16" />;
-      break;
-
-    case 'Internship':
-      bgColor = '#12314C';
-      icon = <FaBlackTie color="#ffffff" size="16" />;
-      break;
-  }
-  if (icon) {
-    return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
-      {icon}
-    </StyledOpportunityIcon>;
-  }
-  return <></>;
-};
-
 const EmploymentConnections = (props) => {
   let { employmentConnections, student, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
@@ -65,7 +43,7 @@ const EmploymentConnections = (props) => {
       return {
         ...employmentConnection,
         employer_name: employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : '',
-        opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
+        opportunity_type: employmentConnection.opportunity ? employmentConnection.opportunity.type : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
@@ -83,7 +61,7 @@ const EmploymentConnections = (props) => {
       },
       {
         Header: 'Opportunity Type',
-        accessor: 'opportunity_icon',
+        accessor: 'opportunity_type',
       },
       {
         Header: 'Status',

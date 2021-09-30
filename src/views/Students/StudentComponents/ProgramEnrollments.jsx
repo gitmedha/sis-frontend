@@ -85,7 +85,7 @@ const ProgramEnrollments = (props) => {
         accessor: 'program_name',
       },
       {
-        Header: 'Status',
+        Header: 'Program Status',
         accessor: 'status_badge',
       },
       {

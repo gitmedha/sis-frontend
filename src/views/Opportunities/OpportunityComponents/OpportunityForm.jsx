@@ -79,7 +79,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
