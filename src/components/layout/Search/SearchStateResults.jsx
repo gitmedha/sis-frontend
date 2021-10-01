@@ -58,7 +58,7 @@ const SearchStateContainer = styled.div`
         background-color: #FF9700;
       }
       &.badge-employers {
-        background-color: #1AAFD0;
+        background-color: #0096FF;
       }
       &.badge-batches {
         background-color: #AA223C;
@@ -67,13 +67,13 @@ const SearchStateContainer = styled.div`
         background-color: #FC636B66;
       }
       &.badge-students-light {
-        background-color: #FF970066;
+        background-color: #FDDAA7;
       }
       &.badge-employers-light {
-        background-color: #1AAFD066;
+        background-color: #7ECCDD;
       }
       &.badge-batches-light {
-        background-color: #AA223C66;
+        background-color: #DFBAC1;
       }
       &.badge-disabled {
         background-color: #C4C4C4;
