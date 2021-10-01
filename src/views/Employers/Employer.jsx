@@ -18,6 +18,7 @@ import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import Tooltip from "../../components/content/Tooltip";
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
@@ -90,9 +91,13 @@ const Employer = (props) => {
     let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
     setOpportunitiesBadge(
       <>
+      <Tooltip placement="top" title="Job">
         <FaBriefcase width="15" color="#D7D7E0" />
-        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+      </Tooltip>
+      <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+      <Tooltip  placement="top" title="Internship">  
         <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+      </Tooltip>
         <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
       </>
     );
