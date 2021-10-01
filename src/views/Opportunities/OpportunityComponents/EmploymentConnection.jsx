@@ -2,7 +2,7 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from '../../../components/content/DetailField';
-import { Badge } from "../../../components/content/Utils";
+import { Anchor, Badge } from "../../../components/content/Utils";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "../../Students/StudentComponents/StudentActions";
 
 const EmploymentConnection = (props) => {
@@ -42,8 +42,8 @@ const EmploymentConnection = (props) => {
       <Modal.Body className="bg-white">
         <div className="row">
           <div className="col-md-6 col-sm-12">
-            <DetailField label="Student" value={`${student.first_name} ${student.last_name}`} />
-            <DetailField label="Employer" value={employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''} />
+            <DetailField label="Student" value={<Anchor text={`${student.first_name} ${student.last_name}`} href={`/student/${student.id}`}  />} />
+            <DetailField label="Employer" value={<Anchor text={employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`}  />} />
             <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
             <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
             <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />

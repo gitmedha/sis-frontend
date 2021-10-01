@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import DetailField from '../../../components/content/DetailField';
-import { Badge } from "../../../components/content/Utils";
+import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
@@ -64,8 +64,8 @@ const ProgramEnrollment = (props) => {
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Name" value={`${student.first_name} ${student.last_name}`} />
-              <DetailField label="Batch" value={programEnrollment.batch?.name} />
-              <DetailField label="Institution" value={programEnrollment.institution?.name} />
+              <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
+              <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
