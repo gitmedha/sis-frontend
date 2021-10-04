@@ -116,7 +116,7 @@ const Opportunity = (props) => {
               <TitleWithLogo
                 id={opportunityData.id}
                 logo={opportunityData.logo}
-                title={` ${opportunityData?.role_or_designation} ${"@"} ${opportunityData?.employer?.name}`}
+                title={`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}
               />
             }
           >
