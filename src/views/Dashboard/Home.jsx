@@ -11,6 +11,7 @@ import BarCharts from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
+import Opportunities from "./components/Opportunities";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -87,6 +88,7 @@ const Home = () => {
           </div>
         </div>
       </Collapsible>
+      <Opportunities />
       <Collapsible opened={true} title="Students Awaiting Internships/Employment" id="newlyCertifiedStudents" badge={180}>
         <Table variant="primary">
           <thead>

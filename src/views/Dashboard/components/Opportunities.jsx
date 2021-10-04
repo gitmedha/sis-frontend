@@ -1,29 +1,17 @@
 import nProgress from "nprogress";
-import api from "../../apis";
+import api from "../../../apis";
 import moment from "moment";
-import styled from "styled-components";
-import Avatar from "../../components/content/Avatar";
+import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import TabPicker from "../../components/content/TabPicker";
-import Table from '../../components/content/Table';
-import WidgetUtilTab from "../../components/content/WidgetUtilTab";
-import { GET_OPPORTUNITIES } from "../../graphql";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import OpportunityForm from "./OpportunityComponents/OpportunityForm";
-import { createOpportunity } from "./OpportunityComponents/opportunityAction";
-import { setAlert } from "../../store/reducers/Notifications/actions";
+import TabPicker from "../../../components/content/TabPicker";
+import Table from '../../../components/content/Table';
+import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
+import { GET_OPPORTUNITIES } from "../../../graphql";
+import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import Collapse from "../../components/content/CollapsiblePanels";
-
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import Collapse from "../../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
     { title: "My Data", key: "test-1" },
@@ -177,20 +165,9 @@ const tabPickerOptions = [
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div className="d-flex justify-content-center align-items-center">
             <WidgetUtilTab />
-            <button
-              className="btn btn-primary"
-              onClick={() => setModalShow(true)}
-              style={{marginLeft: '15px'}}
-            >
-              Add New Opportunity
-            </button>
           </div>
         </div>
         <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-        <OpportunityForm
-          show={modalShow}
-          onHide={hideCreateModal}
-        />
       </div>
     </Collapse>
   );
