@@ -13,21 +13,21 @@ import { connect } from "react-redux";
 import Collapse from "../../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
-    { title: "My Data", key: "test-1" },
-    { title: "My Area", key: "test-2" },
-    { title: "My State", key: "test-3" },
-    { title: "All Medha", key: "test-4" },
-  ];
+  { title: "My Data", key: "test-1" },
+  { title: "My Area", key: "test-2" },
+  { title: "My State", key: "test-3" },
+  { title: "All Medha", key: "test-4" },
+];
 
-  const Opportunities = (props) => {
-    const history = useHistory();
-    const [loading, setLoading] = useState(false);
-    const [opportunities, setOpportunities] = useState([]);
-    const [pickList, setPickList] = useState([]);
-    const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-    const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-    const [paginationPageSize, setPaginationPageSize] = useState(10);
-    const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+const Opportunities = (props) => {
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [opportunities, setOpportunities] = useState([]);
+  const [pickList, setPickList] = useState([]);
+  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
 
   const columns = useMemo(
     () => [
