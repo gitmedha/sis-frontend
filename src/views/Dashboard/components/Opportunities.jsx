@@ -8,7 +8,6 @@ import TabPicker from "../../../components/content/TabPicker";
 import Table from '../../../components/content/Table';
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../../graphql";
-import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../../components/content/CollapsiblePanels";
@@ -26,11 +25,9 @@ const tabPickerOptions = [
     const [opportunities, setOpportunities] = useState([]);
     const [pickList, setPickList] = useState([]);
     const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-    const {setAlert} = props;
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
     const [paginationPageSize, setPaginationPageSize] = useState(10);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
-    const [modalShow, setModalShow] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -134,28 +131,6 @@ const tabPickerOptions = [
 
   const onRowClick = (row) => {
     history.push(`/opportunity/${row.id}`);
-  };
-
-  const hideCreateModal = async (data) => {
-    if (!data || data.isTrusted) {
-      setModalShow(false);
-      return;
-    }
-
-    // need to remove `show` from the payload
-    let {show, ...dataToSave} = data;
-
-    nProgress.start();
-    createOpportunity(dataToSave).then(data => {
-      setAlert("Opportunity created successfully.", "success");
-    }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
-      setAlert("Unable to create opportunity.", "error");
-    }).finally(() => {
-      nProgress.done();
-      getOpportunities();
-    });
-    setModalShow(false);
   };
 
   return (
