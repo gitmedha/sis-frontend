@@ -60,7 +60,7 @@ const Students = (props) => {
   const [layout, setLayout] = useState('grid');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState('All');
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [paginationPageSize, setPaginationPageSize] = useState(25);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
 
   const columns = useMemo(
