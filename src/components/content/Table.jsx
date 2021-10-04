@@ -209,7 +209,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
           )}
         </div>
       </Styles>
-      {showPagination && <Pagination totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />}
+      {showPagination && <Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />}
     </>
   )
 };

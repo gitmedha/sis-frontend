@@ -14,7 +14,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import Address from "./OpportunityComponents/Address";
+import Location from "./OpportunityComponents/Location";
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -110,11 +110,20 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible opened={true}>
+          <Collapsible
+            opened={true}
+            titleContent={
+              <TitleWithLogo
+                id={opportunityData.id}
+                logo={opportunityData.logo}
+                title={` ${opportunityData?.role_or_designation} ${"@"} ${opportunityData?.employer?.name}`}
+              />
+            }
+          >
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
-          <Collapsible title="Address">
-            <Address {...opportunityData} />
+          <Collapsible title="Location">
+            <Location {...opportunityData} />
           </Collapsible>
           <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />

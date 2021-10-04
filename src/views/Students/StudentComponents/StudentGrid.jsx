@@ -300,7 +300,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
         )}
       </Styles>
       <div>
-        <Pagination totalPages={Math.ceil(totalRecords/pageSize)} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />
+        <Pagination totalRecords={totalRecords} totalPages={Math.ceil(totalRecords/pageSize)} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />
       </div>
     </>
   )

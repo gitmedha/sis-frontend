@@ -39,7 +39,7 @@ const tabPickerOptions = [
     const [pickList, setPickList] = useState([]);
     const {setAlert} = props;
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-    const [paginationPageSize, setPaginationPageSize] = useState(10);
+    const [paginationPageSize, setPaginationPageSize] = useState(25);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
 
@@ -131,7 +131,7 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
+       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: opportunitydata.type,
        number_of_opportunities: opportunitydata.number_of_opportunities,

@@ -15,6 +15,19 @@ const Styled = styled.div`
     }
   }
 
+  .count{
+    align-items: center;
+    background-color: hsl(0, 0%, 100%);
+    border-color: hsl(0, 0%, 80%);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: default;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+  }
+
   ul.pagination {
     margin: 30px auto;
     display: flex;
@@ -92,7 +105,7 @@ const range = (from, to, step = 1) => {
   return range;
 }
 
-const Pagination = ({totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit}) => {
+const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit}) => {
   const currentPage = pageIndex + 1;
 
   const fetchPageNumbers = () => {
@@ -163,6 +176,9 @@ const Pagination = ({totalPages, pageNeighbours = 2, gotoPage, nextPage, previou
             </ul>
           </nav>
 
+        </div>
+        <div className="col-md-2" >
+          <span class="count" >Total Records: &nbsp; {totalRecords} </span>
         </div>
       </div>
     </Styled>

@@ -42,7 +42,7 @@ const BatchForm = (props) => {
 
   let initialValues = {
     name: '',
-    name_in_current_sis: '',
+    // name_in_current_sis: '',
     assigned_to: '',
     program: '',
     grant: '',
@@ -149,14 +149,14 @@ const BatchForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                    {/* <Input
                       control="input"
                       className="form-control"
                       name="name_in_current_sis"
                       label="Name in Current SIS"
                       required
                       placeholder="Name in Current SIS"
-                    />
+                    /> */}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (

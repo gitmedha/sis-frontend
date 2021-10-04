@@ -32,7 +32,7 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [paginationPageSize, setPaginationPageSize] = useState(25);
   const {setAlert} = props;
 
   const columns = useMemo(
@@ -90,7 +90,7 @@ const Employers = (props) => {
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
-      employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} />
+      employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />
       employer.industry = <Badge value={employer.industry} pickList={pickList.industry || []} />;
       employer.link =  <TableRowDetailLink value={employer.id} to={"employer"} />
       return employer;
@@ -164,6 +164,7 @@ const Employers = (props) => {
           fetchData={fetchData}
           loading={loading}
           onRowClick={onRowClick}
+          onPageSizeChange={setPaginationPageSize}
         />
         <EmployerForm
           show={modalShow}
