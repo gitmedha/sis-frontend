@@ -16,6 +16,8 @@ import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
+import { TitleWithLogo } from "../../components/content/Avatar";
+import { Restaurant } from "@material-ui/icons";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -121,7 +123,7 @@ const Student = (props) => {
   } else {
     return (
       <>
-        <div className="row" style={{margin: '30px 15px 0 15px'}}>
+        <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
@@ -135,7 +137,18 @@ const Student = (props) => {
             </button>
           </div>
         </div>
-        <Details {...student} />
+        <Collapsible
+          opened={true}
+          titleContent={
+            <TitleWithLogo
+              id={rest.id}
+              logo={`${rest.logo} ? ${'school'}`}
+              title={`${rest.first_name} ${rest.last_name}`}
+            />
+          }
+        >
+          <Details {...student} />
+        </Collapsible>
         <Collapsible title="Address">
           <Address {...student} />
         </Collapsible>

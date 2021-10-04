@@ -83,7 +83,6 @@ const Details = (props) => {
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <hr className="separator" />
         <div className="row latto-regular">
           <div className="col-md-4">
             <DetailField label="First Name" value={first_name} />

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import api from "../../apis";
+import styled from "styled-components";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
@@ -14,7 +15,16 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportunity } from "./OpportunityComponents/opportunityAction";
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import Address from "./OpportunityComponents/Address";
+import Location from "./OpportunityComponents/Location";
+
+const StyledOpportunityIcon = styled.div`
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -25,6 +35,29 @@ const Opportunity = (props) => {
     const {setAlert} = props;
     const history = useHistory();
     const opportunityId = props.match.params.id;
+   
+    const OpportunityIcon = ({opportunityData}) => {
+      let bgColor = '#FF9700';
+      let icon = null;
+      switch (opportunityData?.type?.toLowerCase()) {
+        case 'job':
+          bgColor = '#FF9700';
+          icon = <FaBriefcase color="#ffffff" size="20" />;
+          break;
+
+        case 'internship':
+          bgColor = '#12314C';
+          icon = <FaBlackTie color="#ffffff" size="20" />;
+          break;
+      }
+      if (icon) {
+        console.log(icon)
+        return <StyledOpportunityIcon style={{backgroundColor: bgColor }}>
+          {icon}
+        </StyledOpportunityIcon>;
+      }
+      return(icon) ;
+    };
 
     const hideUpdateModal = async (data) => {
       if (!data || data.isTrusted) {
@@ -110,11 +143,20 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible opened={true}>
+          <Collapsible
+            opened={true}
+            titleContent={
+              <TitleWithLogo
+                //  logo={<OpportunityIcon/>}
+                title={` ${opportunityData?.role_or_designation} ${"@"} ${opportunityData?.employer?.name}`}
+              />
+            }
+          >
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
-          <Collapsible title="Address">
-            <Address {...opportunityData} />
+         
+          <Collapsible title="Location">
+            <Location {...opportunityData} />
           </Collapsible>
           <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />

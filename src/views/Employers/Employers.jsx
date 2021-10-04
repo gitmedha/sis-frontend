@@ -90,7 +90,7 @@ const Employers = (props) => {
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
-      employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} />
+      employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />
       employer.industry = <Badge value={employer.industry} pickList={pickList.industry || []} />;
       employer.link =  <TableRowDetailLink value={employer.id} to={"employer"} />
       return employer;

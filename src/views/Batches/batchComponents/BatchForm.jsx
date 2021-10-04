@@ -42,7 +42,7 @@ const BatchForm = (props) => {
 
   let initialValues = {
     name: '',
-    name_in_current_sis: '',
+    // name_in_current_sis: '',
     assigned_to: '',
     program: '',
     grant: '',
@@ -58,7 +58,7 @@ const BatchForm = (props) => {
     initialValues = {...props}
     initialValues['grant'] = Number(props.grant.id);
     initialValues['program'] = Number(props.program.id);
-    initialValues['institution'] = Number(props.institution.id);
+    initialValues['institution'] = Number(props.institution?.id);
     initialValues['assigned_to'] = Number(props.assigned_to.id);
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -91,6 +91,7 @@ const BatchForm = (props) => {
 
   const onSubmit = async (values) => {
     onHide(values);
+    console.log(values)
   };
 
   const filterInstitution = async (filterValue) => {
@@ -149,14 +150,14 @@ const BatchForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                    {/* <Input
                       control="input"
                       className="form-control"
                       name="name_in_current_sis"
                       label="Name in Current SIS"
                       required
                       placeholder="Name in Current SIS"
-                    />
+                    /> */}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (

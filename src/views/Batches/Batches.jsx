@@ -155,6 +155,7 @@ const Batches = (props) => {
 
     // need to remove `show` from the payload
     let {show, ...dataToSave} = data;
+
     dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
     dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
 

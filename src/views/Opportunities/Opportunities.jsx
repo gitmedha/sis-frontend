@@ -131,7 +131,7 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
+       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: opportunitydata.type,
        number_of_opportunities: opportunitydata.number_of_opportunities,
