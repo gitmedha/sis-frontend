@@ -1,48 +1,33 @@
 import nProgress from "nprogress";
-import api from "../../apis";
+import api from "../../../apis";
 import moment from "moment";
-import styled from "styled-components";
-import Avatar from "../../components/content/Avatar";
+import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import TabPicker from "../../components/content/TabPicker";
-import Table from '../../components/content/Table';
-import WidgetUtilTab from "../../components/content/WidgetUtilTab";
-import { GET_OPPORTUNITIES } from "../../graphql";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import OpportunityForm from "./OpportunityComponents/OpportunityForm";
-import { createOpportunity } from "./OpportunityComponents/opportunityAction";
-import { setAlert } from "../../store/reducers/Notifications/actions";
+import TabPicker from "../../../components/content/TabPicker";
+import Table from '../../../components/content/Table';
+import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
+import { GET_OPPORTUNITIES } from "../../../graphql";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import Collapse from "../../components/content/CollapsiblePanels";
-
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import Collapse from "../../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
-    { title: "My Data", key: "test-1" },
-    { title: "My Area", key: "test-2" },
-    { title: "My State", key: "test-3" },
-    { title: "All Medha", key: "test-4" },
-  ];
+  { title: "My Data", key: "test-1" },
+  { title: "My Area", key: "test-2" },
+  { title: "My State", key: "test-3" },
+  { title: "All Medha", key: "test-4" },
+];
 
-  const Opportunities = (props) => {
-    const history = useHistory();
-    const [loading, setLoading] = useState(false);
-    const [opportunities, setOpportunities] = useState([]);
-    const [pickList, setPickList] = useState([]);
-    const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-    const {setAlert} = props;
-    const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-    const [paginationPageSize, setPaginationPageSize] = useState(10);
-    const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
-    const [modalShow, setModalShow] = useState(false);
+const Opportunities = (props) => {
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [opportunities, setOpportunities] = useState([]);
+  const [pickList, setPickList] = useState([]);
+  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -148,28 +133,6 @@ const tabPickerOptions = [
     history.push(`/opportunity/${row.id}`);
   };
 
-  const hideCreateModal = async (data) => {
-    if (!data || data.isTrusted) {
-      setModalShow(false);
-      return;
-    }
-
-    // need to remove `show` from the payload
-    let {show, ...dataToSave} = data;
-
-    nProgress.start();
-    createOpportunity(dataToSave).then(data => {
-      setAlert("Opportunity created successfully.", "success");
-    }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
-      setAlert("Unable to create opportunity.", "error");
-    }).finally(() => {
-      nProgress.done();
-      getOpportunities();
-    });
-    setModalShow(false);
-  };
-
   return (
     <Collapse title="OPPORTUNITIES" type="plain" opened={true}>
       <div className="row m-3">
@@ -177,20 +140,9 @@ const tabPickerOptions = [
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div className="d-flex justify-content-center align-items-center">
             <WidgetUtilTab />
-            <button
-              className="btn btn-primary"
-              onClick={() => setModalShow(true)}
-              style={{marginLeft: '15px'}}
-            >
-              Add New Opportunity
-            </button>
           </div>
         </div>
         <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-        <OpportunityForm
-          show={modalShow}
-          onHide={hideCreateModal}
-        />
       </div>
     </Collapse>
   );
