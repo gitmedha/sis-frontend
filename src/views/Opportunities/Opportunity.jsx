@@ -35,28 +35,36 @@ const Opportunity = (props) => {
     const {setAlert} = props;
     const history = useHistory();
     const opportunityId = props.match.params.id;
-   
-    const OpportunityIcon = ({opportunityData}) => {
-      let bgColor = '#FF9700';
-      let icon = null;
-      switch (opportunityData?.type?.toLowerCase()) {
-        case 'job':
-          bgColor = '#FF9700';
-          icon = <FaBriefcase color="#ffffff" size="20" />;
-          break;
 
-        case 'internship':
-          bgColor = '#12314C';
-          icon = <FaBlackTie color="#ffffff" size="20" />;
+  const StyledOpportunityIcon = styled.div`
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+   
+    const OpportunityIcon = ({opportunity}) => {
+      let bgColor = '#207b69';
+      let icon = null;
+      switch (opportunity.type) {
+        case 'Job':
+          bgColor = '#207b69';
+          icon = <FaBriefcase color="#ffffff" size="25" />;
+          break;
+    
+        case 'Internship':
+          bgColor = '#207b69';
+          icon = <FaBlackTie color="#ffffff" size="25" />;
           break;
       }
       if (icon) {
-        console.log(icon)
-        return <StyledOpportunityIcon style={{backgroundColor: bgColor }}>
+        return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
           {icon}
         </StyledOpportunityIcon>;
       }
-      return(icon) ;
+      return <></>;
     };
 
     const hideUpdateModal = async (data) => {
@@ -143,14 +151,17 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible
+          <Collapsible 
             opened={true}
             titleContent={
-              <TitleWithLogo
-                //  logo={<OpportunityIcon/>}
-                title={` ${opportunityData?.role_or_designation} ${"@"} ${opportunityData?.employer?.name}`}
-              />
-            }
+              <div className="d-flex align-items-center justify-content-start mb-2">
+                  <OpportunityIcon opportunity={opportunityData}/>
+                   &nbsp;&nbsp;
+                  <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
+                    {`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}   
+                  </h1>
+              </div>
+            }            
           >
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
