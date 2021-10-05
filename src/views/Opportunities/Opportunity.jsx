@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import api from "../../apis";
+import styled from "styled-components";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
@@ -16,6 +17,15 @@ import EmploymentConnections from "./OpportunityComponents/EmploymentConnections
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
 
+const StyledOpportunityIcon = styled.div`
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Opportunity = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [opportunityData, setOpportunityData] = useState({});
@@ -25,6 +35,28 @@ const Opportunity = (props) => {
     const {setAlert} = props;
     const history = useHistory();
     const opportunityId = props.match.params.id;
+   
+    const OpportunityIcon = ({opportunity}) => {
+      let bgColor = '#207b69';
+      let icon = null;
+      switch (opportunity.type) {
+        case 'Job':
+          bgColor = '#207b69';
+          icon = <FaBriefcase color="#ffffff" size="25" />;
+          break;
+    
+        case 'Internship':
+          bgColor = '#207b69';
+          icon = <FaBlackTie color="#ffffff" size="25" />;
+          break;
+      }
+      if (icon) {
+        return <StyledOpportunityIcon style={{backgroundColor: bgColor}}>
+          {icon}
+        </StyledOpportunityIcon>;
+      }
+      return <></>;
+    };
 
     const hideUpdateModal = async (data) => {
       if (!data || data.isTrusted) {
@@ -113,12 +145,14 @@ const Opportunity = (props) => {
           <Collapsible
             opened={true}
             titleContent={
-              <TitleWithLogo
-                id={opportunityData.id}
-                logo={opportunityData.logo}
-                title={`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}
-              />
-            }
+              <div className="d-flex align-items-center justify-content-start mb-2">
+                  <OpportunityIcon opportunity={opportunityData}/>
+                   &nbsp;&nbsp;
+                  <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
+                    {`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}   
+                  </h1>
+              </div>
+            }            
           >
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
