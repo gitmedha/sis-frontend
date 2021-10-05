@@ -58,7 +58,7 @@ const BatchForm = (props) => {
     initialValues = {...props}
     initialValues['grant'] = Number(props.grant.id);
     initialValues['program'] = Number(props.program.id);
-    initialValues['institution'] = Number(props.institution?.id);
+    initialValues['institution'] = Number(props.institution.id);
     initialValues['assigned_to'] = Number(props.assigned_to.id);
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -91,7 +91,6 @@ const BatchForm = (props) => {
 
   const onSubmit = async (values) => {
     onHide(values);
-    console.log(values)
   };
 
   const filterInstitution = async (filterValue) => {

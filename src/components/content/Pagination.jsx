@@ -6,18 +6,6 @@ const Styled = styled.div`
   display: flex;
   align-items: center;
 
-  .count{
-    align-items: center;
-    background-color: hsl(0, 0%, 100%);
-    border-color: hsl(0, 0%, 80%);
-    border-radius: 4px;
-    border-style: solid;
-    border-width: 1px;
-    cursor: default;
-    display: flex;
-    flex-wrap: wrap;
-    padding: 4px;
-  }
   select {
     border: none;
     outline: none;

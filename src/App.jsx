@@ -91,7 +91,6 @@ const App = (props) => {
       // make api request to fetch JSON
       axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
-        localStorage.setItem("id", data.data.jwt);
         setUser(data.data.user);
         history.push('/');
       })

@@ -87,7 +87,7 @@ export const TitleWithLogo = connect(
             onClick={() => setModalShow(true)}
             className="flex-row-centered avatar avatar-default"
           >
-            <FaSchool  size={25} />
+            <FaSchool size={25} />
           </div>
         </Tooltip>
       )}

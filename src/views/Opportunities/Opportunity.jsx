@@ -35,15 +35,6 @@ const Opportunity = (props) => {
     const {setAlert} = props;
     const history = useHistory();
     const opportunityId = props.match.params.id;
-
-  const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
    
     const OpportunityIcon = ({opportunity}) => {
       let bgColor = '#207b69';
@@ -151,7 +142,7 @@ const Opportunity = (props) => {
               </button>
             </div>
           </div>
-          <Collapsible 
+          <Collapsible
             opened={true}
             titleContent={
               <div className="d-flex align-items-center justify-content-start mb-2">

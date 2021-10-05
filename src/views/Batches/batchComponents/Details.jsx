@@ -58,7 +58,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Name" value={batch.name} />
           <DetailField label="Program Name" value={batch.program?.name} />
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
-          <DetailField label="Institution" value={<Anchor text={batch.institution?.name} href={`/institution/${batch.institution?.id}`} />} />
+          <DetailField label="Institution" value={<Anchor text={batch.institution.name} href={`/institution/${batch.institution.id}`} />} />
           {/* <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} /> */}
           <DetailField label="Grant" value={batch.grant.name} />
           <div className="mt-2">
