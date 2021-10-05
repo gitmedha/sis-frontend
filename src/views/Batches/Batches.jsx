@@ -32,7 +32,7 @@ const Batches = (props) => {
   const [modalShow, setModalShow] = useState(false);
   const history = useHistory();
   const {setAlert} = props;
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [paginationPageSize, setPaginationPageSize] = useState(25);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
   const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {

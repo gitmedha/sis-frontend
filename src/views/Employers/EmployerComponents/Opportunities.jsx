@@ -65,7 +65,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
       return {
         ...opportunity,
         id: opportunity.id,
-        avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
+        avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
         role_or_designation: opportunity.role_or_designation,
         opportunity_type: opportunity.type,
         number_of_opportunities: opportunity.number_of_opportunities,

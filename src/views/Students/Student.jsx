@@ -17,7 +17,6 @@ import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
-import { Restaurant } from "@material-ui/icons";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -142,7 +141,7 @@ const Student = (props) => {
           titleContent={
             <TitleWithLogo
               id={rest.id}
-              logo={`${rest.logo} ? ${'school'}`}
+              logo={rest.logo}
               title={`${rest.first_name} ${rest.last_name}`}
             />
           }

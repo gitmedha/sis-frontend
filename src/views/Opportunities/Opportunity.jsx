@@ -154,7 +154,6 @@ const Opportunity = (props) => {
           >
             <Details {...opportunityData}  id={opportunityData.id} />
           </Collapsible>
-         
           <Collapsible title="Location">
             <Location {...opportunityData} />
           </Collapsible>

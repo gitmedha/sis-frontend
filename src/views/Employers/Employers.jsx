@@ -32,7 +32,7 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [paginationPageSize, setPaginationPageSize] = useState(25);
   const {setAlert} = props;
 
   const columns = useMemo(
@@ -164,6 +164,7 @@ const Employers = (props) => {
           fetchData={fetchData}
           loading={loading}
           onRowClick={onRowClick}
+          onPageSizeChange={setPaginationPageSize}
         />
         <EmployerForm
           show={modalShow}
