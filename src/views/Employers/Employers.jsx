@@ -102,21 +102,30 @@ const Employers = (props) => {
     history.push(`/employer/${row.id}`);
   };
 
-  const fetchData = useCallback(({ pageSize, pageIndex, sortBy }) => {
-      if (sortBy && sortBy.length) {
-        let sortByField = 'name';
-        let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
-        switch (sortBy[0].id) {
-          case 'industry':
-            sortByField = sortBy[0].id;
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'name';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'employer':
+        case 'industry':
+          sortByField = sortBy[0].id;
           break;
-          case 'address':
-          case 'avatar':
-          default:
-            sortByField = 'name';
+
+        case 'city':
+          sortByField = 'city'
           break;
-        }
-        getEmployers(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+       
+        case 'city':
+          sortByField = 'city'
+          break;
+
+        case 'avatar':
+        default:
+          sortByField = 'name';
+          break;
+      }
+      getEmployers(pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
       getEmployers(pageSize, pageSize * pageIndex);
     }

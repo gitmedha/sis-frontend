@@ -69,6 +69,44 @@ label {
   color: red;
   font-size: 16px;
 }
+
+.react-datepicker__day--outside-month {
+  color: transparent;
+  pointer-events: none;
+}
+
+.react-datepicker__month-read-view--down-arrow{
+  border-color: #ccc;
+    border-style: solid;
+    border-width: 3px 3px 0 0;
+    content: "";
+    display: block;
+    height: 9px;
+    position: absolute;
+    top: 6px;
+    width: 9px;
+    margin-right:1px;
+    padding:2px;
+}
+
+.react-datepicker__year-read-view{
+  border: 1px solid transparent;
+    border-radius: .3rem;
+    position: relative;
+    margin-left: 25px;
+}
+
+.date-picker-ui .react-datepicker__month-option--selected_month {
+    color: #257b69;
+}
+
+.react-datepicker__month-dropdown{
+  background-color:white;
+}
+
+.react-datepicker__month-option{
+  color:black;
+}
 `;
 
 const DatePicker = (props) => {
@@ -96,6 +134,8 @@ const DatePicker = (props) => {
                 <DateView
                   dateFormat={showtime? "dd MMM yyyy hh:mm a" : "dd MMM yyyy"}
                   showTimeSelect={showtime}
+                  showMonthDropdown
+                  useShortMonthInDropdown
                   showYearDropdown
                   id={name}
                   {...field}
