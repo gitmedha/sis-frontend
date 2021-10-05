@@ -116,8 +116,8 @@ const Employers = (props) => {
           sortByField = 'city'
           break;
        
-        case 'city':
-          sortByField = 'city'
+        case 'state':
+          sortByField = 'state'
           break;
 
         case 'avatar':
