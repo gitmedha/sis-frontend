@@ -77,27 +77,27 @@ label {
 
 .react-datepicker__month-read-view--down-arrow{
   border-color: #ccc;
-    border-style: solid;
-    border-width: 3px 3px 0 0;
-    content: "";
-    display: block;
-    height: 9px;
-    position: absolute;
-    top: 6px;
-    width: 9px;
-    margin-right:1px;
-    padding:2px;
+  border-style: solid;
+  border-width: 3px 3px 0 0;
+  content: "";
+  display: block;
+  height: 9px;
+  position: absolute;
+  top: 6px;
+  width: 9px;
+  margin-right:1px;
+  padding:2px;
 }
 
 .react-datepicker__year-read-view{
   border: 1px solid transparent;
-    border-radius: .3rem;
-    position: relative;
-    margin-left: 25px;
+  border-radius: .3rem;
+  position: relative;
+  margin-left: 25px;
 }
 
 .date-picker-ui .react-datepicker__month-option--selected_month {
-    color: #257b69;
+  color: #257b69;
 }
 
 .react-datepicker__month-dropdown{

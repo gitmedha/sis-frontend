@@ -98,7 +98,7 @@ const Student = (props) => {
     let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship');
     setEmploymentConnectionsBadge(
       <>
-      <Tooltip  placement="top" title="Internship">
+        <Tooltip  placement="top" title="Internship">
           <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
         </Tooltip>
         <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipEmploymentConnections.length}</span>
