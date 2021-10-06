@@ -50,7 +50,7 @@ const Students = ({ students, batch, fetchData }) => {
 
   const studentsTableData = students.map(student => {
     return {
-      id: student.id,
+      id: student.student.id,
       name: `${student.student.first_name} ${student.student.last_name}`,
       phone: student.student.phone,
       enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
