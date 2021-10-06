@@ -32,10 +32,11 @@ const Batches = (props) => {
   const [modalShow, setModalShow] = useState(false);
   const history = useHistory();
   const {setAlert} = props;
-  const [paginationPageSize, setPaginationPageSize] = useState(25);
+  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getBatches = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
     setLoading(true);
     await api.post("/graphql", {

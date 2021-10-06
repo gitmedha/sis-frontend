@@ -35,7 +35,8 @@ const Institutions = (props) => {
   const {setAlert} = props;
   const [modalShow, setModalShow] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [paginationPageSize, setPaginationPageSize] = useState(25);
+  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const columns = useMemo(
     () => [
       {
@@ -58,7 +59,7 @@ const Institutions = (props) => {
     []
   );
 
-  const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getInstitutions = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -138,7 +139,7 @@ const Institutions = (props) => {
 
     // need to remove `show` from the payload
     let {show, ...dataToSave} = data;
-
+    
     nProgress.start();
     createInstitution(dataToSave).then(data => {
       setAlert("Institution created successfully.", "success");

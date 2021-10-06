@@ -40,7 +40,8 @@ const tabPickerOptions = [
     const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
     const {setAlert} = props;
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-    const [paginationPageSize, setPaginationPageSize] = useState(25);
+    const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+    const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
 
@@ -74,8 +75,9 @@ const tabPickerOptions = [
     []
   );
 
-  const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+  const getOpportunities = async (limit = pageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
+    console.log(limit)
     setLoading(true);
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,

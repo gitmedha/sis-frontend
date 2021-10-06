@@ -32,7 +32,8 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(25);
+  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const {setAlert} = props;
 
   const columns = useMemo(
@@ -59,7 +60,7 @@ const Employers = (props) => {
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const getEmployers = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getEmployers = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
