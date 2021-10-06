@@ -139,7 +139,7 @@ const Institutions = (props) => {
 
     // need to remove `show` from the payload
     let {show, ...dataToSave} = data;
-    
+
     nProgress.start();
     createInstitution(dataToSave).then(data => {
       setAlert("Institution created successfully.", "success");
