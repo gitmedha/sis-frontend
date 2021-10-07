@@ -59,7 +59,7 @@ const Institutions = (props) => {
     []
   );
 
-  const getInstitutions = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getInstitutions = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {

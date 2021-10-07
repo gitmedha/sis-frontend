@@ -77,7 +77,6 @@ const tabPickerOptions = [
 
   const getOpportunities = async (limit = pageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
-    console.log(limit)
     setLoading(true);
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,

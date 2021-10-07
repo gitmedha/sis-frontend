@@ -60,7 +60,7 @@ const Employers = (props) => {
 
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const getEmployers = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getEmployers = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {

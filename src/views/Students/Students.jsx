@@ -94,7 +94,7 @@ const Students = (props) => {
     []
   );
 
-  const getStudents = async (status = 'All', limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
     let variables = {

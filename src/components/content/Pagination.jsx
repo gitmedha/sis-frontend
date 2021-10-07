@@ -139,7 +139,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
             options={pageSizeOptions}
             isSearchable={false}
             onChange={e => {
-              localStorage.setItem('tablePageSize', (Number(e.value)));
+              localStorage.setItem('tablePageSize', Number(e.value));
               setPageLimit(Number(e.value))
             }}
           />

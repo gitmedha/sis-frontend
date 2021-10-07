@@ -36,7 +36,7 @@ const Batches = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
 
-  const getBatches = async (limit = pageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
     setLoading(true);
     await api.post("/graphql", {
