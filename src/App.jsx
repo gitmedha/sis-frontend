@@ -49,7 +49,6 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
-  const id = localStorage.getItem("id");
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -81,7 +80,6 @@ const App = (props) => {
           return null;
         }
         setUser(res.data);
-        localStorage.setItem("id", id);
       });
     }
   }
@@ -91,9 +89,8 @@ const App = (props) => {
     // check for full path also.
     if (accessToken) {
       // make api request to fetch JSON
-      axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => { 
+      axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
-        // localStorage.setItem("id", data.data.jwt);
         setUser(data.data.user);
         history.push('/');
       })
