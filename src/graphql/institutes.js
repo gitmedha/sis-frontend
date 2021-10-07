@@ -333,3 +333,59 @@ query GET_STUDENT ($id: ID!){
   }
 }
 `;
+
+const programEnrollmentFields = `
+  id
+  status
+  course_year
+  course_type
+  course_level
+  year_of_course_completion
+  registration_date
+  certification_date
+  fee_status
+  fee_payment_date
+  fee_amount
+  fee_transaction_id
+  fee_refund_status
+  fee_refund_date
+  course_name_in_current_sis
+  medha_program_certificate {
+    id
+    url
+    created_at
+  }
+  institution {
+    id
+    name
+  }
+  batch {
+    id
+    name
+    program {
+      name
+    }
+  }
+`;
+
+export const GET_INSTITUTION_PROGRAM_ENROLLMENTS = `
+query GET_INSTITUTION_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
+  programEnrollmentsConnection (
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      institution: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      ${programEnrollmentFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;

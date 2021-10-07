@@ -9,15 +9,17 @@ import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
 import Students from "./InstitutionComponents/Students";
+import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteInstitution, updateInstitution } from "./InstitutionComponents/instituteActions";
+import { deleteInstitution, updateInstitution, getInstitutionProgramEnrollments } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 
 const Institute = (props) => {
+  const [institutionProgramEnrollments, setInstitutionProgramEnrollments] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [instituteData, setInstituteData] = useState({});
   const [modalShow, setModalShow] = useState(false);
@@ -83,8 +85,17 @@ const Institute = (props) => {
     }
   };
 
-  useEffect(() => {
+  const getProgramEnrollments = async () => {
+    getInstitutionProgramEnrollments(instituteID).then(data => {
+      setInstitutionProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+    }).catch(err => {
+      console.log("getInstitutionProgramEnrollments Error", err);
+    });
+  }
+
+  useEffect(async() => {
     getThisInstitution();
+    await getProgramEnrollments();
   }, [instituteID]);
 
   if (isLoading) {
@@ -126,8 +137,8 @@ const Institute = (props) => {
         <Collapsible title="Contacts">
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
-        <Collapsible title="Students">
-          <Students id={rest.id} />
+        <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
+          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} {...instituteData} />
         </Collapsible>
         <InstitutionForm
           {...instituteData}
