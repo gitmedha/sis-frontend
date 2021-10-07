@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-// import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
@@ -32,11 +32,11 @@ const ProgramEnrollment = (props) => {
   let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
   const [pickList, setPickList] = useState([]);
 
-  // useEffect(() => {
-  //   getProgramEnrollmentsPickList().then(data => {
-  //     setPickList(data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getProgramEnrollmentsPickList().then(data => {
+      setPickList(data);
+    });
+  }, []);
 
   return (
       <Modal
@@ -63,7 +63,7 @@ const ProgramEnrollment = (props) => {
           <h2 className="section-header">Enrollment Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Name" value={`${student.first_name} ${student.last_name}`} />
+              <DetailField label="Name" value={`${programEnrollment.student?.first_name} ${programEnrollment.student?.last_name}`} />
               <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
               <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
             </div>

@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import {GET_INSTITUTION_PROGRAM_ENROLLMENTS, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import {GET_ALL_INSTITUTES, GET_ALL_BATCHES, UPDATE_PROGRAM_ENROLLMENT, DELETE_PROGRAM_ENROLLMENT, GET_INSTITUTION_PROGRAM_ENROLLMENTS, CREATE_PROGRAM_ENROLLMENT, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -129,5 +129,66 @@ export const getInstitutionProgramEnrollments = async (instituteID, limit=10, of
   }).catch(error => {
     return Promise.reject(error);
   });
-  
+}
+
+export const createProgramEnrollment = async (data) => {
+  return await api.post('/graphql', {
+    query: CREATE_PROGRAM_ENROLLMENT,
+    variables: {
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
 };
+
+export const deleteProgramEnrollment = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_PROGRAM_ENROLLMENT,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const updateProgramEnrollment = async (id, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_PROGRAM_ENROLLMENT,
+    variables: {
+      id,
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getAllBatches = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_BATCHES,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getAllInstitutions = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_INSTITUTES,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+;
+

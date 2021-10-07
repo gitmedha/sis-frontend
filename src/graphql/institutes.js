@@ -359,6 +359,10 @@ const programEnrollmentFields = `
     id
     name
   }
+  student{
+    first_name
+    last_name
+  }
   batch {
     id
     name
@@ -386,6 +390,66 @@ query GET_INSTITUTION_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $
     aggregate {
       count
     }
+  }
+}
+`;
+
+export const CREATE_PROGRAM_ENROLLMENT = `
+  mutation CREATE_PROGRAM_ENROLLMENT (
+    $data: ProgramEnrollmentInput!
+  ) {
+    createProgramEnrollment (
+      input: {
+        data: $data
+      }
+    ) {
+      programEnrollment {
+        ${programEnrollmentFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_PROGRAM_ENROLLMENT = `
+  mutation DELETE_PROGRAM_ENROLLMENT(
+    $id: ID!
+  ) {
+    deleteProgramEnrollment (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      programEnrollment {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROGRAM_ENROLLMENT = `
+  mutation UPDATE_PROGRAM_ENROLLMENT (
+    $data: editProgramEnrollmentInput!
+    $id: ID!
+  ) {
+    updateProgramEnrollment(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      programEnrollment {
+        ${programEnrollmentFields}
+      }
+    }
+  }
+`;
+
+export const GET_ALL_BATCHES = `
+query GET_ALL_BATCHES {
+  batches {
+    id
+    name
+    status
   }
 }
 `;
