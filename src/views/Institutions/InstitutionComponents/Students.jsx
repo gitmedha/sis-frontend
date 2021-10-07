@@ -107,17 +107,17 @@ const Students = ({ id }) => {
   return (
     <div className="px-3 py-2">
       <div className="row">
-    <div className="container-fluid my-3">
-      <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} onRowClick={showStudentDetails} fetchData={fetchData} loading={loading}  showPagination={false} />
-    </div>
-    </div>
-    {showModal && (
-      <StudentModal
-        show={showModal}
-        onHide={toggleModal}
-        student={studentInModal}
-      />
-    )}
+        <div className="container-fluid my-3">
+          <Table columns={columns} data={studentsTableData} paginationPageSize={paginationPageSize} totalRecords={institutionStudentsAggregate} onRowClick={showStudentDetails} fetchData={fetchData} loading={loading}  showPagination={false} />
+        </div>
+      </div>
+      {showModal && (
+        <StudentModal
+          show={showModal}
+          onHide={toggleModal}
+          student={studentInModal}
+        />
+      )}
     </div>
   );
 };
