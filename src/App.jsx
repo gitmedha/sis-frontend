@@ -49,6 +49,7 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
+  const state = localStorage.getItem("user_state");
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -80,6 +81,7 @@ const App = (props) => {
           return null;
         }
         setUser(res.data);
+        localStorage.setItem("user_state", state);
       });
     }
   }
