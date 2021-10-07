@@ -32,7 +32,8 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const [paginationPageSize, setPaginationPageSize] = useState(25);
+  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const {setAlert} = props;
 
   const columns = useMemo(

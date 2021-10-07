@@ -35,7 +35,8 @@ const Institutions = (props) => {
   const {setAlert} = props;
   const [modalShow, setModalShow] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [paginationPageSize, setPaginationPageSize] = useState(25);
+  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const columns = useMemo(
     () => [
       {
