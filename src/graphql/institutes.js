@@ -304,13 +304,31 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
         logo {
           url
         }
-        address {
-          city
-        }
+        address 
+        city
       }
     }
     aggregate {
       count
+    }
+  }
+}
+`;
+
+export const GET_INSTITUTION_STUDENTS_DETAILS = `
+query GET_STUDENT ($id: ID!){
+  student(id: $id){
+    first_name
+    last_name
+    name_of_parent_or_guardian
+    phone
+    status
+    gender
+    date_of_birth
+    email
+    category
+    CV {
+      id
     }
   }
 }
