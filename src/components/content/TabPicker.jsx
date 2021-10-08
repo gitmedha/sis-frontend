@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 const TabPicker = ({ options, setActiveTab = () => {} }) => {
   // const [tabs, setTabs] = useState(options);
   const [activeTab, setActive] = useState(options[0].key);
-  const userState = (localStorage.getItem('user_state'))
 
   const changeTab = (tab) => {
     setActive(tab.key);
