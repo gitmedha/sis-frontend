@@ -38,6 +38,9 @@ const Home = () => {
     else if (activeTab.key == "my_area") {
         myDistrictMetrics()
     }
+    else{
+      clearState()
+    }
   }, [activeTab]);
 
   const myStateMetrics = async () => {
@@ -77,6 +80,10 @@ const Home = () => {
     });
   };
  
+  const clearState = () => {
+    setUserState('')
+}
+
   return (
     <div className="container-fluid">
       <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
