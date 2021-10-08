@@ -35,7 +35,7 @@ const Batches = (props) => {
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const id = parseInt(localStorage.getItem('user_id'))
+  const userId  = parseInt(localStorage.getItem('user_id'))
 
   const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
@@ -45,7 +45,7 @@ const Batches = (props) => {
       variables: {
         limit: limit,
         start: offset,
-        id: id,
+        id: userId ,
         sort: `${sortBy}:${sortOrder}`,
       },
     })
