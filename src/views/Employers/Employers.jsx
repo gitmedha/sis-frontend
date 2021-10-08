@@ -67,7 +67,7 @@ const Employers = (props) => {
     await api.post("/graphql", {
       query: GET_USER_EMPLOYERS,
       variables: {
-        //id: id,
+        //id: user.id,
         limit: limit,
         start: offset,
         sort: `${sortBy}:${sortOrder}`,

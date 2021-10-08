@@ -70,7 +70,6 @@ const Institutions = (props) => {
         id: id,
         limit: limit,
         start: offset,
-        // id: 2,
         sort: `${sortBy}:${sortOrder}`,
       },
     })
