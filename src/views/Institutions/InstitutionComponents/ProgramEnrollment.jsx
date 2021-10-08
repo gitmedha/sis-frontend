@@ -31,7 +31,7 @@ const Section = styled.div`
 const ProgramEnrollment = (props) => {
   let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
   const [pickList, setPickList] = useState([]);
-
+  
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setPickList(data);
@@ -63,9 +63,9 @@ const ProgramEnrollment = (props) => {
           <h2 className="section-header">Enrollment Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Name" value={`${programEnrollment.student?.first_name} ${programEnrollment.student?.last_name}`} />
+              <DetailField label="Name" value={<Anchor text ={`${programEnrollment.student?.first_name} ${programEnrollment.student?.last_name}`} href={`/student/${programEnrollment.student?.id}`}   />} />
               <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
-              <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
+              <DetailField label="Institution" value={programEnrollment.institution?.name} />
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />

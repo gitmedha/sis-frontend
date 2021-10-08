@@ -492,6 +492,7 @@ const programEnrollmentFields = `
     name
   }
   student{
+    id
     first_name
     last_name
   }

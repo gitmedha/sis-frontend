@@ -29,7 +29,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student } = props;
+  let { onHide, show, student, programEnrollment } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -46,7 +46,7 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
-    program_enrollment_student: student?.first_name + ' ' + student?.last_name,
+    program_enrollment_student: programEnrollment?.student?.first_name + ' ' + programEnrollment?.student?.last_name,
     status: '',
     batch: '',
     registration_date: '',
