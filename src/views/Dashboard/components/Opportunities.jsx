@@ -28,6 +28,7 @@ const Opportunities = (props) => {
   const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+  const id = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -65,10 +66,9 @@ const Opportunities = (props) => {
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
       variables: {
-        // id: user.id,
+        id: id,
         limit: limit,
         start: offset,
-        id: 2,
         sort: `${sortBy}:${sortOrder}`,
       },
     })

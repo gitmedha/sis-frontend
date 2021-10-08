@@ -35,6 +35,7 @@ const Employers = (props) => {
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const {setAlert} = props;
+  const id = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -66,7 +67,7 @@ const Employers = (props) => {
     await api.post("/graphql", {
       query: GET_USER_EMPLOYERS,
       variables: {
-        //id: user.id,
+        //id: id,
         limit: limit,
         start: offset,
         sort: `${sortBy}:${sortOrder}`,

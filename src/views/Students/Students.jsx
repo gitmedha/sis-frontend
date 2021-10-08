@@ -63,6 +63,7 @@ const Students = (props) => {
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
+  const id = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -100,8 +101,7 @@ const Students = (props) => {
     let variables = {
       limit,
       start: offset,
-      //id: user.id,
-      id: 2,
+      id: id,
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
