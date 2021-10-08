@@ -19,10 +19,12 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
 import { groupBy } from "lodash";
+import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 
 const Batch = (props) => {
+  const [batchProgramEnrollments, setBatchProgramEnrollments] = useState([]);
   const [batch, setBatch] = useState(null);
   const [students, setStudents] = useState([]);
   const batchID = Number(props.match.params.id);
@@ -168,6 +170,7 @@ const Batch = (props) => {
     setLoading(true);
     NP.start();
     await getThisBatch();
+    await getProgramEnrollments();
     NP.done();
     setLoading(false);
   }, [batchID]);
@@ -180,6 +183,14 @@ const Batch = (props) => {
   const handleSessionDataUpdate = async () => {
     await getSessions();
     await getStudents();
+  }
+
+  const getProgramEnrollments = async () => {
+    getBatchProgramEnrollments(batchID).then(data => {
+      setBatchProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+    }).catch(err => {
+      console.log("getInstitutionProgramEnrollments Error", err);
+    });
   }
 
   if (isLoading) {
@@ -221,8 +232,8 @@ const Batch = (props) => {
         <Collapsible title="Sessions" badge={sessions.length.toString()}>
           <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
         </Collapsible>
-        <Collapsible title="Students" badge={students.length.toString()}>
-          <Students students={students} fetchData={getStudents} batch={batch} />
+        <Collapsible title="Program Enrollments" badge={batchProgramEnrollments.length.toString()}>
+          <ProgramEnrollments programEnrollments={batchProgramEnrollments} onDataUpdate={getProgramEnrollments} students={students} fetchData={getStudents} batch={batch} />
         </Collapsible>
         {batch && <BatchForm
           {...batch}
