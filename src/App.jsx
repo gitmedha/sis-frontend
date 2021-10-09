@@ -81,7 +81,7 @@ const App = (props) => {
           setUser(null);
           return null;
         }
-        setUser(res.data);       
+        setUser(res.data);
       });
     }
   }
@@ -107,7 +107,6 @@ const App = (props) => {
   return (
     <AuthContext.Provider
       value={{
-        // state:user.state,
         user: user,
         setUser: setUser,
         isAuthenticated: !!user,
