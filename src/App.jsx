@@ -49,9 +49,8 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
-  const userState = localStorage.getItem("user_state");
-  const userDistrict = localStorage.getItem("user_district");
-  const userArea = localStorage.getItem("user_area");
+  localStorage.setItem("user_state" , user?.state); 
+  localStorage.setItem("user_area", user?.area);
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -82,10 +81,7 @@ const App = (props) => {
           setUser(null);
           return null;
         }
-        setUser(res.data);
-        localStorage.setItem("user_state", userState);
-        localStorage.setItem("user_district", userDistrict);
-        localStorage.setItem("user_area", userArea);
+        setUser(res.data);       
       });
     }
   }
@@ -103,6 +99,7 @@ const App = (props) => {
     }
   }, []);
 
+
   useEffect(() => {
     getUserDetails();
   }, []);
@@ -110,6 +107,7 @@ const App = (props) => {
   return (
     <AuthContext.Provider
       value={{
+        // state:user.state,
         user: user,
         setUser: setUser,
         isAuthenticated: !!user,

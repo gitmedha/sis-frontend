@@ -1,6 +1,6 @@
 import api from "../../../src/apis";
 import { GET_STATE_METRICS, GET_AREA_METRICS, GET_DISTRICT_METRICS, GET_ALL_METRICS } from "../../graphql";
-import SkeletonLoader from "../../components/content/SkeletonLoader";
+import SkeletonLoader from "../../components/content/SkeletonLoader2";
 import {
   FaBlackTie,
   FaBriefcase,
@@ -28,10 +28,8 @@ const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const state = (localStorage.getItem('user_state'));
-  const district = (localStorage.getItem('user_district'));
   const area = (localStorage.getItem('user_area'));
   const [userState, setUserState] = useState({});
-
   
   useEffect(() => {
     if(activeTab.key == "my_state"){
@@ -49,6 +47,7 @@ const Home = () => {
   }, [activeTab]);
 
   const myStateMetrics = async () => {
+    setLoading(true);
     await api.post("/graphql", {
       query: GET_STATE_METRICS,
       variables: {
@@ -62,10 +61,12 @@ const Home = () => {
       return Promise.reject(error);
     })
     .finally(() => {
+      setLoading(false);
     });
   };
 
   const myAreaMetrics = async () => {
+    setLoading(true);
     await api.post("/graphql", {
       query: GET_AREA_METRICS,
       variables: {
@@ -79,6 +80,7 @@ const Home = () => {
       return Promise.reject(error);
     })
     .finally(() => {
+      setLoading(false);
     });
   };
 
@@ -99,9 +101,7 @@ const Home = () => {
   const clearState = () => {
     setUserState('')
 }
-if (isLoading) {
-  return <SkeletonLoader />;
-} else {
+
   return (
     <div className="container-fluid">
       <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
@@ -109,6 +109,9 @@ if (isLoading) {
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <WidgetUtilTab />
         </div>
+        {isLoading ? (
+          <SkeletonLoader />
+        ) : (
         <div className="row py-2">
           <div className="col-md-3 col-sm-12">
             <InfoCards
@@ -146,6 +149,7 @@ if (isLoading) {
             />
           </div>
         </div>
+        )}
       </Collapsible>
       <Collapsible opened={true} title="Charts">
         <div className="row">
@@ -167,7 +171,6 @@ if (isLoading) {
       <Students />
     </div>
   );
-}
 };
 
 export default Home;
