@@ -36,10 +36,10 @@ const Home = () => {
       myStateMetrics()
     } 
     else if (activeTab.key == "my_area"){
-        myAreaMetrics()
+      myAreaMetrics()
     }
     else if (activeTab.key == "all_medha") {
-        myAllMetrics()
+      myAllMetrics()
     }
     else{
       clearState()
@@ -85,6 +85,7 @@ const Home = () => {
   };
 
   const myAllMetrics = async () => {
+    setLoading(true);
     await api.post("/graphql", {
       query: GET_ALL_METRICS,
     })
@@ -95,6 +96,7 @@ const Home = () => {
       return Promise.reject(error);
     })
     .finally(() => {
+      setLoading(false);
     });
   };
  
