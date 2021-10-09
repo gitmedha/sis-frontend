@@ -1,6 +1,6 @@
 import api from "../../../src/apis";
-import { GET_STATE_METRICS, GET_DISTRICT_METRICS } from "../../graphql";
-
+import { GET_STATE_METRICS, GET_AREA_METRICS, GET_DISTRICT_METRICS, GET_ALL_METRICS } from "../../graphql";
+import SkeletonLoader from "../../components/content/SkeletonLoader";
 import {
   FaBlackTie,
   FaBriefcase,
@@ -25,9 +25,11 @@ const tabPickerOptions = [
 ];
 
 const Home = () => {
+  const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const state = (localStorage.getItem('user_state'));
   const district = (localStorage.getItem('user_district'));
+  const area = (localStorage.getItem('user_area'));
   const [userState, setUserState] = useState({});
 
   
@@ -35,8 +37,11 @@ const Home = () => {
     if(activeTab.key == "my_state"){
       myStateMetrics()
     } 
-    else if (activeTab.key == "my_area") {
-        myDistrictMetrics()
+    else if (activeTab.key == "my_area"){
+        myAreaMetrics()
+    }
+    else if (activeTab.key == "all_medha") {
+        myAllMetrics()
     }
     else{
       clearState()
@@ -51,7 +56,6 @@ const Home = () => {
       },
     })
     .then(data => {
-      console.log(data.data.data.metricsStates)
       setUserState(data.data.data.metricsStates[0]);
     })
     .catch(error => {
@@ -61,17 +65,29 @@ const Home = () => {
     });
   };
 
-
-  const myDistrictMetrics = async () => {
+  const myAreaMetrics = async () => {
     await api.post("/graphql", {
-      query: GET_DISTRICT_METRICS,
+      query: GET_AREA_METRICS,
       variables: {
-         district
+         area
       },
     })
     .then(data => {
-      console.log(data.data.data.metricsDistricts)
-      setUserState(data.data.data.metricsDistricts[0]);
+      setUserState(data.data.data.metricsAreas[0]);
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+    });
+  };
+
+  const myAllMetrics = async () => {
+    await api.post("/graphql", {
+      query: GET_ALL_METRICS,
+    })
+    .then(data => {
+      setUserState(data.data.data.metricsAlls[0]);
     })
     .catch(error => {
       return Promise.reject(error);
@@ -83,7 +99,9 @@ const Home = () => {
   const clearState = () => {
     setUserState('')
 }
-
+if (isLoading) {
+  return <SkeletonLoader />;
+} else {
   return (
     <div className="container-fluid">
       <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
@@ -149,6 +167,7 @@ const Home = () => {
       <Students />
     </div>
   );
+}
 };
 
 export default Home;

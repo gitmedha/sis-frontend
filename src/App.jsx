@@ -51,6 +51,7 @@ const App = (props) => {
   const token = localStorage.getItem("token");
   const userState = localStorage.getItem("user_state");
   const userDistrict = localStorage.getItem("user_district");
+  const userArea = localStorage.getItem("user_area");
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -84,6 +85,7 @@ const App = (props) => {
         setUser(res.data);
         localStorage.setItem("user_state", userState);
         localStorage.setItem("user_district", userDistrict);
+        localStorage.setItem("user_area", userArea);
       });
     }
   }
