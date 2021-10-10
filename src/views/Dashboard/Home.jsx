@@ -9,8 +9,8 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import InfoCards from "./components/InfoCards";
-import { Table } from "react-bootstrap";
-import BarCharts from "../../components/content/Chart";
+// import { Table } from "react-bootstrap";
+// import BarCharts from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
@@ -18,6 +18,7 @@ import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
 import s2 from '../../../src/assets/images/s2.JPG';
 import s1 from '../../../src/assets/images/s1.JPG';
+import { getMyDataMetrics } from "./components/DashboardActions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -29,31 +30,50 @@ const tabPickerOptions = [
 const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const userId = localStorage.getItem("userId") || 2;
   const state = (localStorage.getItem('user_state'));
   const area = (localStorage.getItem('user_area'));
   const [userState, setUserState] = useState({});
-  
+
   useEffect(() => {
+    clearState();
     if(activeTab.key == "my_state"){
-      myStateMetrics()
-    } 
-    else if (activeTab.key == "my_area"){
-      myAreaMetrics()
-    }
-    else if (activeTab.key == "all_medha") {
-      myAllMetrics()
-    }
-    else{
-      clearState()
+      getMyStateMetrics();
+    } else if (activeTab.key == "my_area"){
+      getMyAreaMetrics();
+    } else if (activeTab.key == "all_medha") {
+      getMyAllMetrics();
+    } else {
+      updateMyDataMetrics();
     }
   }, [activeTab]);
 
-  const myStateMetrics = async () => {
+  const updateMyDataMetrics = async () => {
+    setLoading(true);
+    const myDataMetrics = {}
+    await getMyDataMetrics(userId, 'registrations').then(data => {
+      myDataMetrics['registrations'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+    });
+    await getMyDataMetrics(userId, 'certifications').then(data => {
+      myDataMetrics['certifications'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+    });
+    await getMyDataMetrics(userId, 'internships').then(data => {
+      myDataMetrics['internships'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+    });
+    await getMyDataMetrics(userId, 'placements').then(data => {
+      myDataMetrics['placements'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+    });
+    console.log('myDataMetrics', myDataMetrics);
+    setUserState(myDataMetrics);
+    setLoading(false);
+  }
+
+  const getMyStateMetrics = async () => {
     setLoading(true);
     await api.post("/graphql", {
       query: GET_STATE_METRICS,
       variables: {
-         state
+        state
       },
     })
     .then(data => {
@@ -67,7 +87,7 @@ const Home = () => {
     });
   };
 
-  const myAreaMetrics = async () => {
+  const getMyAreaMetrics = async () => {
     setLoading(true);
     await api.post("/graphql", {
       query: GET_AREA_METRICS,
@@ -86,7 +106,7 @@ const Home = () => {
     });
   };
 
-  const myAllMetrics = async () => {
+  const getMyAllMetrics = async () => {
     setLoading(true);
     await api.post("/graphql", {
       query: GET_ALL_METRICS,
@@ -101,10 +121,10 @@ const Home = () => {
       setLoading(false);
     });
   };
- 
+
   const clearState = () => {
-    setUserState('')
-}
+    setUserState('');
+  }
 
   return (
     <div className="container-fluid">
@@ -120,7 +140,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="success"
-              value={userState.registrations? userState.registrations :"0" } 
+              value={userState.registrations? userState.registrations :"0" }
               title="Registrations"
               icon={<FaClipboardCheck size={25} color={"white"} />}
             />
@@ -128,7 +148,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="danger"
-              value={userState.certifications? userState.certifications :"0" } 
+              value={userState.certifications? userState.certifications :"0" }
               title="Certifications"
               caption={parseInt((userState.certifications / userState.registrations) * 100 || "0") + '% of Registrations'}
               icon={<FaGraduationCap size={25} color={"white"} />}
@@ -137,7 +157,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="warning"
-              value={userState.internships? userState.internships :"0" } 
+              value={userState.internships? userState.internships :"0" }
               title="Internships"
               caption={parseInt((userState.internships / userState.certifications) * 100 || "0") + "% of Certifications"}
               icon={<FaBlackTie size={25} color={"white"} />}
@@ -146,7 +166,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="info"
-              value={userState.placements? userState.placements :"0" } 
+              value={userState.placements? userState.placements :"0" }
               title="Placements"
               caption={parseInt((userState.placements / userState.certifications) * 100 || "0") + "% of Certifications"}
               icon={<FaBriefcase size={25} color={"white"} />}
@@ -158,7 +178,7 @@ const Home = () => {
       <Collapsible opened={true} title="Charts">
         <div className="row">
           <div className="col-sm-12 col-md-6">
-           <img src={s1} width="600" height="400"/> 
+           <img src={s1} width="600" height="400"/>
             {/* <div className="card">
               <div className="card-body">
                 <BarCharts />
