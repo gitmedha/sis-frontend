@@ -49,7 +49,7 @@ const Home = () => {
               type="danger"
               value={23000}
               title="Certifications"
-              caption="65% of Registrations"
+              caption= {(Math.round((userState.certifications / userState.registrations) * 100)  + "% of Registrations")}  
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>
@@ -58,7 +58,7 @@ const Home = () => {
               type="warning"
               value={23000}
               title="Internships"
-              caption="29% of Certifications"
+              caption={(Math.round((userState.internships / userState.certifications) * 100) + "% of Certifications")} 
               icon={<FaBlackTie size={25} color={"white"} />}
             />
           </div>
@@ -67,7 +67,7 @@ const Home = () => {
               type="info"
               value={23000}
               title="Placements"
-              caption="11% of Certifications"
+              caption={(Math.round((userState.placements / userState.certifications) * 100) + "% of Certifications")} 
               icon={<FaBriefcase size={25} color={"white"} />}
             />
           </div>
