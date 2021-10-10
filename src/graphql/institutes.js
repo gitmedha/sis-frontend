@@ -274,6 +274,15 @@ query TO_GET_ALL_INSTITUTES {
 }
 `;
 
+export const GET_ALL_STUDENTS = `
+query TO_GET_ALL_STUDENTS {
+  students{
+    id
+    first_name
+    last_name
+  }
+}
+`;
 
 export const GET_INSTITUTION_STUDENTS = `
 query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: String){

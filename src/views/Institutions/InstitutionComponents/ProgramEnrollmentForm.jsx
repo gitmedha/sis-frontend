@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations";
-import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./instituteActions";
+import { getAllBatches, getAllInstitutions, getStudentsPickList, getAllStudents } from "./instituteActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`
@@ -33,6 +33,7 @@ const ProgramEnrollmentForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [feeStatusOptions, setFeeStatusOptions] = useState([]);
   const [yearOfCompletionOptions, setYearOfCompletionOptions] = useState([]);
@@ -46,7 +47,7 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
-    program_enrollment_student: programEnrollment?.student?.first_name + ' ' + programEnrollment?.student?.last_name,
+    student:'',
     status: '',
     batch: '',
     registration_date: '',
@@ -69,6 +70,7 @@ const ProgramEnrollmentForm = (props) => {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = props.programEnrollment.batch?.id;
     initialValues['institution'] = props.programEnrollment.institution?.id;
+    initialValues['student'] = props.programEnrollment.student?.id;
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -93,6 +95,14 @@ const ProgramEnrollmentForm = (props) => {
         key: institution.name,
         label: institution.name,
         value: institution.id,
+      })));
+    });
+
+    getAllStudents().then(data => {
+      setStudentOptions(data?.data?.data?.students.map((student) => ({
+        key: student.first_name + ''+ student.last_name,
+        label:student.first_name + ''+ student.last_name,
+        value: student.id,
       })));
     });
 
@@ -139,12 +149,12 @@ const ProgramEnrollmentForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="program_enrollment_student"
-                      control="input"
+                      name="student"
+                      control="lookup"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      disabled={true}
+                      options={studentOptions}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

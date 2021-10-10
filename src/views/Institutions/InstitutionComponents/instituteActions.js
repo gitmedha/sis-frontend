@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import {GET_ALL_INSTITUTES, GET_ALL_BATCHES, UPDATE_PROGRAM_ENROLLMENT, DELETE_PROGRAM_ENROLLMENT, GET_INSTITUTION_PROGRAM_ENROLLMENTS, CREATE_PROGRAM_ENROLLMENT, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import {GET_ALL_INSTITUTES, GET_ALL_BATCHES, GET_ALL_STUDENTS, UPDATE_PROGRAM_ENROLLMENT, DELETE_PROGRAM_ENROLLMENT, GET_INSTITUTION_PROGRAM_ENROLLMENTS, CREATE_PROGRAM_ENROLLMENT, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -184,6 +184,16 @@ export const getAllBatches = async () => {
 export const getAllInstitutions = async () => {
   return await api.post('/graphql', {
     query: GET_ALL_INSTITUTES,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getAllStudents = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_STUDENTS,
   }).then(data => {
     return data;
   }).catch(error => {
