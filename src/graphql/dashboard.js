@@ -10,7 +10,7 @@ query MetricsState($state: String) {
 ;
 
 export const GET_DISTRICT_METRICS = `
-query MetricsDitric ($district: String){
+query MetricsDistrict ($district: String){
   metricsDistricts(where: { district_name: $district}) {
       registrations
       certifications
@@ -18,9 +18,9 @@ query MetricsDitric ($district: String){
       placements
     }
   }`
-  ;
+;
 
-  export const GET_AREA_METRICS = `
+export const GET_AREA_METRICS = `
   query MetricsArea($area: String) {
     metricsAreas(where: {area_name: $area }) {
       registrations
@@ -29,9 +29,9 @@ query MetricsDitric ($district: String){
       placements
     }
   }`
-  ;
+;
 
-  export const GET_ALL_METRICS = `
+export const GET_ALL_METRICS = `
   query MetricsAll {
     metricsAlls {
       registrations
@@ -40,6 +40,4 @@ query MetricsDitric ($district: String){
       placements
     }
   }`
-  ;
-
-  
+;  
