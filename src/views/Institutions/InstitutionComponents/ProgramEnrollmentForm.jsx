@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
-import { ProgramEnrollmentValidations } from "../../../validations";
+// import { ProgramEnrollmentValidations } from "../../../validations";
 import { getAllBatches, getAllInstitutions, getStudentsPickList, getAllStudents } from "./instituteActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -29,7 +29,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student, programEnrollment } = props;
+  let { onHide, show, institution } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -47,11 +47,11 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
+    program_enrollment_institution: institution?.name,
     student:'',
     status: '',
     batch: '',
     registration_date: '',
-    institution: '',
     certification_date: '',
     fee_payment_date: '',
     fee_refund_date: '',
@@ -69,7 +69,6 @@ const ProgramEnrollmentForm = (props) => {
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = props.programEnrollment.batch?.id;
-    initialValues['institution'] = props.programEnrollment.institution?.id;
     initialValues['student'] = props.programEnrollment.student?.id;
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
@@ -140,7 +139,7 @@ const ProgramEnrollmentForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={ProgramEnrollmentValidations}
+          // validationSchema={ProgramEnrollmentValidations}
         >
           {({ values }) => (
             <Form>
@@ -193,13 +192,12 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      control="lookup"
-                      name="institution"
+                      control="input"
+                      name="program_enrollment_institution"
                       label="Institution"
-                      required
-                      options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
+                      disabled={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

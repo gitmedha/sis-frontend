@@ -138,7 +138,7 @@ const Institute = (props) => {
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
         <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} {...instituteData} />
+          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} />
         </Collapsible>
         <InstitutionForm
           {...instituteData}

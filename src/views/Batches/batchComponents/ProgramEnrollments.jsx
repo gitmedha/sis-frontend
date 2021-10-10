@@ -41,7 +41,7 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = (props) => {
-  let { programEnrollments, student, onDataUpdate } = props;
+  let { programEnrollments, batch, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -222,18 +222,18 @@ const ProgramEnrollments = (props) => {
         onHide={hideViewModal}
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
-        student={student}
+        batch={batch}
         programEnrollment={selectedProgramEnrollment}
       />
       <CreateProgramEnrollmentForm
         show={createModalShow}
         onHide={hideCreateModal}
-        student={student}
+        batch={batch}
       />
       <UpdateProgramEnrollmentForm
         show={updateModalShow}
         onHide={hideUpdateModal}
-        student={student}
+        batch={batch}
         programEnrollment={selectedProgramEnrollment}
       />
       <SweetAlert

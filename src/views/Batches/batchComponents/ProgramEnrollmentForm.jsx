@@ -29,7 +29,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student, programEnrollment } = props;
+  let { onHide, show, batch } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -47,9 +47,9 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
+    program_enrollment_batch: batch?.name,
     student:'',
     status: '',
-    batch: '',
     registration_date: '',
     institution: '',
     certification_date: '',
@@ -140,7 +140,7 @@ const ProgramEnrollmentForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={ProgramEnrollmentValidations}
+          // validationSchema={ProgramEnrollmentValidations}
         >
           {({ values }) => (
             <Form>
@@ -171,13 +171,12 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      control="lookup"
-                      name="batch"
+                      control="input"
+                      name="program_enrollment_batch"
                       label="Batch"
-                      required
-                      options={batchOptions}
                       className="form-control"
                       placeholder="Batch"
+                      disabled={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
