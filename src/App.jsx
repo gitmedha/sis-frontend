@@ -95,7 +95,6 @@ const App = (props) => {
         history.push('/');
         localStorage.setItem("user_state" , user.state); 
         localStorage.setItem("user_area", user.area);
-      
       })
     }
   }, []);

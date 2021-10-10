@@ -16,28 +16,28 @@ query MetricsDistrict ($district: String){
       certifications
       internships
       placements
-    }
-  }`
+  }
+}`
 ;
 
 export const GET_AREA_METRICS = `
-  query MetricsArea($area: String) {
-    metricsAreas(where: {area_name: $area }) {
-      registrations
-      certifications
-      internships
-      placements
-    }
-  }`
+query MetricsArea($area: String) {
+  metricsAreas(where: {area_name: $area }) {
+    registrations
+    certifications
+    internships
+    placements
+  }
+}`
 ;
 
 export const GET_ALL_METRICS = `
-  query MetricsAll {
-    metricsAlls {
-      registrations
-      certifications
-      internships
-      placements
-    }
-  }`
+query MetricsAll {
+  metricsAlls {
+    registrations
+    certifications
+    internships
+    placements
+  }
+}`
 ;  
