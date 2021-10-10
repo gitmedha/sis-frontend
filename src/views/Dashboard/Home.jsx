@@ -16,6 +16,8 @@ import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
+import s2 from '../../../src/assets/images/s2.JPG';
+import s1 from '../../../src/assets/images/s1.JPG';
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -118,7 +120,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="success"
-              value={userState.registrations? userState.registrations :"2300" } 
+              value={userState.registrations? userState.registrations :"0" } 
               title="Registrations"
               icon={<FaClipboardCheck size={25} color={"white"} />}
             />
@@ -126,27 +128,27 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="danger"
-              value={userState.certifications? userState.certifications :"2300" } 
+              value={userState.certifications? userState.certifications :"0" } 
               title="Certifications"
-              caption="65% of Registrations"
+              caption={parseInt((userState.certifications / userState.registrations) * 100 || "0") + '% of Registrations'}
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="warning"
-              value={userState.internships? userState.internships :"2300" } 
+              value={userState.internships? userState.internships :"0" } 
               title="Internships"
-              caption="29% of Certifications"
+              caption={parseInt((userState.internships / userState.certifications) * 100 || "0") + "% of Certifications"}
               icon={<FaBlackTie size={25} color={"white"} />}
             />
           </div>
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="info"
-              value={userState.placements? userState.placements :"2300" } 
+              value={userState.placements? userState.placements :"0" } 
               title="Placements"
-              caption="11% of Certifications"
+              caption={parseInt((userState.placements / userState.certifications) * 100 || "0") + "% of Certifications"}
               icon={<FaBriefcase size={25} color={"white"} />}
             />
           </div>
@@ -156,16 +158,18 @@ const Home = () => {
       <Collapsible opened={true} title="Charts">
         <div className="row">
           <div className="col-sm-12 col-md-6">
-            <div className="card">
+           <img src={s1} width="600" height="400"/> 
+            {/* <div className="card">
               <div className="card-body">
                 <BarCharts />
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="col-sm-12 col-md-6">
-            <div className="card">
+            <img src={s2} width="600" height="400"/>
+            {/* <div className="card">
               <div className="card-body">Hello World</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </Collapsible>
