@@ -49,6 +49,8 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
+  localStorage.setItem("user_state" , user?.state); 
+  localStorage.setItem("user_area", user?.area);
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -93,8 +95,6 @@ const App = (props) => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
         history.push('/');
-        localStorage.setItem("user_state" , user.state); 
-        localStorage.setItem("user_area", user.area);
       })
     }
   }, []);
