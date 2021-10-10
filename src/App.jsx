@@ -93,6 +93,8 @@ const App = (props) => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
         history.push('/');
+        localStorage.setItem("user_state" , user.state); 
+        localStorage.setItem("user_area", user.area);
       })
     }
   }, []);
