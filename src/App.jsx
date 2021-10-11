@@ -53,9 +53,6 @@ const App = (props) => {
   localStorage.setItem("user_state" , user?.state); 
   localStorage.setItem("user_area", user?.area);
 
-
-console.log(userId)
-
   const logout = (callback = () => {}) => {
     setUser(null);
     localStorage.removeItem('token');
