@@ -10,7 +10,7 @@ export const GET_STATE_METRICS = `
 ;
 
 export const GET_DISTRICT_METRICS = `
-query MetricsDitric ($district: String){
+query MetricsDistrict ($district: String){
   metricsDistricts(where: { district_name: $district}) {
       registrations
       certifications

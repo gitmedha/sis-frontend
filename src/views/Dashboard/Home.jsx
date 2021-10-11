@@ -31,20 +31,25 @@ const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const userId = localStorage.getItem("userId") || 2;
-  const state = (localStorage.getItem('user_state'));
-  const area = (localStorage.getItem('user_area'));
+  const state = localStorage.getItem('user_state');
+  const area = localStorage.getItem('user_area');
   const [userState, setUserState] = useState({});
 
   useEffect(() => {
     clearState();
-    if(activeTab.key == "my_state"){
-      getMyStateMetrics();
-    } else if (activeTab.key == "my_area"){
-      getMyAreaMetrics();
-    } else if (activeTab.key == "all_medha") {
-      getMyAllMetrics();
-    } else {
-      updateMyDataMetrics();
+    switch(activeTab.key) {
+      case "my_state":
+        getMyStateMetrics();
+        break;
+      case "my_area":
+        getMyAreaMetrics();
+        break;
+      case "all_medha":
+        getMyAllMetrics();
+        break;
+      default:
+        updateMyDataMetrics();
+        break;
     }
   }, [activeTab]);
 
@@ -150,7 +155,7 @@ const Home = () => {
               type="danger"
               value={userState.certifications? userState.certifications :"0" }
               title="Certifications"
-              caption={parseInt((userState.certifications / userState.registrations) * 100 || "0") + '% of Registrations'}
+              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + '% of Registrations'}
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>
