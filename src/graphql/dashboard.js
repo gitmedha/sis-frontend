@@ -155,77 +155,76 @@ employer{
 }
 `;
 
-
 export const GET_OPPORTUNITIES = `
 query GET_OPPORTUNITIES($limit: Int, $start: Int, $status: String) {
-opportunitiesConnection(
-  sort:"created_at:desc"
-  start: $start
-  limit: $limit
-  where: {
-    status: $status,
-  }
-) {
-  values {
-    ${opportunitiesFields}
-  }
-  aggregate {
-    count
-  }
-}
-}`
+  opportunitiesConnection(
+    sort:"created_at:desc"
+    start: $start
+    limit: $limit
+    where: {
+      status: $status,
+    }
+    ) {
+      values {
+        ${opportunitiesFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }`
 ;
 
 const studentFields = `
+id
+first_name
+last_name
+email
+phone
+status
+name_of_parent_or_guardian
+date_of_birth
+category
+gender
+registration_date_latest
+certification_date_latest
+internship_date_latest
+placement_date_latest
+course_type_latest
+income_level
+old_sis_id
+medha_champion
+interested_in_employment_opportunities
+city
+pin_code
+medha_area
+address
+state
+assigned_to{
   id
-  first_name
-  last_name
+  username
   email
-  phone
-  status
-  name_of_parent_or_guardian
-  date_of_birth
-  category
-  gender
-  registration_date_latest
-  certification_date_latest
-  internship_date_latest
-  placement_date_latest
-  course_type_latest
-  income_level
-  old_sis_id
-  medha_champion
-  interested_in_employment_opportunities
-  city
-  pin_code
-  medha_area
-  address
-  state
-  assigned_to{
-    id
-    username
-    email
-  }
-  logo {
-    id
-    url
-  }
-  CV {
-    url
-    previewUrl
-    updated_at
-  }
+}
+logo {
+  id
+  url
+}
+CV {
+  url
+  previewUrl
+  updated_at
+}
 `;
 
 export const GET_STUDENTS = `
-  query GET_STUDENTS($limit: Int, $start: Int, $status: String) {
-    studentsConnection (
-      sort:"certification_date_latest:desc"
-      start: $start
-      limit: $limit
-      where: {
-        status: $status
-      }
+query GET_STUDENTS($limit: Int, $start: Int, $status: String) {
+  studentsConnection (
+    sort:"certification_date_latest:desc"
+    start: $start
+    limit: $limit
+    where: {
+      status: $status
+    }
     ) {
       values {
         ${studentFields}
