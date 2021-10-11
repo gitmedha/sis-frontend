@@ -179,24 +179,22 @@ const Home = () => {
           </div>
         </div>
         )}
-      </Collapsible>
-      <Collapsible opened={true} title="Charts">
-        <div className="row">
-          <div className="col-sm-12 col-md-6">
-           <img src={s1} width="600" height="400"/>
-            {/* <div className="card">
-              <div className="card-body">
-                <BarCharts />
-              </div>
-            </div> */}
+          <div className="row">
+            <div className="col-sm-12 col-md-6">
+            <img src={s1} width="600" height="400"/> 
+              {/* <div className="card">
+                <div className="card-body">
+                  <BarCharts />
+                </div>
+              </div> */}
+            </div>
+            <div className="col-sm-12 col-md-6">
+              <img src={s2} width="600" height="400"/>
+              {/* <div className="card">
+                <div className="card-body">Hello World</div>
+              </div> */}
+            </div>
           </div>
-          <div className="col-sm-12 col-md-6">
-            <img src={s2} width="600" height="400"/>
-            {/* <div className="card">
-              <div className="card-body">Hello World</div>
-            </div> */}
-          </div>
-        </div>
       </Collapsible>
       <Opportunities />
       <Students />
