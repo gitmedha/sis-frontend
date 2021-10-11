@@ -54,12 +54,14 @@ const App = (props) => {
   localStorage.setItem("user_area", user?.area);
 
 
+console.log(userId)
+
   const logout = (callback = () => {}) => {
     setUser(null);
     localStorage.removeItem('token');
     callback();
   }
-
+  console.log(userId)
   useEffect(() => {
     if (props.alert.message && props.alert.variant) {
       addToast(props.alert.message, { appearance: props.alert.variant });
@@ -69,6 +71,7 @@ const App = (props) => {
   }, [props.alert]);
 
   const getUserDetails = () => {
+    console.log(token)
     if (token) {
       // authenticate the token on the server and place set user object
       axios.get(urlPath('/users/me'), {
@@ -84,7 +87,7 @@ const App = (props) => {
           return null;
         }
         setUser(res.data);
-        localStorage.setItem("user_id", userId);
+        localStorage.setItem("user_id", res.data.id);
       });
     }
   }
