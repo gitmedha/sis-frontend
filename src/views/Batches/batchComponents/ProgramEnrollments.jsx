@@ -139,13 +139,13 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
-    // dataToSave['student'] = student.id;
+    dataToSave['batch'] = batch.id;
    
 
      NP.start();
@@ -168,14 +168,14 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let { id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let { id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
   
-
+    console.log(Number(id), dataToSave)
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
