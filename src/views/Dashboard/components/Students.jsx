@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import Avatar from "../../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_STUDENTS } from "../../../graphql";
+import { GET_STUDENTS } from "../../../graphql/dashboard";
 import TabPicker from "../../../components/content/TabPicker";
 import Tabs from "../../../components/content/Tabs";
 import Table from '../../../components/content/Table';
@@ -18,6 +18,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import {studentStatusOptions} from "../../Students/StudentComponents/StudentConfig";
 import Collapse from "../../../components/content/CollapsiblePanels";
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
+import moment from "moment";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -60,30 +61,37 @@ const Students = (props) => {
       {
         Header: 'Name',
         accessor: 'avatar',
+        disableSortBy: true,
       },
       {
         Header: 'Phone',
         accessor: 'phone',
+        disableSortBy: true,
       },
       {
         Header: 'Student ID',
         accessor: 'id',
+        disableSortBy: true,
       },
       {
         Header: 'Area',
         accessor: 'city',
+        disableSortBy: true,
       },
       {
         Header: 'Status',
         accessor: 'status',
+        disableSortBy: true,
       },
       {
         Header: 'Latest Course Type',
         accessor: 'course_type_latest',
+        disableSortBy: true,
       },
       {
         Header: 'Certification Date',
         accessor: 'certification_date_latest',
+        disableSortBy: true,
       },
     ],
     []
@@ -167,6 +175,7 @@ const Students = (props) => {
           statusIcon: studentStatusData?.icon,
           title: `${student.first_name} ${student.last_name}`,
           progressPercent: studentStatusData?.progress,
+          certification_date_latest:  moment(student.certification_date_latest).format("DD MMM YYYY"),
         }
       });
       setStudentsData(data);

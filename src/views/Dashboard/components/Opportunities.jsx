@@ -7,7 +7,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../../components/content/TabPicker";
 import Table from '../../../components/content/Table';
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
-import { GET_OPPORTUNITIES } from "../../../graphql";
+import { GET_OPPORTUNITIES } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../../components/content/CollapsiblePanels";
@@ -35,26 +35,32 @@ const Opportunities = (props) => {
       {
         Header: 'Role/Designation',
         accessor: 'avatar',
+        disableSortBy: true,
       },
       {
         Header: 'Employer',
         accessor: 'employer',
+        disableSortBy: true,
       },
       {
         Header: 'Type',
         accessor: 'opportunity_type',
+        disableSortBy: true,
       },
       {
         Header: 'Openings',
         accessor: 'number_of_opportunities',
+        disableSortBy: true,
       },
       {
         Header: 'Area',
         accessor: 'address',
+        disableSortBy: true,
       },
       {
         Header: 'Date Added',
         accessor: 'created_at',
+        disableSortBy: true,
       },
     ],
     []
