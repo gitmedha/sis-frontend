@@ -114,7 +114,7 @@ export const GET_MY_DATA_PLACEMENTS = `
         opportunity:{
           type: "Job"
         }
-        status: "Offer Accepted by Student"
+        status: "Offer Accepted"
       }
     ) {
       aggregate {
