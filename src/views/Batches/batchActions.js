@@ -195,56 +195,6 @@ export const getBatchProgramEnrollments = async (batchID, limit=10, offset=0, so
   });
 }
 
-export const createProgramEnrollment = async (data) => {
-  return await api.post('/graphql', {
-    query: CREATE_PROGRAM_ENROLLMENT,
-    variables: {
-      data
-    },
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-};
-
-export const deleteProgramEnrollment = async (id) => {
-  return await api.post('/graphql', {
-    query: DELETE_PROGRAM_ENROLLMENT,
-    variables: {
-      id
-    },
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-}
-
-export const updateProgramEnrollment = async (id, data) => {
-  return await api.post('/graphql', {
-    query: UPDATE_PROGRAM_ENROLLMENT,
-    variables: {
-      id,
-      data
-    },
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-}
-
-export const getAllInstitutions = async () => {
-  return await api.post('/graphql', {
-    query: GET_ALL_INSTITUTES,
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-}
-
 export const getAllBatches = async () => {
   return await api.post('/graphql', {
     query: GET_ALL_BATCHES,

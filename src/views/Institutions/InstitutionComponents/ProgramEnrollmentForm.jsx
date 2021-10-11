@@ -6,7 +6,10 @@ import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Institute";
-import { getAllBatches, getAllInstitutions, getStudentsPickList, getAllStudents } from "./instituteActions";
+import { getStudentsPickList } from "./instituteActions";
+import { getAllBatches } from "../../Batches/batchActions";
+import { getAllInstitutions } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`

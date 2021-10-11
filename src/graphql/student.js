@@ -321,3 +321,13 @@ export const DELETE_EMPLOYMENT_CONNECTION = `
     }
   }
 `;
+
+export const GET_ALL_STUDENTS = `
+query TO_GET_ALL_STUDENTS {
+  students{
+    id
+    first_name
+    last_name
+  }
+}
+`;

@@ -5,7 +5,7 @@ import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
-import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment } from "./instituteActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment } from "../../ProgramEnrollments/programEnrollmentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -62,6 +62,7 @@ const ProgramEnrollments = (props) => {
     let data = programEnrollments.map(programEnrollment => {
       return {
         ...programEnrollment,
+        student_name: `${programEnrollment.student.first_name} ${programEnrollment.student.last_name}`,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
         batch_name: programEnrollment.batch.name,
         // institution_name: programEnrollment.institution.name,
@@ -107,7 +108,7 @@ const ProgramEnrollments = (props) => {
       },
       {
         Header: 'Student',
-        accessor: 'student.first_name',
+        accessor: 'student_name',
       },
     ],
     []
@@ -167,7 +168,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_institution, registration_date_formatted, batch_name, institution,  status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_institution, registration_date_formatted, batch_name, institution, student_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;

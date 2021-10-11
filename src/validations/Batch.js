@@ -5,7 +5,7 @@ const date = Yup.date().nullable().required("Session Date is required.");
 
 // Program Enrollment form fields.
 const student = Yup.string().required("Student is required.");
-const program_enrollmnet_institution = Yup.string().required("Institution is required.");
+const program_enrollment_institution = Yup.string().required("Institution is required.");
 const program_enrollment_status = Yup.string().required("Status is required.");
 const course_year = Yup.string().nullable().required("Course Year is required.");
 const course_name_in_current_sis = Yup.string().nullable().required("Course Name is required.");
@@ -58,7 +58,7 @@ export const BatchValidations = Yup.object({
 
 export const ProgramEnrollmentValidations = Yup.object({
   student,
-  institution: program_enrollmnet_institution,
+  institution: program_enrollment_institution,
   status: program_enrollment_status,
   course_year,
   course_name_in_current_sis,
