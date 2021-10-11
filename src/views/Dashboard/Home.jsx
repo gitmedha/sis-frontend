@@ -173,7 +173,7 @@ const Home = () => {
             </div>
           </div>
       </Collapsible>
-      <Opportunities title="Contacts"/>
+      <Opportunities />
       <Students />
     </div>
   );
