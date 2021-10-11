@@ -44,6 +44,7 @@ const tabPickerOptions = [
     const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
+    const userId = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -81,10 +82,9 @@ const tabPickerOptions = [
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
       variables: {
-        // id: user.id,
+        id: userId,
         limit: limit,
         start: offset,
-        id: 2,
         sort: `${sortBy}:${sortOrder}`,
       },
     })
