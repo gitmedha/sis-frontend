@@ -50,6 +50,9 @@ const App = (props) => {
   const history = useHistory();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("user_id");
+  localStorage.setItem("user_state" , user?.state); 
+  localStorage.setItem("user_area", user?.area);
+
 
   const logout = (callback = () => {}) => {
     setUser(null);
