@@ -68,7 +68,7 @@ const Home = () => {
     await getMyDataMetrics(userId, 'placements').then(data => {
       myDataMetrics['placements'] = data.data.data.employmentConnectionsConnection.aggregate.count;
     });
-    console.log('myDataMetrics', myDataMetrics);
+
     setUserState(myDataMetrics);
     setLoading(false);
   }
