@@ -58,7 +58,7 @@ const App = (props) => {
     localStorage.removeItem('token');
     callback();
   }
-  console.log(userId)
+
   useEffect(() => {
     if (props.alert.message && props.alert.variant) {
       addToast(props.alert.message, { appearance: props.alert.variant });
@@ -68,7 +68,6 @@ const App = (props) => {
   }, [props.alert]);
 
   const getUserDetails = () => {
-    console.log(token)
     if (token) {
       // authenticate the token on the server and place set user object
       axios.get(urlPath('/users/me'), {
