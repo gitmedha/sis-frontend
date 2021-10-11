@@ -31,7 +31,7 @@ const EmploymentConnections = (props) => {
   const {setAlert} = props;
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
-  const userId = localStorage.getItem("userId") || 2;
+  const userId = localStorage.getItem("user_id") || 2;
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
