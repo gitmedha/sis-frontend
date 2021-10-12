@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import {GET_ALL_INSTITUTES, GET_INSTITUTION_PROGRAM_ENROLLMENTS, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -113,4 +113,31 @@ export const getProgramEnrollmentsPickList = async () => {
   .catch(error => {
     return Promise.reject(error);
   });
-};
+}
+
+export const getInstitutionProgramEnrollments = async (instituteID, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
+    variables: {
+      id: Number(instituteID),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getAllInstitutions = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_INSTITUTES,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+;

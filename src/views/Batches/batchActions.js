@@ -1,5 +1,5 @@
 import api from "../../apis";
-import { GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS, GET_SESSION_ATTENDANCE, UPDATE_SESSION_QUERY, UPDATE_SESSION_ATTENDANCE, MARK_ATTENDANCE, GET_STUDENT_COUNT_BY_BATCH, GET_BATCH_STUDENTS_ATTENDANCE } from "../../graphql";
+import { GET_ALL_BATCHES, GET_BATCH_PROGRAM_ENROLLMENTS, GET_PICKLIST, DELETE_BATCH, UPDATE_BATCH, CREATE_NEW_BATCH, CREATE_SESSION, GET_SESSIONS, GET_SESSION_ATTENDANCE_STATS, GET_SESSION_ATTENDANCE, UPDATE_SESSION_QUERY, UPDATE_SESSION_ATTENDANCE, MARK_ATTENDANCE, GET_STUDENT_COUNT_BY_BATCH, GET_BATCH_STUDENTS_ATTENDANCE } from "../../graphql";
 
 export const getBatchesPickList = async () => {
   return await api.post("/graphql", {
@@ -178,3 +178,30 @@ export const getBatchStudentAttendances = async (batchId) => {
     return Promise.reject(error);
   });
 }
+
+export const getBatchProgramEnrollments = async (batchID, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_BATCH_PROGRAM_ENROLLMENTS,
+    variables: {
+      id: Number(batchID),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getAllBatches = async () => {
+  return await api.post('/graphql', {
+    query: GET_ALL_BATCHES,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+;

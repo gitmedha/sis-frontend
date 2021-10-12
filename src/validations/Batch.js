@@ -3,6 +3,18 @@ import * as Yup from "yup";
 const topics = Yup.string().required("Topic covered is required.");
 const date = Yup.date().nullable().required("Session Date is required.");
 
+// Program Enrollment form fields.
+const student = Yup.string().required("Student is required.");
+const program_enrollment_institution = Yup.string().required("Institution is required.");
+const program_enrollment_status = Yup.string().required("Status is required.");
+const course_year = Yup.string().nullable().required("Course Year is required.");
+const course_name_in_current_sis = Yup.string().nullable().required("Course Name is required.");
+const course_level = Yup.string().nullable().required("Course Level is required.");
+const course_type = Yup.string().nullable().required("Course Type is required.");
+const year_of_course_completion = Yup.string().nullable().required("Year of Completion is required.");
+const registration_date = Yup.date().nullable().required("Registration Date is required.");
+const fee_status = Yup.string().required("Fee Status is required.");
+
 // New Batch Validation Rules
 const name = Yup.string().required("Name is required.");
 const assigned_to = Yup.string().required("Assignee is required.");
@@ -42,4 +54,17 @@ export const BatchValidations = Yup.object({
   // name_in_current_sis,
   number_of_sessions_planned,
   seats_available,
+});
+
+export const ProgramEnrollmentValidations = Yup.object({
+  student,
+  institution: program_enrollment_institution,
+  status: program_enrollment_status,
+  course_year,
+  course_name_in_current_sis,
+  course_level,
+  course_type,
+  year_of_course_completion,
+  registration_date,
+  fee_status,
 });

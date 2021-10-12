@@ -5,8 +5,10 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 
 import { Input } from "../../../utils/Form";
-import { ProgramEnrollmentValidations } from "../../../validations/Student";
-import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
+import { ProgramEnrollmentValidations } from "../../../validations/Batch";
+import { getAllInstitutions, getStudentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getAllBatches } from "../batchActions";
+import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`
@@ -29,10 +31,11 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student } = props;
+  let { onHide, show, batch } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [feeStatusOptions, setFeeStatusOptions] = useState([]);
   const [yearOfCompletionOptions, setYearOfCompletionOptions] = useState([]);
@@ -46,9 +49,9 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
-    program_enrollment_student: student.first_name + ' ' + student.last_name,
+    program_enrollment_batch: batch?.name,
+    student:'',
     status: '',
-    batch: '',
     registration_date: '',
     institution: '',
     certification_date: '',
@@ -69,6 +72,7 @@ const ProgramEnrollmentForm = (props) => {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = props.programEnrollment.batch?.id;
     initialValues['institution'] = props.programEnrollment.institution?.id;
+    initialValues['student'] = props.programEnrollment.student?.id;
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -93,6 +97,14 @@ const ProgramEnrollmentForm = (props) => {
         key: institution.name,
         label: institution.name,
         value: institution.id,
+      })));
+    });
+
+    getAllStudents().then(data => {
+      setStudentOptions(data?.data?.data?.students.map((student) => ({
+        key: student.first_name + ''+ student.last_name,
+        label:student.first_name + ''+ student.last_name,
+        value: student.id,
       })));
     });
 
@@ -139,12 +151,13 @@ const ProgramEnrollmentForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="program_enrollment_student"
-                      control="input"
+                      name="student"
+                      control="lookup"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      disabled={true}
+                      options={studentOptions}
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -161,13 +174,12 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      control="lookup"
-                      name="batch"
+                      control="input"
+                      name="program_enrollment_batch"
                       label="Batch"
-                      required
-                      options={batchOptions}
                       className="form-control"
                       placeholder="Batch"
+                      disabled={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
