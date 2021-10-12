@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const InfoCards = ({ type, title, value, caption, icon }) => {
   return (
-    <div className="card no-border mb-2 bg-light">
+    <div className="card no-border bg-light">
       <div className="card-body d-felx flex-column">
         <div className="d-flex justify-content-between mb-2">
           <p className={`text--${type} latto-regular`}>{title}</p>

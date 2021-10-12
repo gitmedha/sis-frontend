@@ -1,6 +1,5 @@
 import api from "../../../src/apis";
 import { GET_STATE_METRICS, GET_AREA_METRICS, GET_DISTRICT_METRICS, GET_ALL_METRICS } from "../../graphql";
-import SkeletonLoader from "../../components/content/SkeletonLoader2";
 import {
   FaBlackTie,
   FaBriefcase,
@@ -8,8 +7,9 @@ import {
   FaClipboardCheck,
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
 import InfoCards from "./components/InfoCards";
-// import { Table } from "react-bootstrap";
 // import BarCharts from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
@@ -27,10 +27,16 @@ const tabPickerOptions = [
   { title: "All Medha", key: "all_medha" },
 ];
 
+const DashboardStyled = styled.div`
+  .react-loading-skeleton {
+    display: block;
+  }
+`;
+
 const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const userId = localStorage.getItem("userId") || 2;
+  const userId = Number(localStorage.getItem("user_id")) || 2;
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area');
   const [userState, setUserState] = useState({});
@@ -55,7 +61,7 @@ const Home = () => {
 
   const updateMyDataMetrics = async () => {
     setLoading(true);
-    const myDataMetrics = {}
+    const myDataMetrics = {};
     await getMyDataMetrics(userId, 'registrations').then(data => {
       myDataMetrics['registrations'] = data.data.data.programEnrollmentsConnection.aggregate.count;
     });
@@ -132,16 +138,22 @@ const Home = () => {
   }
 
   return (
-    <div className="container-fluid">
+    <DashboardStyled className="container-fluid">
       <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <WidgetUtilTab />
         </div>
         {isLoading ? (
-          <SkeletonLoader />
+          <div className="row mb-5">
+            {[1, 2, 3, 4].map(i => (
+              <div className="col-md-3 col-sm-12" key={i}>
+                <Skeleton count={1} height={135} width="100%" />
+              </div>
+            ))}
+          </div>
         ) : (
-        <div className="row py-2">
+        <div className="row mb-5">
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="success"
@@ -181,7 +193,7 @@ const Home = () => {
         )}
           <div className="row">
             <div className="col-sm-12 col-md-6">
-            <img src={s1} width="600" height="400"/> 
+            <img src={s1} width="600" height="400"/>
               {/* <div className="card">
                 <div className="card-body">
                   <BarCharts />
@@ -198,7 +210,7 @@ const Home = () => {
       </Collapsible>
       <Opportunities />
       <Students />
-    </div>
+    </DashboardStyled>
   );
 };
 
