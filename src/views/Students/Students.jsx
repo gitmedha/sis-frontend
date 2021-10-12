@@ -23,6 +23,7 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
+import { SignalCellularNull } from "@material-ui/icons";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -64,14 +65,21 @@ const Students = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const state = localStorage.getItem('user_state');
 
   useEffect(() => {
     switch(activeTab.key) {
       case "my_data":
-        getStudentsMyData()
-        break;     
-      default:
+        getStudents("my_data")
+        break;
+      case "my_state":
+        getStudents("my_state")
+        break;
+      case "all_medha":
         getStudents()
+        break;
+      default:
+        
         break;
     }
   }, [activeTab]);
@@ -107,49 +115,26 @@ const Students = (props) => {
     []
   );
 
-  const getStudents = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status = 'All') => {
     nProgress.start();
     setLoading(true);
     let variables = {
       limit,
       start: offset,
-      id: userId,
       sort: `${sortBy}:${sortOrder}`,
+    }
+
+    if(selectedTab == "my_data"){
+      Object.assign(variables, {id: userId})
+    } else if(selectedTab == "my_state"){
+      Object.assign(variables, {state: state})
     }
     if (status !== 'All') {
       variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
     }
+
     await api.post("/graphql", {
       query: GET_STUDENTS,
-      variables,
-    })
-    .then(data => {
-      setStudents(data?.data?.data?.studentsConnection.values);
-      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
-    })
-    .catch(error => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
-      setLoading(false);
-      nProgress.done();
-    });
-  };
-
-  const getStudentsMyData = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
-    nProgress.start();
-    setLoading(true);
-    let variables = {
-      limit,
-      start: offset,
-      id: userId,
-      sort: `${sortBy}:${sortOrder}`,
-    }
-    if (status !== 'All') {
-      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
-    }
-    await api.post("/graphql", {
-      query: GET_STUDENTS_MY_DATA,
       variables,
     })
     .then(data => {

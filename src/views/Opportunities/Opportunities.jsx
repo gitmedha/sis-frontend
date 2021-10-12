@@ -45,11 +45,15 @@ const tabPickerOptions = [
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
     const userId = parseInt(localStorage.getItem('user_id'))
+    const state = localStorage.getItem('user_state');
 
   useEffect(() => {
     switch(activeTab.key) {
       case "my_data":
-        getOpportunitiesMyData()
+        getOpportunities("my_data")
+        break;
+      case "my_state":
+        getOpportunities("my_state")
         break;     
         default:
           getOpportunities()
@@ -87,42 +91,24 @@ const tabPickerOptions = [
     []
   );
 
-  const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
+    let variables = {
+      limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    }
+
+    if(selectedTab == "my_data"){
+      Object.assign(variables, {id: userId})
+    } else if(selectedTab == "my_state"){
+      Object.assign(variables, {state: state})
+    }
+    
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
-      variables: {
-        id: userId,
-        limit: limit,
-        start: offset,
-        sort: `${sortBy}:${sortOrder}`,
-      },
-    })
-    .then(data => {
-      setOpportunities(data?.data?.data?.opportunitiesConnection.values);
-      setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
-    })
-    .catch(error => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
-      setLoading(false);
-      nProgress.done();
-    });
-  };
-
-  const getOpportunitiesMyData = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
-    nProgress.start();
-    setLoading(true);
-    await api.post("/graphql", {
-      query: GET_OPPORTUNITIES_MY_DATA,
-      variables: {
-        id: userId,
-        limit: limit,
-        start: offset,
-        sort: `${sortBy}:${sortOrder}`,
-      },
+      variables,
     })
     .then(data => {
       setOpportunities(data?.data?.data?.opportunitiesConnection.values);
