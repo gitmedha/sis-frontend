@@ -60,13 +60,16 @@ const employmentConnectionFields = `
 `;
 
 export const GET_OPPORTUNITIES = `
-query GET_OPPORTUNITIES($limit: Int, $start: Int, $sort: String, $status: String) {
+query GET_OPPORTUNITIES($id: Int, $limit: Int, $start: Int, $sort: String, $status: String) {
 opportunitiesConnection(
   sort: $sort
   start: $start
   limit: $limit
   where: {
-    status: $status
+    assigned_to: {
+      id: $id
+    },
+    status:$status
   }
 ) {
   values {
