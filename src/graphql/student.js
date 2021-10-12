@@ -99,7 +99,7 @@ const employmentConnectionFields = `
 `;
 
 export const GET_STUDENTS = `
-  query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String ) {
+  query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String) {
     studentsConnection (
       sort: $sort
       start: $start

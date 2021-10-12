@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_STUDENTS, GET_STUDENTS_MY_DATA} from "../../graphql";
+import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';

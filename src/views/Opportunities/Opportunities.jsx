@@ -8,7 +8,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
-import { GET_OPPORTUNITIES, GET_OPPORTUNITIES_MY_DATA } from "../../graphql";
+import { GET_OPPORTUNITIES } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity } from "./OpportunityComponents/opportunityAction";
