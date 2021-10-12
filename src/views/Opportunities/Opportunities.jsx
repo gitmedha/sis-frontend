@@ -8,7 +8,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import WidgetUtilTab from "../../components/content/WidgetUtilTab";
-import { GET_OPPORTUNITIES } from "../../graphql";
+import { GET_OPPORTUNITIES, GET_OPPORTUNITIES_MY_DATA } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity } from "./OpportunityComponents/opportunityAction";
@@ -26,10 +26,10 @@ const StyledOpportunityIcon = styled.div`
 `;
 
 const tabPickerOptions = [
-    { title: "My Data", key: "test-1" },
-    { title: "My Area", key: "test-2" },
-    { title: "My State", key: "test-3" },
-    { title: "All Medha", key: "test-4" },
+    { title: "My Data", key: "my_data" },
+    { title: "My Area", key: "my_area" },
+    { title: "My State", key: "my_state" },
+    { title: "All Medha", key: "all_medha" },
   ];
 
   const Opportunities = (props) => {
@@ -45,6 +45,17 @@ const tabPickerOptions = [
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
     const userId = parseInt(localStorage.getItem('user_id'))
+
+  useEffect(() => {
+    switch(activeTab.key) {
+      case "my_data":
+        getOpportunitiesMyData()
+        break;     
+        default:
+          getOpportunities()
+          break;
+        }
+      }, [activeTab]);
 
   const columns = useMemo(
     () => [
@@ -81,6 +92,31 @@ const tabPickerOptions = [
     setLoading(true);
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
+      variables: {
+        id: userId,
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      },
+    })
+    .then(data => {
+      setOpportunities(data?.data?.data?.opportunitiesConnection.values);
+      setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+  };
+
+  const getOpportunitiesMyData = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+    nProgress.start();
+    setLoading(true);
+    await api.post("/graphql", {
+      query: GET_OPPORTUNITIES_MY_DATA,
       variables: {
         id: userId,
         limit: limit,

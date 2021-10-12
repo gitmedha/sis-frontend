@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_STUDENTS } from "../../graphql";
+import { GET_STUDENTS, GET_STUDENTS_MY_DATA} from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
@@ -25,10 +25,10 @@ import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
-  { title: "My Data", key: "test-1" },
-  { title: "My Area", key: "test-2" },
-  { title: "My State", key: "test-3" },
-  { title: "All Medha", key: "test-4" },
+  { title: "My Data", key: "my_data" },
+  { title: "My Area", key: "my_area" },
+  { title: "My State", key: "my_state" },
+  { title: "All Medha", key: "all_medha" },
 ];
 
 const Styled = styled.div`
@@ -64,6 +64,18 @@ const Students = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const userId = parseInt(localStorage.getItem('user_id'))
+
+  useEffect(() => {
+    switch(activeTab.key) {
+      case "my_data":
+        getStudentsMyData()
+        break;     
+      default:
+        getStudents()
+        break;
+    }
+  }, [activeTab]);
+
 
   const columns = useMemo(
     () => [
@@ -109,6 +121,35 @@ const Students = (props) => {
     }
     await api.post("/graphql", {
       query: GET_STUDENTS,
+      variables,
+    })
+    .then(data => {
+      setStudents(data?.data?.data?.studentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+    })
+    .catch(error => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+  };
+
+  const getStudentsMyData = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+    nProgress.start();
+    setLoading(true);
+    let variables = {
+      limit,
+      start: offset,
+      id: userId,
+      sort: `${sortBy}:${sortOrder}`,
+    }
+    if (status !== 'All') {
+      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
+    }
+    await api.post("/graphql", {
+      query: GET_STUDENTS_MY_DATA,
       variables,
     })
     .then(data => {
