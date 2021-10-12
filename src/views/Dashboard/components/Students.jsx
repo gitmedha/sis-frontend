@@ -53,6 +53,7 @@ const Students = (props) => {
   const [activeStatus, setActiveStatus] = useState('certified');
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -80,6 +81,10 @@ const Students = (props) => {
         Header: 'Latest Course Type',
         accessor: 'course_type_latest',
       },
+      {
+        Header: 'Certification Date',
+        accessor: 'certification_date_latest',
+      },
     ],
     []
   );
@@ -90,8 +95,7 @@ const Students = (props) => {
     let variables = {
       limit,
       start: offset,
-      //id: user.id,
-      id: 2,
+      id: userId,
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
@@ -185,11 +189,11 @@ const Students = (props) => {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <div className="d-flex justify-content-center align-items-center">
-              <WidgetUtilTab />
+              {/* <WidgetUtilTab /> */}
             </div>
             {/* <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} /> */}
           </div>
-          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
         </div>
       </Styled>
     </Collapse>

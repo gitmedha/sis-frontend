@@ -28,6 +28,7 @@ const Opportunities = (props) => {
   const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
+  const userId  = parseInt(localStorage.getItem('user_id'))
 
   const columns = useMemo(
     () => [
@@ -65,10 +66,9 @@ const Opportunities = (props) => {
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
       variables: {
-        // id: user.id,
+        id: userId,
         limit: limit,
         start: offset,
-        id: 2,
         sort: `${sortBy}:${sortOrder}`,
       },
     })
@@ -134,15 +134,15 @@ const Opportunities = (props) => {
   };
 
   return (
-    <Collapse title="OPPORTUNITIES" type="plain" opened={true}>
+    <Collapse title="NEW OPPORTUNITIES" type="plain" opened={true}>
       <div className="row m-3">
         <div className="d-flex justify-content-between align-items-center mb-2 px-0">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div className="d-flex justify-content-center align-items-center">
-            <WidgetUtilTab />
+            {/* <WidgetUtilTab /> */}
           </div>
         </div>
-        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       </div>
     </Collapse>
   );

@@ -37,6 +37,8 @@ const Institutions = (props) => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
+  const userId = parseInt(localStorage.getItem('user_id'))
+
   const columns = useMemo(
     () => [
       {
@@ -65,10 +67,9 @@ const Institutions = (props) => {
     await api.post("/graphql", {
       query: GET_USER_INSTITUTES,
       variables: {
-        // id: user.id,
+        id: userId,
         limit: limit,
         start: offset,
-        id: 2,
         sort: `${sortBy}:${sortOrder}`,
       },
     })

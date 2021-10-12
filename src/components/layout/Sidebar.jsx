@@ -51,11 +51,11 @@ const routes = [
     aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />
   },
-  {
-    to: "/admin",
-    title: "Admin",
-    icon: <FaUserCog {...iconProps} />
-  },
+  // {
+  //   to: "/admin",
+  //   title: "Admin",
+  //   icon: <FaUserCog {...iconProps} />
+  // },
 ];
 
 const Sidebar = ({ isOpen, toggleMenu }) => {
