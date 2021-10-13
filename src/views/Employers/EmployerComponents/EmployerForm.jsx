@@ -96,7 +96,7 @@ const EmployerForm = (props) => {
     industry:'',
     email:'',
     phone:'',
-    status:'',
+    status:'Active'.toLowerCase(),
     address:'',
     assigned_to:'',
     state:'',

@@ -38,6 +38,7 @@ const InstitutionForm = (props) => {
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -77,9 +78,16 @@ const InstitutionForm = (props) => {
         label: geographies.district,
         value: geographies.id,
     })));
+
+    setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+      key: geographies.area,
+      label: geographies.area,
+      value: geographies.id,
+  })));
     });
   }, []);
 
+ 
   const onSubmit = async (values) => {
     if (logo) {
       values.logo = logo;
@@ -94,7 +102,7 @@ const InstitutionForm = (props) => {
     type:'',
     email:'',
     phone:'',
-    status:'',
+    status:'Active'.toLowerCase(),
     address:'',
     assigned_to:'',
     state:'',
@@ -267,10 +275,12 @@ const InstitutionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
                       required
+                      options={areaOptions}
                       className="form-control"
                       placeholder="Medha Area"
                     />
