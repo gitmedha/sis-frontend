@@ -31,7 +31,7 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
 `;
 
 export const GET_USER_INSTITUTES = `
-query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
+query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $state: String, $area:String) {
   institutionsConnection(
     sort: $sort
     start: $start
@@ -40,11 +40,16 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
       assigned_to: {
         id: $id
       }
+      state:$state
+      medha_area:$area
     }
   ) {
     values {
       id
       name
+      state
+      city
+      medha_area
       contacts{
         id
         email

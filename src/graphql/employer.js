@@ -62,12 +62,18 @@ export const GET_MY_EMPLOYER = `
 `;
 
 export const GET_USER_EMPLOYERS = `
-  query GET_EMPLOYERS($id: Int, $limit: Int, $start: Int, $sort: String) {
+  query GET_EMPLOYERS($id: Int, $limit: Int, $start: Int, $sort: String, $state: String, $area: String) {
     employersConnection(
       sort: $sort
       start: $start
       limit: $limit
-      where: { assigned_to: { id: $id } }
+      where: {
+        assigned_to: {
+          id: $id
+        }
+        state:$state
+        medha_area:$area
+      }
     ) {
       values {
         id

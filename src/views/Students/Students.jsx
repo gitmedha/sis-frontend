@@ -66,6 +66,7 @@ const Students = (props) => {
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const userId = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
+  const area = localStorage.getItem('user_area')
 
   useEffect(() => {
     switch(activeTab.key) {
@@ -75,12 +76,12 @@ const Students = (props) => {
       case "my_state":
         getStudents("my_state")
         break;
-      case "all_medha":
-        getStudents()
-        break;
-      default:
-        
-        break;
+      case "my_area":
+        getStudents("my_area")
+        break; 
+      case "my_area":
+        getStudents("all_medha")
+        break; 
     }
   }, [activeTab]);
 
@@ -100,10 +101,6 @@ const Students = (props) => {
         accessor: 'id',
       },
       {
-        Header: 'Area',
-        accessor: 'city',
-      },
-      {
         Header: 'Status',
         accessor: 'status',
       },
@@ -111,11 +108,19 @@ const Students = (props) => {
         Header: 'Latest Course Type',
         accessor: 'course_type_latest',
       },
+      {
+        Header: 'Area',
+        accessor: 'medha_area',
+      },
+      {
+        Header: 'State',
+        accessor: 'state',
+      },
     ],
     []
   );
 
-  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status = 'All') => {
+  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
     nProgress.start();
     setLoading(true);
     let variables = {
@@ -123,14 +128,15 @@ const Students = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-
+    if (status !== 'All') {
+      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
+    }
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
     } else if(selectedTab == "my_state"){
       Object.assign(variables, {state: state})
-    }
-    if (status !== 'All') {
-      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
+    } else if(selectedTab == "my_area"){
+      Object.assign(variables, {area: area})
     }
 
     await api.post("/graphql", {

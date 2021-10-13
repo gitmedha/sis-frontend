@@ -99,7 +99,7 @@ const employmentConnectionFields = `
 `;
 
 export const GET_STUDENTS = `
-  query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String) {
+  query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,) {
     studentsConnection (
       sort: $sort
       start: $start
@@ -108,8 +108,9 @@ export const GET_STUDENTS = `
         assigned_to: {
           id: $id
         }
-         state:$state
-         status:$status
+        medha_area:$area
+        state:$state
+        status:$status
       }
     ) {
       values {

@@ -46,6 +46,7 @@ const tabPickerOptions = [
     const [modalShow, setModalShow] = useState(false);
     const userId = parseInt(localStorage.getItem('user_id'))
     const state = localStorage.getItem('user_state');
+    const area = localStorage.getItem('user_area')
 
   useEffect(() => {
     switch(activeTab.key) {
@@ -54,10 +55,13 @@ const tabPickerOptions = [
         break;
       case "my_state":
         getOpportunities("my_state")
+        break;  
+      case "my_area":
+        getOpportunities("my_area")
         break;     
-        default:
-          getOpportunities()
-          break;
+      default:
+        getOpportunities()
+        break;
         }
       }, [activeTab]);
 
@@ -80,12 +84,16 @@ const tabPickerOptions = [
         accessor: 'number_of_opportunities',
       },
       {
-        Header: 'Area',
-        accessor: 'address',
-      },
-      {
         Header: 'Date Added',
         accessor: 'created_at',
+      },
+      {
+        Header: 'Area',
+        accessor: 'medha_area',
+      },
+      {
+        Header: 'State',
+        accessor: 'state',
       },
     ],
     []
@@ -102,7 +110,10 @@ const tabPickerOptions = [
 
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
+    } else if(selectedTab == "my_area"){
+      Object.assign(variables, {area: area})
+    }
+    else if(selectedTab == "my_state"){
       Object.assign(variables, {state: state})
     }
     
