@@ -10,6 +10,7 @@ import { StudentValidations } from "../../../validations";
 // import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
+import { getAddressOptions }  from "../../Address/addressAction";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 
 const Section = styled.div`
@@ -40,6 +41,9 @@ const StudentForm = (props) => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
   const [logo, setLogo] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -63,6 +67,20 @@ const StudentForm = (props) => {
           label: assignee.username,
           value: assignee.id,
       })));
+    });
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.state,
+          label: geographies.state,
+          value: geographies.id,
+      })));
+      
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.district,
+        label: geographies.district,
+        value: geographies.id,
+    })));
     });
   }, []);
 
@@ -296,9 +314,11 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="state"
                       label="State"
-                      control="input"
+                      control="lookup"
+                      options={stateOptions}
                       placeholder="State"
                       className="form-control"
                       required

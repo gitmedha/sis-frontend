@@ -9,6 +9,7 @@ import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
+import { getAddressOptions }  from "../../Address/addressAction";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -36,6 +37,8 @@ const EmployerForm = (props) => {
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [logo, setLogo] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
 
   useEffect(() => {
     getEmployersPickList().then(data => {
@@ -62,6 +65,20 @@ const EmployerForm = (props) => {
           label: assignee.username,
           value: assignee.id,
       })));
+    });
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.state,
+          label: geographies.state,
+          value: geographies.id,
+      })));
+      
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.district,
+        label: geographies.district,
+        value: geographies.id,
+    })));
     });
 
   }, []);
@@ -239,9 +256,11 @@ const EmployerForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="state"
                       label="State"
-                      control="input"
+                      options={stateOptions}
+                      control="lookup"
                       placeholder="State"
                       className="form-control"
                       required
