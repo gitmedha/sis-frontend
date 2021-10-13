@@ -12,7 +12,7 @@ import InfoCards from "./components/InfoCards";
 // import { Table } from "react-bootstrap";
 // import BarCharts from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
-import WidgetUtilTab from "../../components/content/WidgetUtilTab";
+// import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
@@ -136,7 +136,7 @@ const Home = () => {
       <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <WidgetUtilTab />
+          {/* <WidgetUtilTab /> */}
         </div>
         {isLoading ? (
           <SkeletonLoader />
