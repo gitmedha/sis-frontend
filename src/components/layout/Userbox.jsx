@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Dropdown } from "react-bootstrap";
 import AuthContext from "../../context/AuthContext";
 import { FaUserAlt} from "react-icons/fa";
+
 const Userbox = () => {
   const {user, logout} = useContext(AuthContext);
 
