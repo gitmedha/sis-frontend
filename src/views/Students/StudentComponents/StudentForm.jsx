@@ -319,7 +319,7 @@ const StudentForm = (props) => {
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-12 col-sm-12 mb-2">
                     <Input
                       control="input"
                       label="Address"
@@ -329,7 +329,6 @@ const StudentForm = (props) => {
                       required
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2"></div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       icon="down"

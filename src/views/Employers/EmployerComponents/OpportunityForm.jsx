@@ -278,7 +278,7 @@ const OpportunityForm = (props) => {
                 <h3 className="section-header">Address</h3>
                 <h4 className="section-disclaimer">Defaults to Employer Address</h4>
                 <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-12 col-sm-12 mb-2">
                     <Input
                       control="input"
                       label="Address"
