@@ -50,7 +50,7 @@ const App = (props) => {
   const history = useHistory();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("user_id");
-  localStorage.setItem("user_state" , user?.state); 
+  localStorage.setItem("user_state" , user?.state);
   localStorage.setItem("user_area", user?.area);
 
   const logout = (callback = () => {}) => {
@@ -90,6 +90,7 @@ const App = (props) => {
 
   useEffect(() => {
     const accessToken = new URL(window.location.href).searchParams.get('access_token');
+    console.log('accesstoken', accessToken)
     // check for full path also.
     if (accessToken) {
       // make api request to fetch JSON
