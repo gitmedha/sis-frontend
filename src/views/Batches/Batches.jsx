@@ -45,10 +45,10 @@ const Batches = (props) => {
         getBatches("my_data")
         break;
       case "my_state":
-        // getBatches("my_state")
+        getBatches("my_state")
         break;
       case "my_area":
-        // getBatches("my_area")
+        getBatches("my_area")
         break; 
       default:
         getBatches()
