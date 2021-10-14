@@ -93,6 +93,7 @@ mutation CREATE_INSTITUTIONS(
       pin_code
       state
       medha_area
+      district
       city
       logo{
         url
@@ -157,6 +158,7 @@ mutation UPDATE_INSTITUTIONS(
         state
         medha_area
         city
+        district
         contacts {
           full_name
           email

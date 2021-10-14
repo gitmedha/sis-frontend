@@ -67,10 +67,11 @@ const InstitutionForm = (props) => {
     });
 
     getAddressOptions().then(data => {
+      console.log(data)
       setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.state,
+          key: geographies.id,
           label: geographies.state,
-          value: geographies.id,
+          value: geographies.state,
       })));
     });
    
@@ -78,26 +79,27 @@ const InstitutionForm = (props) => {
 
   const onStateChange = (data) => {
     getdistrict(data).then(data => {
+      console.log(data)
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.district,
+          key: geographies.id,
           label: geographies.district,
-          value: geographies.id,
+          value: geographies.district,
       })));
     });
         };
 
   const onDistrictChange = (data) => {
     getarea(data).then(data => {
-      console.log(data)
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.area,
+        key: geographies.id,
         label: geographies.area,
-        value: geographies.id,
+        value: geographies.area,
       })));
     });
   };
 
   const onSubmit = async (values) => {
+    console.log(values)
     if (logo) {
       values.logo = logo;
     }
@@ -263,8 +265,7 @@ const InstitutionForm = (props) => {
                 <div className="row">
                   <div className="col-md-12 col-sm-12 mb-2">
                     <Input
-                      control="lookup"
-                      icon="down"
+                      control="input"
                       label="Address"
                       required
                       name="address"

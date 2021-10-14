@@ -17,7 +17,7 @@ export const getAddressOptions = async () => {
     return await api.post('/graphql', {
       query: GET_ALL_DISTRICTS,
       variables: {
-      state:value.key
+      state:value.value
       },
     }).then(data => {
       return data;
@@ -31,7 +31,7 @@ export const getAddressOptions = async () => {
     return await api.post('/graphql', {
       query: GET_ALL_AREA,
       variables: {
-      district:value.key
+      district:value.value
       },
     }).then(data => {
       return data;

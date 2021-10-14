@@ -72,9 +72,9 @@ const StudentForm = (props) => {
 
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.state,
+          key: geographies.id,
           label: geographies.state,
-          value: geographies.id,
+          value: geographies.state,
       })));      
     });
   }, []);
@@ -82,20 +82,19 @@ const StudentForm = (props) => {
   const onStateChange = (data) => {
     getdistrict(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.district,
+          key: geographies.id,
           label: geographies.district,
-          value: geographies.id,
+          value: geographies.district,
       })));
     });
         };
 
   const onDistrictChange = (data) => {
     getarea(data).then(data => {
-      console.log(data)
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.area,
+        key: geographies.id,
         label: geographies.area,
-        value: geographies.id,
+        value: geographies.area,
       })));
     });
   };

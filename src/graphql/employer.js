@@ -163,6 +163,7 @@ export const CREATE_EMPLOYER = `
         city
         state
         medha_area
+        district
         assigned_to{
           username
         }
@@ -201,6 +202,7 @@ export const UPDATE_EMPLOYER = `
         city
         state
         medha_area
+        district
         assigned_to{
           username
         }
