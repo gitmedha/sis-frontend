@@ -9,7 +9,7 @@ import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
-import { getAddressOptions }  from "../../Address/addressAction";
+import { getAddressOptions , getdistrict, getarea }  from "../../Address/addressAction";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,6 +39,7 @@ const EmployerForm = (props) => {
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
 
   useEffect(() => {
     getEmployersPickList().then(data => {
@@ -76,6 +77,27 @@ const EmployerForm = (props) => {
     });
 
   }, []);
+
+  const onStateChange = (data) => {
+    getdistrict(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.district,
+          label: geographies.district,
+          value: geographies.id,
+      })));
+    });
+        };
+
+  const onDistrictChange = (data) => {
+    getarea(data).then(data => {
+      console.log(data)
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.area,
+        label: geographies.area,
+        value: geographies.id,
+      })));
+    });
+  };
 
   const onSubmit = async (values) => {
     if (logo) {
@@ -254,8 +276,9 @@ const EmployerForm = (props) => {
                       icon="down"
                       name="state"
                       label="State"
-                      options={stateOptions}
                       control="lookup"
+                      options={stateOptions}
+                      onChange={onStateChange}
                       placeholder="State"
                       className="form-control"
                       required
@@ -263,12 +286,27 @@ const EmployerForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
+                      options={districtOptions}
+                      onChange={onDistrictChange}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
                       className="form-control"
                       placeholder="Medha Area"
                       required
+                      options={areaOptions}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -287,16 +325,6 @@ const EmployerForm = (props) => {
                       name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="district"
-                      label="District"
-                      placeholder="District"
                       className="form-control"
                       required
                     />

@@ -8,7 +8,7 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
-import { getAddressOptions }  from "../../Address/addressAction";
+import { getAddressOptions, getdistrict, getarea }  from "../../Address/addressAction";
 import { urlPath } from "../../../constants";
 
 const Section = styled.div`
@@ -72,22 +72,31 @@ const InstitutionForm = (props) => {
           label: geographies.state,
           value: geographies.id,
       })));
-
-      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.district,
-        label: geographies.district,
-        value: geographies.id,
-    })));
-
-    setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
-      key: geographies.area,
-      label: geographies.area,
-      value: geographies.id,
-  })));
     });
+   
   }, []);
 
- 
+  const onStateChange = (data) => {
+    getdistrict(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.district,
+          label: geographies.district,
+          value: geographies.id,
+      })));
+    });
+        };
+
+  const onDistrictChange = (data) => {
+    getarea(data).then(data => {
+      console.log(data)
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.area,
+        label: geographies.area,
+        value: geographies.id,
+      })));
+    });
+  };
+
   const onSubmit = async (values) => {
     if (logo) {
       values.logo = logo;
@@ -254,7 +263,8 @@ const InstitutionForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      control="lookup"
+                      icon="down"
                       label="Address"
                       required
                       name="address"
@@ -270,7 +280,21 @@ const InstitutionForm = (props) => {
                       required
                       control="lookup"
                       options={stateOptions}
+                      onChange={onStateChange}
                       placeholder="State"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="lookup"
+                      icon="down"
+                      label="District"
+                      required
+                      name="district"
+                      options={districtOptions}
+                      onChange={onDistrictChange}
+                      placeholder="District"
                       className="form-control"
                     />
                   </div>
@@ -289,16 +313,6 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      required
-                      placeholder="Pin Code"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
                       name="city"
                       label="City"
                       required
@@ -309,11 +323,11 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      className="form-control"
+                      name="pin_code"
+                      label="Pin Code"
                       required
+                      placeholder="Pin Code"
+                      className="form-control"
                     />
                   </div>
                 </div>

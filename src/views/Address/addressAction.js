@@ -1,5 +1,6 @@
+import { values } from "lodash";
 import api from "../../../src/apis";
-import { GET_ALL_ADDRESS } from "../../graphql/address";
+import { GET_ALL_ADDRESS, GET_ALL_DISTRICTS, GET_ALL_AREA } from "../../graphql/address";
 
 export const getAddressOptions = async () => {
     return await api.post('/graphql', {
@@ -11,3 +12,32 @@ export const getAddressOptions = async () => {
     });
   }
   ;
+
+  export const getdistrict = async (value) => {
+    return await api.post('/graphql', {
+      query: GET_ALL_DISTRICTS,
+      variables: {
+      state:value.key
+      },
+    }).then(data => {
+      return data;
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
+  ;
+
+  export const getarea = async (value) => {
+    return await api.post('/graphql', {
+      query: GET_ALL_AREA,
+      variables: {
+      district:value.key
+      },
+    }).then(data => {
+      return data;
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
+  ;
+  

@@ -10,7 +10,7 @@ import { StudentValidations } from "../../../validations";
 // import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
-import { getAddressOptions }  from "../../Address/addressAction";
+import { getAddressOptions, getdistrict, getarea }  from "../../Address/addressAction";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 
 const Section = styled.div`
@@ -43,6 +43,7 @@ const StudentForm = (props) => {
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
 
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -74,15 +75,30 @@ const StudentForm = (props) => {
           key: geographies.state,
           label: geographies.state,
           value: geographies.id,
-      })));
-      
-      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.district,
-        label: geographies.district,
-        value: geographies.id,
-    })));
+      })));      
     });
   }, []);
+
+  const onStateChange = (data) => {
+    getdistrict(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.district,
+          label: geographies.district,
+          value: geographies.id,
+      })));
+    });
+        };
+
+  const onDistrictChange = (data) => {
+    getarea(data).then(data => {
+      console.log(data)
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.area,
+        label: geographies.area,
+        value: geographies.id,
+      })));
+    });
+  };
 
   const onSubmit = async (values) => {
     if (logo) {
@@ -313,6 +329,7 @@ const StudentForm = (props) => {
                       required
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2"></div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       icon="down"
@@ -320,6 +337,7 @@ const StudentForm = (props) => {
                       label="State"
                       control="lookup"
                       options={stateOptions}
+                      onChange={onStateChange}
                       placeholder="State"
                       className="form-control"
                       required
@@ -327,12 +345,27 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
+                      options={districtOptions}
+                      onChange={onDistrictChange}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
                       className="form-control"
                       placeholder="Medha Area"
                       required
+                      options={areaOptions}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -351,16 +384,6 @@ const StudentForm = (props) => {
                       name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="district"
-                      label="District"
-                      placeholder="District"
                       className="form-control"
                       required
                     />

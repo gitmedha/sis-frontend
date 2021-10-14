@@ -330,6 +330,16 @@ const OpportunityForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
                       name="medha_area"
                       label="Medha Area"
                       className="form-control"
@@ -353,16 +363,6 @@ const OpportunityForm = (props) => {
                       name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="district"
-                      label="District"
-                      placeholder="District"
                       className="form-control"
                       required
                     />
