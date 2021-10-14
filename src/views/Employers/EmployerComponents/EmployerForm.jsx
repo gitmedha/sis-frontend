@@ -73,12 +73,6 @@ const EmployerForm = (props) => {
           label: geographies.state,
           value: geographies.id,
       })));
-      
-      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.district,
-        label: geographies.district,
-        value: geographies.id,
-    })));
     });
 
   }, []);
@@ -103,6 +97,7 @@ const EmployerForm = (props) => {
     pin_code:'',
     city:'',
     medha_area:'',
+    district:'',
   };
 
   if (props.id) {
@@ -292,6 +287,16 @@ const EmployerForm = (props) => {
                       name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="district"
+                      label="District"
+                      placeholder="District"
                       className="form-control"
                       required
                     />

@@ -126,6 +126,7 @@ export const GET_EMPLOYER = `
       medha_area
       address
       city
+      district
       logo {
         url
       }

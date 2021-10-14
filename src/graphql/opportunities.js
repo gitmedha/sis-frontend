@@ -15,6 +15,7 @@ city
 state
 pin_code
 medha_area
+district
 assigned_to {
   id
   username

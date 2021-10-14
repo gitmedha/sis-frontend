@@ -23,6 +23,7 @@ const studentFields = `
   medha_area
   address
   state
+  district
   assigned_to{
     id
     username

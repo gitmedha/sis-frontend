@@ -235,6 +235,7 @@ query INSTITUTION(
       pin_code
       medha_area
       city
+      district
       logo {
         id
         url

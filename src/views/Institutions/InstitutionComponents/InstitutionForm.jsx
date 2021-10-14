@@ -109,6 +109,7 @@ const InstitutionForm = (props) => {
     pin_code:'',
     city:'',
     medha_area:'',
+    district:'',
   };
 
   if (props.id) {
@@ -303,6 +304,16 @@ const InstitutionForm = (props) => {
                       required
                       placeholder="City"
                       className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
                     />
                   </div>
                 </div>

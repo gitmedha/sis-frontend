@@ -63,6 +63,7 @@ const OpportunityForm = (props) => {
     state: '',
     pin_code: '',
     medha_area: '',
+    district:'',
   });
 
   useEffect(() => {
@@ -138,6 +139,7 @@ const OpportunityForm = (props) => {
       state: employer.details.state,
       pin_code: employer.details.pin_code,
       medha_area: employer.details.medha_area,
+      district: employer.details.district,
     });
   }
 
@@ -351,6 +353,16 @@ const OpportunityForm = (props) => {
                       name="pin_code"
                       label="Pin Code"
                       placeholder="Pin Code"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="district"
+                      label="District"
+                      placeholder="District"
                       className="form-control"
                       required
                     />
