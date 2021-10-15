@@ -7,7 +7,20 @@ const ProgramEnrollmentChart = (props) => {
   const [options, setOptions] = useState({
     chart: {
       height: 280,
-      type: "area"
+      type: "area",
+      toolbar: {
+        show: true,
+        tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: false,
+            customIcons: []
+          },
+      },
     },
     fill: {
       type: "gradient",
@@ -49,6 +62,7 @@ const ProgramEnrollmentChart = (props) => {
       registrationDataArray.map(item => {
         registrationData[item.key] = item.connection.aggregate.count;
       });
+      // sort the data by date
       registrationData = Object.keys(registrationData).sort().reduce((obj, key) => {
         obj[key] = registrationData[key];
         return obj;
