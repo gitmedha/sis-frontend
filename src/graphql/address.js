@@ -1,6 +1,6 @@
 export const GET_ALL_ADDRESS = `
 query GET_ALL_ADDRESS {
-    geographies{
+    geographies(sort: "state:asc"){
       id
       state
       district
@@ -13,14 +13,7 @@ query GET_ALL_ADDRESS {
   query GET_GEOGRAPHIES($state: String) {
     geographies(where: { state: $state }) {
       district
+      area
     }
   }
-`;
-
-export const GET_ALL_AREA = `
-query GET_GEOGRAPHIES($district: String) {
-  geographies(where: { district: $district }) {
-    area
-  }
-}
 `;

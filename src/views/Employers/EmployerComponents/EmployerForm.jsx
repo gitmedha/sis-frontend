@@ -81,16 +81,11 @@ const EmployerForm = (props) => {
   const onStateChange = (data) => {
     getdistrict(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.id,
-          label: geographies.district,
-          value: geographies.district,
+        key: geographies.id,
+        label: geographies.district,
+        value: geographies.district,
       })));
-    });
-        };
 
-  const onDistrictChange = (data) => {
-    getarea(data).then(data => {
-      console.log(data)
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.area,
@@ -294,7 +289,6 @@ const EmployerForm = (props) => {
                       className="form-control"
                       required
                       options={districtOptions}
-                      onChange={onDistrictChange}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">

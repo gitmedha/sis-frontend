@@ -8,7 +8,7 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
-import { getAddressOptions, getdistrict, getarea }  from "../../Address/addressAction";
+import { getAddressOptions, getdistrict }  from "../../Address/addressAction";
 import { urlPath } from "../../../constants";
 
 const Section = styled.div`
@@ -79,17 +79,12 @@ const InstitutionForm = (props) => {
 
   const onStateChange = (data) => {
     getdistrict(data).then(data => {
-      console.log(data)
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.id,
-          label: geographies.district,
-          value: geographies.district,
+        key: geographies.id,
+        label: geographies.district,
+        value: geographies.district,
       })));
-    });
-        };
 
-  const onDistrictChange = (data) => {
-    getarea(data).then(data => {
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.area,
@@ -294,7 +289,6 @@ const InstitutionForm = (props) => {
                       required
                       name="district"
                       options={districtOptions}
-                      onChange={onDistrictChange}
                       placeholder="District"
                       className="form-control"
                     />
