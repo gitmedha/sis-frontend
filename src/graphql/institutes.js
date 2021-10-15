@@ -39,9 +39,9 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $state: 
     where: {
       assigned_to: {
         id: $id
-      }
-      state:$state
-      medha_area:$area
+      },
+      state:$state,
+      medha_area:$area,
     }
   ) {
     values {

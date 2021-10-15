@@ -7,8 +7,8 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
       where: {
         assigned_to: {
           id: $id,
-          state: $state
-          area:$area
+          state: $state,
+          area:$area,
         }
       }
     ) {

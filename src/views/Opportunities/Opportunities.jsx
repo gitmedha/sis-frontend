@@ -112,8 +112,7 @@ const tabPickerOptions = [
       Object.assign(variables, {id: userId})
     } else if(selectedTab == "my_area"){
       Object.assign(variables, {area: area})
-    }
-    else if(selectedTab == "my_state"){
+    }else if(selectedTab == "my_state"){
       Object.assign(variables, {state: state})
     }
     

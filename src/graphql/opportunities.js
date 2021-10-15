@@ -68,10 +68,10 @@ opportunitiesConnection(
   where: {
     assigned_to: {
       id: $id
-    }
-     state:$state
-     status:$status
-     medha_area: $area
+    },
+     state:$state,
+     status:$status,
+     medha_area: $area,
   }
 ) {
   values {

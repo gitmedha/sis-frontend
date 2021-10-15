@@ -70,9 +70,9 @@ export const GET_USER_EMPLOYERS = `
       where: {
         assigned_to: {
           id: $id
-        }
-        state:$state
-        medha_area:$area
+        },
+        state:$state,
+        medha_area:$area,
       }
     ) {
       values {
