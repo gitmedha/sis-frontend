@@ -79,10 +79,11 @@ const Students = (props) => {
       case "my_area":
         getStudents("my_area")
         break; 
-      case "my_area":
-        getStudents("all_medha")
+      default:
+        getStudents()
         break; 
     }
+    console.log(activeTab.key)
   }, [activeTab]);
 
 
@@ -121,6 +122,7 @@ const Students = (props) => {
   );
 
   const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
+    console.log(selectedTab)
     nProgress.start();
     setLoading(true);
     let variables = {
@@ -174,9 +176,9 @@ const Students = (props) => {
           sortByField = 'first_name';
           break;
       }
-      getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getStudents(pageSize, pageSize * pageIndex, sortByField, sortOrder, activeStatus);
     } else {
-      getStudents(activeStatus, pageSize, pageSize * pageIndex);
+      getStudents( pageSize, pageSize * pageIndex, activeStatus);
     }
   }, [activeStatus]);
 
