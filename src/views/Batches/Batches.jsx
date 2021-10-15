@@ -113,6 +113,8 @@ const Batches = (props) => {
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
         program: batch.program.name,
+        area: batch.assigned_to.area,
+        state:batch.assigned_to.state,
         link: <TableRowDetailLink value={batch.id} to={'batch'} />
       }
     });
@@ -140,6 +142,14 @@ const Batches = (props) => {
       {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Area(Assigned To)',
+        accessor: 'area',
+      },
+      {
+        Header: 'State(Assigned To)',
+        accessor: 'state',
       },
     ],
     []

@@ -21,6 +21,10 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
         logo {
           url
         }
+        assigned_to{
+          area
+          state
+        }
         number_of_sessions_planned
         program {
           name
