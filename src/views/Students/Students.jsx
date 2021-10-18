@@ -108,7 +108,6 @@ const Students = (props) => {
   );
 
   const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
-
     nProgress.start();
     setLoading(true);
     let variables = {
@@ -162,11 +161,11 @@ const Students = (props) => {
           sortByField = 'first_name';
           break;
       }
-      getStudents(pageSize, pageSize * pageIndex, sortByField, sortOrder, activeStatus);
+      getStudents(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder, activeStatus);
     } else {
-      getStudents( pageSize, pageSize * pageIndex, activeStatus);
+      getStudents(activeTab.key, pageSize, pageSize * pageIndex, activeStatus);
     }
-  }, [activeStatus]);
+  }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
     getStudentsPickList().then(data => setPickList(data));
@@ -175,7 +174,7 @@ const Students = (props) => {
 
   useEffect(() => {
     setPaginationPageIndex(0);
-  }, [activeTab, activeStatus]);
+  }, [activeStatus]);
 
   useEffect(() => {
     if (students) {

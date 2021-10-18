@@ -127,11 +127,11 @@ const Institutions = (props) => {
           sortByField = 'name';
           break;
       }
-      getInstitutions(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getInstitutions(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getInstitutions(pageSize, pageSize * pageIndex);
+      getInstitutions(activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeTab.key]);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => setPickList(data));
