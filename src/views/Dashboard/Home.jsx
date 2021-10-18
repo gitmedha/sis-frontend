@@ -202,7 +202,9 @@ const Home = () => {
             </div>
             <div className="col-sm-12 col-md-6">
               <div className="card">
-                <EmploymentConnectionsChart />
+                <div className="card-body">
+                  <EmploymentConnectionsChart />
+                </div>
               </div>
             </div>
           </div>
