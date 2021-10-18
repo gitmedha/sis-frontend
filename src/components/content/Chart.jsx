@@ -78,18 +78,18 @@ const ProgramEnrollmentChart = (props) => {
           }
         })
         
-        setSeries([{
-          name: "Registrations",
-          data: Object.values(aggregateDate)
-        },
-        {
-          name: "Registrations",
-          data: ["1", "3", "5","2"]
-        }
-      ])
+        setSeries([
+          {
+            name: "Registrations",
+            data: Object.values(aggregateDate)
+          },
+          {
+            name: "Certifications",
+            data: ["2", "4", "5","2"]
+          }
+        ])
+      });
     });
-  });
-
   }, []);
 
   return (

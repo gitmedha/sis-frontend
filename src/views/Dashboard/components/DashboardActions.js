@@ -24,13 +24,19 @@ export const getMyDataMetrics = async (user, type = 'registrations') => {
 
 export const getMyDataMetricsGraph = async (user, type = 'registrations') => {
   let query = GET_MY_DATA_REGISTRATIONS_GRAPH;
-  if (type === 'certifications') {
-    query = GET_MY_DATA_CERTIFICATIONS_GRAPH;
-  } else if (type === 'internships') {
-    query = GET_MY_DATA_INTERNSHIPS;
-  } else if (type === 'placements') {
-    query = GET_MY_DATA_PLACEMENTS;
+
+  switch(type){
+    case (type === 'certifications'):
+      query = GET_MY_DATA_CERTIFICATIONS_GRAPH;
+    break;
+    case (type === 'internships'):
+      query = GET_MY_DATA_INTERNSHIPS;
+    break;
+    case (type === 'placements'):
+      query = GET_MY_DATA_PLACEMENTS;
+    break;  
   }
+
   return await api.post('/graphql', {
     query,
     variables: {
