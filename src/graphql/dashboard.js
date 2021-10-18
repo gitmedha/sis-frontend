@@ -287,3 +287,61 @@ export const GET_MY_DATA_CERTIFICATIONS_GRAPH = `
     }
   }
 `;
+
+export const GET_MY_DATA_INTERNSHIPS_GRAPH = `
+  query GET_MY_DATA_INTERNSHIPS_GRAPH ($user: Int){
+    employmentConnectionsConnection (
+      where:{
+        student: {
+          assigned_to:{
+            id: $user
+          }
+        }
+        opportunity:{
+          type: "Internship"
+        }
+        status: "Internship Complete"
+      }
+    ) {
+      groupBy {
+        start_date {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_MY_DATA_PLACEMENTS_GRAPH = `
+  query GET_MY_DATA_PLACEMENTS_GRAPH ($user: Int){
+    employmentConnectionsConnection (
+      where:{
+        student: {
+          assigned_to:{
+            id: $user
+          }
+        }
+        opportunity:{
+          type: "Job"
+        }
+        status: "Offer Accepted"
+      }
+    ) {
+      groupBy {
+        start_date {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
