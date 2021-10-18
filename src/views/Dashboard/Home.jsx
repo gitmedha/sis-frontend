@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import InfoCards from "./components/InfoCards";
-import ProgramEnrollmentsChart from "../../components/content/Chart";
+import { ProgramEnrollmentsChart, EmploymentConnectionsChart } from "../../components/content/Chart";
 import TabPicker from "../../components/content/TabPicker";
 // import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
@@ -201,10 +201,9 @@ const Home = () => {
               </div>
             </div>
             <div className="col-sm-12 col-md-6">
-              <img src={s2} width="600" height="400"/>
-              {/* <div className="card">
-                <div className="card-body">Hello World</div>
-              </div> */}
+              <div className="card">
+                <EmploymentConnectionsChart />
+              </div>
             </div>
           </div>
       </Collapsible>
