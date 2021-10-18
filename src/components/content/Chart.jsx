@@ -120,6 +120,10 @@ export const EmploymentConnectionsChart = (props) => {
     theme: {
       palette: 'palette2' // upto palette10
     },
+    yaxis: {
+      floating: false,
+      min: 0,
+    },
     chart: {
       height: 280,
       type: 'bar',
