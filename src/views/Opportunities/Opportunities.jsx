@@ -26,10 +26,10 @@ const StyledOpportunityIcon = styled.div`
 `;
 
 const tabPickerOptions = [
-    { title: "My Data", key: "test-1" },
-    { title: "My Area", key: "test-2" },
-    { title: "My State", key: "test-3" },
-    { title: "All Medha", key: "test-4" },
+    { title: "My Data", key: "my_data" },
+    { title: "My Area", key: "my_area" },
+    { title: "My State", key: "my_state" },
+    { title: "All Medha", key: "all_medha" },
   ];
 
   const Opportunities = (props) => {
@@ -45,6 +45,12 @@ const tabPickerOptions = [
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
     const userId = parseInt(localStorage.getItem('user_id'))
+    const state = localStorage.getItem('user_state');
+    const area = localStorage.getItem('user_area')
+
+  useEffect(() => {
+    getOpportunities(activeTab.key);
+  }, [activeTab]);
 
   const columns = useMemo(
     () => [
@@ -65,28 +71,41 @@ const tabPickerOptions = [
         accessor: 'number_of_opportunities',
       },
       {
-        Header: 'Area',
-        accessor: 'address',
-      },
-      {
         Header: 'Date Added',
         accessor: 'created_at',
+      },
+      {
+        Header: 'Area',
+        accessor: 'medha_area',
+      },
+      {
+        Header: 'State',
+        accessor: 'state',
       },
     ],
     []
   );
 
-  const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
     setLoading(true);
+    let variables = {
+      limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    }
+
+    if(selectedTab == "my_data"){
+      Object.assign(variables, {id: userId})
+    } else if(selectedTab == "my_area"){
+      Object.assign(variables, {area: area})
+    }else if(selectedTab == "my_state"){
+      Object.assign(variables, {state: state})
+    }
+    
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
-      variables: {
-        id: userId,
-        limit: limit,
-        start: offset,
-        sort: `${sortBy}:${sortOrder}`,
-      },
+      variables,
     })
     .then(data => {
       setOpportunities(data?.data?.data?.opportunitiesConnection.values);

@@ -1,12 +1,14 @@
 export const GET_BATCHES = `
-query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
+query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state:String, $area:String ){
     batchesConnection(
       sort: $sort
       start: $start
       limit: $limit
       where: {
         assigned_to: {
-          id: $id
+          id: $id,
+          state: $state,
+          area:$area,
         }
       }
     ) {
@@ -18,6 +20,10 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String){
         status
         logo {
           url
+        }
+        assigned_to{
+          area
+          state
         }
         number_of_sessions_planned
         program {

@@ -17,10 +17,10 @@ import { connect } from "react-redux";
 import TabPicker from "../../components/content/TabPicker";
 
 const tabPickerOptions = [
-  { title: "My Data", key: "test-1" },
-  { title: "My Area", key: "test-2" },
-  { title: "My State", key: "test-3" },
-  { title: "All Medha", key: "test-4" },
+  { title: "My Data", key: "my_data" },
+  { title: "My Area", key: "my_area" },
+  { title: "My State", key: "my_state" },
+  { title: "All Medha", key: "all_medha" },
 ];
 
 const Batches = (props) => {
@@ -36,18 +36,31 @@ const Batches = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const userId  = parseInt(localStorage.getItem('user_id'))
+  const state = localStorage.getItem('user_state');
+  const area = localStorage.getItem('user_area')
 
-  const getBatches = async (limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  useEffect(() => {
+    getBatches(activeTab.key);
+  }, [activeTab]);
+
+  const getBatches = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
     NP.start();
     setLoading(true);
+    let variables= {
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    }
+    if(selectedTab == "my_data"){
+      Object.assign(variables, {id: userId})
+    } else if(selectedTab == "my_state"){
+      Object.assign(variables, {state: state})
+    } else if(selectedTab == "my_area"){
+      Object.assign(variables, {area: area})
+    }
     await api.post("/graphql", {
       query: GET_BATCHES,
-      variables: {
-        limit: limit,
-        start: offset,
-        id: userId ,
-        sort: `${sortBy}:${sortOrder}`,
-      },
+      variables,
     })
     .then(batchesData => {
       getStudentCountByBatch().then(data => {
@@ -87,6 +100,8 @@ const Batches = (props) => {
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
         program: batch.program.name,
+        area: batch.assigned_to.area,
+        state:batch.assigned_to.state,
         link: <TableRowDetailLink value={batch.id} to={'batch'} />
       }
     });
@@ -114,6 +129,14 @@ const Batches = (props) => {
       {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Area (Assigned To)',
+        accessor: 'area',
+      },
+      {
+        Header: 'State (Assigned To)',
+        accessor: 'state',
       },
     ],
     []

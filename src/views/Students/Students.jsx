@@ -23,12 +23,13 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
+import { SignalCellularNull } from "@material-ui/icons";
 
 const tabPickerOptions = [
-  { title: "My Data", key: "test-1" },
-  { title: "My Area", key: "test-2" },
-  { title: "My State", key: "test-3" },
-  { title: "All Medha", key: "test-4" },
+  { title: "My Data", key: "my_data" },
+  { title: "My Area", key: "my_area" },
+  { title: "My State", key: "my_state" },
+  { title: "All Medha", key: "all_medha" },
 ];
 
 const Styled = styled.div`
@@ -64,6 +65,13 @@ const Students = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const state = localStorage.getItem('user_state');
+  const area = localStorage.getItem('user_area')
+
+  useEffect(() => {
+    getStudents(activeTab.key);
+  }, [activeTab]);
+
 
   const columns = useMemo(
     () => [
@@ -80,10 +88,6 @@ const Students = (props) => {
         accessor: 'id',
       },
       {
-        Header: 'Area',
-        accessor: 'city',
-      },
-      {
         Header: 'Status',
         accessor: 'status',
       },
@@ -91,22 +95,38 @@ const Students = (props) => {
         Header: 'Latest Course Type',
         accessor: 'course_type_latest',
       },
+      {
+        Header: 'Area',
+        accessor: 'medha_area',
+      },
+      {
+        Header: 'State',
+        accessor: 'state',
+      },
     ],
     []
   );
 
-  const getStudents = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
+
     nProgress.start();
     setLoading(true);
     let variables = {
       limit,
       start: offset,
-      id: userId,
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
       variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
     }
+    if(selectedTab == "my_data"){
+      Object.assign(variables, {id: userId})
+    } else if(selectedTab == "my_state"){
+      Object.assign(variables, {state: state})
+    } else if(selectedTab == "my_area"){
+      Object.assign(variables, {area: area})
+    }
+
     await api.post("/graphql", {
       query: GET_STUDENTS,
       variables,
@@ -142,9 +162,9 @@ const Students = (props) => {
           sortByField = 'first_name';
           break;
       }
-      getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getStudents(pageSize, pageSize * pageIndex, sortByField, sortOrder, activeStatus);
     } else {
-      getStudents(activeStatus, pageSize, pageSize * pageIndex);
+      getStudents( pageSize, pageSize * pageIndex, activeStatus);
     }
   }, [activeStatus]);
 
