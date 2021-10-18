@@ -117,30 +117,49 @@ export const ProgramEnrollmentsChart = (props) => {
 export const EmploymentConnectionsChart = (props) => {
   const userId = Number(localStorage.getItem("user_id")) || 2;
   const [options, setOptions] = useState({
+    theme: {
+      palette: 'palette2' // upto palette10
+    },
     chart: {
       height: 280,
-      type: "area",
+      type: 'bar',
       toolbar: {
         show: true,
         tools: {
-            download: true,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: false,
-            customIcons: []
-          },
+          download: true,
+          selection: false,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: false,
+          reset: false,
+          customIcons: []
+        },
       },
     },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '55%',
+        endingShape: 'rounded'
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent']
+    },
     fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.9,
-        stops: [0, 90, 100]
+      type: "solid",
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return Number(val)
+        }
       }
     },
   });
@@ -215,10 +234,12 @@ export const EmploymentConnectionsChart = (props) => {
       setSeries([
         {
           name: "Internships",
+          type: 'column',
           data: Object.values(internshipChartData).map(data => data.count)
         },
         {
           name: "Placements",
+          type: 'column',
           data: Object.values(placementChartData).map(data => data.count)
         },
       ]);
