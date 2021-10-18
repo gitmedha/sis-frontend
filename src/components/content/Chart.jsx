@@ -33,31 +33,30 @@ export const ProgramEnrollmentsChart = (props) => {
       }
     },
   });
-  const [series, setSeries] = useState([
-    {
-      name: "Registrations",
-      data: []
-    },
-    {
-      name: "Certifications",
-      data: []
+  const [series, setSeries] = useState([]);
+
+  useEffect(async () => {
+    let chartData = {};
+    let startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 5);
+    for (let index = 0; index < 6; index++) {
+      chartData[moment(startDate).format('YYYY-MM')] = {
+        'month_formatted': moment(startDate).format('MMM yy'),
+        'count': 0,
+      };
+      startDate.setMonth(startDate.getMonth() + 1);
     }
-  ]);
+    let registrationChartData = JSON.parse(JSON.stringify(chartData));
+    let certificationChartData = JSON.parse(JSON.stringify(chartData));
 
-  useEffect(() => {
-    getMyDataMetricsGraph(userId, 'registrations').then(data => {
-      let chartData = {};
-      const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() - 5);
-      for (let index = 0; index < 6; index++) {
-        chartData[moment(startDate).format('YYYY-MM')] = {
-          'month_formatted': moment(startDate).format('MMM yy'),
-          'count': 0,
-        };
-        startDate.setMonth(startDate.getMonth() + 1);
+    setOptions({
+      xaxis: {
+        categories: Object.values(chartData).map(data => data.month_formatted),
       }
+    });
 
-      const sixMonthsAgo = new Date();
+    await getMyDataMetricsGraph(userId, 'registrations').then(data => {
+      let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       // filter out data older than 6 months ago
       let registrationDataArray = (data.data.data.programEnrollmentsConnection.groupBy.registration_date).filter(({key}) => (new Date(key)) > sixMonthsAgo);
@@ -70,26 +69,40 @@ export const ProgramEnrollmentsChart = (props) => {
 
       Object.keys(registrationData).sort().forEach(date => {
         let yearMonth = moment(date).format('YYYY-MM');
-        chartData[yearMonth]['count'] += registrationData[date];
+        registrationChartData[yearMonth]['count'] += registrationData[date];
+      });
+    });
+
+    await getMyDataMetricsGraph(userId, 'certifications').then(data => {
+      let sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      // filter out data older than 6 months ago
+      let certificationDataArray = (data.data.data.programEnrollmentsConnection.groupBy.certification_date).filter(({key}) => (new Date(key)) > sixMonthsAgo);
+
+      // set key = date and value = count
+      let certificationData = {};
+      certificationDataArray.map(item => {
+        certificationData[item.key] = item.connection.aggregate.count;
       });
 
-      setOptions({
-        xaxis: {
-          categories: Object.values(chartData).map(data => data.month_formatted),
-        }
+      Object.keys(certificationData).sort().forEach(date => {
+        let yearMonth = moment(date).format('YYYY-MM');
+        certificationChartData[yearMonth]['count'] += certificationData[date];
       });
+    });
 
+    if (registrationChartData && certificationChartData) {
       setSeries([
         {
           name: "Registrations",
-          data: Object.values(chartData).map(data => data.count)
+          data: Object.values(registrationChartData).map(data => data.count)
         },
         {
           name: "Certifications",
-          data: ["2", "4", "5", "2", "3", "4"]
-        }
+          data: Object.values(certificationChartData).map(data => data.count)
+        },
       ]);
-    });
+    }
   }, []);
 
   return (
@@ -142,20 +155,28 @@ export const EmploymentConnectionsChart = (props) => {
     }
   ]);
 
-  useEffect(() => {
-    getMyDataMetricsGraph(userId, 'internships').then(data => {
-      let chartData = {};
-      const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() - 5);
-      for (let index = 0; index < 6; index++) {
-        chartData[moment(startDate).format('YYYY-MM')] = {
-          'month_formatted': moment(startDate).format('MMM yy'),
-          'count': 0,
-        };
-        startDate.setMonth(startDate.getMonth() + 1);
-      }
+  useEffect(async () => {
+    let chartData = {};
+    let startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 5);
+    for (let index = 0; index < 6; index++) {
+      chartData[moment(startDate).format('YYYY-MM')] = {
+        'month_formatted': moment(startDate).format('MMM yy'),
+        'count': 0,
+      };
+      startDate.setMonth(startDate.getMonth() + 1);
+    }
+    let internshipChartData = JSON.parse(JSON.stringify(chartData));
+    let placementChartData = JSON.parse(JSON.stringify(chartData));
 
-      const sixMonthsAgo = new Date();
+    setOptions({
+      xaxis: {
+        categories: Object.values(chartData).map(data => data.month_formatted),
+      }
+    });
+
+    await getMyDataMetricsGraph(userId, 'internships').then(data => {
+      let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       // filter out data older than 6 months ago
       let internshipDataArray = (data.data.data.employmentConnectionsConnection.groupBy.start_date).filter(({key}) => (new Date(key)) > sixMonthsAgo);
@@ -168,26 +189,40 @@ export const EmploymentConnectionsChart = (props) => {
 
       Object.keys(internshipData).sort().forEach(date => {
         let yearMonth = moment(date).format('YYYY-MM');
-        chartData[yearMonth]['count'] += internshipData[date];
+        internshipChartData[yearMonth]['count'] += internshipData[date];
+      });
+    });
+
+    await getMyDataMetricsGraph(userId, 'placements').then(data => {
+      let sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      // filter out data older than 6 months ago
+      let placementDataArray = (data.data.data.employmentConnectionsConnection.groupBy.start_date).filter(({key}) => (new Date(key)) > sixMonthsAgo);
+
+      // set key = date and value = count
+      let placementData = {};
+      placementDataArray.map(item => {
+        placementData[item.key] = item.connection.aggregate.count;
       });
 
-      setOptions({
-        xaxis: {
-          categories: Object.values(chartData).map(data => data.month_formatted),
-        }
+      Object.keys(placementData).sort().forEach(date => {
+        let yearMonth = moment(date).format('YYYY-MM');
+        placementChartData[yearMonth]['count'] += placementData[date];
       });
+    });
 
+    if (internshipChartData && placementChartData) {
       setSeries([
         {
           name: "Internships",
-          data: Object.values(chartData).map(data => data.count)
+          data: Object.values(internshipChartData).map(data => data.count)
         },
         {
           name: "Placements",
-          data: ["2", "4", "5", "2", "3", "4"]
-        }
+          data: Object.values(placementChartData).map(data => data.count)
+        },
       ]);
-    });
+    }
   }, []);
 
   return (
