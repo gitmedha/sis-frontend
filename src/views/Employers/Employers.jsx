@@ -41,20 +41,7 @@ const Employers = (props) => {
   const area = localStorage.getItem('user_area')
 
   useEffect(() => {
-    switch(activeTab.key) {
-      case "my_data":
-        getEmployers("my_data")
-        break;
-      case "my_state":
-        getEmployers("my_state")
-        break;
-      case "my_area":
-        getEmployers("my_area")
-        break; 
-      default:
-        getEmployers()
-        break;
-    }
+    getEmployers(activeTab.key);
   }, [activeTab]);
 
   const columns = useMemo(

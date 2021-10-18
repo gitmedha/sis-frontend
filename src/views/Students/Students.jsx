@@ -69,21 +69,7 @@ const Students = (props) => {
   const area = localStorage.getItem('user_area')
 
   useEffect(() => {
-    switch(activeTab.key) {
-      case "my_data":
-        getStudents("my_data")
-        break;
-      case "my_state":
-        getStudents("my_state")
-        break;
-      case "my_area":
-        getStudents("my_area")
-        break; 
-      default:
-        getStudents()
-        break; 
-    }
-    console.log(activeTab.key)
+    getStudents(activeTab.key);
   }, [activeTab]);
 
 
@@ -122,7 +108,7 @@ const Students = (props) => {
   );
 
   const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
-    console.log(selectedTab)
+
     nProgress.start();
     setLoading(true);
     let variables = {

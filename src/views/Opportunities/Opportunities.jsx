@@ -49,21 +49,8 @@ const tabPickerOptions = [
     const area = localStorage.getItem('user_area')
 
   useEffect(() => {
-    switch(activeTab.key) {
-      case "my_data":
-        getOpportunities("my_data")
-        break;
-      case "my_state":
-        getOpportunities("my_state")
-        break;  
-      case "my_area":
-        getOpportunities("my_area")
-        break;     
-      default:
-        getOpportunities()
-        break;
-        }
-      }, [activeTab]);
+    getOpportunities(activeTab.key);
+  }, [activeTab]);
 
   const columns = useMemo(
     () => [

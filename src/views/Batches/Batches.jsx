@@ -40,20 +40,7 @@ const Batches = (props) => {
   const area = localStorage.getItem('user_area')
 
   useEffect(() => {
-    switch(activeTab.key) {
-      case "my_data":
-        getBatches("my_data")
-        break;
-      case "my_state":
-        getBatches("my_state")
-        break;
-      case "my_area":
-        getBatches("my_area")
-        break; 
-      default:
-        getBatches()
-        break;
-    }
+    getBatches(activeTab.key);
   }, [activeTab]);
 
   const getBatches = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
@@ -144,11 +131,11 @@ const Batches = (props) => {
         accessor: 'start_date',
       },
       {
-        Header: 'Area(Assigned To)',
+        Header: 'Area (Assigned To)',
         accessor: 'area',
       },
       {
-        Header: 'State(Assigned To)',
+        Header: 'State (Assigned To)',
         accessor: 'state',
       },
     ],

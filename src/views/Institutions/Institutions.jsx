@@ -42,20 +42,7 @@ const Institutions = (props) => {
   const area = localStorage.getItem('user_area')
 
   useEffect(() => {
-    switch(activeTab.key) {
-      case "my_data":
-        getInstitutions("my_data")
-        break;
-      case "my_state":
-        getInstitutions("my_state")
-        break;
-      case "my_area":
-        getInstitutions("my_area")
-        break; 
-      default:
-        getInstitutions()
-        break;
-    }
+    getInstitutions(activeTab.key);
   }, [activeTab]);
 
   const columns = useMemo(
