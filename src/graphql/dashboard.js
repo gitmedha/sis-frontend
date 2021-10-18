@@ -235,3 +235,55 @@ query GET_STUDENTS($limit: Int, $start: Int, $status: String) {
     }
   }
 `;
+
+export const GET_MY_DATA_REGISTRATIONS_GRAPH = `
+  query GET_MY_DATA_REGISTRATIONS_GRAPH ($user: Int){
+    programEnrollmentsConnection (
+      where:{
+        student: {
+          assigned_to:{
+            id: $user
+          }
+        }
+        status_nin: ["Batch Assigned", "Batch Complete", "Certified by Medha"]
+      }
+    ) {
+      groupBy {
+        registration_date {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_MY_DATA_CERTIFICATIONS_GRAPH = `
+  query GET_MY_DATA_CERTIFICATIONS_GRAPH ($user: Int){
+    programEnrollmentsConnection (
+      where:{
+        student: {
+          assigned_to:{
+            id: $user
+          }
+        }
+        status: "Certified by Medha"
+      }
+    ) {
+      groupBy {
+        certification_date {
+          key
+          connection {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+`;

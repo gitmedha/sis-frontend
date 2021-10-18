@@ -1,41 +1,104 @@
 import Chart from "react-apexcharts";
+import { useState, useEffect } from "react";
+import { getMyDataMetricsGraph } from "../../views/Dashboard/components/DashboardActions";
+import moment from "moment";
 
-const BarChart = (props) => {
-  const options = {
-    xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-    },
+const ProgramEnrollmentChart = (props) => {
+  const userId = Number(localStorage.getItem("user_id")) || 2;
+  const [options, setOptions] = useState({
     chart: {
-      width: "100%",
-      height: 380,
-      id: props.id,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
+      height: 280,
+      type: "area",
+      toolbar: {
+        show: true,
+        tools: {
+            download: true,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: false,
+            customIcons: []
+          },
       },
     },
-    dataLabels: {
-      enabled: false,
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.9,
+        stops: [0, 90, 100]
+      }
     },
-    stroke: {
-      width: 1,
-      colors: ["#AA223C", "#207B69"],
-    },
-  };
-
-  const series = [
+  });
+  const [series, setSeries] = useState([
     {
-      name: "series-1",
-      data: [30, 40, 45, 50, 49, 60, 70, 91],
+      name: "Registrations",
+      data: []
     },
     {
-      name: "series-2",
-      data: [35, 35, 40, 25, 44, 55, 75, 102],
-    },
-  ];
+      name: "Certifications",
+      data: []
+    }
+  ]);
 
-  return <Chart options={options} type={props.type} series={series} />;
+  useEffect(() => {
+    getMyDataMetricsGraph(userId, 'registrations').then(data => {
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      let registrationDataArray = (data.data.data.programEnrollmentsConnection.groupBy.registration_date).filter(({key}) => (new Date(key)) > sixMonthsAgo);
+
+      // set key = date and value = count
+      let registrationData = {};
+      registrationDataArray.map(item => {
+        registrationData[item.key] = item.connection.aggregate.count;
+      });
+      // sort the data by date
+      // registrationData = Object.keys(registrationData).sort().reduce((obj, key) => {
+      //   obj[key] = registrationData[key];
+      //   return obj;
+      // }, {});
+      
+      let aggregateDate = [];
+      Object.keys(registrationData).sort().forEach(date => {
+        let registrationCount = registrationData[date];
+        let yearMonth = moment(date).format('yy-MMM');
+        
+        if (aggregateDate[yearMonth] === undefined) {
+          aggregateDate[yearMonth] = registrationCount; 
+        } else {
+          aggregateDate[yearMonth] += registrationCount; 
+        }
+        
+        setOptions({
+          xaxis: {
+            categories: Object.keys(aggregateDate)
+          }
+        })
+        
+        setSeries([
+          {
+            name: "Registrations",
+            data: Object.values(aggregateDate)
+          },
+          {
+            name: "Certifications",
+            data: ["2", "4", "5","2"]
+          }
+        ])
+      });
+    });
+  }, []);
+
+  return (
+    <Chart
+      options={options}
+      series={series}
+      type="area"
+    />
+  )
 };
 
-export default BarChart;
+export default ProgramEnrollmentChart;

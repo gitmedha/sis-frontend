@@ -12,7 +12,7 @@
     "@testing-library/user-event": "^12.8.3",
     "ag-grid-community": "^25.3.0",
     "ag-grid-react": "^25.3.0",
-    "apexcharts": "^3.26.3",
+    "apexcharts": "^3.29.0",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "clsx": "^1.1.1",

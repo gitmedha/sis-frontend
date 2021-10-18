@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_MY_DATA_CERTIFICATIONS, GET_MY_DATA_INTERNSHIPS, GET_MY_DATA_PLACEMENTS, GET_MY_DATA_REGISTRATIONS } from "../../../graphql";
+import { GET_MY_DATA_CERTIFICATIONS, GET_MY_DATA_CERTIFICATIONS_GRAPH, GET_MY_DATA_INTERNSHIPS, GET_MY_DATA_PLACEMENTS, GET_MY_DATA_REGISTRATIONS, GET_MY_DATA_REGISTRATIONS_GRAPH } from "../../../graphql";
 
 export const getMyDataMetrics = async (user, type = 'registrations') => {
   let query = GET_MY_DATA_REGISTRATIONS;
@@ -10,6 +10,33 @@ export const getMyDataMetrics = async (user, type = 'registrations') => {
   } else if (type === 'placements') {
     query = GET_MY_DATA_PLACEMENTS;
   }
+  return await api.post('/graphql', {
+    query,
+    variables: {
+      user,
+    }
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getMyDataMetricsGraph = async (user, type = 'registrations') => {
+  let query = GET_MY_DATA_REGISTRATIONS_GRAPH;
+
+  switch(type){
+    case (type === 'certifications'):
+      query = GET_MY_DATA_CERTIFICATIONS_GRAPH;
+    break;
+    case (type === 'internships'):
+      query = GET_MY_DATA_INTERNSHIPS;
+    break;
+    case (type === 'placements'):
+      query = GET_MY_DATA_PLACEMENTS;
+    break;  
+  }
+
   return await api.post('/graphql', {
     query,
     variables: {
