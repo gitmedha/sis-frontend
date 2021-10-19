@@ -5,6 +5,8 @@ import {
   GET_ALL_PROGRAMS,
   GET_ALL_INSTITUTES,
   GET_ASSIGNEES_LIST_OPTS,
+  GET_ALL_STUDENTS,
+  GET_ALL_BATCHES,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -52,11 +54,29 @@ export const batchLookUpOptions = async () => {
     value: Number(institution.id),
   }));
 
+  data = await queryBuilder({
+    query: GET_ALL_STUDENTS,
+  });
+  let studentOptions = data.data.students.map((student) => ({
+    label: student.first_name + ''+ student.last_name,
+    value: Number(student.id),
+  }));
+
+  data = await queryBuilder({
+    query: GET_ALL_BATCHES,
+  });
+  let batchOptions = data.data.batches.map((batches) => ({
+    label: batches.name,
+    value: Number(batches.id),
+  }));
+
   return {
     grantOptions,
     statusOptions,
     programOptions,
     instituteOptions,
     assigneesOptions,
+    studentOptions,
+    batchOptions,
   };
 };

@@ -3,11 +3,13 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
 
 const Section = styled.div`
   padding-top: 30px;
@@ -28,6 +30,11 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, student } = props;
   const [loading, setLoading] = useState(false);
@@ -40,6 +47,29 @@ const ProgramEnrollmentForm = (props) => {
   const [courseLevelOptions, setCourseLevelOptions] = useState([]);
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
+  const [lookUpLoading, setLookUpLoading] = useState(false);
+  const [options, setOptions] = useState(null);
+
+  const prepareLookUpFields = async () => {
+    setLookUpLoading(true);
+    let lookUpOpts = await batchLookUpOptions();
+    setOptions(lookUpOpts);
+    setLookUpLoading(false);
+  };
+
+  useEffect(() => {
+    if ( props.institution) {
+      filterInstitution(props.institution.name).then(data => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, [props])
+
+  useEffect(() => {
+    if (show && !options) {
+      prepareLookUpFields();
+    }
+  }, [show, options]);
 
   useEffect(() => {
     setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
@@ -106,6 +136,21 @@ const ProgramEnrollmentForm = (props) => {
     });
   }, []);
 
+  const filterInstitution = async (filterValue) => {
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(institution => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+    });
+  }
+
   return (
     <Modal
       centered
@@ -160,15 +205,19 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                  {!lookUpLoading ? (
                     <Input
                       control="lookup"
                       name="batch"
                       label="Batch"
                       required
-                      options={batchOptions}
+                      options={options?.batchOptions}
                       className="form-control"
                       placeholder="Batch"
                     />
+                    ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -182,15 +231,20 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                  {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="institution"
                       label="Institution"
                       required
-                      options={institutionOptions}
+                      filterData={filterInstitution}
+                      defaultOptions={props.id ? institutionOptions : true}
                       className="form-control"
                       placeholder="Institution"
                     />
+                    ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

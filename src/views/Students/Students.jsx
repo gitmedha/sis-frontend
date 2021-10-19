@@ -108,6 +108,7 @@ const Students = (props) => {
   );
 
   const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
+
     nProgress.start();
     setLoading(true);
     let variables = {
@@ -174,7 +175,7 @@ const Students = (props) => {
 
   useEffect(() => {
     setPaginationPageIndex(0);
-  }, [activeStatus]);
+  }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
     if (students) {
