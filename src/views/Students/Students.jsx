@@ -260,7 +260,7 @@ const Students = (props) => {
           </div>
           </div>
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          <div className={`${layout !== 'grid' ? 'd-none' : ''}`}>
+          <div className={`col-12 ${layout !== 'grid' ? 'd-none' : ''}`}>
             <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
           </div>
           <StudentForm
