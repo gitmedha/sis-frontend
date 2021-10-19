@@ -13,7 +13,7 @@ export const batchLookUpOptions = async () => {
       label: "Enrollment Ongoing",
       value: "Enrollment Ongoing",
     },
-    { label: "To Be Started", value: "To Be Started" },
+    { label: "Enrollment Complete -- To Be Started", value: "Enrollment Complete -- To Be Started" },
     { label: "In Progress", value: "In Progress" },
     { label: "Complete", value: "Complete" },
     { label: "Certified", value: "Certified" },
