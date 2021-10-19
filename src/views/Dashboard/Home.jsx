@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import InfoCards from "./components/InfoCards";
-import { ProgramEnrollmentsChart, EmploymentConnectionsChart } from "../../components/content/Chart";
+import { ProgramEnrollmentsChart, EmploymentConnectionsChart } from "../../components/content/DashboardCharts";
 import TabPicker from "../../components/content/TabPicker";
 // import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
