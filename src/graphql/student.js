@@ -92,11 +92,6 @@ const employmentConnectionFields = `
       name
     }
   }
-  assigned_to {
-    id
-    username
-    email
-  }
 `;
 
 export const GET_STUDENTS = `

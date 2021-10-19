@@ -32,7 +32,6 @@ const Student = (props) => {
   const { address, contacts, ...rest } = student;
 
   const hideUpdateModal = async (data) => {
-    console.log(data)
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;

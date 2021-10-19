@@ -33,7 +33,6 @@ const Employer = (props) => {
   const employerId = props.match.params.id;
 
   const hideUpdateModal = async (data) => {
-    console.log(data)
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;

@@ -8,6 +8,7 @@ export const GET_ALL_EMPLOYERS = `
       city
       state
       pin_code
+      district
     }
   }
 `;

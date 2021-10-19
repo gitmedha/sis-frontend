@@ -5,7 +5,6 @@ query GET_ALL_ADDRESS {
       state
       district
       area
-      pin_code
     }
   }
   `;

@@ -12,6 +12,7 @@ import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getdistrict }  from "../../Address/addressAction";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
+import { DateRange } from '@material-ui/icons';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -44,7 +45,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-
+  
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -76,17 +77,25 @@ const StudentForm = (props) => {
           label: geographies.state,
           value: geographies.state,
       })));      
-    });
-  }, []);
 
-  const onStateChange = (data) => {
-    getdistrict(data).then(data => {
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
+    });
+
+  }, [props]);
+
+  const onStateChange = value => {
+    setDistrictOptions([]);
+    getdistrict(value).then(data => { 
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,
         value: geographies.district,
       })));
-
+      setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.area,
@@ -128,6 +137,8 @@ const StudentForm = (props) => {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
     initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['district'] = props.district ? props.district: null ;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
   
   return (
@@ -325,6 +336,7 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {stateOptions.length ? (
                     <Input
                       icon="down"
                       name="state"
@@ -336,8 +348,12 @@ const StudentForm = (props) => {
                       className="form-control"
                       required
                     />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {districtOptions.length ? (
                     <Input
                       icon="down"
                       control="lookup"
@@ -348,8 +364,15 @@ const StudentForm = (props) => {
                       required
                       options={districtOptions}
                     />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Districts</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
                     <Input
                       icon="down"
                       control="lookup"
@@ -360,6 +383,12 @@ const StudentForm = (props) => {
                       required
                       options={areaOptions}
                     />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

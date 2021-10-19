@@ -67,24 +67,30 @@ const InstitutionForm = (props) => {
     });
 
     getAddressOptions().then(data => {
-      console.log(data)
       setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
           key: geographies.id,
           label: geographies.state,
           value: geographies.state,
       })));
+
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
     });
    
-  }, []);
+  }, [props]);
 
   const onStateChange = (data) => {
+    setDistrictOptions([]);
     getdistrict(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,
         value: geographies.district,
       })));
-
+      setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.area,
@@ -121,6 +127,8 @@ const InstitutionForm = (props) => {
   if (props.id) {
     initialValues = {...props}
     initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['district'] = props.district ? props.district: null ;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
 
   if (!props.contacts) {
@@ -269,6 +277,7 @@ const InstitutionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {stateOptions.length ? (
                     <Input
                       icon="down"
                       name="state"
@@ -280,8 +289,12 @@ const InstitutionForm = (props) => {
                       placeholder="State"
                       className="form-control"
                     />
+                     ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {districtOptions.length ? (
                     <Input
                       control="lookup"
                       icon="down"
@@ -292,8 +305,15 @@ const InstitutionForm = (props) => {
                       placeholder="District"
                       className="form-control"
                     />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Districts</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
                     <Input
                       icon="down"
                       control="lookup"
@@ -304,6 +324,12 @@ const InstitutionForm = (props) => {
                       className="form-control"
                       placeholder="Medha Area"
                     />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

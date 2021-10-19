@@ -20,6 +20,7 @@ const pin_code = Yup.string("Should be a number.")
   .max(6, "Pincode is too long")
   .required("Pincode is required.");
 const city = Yup.string().required("City is required.");
+const district= Yup.string().required("District is required.");
 
 
 export const OpportunityValidations = Yup.object({
@@ -36,6 +37,7 @@ export const OpportunityValidations = Yup.object({
   role_description,
   address,
   medha_area,
+  district,
   state,
   city,
   pin_code,
@@ -57,4 +59,5 @@ export const EmployerOpportunityValidations = Yup.object({
   state,
   city,
   pin_code,
+  district,
 });

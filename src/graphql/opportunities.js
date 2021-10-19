@@ -53,11 +53,6 @@ const employmentConnectionFields = `
     first_name
     last_name
   }
-  assigned_to {
-    id
-    username
-    email
-  }
 `;
 
 export const GET_OPPORTUNITIES = `
