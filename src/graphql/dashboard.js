@@ -51,7 +51,7 @@ export const GET_MY_DATA_REGISTRATIONS = `
             id: $user
           }
         }
-        status_nin: ["Batch Assigned", "Batch Complete", "Certified by Medha"]
+        status_in: ["Batch Assigned", "Batch Complete", "Certified by Medha"]
       }
     ) {
       aggregate {
@@ -245,7 +245,7 @@ export const GET_MY_DATA_REGISTRATIONS_GRAPH = `
             id: $user
           }
         }
-        status_nin: ["Batch Assigned", "Batch Complete", "Certified by Medha"]
+        status_in: ["Batch Assigned", "Batch Complete", "Certified by Medha"]
       }
     ) {
       groupBy {
