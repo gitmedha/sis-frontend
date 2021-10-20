@@ -92,7 +92,6 @@ const tabPickerOptions = [
   );
 
   const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
-    console.log(selectedTab)
     nProgress.start();
     setLoading(true);
     let variables = {
