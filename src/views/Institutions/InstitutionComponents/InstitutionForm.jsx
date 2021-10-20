@@ -114,7 +114,7 @@ const InstitutionForm = (props) => {
     type:'',
     email:'',
     phone:'',
-    status:'Active'.toLowerCase(),
+    status:'active',
     address:'',
     assigned_to:'',
     state:'',

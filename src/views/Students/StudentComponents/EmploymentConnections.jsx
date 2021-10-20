@@ -105,7 +105,6 @@ const EmploymentConnections = (props) => {
   }
 
   const hideCreateModal = async (data) => {
-    console.log(data)
     if (!data || data.isTrusted) {
       setCreateModalShow(false);
       return;
