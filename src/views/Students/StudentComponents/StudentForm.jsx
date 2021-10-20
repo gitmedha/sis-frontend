@@ -10,7 +10,7 @@ import { StudentValidations } from "../../../validations";
 // import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
-import { getAddressOptions, getDistrict }  from "../../Address/addressActions";
+import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 import { DateRange } from '@material-ui/icons';
 
@@ -89,7 +89,7 @@ const StudentForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getDistrict(value).then(data => { 
+    getStateDistricts(value).then(data => { 
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,

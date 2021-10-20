@@ -9,7 +9,7 @@ import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
-import { getAddressOptions , getDistrict }  from "../../Address/addressActions";
+import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -86,7 +86,7 @@ const EmployerForm = (props) => {
 
   const onStateChange = (data) => {
     setDistrictOptions([]);
-    getDistrict(data).then(data => {
+    getStateDistricts(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,

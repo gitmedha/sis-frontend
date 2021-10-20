@@ -12,7 +12,7 @@ export const getAddressOptions = async () => {
   });
 };
 
-export const getDistrict = async (value) => {
+export const getStateDistricts = async (value) => {
   return await api.post('/graphql', {
     query: GET_ALL_DISTRICTS,
     variables: {
