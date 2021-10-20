@@ -38,7 +38,6 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, institution } = props;
   const [loading, setLoading] = useState(false);
@@ -54,7 +53,6 @@ const ProgramEnrollmentForm = (props) => {
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
-
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
