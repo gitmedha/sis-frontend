@@ -117,7 +117,7 @@ const EmploymentConnections = (props) => {
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student.id;
-    dataToSave['assigned_to'] = userId;
+    // dataToSave['assigned_to'] = userId;
 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
@@ -142,7 +142,7 @@ const EmploymentConnections = (props) => {
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['assigned_to'] = userId;
+    // dataToSave['assigned_to'] = userId;
 
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");

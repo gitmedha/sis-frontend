@@ -23,6 +23,7 @@ const studentFields = `
   medha_area
   address
   state
+  district
   assigned_to{
     id
     username
@@ -90,11 +91,6 @@ const employmentConnectionFields = `
       id
       name
     }
-  }
-  assigned_to {
-    id
-    username
-    email
   }
 `;
 

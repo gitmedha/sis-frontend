@@ -8,6 +8,7 @@ export const GET_ALL_EMPLOYERS = `
       city
       state
       pin_code
+      district
     }
   }
 `;
@@ -132,6 +133,7 @@ export const GET_EMPLOYER = `
       medha_area
       address
       city
+      district
       logo {
         url
       }
@@ -168,6 +170,7 @@ export const CREATE_EMPLOYER = `
         city
         state
         medha_area
+        district
         assigned_to{
           username
         }
@@ -206,6 +209,7 @@ export const UPDATE_EMPLOYER = `
         city
         state
         medha_area
+        district
         assigned_to{
           username
         }
