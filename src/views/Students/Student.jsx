@@ -154,7 +154,7 @@ const Student = (props) => {
         <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
         </Collapsible>
-        <Collapsible title="Employment Connections" badge={employmentConnectionsBadge}>
+        <Collapsible title="Employment Connections" badge={employmentConnectionsBadge.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
         </Collapsible>
         <StudentForm

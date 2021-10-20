@@ -135,17 +135,7 @@ const EnrollmentConnectionForm = (props) => {
                       disabled={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="start_date"
-                      label="Start Date"
-                      required
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2"></div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOptions.length ? (
                       <Input
@@ -161,17 +151,6 @@ const EnrollmentConnectionForm = (props) => {
                     ) : (
                       <Skeleton count={1} height={45} />
                     )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="end_date"
-                      label="End Date"
-                      required={true}
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOpportunityOptions.length ? (
@@ -206,11 +185,13 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="reason_if_rejected"
-                      control="input"
-                      label="Reason if Rejected"
+                      name="start_date"
+                      label="Start Date"
+                      required
+                      placeholder="Start Date"
+                      control="datepicker"
                       className="form-control"
-                      placeholder="Reason if Rejected"
+                      autoComplete="off"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -235,6 +216,26 @@ const EnrollmentConnectionForm = (props) => {
                       options={sourceOptions}
                       className="form-control"
                       placeholder="Source"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="reason_if_rejected"
+                      control="input"
+                      label="Reason if Rejected"
+                      className="form-control"
+                      placeholder="Reason if Rejected"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="end_date"
+                      label="End Date"
+                      required={true}
+                      placeholder="End Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

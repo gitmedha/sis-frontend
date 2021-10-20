@@ -2,7 +2,7 @@ import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection, getOpportunitiesPickList } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -32,10 +32,14 @@ const EmploymentConnections = (props) => {
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
   const userId = localStorage.getItem("user_id") || 2;
+  const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setPickList(data);
+    });
+    getOpportunitiesPickList().then(data => {
+      setOpportunitiesPickList(data);
     });
   }, []);
 
@@ -49,10 +53,11 @@ const EmploymentConnections = (props) => {
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
+        opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} />,
       };
     });
     setEmploymentConnectionsTableData(data);
-  }, [employmentConnections, pickList]);
+  }, [employmentConnections, pickList, opportunitiesPickList]);
 
   const columns = useMemo(
     () => [

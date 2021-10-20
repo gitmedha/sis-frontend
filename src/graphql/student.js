@@ -23,6 +23,8 @@ const studentFields = `
   medha_area
   address
   state
+  created_at
+  updated_at
   district
   assigned_to{
     id
