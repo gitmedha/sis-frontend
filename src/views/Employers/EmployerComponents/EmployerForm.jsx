@@ -9,7 +9,7 @@ import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
-import { getAddressOptions , getdistrict, getarea }  from "../../Address/addressAction";
+import { getAddressOptions , getDistrict }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -86,7 +86,7 @@ const EmployerForm = (props) => {
 
   const onStateChange = (data) => {
     setDistrictOptions([]);
-    getdistrict(data).then(data => {
+    getDistrict(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,
@@ -306,7 +306,7 @@ const EmployerForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Districts</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -325,7 +325,7 @@ const EmployerForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}

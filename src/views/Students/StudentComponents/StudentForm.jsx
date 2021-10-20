@@ -10,7 +10,7 @@ import { StudentValidations } from "../../../validations";
 // import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
-import { getAddressOptions, getdistrict }  from "../../Address/addressAction";
+import { getAddressOptions, getDistrict }  from "../../Address/addressActions";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 import { DateRange } from '@material-ui/icons';
 
@@ -89,7 +89,7 @@ const StudentForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getdistrict(value).then(data => { 
+    getDistrict(value).then(data => { 
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,
@@ -366,7 +366,7 @@ const StudentForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Districts</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -385,7 +385,7 @@ const StudentForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}

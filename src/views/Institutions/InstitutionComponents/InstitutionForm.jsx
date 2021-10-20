@@ -8,7 +8,7 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
-import { getAddressOptions, getdistrict }  from "../../Address/addressAction";
+import { getAddressOptions, getDistrict }  from "../../Address/addressActions";
 import { urlPath } from "../../../constants";
 
 const Section = styled.div`
@@ -84,7 +84,7 @@ const InstitutionForm = (props) => {
 
   const onStateChange = (data) => {
     setDistrictOptions([]);
-    getdistrict(data).then(data => {
+    getDistrict(data).then(data => {
       setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
         key: geographies.id,
         label: geographies.district,
@@ -307,7 +307,7 @@ const InstitutionForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Districts</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -326,7 +326,7 @@ const InstitutionForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to show Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
