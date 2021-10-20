@@ -89,7 +89,7 @@ const EmploymentConnections = (props) => {
     ],
     []
   );
- 
+
   const handleRowClick = programEnrollment => {
     setSelectedEmploymentConnection(programEnrollment);
     setViewModalShow(true);

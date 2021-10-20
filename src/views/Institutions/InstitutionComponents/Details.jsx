@@ -5,7 +5,6 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 
 const Details = (props) => {
-  console.log(props)
   const {
     name,
     phone,
