@@ -2,7 +2,7 @@ import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "./StudentActions";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection, getOpportunitiesPickList } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -32,12 +32,16 @@ const EmploymentConnections = (props) => {
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
   const userId = localStorage.getItem("user_id") || 2;
+  const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setPickList(data);
     });
-  }, []);
+    getOpportunitiesPickList().then(data => {
+      setOpportunitiesPickList(data);
+    });
+  }, [opportunitiesPickList]);
 
   useEffect(() => {
     let data = employmentConnections.map(employmentConnection => {
@@ -49,6 +53,7 @@ const EmploymentConnections = (props) => {
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
+        opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} />,
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -117,7 +122,7 @@ const EmploymentConnections = (props) => {
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student.id;
-    dataToSave['assigned_to'] = userId;
+    // dataToSave['assigned_to'] = userId;
 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
@@ -142,7 +147,7 @@ const EmploymentConnections = (props) => {
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['assigned_to'] = userId;
+    // dataToSave['assigned_to'] = userId;
 
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");

@@ -85,7 +85,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
       }
     });
     setOpportunitiesTableData(data);
-  }, [opportunities]);
+  }, [opportunities, pickList]);
 
   const handleRowClick = (row) => {
     history.push(`/opportunity/${row.id}`);
