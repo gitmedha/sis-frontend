@@ -52,6 +52,7 @@ const Styled = styled.div`
 `;
 
 const Details = (props) => {
+  console.log(props)
   const {
     first_name,
     last_name,
@@ -68,7 +69,10 @@ const Details = (props) => {
     course_type_latest,
     medha_champion,
     interested_in_employment_opportunities,
-    CV
+    CV,
+    assigned_to,
+    created_at,
+    updated_at,
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -90,13 +94,16 @@ const Details = (props) => {
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
+            <DetailField label="Created Date" value={moment(created_at).format("DD MMM YYYY")} />
+            <DetailField label="Assigned To" value={assigned_to?.username} />
           </div>
           <div className="col-md-4">
-            <DetailField label="Phone number" value={phone} />
+            <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
             <DetailField label="Income Level (INR)" value={income_level} />
+            <DetailField label="Updated Date" value={moment(updated_at).format("DD MMM YYYY")} />
           </div>
           <div className="col-md-4 d-flex justify-content-end">
             <div className="img-profile-container">

@@ -240,6 +240,8 @@ query INSTITUTION(
       pin_code
       medha_area
       city
+      created_at
+      updated_at
       logo {
         id
         url

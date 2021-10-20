@@ -6,6 +6,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import DetailField from "../../../components/content/DetailField";
 import { getBatchesPickList } from "../batchActions";
 import Table from '../../../components/content/Table';
+import moment from "moment";
 
 const Details = ({ batch, sessions=[] }) => {
   const [pickList, setPickList] = useState([]);
@@ -59,6 +60,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Program Name" value={batch.program?.name} />
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
           <DetailField label="Institution" value={<Anchor text={batch.institution.name} href={`/institution/${batch.institution.id}`} />} />
+          <DetailField label="Assigned To" value={batch.assigned_to?.username} />
           {/* <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} /> */}
           <DetailField label="Grant" value={batch.grant.name} />
           <div className="mt-2">
@@ -69,10 +71,11 @@ const Details = ({ batch, sessions=[] }) => {
           </div>
         </div>
         <div className="col-6 offset-md-2 col-md-4">
-          <DetailField label="Assigned To" value={batch.assigned_to?.username} />
           <DetailField label="Area" value={"HARDCODED"} />
           <DetailField label="Start Date" value={<Moment date={batch.start_date} format={"DD MMM YYYY"} />} />
           <DetailField label="End Date" value={<Moment date={batch.end_date} format={"DD MMM YYYY"} />} />
+          <DetailField label="Created Date" value={moment(batch.created_at).format("DD MMM YYYY")} />
+          <DetailField label="Updated Date" value={moment(batch.updated_at).format("DD MMM YYYY")} />
           <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} />
         </div>
       </div>
