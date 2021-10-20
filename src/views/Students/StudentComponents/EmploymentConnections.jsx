@@ -41,7 +41,7 @@ const EmploymentConnections = (props) => {
     getOpportunitiesPickList().then(data => {
       setOpportunitiesPickList(data);
     });
-  }, [opportunitiesPickList]);
+  }, []);
 
   useEffect(() => {
     let data = employmentConnections.map(employmentConnection => {
@@ -57,7 +57,7 @@ const EmploymentConnections = (props) => {
       };
     });
     setEmploymentConnectionsTableData(data);
-  }, [employmentConnections, pickList]);
+  }, [employmentConnections, pickList, opportunitiesPickList]);
 
   const columns = useMemo(
     () => [
@@ -89,7 +89,7 @@ const EmploymentConnections = (props) => {
     ],
     []
   );
-
+ 
   const handleRowClick = programEnrollment => {
     setSelectedEmploymentConnection(programEnrollment);
     setViewModalShow(true);
