@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Batch";
@@ -10,6 +11,7 @@ import { getAllInstitutions, getStudentsPickList } from "../../Institutions/Inst
 import { getAllBatches } from "../batchActions";
 import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -30,19 +32,47 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, batch } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
-  const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState(null);
   const [feeStatusOptions, setFeeStatusOptions] = useState([]);
   const [yearOfCompletionOptions, setYearOfCompletionOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [courseLevelOptions, setCourseLevelOptions] = useState([]);
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
+  const [lookUpLoading, setLookUpLoading] = useState(false);
+  const [options, setOptions] = useState(null);
+
+  const prepareLookUpFields = async () => {
+    setLookUpLoading(true);
+    let lookUpOpts = await batchLookUpOptions();
+    setOptions(lookUpOpts);
+    setLookUpLoading(false);
+  };
+
+  useEffect(() => {
+    if ( props.institution) {
+      filterInstitution(props.institution.name).then(data => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, [props])
+
+  useEffect(() => {
+    if (show && !options) {
+      prepareLookUpFields();
+    }
+  }, [show, options]);
 
   useEffect(() => {
     setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
@@ -92,21 +122,21 @@ const ProgramEnrollmentForm = (props) => {
       })));
     });
 
-    getAllInstitutions().then(data => {
-      setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-        key: institution.name,
-        label: institution.name,
-        value: institution.id,
-      })));
-    });
+    // getAllInstitutions().then(data => {
+    //   setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
+    //     key: institution.name,
+    //     label: institution.name,
+    //     value: institution.id,
+    //   })));
+    // });
 
-    getAllStudents().then(data => {
-      setStudentOptions(data?.data?.data?.students.map((student) => ({
-        key: student.first_name + ''+ student.last_name,
-        label:student.first_name + ''+ student.last_name,
-        value: student.id,
-      })));
-    });
+    // getAllStudents().then(data => {
+    //   setStudentOptions(data?.data?.data?.students.map((student) => ({
+    //     key: student.first_name + ''+ student.last_name,
+    //     label:student.first_name + ''+ student.last_name,
+    //     value: student.id,
+    //   })));
+    // });
 
     getProgramEnrollmentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -117,6 +147,21 @@ const ProgramEnrollmentForm = (props) => {
       setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
+
+  const filterInstitution = async (filterValue) => {
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(institution => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+    });
+  }
 
   return (
     <Modal
@@ -150,15 +195,19 @@ const ProgramEnrollmentForm = (props) => {
                 <h3 className="section-header">Enrollment Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
+                  {!lookUpLoading ? (
                     <Input
                       name="student"
                       control="lookup"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      options={studentOptions}
+                      options={options?.studentOptions}
                       required
                     />
+                     ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -194,15 +243,20 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                  {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="institution"
                       label="Institution"
                       required
-                      options={institutionOptions}
+                      filterData={filterInstitution}
+                      defaultOptions={props.id ? institutionOptions : true}
                       className="form-control"
                       placeholder="Institution"
                     />
+                    ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

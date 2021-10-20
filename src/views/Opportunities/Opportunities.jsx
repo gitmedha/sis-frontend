@@ -15,6 +15,7 @@ import { createOpportunity } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
+import { Anchor } from "../../components/content/Utils";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -82,6 +83,10 @@ const tabPickerOptions = [
         Header: 'State',
         accessor: 'state',
       },
+      {
+        Header: 'Assigned To',
+        accessor: 'assignedTo',
+      },
     ],
     []
   );
@@ -94,7 +99,6 @@ const tabPickerOptions = [
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
     } else if(selectedTab == "my_area"){
@@ -141,9 +145,9 @@ const tabPickerOptions = [
           sortByField = 'role_or_designation';
           break;
       }
-      getOpportunities(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getOpportunities(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getOpportunities(pageSize, pageSize * pageIndex);
+      getOpportunities(activeTab.key, pageSize, pageSize * pageIndex);
     }
   }, []);
 
@@ -152,6 +156,7 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
+       assignedTo:  <Anchor text={opportunitydata.assigned_to.username} href={'/user/' + opportunitydata.assigned_to.id} />,
        avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: opportunitydata.type,
