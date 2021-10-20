@@ -22,7 +22,6 @@ const pin_code = Yup.string("Should be a number.")
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 
-
 export const OpportunityValidations = Yup.object({
   status,
   assigned_to,
