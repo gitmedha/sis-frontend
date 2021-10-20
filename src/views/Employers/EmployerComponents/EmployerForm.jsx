@@ -9,6 +9,7 @@ import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
+import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -36,6 +37,9 @@ const EmployerForm = (props) => {
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [logo, setLogo] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
 
   useEffect(() => {
     getEmployersPickList().then(data => {
@@ -64,7 +68,38 @@ const EmployerForm = (props) => {
       })));
     });
 
-  }, []);
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.id,
+          label: geographies.state,
+          value: geographies.state,
+      })));
+
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
+    });
+
+  }, [props]);
+
+  const onStateChange = (data) => {
+    setDistrictOptions([]);
+    getStateDistricts(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.district,
+        value: geographies.district,
+      })));
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.area,
+        value: geographies.area,
+      })));
+    });
+  };
 
   const onSubmit = async (values) => {
     if (logo) {
@@ -79,18 +114,21 @@ const EmployerForm = (props) => {
     industry:'',
     email:'',
     phone:'',
-    status:'',
+    status:'active',
     address:'',
     assigned_to:'',
     state:'',
     pin_code:'',
     city:'',
     medha_area:'',
+    district:'',
   };
 
   if (props.id) {
     initialValues = {...props};
     initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['district'] = props.district ? props.district: null ;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
 
   if (!props.contacts) {
@@ -227,7 +265,7 @@ const EmployerForm = (props) => {
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-12 col-sm-12 mb-2">
                     <Input
                       control="input"
                       label="Address"
@@ -238,24 +276,59 @@ const EmployerForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {stateOptions.length ? (
                     <Input
+                      icon="down"
                       name="state"
                       label="State"
-                      control="input"
+                      control="lookup"
+                      options={stateOptions}
+                      onChange={onStateChange}
                       placeholder="State"
                       className="form-control"
                       required
                     />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {districtOptions.length ? (
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
+                      options={districtOptions}
+                    />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
                       className="form-control"
                       placeholder="Medha Area"
                       required
+                      options={areaOptions}
                     />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

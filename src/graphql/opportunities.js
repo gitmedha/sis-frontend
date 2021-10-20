@@ -15,6 +15,7 @@ city
 state
 pin_code
 medha_area
+district
 assigned_to {
   id
   username
@@ -51,11 +52,6 @@ const employmentConnectionFields = `
     id
     first_name
     last_name
-  }
-  assigned_to {
-    id
-    username
-    email
   }
 `;
 

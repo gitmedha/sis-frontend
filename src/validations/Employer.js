@@ -24,6 +24,7 @@ const pin_code = Yup.string("Should be a number.")
   .required("Pincode is required.");
 const industry = Yup.string().required("Industry is required.");
 const city = Yup.string().required("City is required.");
+const district= Yup.string().required("District is required.");
 
 const contacts = Yup.array().of(
   Yup.object({
@@ -47,6 +48,7 @@ export const EmployerValidations = Yup.object({
     pin_code,
     contacts,
     email,
+    district,
 });
 
 export const ContactValidations = Yup.object({
