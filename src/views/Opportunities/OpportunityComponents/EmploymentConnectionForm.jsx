@@ -133,7 +133,7 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Student"
                       filterData={filterStudent}
                       defaultOptions={props.employmentConnection ? studentOptions : true}
-                      required={true}
+                     
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

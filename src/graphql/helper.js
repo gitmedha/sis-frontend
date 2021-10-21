@@ -78,5 +78,6 @@ query TO_GET_ALL_GRANTS {
     id
     name
     status
+    donor
   }
 }`;

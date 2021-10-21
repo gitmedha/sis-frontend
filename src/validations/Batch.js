@@ -36,6 +36,9 @@ const name_in_current_sis = Yup.string().required(
 const number_of_sessions_planned = Yup.string().required(
   "Total number of sessions planned is required."
 );
+const state = Yup.string().required("State is required.");
+const medha_area = Yup.string().required("Medha area is required.");
+const enrollment_type = Yup.string().required("Enrollment Type is required.");
 
 export const sessionValidations = Yup.object({
   date,
@@ -54,6 +57,9 @@ export const BatchValidations = Yup.object({
   // name_in_current_sis,
   number_of_sessions_planned,
   seats_available,
+  state,
+  medha_area,
+  // enrollment_type,
 });
 
 export const ProgramEnrollmentValidations = Yup.object({
