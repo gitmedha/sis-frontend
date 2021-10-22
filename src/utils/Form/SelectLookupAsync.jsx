@@ -65,7 +65,7 @@ const SelectField = (props) => {
     isSearchable = false,
     filterData,
     defaultOptions,
-    disabled
+    isDisabled
   } = props;
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
@@ -99,7 +99,7 @@ const SelectField = (props) => {
         }
         defaultOptions={defaultOptions}
         cacheOptions
-        disabled
+        isDisabled={isDisabled}
       />
   );
 };

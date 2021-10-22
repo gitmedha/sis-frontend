@@ -84,7 +84,7 @@ const BatchForm = (props) => {
   };
 
   useEffect(() => {
-    getBatchesPickList().then(data => {console.log(data)
+    getBatchesPickList().then(data => {
       setEnrollmentTypeOptions(data.enrollment_type.map(enrollment_type => ({ key: enrollment_type.value, value: enrollment_type.value, label: enrollment_type.value })));
     });
 
@@ -185,7 +185,6 @@ const BatchForm = (props) => {
                       control="input"
                       placeholder="Name"
                       className="form-control"
-                      disabled={!enrollmentType}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -267,7 +266,7 @@ const BatchForm = (props) => {
                         defaultOptions={props.id ? institutionOptions : true}
                         placeholder="Institution"
                         className="form-control"
-                      
+                        isDisabled={!enrollmentType}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -285,7 +284,6 @@ const BatchForm = (props) => {
                       className="form-control"
                       options={stateOptions}
                       onChange={onStateChange}
-                      disabled={true}
                     />
                      ) : (
                       <Skeleton count={1} height={45} />
