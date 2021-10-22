@@ -29,12 +29,11 @@ const Section = styled.div`
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
-  const [loading, setLoading] = useState(false);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection ? props.employmentConnection.opportunity.type : null);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection && props.employmentConnection.opportunity ? props.employmentConnection.opportunity.type : null);
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
 
   let initialValues = {

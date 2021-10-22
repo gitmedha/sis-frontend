@@ -10,6 +10,11 @@ const EmploymentConnection = (props) => {
   const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
+  let endDate = '';
+  if (employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && employmentConnection.status === 'Internship Complete') {
+    endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
+  }
+
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setEmploymentConnectionsPickList(data);
@@ -50,7 +55,7 @@ const EmploymentConnection = (props) => {
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
-              <DetailField label="End Date" value={employmentConnection.end_date ? moment(employmentConnection.end_date).format("DD MMM YYYY") : ''} />
+              <DetailField label="End Date" value={endDate} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
               <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
