@@ -63,6 +63,11 @@ const ProgramEnrollmentForm = (props) => {
         setInstitutionOptions(data);
       });
     }
+    if ( props.batches) {
+      filterInstitution(props.batches.name).then(data => {
+        setBatchOptions(data);
+      });
+    }
   }, [props])
 
   useEffect(() => {
@@ -110,21 +115,21 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    getAllBatches().then(data => {
-      setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-        key: batches.name,
-        label: batches.name,
-        value: batches.id,
-      })));
-    });
+    // getAllBatches().then(data => {
+    //   setBatchOptions(data?.data?.data?.batches.map((batches) => ({
+    //     key: batches.name,
+    //     label: batches.name,
+    //     value: batches.id,
+    //   })));
+    // });
 
-    getAllInstitutions().then(data => {
-      setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-        key: institution.name,
-        label: institution.name,
-        value: institution.id,
-      })));
-    });
+    // getAllInstitutions().then(data => {
+    //   setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
+    //     key: institution.name,
+    //     label: institution.name,
+    //     value: institution.id,
+    //   })));
+    // });
 
     getProgramEnrollmentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -146,6 +151,21 @@ const ProgramEnrollmentForm = (props) => {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
+        }
+      });
+    });
+  }
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(batches => {
+        return {
+          ...batches,
+          label: batches.name,
+          value: Number(batches.id),
         }
       });
     });
@@ -207,11 +227,13 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="batch"
                       label="Batch"
                       required
-                      options={options?.batchOptions}
+                      // options={options?.batchOptions}
+                      filterData={filterBatch}
+                      defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
                     />

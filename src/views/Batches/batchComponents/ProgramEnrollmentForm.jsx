@@ -66,6 +66,13 @@ const ProgramEnrollmentForm = (props) => {
         setInstitutionOptions(data);
       });
     }
+
+    if ( props.student) {
+      filterStudent(props.student.first_name).then(data => {
+        console.log(data)
+        setStudentOptions(data);
+      });
+    }
   }, [props])
 
   useEffect(() => {
@@ -163,6 +170,21 @@ const ProgramEnrollmentForm = (props) => {
     });
   }
 
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient.index('students').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'first_name', 'last_name']
+    }).then(data => {
+      return data.hits.map(student => {
+        return {
+          ...student,
+          label:student.first_name + ''+ student.last_name,
+          value: Number(student.id),
+        }
+      });
+    });
+  }
+
   return (
     <Modal
       centered
@@ -198,11 +220,13 @@ const ProgramEnrollmentForm = (props) => {
                   {!lookUpLoading ? (
                     <Input
                       name="student"
-                      control="lookup"
+                      control="lookupAsync"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      options={options?.studentOptions}
+                      // options={options?.studentOptions}
+                      filterData={filterStudent}
+                      defaultOptions={props.id ? studentOptions : true}
                       required
                     />
                      ) : (

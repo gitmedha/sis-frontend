@@ -68,6 +68,21 @@ const ProgramEnrollmentForm = (props) => {
   }, [show, options]);
 
   useEffect(() => {
+    if ( props.batches) {
+      filterBatch(props.batches.name).then(data => {
+        setBatchOptions(data);
+      });
+    }
+
+    if ( props.student) {
+      filterStudent(props.student.first_name).then(data => {
+        console.log(data)
+        setStudentOptions(data);
+      });
+    }
+  }, [props])
+
+  useEffect(() => {
     setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
   }, [props.programEnrollment]);
 
@@ -106,21 +121,21 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    getAllBatches().then(data => {
-      setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-        key: batches.name,
-        label: batches.name,
-        value: batches.id,
-      })));
-    });
+    // getAllBatches().then(data => {
+    //   setBatchOptions(data?.data?.data?.batches.map((batches) => ({
+    //     key: batches.name,
+    //     label: batches.name,
+    //     value: batches.id,
+    //   })));
+    // });
 
-    getAllInstitutions().then(data => {
-      setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-        key: institution.name,
-        label: institution.name,
-        value: institution.id,
-      })));
-    });
+    // getAllInstitutions().then(data => {
+    //   setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
+    //     key: institution.name,
+    //     label: institution.name,
+    //     value: institution.id,
+    //   })));
+    // });
 
     // getAllStudents().then(data => {
     //   setStudentOptions(data?.data?.data?.students.map((student) => ({
@@ -139,6 +154,36 @@ const ProgramEnrollmentForm = (props) => {
       setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
+
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient.index('students').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'first_name', 'last_name']
+    }).then(data => {
+      return data.hits.map(student => {
+        return {
+          ...student,
+          label:student.first_name + ''+ student.last_name,
+          value: Number(student.id),
+        }
+      });
+    });
+  }
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(batches => {
+        return {
+          ...batches,
+          label: batches.name,
+          value: Number(batches.id),
+        }
+      });
+    });
+  }
 
   return (
     <Modal
@@ -179,7 +224,9 @@ const ProgramEnrollmentForm = (props) => {
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      options={options?.studentOptions}
+                      // options={options?.studentOptions}
+                      filterData={filterStudent}
+                      defaultOptions={props.id ? studentOptions : true}
                       required
                     />
                      ) : (
@@ -205,7 +252,9 @@ const ProgramEnrollmentForm = (props) => {
                       name="batch"
                       label="Batch"
                       required
-                      options={options?.batchOptions}
+                      // options={options?.batchOptions}
+                      filterData={filterStudent}
+                      defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
                     />
