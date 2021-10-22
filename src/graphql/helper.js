@@ -54,7 +54,6 @@ query GET_ALL_USERS {
     role {
       name
     }
-    medha_role
     reports_to {
       id
       username

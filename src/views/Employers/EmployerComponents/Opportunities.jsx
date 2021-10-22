@@ -10,6 +10,8 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityForm";
 import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
+import { Badge } from "../../../components/content/Utils";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -24,6 +26,13 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
   const history = useHistory();
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
   const [createOpportunityModalShow, setCreateOpportunityModalShow] = useState(false);
+  const [pickList, setPickList] = useState([]);
+
+  useEffect(() => {
+    getOpportunitiesPickList().then(data => {
+      setPickList(data);
+    });
+  }, [])
 
   const columns = useMemo(
     () => [
@@ -67,7 +76,8 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
         id: opportunity.id,
         avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
         role_or_designation: opportunity.role_or_designation,
-        opportunity_type: opportunity.type,
+        opportunity_type: <Badge value={opportunity.type} pickList={pickList.type}/>,
+        status:<Badge value={opportunity.status} pickList={pickList.status}/>,
         number_of_opportunities: opportunity.number_of_opportunities,
         address: employer ? employer.address : '',
         employer: employer ? employer.name : '',
@@ -75,7 +85,7 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
       }
     });
     setOpportunitiesTableData(data);
-  }, [opportunities]);
+  }, [opportunities, pickList]);
 
   const handleRowClick = (row) => {
     history.push(`/opportunity/${row.id}`);

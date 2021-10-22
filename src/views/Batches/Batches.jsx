@@ -166,11 +166,11 @@ const Batches = (props) => {
           sortByField = 'created_at';
           break;
       }
-      getBatches(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getBatches(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getBatches(pageSize, pageSize * pageIndex);
+      getBatches(activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeTab.key]);
 
   const onRowClick = (row) => {
     history.push(`/batch/${row.id}`)

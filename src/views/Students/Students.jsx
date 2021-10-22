@@ -103,11 +103,15 @@ const Students = (props) => {
         Header: 'State',
         accessor: 'state',
       },
+      {
+        Header: 'Assigned To',
+        accessor: 'assignedTo',
+      },
     ],
     []
   );
 
-  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
+  const getStudents = async (status ='All', selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
 
     nProgress.start();
     setLoading(true);
@@ -117,7 +121,7 @@ const Students = (props) => {
       sort: `${sortBy}:${sortOrder}`,
     }
     if (status !== 'All') {
-      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
+      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
     }
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
@@ -162,11 +166,11 @@ const Students = (props) => {
           sortByField = 'first_name';
           break;
       }
-      getStudents(pageSize, pageSize * pageIndex, sortByField, sortOrder, activeStatus);
+      getStudents(activeStatus, activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getStudents( pageSize, pageSize * pageIndex, activeStatus);
+      getStudents(activeStatus, activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, [activeStatus]);
+  }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
     getStudentsPickList().then(data => setPickList(data));
@@ -175,7 +179,7 @@ const Students = (props) => {
 
   useEffect(() => {
     setPaginationPageIndex(0);
-  }, [activeTab, activeStatus]);
+  }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
     if (students) {
@@ -184,6 +188,7 @@ const Students = (props) => {
         let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
         return {
           ...student,
+          assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
           gridLink: `/student/${student.id}`,
@@ -232,7 +237,7 @@ const Students = (props) => {
 
   const handleStudentStatusTabChange = (activeTab) => {
     setActiveStatus(activeTab.title);
-    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex);
+    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex, activeStatus);
   }
 
   return (

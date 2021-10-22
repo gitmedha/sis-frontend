@@ -62,6 +62,10 @@ const Employers = (props) => {
         Header: "State",
         accessor: "state",
       },
+      {
+        Header: "Assigned To",
+        accessor: "assignedTo",
+      },
     ],
     []
   );
@@ -104,6 +108,7 @@ const Employers = (props) => {
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
+      employer.assignedTo = <Anchor text={employer.assigned_to.username} href={'/user/' + employer.assigned_to.id} />
       employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />
       employer.industry = <Badge value={employer.industry} pickList={pickList.industry || []} />;
       employer.link =  <TableRowDetailLink value={employer.id} to={"employer"} />
@@ -139,11 +144,11 @@ const Employers = (props) => {
           sortByField = 'name';
           break;
       }
-      getEmployers(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getEmployers(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getEmployers(pageSize, pageSize * pageIndex);
+      getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeTab.key]);
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {

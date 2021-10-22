@@ -65,9 +65,9 @@ export const GET_MY_EMPLOYER = `
 export const GET_USER_EMPLOYERS = `
   query GET_EMPLOYERS($id: Int, $limit: Int, $start: Int, $sort: String, $state: String, $area: String) {
     employersConnection(
-      sort: $sort
-      start: $start
-      limit: $limit
+      sort: $sort,
+      start: $start,
+      limit: $limit,
       where: {
         assigned_to: {
           id: $id
@@ -133,6 +133,8 @@ export const GET_EMPLOYER = `
       medha_area
       address
       city
+      created_at
+      updated_at
       district
       logo {
         url

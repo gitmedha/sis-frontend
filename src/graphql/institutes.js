@@ -33,9 +33,9 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
 export const GET_USER_INSTITUTES = `
 query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $state: String, $area:String) {
   institutionsConnection(
-    sort: $sort
-    start: $start
-    limit: $limit
+    sort: $sort,
+    start: $start,
+    limit: $limit,
     where: {
       assigned_to: {
         id: $id
@@ -242,6 +242,8 @@ query INSTITUTION(
       pin_code
       medha_area
       city
+      created_at
+      updated_at
       district
       logo {
         id
