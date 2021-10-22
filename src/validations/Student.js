@@ -72,7 +72,6 @@ export const ProgramEnrollmentValidations = Yup.object({
 
 export const EmploymentConnectionValidations = Yup.object({
   start_date,
-  end_date,
   status: employment_connection_status,
   employer_id,
   opportunity_id,
@@ -82,7 +81,6 @@ export const EmploymentConnectionValidations = Yup.object({
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
   start_date,
-  end_date,
   status: employment_connection_status,
   student_id,
   source,
