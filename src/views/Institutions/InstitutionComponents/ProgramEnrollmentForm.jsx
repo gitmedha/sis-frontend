@@ -106,7 +106,6 @@ const ProgramEnrollmentForm = (props) => {
     fee_refund_date: null,
   };
   if (props.programEnrollment) {
-    console.log(props)
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = Number(props.programEnrollment.batch?.id);
     initialValues['student'] = Number(props.programEnrollment.student?.id);
