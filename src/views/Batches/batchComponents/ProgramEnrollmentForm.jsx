@@ -69,7 +69,6 @@ const ProgramEnrollmentForm = (props) => {
 
     if ( props.student) {
       filterStudent(props.student.first_name).then(data => {
-        console.log(data)
         setStudentOptions(data);
       });
     }

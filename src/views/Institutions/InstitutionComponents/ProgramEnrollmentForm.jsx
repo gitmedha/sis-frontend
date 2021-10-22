@@ -62,12 +62,6 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    if (show && !options) {
-      prepareLookUpFields();
-    }
-  }, [show, options]);
-
-  useEffect(() => {
     if ( props.batches) {
       filterBatch(props.batches.name).then(data => {
         setBatchOptions(data);
@@ -76,11 +70,16 @@ const ProgramEnrollmentForm = (props) => {
 
     if ( props.student) {
       filterStudent(props.student.first_name).then(data => {
-        console.log(data)
         setStudentOptions(data);
       });
     }
   }, [props])
+
+  useEffect(() => {
+    if (show && !options) {
+      prepareLookUpFields();
+    }
+  }, [show, options]);
 
   useEffect(() => {
     setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
@@ -220,7 +219,7 @@ const ProgramEnrollmentForm = (props) => {
                   {!lookUpLoading ? (
                     <Input
                       name="student"
-                      control="lookup"
+                      control="lookupAsync"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
@@ -248,12 +247,12 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="batch"
                       label="Batch"
                       required
                       // options={options?.batchOptions}
-                      filterData={filterStudent}
+                      filterData={filterBatch}
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
