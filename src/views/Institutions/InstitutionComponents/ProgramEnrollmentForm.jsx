@@ -62,14 +62,14 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    if ( props.batches) {
-      filterBatch(props.batches.name).then(data => {
+    if ( props.batch) {
+      filterBatch(props.programEnrollment.batch.name).then(data => {
         setBatchOptions(data);
       });
     }
 
     if ( props.student) {
-      filterStudent(props.student.first_name).then(data => {
+      filterStudent(props.programEnrollment.student.first_name).then(data => {
         setStudentOptions(data);
       });
     }
@@ -106,9 +106,10 @@ const ProgramEnrollmentForm = (props) => {
     fee_refund_date: null,
   };
   if (props.programEnrollment) {
+    console.log(props)
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = props.programEnrollment.batch?.id;
-    initialValues['student'] = props.programEnrollment.student?.id;
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
+    initialValues['student'] = Number(props.programEnrollment.student?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -163,7 +164,7 @@ const ProgramEnrollmentForm = (props) => {
         return {
           ...student,
           label:student.first_name + ''+ student.last_name,
-          value: Number(student.id),
+          value:  Number(student.id),
         }
       });
     });
@@ -174,11 +175,11 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(batches => {
+      return data.hits.map(batch => {
         return {
-          ...batches,
-          label: batches.name,
-          value: Number(batches.id),
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
         }
       });
     });

@@ -62,13 +62,13 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     if ( props.institution) {
-      filterInstitution(props.institution.name).then(data => {
+      filterInstitution(props.programEnrollment.institution.name).then(data => {
         setInstitutionOptions(data);
       });
     }
 
     if ( props.student) {
-      filterStudent(props.student.first_name).then(data => {
+      filterStudent(props.programEnrollment.student.first_name).then(data => {
         setStudentOptions(data);
       });
     }
@@ -104,11 +104,12 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
   };
+
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = props.programEnrollment.batch?.id;
-    initialValues['institution'] = props.programEnrollment.institution?.id;
-    initialValues['student'] = props.programEnrollment.student?.id;
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id); 
+    initialValues['institution'] = Number(props.programEnrollment.institution?.id);
+    initialValues['student'] = Number(props.programEnrollment.student?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -163,7 +164,7 @@ const ProgramEnrollmentForm = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value:Number(institution.id),
         }
       });
     });
@@ -177,7 +178,7 @@ const ProgramEnrollmentForm = (props) => {
       return data.hits.map(student => {
         return {
           ...student,
-          label:student.first_name + ''+ student.last_name,
+          label: student.first_name + ''+ student.last_name,
           value: Number(student.id),
         }
       });
