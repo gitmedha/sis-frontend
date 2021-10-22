@@ -186,6 +186,7 @@ const Batches = (props) => {
     let {show, ...dataToSave} = data;
     dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
     dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
+    dataToSave['institution'] = data?.institution ? Number(data?.institution) : null;
 
     NP.start();
     createBatch(dataToSave).then(data => {
