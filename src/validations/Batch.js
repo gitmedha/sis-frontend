@@ -59,7 +59,7 @@ export const BatchValidations = Yup.object({
   seats_available,
   state,
   medha_area,
-  // enrollment_type,
+  enrollment_type,
 });
 
 export const ProgramEnrollmentValidations = Yup.object({
