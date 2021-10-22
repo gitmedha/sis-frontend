@@ -115,22 +115,6 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    // getAllBatches().then(data => {
-    //   setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-    //     key: batches.name,
-    //     label: batches.name,
-    //     value: batches.id,
-    //   })));
-    // });
-
-    // getAllInstitutions().then(data => {
-    //   setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-    //     key: institution.name,
-    //     label: institution.name,
-    //     value: institution.id,
-    //   })));
-    // });
-
     getProgramEnrollmentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -231,7 +215,6 @@ const ProgramEnrollmentForm = (props) => {
                       name="batch"
                       label="Batch"
                       required
-                      // options={options?.batchOptions}
                       filterData={filterBatch}
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"

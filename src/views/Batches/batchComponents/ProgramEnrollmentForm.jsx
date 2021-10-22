@@ -61,13 +61,13 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    if ( props.institution) {
+    if (props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(data => {
         setInstitutionOptions(data);
       });
     }
 
-    if ( props.student) {
+    if (props.student) {
       filterStudent(props.programEnrollment.student.first_name).then(data => {
         setStudentOptions(data);
       });
@@ -224,7 +224,6 @@ const ProgramEnrollmentForm = (props) => {
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      // options={options?.studentOptions}
                       filterData={filterStudent}
                       defaultOptions={props.id ? studentOptions : true}
                       required
