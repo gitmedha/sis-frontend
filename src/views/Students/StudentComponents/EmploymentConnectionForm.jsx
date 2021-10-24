@@ -35,6 +35,7 @@ const EnrollmentConnectionForm = (props) => {
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection && props.employmentConnection.opportunity ? props.employmentConnection.opportunity.type : null);
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
+  const [showEndDate, setShowEndDate] = useState(false);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
@@ -65,6 +66,10 @@ const EnrollmentConnectionForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  useEffect(() => {
+    setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
+  }, [selectedOpportunityType, selectedStatus]);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
@@ -232,7 +237,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete' &&
+                    {showEndDate &&
                       <Input
                         name="end_date"
                         label="End Date"
