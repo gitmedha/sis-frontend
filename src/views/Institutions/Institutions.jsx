@@ -156,11 +156,12 @@ const Institutions = (props) => {
   };
 
   const hideCreateModal = async (data) => {
+    setFormErrors([]);
+
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
     }
-    setFormErrors([]);
 
     // need to remove `show` from the payload
     let {show, ...dataToSave} = data;
