@@ -8,6 +8,7 @@ import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
 import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
 import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
+import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -46,6 +47,9 @@ const OpportunityForm = (props) => {
   const [employerOptions, setEmployerOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
   const [initialValues, setInitialValues] = useState({
     employer: '',
     assigned_to: '',
@@ -125,7 +129,21 @@ const OpportunityForm = (props) => {
         employer: props.employer ? Number(props.employer.id) : '',
       });
     }
-  }, []);
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.id,
+          label: geographies.state,
+          value: geographies.state,
+      })));
+
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
+    });
+  }, [props]);
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -142,6 +160,23 @@ const OpportunityForm = (props) => {
       district: employer.details.district,
     });
   }
+
+  const onStateChange = (data) => {
+    setDistrictOptions([]);
+    getStateDistricts(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.district,
+        value: geographies.district,
+      })));
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.area,
+        value: geographies.area,
+      })));
+    });
+  };
 
   return (
     <Modal
@@ -319,33 +354,54 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="state"
                       label="State"
-                      control="input"
+                      control="lookup"
                       placeholder="State"
                       className="form-control"
+                      options={stateOptions}
+                      onChange={onStateChange}
                       required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {districtOptions.length ? (
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="district"
                       label="District"
                       placeholder="District"
+                      options={districtOptions}
                       className="form-control"
                       required
                     />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
                       className="form-control"
+                      options={areaOptions}
                       placeholder="Medha Area"
                       required
                     />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
