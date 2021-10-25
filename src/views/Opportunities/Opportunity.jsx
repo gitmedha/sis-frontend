@@ -37,17 +37,17 @@ const Opportunity = (props) => {
     const opportunityId = props.match.params.id;
    
     const OpportunityIcon = ({opportunity}) => {
-      let bgColor = '#207b69';
+      let bgColor = '#ffffff';
       let icon = null;
       switch (opportunity.type) {
         case 'Job':
-          bgColor = '#207b69';
-          icon = <FaBriefcase color="#ffffff" size="25" />;
+          bgColor = '#ffffff';
+          icon = <FaBriefcase color="#787B96" size="25" />;
           break;
     
         case 'Internship':
-          bgColor = '#207b69';
-          icon = <FaBlackTie color="#ffffff" size="25" />;
+          bgColor = '#ffffff';
+          icon = <FaBlackTie color="#787B96" size="25" />;
           break;
       }
       if (icon) {

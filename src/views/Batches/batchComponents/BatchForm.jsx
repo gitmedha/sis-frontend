@@ -9,6 +9,7 @@ import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
+import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,6 +40,14 @@ const BatchForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
   const [institutionOptions, setInstitutionOptions] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
+  const [enrollmentType, setEnrollmentType] = useState(true);
+
+  useEffect(() => {
+    setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
+  }, [props.enrollment_type]);
 
   let initialValues = {
     name: '',
@@ -53,12 +62,15 @@ const BatchForm = (props) => {
     seats_available: '',
     start_date: '',
     end_date: '',
+    enrollment_type:'',
+    state:'',
+    medha_area:'',
   };
   if (props.id) {
     initialValues = {...props}
-    initialValues['grant'] = Number(props.grant.id);
-    initialValues['program'] = Number(props.program.id);
-    initialValues['institution'] = Number(props.institution.id);
+    initialValues['grant'] = Number(props.grant?.id);
+    initialValues['program'] = Number(props.program?.id);
+    initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
     initialValues['assigned_to'] = Number(props.assigned_to.id);
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -72,8 +84,35 @@ const BatchForm = (props) => {
   };
 
   useEffect(() => {
-    getBatchesPickList();
+    getBatchesPickList().then(data => {
+      setEnrollmentTypeOptions(data.enrollment_type.map(enrollment_type => ({ key: enrollment_type.value, value: enrollment_type.value, label: enrollment_type.value })));
+    });
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.id,
+          label: geographies.state,
+          value: geographies.state,
+      })));      
+
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
+    });
   }, []);
+
+  const onStateChange = value => {
+    getStateDistricts(value).then(data => { 
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.area,
+        value: geographies.area,
+      })));
+    });
+  };
 
   useEffect(() => {
     if (props.institution) {
@@ -149,15 +188,28 @@ const BatchForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {/* <Input
+                    <Input
+                      icon="down"
+                      name="enrollment_type"
+                      label="Enrollment Type"
+                      required
+                      control="lookup"
+                      placeholder="Enrollment Type"
+                      className="form-control"
+                      options={enrollmentTypeOptions}
+                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
+                    />
+                  </div>
+                  {/* <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       control="input"
                       className="form-control"
                       name="name_in_current_sis"
                       label="Name in Current SIS"
                       required
                       placeholder="Name in Current SIS"
-                    /> */}
-                  </div>
+                    />
+                  </div> */}
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
@@ -214,9 +266,46 @@ const BatchForm = (props) => {
                         defaultOptions={props.id ? institutionOptions : true}
                         placeholder="Institution"
                         className="form-control"
+                        isDisabled={!enrollmentType}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {stateOptions.length ? (
+                    <Input
+                      icon="down"
+                      name="state"
+                      label="State"
+                      required
+                      control="lookup"
+                      placeholder="State"
+                      className="form-control"
+                      options={stateOptions}
+                      onChange={onStateChange}
+                    />
+                     ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

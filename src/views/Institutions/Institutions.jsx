@@ -52,10 +52,6 @@ const Institutions = (props) => {
         accessor: 'avatar',
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assignedTo',
-      },
-      {
         Header: 'Status',
         accessor: 'status',
       },
@@ -70,6 +66,10 @@ const Institutions = (props) => {
       {
         Header: 'State',
         accessor: 'state',
+      },
+      {
+        Header: 'Assigned To',
+        accessor: 'assignedTo',
       },
     ],
     []
