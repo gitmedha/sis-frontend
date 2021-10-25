@@ -39,6 +39,7 @@ const Employers = (props) => {
   const userId = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
+  const [formErrors, setFormErrors] = useState([]);
 
   useEffect(() => {
     getEmployers(activeTab.key);
@@ -151,6 +152,7 @@ const Employers = (props) => {
   }, [activeTab.key]);
 
   const hideCreateModal = async (data) => {
+    setFormErrors([]);
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
@@ -161,15 +163,21 @@ const Employers = (props) => {
 
     nProgress.start();
     createEmployer(dataToSave).then(data => {
+      if (data.data.errors) {
+        setFormErrors(data.data.errors);
+      } else {
       setAlert("Employer created successfully.", "success");
+      getEmployers();
+      setModalShow(false);
+      }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create employer.", "error");
+      getEmployers();
+      setModalShow(false);
     }).finally(() => {
       nProgress.done();
-      getEmployers();
     });
-    setModalShow(false);
   };
 
   return (
@@ -197,6 +205,7 @@ const Employers = (props) => {
         <EmployerForm
           show={modalShow}
           onHide={hideCreateModal}
+          errors={formErrors}
         />
       </div>
     </Collapse>

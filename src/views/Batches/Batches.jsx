@@ -38,6 +38,7 @@ const Batches = (props) => {
   const userId  = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
+  const [formErrors, setFormErrors] = useState([]);
 
   useEffect(() => {
     getBatches(activeTab.key);
@@ -177,6 +178,7 @@ const Batches = (props) => {
   }
 
   const hideCreateModal = async (data) => {
+    setFormErrors([]);
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
@@ -190,15 +192,21 @@ const Batches = (props) => {
 
     NP.start();
     createBatch(dataToSave).then(data => {
+      if (data.data.errors) {
+        setFormErrors(data.data.errors);
+      } else {
       setAlert("Batch created successfully.", "success");
+      getBatches();
+      setModalShow(false);
+      }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create batch.", "error");
+      getBatches();
+      setModalShow(false);
     }).finally(() => {
       NP.done();
-      getBatches();
     });
-    setModalShow(false);
   };
 
   return (
@@ -217,6 +225,7 @@ const Batches = (props) => {
       <BatchForm
         show={modalShow}
         onHide={hideCreateModal}
+        errors={formErrors}
       />
       </div>
     </Collapse>

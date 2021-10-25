@@ -44,6 +44,7 @@ const BatchForm = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
+  const [formValues, setFormValues] = useState(null);
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -129,6 +130,7 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
+    setFormValues(values);
     onHide(values);
   };
 
@@ -386,6 +388,18 @@ const BatchForm = (props) => {
                 </div>
               </Section>
               <div className="row mt-3 py-3">
+              <div className="col-12">
+                  {props.errors.length !== 0 &&
+                    <div className="alert alert-danger">
+                      <span>There are some errors. Please resolve them and save again:</span>
+                      <ul className="mb-0">
+                        {props.errors.map((error, index) => (
+                          <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  }
+                </div>
                 <div className="d-flex justify-content-start">
                     <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
                     <button
