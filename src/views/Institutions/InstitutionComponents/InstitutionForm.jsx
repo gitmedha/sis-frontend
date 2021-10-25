@@ -160,7 +160,7 @@ const InstitutionForm = (props) => {
           </div>
           )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.name : 'Add New Institute'}
+            {props.id ? props.name : 'Add New Institution'}
           </h1>
         </Modal.Title>
       </Modal.Header>
