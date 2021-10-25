@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import Session from "./views/Batches/sessions";
 import { useToasts } from "react-toast-notifications";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
@@ -97,7 +97,11 @@ const App = (props) => {
       axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
-        history.push('/');
+        let nextUrl = '/';
+        if (localStorage.getItem("next_url")){
+          nextUrl = localStorage.getItem("next_url");
+        }
+        history.push(nextUrl); // or redirect to next url
       })
     }
   }, []);
@@ -147,7 +151,7 @@ const App = (props) => {
                   />
                   <PrivateRoute path="/employers" exact component={Employers} />
                   <PrivateRoute path="/employer/:id" exact component={Employer} />
-                  <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} />} />
+                  <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } />
                 </Switch>
               </RouteContainer>
             </LayoutContainer>
