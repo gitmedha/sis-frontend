@@ -11,7 +11,7 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getEmploymentConnectionsPickList, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -143,6 +143,7 @@ const Student = (props) => {
               id={rest.id}
               logo={rest.logo}
               title={`${rest.first_name} ${rest.last_name}`}
+              icon="student"
             />
           }
         >

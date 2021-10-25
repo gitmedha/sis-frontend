@@ -3,7 +3,7 @@ import Tooltip from "./Tooltip";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
-import { FaSchool, FaUserGraduate, FaUserTie, FaBriefcase } from "react-icons/fa";
+import { FaSchool, FaUserGraduate, FaUserTie, FaBriefcase, FaChalkboardTeacher } from "react-icons/fa";
 import ImageUploader from "./ImageUploader";
 
 import { connect } from "react-redux";
@@ -23,6 +23,7 @@ const Avatar = ({ logo, name, style = {width: '35px', height: '35px'}, icon = 's
         <div className="flex-row-centered avatar avatar-default" style={style}>
           {icon === 'school' && (<FaSchool size={20} />)}
           {icon === 'student' && (<FaUserGraduate size={20} />)}
+          {icon === 'batch' && (<FaChalkboardTeacher size={20} />)}
           {icon === 'employer' && (<FaUserTie size={20} />)}
           {icon === 'opportunity' && (<FaBriefcase size={20} />)}
         </div>
@@ -41,7 +42,7 @@ const mapActionsToProps = {
 export const TitleWithLogo = connect(
   mapStateToProps,
   mapActionsToProps
-)(({ logo, title, done, query, id, setAlert }) => {
+)(({ logo, title, done, query, id, setAlert, icon="school" }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const modalCloseHandler = async (logoId) => {
@@ -87,7 +88,11 @@ export const TitleWithLogo = connect(
             onClick={() => setModalShow(true)}
             className="flex-row-centered avatar avatar-default"
           >
-            <FaSchool size={25} />
+            {icon === 'school' && (<FaSchool size={25} />)}
+            {icon === 'student' && (<FaUserGraduate size={25} />)}
+            {icon === 'batch' && (<FaChalkboardTeacher size={25} />)}
+            {icon === 'employer' && (<FaUserTie size={25} />)}
+            {icon === 'opportunity' && (<FaBriefcase size={25} />)}
           </div>
         </Tooltip>
       )}

@@ -32,6 +32,7 @@ const Institutions = (props) => {
   const [institutionsAggregate, setInstitutionsAggregate] = useState([]);
   const [institutionsTableData, setInstitutionsTableData] = useState([]);
   const [pickList, setPickList] = useState([]);
+  const [formErrors, setFormErrors] = useState([]);
   const {setAlert} = props;
   const [modalShow, setModalShow] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
@@ -83,7 +84,7 @@ const Institutions = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    
+
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
     } else if(selectedTab == "my_state"){
@@ -155,6 +156,8 @@ const Institutions = (props) => {
   };
 
   const hideCreateModal = async (data) => {
+    setFormErrors([]);
+
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
@@ -165,15 +168,21 @@ const Institutions = (props) => {
 
     nProgress.start();
     createInstitution(dataToSave).then(data => {
-      setAlert("Institution created successfully.", "success");
+      if (data.data.errors) {
+        setFormErrors(data.data.errors);
+      } else {
+        setAlert("Institution created successfully.", "success");
+        setModalShow(false);
+        getInstitutions();
+      }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create institution.", "error");
+      setModalShow(false);
+      getInstitutions();
     }).finally(() => {
       nProgress.done();
-      getInstitutions();
     });
-    setModalShow(false);
   };
 
   return (
@@ -193,6 +202,7 @@ const Institutions = (props) => {
       <InstitutionForm
         show={modalShow}
         onHide={hideCreateModal}
+        errors={formErrors}
       />
     </div>
     </Collapse>

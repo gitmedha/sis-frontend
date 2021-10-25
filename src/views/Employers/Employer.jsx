@@ -91,7 +91,7 @@ const Employer = (props) => {
     let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
     setOpportunitiesBadge(
       <>
-       <Tooltip  placement="top" title="Internships">  
+       <Tooltip  placement="top" title="Internships">
         <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
       </Tooltip>
         <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
@@ -99,7 +99,7 @@ const Employer = (props) => {
         <FaBriefcase width="15" color="#D7D7E0" />
       </Tooltip>
       <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
-     
+
       </>
     );
   }
@@ -144,6 +144,7 @@ const Employer = (props) => {
               logo={rest.logo}
               title={rest.name}
               query={UPDATE_EMPLOYER}
+              icon="employer"
             />
           }
         >

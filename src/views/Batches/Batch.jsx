@@ -222,6 +222,7 @@ const Batch = (props) => {
                 logo={batch.logo}
                 title={batch.name}
                 query={UPDATE_BATCH}
+                icon="batch"
               />
             }
             opened={true}

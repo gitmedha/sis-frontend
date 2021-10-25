@@ -39,6 +39,7 @@ const InstitutionForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [formValues, setFormValues] = useState(null);
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -79,7 +80,7 @@ const InstitutionForm = (props) => {
         });
       }
     });
-   
+
   }, [props]);
 
   const onStateChange = (data) => {
@@ -100,7 +101,7 @@ const InstitutionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values)
+    setFormValues(values);
     if (logo) {
       values.logo = logo;
     }
@@ -159,7 +160,7 @@ const InstitutionForm = (props) => {
           </div>
           )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.name : 'Add New Institute'}
+            {props.id ? props.name : 'Add New Institution'}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -424,6 +425,18 @@ const InstitutionForm = (props) => {
                 </FieldArray>
               </Section>
               <div className="row mt-3 py-3">
+                <div className="col-12">
+                  {props.errors.length !== 0 &&
+                    <div className="alert alert-danger">
+                      <span>There are some errors. Please resolve them and save again:</span>
+                      <ul className="mb-0">
+                        {props.errors.map((error, index) => (
+                          <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Institution with "${formValues.name}" already exists.` : error.message}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  }
+                </div>
                 <div className="d-flex justify-content-start">
                     <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
                     <button

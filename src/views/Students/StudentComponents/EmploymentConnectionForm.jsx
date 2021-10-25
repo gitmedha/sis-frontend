@@ -29,11 +29,13 @@ const Section = styled.div`
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
-  const [loading, setLoading] = useState(false);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection && props.employmentConnection.opportunity ? props.employmentConnection.opportunity.type : null);
+  const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
+  const [showEndDate, setShowEndDate] = useState(false);
 
   let initialValues = {
     employment_connection_student: student.first_name + ' ' + student.last_name,
@@ -66,6 +68,10 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
+    setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
+  }, [selectedOpportunityType, selectedStatus]);
+
+  useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -90,6 +96,7 @@ const EnrollmentConnectionForm = (props) => {
       setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
         key: opportunity.role_or_designation,
         label: `${opportunity.role_or_designation} | ${opportunity.type}`,
+        type: opportunity.type,
         value: opportunity.id,
       })));
     });
@@ -163,6 +170,7 @@ const EnrollmentConnectionForm = (props) => {
                         options={employerOpportunityOptions}
                         className="form-control"
                         placeholder={'Opportunity'}
+                        onChange = {(e) => setSelectedOpportunityType(e.type)}
                       />
                     ) : (
                       <>
@@ -181,6 +189,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
+                      onChange = {(e) => setSelectedStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -228,15 +237,16 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="end_date"
-                      label="End Date"
-                      required={true}
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
+                    {showEndDate &&
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                      />
+                    }
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
