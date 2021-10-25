@@ -56,15 +56,15 @@ const Details = ({ batch, sessions=[] }) => {
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
           <DetailField label="Name" value={batch.name} />
-          <DetailField label="Program Name" value={batch.program?.name} />
+          <DetailField label="Program Name" value={batch.program.name} />
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
           <DetailField label="Enrollment Type" value={<Badge value={batch.enrollment_type} pickList={pickList.enrollment_type} />} />
           <DetailField label="Institution" value={<Anchor text={batch?.institution?.name} href={`/institution/${batch?.institution?.id}`} />} />
-          <DetailField label="Assigned To" value={batch.assigned_to?.username} />
+          <DetailField label="Assigned To" value={batch.assigned_to.username} />
           {/* <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} /> */}
           <DetailField label="Grant" value={batch.grant.name} />
           <DetailField label="Donor" value={batch.grant.donor} />
-          <DetailField label="Assigned To" value={batch.assigned_to?.username} />
+          <DetailField label="Assigned To" value={batch.assigned_to.username} />
           <div className="mt-2">
             <div style={{color: '#787B96', fontFamily: 'Latto-Regular', fontSize: '14px', lineHeight: 1.2, marginBottom: '10px'}}>
               Average Attendance Across All Sessions

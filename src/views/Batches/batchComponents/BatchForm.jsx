@@ -68,8 +68,8 @@ const BatchForm = (props) => {
   };
   if (props.id) {
     initialValues = {...props}
-    initialValues['grant'] = Number(props.grant.id);
-    initialValues['program'] = Number(props.program.id);
+    initialValues['grant'] = Number(props.grant?.id);
+    initialValues['program'] = Number(props.program?.id);
     initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
     initialValues['assigned_to'] = Number(props.assigned_to.id);
     initialValues['start_date'] = new Date(props.start_date);

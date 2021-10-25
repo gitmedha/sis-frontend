@@ -536,12 +536,12 @@ query GET_BATCH_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: 
 }
 `;
 
-export const GET_ALL_ENROLLMENT_TYPE = `
-query GET_ALL_ENROLLMENT_TYPE {
-  batches {
-    id
-    name
-    status
-    enrollment_type
-  }
-}`;
+// export const GET_ALL_ENROLLMENT_TYPE = `
+// query GET_ALL_ENROLLMENT_TYPE {
+//   batches {
+//     id
+//     name
+//     status
+//     enrollment_type
+//   }
+// }`;
