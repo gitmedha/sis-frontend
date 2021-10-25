@@ -42,7 +42,7 @@ export const batchLookUpOptions = async () => {
     query: GET_ALL_GRANTS,
   });
   let grantOptions = data.data.grants.map((grant) => ({
-    label: grant.name,
+    label: `${grant.name} | ${grant.donor}`,
     value: Number(grant.id),
   }));
 

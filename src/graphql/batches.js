@@ -6,10 +6,10 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id,
-          state: $state,
-          area:$area,
+          id: $id
         }
+      state: $state,
+      medha_area:$area,
       }
     ) {
       values {
@@ -18,12 +18,11 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
         start_date
         end_date
         status
+        medha_area
+        state
+        enrollment_type
         logo {
           url
-        }
-        assigned_to{
-          area
-          state
         }
         number_of_sessions_planned
         program {
@@ -53,6 +52,9 @@ query GET_BATCH ($id:ID!) {
     created_at
     updated_at
     status
+    enrollment_type
+    state
+    medha_area
     program {
       id
       name
@@ -71,6 +73,7 @@ query GET_BATCH ($id:ID!) {
     grant {
       id
       name
+      donor
     }
     institution {
       id
@@ -532,3 +535,13 @@ query GET_BATCH_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: 
   }
 }
 `;
+
+// export const GET_ALL_ENROLLMENT_TYPE = `
+// query GET_ALL_ENROLLMENT_TYPE {
+//   batches {
+//     id
+//     name
+//     status
+//     enrollment_type
+//   }
+// }`;

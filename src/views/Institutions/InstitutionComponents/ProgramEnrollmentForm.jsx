@@ -62,6 +62,20 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
+    if ( props.batch) {
+      filterBatch(props.programEnrollment.batch.name).then(data => {
+        setBatchOptions(data);
+      });
+    }
+
+    if ( props.student) {
+      filterStudent(props.programEnrollment.student.first_name).then(data => {
+        setStudentOptions(data);
+      });
+    }
+  }, [props])
+
+  useEffect(() => {
     if (show && !options) {
       prepareLookUpFields();
     }
@@ -93,8 +107,8 @@ const ProgramEnrollmentForm = (props) => {
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = props.programEnrollment.batch?.id;
-    initialValues['student'] = props.programEnrollment.student?.id;
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
+    initialValues['student'] = Number(props.programEnrollment.student?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -106,30 +120,6 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    getAllBatches().then(data => {
-      setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-        key: batches.name,
-        label: batches.name,
-        value: batches.id,
-      })));
-    });
-
-    getAllInstitutions().then(data => {
-      setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-        key: institution.name,
-        label: institution.name,
-        value: institution.id,
-      })));
-    });
-
-    // getAllStudents().then(data => {
-    //   setStudentOptions(data?.data?.data?.students.map((student) => ({
-    //     key: student.first_name + ''+ student.last_name,
-    //     label:student.first_name + ''+ student.last_name,
-    //     value: student.id,
-    //   })));
-    // });
-
     getProgramEnrollmentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -139,6 +129,36 @@ const ProgramEnrollmentForm = (props) => {
       setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
+
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient.index('students').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'first_name', 'last_name']
+    }).then(data => {
+      return data.hits.map(student => {
+        return {
+          ...student,
+          label:student.first_name + ''+ student.last_name,
+          value:  Number(student.id),
+        }
+      });
+    });
+  }
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(batch => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        }
+      });
+    });
+  }
 
   return (
     <Modal
@@ -175,11 +195,12 @@ const ProgramEnrollmentForm = (props) => {
                   {!lookUpLoading ? (
                     <Input
                       name="student"
-                      control="lookup"
+                      control="lookupAsync"
                       label="Student"
                       className="form-control"
                       placeholder="Student"
-                      options={options?.studentOptions}
+                      filterData={filterStudent}
+                      defaultOptions={props.id ? studentOptions : true}
                       required
                     />
                      ) : (
@@ -201,11 +222,12 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="batch"
                       label="Batch"
                       required
-                      options={options?.batchOptions}
+                      filterData={filterBatch}
+                      defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
                     />

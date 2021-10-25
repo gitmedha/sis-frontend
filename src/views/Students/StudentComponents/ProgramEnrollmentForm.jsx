@@ -59,8 +59,13 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     if ( props.institution) {
-      filterInstitution(props.institution.name).then(data => {
+      filterInstitution(props.programEnrollment.institution.name).then(data => {
         setInstitutionOptions(data);
+      });
+    }
+    if ( props.batch) {
+      filterInstitution(props.programEnrollment.batch.name).then(data => {
+        setBatchOptions(data);
       });
     }
   }, [props])
@@ -97,8 +102,8 @@ const ProgramEnrollmentForm = (props) => {
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = props.programEnrollment.batch?.id;
-    initialValues['institution'] = props.programEnrollment.institution?.id;
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
+    initialValues['institution'] = Number(props.programEnrollment.institution?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
@@ -110,22 +115,6 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    getAllBatches().then(data => {
-      setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-        key: batches.name,
-        label: batches.name,
-        value: batches.id,
-      })));
-    });
-
-    getAllInstitutions().then(data => {
-      setInstitutionOptions(data?.data?.data?.institutions.map((institution) => ({
-        key: institution.name,
-        label: institution.name,
-        value: institution.id,
-      })));
-    });
-
     getProgramEnrollmentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -146,6 +135,21 @@ const ProgramEnrollmentForm = (props) => {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
+        }
+      });
+    });
+  }
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(batch => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
         }
       });
     });
@@ -207,11 +211,12 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="batch"
                       label="Batch"
                       required
-                      options={options?.batchOptions}
+                      filterData={filterBatch}
+                      defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
                     />

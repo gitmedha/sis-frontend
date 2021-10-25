@@ -35,7 +35,7 @@ const Opportunity = (props) => {
     const opportunityId = props.match.params.id;
 
     const OpportunityIcon = ({opportunity}) => {
-      let bgColor = '#207b69';
+      let bgColor = '#ffffff';
       let icon = null;
       switch (opportunity.type) {
         case 'Job':
