@@ -101,6 +101,7 @@ const App = (props) => {
         if (localStorage.getItem("next_url")){
           nextUrl = localStorage.getItem("next_url");
         }
+        localStorage.removeItem("next_url");
         history.push(nextUrl); // or redirect to next url
       })
     }
