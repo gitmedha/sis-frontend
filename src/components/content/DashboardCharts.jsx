@@ -7,6 +7,7 @@ export const ProgramEnrollmentsChart = (props) => {
   const userId = Number(localStorage.getItem("user_id")) || 2;
   const [options, setOptions] = useState({
     chart: {
+      fontFamily: 'Lato',
       height: 280,
       type: "area",
       toolbar: {
@@ -23,6 +24,7 @@ export const ProgramEnrollmentsChart = (props) => {
           },
       },
     },
+    colors: ["#207B69", "#AA223C"],
     fill: {
       type: "gradient",
       gradient: {
@@ -129,6 +131,7 @@ export const EmploymentConnectionsChart = (props) => {
       min: 0,
     },
     chart: {
+      fontFamily: 'Lato',
       height: 280,
       type: 'bar',
       toolbar: {
@@ -155,6 +158,7 @@ export const EmploymentConnectionsChart = (props) => {
     dataLabels: {
       enabled: false
     },
+    colors: ["#FF9700", "#12314C"],
     stroke: {
       show: true,
       width: 2,

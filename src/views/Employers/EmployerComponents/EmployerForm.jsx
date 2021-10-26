@@ -63,8 +63,8 @@ const EmployerForm = (props) => {
 
     getAssigneeOptions().then(data => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
+          label: `${assignee.username} (${assignee.email})`,
           key: assignee.username,
-          label: assignee.username,
           value: assignee.id,
       })));
     });

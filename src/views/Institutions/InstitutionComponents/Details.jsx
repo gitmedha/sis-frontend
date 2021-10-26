@@ -33,13 +33,13 @@ const Details = (props) => {
           <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
           <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
           <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
-          <DetailField label="Created Date" value={moment(created_at).format("DD MMM YYYY")} />
+          <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
           <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
           <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
           <DetailField label="Assigned To" value={assigned_to?.username} />
-          <DetailField label="Updated Date" value={moment(updated_at).format("DD MMM YYYY")} />
+          <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
         </div>
       </div>
     </div>
