@@ -24,6 +24,9 @@ employer{
   id
   name
   address
+  district
+  state
+  medha_area
   logo{
     url
   }

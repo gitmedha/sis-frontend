@@ -98,9 +98,9 @@ const OpportunityForm = (props) => {
           value: geographies.state,
       })));
 
-      if (props.state) {
+      if (props.employer.state) {
         onStateChange({
-          value: props.state,
+          value: props.employer.state,
         });
       }
     });
