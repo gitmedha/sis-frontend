@@ -38,7 +38,7 @@ const Student = (props) => {
     }
 
     // need to remove some data from payload
-    let {id, show, CV, logo, ...dataToSave} = data;
+    let {id, show, CV, logo, created_at, updated_at, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
 
     NP.start();
