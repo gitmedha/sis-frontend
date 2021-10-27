@@ -45,6 +45,8 @@ const BatchForm = (props) => {
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
   const [formValues, setFormValues] = useState(null);
+  const [programOptions, SetProgramOptions] = useState(null);
+  const [grantOptions, SetGrantOptions] = useState(null);
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -121,6 +123,16 @@ const BatchForm = (props) => {
         setInstitutionOptions(data);
       });
     }
+    if (props.program) {
+      filterProgram(props.program.name).then(data => {
+        SetProgramOptions(data);
+      });
+    }
+    if (props.grant) {
+      filterGrant(props.grant.name).then(data => {
+        SetGrantOptions(data);
+      });
+    }
   }, [props])
 
   useEffect(() => {
@@ -144,6 +156,37 @@ const BatchForm = (props) => {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
+        }
+      });
+    });
+  }
+
+  const filterProgram = async (filterValue) => {
+    return await meilisearchClient.index('programs').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(program => {
+        return {
+          ...program,
+          label: program.name,
+          value: Number(program.id),
+        }
+      });
+    });
+  }
+
+  const filterGrant = async (filterValue) => {
+    return await meilisearchClient.index('grants').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name', 'donor']
+    }).then(data => {
+      return data.hits.map(grant => {
+        console.log(grant)
+        return {
+          ...grant,
+          label: `${grant.name} | ${grant.donor}`,
+          value: Number(grant.id),
         }
       });
     });
@@ -233,10 +276,12 @@ const BatchForm = (props) => {
                         name="program"
                         label="Program"
                         required
-                        control="lookup"
+                        control="lookupAsync"
+                        filterData={filterProgram}
+                        defaultOptions={props.id ? programOptions : true}
                         placeholder="Program"
                         className="form-control"
-                        options={options?.programOptions}
+                        // options={options?.programOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -249,10 +294,12 @@ const BatchForm = (props) => {
                         name="grant"
                         label="Grant"
                         required
-                        control="lookup"
                         placeholder="Grant"
                         className="form-control"
-                        options={options?.grantOptions}
+                        control="lookupAsync"
+                        filterData={filterGrant}
+                        defaultOptions={props.id ? grantOptions : true}
+                        // options={options?.grantOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
