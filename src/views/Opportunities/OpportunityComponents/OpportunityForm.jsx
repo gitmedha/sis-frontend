@@ -147,7 +147,6 @@ const OpportunityForm = (props) => {
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       return data.hits.map(employer => {
-        console.log(employer)
         return {
           ...employer,
           label: employer.name,

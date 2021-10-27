@@ -182,7 +182,6 @@ const BatchForm = (props) => {
       attributesToRetrieve: ['id', 'name', 'donor']
     }).then(data => {
       return data.hits.map(grant => {
-        console.log(grant)
         return {
           ...grant,
           label: `${grant.name} | ${grant.donor}`,
