@@ -88,11 +88,11 @@ export const TitleWithLogo = connect(
             onClick={() => setModalShow(true)}
             className="flex-row-centered avatar avatar-default"
           >
-            {icon === 'school' && (<FaSchool size={25} />)}
-            {icon === 'student' && (<FaUserGraduate size={25} />)}
-            {icon === 'batch' && (<FaChalkboardTeacher size={25} />)}
-            {icon === 'employer' && (<FaUserTie size={25} />)}
-            {icon === 'opportunity' && (<FaBriefcase size={25} />)}
+            {icon === 'school' && (<FaSchool size={25} color="#808080" />)}
+            {icon === 'student' && (<FaUserGraduate size={25} color="#808080" />)}
+            {icon === 'batch' && (<FaChalkboardTeacher size={25} color="#808080" />)}
+            {icon === 'employer' && (<FaUserTie size={25} color="#808080" />)}
+            {icon === 'opportunity' && (<FaBriefcase size={25} color="#808080" />)}
           </div>
         </Tooltip>
       )}

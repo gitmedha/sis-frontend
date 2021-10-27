@@ -11,11 +11,11 @@ import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
-import { createOpportunity } from "./OpportunityComponents/opportunityAction";
+import { createOpportunity, getOpportunitiesPickList } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { Anchor } from "../../components/content/Utils";
+import { Anchor, Badge } from "../../components/content/Utils";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -48,6 +48,31 @@ const tabPickerOptions = [
     const userId = parseInt(localStorage.getItem('user_id'))
     const state = localStorage.getItem('user_state');
     const area = localStorage.getItem('user_area')
+
+    const OpportunityIcon = ({opportunity, name}) => {
+      let bgColor = '#ffffff';
+      let icon = null;
+
+      switch (opportunity.type) {
+        case 'Job':
+          icon = <FaBriefcase size="20" color="#808080"/>;
+          break;
+
+        case 'Internship':
+          icon = <FaBlackTie size="20" color="#808080"/>;
+          break;
+      }
+      if (icon) {
+        return (
+        <div className="d-flex align-items-center justify-content-start h-100">
+          <div className="flex-row-centered avatar avatar-default " style ={{ width: '35px', height: '35px'}} >
+            {icon}
+          </div>
+          <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
+        </div>)
+      }
+      return <></>;
+    };
 
   useEffect(() => {
     getOpportunities(activeTab.key);
@@ -90,6 +115,12 @@ const tabPickerOptions = [
     ],
     []
   );
+
+  useEffect(() => {
+    getOpportunitiesPickList().then(data => {
+      setPickList(data);
+    });
+  }, [])
 
   const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
@@ -157,13 +188,13 @@ const tabPickerOptions = [
       return {
       ...opportunitydata,
        assignedTo:  <Anchor text={opportunitydata.assigned_to.username} href={'/user/' + opportunitydata.assigned_to.id} />,
-       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
        role_or_designation: opportunitydata.role_or_designation,
-       opportunity_type: opportunitydata.type,
+       opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
+       avatar:  <OpportunityIcon opportunity={opportunitydata} name={opportunitydata.role_or_designation}> {opportunitydata.role_or_designation} </OpportunityIcon>,
       }
     });
     setOpportunitiesTableData(data);
