@@ -7,7 +7,9 @@ export const ProgramEnrollmentsChart = (props) => {
   const userId = Number(localStorage.getItem("user_id")) || 2;
   const [options, setOptions] = useState({
     chart: {
-      fontFamily: 'Lato',
+      fontFamily: "Latto-Regular",
+      fontweight: 700,
+      fontsize: 12,
       height: 280,
       type: "area",
       toolbar: {
@@ -131,7 +133,9 @@ export const EmploymentConnectionsChart = (props) => {
       min: 0,
     },
     chart: {
-      fontFamily: 'Lato',
+      fontFamily: "Latto-Regular",
+      fontweight: 700,
+      fontsize: 12,
       height: 280,
       type: 'bar',
       toolbar: {
