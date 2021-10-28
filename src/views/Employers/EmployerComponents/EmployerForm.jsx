@@ -435,7 +435,8 @@ const EmployerForm = (props) => {
                         ))}
                       </ul>
                     </div>
-                  :null}
+                   :null
+                  }
                 </div>
                 <div className="d-flex justify-content-start">
                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
