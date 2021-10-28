@@ -58,7 +58,7 @@ export const batchLookUpOptions = async () => {
     query: GET_ALL_STUDENTS,
   });
   let studentOptions = data.data.students.map((student) => ({
-    label: student.first_name + ''+ student.last_name,
+    label: student.full_name,
     value: Number(student.id),
   }));
 

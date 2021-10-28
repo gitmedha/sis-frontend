@@ -62,7 +62,7 @@ const ProgramEnrollments = (props) => {
     let data = programEnrollments.map(programEnrollment => {
       return {
         ...programEnrollment,
-        student_name: `${programEnrollment.student.first_name} ${programEnrollment.student.last_name}`,
+        student_name: programEnrollment.student.full_name,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
         batch_name: programEnrollment.batch.name,
         institution_name: programEnrollment.institution.name,

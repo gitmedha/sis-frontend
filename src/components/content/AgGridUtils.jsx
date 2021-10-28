@@ -127,7 +127,7 @@ export const StudentDetailsRenderer = (props) => {
           student={{
             id: props.data.student.id,
             institute: props.data.institution.name,
-            name: `${props.data.student.first_name} ${props.data.student.last_name}`,
+            name: props.data.student.full_name,
           }}
         />
       )}

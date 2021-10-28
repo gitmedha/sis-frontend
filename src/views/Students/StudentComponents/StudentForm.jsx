@@ -114,8 +114,7 @@ const StudentForm = (props) => {
   let initialValues = {
     institution:'',
     batch:'',
-    first_name:'',
-    last_name:'',
+    full_name:'',
     phone:'',
     name_of_parent_or_guardian:'',
     category:'',
@@ -164,7 +163,7 @@ const StudentForm = (props) => {
           </div>
           )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? `${props.first_name} ${props.last_name}` : 'Add New Student'}
+            {props.id ? props.full_name : 'Add New Student'}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -181,21 +180,11 @@ const StudentForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="first_name"
-                      label="First Name"
+                      name="full_name"
+                      label="Name"
                       required
                       control="input"
-                      placeholder="First Name"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="last_name"
-                      label="Last Name"
-                      required
-                      control="input"
-                      placeholder="Last Name"
+                      placeholder="Name"
                       className="form-control"
                     />
                   </div>

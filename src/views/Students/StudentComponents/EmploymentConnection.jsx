@@ -47,7 +47,7 @@ const EmploymentConnection = (props) => {
         <Modal.Body className="bg-white">
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Student" value={`${student.first_name} ${student.last_name}`} />
+              <DetailField label="Student" value={student.full_name} />
               <DetailField label="Employer" value={<Anchor text={employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`} />} />
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />

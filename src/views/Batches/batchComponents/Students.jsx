@@ -51,7 +51,7 @@ const Students = ({ students, batch, fetchData }) => {
   const studentsTableData = students.map(student => {
     return {
       id: student.student.id,
-      name: `${student.student.first_name} ${student.student.last_name}`,
+      name: student.student.full_name,
       phone: student.student.phone,
       enrollment_status: <Badge value={student.status} pickList={pickList.status} />,
       institution: student.institution.name,
@@ -61,11 +61,11 @@ const Students = ({ students, batch, fetchData }) => {
 
   const refetchStudents = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'student.first_name';
+      let sortByField = 'student.full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'name':
-          sortByField = 'student.first_name'
+          sortByField = 'student.full_name'
           break;
 
         case 'phone':
@@ -77,7 +77,7 @@ const Students = ({ students, batch, fetchData }) => {
           break;
 
         default:
-          sortByField = 'student.first_name';
+          sortByField = 'student.full_name';
           break;
       }
       fetchData(sortByField, sortOrder);

@@ -1,7 +1,6 @@
 const studentFields = `
   id
-  first_name
-  last_name
+  full_name
   email
   phone
   status
@@ -329,8 +328,7 @@ export const GET_ALL_STUDENTS = `
 query TO_GET_ALL_STUDENTS {
   students{
     id
-    first_name
-    last_name
+    full_name
   }
 }
 `;

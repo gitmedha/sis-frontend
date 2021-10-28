@@ -89,12 +89,12 @@ const EnrollmentConnectionForm = (props) => {
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'first_name', 'last_name']
+      attributesToRetrieve: ['id', 'full_name']
     }).then(data => {
       return data.hits.map(student => {
         return {
           ...student,
-          label: `${student.first_name} ${student.last_name}`,
+          label: `student.full_name`,
           value: Number(student.id),
         }
       });

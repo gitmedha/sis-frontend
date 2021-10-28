@@ -141,14 +141,11 @@ const SearchHits = props => {
 
     case 'students':
     default:
-      columns = ['First Name', 'Last Name', 'Email'];
+      columns = ['Name', 'Email'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="first_name" />
-          </td>
-          <td>
-            <SearchHighlight hit={hit} attribute="last_name" />
+            <SearchHighlight hit={hit} attribute="full_name" />
           </td>
           <td>
             <SearchHighlight hit={hit} attribute="email" />

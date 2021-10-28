@@ -32,8 +32,7 @@ const salary_offered = Yup.number().nullable().required("Salary Offered is requi
                           .max(1000000, 'Salary should be in range of between 0 to 10 Lakh.');
 
 // Student form fields.
-const first_name  = Yup.string().required("First Name is required.");
-const last_name  = Yup.string().required("Last Name is required.");
+const full_name  = Yup.string().required("Name is required.");
 const phone = Yup.string()
   .matches(phoneRegExp, 'Phone number is not valid')
   .min(10, "Number is too short")
@@ -88,8 +87,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
 });
 
 export const StudentValidations = Yup.object({
-  first_name,
-  last_name,
+  full_name,
   phone,
   name_of_parent_or_guardian,
   category,

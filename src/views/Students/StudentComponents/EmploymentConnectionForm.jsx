@@ -38,7 +38,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showEndDate, setShowEndDate] = useState(false);
 
   let initialValues = {
-    employment_connection_student: student.first_name + ' ' + student.last_name,
+    employment_connection_student: student.full_name,
     employer_id:'',
     opportunity_id:'',
     status: '',

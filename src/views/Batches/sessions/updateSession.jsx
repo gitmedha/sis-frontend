@@ -252,7 +252,7 @@ const UpdateSession = (props) => {
 };
 
 const nameGetter = (params) =>
-  `${params.data.program_enrollment.student.first_name} ${params.data.program_enrollment.student.last_name}`;
+  params.data.program_enrollment.student.full_name;
 
 const mapStateToProps = (state) => ({
   ...state.sessionAttendance,

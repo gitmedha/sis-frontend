@@ -127,8 +127,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
       student {
         id
         phone
-        last_name
-        first_name
+        full_name
       }
     }
   }
@@ -137,12 +136,11 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
 
 export const GET_BATCH_STUDENTS_ONLY = `
 query GET_STUDENTS_IN_BATCH ($id: ID!){
-  programEnrollments (where: {batch: {id: $id}}, sort: "student.first_name:asc") {
+  programEnrollments (where: {batch: {id: $id}}, sort: "student.full_name:asc") {
     id
     student {
       id
-      last_name
-      first_name
+      full_name
       phone
     }
   }
@@ -300,8 +298,7 @@ query GET_SESSION_ATTENDANCE($sessionID: ID!){
     program_enrollment{
       id
       student{
-        first_name
-        last_name
+        full_name
       }
     }
   }
@@ -418,8 +415,7 @@ query GET_BATCH_ENTROLLED_STUDENTS ($id: ID!){
   ) {
     id
     student {
-      first_name
-      last_name
+      full_name
     }
   }
 }
@@ -502,8 +498,7 @@ const programEnrollmentFields = `
   }
   student{
     id
-    first_name
-    last_name
+    full_name
   }
   batch {
     id

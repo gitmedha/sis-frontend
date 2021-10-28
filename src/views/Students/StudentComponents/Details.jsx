@@ -53,8 +53,7 @@ const Styled = styled.div`
 
 const Details = (props) => {
   const {
-    first_name,
-    last_name,
+    full_name,
     phone,
     name_of_parent_or_guardian,
     category,
@@ -88,8 +87,7 @@ const Details = (props) => {
       <div className="container-fluid my-3">
         <div className="row latto-regular">
           <div className="col-md-4">
-            <DetailField label="First Name" value={first_name} />
-            <DetailField label="Last Name" value={last_name} />
+            <DetailField label=" Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
@@ -107,7 +105,7 @@ const Details = (props) => {
           <div className="col-md-4 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
-              {logo && <img className="img-profile" src={urlPath(logo.url)} alt={`${first_name} ${last_name}`} />}
+              {logo && <img className="img-profile" src={urlPath(logo.url)} alt={full_name} />}
             </div>
           </div>
         </div>
