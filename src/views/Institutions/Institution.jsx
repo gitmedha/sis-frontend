@@ -36,7 +36,7 @@ const Institute = (props) => {
     }
 
     // need to remove id and show from the payload
-    let {id, show, ...dataToSave} = data;
+    let {id, show, created_at, updated_at, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
