@@ -45,8 +45,8 @@ const BatchForm = (props) => {
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
   const [formValues, setFormValues] = useState(null);
-  const [programOptions, SetProgramOptions] = useState(null);
-  const [grantOptions, SetGrantOptions] = useState(null);
+  const [programOptions, setProgramOptions] = useState(null);
+  const [grantOptions, setGrantOptions] = useState(null);
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -125,12 +125,12 @@ const BatchForm = (props) => {
     }
     if (props.program) {
       filterProgram(props.program.name).then(data => {
-        SetProgramOptions(data);
+        setProgramOptions(data);
       });
     }
     if (props.grant) {
       filterGrant(props.grant.name).then(data => {
-        SetGrantOptions(data);
+        setGrantOptions(data);
       });
     }
   }, [props])
@@ -280,7 +280,6 @@ const BatchForm = (props) => {
                         defaultOptions={props.id ? programOptions : true}
                         placeholder="Program"
                         className="form-control"
-                        // options={options?.programOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />

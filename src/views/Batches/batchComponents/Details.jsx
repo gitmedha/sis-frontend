@@ -77,8 +77,8 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Area" value={batch.medha_area} />
           <DetailField label="Start Date" value={<Moment date={batch.start_date} format={"DD MMM YYYY"} />} />
           <DetailField label="End Date" value={<Moment date={batch.end_date} format={"DD MMM YYYY"} />} />
-          <DetailField label="Created Date" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
-          <DetailField label="Updated Date" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Created at" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Updated at" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
           <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} />
         </div>
       </div>
