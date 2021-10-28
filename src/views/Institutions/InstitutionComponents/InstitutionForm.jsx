@@ -426,7 +426,8 @@ const InstitutionForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="col-12">
-                  {props.errors.length !== 0 &&
+                  { props.errors ?
+                  props.errors.length !== 0 &&
                     <div className="alert alert-danger">
                       <span>There are some errors. Please resolve them and save again:</span>
                       <ul className="mb-0">
@@ -435,7 +436,7 @@ const InstitutionForm = (props) => {
                         ))}
                       </ul>
                     </div>
-                  }
+                  :null}
                 </div>
                 <div className="d-flex justify-content-start">
                     <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
