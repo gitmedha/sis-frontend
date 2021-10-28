@@ -296,7 +296,6 @@ const BatchForm = (props) => {
                         control="lookupAsync"
                         filterData={filterGrant}
                         defaultOptions={props.id ? grantOptions : true}
-                        // options={options?.grantOptions}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
