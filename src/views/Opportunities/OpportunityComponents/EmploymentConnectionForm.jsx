@@ -38,6 +38,9 @@ const EnrollmentConnectionForm = (props) => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
+  const [showEndDate, setShowEndDate] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
 
   let initialValues = {
     student: '',
@@ -58,6 +61,10 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
+  
+  useEffect(() => {
+    setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
+  }, [selectedOpportunityType, selectedStatus]);
 
   const onModalClose = () => {
     onHide();
@@ -167,6 +174,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
+                      onChange = {(e) => setSelectedStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -214,6 +222,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                  {showEndDate &&
                     <Input
                       name="end_date"
                       label="End Date"
@@ -223,6 +232,7 @@ const EnrollmentConnectionForm = (props) => {
                       className="form-control"
                       autoComplete="off"
                     />
+                  }
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
