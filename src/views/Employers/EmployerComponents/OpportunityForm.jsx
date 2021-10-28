@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { EmployerOpportunityValidations } from "../../../validations";
 import { getOpportunitiesPickList, getAssigneeOptions } from "../../Opportunities/OpportunityComponents/opportunityAction";
+import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -43,6 +44,9 @@ const OpportunityForm = (props) => {
   const [compensationTypeOptions, setCompensationTypeOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -86,7 +90,38 @@ const OpportunityForm = (props) => {
           value: assignee.id,
       })));
     });
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
+          key: geographies.id,
+          label: geographies.state,
+          value: geographies.state,
+      })));
+
+      if (props.employer.state) {
+        onStateChange({
+          value: props.employer.state,
+        });
+      }
+    });
   }, []);
+
+  const onStateChange = (data) => {
+    setDistrictOptions([]);
+    getStateDistricts(data).then(data => {
+      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.district,
+        value: geographies.district,
+      })));
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
+        key: geographies.id,
+        label: geographies.area,
+        value: geographies.area,
+      })));
+    });
+  };
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -290,29 +325,36 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="state"
                       label="State"
-                      control="input"
+                      control="lookup"
                       placeholder="State"
                       className="form-control"
                       required
+                      options={stateOptions}
+                      onChange={onStateChange}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="district"
                       label="District"
                       placeholder="District"
+                      options={districtOptions}
                       className="form-control"
                       required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="medha_area"
                       label="Medha Area"
+                      options={areaOptions}
                       className="form-control"
                       placeholder="Medha Area"
                       required
