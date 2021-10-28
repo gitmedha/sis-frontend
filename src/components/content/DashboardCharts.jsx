@@ -11,7 +11,7 @@ export const ProgramEnrollmentsChart = (props) => {
       fontweight: 700,
       fontsize: 12,
       height: 280,
-      type: "area",
+      type: "bar",
       toolbar: {
         show: true,
         tools: {
@@ -26,9 +26,28 @@ export const ProgramEnrollmentsChart = (props) => {
           },
       },
     },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '55%',
+        endingShape: 'rounded'
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      offsetY: -10,
+      style: {
+        fontSize: "12px"
+      }
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent']
+    },
     colors: ["#207B69", "#AA223C"],
     fill: {
-      type: "gradient",
+      type: "solid",
       gradient: {
         shadeIntensity: 1,
         opacityFrom: 0.7,
@@ -103,10 +122,12 @@ export const ProgramEnrollmentsChart = (props) => {
       setSeries([
         {
           name: "Registrations",
+          type: 'column',
           data: Object.values(registrationChartData).map(data => data.count)
         },
         {
           name: "Certifications",
+          type: 'column',
           data: Object.values(certificationChartData).map(data => data.count)
         },
       ]);
@@ -131,6 +152,11 @@ export const EmploymentConnectionsChart = (props) => {
     yaxis: {
       floating: false,
       min: 0,
+      labels: {
+        formatter: function(val) {
+          return Math.floor(val)
+        }
+      },
     },
     chart: {
       fontFamily: "Latto-Regular",
@@ -160,7 +186,11 @@ export const EmploymentConnectionsChart = (props) => {
       },
     },
     dataLabels: {
-      enabled: false
+      enabled: true,
+      offsetY: -10,
+      style: {
+        fontSize: "12px"
+      }
     },
     colors: ["#FF9700", "#12314C"],
     stroke: {
