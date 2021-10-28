@@ -93,7 +93,7 @@ const Details = (props) => {
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
-            <DetailField label="Created Date" value={moment(created_at).format("DD MMM YYYY")} />
+            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="Assigned To" value={assigned_to?.username} />
           </div>
           <div className="col-md-4">
@@ -102,7 +102,7 @@ const Details = (props) => {
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
             <DetailField label="Income Level (INR)" value={income_level} />
-            <DetailField label="Updated Date" value={moment(updated_at).format("DD MMM YYYY")} />
+            <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
           <div className="col-md-4 d-flex justify-content-end">
             <div className="img-profile-container">

@@ -36,7 +36,10 @@ mutation UPLOAD_FILE(
 
 export const GET_ASSIGNEES_LIST_OPTS = `
 query GET_ALL_USERS {
-  users {
+  users(
+    sort: "username:asc"
+    where: { _or: [{ blocked_null: "true" }, { blocked_contains: "false" }] }
+  ) {
     id
     email
     username
@@ -46,7 +49,10 @@ query GET_ALL_USERS {
 
 export const GET_ASSIGNEES_LIST = `
 query GET_ALL_USERS {
-  users {
+  users(
+    sort: "username:asc"
+    where: { _or: [{ blocked_null: "true" }, { blocked_contains: "false" }] }
+  ) {
     id
     username
     email

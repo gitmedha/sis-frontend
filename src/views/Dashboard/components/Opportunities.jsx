@@ -11,6 +11,9 @@ import { GET_OPPORTUNITIES } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../../components/content/CollapsiblePanels";
+import { getOpportunitiesPickList } from "../../Opportunities/OpportunityComponents/opportunityAction";
+import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import { Badge } from "../../../components/content/Utils";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -29,6 +32,31 @@ const Opportunities = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
   const userId  = parseInt(localStorage.getItem('user_id'))
+
+  const OpportunityIcon = ({opportunity, name}) => {
+    let bgColor = '#ffffff';
+    let icon = null;
+
+    switch (opportunity.type) {
+      case 'Job':
+        icon = <FaBriefcase size="20" color="#808080"/>;
+        break;
+
+      case 'Internship':
+        icon = <FaBlackTie size="20" color="#808080"/>;
+        break;
+    }
+    if (icon) {
+      return (
+      <div className="d-flex align-items-center justify-content-start h-100">
+        <div className="flex-row-centered avatar avatar-default " style ={{ width: '35px', height: '35px'}} >
+          {icon}
+        </div>
+        <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
+      </div>)
+    }
+    return <></>;
+  };
 
   const columns = useMemo(
     () => [
@@ -65,6 +93,12 @@ const Opportunities = (props) => {
     ],
     []
   );
+
+  useEffect(() => {
+    getOpportunitiesPickList().then(data => {
+      setPickList(data);
+    });
+  }, [])
 
   const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
@@ -123,9 +157,9 @@ const Opportunities = (props) => {
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       avatar: opportunitydata.employer ? <Avatar name={`${opportunitydata.role_or_designation}`} logo={opportunitydata.employer.logo} style={{width: '35px', height: '35px'}} icon="student" /> : <></>,
+      avatar:  <OpportunityIcon opportunity={opportunitydata} name={opportunitydata.role_or_designation}> {opportunitydata.role_or_designation} </OpportunityIcon>,
        role_or_designation: opportunitydata.role_or_designation,
-       opportunity_type: opportunitydata.type,
+       opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',

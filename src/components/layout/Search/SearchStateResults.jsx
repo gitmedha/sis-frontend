@@ -70,7 +70,7 @@ const SearchStateContainer = styled.div`
         background-color: #FDDAA7;
       }
       &.badge-employers-light {
-        background-color: #7ECCDD;
+        background-color: #1AAFD0;
       }
       &.badge-batches-light {
         background-color: #DFBAC1;

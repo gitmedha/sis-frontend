@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
@@ -38,6 +39,11 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const OpportunityForm = (props) => {
   let { onHide, show } = props;
   const [statusOptions, setStatusOptions] = useState([]);
@@ -65,6 +71,14 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
+
+  useEffect(() => {
+    if (props.institution) {
+      filterEmployer(props.institution.name).then(data => {
+        setEmployerOptions(data);
+      });
+    }
+  }, [props])
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -104,7 +118,7 @@ const OpportunityForm = (props) => {
     getAssigneeOptions().then(data => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
           key: assignee.username,
-          label: assignee.username,
+          label: `${assignee.username} (${assignee.email})`,
           value: assignee.id,
       })));
     });
@@ -126,6 +140,21 @@ const OpportunityForm = (props) => {
       });
     }
   }, []);
+
+  const filterEmployer = async (filterValue) => {
+    return await meilisearchClient.index('employers').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(employer => {
+        return {
+          ...employer,
+          label: employer.name,
+          value: Number(employer.id),
+        }
+      });
+    });
+  }
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -178,11 +207,13 @@ const OpportunityForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="employer"
-                      control="lookup"
+                      control="lookupAsync"
                       label="Employer"
                       placeholder="Employer"
                       className="form-control"
-                      options={employerOptions}
+                      filterData={filterEmployer}
+                      defaultOptions={props.id ? employerOptions : true}
+                      // options={employerOptions}
                       onChange={handleEmployerChange}
                       required
                     />

@@ -39,11 +39,11 @@ const Opportunity = (props) => {
       let icon = null;
       switch (opportunity.type) {
         case 'Job':
-          icon = <FaBriefcase size="25" />;
+          icon = <FaBriefcase size="25" color="#808080"/>;
           break;
 
         case 'Internship':
-          icon = <FaBlackTie size="25" />;
+          icon = <FaBlackTie size="25" color="#808080"/>;
           break;
       }
       if (icon) {
