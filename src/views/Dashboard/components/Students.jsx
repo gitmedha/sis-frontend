@@ -128,7 +128,7 @@ const Students = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'first_name';
+      let sortByField = 'full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'status':
@@ -141,7 +141,7 @@ const Students = (props) => {
 
         case 'avatar':
         default:
-          sortByField = 'first_name';
+          sortByField = 'full_name';
           break;
       }
       getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -166,14 +166,14 @@ const Students = (props) => {
         let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
         return {
           ...student,
-          avatar: <Avatar name={`${student.first_name} ${student.last_name}`} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
+          avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
           gridLink: `/student/${student.id}`,
           status: <Badge value={student.status} pickList={pickList.status || []} />,
           category: <Badge value={student.category} pickList={pickList.category || []} />,
           gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
           statusIcon: studentStatusData?.icon,
-          title: `${student.first_name} ${student.last_name}`,
+          title: student.full_name,
           progressPercent: studentStatusData?.progress,
           certification_date_latest:  moment(student.certification_date_latest).format("DD MMM YYYY"),
         }

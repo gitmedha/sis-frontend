@@ -81,7 +81,7 @@ const ProgramEnrollmentForm = (props) => {
   }, [props.programEnrollment]);
 
   let initialValues = {
-    program_enrollment_student: student.first_name + ' ' + student.last_name,
+    program_enrollment_student: student.full_name,
     status: '',
     batch: '',
     registration_date: '',

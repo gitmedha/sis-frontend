@@ -142,7 +142,7 @@ const Student = (props) => {
             <TitleWithLogo
               id={rest.id}
               logo={rest.logo}
-              title={`${rest.first_name} ${rest.last_name}`}
+              title={rest.full_name}
               icon="student"
             />
           }
@@ -171,7 +171,7 @@ const Student = (props) => {
           onConfirm={() => handleDelete()}
           onCancel={() => setShowDeleteAlert(false)}
           title={
-            <span className="text--primary latto-bold">Delete {`${student.first_name} ${student.last_name}`}?</span>
+            <span className="text--primary latto-bold">Delete {student.full_name}?</span>
           }
           customButtons={
             <>

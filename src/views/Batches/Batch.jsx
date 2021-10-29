@@ -87,7 +87,7 @@ const Batch = (props) => {
     });
   };
 
-  const getStudents = async (sortBy = 'student.first_name', sortOrder = 'desc') => {
+  const getStudents = async (sortBy = 'student.full_name', sortOrder = 'desc') => {
     try {
       const batchID = props.match.params.id;
       let { data } = await queryBuilder({

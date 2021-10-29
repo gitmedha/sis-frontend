@@ -177,8 +177,7 @@ query GET_OPPORTUNITIES($limit: Int, $start: Int, $status: String) {
 
 const studentFields = `
 id
-first_name
-last_name
+full_name
 email
 phone
 status

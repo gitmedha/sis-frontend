@@ -61,7 +61,7 @@ const ProgramEnrollment = (props) => {
           <h2 className="section-header">Enrollment Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Name" value={<Anchor text={`${programEnrollment.student?.first_name} ${programEnrollment.student?.last_name}`} href={`/student/${programEnrollment.student?.id}`} />} />
+              <DetailField label="Name" value={<Anchor text={programEnrollment.student?.full_name} href={`/student/${programEnrollment.student?.id}`} />} />
               <DetailField label="Batch" value={programEnrollment.batch?.name} />
               <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
             </div>

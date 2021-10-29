@@ -308,8 +308,7 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
       student {
         id
         phone
-        last_name
-        first_name
+        full_name
         logo {
           url
         }
@@ -327,8 +326,7 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
 export const GET_INSTITUTION_STUDENTS_DETAILS = `
 query GET_STUDENT ($id: ID!){
   student(id: $id){
-    first_name
-    last_name
+    full_name
     name_of_parent_or_guardian
     phone
     status
@@ -370,8 +368,7 @@ const programEnrollmentFields = `
   }
   student{
     id
-    first_name
-    last_name
+    full_name
   }
   batch {
     id

@@ -34,7 +34,7 @@ const Students = ({ id }) => {
       sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'student':
-          sortByField = 'student.first_name';
+          sortByField = 'student.full_name';
           break;
 
         case 'status':
@@ -67,7 +67,7 @@ const Students = ({ id }) => {
     data = data.map((programEnrollment, index) => {
       return {
         id: programEnrollment.student.id,
-        student: programEnrollment.student.first_name + ' ' + programEnrollment.student.last_name,
+        student: programEnrollment.student.full_name,
         area: programEnrollment.student.city,
         status: <Badge value={programEnrollment.status} pickList={pickList.status || []} />,
         year_of_course_completion: programEnrollment.year_of_course_completion,
@@ -167,7 +167,7 @@ const StudentModal = (props) => {
         ) : (
           <div className="row">
             <div className="col-md-5 col-sm-12">
-              <DetailField label="Name" value={<Anchor text={`${details.first_name} ${details.last_name}`} href={`/student/${props.student.id}`}  />} /> 
+              <DetailField label="Name" value={<Anchor text={details.full_name} href={`/student/${props.student.id}`}  />} /> 
               <DetailField label="Status" value={details.status} />
               <DetailField label="Category" value={details.category} />
               <DetailField label="Gender" value={details.gender} />

@@ -87,7 +87,7 @@ const AddSession = (props) => {
       present: false,
       id: rec.student.id,
       program_enrollment_id: Number(rec.id),
-      name: `${rec.student.first_name} ${rec.student.last_name}`,
+      name: rec.student.full_name,
     }));
   };
 
