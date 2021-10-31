@@ -1,18 +1,26 @@
 export const GET_ALL_ADDRESS = `
 query GET_ALL_ADDRESS {
-    geographies(sort: "state:asc"){
-      id
-      state
-      district
-      area
+  geographiesConnection {
+    groupBy {
+      state {
+        key
+      }
     }
   }
+}
   `;
   export const GET_ALL_DISTRICTS = `
   query GET_GEOGRAPHIES($state: String) {
-    geographies(where: { state: $state }) {
-      district
-      area
+    geographiesConnection(where: { state: $state }) {
+      groupBy {
+        district {
+          key
+        }
+        area {
+          key
+        }
+      }
     }
   }
+  
 `;

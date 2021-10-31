@@ -12,6 +12,8 @@ import { createOpportunity } from "../../Opportunities/OpportunityComponents/opp
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { Badge } from "../../../components/content/Utils";
+import NP from "nprogress";
+import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -22,8 +24,10 @@ const StyledOpportunityIcon = styled.div`
   justify-content: center;
 `;
 
-const Opportunities = ({employer, opportunities, onDataUpdate}) => {
+const Opportunities = (props) => {
+  let { employer, opportunities, onDataUpdate } = props;
   const history = useHistory();
+  const {setAlert} = props;
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
   const [createOpportunityModalShow, setCreateOpportunityModalShow] = useState(false);
   const [pickList, setPickList] = useState([]);
@@ -101,14 +105,14 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
     let {show, employer_name, ...dataToSave} = data;
     dataToSave['employer'] = data.employer.id;
 
-    nProgress.start();
+    NP.start();
     createOpportunity(dataToSave).then(data => {
       setAlert("Opportunity created successfully.", "success");
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create opportunity.", "error");
     }).finally(() => {
-      nProgress.done();
+      NP.done();
       onDataUpdate();
     });
     setCreateOpportunityModalShow(false);
@@ -135,5 +139,11 @@ const Opportunities = ({employer, opportunities, onDataUpdate}) => {
     </div>
   );
 };
+const mapStateToProps = (state) => ({});
 
-export default Opportunities;
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Opportunities);
+
