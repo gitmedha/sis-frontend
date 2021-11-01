@@ -72,7 +72,7 @@ const InstitutionForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));      
+      })));
 
       if (props.state) {
         onStateChange({
@@ -85,7 +85,7 @@ const InstitutionForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,

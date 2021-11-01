@@ -96,7 +96,7 @@ const OpportunityForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));      
+      })));
 
       if (props.employer.state) {
         onStateChange({

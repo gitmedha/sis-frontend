@@ -74,7 +74,7 @@ const EmployerForm = (props) => {
         key: state.id,
         label: state.key,
         value: state.key,
-      })));  
+      })));
 
       if (props.state) {
         onStateChange({
