@@ -56,7 +56,7 @@ const Details = ({ batch, sessions=[] }) => {
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
           <DetailField label="Name" value={batch.name} />
-          <DetailField label="Program Name" value={batch.program.name} />
+          <DetailField label="Program Name" value={batch?.program?.name} />
           <DetailField label="Status" value={<Badge value={batch.status} pickList={pickList.status} />} />
           <DetailField label="Enrollment Type" value={<Badge value={batch.enrollment_type} pickList={pickList.enrollment_type} />} />
           <DetailField label="Institution" value={<Anchor text={batch?.institution?.name} href={`/institution/${batch?.institution?.id}`} />} />
