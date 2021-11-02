@@ -100,7 +100,7 @@ const Batches = (props) => {
         students_count: batch.students_count,
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
-        program: batch.program.name,
+        program: batch?.program?.name,
         area: batch.medha_area,
         state:batch.state,
         enrollment_type:<Badge value={batch.enrollment_type} pickList={pickList.enrollment_type || []} />,

@@ -70,10 +70,10 @@ const EmployerForm = (props) => {
     });
 
     getAddressOptions().then(data => {
-      setStateOptions(data?.data?.data?.geographies.map((geographies) => ({
-          key: geographies.id,
-          label: geographies.state,
-          value: geographies.state,
+      setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
+        key: state.id,
+        label: state.key,
+        value: state.key,
       })));
 
       if (props.state) {
@@ -85,19 +85,19 @@ const EmployerForm = (props) => {
 
   }, [props]);
 
-  const onStateChange = (data) => {
+  const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(data).then(data => {
-      setDistrictOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.id,
-        label: geographies.district,
-        value: geographies.district,
+    getStateDistricts(value).then(data => { 
+      setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
+        key: district.id,
+        label: district.key,
+        value: district.key,
       })));
       setAreaOptions([]);
-      setAreaOptions(data?.data?.data?.geographies.map((geographies) => ({
-        key: geographies.id,
-        label: geographies.area,
-        value: geographies.area,
+      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+        key: area.id,
+        label: area.key,
+        value: area.key,
       })));
     });
   };
