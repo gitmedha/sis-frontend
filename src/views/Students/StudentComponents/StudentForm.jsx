@@ -45,6 +45,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
   
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -130,6 +131,7 @@ const StudentForm = (props) => {
     address:'',
     state:'',
     district:'',
+    logo:'',
   };
 
   if (props.id) {
@@ -308,6 +310,30 @@ const StudentForm = (props) => {
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="logo"
+                      label="Upload Image"
+                      control="input"
+                      accept=".jpg,.jpeg,.png"
+                      type="file"
+                      value={selectedFile}
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="cv"
+                      label="Upload CV"
+                      control="input"
+                      accept=".doc, .pdf, .docx"
+                      type="file"
+                      value={selectedFile}
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      className="form-control"
+                    />
                   </div>
                 </div>
               </Section>
