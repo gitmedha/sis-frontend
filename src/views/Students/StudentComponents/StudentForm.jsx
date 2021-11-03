@@ -13,6 +13,7 @@ import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 import { DateRange } from '@material-ui/icons';
+import { TitleWithLogo } from "../../../components//content/Avatar";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -46,7 +47,7 @@ const StudentForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  
+  console.log(selectedFile)
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -313,25 +314,13 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="logo"
-                      label="Upload Image"
-                      control="input"
-                      accept=".jpg,.jpeg,.png"
-                      type="file"
-                      value={selectedFile}
-                      onChange={(e) => setSelectedFile(e.target.files[0])}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
                       name="cv"
                       label="Upload CV"
                       control="input"
                       accept=".doc, .pdf, .docx"
                       type="file"
                       value={selectedFile}
-                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      onChange={ <TitleWithLogo/>}
                       className="form-control"
                     />
                   </div>
