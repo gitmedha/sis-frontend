@@ -312,18 +312,6 @@ const StudentForm = (props) => {
                       {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="cv"
-                      label="Upload CV"
-                      control="input"
-                      accept=".doc, .pdf, .docx"
-                      type="file"
-                      value={selectedFile}
-                      onChange={ <TitleWithLogo/>}
-                      className="form-control"
-                    />
-                  </div>
                 </div>
               </Section>
               <Section>
