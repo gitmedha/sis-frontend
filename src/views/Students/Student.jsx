@@ -74,14 +74,6 @@ const Student = (props) => {
     });
   };
 
-  // const fetchStudent = async () => {
-  //   getStudent(studentId).then(data => {
-  //     setStudent(data.data.data.student);
-  //   }).catch(err => {
-  //     console.log("getStudent Error", err);
-  //   });
-  // }
-
   const getStudent = async () => {
     setLoading(true);
     NP.start();
@@ -136,7 +128,6 @@ const Student = (props) => {
   }
 
   useEffect(async () => {
-    // getStudent();
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
