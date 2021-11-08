@@ -53,7 +53,7 @@ const EmploymentConnections = (props) => {
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
-        opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} />,
+        opportunity_type: <Badge value={employmentConnection.opportunity?.type} pickList={opportunitiesPickList?.type} />,
       };
     });
     setEmploymentConnectionsTableData(data);
