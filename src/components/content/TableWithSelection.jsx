@@ -1,5 +1,5 @@
 import React from "react";
-import { useTable, useRowSelect } from 'react-table';
+import { useTable, useRowSelect, useSortBy } from 'react-table';
 import styled from 'styled-components';
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
@@ -85,13 +85,15 @@ const Styles = styled.div`
   }
 `
 
-const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=true, selectAllHeader="", setSelectedRows = () => {}, selectedRows = {} }) => {
+const TableWithSelection = ({ columns, data, fetchData, loading, onRowClick=null, indexes=true, selectAllHeader="", setSelectedRows = () => {}, selectedRows = {} }) => {
   const tableInstance = useTable(
     {
       columns,
       data,
       initialState: { selectedRowIds: selectedRows },
+      manualSortBy: true,
     },
+    useSortBy,
     useRowSelect,
     hooks => {
       hooks.visibleColumns.push(columns => [
@@ -126,8 +128,12 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
     rows,
     prepareRow,
     selectedFlatRows,
-    state: { selectedRowIds },
+    state: {sortBy, selectedRowIds },
   } = tableInstance;
+
+  React.useEffect(() => {
+    fetchData(sortBy);
+  }, [fetchData, sortBy]);
 
   const isRowClickable = typeof onRowClick === 'function';
 
@@ -151,7 +157,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {indexes && <th>#</th>}
                   {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
                       <span>
                         {column.isSorted

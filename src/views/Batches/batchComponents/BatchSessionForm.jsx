@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
@@ -62,13 +62,14 @@ const BatchSessionForm = (props) => {
     });
   };
 
-  const getStudents = async () => {
+  const getStudents = async ( sortBy = 'created_at', sortOrder = 'asc') => {
     setLoading(true);
     try {
       let { data } = await api.post("/graphql", {
         query: GET_BATCH_STUDENTS_ONLY,
         variables: {
-          id: batchId,
+          sort: `${sortBy}:${sortOrder}`,
+          id: batchId
         },
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
@@ -89,10 +90,6 @@ const BatchSessionForm = (props) => {
       student_id:"stu-"
     }));
   };
-
-  useEffect(() => {
-    getStudents();
-  }, []);
 
   useEffect(() => {
     // setting the rows that needs to be checked if an existing session is being updated.
@@ -124,21 +121,42 @@ const BatchSessionForm = (props) => {
       {
         Header: 'Name',
         accessor: 'name',
-        disableSortBy: true,
       },
       {
         Header: 'Student ID',
         accessor: 'student_id',
-        disableSortBy: true,
       },
       {
         Header: 'Phone',
         accessor: 'phone',
-        disableSortBy: true,
       },
     ],
     []
   );
+  const fetchData = useCallback((sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'student.full_name';
+      let sortOrder = sortBy[0].desc === true ? 'asc' : 'desc';
+      switch (sortBy[0].id) {
+
+        case 'phone':
+          sortByField = 'student.phone'
+          break;
+
+        default:
+          sortByField = 'student.full_name';
+          break;
+      }
+      getStudents(sortByField, sortOrder);
+    } else{
+      
+    }
+  }, []);
+
+  useEffect(() => {
+    getStudents();
+  }, []);
+
 
   return (
     <Modal
@@ -200,7 +218,7 @@ const BatchSessionForm = (props) => {
                         <Skeleton width="100%" height="50px" />
                       </>
                     ) : (
-                      <TableWithSelection columns={columns} data={students} selectAllHeader="Mark Attendance" selectedRows={selectedRows} setSelectedRows={setSelectedStudents} />
+                      <TableWithSelection columns={columns} fetchData={fetchData} data={students} selectAllHeader="Mark Attendance" selectedRows={selectedRows} setSelectedRows={setSelectedStudents} />
                     )}
                   </div>
                 </div>
@@ -228,3 +246,4 @@ const BatchSessionForm = (props) => {
 };
 
 export default BatchSessionForm;
+

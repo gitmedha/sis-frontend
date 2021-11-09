@@ -185,10 +185,10 @@ const Students = (props) => {
     if (students) {
       let data = students;
       data = data.map(student => {
-        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
+        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch?.toLowerCase() === student?.status?.toLowerCase());
         return {
           ...student,
-          assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
+          assignedTo: <Anchor text={student?.assigned_to?.username} href={'/user/' + student?.assigned_to?.id} />,
           avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
           gridLink: `/student/${student.id}`,

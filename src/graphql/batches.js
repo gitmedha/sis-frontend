@@ -108,10 +108,11 @@ query GET_SESSIONS($id: ID!, $sort: String) {
 `;
 
 export const GET_BATCH_STUDENTS = `
-query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
+query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String,  $start: Int){
   programEnrollmentsConnection (
+    sort: $sort,
+    start: $start,
     where: {batch: {id: $id}}
-    sort: $sort
   ) {
     values {
       id
@@ -135,8 +136,10 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
 `;
 
 export const GET_BATCH_STUDENTS_ONLY = `
-query GET_STUDENTS_IN_BATCH ($id: ID!){
-  programEnrollments (where: {batch: {id: $id}}, sort: "student.full_name:asc") {
+query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
+  programEnrollments (where: {batch: {id: $id}}
+    sort: $sort
+    ) {
     id
     student {
       id
