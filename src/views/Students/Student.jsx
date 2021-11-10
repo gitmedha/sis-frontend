@@ -82,7 +82,6 @@ const Student = (props) => {
         query: GET_STUDENT,
         variables: { id: studentId },
       });
-      console.log(data)
       setStudent(data.data.student);
     } catch (err) {
       console.log("ERR", err);

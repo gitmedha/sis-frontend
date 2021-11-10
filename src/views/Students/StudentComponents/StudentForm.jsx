@@ -47,7 +47,6 @@ const StudentForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  console.log(selectedFile)
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
