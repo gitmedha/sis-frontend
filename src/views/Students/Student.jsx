@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import moment from "moment";
+import api from "../../apis";
 
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
@@ -17,6 +18,7 @@ import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
+import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -38,8 +40,12 @@ const Student = (props) => {
     }
 
     // need to remove some data from payload
-    let {id, show, CV, logo, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, CV, created_at, updated_at, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+
+    if (typeof data.logo === 'object') {
+      dataToSave['logo'] = data.logo?.id;
+    }
 
     NP.start();
     updateStudent(Number(id), dataToSave).then(data => {
@@ -49,7 +55,7 @@ const Student = (props) => {
       setAlert("Unable to update student.", "error");
     }).finally(() => {
       NP.done();
-      fetchStudent();
+      getStudent();
     });
     setModalShow(false);
   };
@@ -68,13 +74,22 @@ const Student = (props) => {
     });
   };
 
-  const fetchStudent = async () => {
-    getStudent(studentId).then(data => {
-      setStudent(data.data.data.student);
-    }).catch(err => {
-      console.log("getStudent Error", err);
-    });
-  }
+  const getStudent = async () => {
+    setLoading(true);
+    NP.start();
+    try {
+      let { data } = await api.post("/graphql", {
+        query: GET_STUDENT,
+        variables: { id: studentId },
+      });
+      setStudent(data.data.student);
+    } catch (err) {
+      console.log("ERR", err);
+    } finally {
+      setLoading(false);
+      NP.done();
+    }
+  };
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
@@ -112,7 +127,7 @@ const Student = (props) => {
   }
 
   useEffect(async () => {
-    await fetchStudent();
+    await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
   }, [studentId]);
@@ -140,9 +155,11 @@ const Student = (props) => {
           opened={true}
           titleContent={
             <TitleWithLogo
+              done={() => getStudent()}
               id={rest.id}
               logo={rest.logo}
               title={rest.full_name}
+              query={UPDATE_STUDENT}
               icon="student"
             />
           }

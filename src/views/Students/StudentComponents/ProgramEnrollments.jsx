@@ -64,7 +64,7 @@ const ProgramEnrollments = (props) => {
         ...programEnrollment,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
         batch_name: programEnrollment?.batch?.name,
-        institution_name: programEnrollment.institution.name,
+        institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',

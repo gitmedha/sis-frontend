@@ -13,6 +13,7 @@ import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 import { DateRange } from '@material-ui/icons';
+import { TitleWithLogo } from "../../../components//content/Avatar";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -45,7 +46,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  
+  const [selectedFile, setSelectedFile] = useState(null);
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -130,6 +131,7 @@ const StudentForm = (props) => {
     address:'',
     state:'',
     district:'',
+    logo:'',
   };
 
   if (props.id) {

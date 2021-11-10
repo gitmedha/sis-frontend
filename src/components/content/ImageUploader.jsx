@@ -47,7 +47,7 @@ const ImageUploader = ({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await setImageUrl(urlPath(data.data.upload.url.substring(1)));
+      await setImageUrl(urlPath(data.data.upload.url.substring(0)));
       await setImageId(Number(data.data.upload.id));
 
       handler({
