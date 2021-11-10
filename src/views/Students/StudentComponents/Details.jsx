@@ -7,6 +7,8 @@ import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 import { FaCheckCircle } from "react-icons/fa";
+import CvUploader from "../../../components/content/CvUploader";
+import CvWith from "../../../components/content/Cv";
 
 const Styled = styled.div`
   .container-fluid {
@@ -102,6 +104,7 @@ const Details = (props) => {
             <DetailField label="Income Level (INR)" value={income_level} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
+          
           <div className="col-md-4 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
@@ -111,15 +114,19 @@ const Details = (props) => {
         </div>
         <hr className="separator" />
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="ID in SIS 2.0" value={old_sis_id} />
             <DetailField label="Latest Course Type" value={course_type_latest} />
           </div>
+          <div className="col-md-2 my-4" >
+          <CvWith/>
+          </div>
+          <div className="col-md-6">
           {CV &&
-            <div className="offset-md-3 col-md-3 d-flex flex-column section-cv">
-              <div className="d-flex align-items-end mb-2">
+            <div className="offset-md-4 col-md-4 d-flex flex-column section-cv">
+              <div className="d-flex align-items-start mb-2">
                 <label>CV</label>
                 <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
               </div>
@@ -128,6 +135,7 @@ const Details = (props) => {
               </div>
             </div>
           }
+          </div>
         </div>
       </div>
     </Styled>

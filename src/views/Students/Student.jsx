@@ -147,7 +147,7 @@ const Student = (props) => {
             />
           }
         >
-          <Details {...student} />
+          <Details {...student}  id={rest.id}/>
         </Collapsible>
         <Collapsible title="Address">
           <Address {...student} />
