@@ -164,7 +164,7 @@ const Student = (props) => {
             />
           }
         >
-          <Details {...student}  id={rest.id}/>
+          <Details {...student} onUpdate={getStudent}/>
         </Collapsible>
         <Collapsible title="Address">
           <Address {...student} />

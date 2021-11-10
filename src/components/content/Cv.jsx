@@ -3,7 +3,7 @@ import Tooltip from "./Tooltip";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
-import CvUploader from "./CvUploader";
+import FileUploader from "./FileUploader";
 
 import { connect } from "react-redux";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -13,10 +13,10 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
       setAlert,
     };
     
-    export const CvWith = connect(
+    export const CvUpload = connect(
       mapStateToProps,
       mapActionsToProps
-    )(({ Cv, title, done, query, id, setAlert }) => {
+    )(({ CV, title, done, query, id, setAlert }) => {
       const [modalShow, setModalShow] = useState(false);
     
       const modalCloseHandler = async (CvId) => {
@@ -29,7 +29,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
           await api.post("/graphql", {
             query,
             variables: {
-              data: { logo: CvId },
+              data: { CV: CvId },
               id,
             },
           });
@@ -43,15 +43,12 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
     
       return (
         <div className="d-flex align-items-center justify-content-start mb-2">
-          {!Cv && (
+          {!CV && (
             <Tooltip title="Click Here to Upload Cv">
               <div
-                // style={{ cursor: "pointer" }}
                 onClick={() => setModalShow(true)}
-                // className="flex-row-centered avatar avatar-default"
               >
                 <button
-                //   onClick={CvWith}
                 className="btn btn-secondary btn-cv-upload mx-1">
                   Upload Cv
                 </button>
@@ -94,7 +91,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
               style={{ width: "100%", height: "200px" }}
               className="flex-row-centered"
             >
-              <CvUploader handler={handler} />
+              <FileUploader handler={handler} />
             </div>
           </Modal.Body>
           <Modal.Footer className="bg-light">
@@ -102,11 +99,11 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
               CANCEL
             </button>
             <button className="btn btn-primary btn-regular" onClick={updateCv}>
-              Change Cv
+              Save
             </button>
           </Modal.Footer>
         </Modal>
       );
       };
 
-export default CvWith;
+export default CvUpload;

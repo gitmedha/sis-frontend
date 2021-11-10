@@ -7,8 +7,8 @@ import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 import { FaCheckCircle } from "react-icons/fa";
-import CvUploader from "../../../components/content/CvUploader";
-import CvWith from "../../../components/content/Cv";
+import CvUpload from "../../../components/content/Cv";
+import { UPDATE_STUDENT } from "../../../graphql";
 
 const Styled = styled.div`
   .container-fluid {
@@ -54,7 +54,9 @@ const Styled = styled.div`
 `;
 
 const Details = (props) => {
+  let { onUpdate } = props;
   const {
+    id,
     full_name,
     phone,
     name_of_parent_or_guardian,
@@ -121,7 +123,11 @@ const Details = (props) => {
             <DetailField label="Latest Course Type" value={course_type_latest} />
           </div>
           <div className="col-md-2 my-4" >
-          <CvWith/>
+          <CvUpload
+            query={UPDATE_STUDENT}
+            id={id}
+            done={() => onUpdate()}
+          />
           </div>
           <div className="col-md-6">
           {CV &&

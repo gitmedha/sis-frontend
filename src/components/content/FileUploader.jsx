@@ -1,11 +1,11 @@
 import api from "../../apis";
 import { useState } from "react";
 import { urlPath } from "../../constants";
-import { FaFileImage } from "react-icons/fa";
+import { FaFileUpload } from "react-icons/fa";
 import { ProgressBar } from "react-bootstrap";
 import { IMAGE_UPLOADER } from "../../graphql";
 
-const CvUploader = ({
+const FileUploader = ({
   handler,
   id = "file_uploader",
   label = "Upload Cv",
@@ -41,13 +41,11 @@ const CvUploader = ({
       );
 
       formdata.append("0", e.target.files[0], e.target.files[0].name);
-      console.log( e.target.files[0].name)
     
       let { data } = await api.post("/graphql", formdata, {
         onUploadProgress,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(data)
 
       await setCvUrl(urlPath(data.data.upload.url.substring(0)));
       await setCvId(Number(data.data.upload.id));
@@ -70,7 +68,7 @@ const CvUploader = ({
           <div className="imageUploader">
             <p className="upload-helper-text">Click Here To Upload Cv</p>
             <div className="upload-helper-icon">
-              <FaFileImage size={30} color={"#257b69"} />
+              <FaFileUpload size={30} color={"#257b69"} />
             </div>
             <input
               id={id}
@@ -91,10 +89,11 @@ const CvUploader = ({
         <ProgressBar variant="success" now={uploadProgress} />
       )}
       {cvUrl && (
-        <fileUrl src={cvUrl} className="uploaded-img" alt={"uploaded-pic"} />
+        <a class="alert alert-success" >File uploading </a>
+      
       )}
     </div>
   );
 };
 
-export default CvUploader;
+export default FileUploader;
