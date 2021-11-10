@@ -7,6 +7,7 @@ import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 import { FaCheckCircle } from "react-icons/fa";
+import ProgressBar from "../../../components/content/ProgressBar";
 
 const Styled = styled.div`
   .container-fluid {
@@ -37,7 +38,7 @@ const Styled = styled.div`
   }
   .section-cv {
     color: #787B96;
-    label {
+    label, {
       font-size: 14px;
       line-height: 1.25;
     }
@@ -85,6 +86,7 @@ const Details = (props) => {
   return (
     <Styled>
       <div className="container-fluid my-3">
+        <ProgressBar steps={['Starting Date', 'Certification Date', 'Pending', 'Completed']} activeStep={1} />
         <div className="row latto-regular">
           <div className="col-md-4">
             <DetailField label=" Name" value={full_name} />
