@@ -12,7 +12,7 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteCv, deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -71,6 +71,21 @@ const Student = (props) => {
       setShowDeleteAlert(false);
       NP.done();
       history.push("/students");
+    });
+  };
+
+  const fileDelete = async () => {
+    NP.start();
+    deleteCv(student.CV.id).then(data => {
+      setAlert("CV deleted successfully.", "success");
+    }).catch(err => {
+      console.log("CV_DELETE_ERR", err);
+      setAlert("Unable to delete CV.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      NP.done();
+      history.push("/student/".id);
+      getStudent()
     });
   };
 
@@ -164,7 +179,7 @@ const Student = (props) => {
             />
           }
         >
-          <Details {...student} onUpdate={getStudent}/>
+          <Details {...student} onUpdate={getStudent} onDelete={fileDelete}/>
         </Collapsible>
         <Collapsible title="Address">
           <Address {...student} />

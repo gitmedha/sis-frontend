@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
 import FileUploader from "./FileUploader";
+import { FaUpload } from "react-icons/fa";
 
 import { connect } from "react-redux";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -42,17 +43,10 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
       };
     
       return (
-        <div className="d-flex align-items-center justify-content-start mb-2">
+        <div className=" justify-content-start mb-2">
           {!CV && (
-            <Tooltip title="Click Here to Upload Cv">
-              <div
-                onClick={() => setModalShow(true)}
-              >
-                <button
-                className="btn btn-secondary btn-cv-upload mx-1">
-                  Upload CV
-                </button>
-              </div>
+            <Tooltip placement="top" title="Click Here to Upload CV">
+            <a  href="#" class="menu_links" onClick={() => setModalShow(true)}> <FaUpload  size="25" color='207B69' /> </a>
             </Tooltip>
           )}
     

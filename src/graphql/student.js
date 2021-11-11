@@ -36,6 +36,7 @@ const studentFields = `
     url
   }
   CV {
+    id
     url
     previewUrl
     updated_at

@@ -6,9 +6,10 @@ import { getStudentsPickList } from "./StudentActions";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import CvUpload from "../../../components/content/Cv";
 import { UPDATE_STUDENT } from "../../../graphql";
+import Tooltip from "../../../components/content/Tooltip";
 
 const Styled = styled.div`
   .container-fluid {
@@ -54,7 +55,7 @@ const Styled = styled.div`
 `;
 
 const Details = (props) => {
-  let { onUpdate } = props;
+  let { onUpdate, onDelete } = props;
   const {
     id,
     student_id,
@@ -124,27 +125,38 @@ const Details = (props) => {
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          <div className="col-md-2 my-4" >
-          <CvUpload
-            query={UPDATE_STUDENT}
-            id={id}
-            done={() => onUpdate()}
-          />
-          </div>
-          <div className="col-md-6">
-          {CV &&
-            <div className="offset-md-4 col-md-4 d-flex flex-column section-cv">
-              <div className="d-flex align-items-start mb-2">
-                <label>CV</label>
-                <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
-              </div>
-              <div className="d-flex align-items-start">
-                <a href={urlPath(CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
-              </div>
+          <div  className ="col-md-6 offset-md-2" style={{marginTop : '20px'}} >
+            <div class="row justify-content-end">
+              <div class="col-2">
+                <CvUpload
+                  query={UPDATE_STUDENT}
+                  id={id}
+                  done={() => onUpdate()}
+                />
             </div>
-          }
+            <div class="col-2">
+              {CV &&
+                <Tooltip placement="top" title="Click Here to Delete CV">
+                 <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#207B69' : '#787B96'} /> </a>
+                </Tooltip>   
+              }
+            </div>
+            <div class="col-4" >
+              {CV &&
+              <div className="col-md-12 d-flex flex-column section-cv">   
+                <Tooltip placement="top" title="Click Here to View CV">
+                  <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
+                </Tooltip>
+                <div className="d-flex align-items-start mb-2">
+                  <label>CV</label>
+                  <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
+                </div>    
+              </div>          
+              }
+            </div>   
           </div>
         </div>
+       </div>
       </div>
     </Styled>
   );
