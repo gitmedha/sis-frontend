@@ -90,13 +90,13 @@ const InstitutionForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      }).sort((a, b) => a.label.localeCompare(b.label))));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
-      }).sort((a, b) => a.label.localeCompare(b.label))));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 
