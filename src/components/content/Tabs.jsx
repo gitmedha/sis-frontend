@@ -25,6 +25,9 @@ const Styled = styled.div`
       background: rgba(196, 196, 196, 0.28);
     }
   }
+  @media screen and (min-width: 768px) {
+    
+  }
 `;
 
 const Tabs = ({ options, onTabChange }) => {

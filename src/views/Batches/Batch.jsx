@@ -28,6 +28,10 @@ const Styled = styled.div`
 .btn--primary, .btn--secondary {
     padding: 6px 43px !important;
 }
+.section-badge {
+    margin-left: 2px;
+    padding: 0px 28px !important;
+}
 `
 
 const Batch = (props) => {

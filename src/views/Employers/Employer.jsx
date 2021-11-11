@@ -27,10 +27,10 @@ const Styled = styled.div`
 }
 
 .section-badge {
-    margin-left: 9px;
+    margin-left: 2px;
+    padding: 0px 20px !important;
 }
 `
-
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
