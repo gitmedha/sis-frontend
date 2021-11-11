@@ -85,7 +85,7 @@ const Students = (props) => {
       },
       {
         Header: 'Student ID',
-        accessor: 'id',
+        accessor: 'student_id',
       },
       {
         Header: 'Status',

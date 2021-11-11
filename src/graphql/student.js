@@ -25,6 +25,7 @@ const studentFields = `
   created_at
   updated_at
   district
+  student_id
   assigned_to{
     id
     username

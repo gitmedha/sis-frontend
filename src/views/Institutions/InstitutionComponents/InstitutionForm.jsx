@@ -72,7 +72,7 @@ const InstitutionForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
         onStateChange({
@@ -90,13 +90,13 @@ const InstitutionForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })));
+      }).sort((a, b) => a.label.localeCompare(b.label))));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
-      })));
+      }).sort((a, b) => a.label.localeCompare(b.label))));
     });
   };
 

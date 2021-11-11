@@ -57,6 +57,7 @@ const Details = (props) => {
   let { onUpdate } = props;
   const {
     id,
+    student_id,
     full_name,
     phone,
     name_of_parent_or_guardian,
@@ -99,6 +100,7 @@ const Details = (props) => {
             <DetailField label="Assigned To" value={assigned_to?.username} />
           </div>
           <div className="col-md-4">
+          <DetailField label=" Student ID" value={student_id} />
             <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
@@ -119,8 +121,8 @@ const Details = (props) => {
           <div className="col-md-4">
             <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
-            <DetailField label="ID in SIS 2.0" value={old_sis_id} />
-            <DetailField label="Latest Course Type" value={course_type_latest} />
+            {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
+            {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
           <div className="col-md-2 my-4" >
           <CvUpload

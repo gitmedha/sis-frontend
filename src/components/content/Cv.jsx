@@ -50,7 +50,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
               >
                 <button
                 className="btn btn-secondary btn-cv-upload mx-1">
-                  Upload Cv
+                  Upload CV
                 </button>
               </div>
             </Tooltip>
