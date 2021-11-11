@@ -17,6 +17,18 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteInstitution, updateInstitution, getInstitutionProgramEnrollments } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+
+.btn--primary {
+font-size: 16px;
+margin: auto 10px;
+border-radius: 5px;
+font-family: Latto-Bold;
+padding: 6px 43px !important;
+}
+`
 
 const Institute = (props) => {
   const [institutionProgramEnrollments, setInstitutionProgramEnrollments] = useState([]);
@@ -102,6 +114,7 @@ const Institute = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
+      <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
@@ -172,6 +185,7 @@ const Institute = (props) => {
           <p>Are you sure, you want to delete this institution?</p>
         </SweetAlert>
       </>
+      </Styled>
     );
   }
 };

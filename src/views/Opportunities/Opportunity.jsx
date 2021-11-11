@@ -17,6 +17,12 @@ import EmploymentConnections from "./OpportunityComponents/EmploymentConnections
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
 
+const Styled = styled.div`
+.btn--primary, .btn--secondary {
+    padding: 6px 43px !important;
+}
+`
+
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
   display: flex;
@@ -123,73 +129,75 @@ const Opportunity = (props) => {
         return <SkeletonLoader />;
     } else {
         return (
-        <>
-          <div className="row" style={{margin: '30px 0 0'}}>
-            <div className="col-12">
-              <button
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "0px" }}
-                className="btn--primary"
-              >
-                EDIT
-              </button>
-              <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
-                DELETE
-              </button>
-            </div>
-          </div>
-          <Collapsible
-            opened={true}
-            titleContent={
-              <div className="d-flex align-items-center justify-content-start mb-2">
-                  <OpportunityIcon opportunity={opportunityData}/>
-                   &nbsp;&nbsp;
-                  <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
-                    {`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}
-                  </h1>
-              </div>
-            }
-          >
-            <Details {...opportunityData}  id={opportunityData.id} />
-          </Collapsible>
-          <Collapsible title="Location">
-            <Location {...opportunityData} />
-          </Collapsible>
-          <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
-            <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />
-          </Collapsible>
-          <OpportunityForm
-            {...opportunityData}
-            show={modalShow}
-            onHide={hideUpdateModal}
-          />
-          <SweetAlert
-            danger
-            showCancel
-            btnSize="md"
-            show={showDeleteAlert}
-            onConfirm={() => handleDelete()}
-            onCancel={() => setShowDeleteAlert(false)}
-            title={
-              <span className="text--primary latto-bold">Delete {opportunityData.role_or_designation}?</span>
-            }
-            customButtons={
-              <>
+        <Styled>
+          <>
+            <div className="row" style={{margin: '30px 0 0'}}>
+              <div className="col-12">
                 <button
-                  onClick={() => setShowDeleteAlert(false)}
-                  className="btn btn-secondary mx-2 px-4"
+                  onClick={() => setModalShow(true)}
+                  style={{ marginLeft: "0px" }}
+                  className="btn--primary"
                 >
-                  Cancel
+                  EDIT
                 </button>
-                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                  Delete
+                <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+                  DELETE
                 </button>
-              </>
-            }
-          >
-            <p>Are you sure, you want to delete this employer?</p>
-          </SweetAlert>
-        </>
+              </div>
+            </div>
+            <Collapsible
+              opened={true}
+              titleContent={
+                <div className="d-flex align-items-center justify-content-start mb-2">
+                    <OpportunityIcon opportunity={opportunityData}/>
+                    &nbsp;&nbsp;
+                    <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
+                      {`${opportunityData?.role_or_designation} @ ${opportunityData?.employer?.name}`}
+                    </h1>
+                </div>
+              }
+            >
+              <Details {...opportunityData}  id={opportunityData.id} />
+            </Collapsible>
+            <Collapsible title="Location">
+              <Location {...opportunityData} />
+            </Collapsible>
+            <Collapsible title="Employment Connections" badge={opportunityEmploymentConnections.length}>
+              <EmploymentConnections employmentConnections={opportunityEmploymentConnections} opportunity={opportunityData} onDataUpdate={getEmploymentConnections} />
+            </Collapsible>
+            <OpportunityForm
+              {...opportunityData}
+              show={modalShow}
+              onHide={hideUpdateModal}
+            />
+            <SweetAlert
+              danger
+              showCancel
+              btnSize="md"
+              show={showDeleteAlert}
+              onConfirm={() => handleDelete()}
+              onCancel={() => setShowDeleteAlert(false)}
+              title={
+                <span className="text--primary latto-bold">Delete {opportunityData.role_or_designation}?</span>
+              }
+              customButtons={
+                <>
+                  <button
+                    onClick={() => setShowDeleteAlert(false)}
+                    className="btn btn-secondary mx-2 px-4"
+                  >
+                    Cancel
+                  </button>
+                  <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                    Delete
+                  </button>
+                </>
+              }
+            >
+              <p>Are you sure, you want to delete this employer?</p>
+            </SweetAlert>
+          </>
+        </Styled>
       );
     }
 };

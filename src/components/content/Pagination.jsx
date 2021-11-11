@@ -25,6 +25,7 @@ const Styled = styled.div`
     padding: 4px;
     color: #787B96;
     font-weight:bold;
+    margin:4px -12px;
   }
 
   ul.pagination {
@@ -85,6 +86,10 @@ const Styled = styled.div`
         font-size: 14px;
       }
     }
+  }
+
+  .css-yk16xz-control{
+    margin:10px -34px 2px -13px;
   }
 `
 

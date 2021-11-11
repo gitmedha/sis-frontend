@@ -19,6 +19,17 @@ import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+.btn--primary, .btn--secondary {
+    padding: 6px 43px !important;
+}
+
+.section-badge {
+    margin-left: 9px;
+}
+`
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
@@ -120,77 +131,79 @@ const Employer = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
-      <>
-        <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
-            <button
-              onClick={() => setModalShow(true)}
-              style={{ marginLeft: "0px" }}
-              className="btn--primary"
-            >
-              EDIT
-            </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
-              DELETE
-            </button>
-          </div>
-        </div>
-        <Collapsible
-          opened={true}
-          titleContent={
-            <TitleWithLogo
-              done={() => getThisEmployer()}
-              id={rest.id}
-              logo={rest.logo}
-              title={rest.name}
-              query={UPDATE_EMPLOYER}
-              icon="employer"
-            />
-          }
-        >
-          <Details {...employerData} />
-        </Collapsible>
-        <Collapsible title="Address">
-          <Address {...employerData} />
-        </Collapsible>
-        <Collapsible title="Contacts">
-          <Contacts contacts={contacts} id={rest.id} />
-        </Collapsible>
-        <Collapsible title="Opportunities" badge={opportunitiesBadge}>
-          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
-        </Collapsible>
-        <EmployerForm
-          {...employerData}
-          show={modalShow}
-          onHide={hideUpdateModal}
-        />
-        <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete {employerData.name}?</span>
-          }
-          customButtons={
-            <>
+      <Styled>
+        <>
+          <div className="row" style={{margin: '30px 0 0'}}>
+            <div className="col-12">
               <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
+                onClick={() => setModalShow(true)}
+                style={{ marginLeft: "0px" }}
+                className="btn--primary"
               >
-                Cancel
+                EDIT
               </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
+              <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+                DELETE
               </button>
-            </>
-          }
-        >
-          <p>Are you sure, you want to delete this employer?</p>
-        </SweetAlert>
-      </>
+            </div>
+          </div>
+          <Collapsible
+            opened={true}
+            titleContent={
+              <TitleWithLogo
+                done={() => getThisEmployer()}
+                id={rest.id}
+                logo={rest.logo}
+                title={rest.name}
+                query={UPDATE_EMPLOYER}
+                icon="employer"
+              />
+            }
+          >
+            <Details {...employerData} />
+          </Collapsible>
+          <Collapsible title="Address">
+            <Address {...employerData} />
+          </Collapsible>
+          <Collapsible title="Contacts">
+            <Contacts contacts={contacts} id={rest.id} />
+          </Collapsible>
+          <Collapsible title="Opportunities" badge={opportunitiesBadge}>
+            <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
+          </Collapsible>
+          <EmployerForm
+            {...employerData}
+            show={modalShow}
+            onHide={hideUpdateModal}
+          />
+          <SweetAlert
+            danger
+            showCancel
+            btnSize="md"
+            show={showDeleteAlert}
+            onConfirm={() => handleDelete()}
+            onCancel={() => setShowDeleteAlert(false)}
+            title={
+              <span className="text--primary latto-bold">Delete {employerData.name}?</span>
+            }
+            customButtons={
+              <>
+                <button
+                  onClick={() => setShowDeleteAlert(false)}
+                  className="btn btn-secondary mx-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                  Delete
+                </button>
+              </>
+            }
+          >
+            <p>Are you sure, you want to delete this employer?</p>
+          </SweetAlert>
+        </>
+      </Styled>  
     );
   }
 };
