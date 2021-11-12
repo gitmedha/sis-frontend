@@ -54,8 +54,13 @@ const Styled = styled.div`
       margin-bottom: 0;
       margin-left: 15px;
       font-family: 'Latto-Italic';
+      color: #787B96;
     }
   }
+  @media (min-width: 576px) {
+    
+   }
+
 `;
 
 const Details = (props) => {
@@ -129,44 +134,41 @@ const Details = (props) => {
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          <div className="col-md-2" style={{marginTop : '35px'}}>
-            <DetailField label="CV Upload "/>
-          </div>
-          <div  className ="col-md-4" style={{marginTop : '-15px'}} >
-            <div class="row justify-content-start">
-              {CV &&
-                <div className="d-flex align-items-start mb-2">
+          <div className="col-sm-6" >
+            <DetailField  value={
+                CV &&
+                <div className="d-flex align-self-baseline" >
                   <label>CV</label>
                   <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
                 </div> 
-              }
-                <div class="col-2" >
-                  {CV &&
-                    <div className="col-md-12 d-flex flex-column section-cv">   
-                      <Tooltip placement="top" title="Click Here to View CV">
-                        <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
-                      </Tooltip>   
-                    </div>          
-                  }
-                </div>   
-              <div class="col-2">
-                <CvUpload
-                  query={UPDATE_STUDENT}
-                  id={id}
-                  done={() => onUpdate()}
-                />
+                }
+             />
+             <div class="row justify-content-md-center" style={{ margin:"-25px 20px 0px 0px"}}>
+             <div>
+             <label>CV Upload</label></div>
+              <div class="col col-md-1">
+                <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
               </div>
-             <div class="col-2">
-              {CV &&
-                <Tooltip placement="top" title="Click Here to Delete CV">
-                 <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#ed1919' : '#787B96'} /> </a>
-                </Tooltip>   
-              }
-             </div>
+              <div class="col col-md-1">
+                {CV &&
+                  <div className="col-md-1 d-flex flex-column section-cv">   
+                    <Tooltip placement="top" title="Click Here to View CV">
+                      <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
+                     </Tooltip>   
+                  </div>   
+                }
+              </div>
+              <div class="col col-md-1">
+                {CV &&
+                  <Tooltip placement="top" title="Click Here to Delete CV">
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#ed1919' : '#787B96'} /> </a>
+                  </Tooltip>   
+                }
+              </div>
+            </div> 
           </div>
+         </div>
         </div>
-       </div>
-      </div>
     </Styled>
   );
 };
