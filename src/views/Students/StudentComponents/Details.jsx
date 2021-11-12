@@ -86,7 +86,7 @@ const Details = (props) => {
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <ProgressBar steps={['Starting Date', 'Certification Date', 'Pending', 'Completed']} activeStep={1} />
+        <ProgressBar steps={[moment(created_at).format("DD MMM YYYY"), 'Certification Date', 'Pending', 'Completed']} activeStep={2} />
         <div className="row latto-regular">
           <div className="col-md-4">
             <DetailField label=" Name" value={full_name} />
