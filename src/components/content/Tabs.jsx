@@ -25,9 +25,6 @@ const Styled = styled.div`
       background: rgba(196, 196, 196, 0.28);
     }
   }
-  @media screen and (min-width: 768px) {
-    
-  }
 `;
 
 const Tabs = ({ options, onTabChange }) => {
@@ -40,9 +37,9 @@ const Tabs = ({ options, onTabChange }) => {
 
   return (
     <Styled>
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="navbar">
         {options.map((tab, key) => (
-          <div className={`tab ${activeTab === key ? 'active' : ''}`} onClick={() => handleClick(key)}>
+          <div className={`tab ${activeTab === key ? 'active' : ''}`} onClick={() => handleClick(key)} >
             {tab.icon && <span className="icon">{tab.icon}</span>}
             <span className="title">{tab.title}</span>
           </div>

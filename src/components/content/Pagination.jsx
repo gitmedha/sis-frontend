@@ -30,6 +30,7 @@ const Styled = styled.div`
 
   ul.pagination {
     margin: 30px auto;
+    padding:2px 2px 2px 25px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,7 +82,7 @@ const Styled = styled.div`
       }
 
       .pagination-link {
-        width: 36px;
+        width: 30px;
         height: 36px;
         font-size: 14px;
       }
@@ -89,7 +90,7 @@ const Styled = styled.div`
   }
 
   .css-yk16xz-control{
-    margin:10px -34px 2px -13px;
+    margin:15px -35px 0px -12px;
   }
 `
 

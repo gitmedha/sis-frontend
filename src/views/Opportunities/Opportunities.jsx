@@ -232,7 +232,7 @@ const tabPickerOptions = [
         <div className="d-flex justify-content-between align-items-center mb-2 px-0">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div className="d-flex justify-content-center align-items-center">
-            <WidgetUtilTab />
+            {/* <WidgetUtilTab /> */}
             <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
