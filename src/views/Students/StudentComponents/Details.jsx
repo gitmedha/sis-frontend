@@ -125,15 +125,18 @@ const Details = (props) => {
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          <div  className ="col-md-6 offset-md-2" style={{marginTop : '20px'}} >
-            <div class="row justify-content-end">
+          <div className="col-md-2" style={{marginTop : '35px'}}>
+            <DetailField label="CV Upload "/>
+          </div>
+          <div  className ="col-md-4" style={{marginTop : '27px'}} >
+            <div class="row justify-content-start">
               <div class="col-2">
                 <CvUpload
                   query={UPDATE_STUDENT}
                   id={id}
                   done={() => onUpdate()}
                 />
-            </div>
+              </div>
             <div class="col-2">
               {CV &&
                 <Tooltip placement="top" title="Click Here to Delete CV">
@@ -143,15 +146,15 @@ const Details = (props) => {
             </div>
             <div class="col-4" >
               {CV &&
-              <div className="col-md-12 d-flex flex-column section-cv">   
-                <Tooltip placement="top" title="Click Here to View CV">
-                  <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
-                </Tooltip>
-                <div className="d-flex align-items-start mb-2">
-                  <label>CV</label>
-                  <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
-                </div>    
-              </div>          
+                <div className="col-md-12 d-flex flex-column section-cv">   
+                  <Tooltip placement="top" title="Click Here to View CV">
+                    <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
+                  </Tooltip>
+                  <div className="d-flex align-items-start mb-2">
+                    <label>CV</label>
+                    <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
+                  </div>    
+                </div>          
               }
             </div>   
           </div>
