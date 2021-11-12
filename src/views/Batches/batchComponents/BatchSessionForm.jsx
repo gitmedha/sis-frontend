@@ -80,13 +80,14 @@ const BatchSessionForm = (props) => {
   };
 
   const clubStudentRecords = (records) => {
+    console.log(records)
     return records.map((rec) => ({
       present: false,
       id: rec.student.id,
       program_enrollment_id: Number(rec.id),
       name: rec.student.full_name,
       phone: rec.student.phone,
-      student_id:"stu-"
+      student_id: rec.student.student_id,
     }));
   };
 
