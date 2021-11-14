@@ -16,6 +16,19 @@ const Styled = styled.div`
     color: #787B96;
  }
 
+
+@media screen and (min-width: 360px) {
+  .col-md-1 {
+    flex: 0 0 auto;
+    width: 8.33333%;
+    padding: 0px 33px 0px 4px;
+    ${'' /* border: 2px solid green; */}
+}
+  }
+
+.icon-box{
+  display:flex;
+}
   .container-fluid {
     padding-left: 30px;
     padding-right: 30px;
@@ -57,10 +70,6 @@ const Styled = styled.div`
       color: #787B96;
     }
   }
-  @media (min-width: 576px) {
-    
-   }
-
 `;
 
 const Details = (props) => {
@@ -134,22 +143,21 @@ const Details = (props) => {
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          <div className="col-sm-6" >
-            <DetailField  value={
-                CV &&
-                <div className="d-flex align-self-baseline" >
+          <div className="col-md-6">
+              {CV &&
+                <div className="d-flex align-self-baseline" style={{ margin: "2px 2px 0px 200px" }} >
                   <label>CV</label>
                   <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
                 </div> 
                 }
-             />
-             <div class="row justify-content-md-center" style={{ margin:"-25px 20px 0px 0px"}}>
-             <div>
-             <label>CV Upload</label></div>
-              <div class="col col-md-1">
+              <div className="col-md-1">
+             <label>CV Upload</label>
+             </div>
+             <div className="icon-box"  style={{ margin:"-32px 20px 0px 198px"}}>
+              <div class=" col-md-1">
                 <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
               </div>
-              <div class="col col-md-1">
+              <div class="col-md-1">
                 {CV &&
                   <div className="col-md-1 d-flex flex-column section-cv">   
                     <Tooltip placement="top" title="Click Here to View CV">
@@ -158,7 +166,7 @@ const Details = (props) => {
                   </div>   
                 }
               </div>
-              <div class="col col-md-1">
+              <div class="col-md-1">
                 {CV &&
                   <Tooltip placement="top" title="Click Here to Delete CV">
                     <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#ed1919' : '#787B96'} /> </a>
