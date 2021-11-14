@@ -21,7 +21,7 @@ const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
   { title: "My Area", key: "my_area" },
   { title: "My State", key: "my_state" },
-  { title: "All Area", key: "all_medha" },
+  { title: "All Medha", key: "all_medha" },
 ];
 
 const Employers = (props) => {

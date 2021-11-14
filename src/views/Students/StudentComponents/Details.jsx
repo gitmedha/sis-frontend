@@ -83,10 +83,23 @@ const Details = (props) => {
     });
   }, []);
 
+  let activestep = 0;
+  switch(status){
+    case "Certified":
+      activestep = 1
+      break;
+    case "Internship Complete":
+      activestep=2
+      break;
+    case "Placement Complete":
+      activestep =3 
+      break;
+  }
+
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <ProgressBar steps={[moment(created_at).format("DD MMM YYYY"), 'Certification Date', 'Pending', 'Completed']} activeStep={2} />
+        <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
         <div className="row latto-regular">
           <div className="col-md-4">
             <DetailField label=" Name" value={full_name} />
