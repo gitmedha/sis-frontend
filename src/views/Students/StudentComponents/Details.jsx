@@ -17,14 +17,22 @@ const Styled = styled.div`
  }
 
 
-@media screen and (min-width: 360px) {
+@media screen and (min-width: 425px) {
   .col-md-1 {
     flex: 0 0 auto;
     width: 8.33333%;
     padding: 0px 33px 0px 4px;
-    ${'' /* border: 2px solid green; */}
+    }
+  .icon-box {
+    margin: -15px 20px 0px 0px;
+   }
 }
+
+@media screen and (min-width: 768px) {
+  .icon-box {
+  margin: -15px 20px 0px 210px;
   }
+}
 
 .icon-box{
   display:flex;
@@ -143,17 +151,16 @@ const Details = (props) => {
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
+          <DetailField label="CV Upload" value=
               {CV &&
-                <div className="d-flex align-self-baseline" style={{ margin: "2px 2px 0px 200px" }} >
+                <div>
                   <label>CV</label>
                   <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
                 </div> 
                 }
-              <div className="col-md-1">
-             <label>CV Upload</label>
-             </div>
-             <div className="icon-box"  style={{ margin:"-32px 20px 0px 198px"}}>
+                />
+             <div className="icon-box">
               <div class=" col-md-1">
                 <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
               </div>
