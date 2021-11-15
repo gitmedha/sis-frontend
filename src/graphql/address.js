@@ -24,3 +24,16 @@ query GET_ALL_ADDRESS {
   }
   
 `;
+
+export const GET_ALL_AREA = `
+query GET_GEOGRAPHIES($district: String) {
+  geographiesConnection(where: { district: $district }) {
+    groupBy {
+      area {
+        key
+      }
+    }
+  }
+}
+
+`;

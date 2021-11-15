@@ -8,7 +8,7 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
-import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
+import { getAddressOptions, getStateDistricts, getArea }  from "../../Address/addressActions";
 import { urlPath } from "../../../constants";
 
 const Section = styled.div`
@@ -91,7 +91,12 @@ const InstitutionForm = (props) => {
         label: district.key,
         value: district.key,
       })));
-      setAreaOptions([]);
+    });
+  };
+
+  const onDistrictChange = value => {
+    setAreaOptions([]);
+    getArea(value).then(data => {
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
@@ -99,6 +104,7 @@ const InstitutionForm = (props) => {
       })));
     });
   };
+
 
   const onSubmit = async (values) => {
     setFormValues(values);
@@ -303,6 +309,7 @@ const InstitutionForm = (props) => {
                       required
                       name="district"
                       options={districtOptions}
+                      onChange={onDistrictChange}
                       placeholder="District"
                       className="form-control"
                     />
