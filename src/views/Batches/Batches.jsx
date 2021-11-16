@@ -217,6 +217,7 @@ const Batches = (props) => {
             <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
+              style={{marginLeft: '15px'}}
             >
               Add New Batch
             </button>
