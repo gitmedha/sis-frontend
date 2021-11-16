@@ -180,7 +180,7 @@ const tabPickerOptions = [
     } else {
       getOpportunities(activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeTab.key]);
 
   useEffect(() => {
     let data = opportunities;
@@ -216,6 +216,7 @@ const tabPickerOptions = [
     nProgress.start();
     createOpportunity(dataToSave).then(data => {
       setAlert("Opportunity created successfully.", "success");
+      history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create opportunity.", "error");

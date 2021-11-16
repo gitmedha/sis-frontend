@@ -169,6 +169,7 @@ const Employers = (props) => {
       setAlert("Employer created successfully.", "success");
       getEmployers();
       setModalShow(false);
+      history.push(`/employer/${data.data.data.createEmployer.employer.id}`);
       }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);

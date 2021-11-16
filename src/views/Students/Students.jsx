@@ -58,7 +58,7 @@ const Students = (props) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [layout, setLayout] = useState('grid');
+  const [layout, setLayout] = useState('list');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState('All');
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
@@ -111,7 +111,7 @@ const Students = (props) => {
     []
   );
 
-  const getStudents = async (status ='All', selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc', status ='All') => {
 
     nProgress.start();
     setLoading(true);
@@ -223,7 +223,9 @@ const Students = (props) => {
 
     nProgress.start();
     createStudent(dataToSave).then(data => {
+      console.log(data)
       setAlert("Student created successfully.", "success");
+      history.push(`/student/${data.data.data.createStudent.student.id}`);
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create student.", "error");
