@@ -34,6 +34,7 @@ import { PrivateRoute } from "./route/PrivateRoute";
 import axios from "axios";
 import { urlPath } from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
+import PageNotFound from "./views/404Page";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -130,7 +131,7 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  <PrivateRoute path="/" exact component={Home} />
+                  <PrivateRoute path="/home" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
                   <PrivateRoute path="/institutions" exact component={Institutions} />
@@ -152,7 +153,9 @@ const App = (props) => {
                   />
                   <PrivateRoute path="/employers" exact component={Employers} />
                   <PrivateRoute path="/employer/:id" exact component={Employer} />
-                  <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } />
+                  {/* <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } /> */}
+                  <Route path='/404' component={PageNotFound} />
+                  <Redirect to='/404' />
                 </Switch>
               </RouteContainer>
             </LayoutContainer>
