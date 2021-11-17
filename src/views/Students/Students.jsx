@@ -223,7 +223,6 @@ const Students = (props) => {
 
     nProgress.start();
     createStudent(dataToSave).then(data => {
-      console.log(data)
       setAlert("Student created successfully.", "success");
       history.push(`/student/${data.data.data.createStudent.student.id}`);
     }).catch(err => {

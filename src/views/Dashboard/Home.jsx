@@ -31,24 +31,27 @@ const DashboardStyled = styled.div`
   .react-loading-skeleton {
     display: block;
   }
+
   @media (min-width: 1024px){
   .box-1 {
-  width: 46%;
-  margin-left:45px;
+    width: 46%;
+    margin-left:45px;
   }
-  .box-2
-  {
-  width: 46%;
-  margin-right:25px;
-  }
+
+  .box-2 {
+    width: 46%;
+    margin-right:25px;
+    }
 }
-@media (min-width: 576px)
-.col-sm-12 {
+
+@media (min-width: 576px){
+  .col-sm-12 {
     padding-bottom: 2px;
+  }
+  .mb-5 {
+    margin-bottom: 1rem !important;
+  }
 }
-.mb-5 {
-  margin-bottom: 1rem !important;
- }
 `;
 
 const Home = () => {
