@@ -198,6 +198,7 @@ const Batches = (props) => {
       setAlert("Batch created successfully.", "success");
       getBatches();
       setModalShow(false);
+      history.push(`/batch/${data.data.data.createBatch.batch.id}`);
       }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);

@@ -10,10 +10,10 @@ export const ProgramEnrollmentsChart = (props) => {
       fontFamily: "Latto-Regular",
       fontweight: 700,
       fontsize: 12,
-      height: 280,
+      height: 150,
       type: "bar",
       toolbar: {
-        show: true,
+        show: false,
         tools: {
             download: true,
             selection: false,
@@ -162,10 +162,10 @@ export const EmploymentConnectionsChart = (props) => {
       fontFamily: "Latto-Regular",
       fontweight: 700,
       fontsize: 12,
-      height: 280,
+      height: 150,
       type: 'bar',
       toolbar: {
-        show: true,
+        show: false,
         tools: {
           download: true,
           selection: false,
