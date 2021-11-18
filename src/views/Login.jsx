@@ -2,6 +2,14 @@ import styled from "styled-components";
 import { urlPath } from "../constants";
 
 const Styled = styled.div`
+@font-face {
+  font-family: 'Bebas Neue Book';
+  src: local('BebasNeueBook'), url(https://fonts.gstatic.com/...) format('woff2');
+}
+.button-box{
+  padding: 0px 68px 0px 5px;
+}
+
 .logo {
   padding: 5px;
   width: 130px;
@@ -11,17 +19,17 @@ const Styled = styled.div`
 
  .row-box{
     color: black;
-    font-family: 'Bebas';
-    font-size: 40px;
+    font-size: 60px;
     line-height: 1.25;
-    margin: 75px 39px 1px 19px;
-    font-weight: 200;
+    margin: 49px 39px 1px 19px;
     width:90%;
   }
 
 p{
   margin-top: -6px;
   margin-bottom: 0rem;
+  font-family: Bebas Neue Book;
+  font-size: 80px;
 }
   
 .box-1, .col{
@@ -46,26 +54,22 @@ text-align:center;
 }
 
 .btn-ms-login {
-    border: 3px solid #c3f1e9;
+    border: 3px solid #32b89d;
     box-sizing: border-box;
     border-radius: 40px;
+    font-size: 20px;
     padding: 20px 45px ;
-    color: #787B96;
-    font-family: 'Lato Regular';
+    color: black;
+    font-family: 'Lato';
     text-decoration: none;
-    margin: 110px 0px 20px 15px;
+    margin: 110px -40px 20px 15px;
     img {
-      width: 30px;
+      width: 20px;
       margin-right: 20px;
     }
 }
 
   @media screen and (min-width: 768px) {
-    .image{
-  max-width:105%;
-  max-height:30%;
-  margin: 6px 6px 4px 35px;
-  }
   .logo {
     padding: 5px;
     width: 130px;
@@ -78,11 +82,15 @@ text-align:center;
     margin: 6px 6px 4px 64px;
   }
   .btn-ms-login {
-    margin: 150px 0px 20px 5px;
+    margin: 80px 0px 20px 5px;
+    font-family: 'Lato Regular';
   }
   p{
     text-align: initial;
     }
+  ${'' /* .row-box{
+    margin: 70px 39px 1px 19px;
+  } */}
 }
 
 @media (min-width:750px) and (max-width:1024px) {
@@ -108,7 +116,7 @@ const Login = () => {
               />
             </div>
             <div class="row-box">
-              <p id="text">STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
+              <p id="text" >STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
             </div>
             <div class=" button-box">
               <a type="button" href={urlPath('/connect/microsoft')} className="btn-ms-login d-flex">
@@ -117,7 +125,7 @@ const Login = () => {
                     alt="Microsoft"
                     className={`mr-5`}
                   />
-                  <span>Login using Microsoft account</span>
+                  <span style={{fontFamily:"Latto-Regular"}}>Login using Microsoft account</span>
               </a>
             </div>
         </div>
