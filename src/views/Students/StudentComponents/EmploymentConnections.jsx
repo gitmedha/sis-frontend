@@ -54,6 +54,7 @@ const EmploymentConnections = (props) => {
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
         opportunity_type: <Badge value={employmentConnection.opportunity?.type} pickList={opportunitiesPickList?.type} />,
+        updated_at: moment(employmentConnection.updated_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -66,6 +67,10 @@ const EmploymentConnections = (props) => {
         accessor: 'employer_name',
       },
       {
+        Header: 'Role/Designation',
+        accessor: 'role_or_designation',
+      },
+      {
         Header: 'Opportunity Type',
         accessor: 'opportunity_type',
       },
@@ -74,12 +79,16 @@ const EmploymentConnections = (props) => {
         accessor: 'status_badge',
       },
       {
-        Header: 'Role/Designation',
-        accessor: 'role_or_designation',
-      },
-      {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Source',
+        accessor: 'source',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',

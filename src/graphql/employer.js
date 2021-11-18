@@ -99,6 +99,7 @@ export const GET_USER_EMPLOYERS = `
         medha_area
         pin_code
         state
+        district
         created_at
       }
       aggregate {

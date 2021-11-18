@@ -80,32 +80,28 @@ const Students = (props) => {
         accessor: 'avatar',
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
-      },
-      {
         Header: 'Student ID',
         accessor: 'student_id',
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-      },
-      {
-        Header: 'Latest Course Type',
-        accessor: 'course_type_latest',
       },
       {
         Header: 'Area',
         accessor: 'medha_area',
       },
       {
-        Header: 'State',
-        accessor: 'state',
+        Header: 'Phone',
+        accessor: 'phone',
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
       },
       {
         Header: 'Assigned To',
-        accessor: 'assignedTo',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -188,7 +184,7 @@ const Students = (props) => {
         let studentStatusData = studentStatusOptions.find(status => status.picklistMatch?.toLowerCase() === student?.status?.toLowerCase());
         return {
           ...student,
-          assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
+          // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
           gridLink: `/student/${student.id}`,

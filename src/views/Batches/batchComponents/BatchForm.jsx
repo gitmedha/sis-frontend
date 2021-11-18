@@ -232,29 +232,6 @@ const BatchForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      name="enrollment_type"
-                      label="Enrollment Type"
-                      required
-                      control="lookup"
-                      placeholder="Enrollment Type"
-                      className="form-control"
-                      options={enrollmentTypeOptions}
-                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
-                    />
-                  </div>
-                  {/* <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="input"
-                      className="form-control"
-                      name="name_in_current_sis"
-                      label="Name in Current SIS"
-                      required
-                      placeholder="Name in Current SIS"
-                    />
-                  </div> */}
-                  <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
                         control="lookup"
@@ -288,6 +265,22 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
+                        icon="down"
+                        name="status"
+                        label="Status"
+                        required
+                        control="lookup"
+                        placeholder="Status"
+                        className="form-control"
+                        options={options?.statusOptions}
+                      />
+                    ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {!lookUpLoading ? (
+                      <Input
                         name="grant"
                         label="Grant"
                         required
@@ -300,6 +293,19 @@ const BatchForm = (props) => {
                     ) : (
                       <Skeleton count={1} height={60} />
                     )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      name="enrollment_type"
+                      label="Enrollment Type"
+                      required
+                      control="lookup"
+                      placeholder="Enrollment Type"
+                      className="form-control"
+                      options={enrollmentTypeOptions}
+                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
@@ -334,6 +340,16 @@ const BatchForm = (props) => {
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
+                  {/* <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      control="input"
+                      className="form-control"
+                      name="name_in_current_sis"
+                      label="Name in Current SIS"
+                      required
+                      placeholder="Name in Current SIS"
+                    />
+                  </div> */}
                   <div className="col-md-6 col-sm-12 mb-2">
                   {areaOptions.length ? (
                     <Input
@@ -353,23 +369,6 @@ const BatchForm = (props) => {
                       </>
                     )}
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {!lookUpLoading ? (
-                      <Input
-                        icon="down"
-                        name="status"
-                        label="Status"
-                        required
-                        control="lookup"
-                        placeholder="Status"
-                        className="form-control"
-                        options={options?.statusOptions}
-                      />
-                    ) : (
-                      <Skeleton count={1} height={60} />
-                    )}
-                  </div>
-
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       min={0}

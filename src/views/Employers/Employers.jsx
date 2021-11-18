@@ -52,20 +52,20 @@ const Employers = (props) => {
         accessor: "avatar",
       },
       {
-        Header: "Type of industry",
-        accessor: "industry",
-      },
-      {
-        Header: "Area",
-        accessor: "medha_area",
+        Header: "District",
+        accessor: "district",
       },
       {
         Header: "State",
         accessor: "state",
       },
       {
+        Header: "Industry",
+        accessor: "industry",
+      },
+      {
         Header: "Assigned To",
-        accessor: "assignedTo",
+        accessor: "assigned_to.username",
       },
     ],
     []

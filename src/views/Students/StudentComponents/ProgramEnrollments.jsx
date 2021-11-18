@@ -60,9 +60,12 @@ const ProgramEnrollments = (props) => {
 
   useEffect(() => {
     let data = programEnrollments.map(programEnrollment => {
+      console.log(programEnrollment)
       return {
         ...programEnrollment,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+        certification_date_formatted: moment(programEnrollment.certification_date).format("DD MMM YYYY"),
+        updated_at:moment(programEnrollment.updated_at).format("DD MMM YYYY"),
         batch_name: programEnrollment?.batch?.name,
         institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
@@ -77,12 +80,16 @@ const ProgramEnrollments = (props) => {
   const columns = useMemo(
     () => [
       {
+        Header: 'Program',
+        accessor: 'program_name',
+      },
+      {
         Header: 'Batch',
         accessor: 'batch_name',
       },
       {
-        Header: 'Program Name',
-        accessor: 'program_name',
+        Header: 'Institution',
+        accessor: 'institution_name',
       },
       {
         Header: 'Program Status',
@@ -93,21 +100,17 @@ const ProgramEnrollments = (props) => {
         accessor: 'registration_date_formatted',
       },
       {
-        Header: 'Fees Status',
-        accessor: 'fee_status_badge',
+        Header: 'Certification Date',
+        accessor: 'certification_date_formatted',
       },
       {
-        Header: 'Medha Program Certificate',
-        accessor: 'medha_program_certificate_icon',
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
-      },
-      {
-        Header: 'Institute',
-        accessor: 'institution_name',
       },
     ],
     []
@@ -168,7 +171,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, certification_date_formatted, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;

@@ -94,8 +94,10 @@ const Batches = (props) => {
   useEffect(() => {
     let data = batches;
     data = data.map((batch, index) => {
+      console.log(batch)
       return {
         id: batch.id,
+        assigned_to:batch.assigned_to.username,
         name: batch.name,
         students_count: batch.students_count,
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
@@ -113,7 +115,7 @@ const Batches = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Batch Name',
+        Header: 'Name',
         accessor: 'name',
       },
       {
@@ -121,12 +123,12 @@ const Batches = (props) => {
         accessor: 'program',
       },
       {
-        Header: 'Students',
-        accessor: 'students_count',
-      },
-      {
         Header: 'Status',
         accessor: 'status',
+      },
+      {
+        Header: 'Student Enrolled',
+        accessor: 'students_count',
       },
       {
         Header: 'Start Date',
@@ -141,8 +143,8 @@ const Batches = (props) => {
         accessor: 'area',
       },
       {
-        Header: 'State',
-        accessor: 'state',
+        Header: 'Assigned To',
+        accessor: 'assigned_to',
       },
     ],
     []

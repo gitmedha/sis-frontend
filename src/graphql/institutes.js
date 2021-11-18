@@ -244,6 +244,12 @@ query INSTITUTION(
       city
       created_at
       updated_at
+      created_by_frontend{
+        username
+      }
+      updated_by_frontend{
+        username
+      }
       district
       logo {
         id

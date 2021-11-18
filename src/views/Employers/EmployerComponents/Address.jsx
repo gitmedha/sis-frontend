@@ -6,13 +6,13 @@ const Address = ({ address, medha_area, pin_code, state, city, district }) => {
       <div className="row">
         <div className="col-6 col-md-4">
           <DetailField label="Address" value={address} />
-          <DetailField label="Area" value={medha_area} />
           <DetailField label="City" value={city} />
+          <DetailField label="District" value={district} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
           <DetailField label="Pin Code" value={pin_code} />
+          <DetailField label="Area" value={medha_area} />
           <DetailField label="State" value={state} />
-          <DetailField label="District" value={district} />
         </div>
       </div>
     </div>

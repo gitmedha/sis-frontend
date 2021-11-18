@@ -21,6 +21,9 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
         medha_area
         state
         enrollment_type
+        assigned_to{
+          username
+        }
         logo {
           url
         }
@@ -488,6 +491,7 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  updated_at
   medha_program_certificate {
     id
     url

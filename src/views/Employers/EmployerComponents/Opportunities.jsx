@@ -41,16 +41,8 @@ const Opportunities = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Area',
-        accessor: 'address',
-      },
-      {
         Header: 'Role/Designation',
         accessor: 'avatar',
-      },
-      {
-        Header: 'Openings',
-        accessor: 'number_of_opportunities',
       },
       {
         Header: 'Type',
@@ -61,8 +53,12 @@ const Opportunities = (props) => {
         accessor: 'status',
       },
       {
-        Header: 'Mapped',
-        accessor: 'students_mapped',
+        Header: 'Assigned To',
+        accessor: 'opportunity.assigned_to.username',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'opportunity.updated_at',
       },
       {
         Header: '',

@@ -134,20 +134,22 @@ const Details = (props) => {
         <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
         <div className="row latto-regular">
           <div className="col-md-4">
-            <DetailField label=" Name" value={full_name} />
+            <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
-            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
-            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
-            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
-            <DetailField label="Assigned To" value={assigned_to?.username} />
-          </div>
-          <div className="col-md-4">
-          <DetailField label=" Student ID" value={student_id} />
             <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
+            &nbsp;
+            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            
+          </div>
+          <div className="col-md-4">
+            <DetailField label="Assigned To" value={assigned_to?.username} />
+            <DetailField label=" Student ID" value={student_id} />
+            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
-            <DetailField label="Income Level (INR)" value={income_level} />
+            &nbsp;
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
           
@@ -167,6 +169,7 @@ const Details = (props) => {
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
           <div className="col-md-4">
+          <DetailField label="Income Level (INR)" value={income_level} />
           <DetailField label="CV Upload" value=
               {CV &&
                 <div>
@@ -191,7 +194,7 @@ const Details = (props) => {
               <div class="col-md-1">
                 {CV &&
                   <Tooltip placement="top" title="Click Here to Delete CV">
-                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#ed1919' : '#787B96'} /> </a>
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#207B69' : '#787B96'} /> </a>
                   </Tooltip>   
                 }
               </div>
