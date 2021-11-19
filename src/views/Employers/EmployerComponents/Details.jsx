@@ -30,8 +30,8 @@ useEffect(() => {
         <div className="col-6 offset-md-2 col-md-4">
           {/* <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} /> */}
           <DetailField label="Assigned To" value={assigned_to?.username} />
-          <DetailField label="Phone number" value={<a href="tel:+91">{phone} </a>} />
           <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+          <DetailField label="Phone number" value={<a href="tel:+91">{phone} </a>} />
           <div> &nbsp;</div>
           &nbsp;
           <DetailField label="Updated By" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />

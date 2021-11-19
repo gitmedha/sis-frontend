@@ -94,7 +94,7 @@ const EnrollmentConnectionForm = (props) => {
       return data.hits.map(student => {
         return {
           ...student,
-          label: `student.full_name`,
+          label: student.full_name,
           value: Number(student.id),
         }
       });

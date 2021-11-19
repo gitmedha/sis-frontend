@@ -167,13 +167,12 @@ const Sessions = (props) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-        <div className="col-md-6 col-sm-12"></div>
-        <div className="col-md-6 col-sm-12 d-flex justify-content-end">
+        <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            Add Session & Attendance
+            Session & Attendance
           </button>
         </div>
         <div className="col-12 mt-3">

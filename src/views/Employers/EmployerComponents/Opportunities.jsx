@@ -53,12 +53,16 @@ const Opportunities = (props) => {
         accessor: 'status',
       },
       {
+        Header: 'Openings',
+        accessor: 'number_of_opportunities',
+      },
+      {
         Header: 'Assigned To',
-        accessor: 'opportunity.assigned_to.username',
+        accessor: 'assigned_to.username',
       },
       {
         Header: 'Updated At',
-        accessor: 'opportunity.updated_at',
+        accessor: 'updated_at',
       },
       {
         Header: '',
@@ -82,6 +86,7 @@ const Opportunities = (props) => {
         address: employer ? employer.address : '',
         employer: employer ? employer.name : '',
         created_at: moment(opportunity.created_at).format("DD MMM YYYY"),
+        updated_at: moment(opportunity.updated_at).format("DD MMM YYYY"),
       }
     });
     setOpportunitiesTableData(data);

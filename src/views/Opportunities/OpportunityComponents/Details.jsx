@@ -42,6 +42,8 @@ const Details = (props) => {
           <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == 'yes' ? '#207B69' : '#E0E0E8'} />} />
           <DetailField label="Monthly Salary" value={salary} />
           <DetailField label="Role Description" value={role_description} />
+          &nbsp;
+          <DetailField label="Created By" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
           <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
@@ -49,7 +51,10 @@ const Details = (props) => {
           <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ''} />
           <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
           <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
+           &nbsp;
           <DetailField label="Skills Required" value={skills_required} />
+          &nbsp;
+          <DetailField label="Updated By" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
           <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
         </div>
       </div>

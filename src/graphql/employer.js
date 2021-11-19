@@ -25,6 +25,10 @@ export const GET_EMPLOYER_OPPORTUNITIES = `
       status
       role_or_designation
       role_description
+      assigned_to{
+        username
+      }
+      updated_at
     }
   }
 `;

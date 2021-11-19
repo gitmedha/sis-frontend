@@ -41,6 +41,7 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
+  updated_at
   opportunity {
     id
     role_description
@@ -52,7 +53,7 @@ const employmentConnectionFields = `
     }
   }
   student {
-    id
+    student_id
     full_name
   }
 `;
