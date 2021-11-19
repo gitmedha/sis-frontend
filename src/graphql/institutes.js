@@ -246,9 +246,11 @@ query INSTITUTION(
       updated_at
       created_by_frontend{
         username
+        email
       }
       updated_by_frontend{
         username
+        email
       }
       district
       logo {

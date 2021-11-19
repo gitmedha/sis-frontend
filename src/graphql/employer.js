@@ -140,6 +140,14 @@ export const GET_EMPLOYER = `
       city
       created_at
       updated_at
+      created_by_frontend{
+        username
+        email
+      }
+      updated_by_frontend{
+        username
+        email
+      }
       district
       logo {
         url

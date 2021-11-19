@@ -36,7 +36,7 @@ const Details = (props) => {
           <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
           <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
           &nbsp;
-          <DetailField label="Created By" value={created_by_frontend?.username} />
+          <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
           <DetailField label="Created At" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
@@ -45,7 +45,7 @@ const Details = (props) => {
           <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
           <div> &nbsp;</div>
           &nbsp;
-          <DetailField label="Updated By" value={updated_by_frontend?.username} />
+          <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
           <DetailField label="Updated At" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
         </div>
       </div>

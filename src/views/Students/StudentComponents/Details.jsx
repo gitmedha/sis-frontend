@@ -81,7 +81,7 @@ const Styled = styled.div`
   }
 `;
 
-const Details = (props) => {
+const Details = (props) => {console.log(props)
   let { onUpdate, onDelete } = props;
   const {
     id,
@@ -104,6 +104,8 @@ const Details = (props) => {
     assigned_to,
     created_at,
     updated_at,
+    created_by_frontend,
+    updated_by_frontend
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -133,13 +135,14 @@ const Details = (props) => {
       <div className="container-fluid my-3">
         <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
         <div className="row latto-regular">
-          <div className="col-md-4">
+          <div className="col-md-5">
             <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
-            <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
+            <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             &nbsp;
+            <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
             
           </div>
@@ -150,10 +153,11 @@ const Details = (props) => {
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
             &nbsp;
+            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
           
-          <div className="col-md-4 d-flex justify-content-end">
+          <div className="col-md-3 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
               {logo && <img className="img-profile" src={urlPath(logo.url)} alt={full_name} />}
@@ -162,7 +166,7 @@ const Details = (props) => {
         </div>
         <hr className="separator" />
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-5">
             <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}

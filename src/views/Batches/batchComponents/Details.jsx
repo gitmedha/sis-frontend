@@ -67,7 +67,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Session Planned" value={batch.number_of_sessions_planned} />
           <DetailField label="Seats Avaiable" value={ batch.seats_available || 0} />
           &nbsp;
-          <DetailField label="Created By" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Created By" value={batch.created_by_frontend?.username ?`${batch.created_by_frontend?.username} (${batch.created_by_frontend?.email})`: ''} />
           <DetailField label="Created At" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
           <div className="mt-2">
             <div style={{color: '#787B96', fontFamily: 'Latto-Regular', fontSize: '14px', lineHeight: 2.2, marginBottom: '10px', marginTop: '10px'}}>
@@ -86,9 +86,9 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Donor" value={batch.grant.donor} />
           &nbsp;
           <DetailField label="Per-student Fees" value={batch.per_student_fees} />
-          <div>&nbsp;</div>
+          <div>&nbsp; &nbsp;</div>
           &nbsp;
-          <DetailField label="Updated By" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Updated By" value={batch.updated_by_frontend?.username ?`${batch.updated_by_frontend?.username} (${batch.updated_by_frontend?.email})`: ''} />
           <DetailField label="Updated At" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
           {/* <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} /> */}
         </div>

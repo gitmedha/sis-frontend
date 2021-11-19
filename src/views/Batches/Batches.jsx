@@ -94,7 +94,6 @@ const Batches = (props) => {
   useEffect(() => {
     let data = batches;
     data = data.map((batch, index) => {
-      console.log(batch)
       return {
         id: batch.id,
         assigned_to:batch.assigned_to.username,

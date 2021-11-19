@@ -156,7 +156,6 @@ const SearchHits = props => {
 
     case 'opportunities':
       columns = ['Role', 'Type','Employer'];
-      console.log(hits)
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>

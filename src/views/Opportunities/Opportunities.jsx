@@ -113,7 +113,7 @@ const tabPickerOptions = [
   );
 
   useEffect(() => {
-    getOpportunitiesPickList().then(data => {
+    getOpportunitiesPickList().then(data => {console.log(data)
       setPickList(data);
     });
   }, [])
@@ -183,9 +183,9 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-      //  assignedTo:  <Anchor text={opportunitydata.assigned_to.username} href={'/user/' + opportunitydata.assigned_to.id} />,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
+       status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',

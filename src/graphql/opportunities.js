@@ -16,6 +16,14 @@ state
 pin_code
 medha_area
 district
+created_by_frontend{
+  username
+  email
+}
+updated_by_frontend{
+  username
+  email
+}
 assigned_to {
   id
   username

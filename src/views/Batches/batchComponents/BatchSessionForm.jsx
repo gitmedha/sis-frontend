@@ -80,7 +80,6 @@ const BatchSessionForm = (props) => {
   };
 
   const clubStudentRecords = (records) => {
-    console.log(records)
     return records.map((rec) => ({
       present: false,
       id: rec.student.id,

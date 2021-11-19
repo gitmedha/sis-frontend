@@ -53,6 +53,14 @@ query GET_BATCH ($id:ID!) {
     end_date
     start_date
     created_at
+    created_by_frontend{
+      username
+      email
+    }
+    updated_by_frontend{
+      username
+      email
+    }
     updated_at
     status
     enrollment_type

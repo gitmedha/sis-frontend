@@ -20,7 +20,9 @@ const Details = (props) => {
     assigned_to,
     employer,
     created_at,
-    updated_at
+    updated_at,
+    created_by_frontend,
+    updated_by_frontend
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -43,7 +45,7 @@ const Details = (props) => {
           <DetailField label="Monthly Salary" value={salary} />
           <DetailField label="Role Description" value={role_description} />
           &nbsp;
-          <DetailField label="Created By" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
           <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
@@ -54,7 +56,7 @@ const Details = (props) => {
            &nbsp;
           <DetailField label="Skills Required" value={skills_required} />
           &nbsp;
-          <DetailField label="Updated By" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+          <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
           <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
         </div>
       </div>
