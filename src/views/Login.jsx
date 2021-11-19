@@ -2,13 +2,15 @@ import styled from "styled-components";
 import { urlPath } from "../constants";
 
 const Styled = styled.div`
-@font-face {
-  font-family: 'Bebas Neue Book';
-  src: local('BebasNeueBook'), url(https://fonts.gstatic.com/...) format('woff2');
-}
+
 .button-box{
   padding: 0px 68px 0px 5px;
 }
+
+.line-box{
+    border: 2px solid #32b89d;
+    margin:0px 130px 0px 130px;
+  }
 
 .logo {
   padding: 5px;
@@ -76,6 +78,10 @@ text-align:center;
     height: 130px;
     margin-left: 30px;
   }
+  .line-box{
+    border: 2px solid #32b89d;
+    margin:0px 400px 0px 21px;
+  }
   .image{
     max-width:85%;
     max-height:10%;
@@ -88,9 +94,6 @@ text-align:center;
   p{
     text-align: initial;
     }
-  ${'' /* .row-box{
-    margin: 70px 39px 1px 19px;
-  } */}
 }
 
 @media (min-width:750px) and (max-width:1024px) {
@@ -98,6 +101,10 @@ text-align:center;
     max-width:125%;
     max-height:90%;
     margin: 6px 6px 4px 35px;
+  }
+  .line-box{
+    border: 2px solid #32b89d;
+    margin:0px 260px 0px 21px;
   }
 }
 `;
@@ -118,6 +125,7 @@ const Login = () => {
             <div class="row-box">
               <p id="text" >STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
             </div>
+            <div class="line-box"> </div>
             <div class=" button-box">
               <a type="button" href={urlPath('/connect/microsoft')} className="btn-ms-login d-flex">
                   <img
