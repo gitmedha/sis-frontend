@@ -40,8 +40,8 @@ const Details = (props) => {
           <DetailField label="Created At" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
-          <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
           <DetailField label="Assigned To" value={assigned_to?.username} />
+          <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
           <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
           <div> &nbsp;</div>
           &nbsp;

@@ -85,15 +85,8 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiTypography-root': {
       fontFamily: 'Latto-Regular',
     },
-    '& .MuiTypography-root': {
-      fontFamily: 'Latto-Regular',
-    },
   },
 }));
-
-function getSteps() {
-  return ['Starting Date', 'Certification Date', 'Pending', 'Completed'];
-}
 
 export default function ProgressBar({ activeStep, steps }) {
   const classes = useStyles();

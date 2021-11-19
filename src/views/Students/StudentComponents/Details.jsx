@@ -6,7 +6,6 @@ import { getStudentsPickList } from "./StudentActions";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
-import ProgressBar from "../../../components/content/ProgressBar";
 import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import CvUpload from "../../../components/content/Cv";
 import { UPDATE_STUDENT } from "../../../graphql";
@@ -117,23 +116,9 @@ const Details = (props) => {console.log(props)
     });
   }, []);
 
-  let activestep = 0;
-  switch(status){
-    case "Certified":
-      activestep = 1
-      break;
-    case "Internship Complete":
-      activestep=2
-      break;
-    case "Placement Complete":
-      activestep =3 
-      break;
-  }
-
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
         <div className="row latto-regular">
           <div className="col-md-5">
             <DetailField label="Name" value={full_name} />
