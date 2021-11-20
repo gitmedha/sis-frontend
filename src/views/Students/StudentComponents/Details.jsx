@@ -80,7 +80,7 @@ const Styled = styled.div`
   }
 `;
 
-const Details = (props) => {console.log(props)
+const Details = (props) => {
   let { onUpdate, onDelete } = props;
   const {
     id,

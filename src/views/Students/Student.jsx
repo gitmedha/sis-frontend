@@ -167,9 +167,6 @@ const Student = (props) => {
     return (
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div style={{margin:"0px 0px 20px 0px"}}> 
-           <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
-          </div>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
@@ -181,6 +178,9 @@ const Student = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
             </button>
+          </div>
+          <div style={{margin:"0px 0px 20px 0px"}}> 
+           <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
           </div>
         </div>
         <Collapsible

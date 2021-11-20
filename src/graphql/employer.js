@@ -254,3 +254,46 @@ export const DELETE_EMPLOYER = `
     }
   }
 `
+export const GET_EMPLOYER_EMPLOYMENT_CONNECTIONS = `
+query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
+  $id: Int
+  $limit: Int
+  $start: Int
+  $sort: String
+) {
+  employmentConnectionsConnection(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: { opportunity: { employer: { id: $id } } }
+  ) {
+    values {
+      id
+      status
+      start_date
+      end_date
+      source
+      reason_if_rejected
+      salary_offered
+      updated_at
+      student{
+        full_name
+        id
+      }
+      opportunity {
+        id
+        role_description
+        role_or_designation
+        type
+        employer {
+          id
+          name
+        }
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}`
+;

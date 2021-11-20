@@ -113,7 +113,7 @@ const tabPickerOptions = [
   );
 
   useEffect(() => {
-    getOpportunitiesPickList().then(data => {console.log(data)
+    getOpportunitiesPickList().then(data => {
       setPickList(data);
     });
   }, [])

@@ -42,7 +42,7 @@ const OpportunityIcon = ({opportunity}) => {
   return <></>;
 };
 
-const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdate }) => {console.log(employmentConnections)
+const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdate }) => {
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);

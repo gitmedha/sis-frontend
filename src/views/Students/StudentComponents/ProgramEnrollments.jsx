@@ -60,7 +60,6 @@ const ProgramEnrollments = (props) => {
 
   useEffect(() => {
     let data = programEnrollments.map(programEnrollment => {
-      console.log(programEnrollment)
       return {
         ...programEnrollment,
         registration_date_formatted: programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY"): '',

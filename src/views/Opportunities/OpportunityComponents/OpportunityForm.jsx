@@ -178,7 +178,7 @@ const OpportunityForm = (props) => {
     onHide(values);
   };
 
-  const handleEmployerChange = (employer) => {console.log(employer)
+  const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
       address: employer.details.address,

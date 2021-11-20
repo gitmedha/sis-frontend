@@ -36,7 +36,7 @@ const Institute = (props) => {
     }
 
     // need to remove id and show from the payload
-    let {id, show, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, created_at, updated_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
@@ -134,7 +134,7 @@ const Institute = (props) => {
         <Collapsible title="Address">
           <Address {...instituteData}  id={rest.id} />
         </Collapsible>
-        <Collapsible title="Contacts">
+        <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
         <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
