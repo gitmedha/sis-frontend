@@ -71,6 +71,8 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
+        student_id: employmentConnection.student ? employmentConnection.student.student_id : '',
+        updated_at:  moment(employmentConnection.updated_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -83,8 +85,8 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         accessor: 'student_name',
       },
       {
-        Header: 'Institution',
-        accessor: 'institution_name',
+        Header: 'Student ID',
+        accessor: 'student_id',
       },
       {
         Header: 'Status',
@@ -93,6 +95,14 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
       {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Source',
+        accessor: 'source',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',

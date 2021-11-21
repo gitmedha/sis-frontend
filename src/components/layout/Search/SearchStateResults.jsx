@@ -63,6 +63,9 @@ const SearchStateContainer = styled.div`
       &.badge-batches {
         background-color: #AA223C;
       }
+      &.badge-opportunities {
+        background-color: #00FF00;
+      }
       &.badge-institutions-light {
         background-color: #FC636B66;
       }
@@ -74,6 +77,9 @@ const SearchStateContainer = styled.div`
       }
       &.badge-batches-light {
         background-color: #DFBAC1;
+      }
+      &.badge-opportunities-light {
+        background-color: #9dff9d;
       }
       &.badge-disabled {
         background-color: #C4C4C4;
@@ -95,7 +101,7 @@ const SearchStateContainer = styled.div`
       .badge {
         height: 30px;
         padding-left: 20px !important;
-        padding-right: 20px !important;
+        padding-right: 11px !important;
         margin-right: 15px;
         font-size: 14px;
         line-height: 18px;
@@ -144,6 +150,9 @@ const SearchStateResults = (props) => {
           </div>
           <div className={`badge ${activeFilterBy === 'batches' ? 'badge-batches' : (hitsData.batches && hitsData.batches.nbHits ? 'badge-batches-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('batches')}>
             Batches {hitsData.batches ? `(${hitsData.batches.nbHits})` : ''}
+          </div>
+          <div className={`badge ${activeFilterBy === 'opportunities' ? 'badge-opportunities' : (hitsData.opportunities && hitsData.opportunities.nbHits ? 'badge-opportunities-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('opportunities')}>
+            Opportunities {hitsData.opportunities ? `(${hitsData.opportunities.nbHits})` : ''}
           </div>
         </div>
       </div>

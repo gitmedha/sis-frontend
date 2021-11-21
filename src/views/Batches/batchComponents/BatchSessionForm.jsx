@@ -87,7 +87,7 @@ const BatchSessionForm = (props) => {
       program_enrollment_id: Number(rec.id),
       name: rec.student.full_name,
       phone: rec.student.phone,
-      student_id:"stu-"
+      student_id: rec.student.student_id,
     }));
   };
 

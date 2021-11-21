@@ -40,6 +40,11 @@ const Sessions = (props) => {
         disableSortBy: true,
       },
       {
+        Header: 'Updated At',
+        accessor: 'updated_at',
+        disableSortBy: true,
+      },
+      {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
@@ -53,6 +58,7 @@ const Sessions = (props) => {
       id: session.id,
       topics_covered: session.topics_covered,
       date: moment(session.date).format('DD MMM YYYY, hh:mm a'),
+      updated_at: moment(session.updated_at).format('DD MMM YYYY'),
       attendance: <ProgressBarField value={Number.parseInt(session.percent)} />,
       link: <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>
     }
@@ -161,13 +167,12 @@ const Sessions = (props) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-        <div className="col-md-6 col-sm-12"></div>
-        <div className="col-md-6 col-sm-12 d-flex justify-content-end">
+        <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            Add Session & Attendance
+            Session & Attendance
           </button>
         </div>
         <div className="col-12 mt-3">

@@ -31,6 +31,27 @@ const DashboardStyled = styled.div`
   .react-loading-skeleton {
     display: block;
   }
+
+  @media (min-width: 1024px){
+  .box-1 {
+    width: 46%;
+    margin-left:45px;
+  }
+
+  .box-2 {
+    width: 46%;
+    margin-right:25px;
+    }
+}
+
+@media (min-width: 576px){
+  .col-sm-12 {
+    padding-bottom: 2px;
+  }
+  .mb-5 {
+    margin-bottom: 1rem !important;
+  }
+}
 `;
 
 const Home = () => {
@@ -139,9 +160,9 @@ const Home = () => {
 
   return (
     <DashboardStyled className="container-fluid">
-      <Collapsible opened={true} title="Key Metrics" id="keyMetrics">
+      <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
-          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+          {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
           {/* <WidgetUtilTab /> */}
         </div>
         {isLoading ? (
@@ -192,15 +213,14 @@ const Home = () => {
         </div>
         )}
           <div className="row">
-            <div className="col-sm-12 col-md-6">
-
+            <div className="box-1 col-sm-12 col-md-6">
               <div className="card">
                 <div className="card-body">
                   <ProgramEnrollmentsChart />
                 </div>
               </div>
             </div>
-            <div className="col-sm-12 col-md-6">
+            <div className="box-2 col-sm-12 col-md-6">
               <div className="card">
                 <div className="card-body">
                   <EmploymentConnectionsChart />

@@ -85,7 +85,7 @@ export const deleteOpportunity = async (id) => {
     });
 };
 
-export const getOpportunityEmploymentConnections = async (opportunityId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getOpportunityEmploymentConnections = async (opportunityId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS,
     variables: {

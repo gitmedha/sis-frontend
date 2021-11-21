@@ -24,7 +24,16 @@ const studentFields = `
   state
   created_at
   updated_at
+  created_by_frontend{
+    email
+    username
+  }
+  updated_by_frontend{
+    username
+    email
+  }
   district
+  student_id
   assigned_to{
     id
     username
@@ -35,6 +44,7 @@ const studentFields = `
     url
   }
   CV {
+    id
     url
     previewUrl
     updated_at
@@ -57,6 +67,8 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  created_at
+  updated_at
   medha_program_certificate {
     id
     url
@@ -88,6 +100,7 @@ const employmentConnectionFields = `
     role_description
     role_or_designation
     type
+    updated_at
     employer {
       id
       name

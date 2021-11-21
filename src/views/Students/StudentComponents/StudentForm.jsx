@@ -13,6 +13,7 @@ import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
 import { DateRange } from '@material-ui/icons';
+import { TitleWithLogo } from "../../../components//content/Avatar";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -45,7 +46,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  
+  const [selectedFile, setSelectedFile] = useState(null);
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -76,7 +77,7 @@ const StudentForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));      
+      })).sort((a, b) => a.label.localeCompare(b.label)));      
 
       if (props.state) {
         onStateChange({
@@ -94,7 +95,7 @@ const StudentForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
@@ -130,6 +131,7 @@ const StudentForm = (props) => {
     address:'',
     state:'',
     district:'',
+    logo:'',
   };
 
   if (props.id) {
@@ -189,12 +191,37 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookup"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        options={assigneeOptions}
+                        className="form-control"
+                        placeholder="Assigned To"
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="name_of_parent_or_guardian"
                       label="Parents Name"
                       required
                       control="input"
                       placeholder="Parents Name"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="phone"
+                      label="Phone"
+                      required
+                      control="input"
+                      placeholder="Phone"
                       className="form-control"
                     />
                   </div>
@@ -215,6 +242,17 @@ const StudentForm = (props) => {
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      type="email"
+                      name="email"
+                      label="Email"
+                      required
+                      control="input"
+                      placeholder="Email"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
                     {/* {genderOptions.length ? ( */}
                       <Input
                         icon="down"
@@ -232,27 +270,6 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="phone"
-                      label="Phone"
-                      required
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      type="email"
-                      name="email"
-                      label="Email"
-                      required
-                      control="input"
-                      placeholder="Email"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
                       name="date_of_birth"
                       label="Date of Birth"
                       required
@@ -261,21 +278,6 @@ const StudentForm = (props) => {
                       className="form-control"
                       autoComplete="off"
                     />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                      <Input
-                        control="lookup"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        options={assigneeOptions}
-                        className="form-control"
-                        placeholder="Assigned To"
-                      />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
@@ -314,7 +316,7 @@ const StudentForm = (props) => {
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  <div className="col-md-12 col-sm-12 mb-2">
+                  <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
                       label="Address"
@@ -323,6 +325,45 @@ const StudentForm = (props) => {
                       className="form-control"
                       required
                     />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      className="form-control"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   {stateOptions.length ? (
@@ -359,45 +400,6 @@ const StudentForm = (props) => {
                         <Skeleton count={1} height={35} />
                       </>
                     )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      placeholder="Medha Area"
-                      required
-                      options={areaOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      className="form-control"
-                      placeholder="City"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
                   </div>
                 </div>
               </Section>

@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import moment from "moment";
+import api from "../../apis";
+import ProgressBar from "../../../src/components/content/ProgressBar";
 
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
@@ -11,12 +13,13 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteCv, deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
+import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -38,8 +41,12 @@ const Student = (props) => {
     }
 
     // need to remove some data from payload
-    let {id, show, CV, logo, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, CV, created_at, updated_at, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+
+    if (typeof data.logo === 'object') {
+      dataToSave['logo'] = data.logo?.id;
+    }
 
     NP.start();
     updateStudent(Number(id), dataToSave).then(data => {
@@ -49,7 +56,7 @@ const Student = (props) => {
       setAlert("Unable to update student.", "error");
     }).finally(() => {
       NP.done();
-      fetchStudent();
+      getStudent();
     });
     setModalShow(false);
   };
@@ -68,13 +75,37 @@ const Student = (props) => {
     });
   };
 
-  const fetchStudent = async () => {
-    getStudent(studentId).then(data => {
-      setStudent(data.data.data.student);
+  const fileDelete = async () => {
+    NP.start();
+    deleteCv(student.CV.id).then(data => {
+      setAlert("CV deleted successfully.", "success");
     }).catch(err => {
-      console.log("getStudent Error", err);
+      console.log("CV_DELETE_ERR", err);
+      setAlert("Unable to delete CV.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      NP.done();
+      history.push("/student/".id);
+      getStudent()
     });
-  }
+  };
+
+  const getStudent = async () => {
+    setLoading(true);
+    NP.start();
+    try {
+      let { data } = await api.post("/graphql", {
+        query: GET_STUDENT,
+        variables: { id: studentId },
+      });
+      setStudent(data.data.student);
+    } catch (err) {
+      console.log("ERR", err);
+    } finally {
+      setLoading(false);
+      NP.done();
+    }
+  };
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
@@ -111,8 +142,21 @@ const Student = (props) => {
     );
   }
 
+  let activestep = 0;
+  switch(student.status){
+    case "Certified":
+      activestep = 1
+      break;
+    case "Internship Complete":
+      activestep=2
+      break;
+    case "Placement Complete":
+      activestep =3 
+      break;
+  }
+
   useEffect(async () => {
-    await fetchStudent();
+    await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
   }, [studentId]);
@@ -135,19 +179,24 @@ const Student = (props) => {
               DELETE
             </button>
           </div>
+          <div style={{margin:"0px 0px 20px 0px"}}> 
+           <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
+          </div>
         </div>
         <Collapsible
           opened={true}
           titleContent={
             <TitleWithLogo
+              done={() => getStudent()}
               id={rest.id}
               logo={rest.logo}
               title={rest.full_name}
+              query={UPDATE_STUDENT}
               icon="student"
             />
           }
         >
-          <Details {...student} />
+          <Details {...student} onUpdate={getStudent} onDelete={fileDelete}/>
         </Collapsible>
         <Collapsible title="Address">
           <Address {...student} />

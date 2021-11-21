@@ -1,18 +1,18 @@
 import api from "../../apis";
 import { useState } from "react";
 import { urlPath } from "../../constants";
-import { FaFileImage } from "react-icons/fa";
+import { FaFileUpload } from "react-icons/fa";
 import { ProgressBar } from "react-bootstrap";
 import { IMAGE_UPLOADER } from "../../graphql";
 
-const ImageUploader = ({
+const FileUploader = ({
   handler,
   id = "file_uploader",
-  label = "Upload Logo",
+  label = "Upload Cv",
   initialValue = {},
 }) => {
-  const [imageUrl, setImageUrl] = useState(initialValue.url ? urlPath(initialValue.url.substring(1)) : null);
-  const [imageId, setImageId] = useState(initialValue.id || null);
+  const [cvUrl, setCvUrl] = useState(initialValue.url ? urlPath(initialValue.url.substring(1)) : null);
+  const [cvId, setCvId] = useState(initialValue.id || null);
   const [uploadProgress, setProgress] = useState(0);
   const [isUploading, setUploading] = useState(false);
 
@@ -41,18 +41,18 @@ const ImageUploader = ({
       );
 
       formdata.append("0", e.target.files[0], e.target.files[0].name);
-
+    
       let { data } = await api.post("/graphql", formdata, {
         onUploadProgress,
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await setImageUrl(urlPath(data.data.upload.url.substring(0)));
-      await setImageId(Number(data.data.upload.id));
+      await setCvUrl(urlPath(data.data.upload.url.substring(0)));
+      await setCvId(Number(data.data.upload.id));
 
       handler({
-        id: imageId || Number(data.data.upload.id),
-        path: imageUrl || urlPath(data.data.upload.url.substring(1)),
+        id: cvId || Number(data.data.upload.id),
+        path: cvUrl || urlPath(data.data.upload.url.substring(1)),
       });
     } catch (err) {
       console.log("UPLOAD_ERR", err);
@@ -63,15 +63,16 @@ const ImageUploader = ({
 
   return (
     <div>
-      {!isUploading && !imageUrl && (
+      {!isUploading && !cvUrl && (
         <div className="uploader-container">
           <div className="imageUploader">
-            <p className="upload-helper-text">Click Here To Upload Image</p>
+            <p className="upload-helper-text">Click Here To Upload Cv</p>
             <div className="upload-helper-icon">
-              <FaFileImage size={30} color={"#257b69"} />
+              <FaFileUpload size={30} color={"#257b69"} />
             </div>
             <input
               id={id}
+              accept=".pdf, .docx" 
               type="file"
               multiple={false}
               name="file-uploader"
@@ -79,19 +80,20 @@ const ImageUploader = ({
               className="uploaderInput"
             />
           </div>
-          <label htmlFor={id} className="text--primary latto-bold text-center">
+          <label  className="text--primary latto-bold text-center">
             {label}
           </label>
         </div>
       )}
-      {isUploading && !imageUrl && (
+      {isUploading && !cvUrl && (
         <ProgressBar variant="success" now={uploadProgress} />
       )}
-      {imageUrl && (
-        <img src={imageUrl} className="uploaded-img" alt={"uploaded-pic"} />
+      {cvUrl && (
+        <a class="alert alert-success" >File uploading </a>
+      
       )}
     </div>
   );
 };
 
-export default ImageUploader;
+export default FileUploader;

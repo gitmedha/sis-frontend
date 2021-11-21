@@ -59,18 +59,18 @@ const Students = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Name',
+        Header: 'Student',
         accessor: 'avatar',
         disableSortBy: true,
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
+        Header: 'Program',
+        accessor: '',
         disableSortBy: true,
       },
       {
-        Header: 'Student ID',
-        accessor: 'id',
+        Header: 'Program Status',
+        accessor: '',
         disableSortBy: true,
       },
       {
@@ -79,13 +79,8 @@ const Students = (props) => {
         disableSortBy: true,
       },
       {
-        Header: 'Status',
-        accessor: 'status',
-        disableSortBy: true,
-      },
-      {
-        Header: 'Latest Course Type',
-        accessor: 'course_type_latest',
+        Header: 'Institution',
+        accessor: 'institution',
         disableSortBy: true,
       },
       {
@@ -175,7 +170,7 @@ const Students = (props) => {
           statusIcon: studentStatusData?.icon,
           title: student.full_name,
           progressPercent: studentStatusData?.progress,
-          certification_date_latest:  moment(student.certification_date_latest).format("DD MMM YYYY"),
+          certification_date_latest: student.certification_date_latest ?  moment(student.certification_date_latest).format("DD MMM YYYY"): '',
         }
       });
       setStudentsData(data);

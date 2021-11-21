@@ -34,6 +34,17 @@ mutation UPLOAD_FILE(
 }
 `;
 
+export const DELETE_CV = `
+mutation DELETE_FILE($id: ID!) {
+  deleteFile(input: { where: { id: $id } }) {
+    file {
+      url
+    }
+  }
+}
+
+`;
+
 export const GET_ASSIGNEES_LIST_OPTS = `
 query GET_ALL_USERS {
   users(

@@ -53,14 +53,6 @@ const Institutions = (props) => {
         accessor: 'avatar',
       },
       {
-        Header: 'Status',
-        accessor: 'status',
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-      },
-      {
         Header: 'Area',
         accessor: 'medha_area',
       },
@@ -69,8 +61,16 @@ const Institutions = (props) => {
         accessor: 'state',
       },
       {
+        Header: 'Type',
+        accessor: 'type',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
         Header: 'Assigned To',
-        accessor: 'assignedTo',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -141,7 +141,7 @@ const Institutions = (props) => {
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
-      institution.assignedTo = <Anchor text={institution.assigned_to.username} href={'/user/' + institution.assigned_to.id} />
+      // institution.assignedTo = <Anchor text={institution?.assigned_to?.username} href={'/user/' + institution?.assigned_to?.id} />
       institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
       institution.status = <Badge value={institution.status} pickList={pickList.status || []} />
       institution.type = <Badge value={institution.type} pickList={pickList.type || []} />
@@ -174,6 +174,7 @@ const Institutions = (props) => {
         setAlert("Institution created successfully.", "success");
         setModalShow(false);
         getInstitutions();
+        history.push(`/institution/${data.data.data.createInstitution.institution.id}`);
       }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
