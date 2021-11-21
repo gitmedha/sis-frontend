@@ -123,7 +123,7 @@ const Batch = (props) => {
     }
 
     // // need to remove id and show from the payload
-    let {id, show, logo, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
     }
@@ -210,7 +210,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
             </button>
-            <button className="btn--secondary">MARK AS COMPLETE</button>
+            {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
           </div>
         </div>
         {batch && (

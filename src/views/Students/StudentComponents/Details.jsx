@@ -6,7 +6,6 @@ import { getStudentsPickList } from "./StudentActions";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
-import ProgressBar from "../../../components/content/ProgressBar";
 import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import CvUpload from "../../../components/content/Cv";
 import { UPDATE_STUDENT } from "../../../graphql";
@@ -104,6 +103,8 @@ const Details = (props) => {
     assigned_to,
     created_at,
     updated_at,
+    created_by_frontend,
+    updated_by_frontend
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -115,43 +116,33 @@ const Details = (props) => {
     });
   }, []);
 
-  let activestep = 0;
-  switch(status){
-    case "Certified":
-      activestep = 1
-      break;
-    case "Internship Complete":
-      activestep=2
-      break;
-    case "Placement Complete":
-      activestep =3 
-      break;
-  }
-
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
         <div className="row latto-regular">
-          <div className="col-md-4">
-            <DetailField label=" Name" value={full_name} />
+          <div className="col-md-5">
+            <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
-            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
-            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
-            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
-            <DetailField label="Assigned To" value={assigned_to?.username} />
-          </div>
-          <div className="col-md-4">
-          <DetailField label=" Student ID" value={student_id} />
-            <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
+            <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
+            &nbsp;
+            <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
+            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            
+          </div>
+          <div className="col-md-4">
+            <DetailField label="Assigned To" value={assigned_to?.username} />
+            <DetailField label=" Student ID" value={student_id} />
+            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
-            <DetailField label="Income Level (INR)" value={income_level} />
+            &nbsp;
+            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
           
-          <div className="col-md-4 d-flex justify-content-end">
+          <div className="col-md-3 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
               {logo && <img className="img-profile" src={urlPath(logo.url)} alt={full_name} />}
@@ -160,13 +151,14 @@ const Details = (props) => {
         </div>
         <hr className="separator" />
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-5">
             <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
           <div className="col-md-4">
+          <DetailField label="Income Level (INR)" value={income_level} />
           <DetailField label="CV Upload" value=
               {CV &&
                 <div>
@@ -191,7 +183,7 @@ const Details = (props) => {
               <div class="col-md-1">
                 {CV &&
                   <Tooltip placement="top" title="Click Here to Delete CV">
-                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#ed1919' : '#787B96'} /> </a>
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#207B69' : '#787B96'} /> </a>
                   </Tooltip>   
                 }
               </div>

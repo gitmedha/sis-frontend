@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import moment from "moment";
 import api from "../../apis";
+import ProgressBar from "../../../src/components/content/ProgressBar";
 
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
@@ -141,6 +142,19 @@ const Student = (props) => {
     );
   }
 
+  let activestep = 0;
+  switch(student.status){
+    case "Certified":
+      activestep = 1
+      break;
+    case "Internship Complete":
+      activestep=2
+      break;
+    case "Placement Complete":
+      activestep =3 
+      break;
+  }
+
   useEffect(async () => {
     await getStudent();
     await getProgramEnrollments();
@@ -164,6 +178,9 @@ const Student = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
             </button>
+          </div>
+          <div style={{margin:"0px 0px 20px 0px"}}> 
+           <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
           </div>
         </div>
         <Collapsible

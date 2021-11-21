@@ -54,6 +54,7 @@ const EmploymentConnections = (props) => {
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
         opportunity_type: <Badge value={employmentConnection.opportunity?.type} pickList={opportunitiesPickList?.type} />,
+        updated_at: moment(employmentConnection.updated_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -66,6 +67,10 @@ const EmploymentConnections = (props) => {
         accessor: 'employer_name',
       },
       {
+        Header: 'Role/Designation',
+        accessor: 'role_or_designation',
+      },
+      {
         Header: 'Opportunity Type',
         accessor: 'opportunity_type',
       },
@@ -74,12 +79,16 @@ const EmploymentConnections = (props) => {
         accessor: 'status_badge',
       },
       {
-        Header: 'Role/Designation',
-        accessor: 'role_or_designation',
-      },
-      {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Source',
+        accessor: 'source',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
@@ -142,7 +151,7 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, employer_id, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, opportunity_type, assigned_to, ...dataToSave} = data;
+    let {id, employer, employer_id, created_at, updated_at ,updated_by, created_by, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, opportunity_type, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;

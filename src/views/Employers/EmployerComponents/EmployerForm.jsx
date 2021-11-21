@@ -187,56 +187,6 @@ const EmployerForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="email"
-                      label="Email"
-                      control="input"
-                      placeholder="Email"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="phone"
-                      label="Phone"
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="website"
-                      control="input"
-                      label="Website"
-                      placeholder="Website"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      icon="down"
-                      name="industry"
-                      label="Industry"
-                      control="lookup"
-                      options={industryOptions}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="type"
-                      control="input"
-                      label="Type"
-                      placeholder="Type"
-                      className="form-control"
-                      required
-                    />
-                  </div> */}
-                  <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
                         control="lookup"
@@ -254,6 +204,17 @@ const EmployerForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       icon="down"
+                      name="industry"
+                      label="Industry"
+                      control="lookup"
+                      options={industryOptions}
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
                       name="status"
                       label="Status"
                       control="lookup"
@@ -262,12 +223,51 @@ const EmployerForm = (props) => {
                       required
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="website"
+                      control="input"
+                      label="Website"
+                      placeholder="Website"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="phone"
+                      label="Phone"
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="email"
+                      label="Email"
+                      control="input"
+                      placeholder="Email"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  {/* <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="type"
+                      control="input"
+                      label="Type"
+                      placeholder="Type"
+                      className="form-control"
+                      required
+                    />
+                  </div> */}
                 </div>
               </Section>
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  <div className="col-md-12 col-sm-12 mb-2">
+                  <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
                       label="Address"
@@ -278,20 +278,42 @@ const EmployerForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                  {stateOptions.length ? (
                     <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      control="lookup"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                      placeholder="State"
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
                       className="form-control"
                       required
                     />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      className="form-control"
+                      placeholder="City"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
                     ) : (
-                      <Skeleton count={1} height={45} />
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -314,43 +336,21 @@ const EmployerForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
+                  {stateOptions.length ? (
                     <Input
                       icon="down"
+                      name="state"
+                      label="State"
                       control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
+                      options={stateOptions}
+                      onChange={onStateChange}
+                      placeholder="State"
                       className="form-control"
-                      placeholder="Medha Area"
                       required
-                      options={areaOptions}
                     />
                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
-                        <Skeleton count={1} height={35} />
-                      </>
+                      <Skeleton count={1} height={45} />
                     )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      className="form-control"
-                      placeholder="City"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
                   </div>
                 </div>
               </Section>

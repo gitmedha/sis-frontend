@@ -87,7 +87,7 @@ export const deleteCv = async (id) => {
   });
 }
 
-export const getStudentProgramEnrollments = async (studentId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentProgramEnrollments = async (studentId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_STUDENT_PROGRAM_ENROLLMENTS,
     variables: {

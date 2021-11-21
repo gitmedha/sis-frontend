@@ -153,6 +153,23 @@ const SearchHits = props => {
         </tr>
       ));
       break;
+
+    case 'opportunities':
+      columns = ['Role', 'Type','Employer'];
+      tableData = hits.map(hit => (
+        <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
+          <td>
+            <SearchHighlight hit={hit} attribute="role_or_designation" />
+          </td>
+          <td>
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+          </td>
+          <td>
+          {hit?.employer?.name}
+          </td>
+        </tr>
+      ))
+      break;
   }
 
   const clickHandler = hit => {
@@ -171,6 +188,10 @@ const SearchHits = props => {
 
       case 'institutions':
         history.push(`/institution/${hit.id}`);
+        break;
+      
+      case 'opportunities':
+        history.push(`/opportunities/${hit.id}`);
         break;
 
       case 'students':

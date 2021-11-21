@@ -76,17 +76,22 @@ const Opportunities = (props) => {
         disableSortBy: true,
       },
       {
+        Header: 'Status',
+        accessor: 'status',
+        disableSortBy: true,
+      },
+      {
         Header: 'Openings',
         accessor: 'number_of_opportunities',
         disableSortBy: true,
       },
       {
-        Header: 'Area',
-        accessor: 'address',
+        Header: 'Assigned To',
+        accessor: 'assigned_to',
         disableSortBy: true,
       },
       {
-        Header: 'Date Added',
+        Header: 'Created At',
         accessor: 'created_at',
         disableSortBy: true,
       },
@@ -159,10 +164,12 @@ const Opportunities = (props) => {
       ...opportunitydata,
       avatar:  <OpportunityIcon opportunity={opportunitydata} name={opportunitydata.role_or_designation}> {opportunitydata.role_or_designation} </OpportunityIcon>,
        role_or_designation: opportunitydata.role_or_designation,
+       status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
+       assigned_to: opportunitydata.assigned_to ? opportunitydata.assigned_to.username : '',
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
       }
     });

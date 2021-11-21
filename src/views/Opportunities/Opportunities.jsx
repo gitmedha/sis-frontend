@@ -89,28 +89,24 @@ const tabPickerOptions = [
         accessor: 'employer',
       },
       {
+        Header: 'District',
+        accessor: 'state',
+      },
+      {
         Header: 'Type',
         accessor: 'opportunity_type',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
       },
       {
         Header: 'Openings',
         accessor: 'number_of_opportunities',
       },
       {
-        Header: 'Date Added',
-        accessor: 'created_at',
-      },
-      {
-        Header: 'Area',
-        accessor: 'medha_area',
-      },
-      {
-        Header: 'State',
-        accessor: 'state',
-      },
-      {
         Header: 'Assigned To',
-        accessor: 'assignedTo',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -187,9 +183,9 @@ const tabPickerOptions = [
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       assignedTo:  <Anchor text={opportunitydata.assigned_to.username} href={'/user/' + opportunitydata.assigned_to.id} />,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
+       status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
