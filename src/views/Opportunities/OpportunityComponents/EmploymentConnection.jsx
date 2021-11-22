@@ -5,7 +5,7 @@ import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "../../Students/StudentComponents/StudentActions";
 
-const EmploymentConnection = (props) => {
+const EmploymentConnection = (props) => {console.log(props)
   let { onHide, show, handleEdit, handleDelete, student, employmentConnection } = props;
   const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);

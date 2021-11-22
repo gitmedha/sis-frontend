@@ -64,7 +64,7 @@ const SearchStateContainer = styled.div`
         background-color: #AA223C;
       }
       &.badge-opportunities {
-        background-color: #00FF00;
+        background-color: #109e10;
       }
       &.badge-institutions-light {
         background-color: #FC636B66;
@@ -79,7 +79,7 @@ const SearchStateContainer = styled.div`
         background-color: #DFBAC1;
       }
       &.badge-opportunities-light {
-        background-color: #9dff9d;
+        background-color: #7bb47b;
       }
       &.badge-disabled {
         background-color: #C4C4C4;

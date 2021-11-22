@@ -89,31 +89,52 @@ const SearchHits = props => {
 
   switch (searchIndex) {
     case 'employers':
-      columns = ['Name', 'Website'];
+      columns = ['Name','District','State','Industry','Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="website" />
+            <SearchHighlight hit={hit} attribute="district" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="state" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="industry" />
+          </td>
+          <td>
+          {hit?.assigned_to?.username}
           </td>
         </tr>
       ))
       break;
 
     case 'batches':
-      columns = ['Name', 'Start Date', 'End Date', 'Assigned To'];
+      columns = ['Name', 'Program', 'Status', 'Student Enrolled', 'Start Date', 'Enrollment Type', 'Area', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
           <td>
+          {hit?.program?.name }
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="status" />
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="student_count" />
+          </td>
+          <td>
             <SearchHighlight hit={hit} attribute="start_date" />
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="end_date" />
+           {hit?.enrollment_type} 
+          </td>
+          <td>
+            <SearchHighlight hit={hit} attribute="medha_area" />
           </td>
           <td>
             {hit?.assigned_to?.username}
@@ -123,7 +144,7 @@ const SearchHits = props => {
       break;
 
     case 'institutions':
-      columns = ['Name', 'Area', 'Assigned To'];
+      columns = ['Name', 'Area', 'State', 'Type', 'Status', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
@@ -131,6 +152,15 @@ const SearchHits = props => {
           </td>
           <td>
             {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ''}
+          </td>
+          <td>
+            {hit.state ? <SearchHighlight hit={hit} attribute="state" /> : ''}
+          </td>
+          <td>
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+          </td>
+          <td>
+            {hit?.status}
           </td>
           <td>
             {hit?.assigned_to?.username}
@@ -141,31 +171,58 @@ const SearchHits = props => {
 
     case 'students':
     default:
-      columns = ['Name', 'Email'];
+      columns = ['Name', 'Student ID','Area', 'Phone', 'Email', 'Status','Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="full_name" />
           </td>
           <td>
+            {hit?.student_id}
+          </td>
+          <td>
+            {hit?.medha_area}
+          </td>
+          <td>
+            {hit?.phone}
+          </td>
+          <td>
             <SearchHighlight hit={hit} attribute="email" />
+          </td>
+          <td>
+            {hit?.status}
+          </td>
+          <td>
+            {hit?.assigned_to?.username}
           </td>
         </tr>
       ));
       break;
 
     case 'opportunities':
-      columns = ['Role', 'Type','Employer'];
+      columns = ['Role/Designation', 'Employer', 'District', 'Type', 'Status', 'Opening', 'Assigned To'];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="role_or_designation" />
           </td>
           <td>
+            {hit?.employer?.name}
+          </td>
+          <td>
+            {hit?.district}
+          </td>
+          <td>
             {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
           </td>
           <td>
-          {hit?.employer?.name}
+            {hit?.status}
+          </td>
+          <td>
+            {hit?.number_of_opportunities}
+          </td>
+          <td>
+            {hit?.assigned_to?.username}
           </td>
         </tr>
       ))

@@ -63,6 +63,7 @@ const employmentConnectionFields = `
   student {
     student_id
     full_name
+    id
   }
 `;
 
