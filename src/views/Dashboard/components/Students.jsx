@@ -191,7 +191,7 @@ const Students = (props) => {
       <Styled>
         <div className="row m-1">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+            {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
             <div className="d-flex justify-content-center align-items-center">
               {/* <WidgetUtilTab /> */}
             </div>

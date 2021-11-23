@@ -8,6 +8,7 @@ import api from "../../apis";
 import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
+// import InstitutionBatches from "./InstitutionComponents/InstitutionBatches";
 import Students from "./InstitutionComponents/Students";
 import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
@@ -137,6 +138,9 @@ const Institute = (props) => {
         <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
+        {/* <Collapsible title="Batches">
+          <InstitutionBatches />
+        </Collapsible> */}
         <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} />
         </Collapsible>

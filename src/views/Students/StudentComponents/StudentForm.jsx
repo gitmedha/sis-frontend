@@ -101,7 +101,7 @@ const StudentForm = (props) => {
         key: area.id,
         label: area.key,
         value: area.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 

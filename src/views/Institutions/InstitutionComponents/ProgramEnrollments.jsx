@@ -64,7 +64,7 @@ const ProgramEnrollments = (props) => {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-        certification_date_formatted: moment(programEnrollment.certification_date).format("DD MMM YYYY"),
+        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
         batch_name: programEnrollment?.batch?.name,
         updated_at:moment(programEnrollment.updated_at).format("DD MMM YYYY"),
         // institution_name: programEnrollment.institution.name,

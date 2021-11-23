@@ -184,7 +184,7 @@ const Opportunities = (props) => {
     <Collapse title="NEW OPPORTUNITIES" type="plain" opened={true}>
       <div className="row m-3">
         <div className="d-flex justify-content-between align-items-center mb-2 px-0">
-          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+          {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
           <div className="d-flex justify-content-center align-items-center">
             {/* <WidgetUtilTab /> */}
           </div>
