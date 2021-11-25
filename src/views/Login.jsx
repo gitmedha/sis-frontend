@@ -134,7 +134,7 @@ p{
     font-size: 70px;
   }
 }
-@media screen and (min-width:1025px)   {
+@media screen and (min-width:1024px)   {
   .row-box-2{
     display: flex;
     justify-content:start;
