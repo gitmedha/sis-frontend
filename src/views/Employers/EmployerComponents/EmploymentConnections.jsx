@@ -187,7 +187,7 @@ const EmploymentConnections = (props) => {
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id;
   
-    updateEmploymentConnection(Number(id), dataToSave).then(data => {console.log(dataToSave)
+    updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);

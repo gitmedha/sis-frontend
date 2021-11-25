@@ -148,8 +148,7 @@ const EmploymentConnections = (props) => {
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = opportunity.id;
     dataToSave['student'] = student_id;
-    console.log(data)
-    console.log(dataToSave)
+
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {

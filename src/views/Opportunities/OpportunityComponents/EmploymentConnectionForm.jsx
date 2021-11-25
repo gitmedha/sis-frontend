@@ -91,7 +91,7 @@ const EnrollmentConnectionForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name']
     }).then(data => {
-      return data.hits.map(student => {console.log(student)
+      return data.hits.map(student => {
         return {
           ...student,
           label: student.full_name,
