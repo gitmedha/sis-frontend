@@ -4,7 +4,8 @@ import {
   GET_ASSIGNEES_LIST,
   UPDATE_EMPLOYER,
   DELETE_EMPLOYER,
-  CREATE_EMPLOYER
+  CREATE_EMPLOYER,
+  GET_EMPLOYER_EMPLOYMENT_CONNECTIONS
 } from "../../../graphql";
 
 export const getEmployersPickList = async () => {
@@ -83,3 +84,19 @@ export const deleteEmployer = async (id) => {
       return Promise.reject(error);
     });
 };
+
+export const getEmployerEmploymentConnections = async (employerId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_EMPLOYER_EMPLOYMENT_CONNECTIONS,
+    variables: {
+      id: Number(employerId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}

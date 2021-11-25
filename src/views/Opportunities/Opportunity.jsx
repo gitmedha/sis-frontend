@@ -65,7 +65,7 @@ const Opportunity = (props) => {
         setModalShow(false);
         return;
       }
-      let {id, show, created_at, ...dataToSave} = data;
+      let {id, show, created_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
 
       NP.start();
       updateOpportunity(Number(id), dataToSave).then(data => {

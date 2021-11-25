@@ -64,12 +64,14 @@ const ProgramEnrollments = (props) => {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
         batch_name: programEnrollment.batch?.name,
         institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
+        updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
     setProgramEnrollmentsTableData(data);
@@ -78,12 +80,16 @@ const ProgramEnrollments = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Institution',
-        accessor: 'institution.name',
+        Header: 'Student',
+        accessor: 'student_name',
       },
       {
-        Header: 'Program Name',
+        Header: 'Program',
         accessor: 'program_name',
+      },
+      {
+        Header: 'Institution',
+        accessor: 'institution.name',
       },
       {
         Header: 'Program Status',
@@ -94,21 +100,17 @@ const ProgramEnrollments = (props) => {
         accessor: 'registration_date_formatted',
       },
       {
-        Header: 'Fees Status',
-        accessor: 'fee_status_badge',
+        Header: 'Certification Date',
+        accessor: 'certification_date_formatted',
       },
       {
-        Header: 'Medha Program Certificate',
-        accessor: 'medha_program_certificate_icon',
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
-      },
-      {
-        Header: 'Student',
-        accessor: 'student_name',
       },
     ],
     []
@@ -168,7 +170,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let { id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
+    let { id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;

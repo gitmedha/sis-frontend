@@ -13,13 +13,14 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { GET_EMPLOYER, UPDATE_EMPLOYER } from "../../graphql";
-import { deleteEmployer, updateEmployer } from "./EmployerComponents/employerAction";
+import { deleteEmployer, updateEmployer, getEmployerEmploymentConnections } from "./EmployerComponents/employerAction";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import styled from 'styled-components';
+import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 
 const Styled = styled.div`
 .btn--primary, .btn--secondary {
@@ -39,6 +40,7 @@ const Employer = (props) => {
   const [employerOpportunities, setEmployerOpportunities] = useState([]);
   const [opportunitiesBadge, setOpportunitiesBadge] = useState(<></>);
   const { address, contacts, ...rest } = employerData;
+  const [employerEmploymentConnections, setEmployerEmploymentConnections] = useState([]);
   const {setAlert} = props;
   const history = useHistory();
   const employerId = props.match.params.id;
@@ -48,7 +50,7 @@ const Employer = (props) => {
       setModalShow(false);
       return;
     }
-    let {id, show, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
@@ -115,6 +117,15 @@ const Employer = (props) => {
     );
   }
 
+  const getEmploymentConnections = async () => {
+    getEmployerEmploymentConnections(employerId).then(data => {
+      let employmentConnections = data.data.data.employmentConnectionsConnection.values;
+      setEmployerEmploymentConnections(employmentConnections);
+    }).catch(err => {
+      console.log("getStudentEmploymentConnections Error", err);
+    });
+  }
+
   const getOpportunities = () => {
     getEmployerOpportunities(employerId).then(data => {
       setEmployerOpportunities(data.data.data.opportunities);
@@ -125,7 +136,8 @@ const Employer = (props) => {
   useEffect(() => {
     getThisEmployer();
     getOpportunities();
-  }, []);
+    getEmploymentConnections();
+  }, [employerId]);
 
   if (isLoading) {
     return <SkeletonLoader />;
@@ -133,61 +145,64 @@ const Employer = (props) => {
     return (
       <Styled>
         <>
-          <div className="row" style={{margin: '30px 0 0'}}>
-            <div className="col-12">
-              <button
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "0px" }}
-                className="btn--primary"
-              >
-                EDIT
-              </button>
-              <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
-                DELETE
-              </button>
-            </div>
+        <div className="row" style={{margin: '30px 0 0'}}>
+          <div className="col-12">
+            <button
+              onClick={() => setModalShow(true)}
+              style={{ marginLeft: "0px" }}
+              className="btn--primary"
+            >
+              EDIT
+            </button>
+            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+              DELETE
+            </button>
           </div>
-          <Collapsible
-            opened={true}
-            titleContent={
-              <TitleWithLogo
-                done={() => getThisEmployer()}
-                id={rest.id}
-                logo={rest.logo}
-                title={rest.name}
-                query={UPDATE_EMPLOYER}
-                icon="employer"
-              />
-            }
-          >
-            <Details {...employerData} />
+        </div>
+        <Collapsible
+          opened={true}
+          titleContent={
+            <TitleWithLogo
+              done={() => getThisEmployer()}
+              id={rest.id}
+              logo={rest.logo}
+              title={rest.name}
+              query={UPDATE_EMPLOYER}
+              icon="employer"
+            />
+          }
+        >
+          <Details {...employerData} />
+        </Collapsible>
+        <Collapsible title="Address">
+          <Address {...employerData} />
+        </Collapsible>
+        <Collapsible title="Contacts" badge={employerData?.contacts?.length}>
+          <Contacts contacts={contacts} id={rest.id} />
+        </Collapsible>
+        <Collapsible title="Opportunities" badge={opportunitiesBadge}>
+          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
+        </Collapsible>
+        <Collapsible title="Employment Connections" badge={employerEmploymentConnections.length}>
+            <EmploymentConnections employmentConnections={employerEmploymentConnections} employer={employerData} onDataUpdate={getEmploymentConnections} />
           </Collapsible>
-          <Collapsible title="Address">
-            <Address {...employerData} />
-          </Collapsible>
-          <Collapsible title="Contacts">
-            <Contacts contacts={contacts} id={rest.id} />
-          </Collapsible>
-          <Collapsible title="Opportunities" badge={opportunitiesBadge}>
-            <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
-          </Collapsible>
-          <EmployerForm
-            {...employerData}
-            show={modalShow}
-            onHide={hideUpdateModal}
-          />
-          <SweetAlert
-            danger
-            showCancel
-            btnSize="md"
-            show={showDeleteAlert}
-            onConfirm={() => handleDelete()}
-            onCancel={() => setShowDeleteAlert(false)}
-            title={
-              <span className="text--primary latto-bold">Delete {employerData.name}?</span>
-            }
-            customButtons={
-              <>
+        <EmployerForm
+          {...employerData}
+          show={modalShow}
+          onHide={hideUpdateModal}
+        />
+        <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          onConfirm={() => handleDelete()}
+          onCancel={() => setShowDeleteAlert(false)}
+          title={
+            <span className="text--primary latto-bold">Delete {employerData.name}?</span>
+          }
+          customButtons={
+            <>
                 <button
                   onClick={() => setShowDeleteAlert(false)}
                   className="btn btn-secondary mx-2 px-4"

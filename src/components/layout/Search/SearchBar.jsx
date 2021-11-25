@@ -30,6 +30,7 @@ const SearchBar = () => {
     institutions: [],
     employers: [],
     batches: [],
+    opportunities:[],
   });
 
   useEffect(async () => {
@@ -54,6 +55,9 @@ const SearchBar = () => {
     // make api call to employers
     await client.index('employers').search(searchState.query).then(async data => {
       apiHitsData['employers'] = data;
+    });
+    await client.index('opportunities').search(searchState.query).then(async data => {
+      apiHitsData['opportunities'] = data;
     });
     setHitsData(apiHitsData);
   }, [searchState])

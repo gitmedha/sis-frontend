@@ -25,6 +25,10 @@ export const GET_EMPLOYER_OPPORTUNITIES = `
       status
       role_or_designation
       role_description
+      assigned_to{
+        username
+      }
+      updated_at
     }
   }
 `;
@@ -99,6 +103,7 @@ export const GET_USER_EMPLOYERS = `
         medha_area
         pin_code
         state
+        district
         created_at
       }
       aggregate {
@@ -135,6 +140,14 @@ export const GET_EMPLOYER = `
       city
       created_at
       updated_at
+      created_by_frontend{
+        username
+        email
+      }
+      updated_by_frontend{
+        username
+        email
+      }
       district
       logo {
         url
@@ -241,3 +254,47 @@ export const DELETE_EMPLOYER = `
     }
   }
 `
+export const GET_EMPLOYER_EMPLOYMENT_CONNECTIONS = `
+query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
+  $id: Int
+  $limit: Int
+  $start: Int
+  $sort: String
+) {
+  employmentConnectionsConnection(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: { opportunity: { employer: { id: $id } } }
+  ) {
+    values {
+      id
+      status
+      start_date
+      end_date
+      source
+      reason_if_rejected
+      salary_offered
+      updated_at
+      student{
+        full_name
+        id
+        student_id
+      }
+      opportunity {
+        id
+        role_description
+        role_or_designation
+        type
+        employer {
+          id
+          name
+        }
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}`
+;

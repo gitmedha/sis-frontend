@@ -21,7 +21,7 @@ const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
   { title: "My Area", key: "my_area" },
   { title: "My State", key: "my_state" },
-  { title: "All Area", key: "all_medha" },
+  { title: "All Medha", key: "all_medha" },
 ];
 
 const Employers = (props) => {
@@ -52,20 +52,20 @@ const Employers = (props) => {
         accessor: "avatar",
       },
       {
-        Header: "Type of industry",
-        accessor: "industry",
-      },
-      {
-        Header: "Area",
-        accessor: "medha_area",
+        Header: "District",
+        accessor: "district",
       },
       {
         Header: "State",
         accessor: "state",
       },
       {
+        Header: "Industry",
+        accessor: "industry",
+      },
+      {
         Header: "Assigned To",
-        accessor: "assignedTo",
+        accessor: "assigned_to.username",
       },
     ],
     []
@@ -169,6 +169,7 @@ const Employers = (props) => {
       setAlert("Employer created successfully.", "success");
       getEmployers();
       setModalShow(false);
+      history.push(`/employer/${data.data.data.createEmployer.employer.id}`);
       }
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
@@ -188,6 +189,7 @@ const Employers = (props) => {
           <button
             className="btn btn-primary"
             onClick={() => setModalShow(true)}
+            style={{marginLeft: '15px'}}
           >
             Add New Employer
           </button>

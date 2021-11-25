@@ -8,6 +8,7 @@ import api from "../../apis";
 import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
+// import InstitutionBatches from "./InstitutionComponents/InstitutionBatches";
 import Students from "./InstitutionComponents/Students";
 import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
@@ -48,7 +49,7 @@ const Institute = (props) => {
     }
 
     // need to remove id and show from the payload
-    let {id, show, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, created_at, updated_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
@@ -147,9 +148,12 @@ const Institute = (props) => {
         <Collapsible title="Address">
           <Address {...instituteData}  id={rest.id} />
         </Collapsible>
-        <Collapsible title="Contacts">
+        <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
+        {/* <Collapsible title="Batches">
+          <InstitutionBatches />
+        </Collapsible> */}
         <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
           <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} />
         </Collapsible>

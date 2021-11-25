@@ -41,16 +41,8 @@ const Opportunities = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Area',
-        accessor: 'address',
-      },
-      {
         Header: 'Role/Designation',
         accessor: 'avatar',
-      },
-      {
-        Header: 'Openings',
-        accessor: 'number_of_opportunities',
       },
       {
         Header: 'Type',
@@ -61,8 +53,16 @@ const Opportunities = (props) => {
         accessor: 'status',
       },
       {
-        Header: 'Mapped',
-        accessor: 'students_mapped',
+        Header: 'Openings',
+        accessor: 'number_of_opportunities',
+      },
+      {
+        Header: 'Assigned To',
+        accessor: 'assigned_to.username',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
@@ -86,6 +86,7 @@ const Opportunities = (props) => {
         address: employer ? employer.address : '',
         employer: employer ? employer.name : '',
         created_at: moment(opportunity.created_at).format("DD MMM YYYY"),
+        updated_at: moment(opportunity.updated_at).format("DD MMM YYYY"),
       }
     });
     setOpportunitiesTableData(data);

@@ -6,9 +6,37 @@ import { getStudentsPickList } from "./StudentActions";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
+import CvUpload from "../../../components/content/Cv";
+import { UPDATE_STUDENT } from "../../../graphql";
+import Tooltip from "../../../components/content/Tooltip";
 
 const Styled = styled.div`
+ p, label {
+    color: #787B96;
+ }
+
+
+@media screen and (min-width: 425px) {
+  .col-md-1 {
+    flex: 0 0 auto;
+    width: 8.33333%;
+    padding: 0px 33px 0px 4px;
+    }
+  .icon-box {
+    margin: -15px 20px 0px 0px;
+   }
+}
+
+@media screen and (min-width: 768px) {
+  .icon-box {
+  margin: -15px 20px 0px 210px;
+  }
+}
+
+.icon-box{
+  display:flex;
+}
   .container-fluid {
     padding-left: 30px;
     padding-right: 30px;
@@ -37,7 +65,7 @@ const Styled = styled.div`
   }
   .section-cv {
     color: #787B96;
-    label {
+    label, {
       font-size: 14px;
       line-height: 1.25;
     }
@@ -47,12 +75,16 @@ const Styled = styled.div`
       margin-bottom: 0;
       margin-left: 15px;
       font-family: 'Latto-Italic';
+      color: #787B96;
     }
   }
 `;
 
 const Details = (props) => {
+  let { onUpdate, onDelete } = props;
   const {
+    id,
+    student_id,
     full_name,
     phone,
     name_of_parent_or_guardian,
@@ -71,6 +103,8 @@ const Details = (props) => {
     assigned_to,
     created_at,
     updated_at,
+    created_by_frontend,
+    updated_by_frontend
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -86,23 +120,29 @@ const Details = (props) => {
     <Styled>
       <div className="container-fluid my-3">
         <div className="row latto-regular">
-          <div className="col-md-4">
-            <DetailField label=" Name" value={full_name} />
+          <div className="col-md-5">
+            <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
-            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
-            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
-            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
-            <DetailField label="Assigned To" value={assigned_to?.username} />
-          </div>
-          <div className="col-md-4">
-            <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
+            <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
+            &nbsp;
+            <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
+            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            
+          </div>
+          <div className="col-md-4">
+            <DetailField label="Assigned To" value={assigned_to?.username} />
+            <DetailField label=" Student ID" value={student_id} />
+            <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+            <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
-            <DetailField label="Income Level (INR)" value={income_level} />
+            &nbsp;
+            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
-          <div className="col-md-4 d-flex justify-content-end">
+          
+          <div className="col-md-3 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
               {logo && <img className="img-profile" src={urlPath(logo.url)} alt={full_name} />}
@@ -111,25 +151,46 @@ const Details = (props) => {
         </div>
         <hr className="separator" />
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-5">
             <DetailField label="Medha Champion" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
-            <DetailField label="ID in SIS 2.0" value={old_sis_id} />
-            <DetailField label="Latest Course Type" value={course_type_latest} />
+            {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
+            {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
-          {CV &&
-            <div className="offset-md-3 col-md-3 d-flex flex-column section-cv">
-              <div className="d-flex align-items-end mb-2">
-                <label>CV</label>
-                <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
+          <div className="col-md-4">
+          <DetailField label="Income Level (INR)" value={income_level} />
+          <DetailField label="CV Upload" value=
+              {CV &&
+                <div>
+                  <label>CV</label>
+                  <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
+                </div> 
+                }
+                />
+             <div className="icon-box">
+              <div class=" col-md-1">
+                <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
               </div>
-              <div className="d-flex align-items-start">
-                <a href={urlPath(CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
+              <div class="col-md-1">
+                {CV &&
+                  <div className="col-md-1 d-flex flex-column section-cv">   
+                    <Tooltip placement="top" title="Click Here to View CV">
+                      <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
+                     </Tooltip>   
+                  </div>   
+                }
               </div>
-            </div>
-          }
+              <div class="col-md-1">
+                {CV &&
+                  <Tooltip placement="top" title="Click Here to Delete CV">
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#207B69' : '#787B96'} /> </a>
+                  </Tooltip>   
+                }
+              </div>
+            </div> 
+          </div>
+         </div>
         </div>
-      </div>
     </Styled>
   );
 };
