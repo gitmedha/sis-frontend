@@ -26,6 +26,22 @@ const industry = Yup.string().required("Industry is required.");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 
+// Employment Connection form fields.
+const start_date = Yup.date().nullable().required("Start Date is required.");
+const end_date = Yup.date().nullable().required("End Date is required.")
+                    .when(
+                      "start_date",
+                      (start_date, schema) => start_date && schema.min(start_date, "End date can't be before Start date")
+                    );
+const employment_connection_status = Yup.string().nullable().required("Employment Connection status is required.");
+const employer_id = Yup.string().required("Employer is required.");
+const opportunity_id = Yup.string().required("Opportunity is required.");
+const student_id = Yup.string().required("Student is required.");
+const source = Yup.string().required("Source is required.");
+const salary_offered = Yup.number().nullable().required("Salary Offered is required.")
+                          .min(0, 'Min value 0.')
+                          .max(1000000, 'Salary should be in range of between 0 to 10 Lakh.');
+
 const contacts = Yup.array().of(
   Yup.object({
     full_name,
@@ -34,6 +50,16 @@ const contacts = Yup.array().of(
     designation,
   })
 );
+
+export const EmploymentConnectionValidations = Yup.object({
+  status: employment_connection_status,
+  employer_id,
+  opportunity_id,
+  start_date,
+  source,
+  salary_offered,
+  student_id
+});
 
 export const EmployerValidations = Yup.object({
     name,

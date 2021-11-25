@@ -248,7 +248,7 @@ const SearchHits = props => {
         break;
       
       case 'opportunities':
-        history.push(`/opportunities/${hit.id}`);
+        history.push(`/opportunity/${hit.id}`);
         break;
 
       case 'students':

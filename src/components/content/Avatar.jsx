@@ -140,7 +140,7 @@ const ChangeAvatarModal = (props) => {
           CANCEL
         </button>
         <button className="btn btn-primary btn-regular" onClick={updateImage}>
-          Change Logo
+          SAVE
         </button>
       </Modal.Footer>
     </Modal>

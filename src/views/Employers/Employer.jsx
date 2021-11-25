@@ -19,7 +19,7 @@ import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
-// import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
+import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
@@ -171,9 +171,9 @@ const Employer = (props) => {
         <Collapsible title="Opportunities" badge={opportunitiesBadge}>
           <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
         </Collapsible>
-        {/* <Collapsible title="Employment Connections" badge={employerEmploymentConnections.length}>
+        <Collapsible title="Employment Connections" badge={employerEmploymentConnections.length}>
             <EmploymentConnections employmentConnections={employerEmploymentConnections} employer={employerData} onDataUpdate={getEmploymentConnections} />
-          </Collapsible> */}
+          </Collapsible>
         <EmployerForm
           {...employerData}
           show={modalShow}
