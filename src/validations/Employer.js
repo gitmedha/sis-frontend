@@ -37,7 +37,6 @@ const employment_connection_status = Yup.string().nullable().required("Employmen
 const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
 const student_id = Yup.string().required("Student is required.");
-const employer_name  = Yup.string().required("Employer is required.");
 const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.number().nullable().required("Salary Offered is required.")
                           .min(0, 'Min value 0.')
@@ -53,14 +52,13 @@ const contacts = Yup.array().of(
 );
 
 export const EmploymentConnectionValidations = Yup.object({
-  start_date,
   status: employment_connection_status,
+  employer_id,
   opportunity_id,
+  start_date,
   source,
   salary_offered,
-  employer_name,
-  student_id,
-  opportunity_id
+  student_id
 });
 
 export const EmployerValidations = Yup.object({

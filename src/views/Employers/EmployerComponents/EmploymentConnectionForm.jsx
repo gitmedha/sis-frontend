@@ -45,13 +45,14 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection ? props.employmentConnection?.opportunities?.type: null);
 
   let initialValues = {
+    student_id:'',
     employer_id:'',
-    opportunity_id:'',
     status: '',
+    salary_offered:'',
+    opportunity_id:'',
     start_date:'',
     end_date:'',
     source:'',
-    salary_offered:'',
   };
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
@@ -171,7 +172,7 @@ const EnrollmentConnectionForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={EmploymentConnectionValidations}
+          validationSchema={EmploymentConnectionValidations}
         >
           {({ setFieldValue }) => (
             <Form>
