@@ -64,7 +64,7 @@ const SearchStateContainer = styled.div`
         background-color: #AA223C;
       }
       &.badge-opportunities {
-        background-color: #109e10;
+        background-color: #207B69;
       }
       &.badge-institutions-light {
         background-color: #FC636B66;
@@ -145,11 +145,11 @@ const SearchStateResults = (props) => {
           <div className={`badge ${activeFilterBy === 'institutions' ? 'badge-institutions' : (hitsData.institutions && hitsData.institutions.nbHits ? 'badge-institutions-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('institutions')}>
             Institutions {hitsData.institutions ? `(${hitsData.institutions.nbHits})` : ''}
           </div>
-          <div className={`badge ${activeFilterBy === 'employers' ? 'badge-employers' : (hitsData.employers && hitsData.employers.nbHits ? 'badge-employers-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('employers')}>
-            Employers {hitsData.employers ? `(${hitsData.employers.nbHits})` : ''}
-          </div>
           <div className={`badge ${activeFilterBy === 'batches' ? 'badge-batches' : (hitsData.batches && hitsData.batches.nbHits ? 'badge-batches-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('batches')}>
             Batches {hitsData.batches ? `(${hitsData.batches.nbHits})` : ''}
+          </div>
+          <div className={`badge ${activeFilterBy === 'employers' ? 'badge-employers' : (hitsData.employers && hitsData.employers.nbHits ? 'badge-employers-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('employers')}>
+            Employers {hitsData.employers ? `(${hitsData.employers.nbHits})` : ''}
           </div>
           <div className={`badge ${activeFilterBy === 'opportunities' ? 'badge-opportunities' : (hitsData.opportunities && hitsData.opportunities.nbHits ? 'badge-opportunities-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('opportunities')}>
             Opportunities {hitsData.opportunities ? `(${hitsData.opportunities.nbHits})` : ''}

@@ -279,6 +279,7 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       student{
         full_name
         id
+        student_id
       }
       opportunity {
         id

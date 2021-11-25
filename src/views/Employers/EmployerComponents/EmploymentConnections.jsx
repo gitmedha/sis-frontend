@@ -10,6 +10,7 @@ import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
+import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
@@ -44,17 +45,24 @@ const OpportunityIcon = ({opportunity}) => {
 };
 
 const EmploymentConnections = (props) => {
-  let { employmentConnections, opportunity, onDataUpdate } = props;
+  let { employmentConnections, employer, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
   const {setAlert} = props;
+  const [opportunitypickList, setopportunityPickList] = useState([]);
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({
-    student: {},
+    employer: {},
   });
+
+  useEffect(() => {
+    getOpportunitiesPickList().then(data => {
+      setopportunityPickList(data);
+    });
+  }, [])
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
@@ -66,8 +74,9 @@ const EmploymentConnections = (props) => {
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? employmentConnection.student.full_name : '',
+        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',  
         institution_name: 'To be added',
+        opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitypickList.type}/>,
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
         role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
@@ -79,7 +88,7 @@ const EmploymentConnections = (props) => {
       };
     });
     setEmploymentConnectionsTableData(data);
-  }, [employmentConnections, pickList]);
+  }, [employmentConnections, pickList, opportunitypickList]);
 
   const columns = useMemo(
     () => [
@@ -88,8 +97,12 @@ const EmploymentConnections = (props) => {
         accessor: 'student_name',
       },
       {
-        Header: 'Student ID',
-        accessor: 'student_id',
+        Header: 'Role/Designation',
+        accessor: 'opportunity.role_or_designation',
+      },
+      {
+        Header: 'Type',
+        accessor: 'opportunity_type',
       },
       {
         Header: 'Status',
@@ -142,14 +155,13 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer_id, opportunity_id, opportunity, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = opportunity.id;
-    dataToSave['student'] = student_id;
-    console.log(data)
-    console.log(dataToSave)
+    dataToSave['opportunity'] = data.opportunity_id;
+    dataToSave['student'] = student_id
+ 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {
@@ -168,14 +180,14 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, updated_at, created_at, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer_id, created_at, opportunity_id, updated_at, opportunity_type, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id;
-
-    updateEmploymentConnection(Number(id), dataToSave).then(data => {
+  
+    updateEmploymentConnection(Number(id), dataToSave).then(data => {console.log(dataToSave)
       setAlert("Employment Connection updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
@@ -222,12 +234,12 @@ const EmploymentConnections = (props) => {
       <CreateEmploymentConnectionForm
         show={createModalShow}
         onHide={hideCreateModal}
-        opportunity={opportunity}
+        employer={employer}
       />
       <UpdateEmploymentConnectionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
-        opportunity={opportunity}
+        employer={employer}
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert

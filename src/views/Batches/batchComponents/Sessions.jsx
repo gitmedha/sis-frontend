@@ -172,7 +172,7 @@ const Sessions = (props) => {
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            Session & Attendance
+            Add Session & Attendance
           </button>
         </div>
         <div className="col-12 mt-3">

@@ -53,8 +53,8 @@ function ColorlibStepIcon(props) {
 
   const icons = {
     1: <FaClipboardCheck size={20} />,
-    2: <Tooltip color="#eeeff8" textColor="#6c6d78" placement="top" title= {<div>Certificate <span style=  {{  borderRadius:'2px', padding: '0px 6px 1px 9px', backgroundColor:"#D1D2DB" }}>3X  </span> </div>} ><FaGraduationCap size={20} /></Tooltip>,
-    3: <Tooltip color="#eeeff8" textColor="#6c6d78" placement="top" title= {<div>Internship  <span style = {{  borderRadius:'2px', padding: '0px 6px 1px 9px', backgroundColor:"#D1D2DB" }}>3X  </span> </div>}><FaBlackTie size={20}/></Tooltip>,
+    2: <Tooltip color="#eeeff8" textColor="#6c6d78" placement="top" title= {<div>Certificate </div>} ><FaGraduationCap size={20} /></Tooltip>,
+    3: <Tooltip color="#eeeff8" textColor="#6c6d78" placement="top" title= {<div>Internship </div>}><FaBlackTie size={20}/></Tooltip>,
     4: <FaBriefcase size={20} />,
   };
 
@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiTypography-root': {
       fontFamily: 'Latto-Regular',
+      color:'#808080',
     },
   },
 }));

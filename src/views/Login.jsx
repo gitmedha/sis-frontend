@@ -16,12 +16,16 @@ const Styled = styled.div`
   padding: 5px;
   width: 130px;
   height: 130px;
-  margin-left: 175px;
+ }
+ 
+ .row{
+  display: flex;
+  justify-content: center;
  }
 
  .row-box{
     color: black;
-    font-size: 60px;
+    font-size: 40px;
     line-height: 1.25;
     margin: 49px 39px 1px 19px;
     width:90%;
@@ -32,79 +36,107 @@ p{
   margin-bottom: 0rem;
   font-family: Bebas Neue Book;
   font-size: 80px;
+  text-align:center;
 }
   
 .box-1, .col{
   display: inline-block;
   overflow: hidden;
-  height:100%;
 }
 
 .image{
-  max-width:85%;
+  max-width:100%;
   max-height:10%;
-  margin: 6px 6px 4px 35px;
-}
-
-.logo{
-  max-width:35%;
-  max-height:10%;
-}
-
-p{
-text-align:center;
 }
 
 .btn-ms-login {
     border: 3px solid #32b89d;
     box-sizing: border-box;
     border-radius: 40px;
-    font-size: 20px;
-    padding: 20px 45px ;
+    font-size: 15px;
+    padding: 8px 30px;
     color: black;
     font-family: 'Lato';
     text-decoration: none;
-    margin: 110px -40px 20px 15px;
+    margin: 31px 19px 19px 6px;
     img {
       width: 20px;
       margin-right: 20px;
     }
 }
 
-  @media screen and (min-width: 768px) {
-  .logo {
-    padding: 5px;
-    width: 130px;
-    height: 130px;
-    margin-left: 30px;
+  @media (min-width:350px) and (max-width: 767px) {
+  .row{
+    display: flex;
+    justify-content:center;
   }
+
+  .row-box{
+    color: black;
+    font-size: 40px;
+    line-height: 1.25;
+    margin: 40px 39px 1px 19px;
+    width:90%;
+  }  
   .line-box{
     border: 2px solid #32b89d;
-    margin:0px 400px 0px 21px;
+    margin: 9px 97px 3px 107px;
   }
   .image{
-    max-width:85%;
-    max-height:10%;
-    margin: 6px 6px 4px 64px;
+    max-height: 100%;
+    height: 100%;
+    width: 100%
   }
   .btn-ms-login {
-    margin: 80px 0px 20px 5px;
-    font-family: 'Lato Regular';
+    font-size: 15px;
+    padding: 13px 30px 12px 29px;
+    margin:  31px -60px 17px 8px;
+  }
+}
+
+@media (min-width:768px) and (max-width:1440px) {
+  .row-box-2{
+    display: flex;
+    justify-content:start;
+    height: 650px;
+  }
+  
+  .button-box{
+    position:fixed; 
+	  bottom:0; 
+	  left:22px; 
+  }
+
+  .row-box{
+    color: black;
+    font-size: 40px;
+    line-height: 1.25;
+    margin: 235px 39px 1px 19px;
+    width:90%;
+  }
+  .logo {
+    position:fixed; 
+	  top:0; 
+	  left:22px; 
+  }
+  
+  .line-box{
+    border: 2px solid #32b89d;
+    margin: 9px 424px 0px 15px;
+  }
+  .image{
+    max-height: 100%;
+    height: 100%;
+    width: 100%
+  }
+  .btn-ms-login {
+    font-size: 15px;
+    padding: 13px 30px 13px 13px;
+    margin:95px 180px 22px 6px;
   }
   p{
     text-align: initial;
-    }
-}
-
-@media (min-width:750px) and (max-width:1024px) {
-  .image{
-    max-width:125%;
-    max-height:90%;
-    margin: 6px 6px 4px 35px;
-  }
-  .line-box{
-    border: 2px solid #32b89d;
-    margin:0px 260px 0px 21px;
+    font-size: 70px;
   }
 }
 `;
@@ -113,8 +145,8 @@ const Login = () => {
   return (
     <Styled>
       <div class="container-fluid">
-        <div class="row">
-          <div className="col col-md-5">
+        <div class="row-box-2">
+          <div className="box-2 col-md-5">
             <div class="row">
               <img
                   src={require('../assets/images/logo.png').default}
@@ -126,14 +158,15 @@ const Login = () => {
               <p id="text" >STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
             </div>
             <div class="line-box"> </div>
-            <div class=" button-box">
+            <div class=" button-box" style={{textAlign:"center"}}>
               <a type="button" href={urlPath('/connect/microsoft')} className="btn-ms-login d-flex">
                   <img
                     src={require('../assets/images/logo-microsoft.svg').default}
                     alt="Microsoft"
                     className={`mr-5`}
+                    
                   />
-                  <span style={{fontFamily:"Latto-Regular"}}>Login using Microsoft account</span>
+                  <span style={{fontFamily:"Latto-Regular", textAlign:"center"}}>Login using Microsoft account</span>
               </a>
             </div>
         </div>
@@ -142,6 +175,7 @@ const Login = () => {
               src={require('../assets/images/web-image.png').default}
               alt="Medha SIS"
               className='image'
+              width="400" height="400"
           />
         </div>
       </div>
