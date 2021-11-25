@@ -134,7 +134,7 @@ p{
     font-size: 70px;
   }
 }
-@media (min-width:1025px) and (max-width:1370px)  {
+@media screen and (min-width:1025px)   {
   .row-box-2{
     display: flex;
     justify-content:start;
@@ -167,7 +167,7 @@ p{
   .btn-ms-login {
     font-size: 16px;
     padding: 18px 57px 15px 49px;
-    margin: 89px -16px 43px -8px;
+    margin: 89px 115px 43px -8px;
   }
   p{
     text-align: initial;
