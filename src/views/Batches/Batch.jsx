@@ -22,6 +22,20 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
 import { groupBy } from "lodash";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+.button{
+    padding: 6px 43px !important;
+}
+
+@media screen and (max-width: 360px) {
+  .section-badge {
+    margin-left: 2px;
+    padding: 0px 20px !important;
+    }
+}
+`
 
 const Batch = (props) => {
   const [batchProgramEnrollments, setBatchProgramEnrollments] = useState([]);
@@ -197,17 +211,18 @@ const Batch = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
-      <>
+      <Styled>
+    <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
-              className="btn--primary"
+              className="button btn--primary"
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
             {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
@@ -254,22 +269,23 @@ const Batch = (props) => {
           }
           customButtons={
             <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
+                <button
+                  onClick={() => setShowDeleteAlert(false)}
+                  className="btn btn-secondary mx-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                  Delete
+                </button>
+              </>
+            }
+          >
+            <p>Are you sure, you want to delete this batch?</p>
+          </SweetAlert>
           }
-        >
-          <p>Are you sure, you want to delete this batch?</p>
-        </SweetAlert>
-        }
-      </>
+        </>
+        </Styled>
     );
   }
 };

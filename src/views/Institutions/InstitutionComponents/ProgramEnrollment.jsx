@@ -26,6 +26,23 @@ const Section = styled.div`
     margin-bottom: 20px;
     margin-top: px;
   }
+  .btn-box{
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+    margin-right: 1.5rem!important;
+    margin-left: 1.5rem!important;
+  }
+
+  @media screen and (max-width: 360px) {
+    .btn-box{
+      height: 57px;
+      width: 117px;
+      padding-right: 0.5rem!important;
+      padding-left: 0.5rem!important;
+      margin-right: 0.5rem!important;
+      margin-left: 0.5rem!important;
+    }
+  }
 `;
 
 const ProgramEnrollment = (props) => {
@@ -111,9 +128,9 @@ const ProgramEnrollment = (props) => {
           </div>
           <div className="row mt-4">
             <div className="col-md-12 d-flex justify-content-center">
-              <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button>
-              <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button>
-              <button type="button" className="btn btn-primary px-4 mx-4" onClick={() => {}}>REGENERATE CERTIFICATE</button>
+              <button type="button" className="btn-box btn btn-primary" onClick={handleEdit}>EDIT</button>
+              <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
+              <button type="button" className="btn-box btn btn-primary" onClick={() => {}}>REGENERATE CERTIFICATE</button>
             </div>
           </div>
           </Section>

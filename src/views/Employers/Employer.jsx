@@ -19,8 +19,24 @@ import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
+import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 
+const Styled = styled.div`
+.button {
+  padding: 6px 43px !important;
+}
+
+@media screen and (max-width: 360px) {
+ .btn-box{
+   margin-left: 20px;
+  }
+ .section-badge {
+   margin-left: 2px;
+   padding: 0px 20px !important;
+  }
+}
+`
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
@@ -132,17 +148,18 @@ const Employer = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
-      <>
+      <Styled>
+        <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
+          <div className="btn-box col-12">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
-              className="btn--primary"
+              className="button btn--primary"
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
           </div>
@@ -191,21 +208,22 @@ const Employer = (props) => {
           }
           customButtons={
             <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
-          }
-        >
-          <p>Are you sure, you want to delete this employer?</p>
-        </SweetAlert>
-      </>
+                <button
+                  onClick={() => setShowDeleteAlert(false)}
+                  className="btn btn-secondary mx-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                  Delete
+                </button>
+              </>
+            }
+          >
+            <p>Are you sure, you want to delete this employer?</p>
+          </SweetAlert>
+        </>
+      </Styled>  
     );
   }
 };

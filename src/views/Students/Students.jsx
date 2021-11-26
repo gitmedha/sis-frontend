@@ -68,11 +68,6 @@ const Students = (props) => {
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
 
-  useEffect(() => {
-    getStudents(activeTab.key);
-  }, [activeTab]);
-
-
   const columns = useMemo(
     () => [
       {
@@ -232,9 +227,9 @@ const Students = (props) => {
   };
 
 
-  const handleStudentStatusTabChange = (activeTab) => {
-    setActiveStatus(activeTab.title);
-    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex, activeStatus);
+  const handleStudentStatusTabChange = (statusTab) => {
+    setActiveStatus(statusTab.title);
+    getStudents(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
   }
 
   return (
