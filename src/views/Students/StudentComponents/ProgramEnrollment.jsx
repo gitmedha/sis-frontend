@@ -36,16 +36,14 @@ const Section = styled.div`
 
   @media screen and (max-width: 360px) {
     .btn-box{
-    height: 50px;
-    width: 80px;
-    height: 57px;
-    width: 117px;
-    Padding-right: 0.5rem!important;
-    padding-left: 0.5rem!important;
-    margin-right: 0.5rem!important;
-    margin-left: 0.5rem!important;
+      height: 57px;
+      width: 117px;
+      padding-right: 0.5rem!important;
+      padding-left: 0.5rem!important;
+      margin-right: 0.5rem!important;
+      margin-left: 0.5rem!important;
     }
-}
+  }
 `;
 
 const ProgramEnrollment = (props) => {

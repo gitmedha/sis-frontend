@@ -17,27 +17,27 @@ import { useHistory } from "react-router-dom";
 import NP from "nprogress";
 
 const Styled = styled.div`
-  .img-profile-container {
-    position: relative;
-    .status-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1px 5px 5px 5px;
+.img-profile-container {
+  position: relative;
+  .status-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1px 5px 5px 5px;
+  }
+  .img-profile {
+    width: 160px;
+    margin-left: auto;
     }
-    .img-profile {
-      width: 160px;
-      margin-left: auto;
-    }
-  }
-  .separator {
-    background-color: #C4C4C4;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  hr {
-    height: 1px;
-  }
+}
+.separator {
+  background-color: #C4C4C4;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+hr {
+  height: 1px;
+}
 `;
 
 const ProgramEnrollments = (props) => {

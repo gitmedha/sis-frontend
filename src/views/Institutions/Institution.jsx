@@ -23,18 +23,18 @@ import styled from 'styled-components';
 const Styled = styled.div`
 
 .button {
-font-size: 16px;
-margin: auto 10px;
-border-radius: 5px;
-font-family: Latto-Bold;
-padding: 6px 43px !important;
+  font-size: 16px;
+  margin: auto 10px;
+  border-radius: 5px;
+  font-family: Latto-Bold;
+  padding: 6px 43px !important;
 }
 
 @media screen and (max-width: 360px) {
   .section-badge {
     margin-left: 2px;
     padding: 0px 20px !important;
-}
+  }
 }
 `
 

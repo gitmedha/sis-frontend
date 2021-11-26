@@ -88,9 +88,8 @@ const Styled = styled.div`
       }
     }
   }
-
   .page-box{
-    margin:15px 15px 15px 15px;
+    margin:15px;
   }
 `
 
