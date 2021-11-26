@@ -111,6 +111,12 @@ const SearchStateContainer = styled.div`
       padding: 15px;
     }
   }
+  @media screen and (max-width: 360px) {
+    .header {
+      height: 50px;
+      overflow-y: scroll;
+    }
+}
 `;
 
 const SearchStateResults = (props) => {

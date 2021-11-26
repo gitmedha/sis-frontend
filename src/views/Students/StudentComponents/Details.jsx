@@ -34,6 +34,12 @@ const Styled = styled.div`
   }
 }
 
+@media screen and (max-width: 360px) {
+  .col-md-1{
+    padding: 0px 15px 0px 0px;
+  }
+}
+
 .icon-box{
   display:flex;
 }

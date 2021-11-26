@@ -89,8 +89,8 @@ const Styled = styled.div`
     }
   }
 
-  .css-yk16xz-control{
-    margin:15px -35px 0px -12px;
+  .page-box{
+    margin:15px 15px 15px 15px;
   }
 `
 
@@ -138,7 +138,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
   return (
     <Styled>
       <div className="row d-flex align-items-center w-100">
-        <div className="col-md-2">
+        <div className="page-box col-md-2">
           <Select
             value = {pageSizeOptions.filter(option => option.value === pageLimit)}
             options={pageSizeOptions}

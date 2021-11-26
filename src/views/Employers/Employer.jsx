@@ -23,13 +23,18 @@ import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 
 const Styled = styled.div`
-.btn--primary, .btn--secondary {
-    padding: 6px 43px !important;
+.button {
+  padding: 6px 43px !important;
 }
 
-.section-badge {
-    margin-left: 2px;
-    padding: 0px 20px !important;
+@media screen and (max-width: 360px) {
+ .btn-box{
+   margin-left: 20px;
+  }
+ .section-badge {
+   margin-left: 2px;
+   padding: 0px 20px !important;
+  }
 }
 `
 const Employer = (props) => {
@@ -146,15 +151,15 @@ const Employer = (props) => {
       <Styled>
         <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
+          <div className="btn-box col-12">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
-              className="btn--primary"
+              className="button btn--primary"
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
           </div>

@@ -20,6 +20,17 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+
+@media screen and (max-width: 360px) {
+  .section-badge {
+    margin-left: 2px;
+    padding: 0px 20px !important;
+  }
+}
+`
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -165,6 +176,7 @@ const Student = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
+      <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
@@ -239,6 +251,7 @@ const Student = (props) => {
           <p>Are you sure, you want to delete this student?</p>
         </SweetAlert>
       </>
+      </Styled>
     );
   }
 };
