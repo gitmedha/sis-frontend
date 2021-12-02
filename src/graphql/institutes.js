@@ -365,6 +365,8 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  program_selected_by_student
+  discount_code_id
   medha_program_certificate {
     id
     url

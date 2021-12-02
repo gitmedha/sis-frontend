@@ -41,6 +41,7 @@ const EmployerForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const assigned_to_name = localStorage.getItem('user_name')
 
   useEffect(() => {
     getEmployersPickList().then(data => {
@@ -63,9 +64,9 @@ const EmployerForm = (props) => {
 
     getAssigneeOptions().then(data => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-          label: `${assignee.username} (${assignee.email})`,
-          key: assignee.username,
-          value: assignee.id,
+        key: assignee.username,
+        label: `${assignee.username} (${assignee.email})`,
+        value: `${assignee.username} (${assignee.email})`,
       })));
     });
 
@@ -118,7 +119,7 @@ const EmployerForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to:'',
+    assigned_to:assigned_to_name,
     state:'',
     pin_code:'',
     city:'',
@@ -128,7 +129,7 @@ const EmployerForm = (props) => {
 
   if (props.id) {
     initialValues = {...props};
-    initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['assigned_to'] = props.assigned_to ? (`${props.assigned_to.username} (${props.assigned_to.email})`): '';
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }

@@ -62,7 +62,7 @@ const Details = ({ batch, sessions=[] }) => {
           &nbsp;
           {/* <DetailField label="Name in Current SIS" value={batch.name_in_current_sis} /> */}
           <DetailField label="State" value={batch.state} />
-          <DetailField label="Grant" value={batch.grant.name} />
+          <DetailField label="Grant" value={batch.grant?.name} />
           &nbsp;
           <DetailField label="Session Planned" value={batch.number_of_sessions_planned} />
           <DetailField label="Seats Avaiable" value={ batch.seats_available || 0} />

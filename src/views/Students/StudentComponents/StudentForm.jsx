@@ -47,6 +47,7 @@ const StudentForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const assigned_to_name = localStorage.getItem('user_name')
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -68,7 +69,7 @@ const StudentForm = (props) => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
           key: assignee.username,
           label: `${assignee.username} (${assignee.email})`,
-          value: assignee.id,
+          value: `${assignee.username} (${assignee.email})`,
       })));
     });
 
@@ -121,7 +122,7 @@ const StudentForm = (props) => {
     category:'',
     email:'',
     gender:'',
-    assigned_to:'',
+    assigned_to:assigned_to_name,
     status:'',
     income_level:'',
     date_of_birth:'',
@@ -137,7 +138,7 @@ const StudentForm = (props) => {
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
-    initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['assigned_to'] = props.assigned_to ? (`${props.assigned_to.username} (${props.assigned_to.email})`): '';
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }

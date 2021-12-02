@@ -131,6 +131,7 @@ export const GET_EMPLOYER = `
       assigned_to{
         id
         username
+        email
       }
       address
       pin_code

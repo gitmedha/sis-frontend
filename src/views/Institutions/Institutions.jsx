@@ -40,7 +40,7 @@ const Institutions = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const userId = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
-  const area = localStorage.getItem('user_area')
+  const area = localStorage.getItem('user_area');
 
   useEffect(() => {
     getInstitutions(activeTab.key);

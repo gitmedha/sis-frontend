@@ -27,6 +27,7 @@ updated_by_frontend{
 assigned_to {
   id
   username
+  email
 }
 employer{
   id

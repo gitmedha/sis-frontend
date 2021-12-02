@@ -109,7 +109,7 @@ const ProgramEnrollment = (props) => {
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Fee Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
-              <DetailField label="Discount Code ID" value={``} />
+              <DetailField label="Discount Code ID" value={programEnrollment.discount_code_id} />
               <DetailField label="Fee Amount (INR)" value={programEnrollment.fee_amount} />
             </div>
             <div className="col-md-6 col-sm-12">

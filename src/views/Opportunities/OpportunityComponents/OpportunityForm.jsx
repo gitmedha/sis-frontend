@@ -45,7 +45,7 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-const OpportunityForm = (props) => {
+const OpportunityForm = (props) => {console.log(props)
   let { onHide, show } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
@@ -56,9 +56,11 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const assigned_to_name = localStorage.getItem('user_name')
+  
   const [initialValues, setInitialValues] = useState({
     employer: '',
-    assigned_to: '',
+    assigned_to: assigned_to_name ,
     role_or_designation: '',
     type: '',
     compensation_type: '',
@@ -75,6 +77,7 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
+  
 
   useEffect(() => {
     if (props.institution) {
@@ -123,7 +126,7 @@ const OpportunityForm = (props) => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
           key: assignee.username,
           label: `${assignee.username} (${assignee.email})`,
-          value: assignee.id,
+          value: `${assignee.username} (${assignee.email})`,
       })));
     });
 
@@ -139,7 +142,7 @@ const OpportunityForm = (props) => {
     if (props.id) {
       setInitialValues({
         ...props,
-        assigned_to: props.assigned_to ? props.assigned_to.id : '',
+        assigned_to: props.assigned_to ? (`${props.assigned_to.username} (${props.assigned_to.email})`): '',
         employer: props.employer ? Number(props.employer.id) : '',
       });
     }
