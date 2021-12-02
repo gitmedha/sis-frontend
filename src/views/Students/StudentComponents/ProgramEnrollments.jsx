@@ -41,7 +41,7 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = (props) => {
-  let { programEnrollments, student, onDataUpdate } = props;console.log(props)
+  let { programEnrollments, student, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);

@@ -45,7 +45,7 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-const OpportunityForm = (props) => {console.log(props)
+const OpportunityForm = (props) => {
   let { onHide, show } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
