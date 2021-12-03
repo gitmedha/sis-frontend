@@ -126,7 +126,7 @@ const OpportunityForm = (props) => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
           key: assignee.username,
           label: `${assignee.username} (${assignee.email})`,
-          value:  assignee.id,
+          value: assignee.id,
       })));
     });
 

@@ -31,7 +31,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show } = props; 
+  let { onHide, show } = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
