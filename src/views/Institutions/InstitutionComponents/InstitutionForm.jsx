@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
+import { FaSchool, FaUserFriends } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
@@ -31,7 +31,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show } = props; 
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -40,7 +40,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
-  const assigned_to_name = localStorage.getItem('user_name')
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -64,7 +64,7 @@ const InstitutionForm = (props) => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
           key: assignee.username,
           label: `${assignee.username} (${assignee.email})`,
-          value: `${assignee.username} (${assignee.email})`,
+          value: assignee.id,
       })));
     });
 
@@ -118,7 +118,7 @@ const InstitutionForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to: assigned_to_name,
+    assigned_to:userId.toString(),
     state:'',
     pin_code:'',
     city:'',
@@ -127,10 +127,11 @@ const InstitutionForm = (props) => {
   };
 
   if (props.id) {
-    initialValues = {...props} 
-    initialValues['assigned_to'] = props.assigned_to ? (`${props.assigned_to.username} (${props.assigned_to.email})`): '';
+    initialValues = {...props}
+    initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    
   }
 
   if (!props.contacts) {

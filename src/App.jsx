@@ -52,7 +52,6 @@ const App = (props) => {
   const userId = localStorage.getItem("user_id");
   localStorage.setItem("user_state" , user?.state);
   localStorage.setItem("user_area", user?.area);
-  localStorage.setItem("user_name", `${user?.username} (${user?.email})`)
 
   const logout = (callback = () => {}) => {
     setUser(null);

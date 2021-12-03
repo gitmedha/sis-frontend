@@ -47,7 +47,7 @@ const BatchForm = (props) => {
   const [formValues, setFormValues] = useState(null);
   const [programOptions, setProgramOptions] = useState(null);
   const [grantOptions, setGrantOptions] = useState(null);
-  const assigned_to_name = localStorage.getItem('user_name')
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -56,7 +56,7 @@ const BatchForm = (props) => {
   let initialValues = {
     name: '',
     // name_in_current_sis: '',
-    assigned_to: assigned_to_name,
+    assigned_to: userId.toString(),
     program: '',
     grant: '',
     institution: '',
@@ -75,7 +75,7 @@ const BatchForm = (props) => {
     initialValues['grant'] = Number(props.grant?.id);
     initialValues['program'] = Number(props.program?.id);
     initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
-    initialValues['assigned_to'] =  props.assigned_to ? (`${props.assigned_to.username} (${props.assigned_to.email})`): '';
+    initialValues['assigned_to'] =   props?.assigned_to?.id;
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
   }
