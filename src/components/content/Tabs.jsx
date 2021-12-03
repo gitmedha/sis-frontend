@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Styled = styled.div`
   .tab {
-    margin-left: 10px;
+    margin-left: 7px;
     display: flex;
     align-items: center;
     justify-content: center;

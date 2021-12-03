@@ -16,6 +16,7 @@ import TabPicker from "../../components/content/TabPicker";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
+import ProgramEnrollments from "./components/ProgramEnrollments";
 import s2 from '../../../src/assets/images/s2.JPG';
 import s1 from '../../../src/assets/images/s1.JPG';
 import { getMyDataMetrics } from "./components/DashboardActions";
@@ -229,6 +230,7 @@ const Home = () => {
             </div>
           </div>
       </Collapsible>
+      <ProgramEnrollments/>
       <Opportunities />
       <Students />
     </DashboardStyled>

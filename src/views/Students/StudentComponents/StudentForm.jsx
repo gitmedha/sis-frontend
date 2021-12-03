@@ -47,6 +47,7 @@ const StudentForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -121,7 +122,7 @@ const StudentForm = (props) => {
     category:'',
     email:'',
     gender:'',
-    assigned_to:'',
+    assigned_to:userId.toString(),
     status:'',
     income_level:'',
     date_of_birth:'',

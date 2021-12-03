@@ -87,6 +87,7 @@ const ProgramEnrollment = (props) => {
             <div className="col-md-6 col-sm-12">
               <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
               <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
+              <DetailField label="Program Name" value={programEnrollment.program_selected_by_student} />
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
@@ -108,7 +109,7 @@ const ProgramEnrollment = (props) => {
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Fee Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
-              <DetailField label="Discount Code ID" value={``} />
+              <DetailField label="Discount Code ID" value={programEnrollment.discount_code_id} />
               <DetailField label="Fee Amount (INR)" value={programEnrollment.fee_amount} />
             </div>
             <div className="col-md-6 col-sm-12">

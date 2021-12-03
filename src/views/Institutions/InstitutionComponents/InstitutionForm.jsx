@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
+import { FaSchool, FaUserFriends } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
@@ -40,6 +40,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -117,7 +118,7 @@ const InstitutionForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to:'',
+    assigned_to:userId.toString(),
     state:'',
     pin_code:'',
     city:'',
@@ -130,6 +131,7 @@ const InstitutionForm = (props) => {
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    
   }
 
   if (!props.contacts) {

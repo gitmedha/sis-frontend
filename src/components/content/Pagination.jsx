@@ -75,6 +75,18 @@ const Styled = styled.div`
   }
 
   @media screen and (min-width: 768px) {
+    .count{
+    align-items: center;
+    border-radius: 4px;
+    border-width: 1px;
+    cursor: default;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+    color: #787B96;
+    font-weight:bold;
+    margin:4px 4px;
+  }
     ul.pagination {
 
       .pagination-link-wrapper {
@@ -148,7 +160,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
             }}
           />
         </div>
-        <div className="col-md-8">
+        <div className="col-md-7">
           <nav>
             <ul className="pagination">
               <li key='first' className="pagination-link-wrapper">

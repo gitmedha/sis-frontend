@@ -7,6 +7,12 @@ export const studentStatusOptions = [
     picklistMatch: '',
   },
   {
+    icon: <FaUserGraduate size={20} color="#31B89D" />,
+    title: 'New Request',
+    progress: '0%',
+    picklistMatch: 'New Request',
+  },
+  {
     icon: <FaClipboardCheck size={20} color="#31B89D" />,
     title: 'Registered',
     progress: '25%',

@@ -56,9 +56,11 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const userId = parseInt(localStorage.getItem('user_id'))
+  
   const [initialValues, setInitialValues] = useState({
     employer: '',
-    assigned_to: '',
+    assigned_to: userId.toString() ,
     role_or_designation: '',
     type: '',
     compensation_type: '',
@@ -75,6 +77,7 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
+  
 
   useEffect(() => {
     if (props.institution) {
@@ -139,7 +142,7 @@ const OpportunityForm = (props) => {
     if (props.id) {
       setInitialValues({
         ...props,
-        assigned_to: props.assigned_to ? props.assigned_to.id : '',
+        assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
       });
     }

@@ -41,6 +41,7 @@ const EmployerForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getEmployersPickList().then(data => {
@@ -63,9 +64,9 @@ const EmployerForm = (props) => {
 
     getAssigneeOptions().then(data => {
       setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-          label: `${assignee.username} (${assignee.email})`,
-          key: assignee.username,
-          value: assignee.id,
+        label: `${assignee.username} (${assignee.email})`,
+        key: assignee.username,
+        value: assignee.id,
       })));
     });
 
@@ -118,7 +119,7 @@ const EmployerForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to:'',
+    assigned_to:userId.toString(),
     state:'',
     pin_code:'',
     city:'',
