@@ -47,6 +47,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -130,12 +131,12 @@ const OpportunityForm = (props) => {
   let initialValues = {
     employer: employer,
     employer_name: employer.name,
-    assigned_to: '',
+    assigned_to: userId.toString(),
     role_or_designation: '',
     type: '',
     compensation_type: '',
     number_of_opportunities: '',
-    status: '',
+    status: 'active',
     department_or_team: '',
     salary: '',
     role_description: '',

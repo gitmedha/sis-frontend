@@ -27,7 +27,7 @@ export const batchLookUpOptions = async () => {
   });
   let assigneesOptions = data.data.users.map((assignee) => ({
     label: `${assignee.username} (${assignee.email})`,
-    value: Number(assignee.id),
+    value: assignee.id,
   }));
 
   data = await queryBuilder({

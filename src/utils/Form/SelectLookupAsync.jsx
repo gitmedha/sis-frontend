@@ -82,7 +82,7 @@ const SelectField = (props) => {
     setInputValue(inputValue);
     return inputValue;
   };
-
+  console.log(options,field.value )
   return (
       <AsyncSelect
         icon={icon}

@@ -180,10 +180,9 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
   $id: Int
   $limit: Int
   $start: Int
-  $sort: String
 ) {
   programEnrollmentsConnection(
-    sort: $sort
+    sort:"created_at:desc"
     start: $start
     limit: $limit
     where: { institution: { assigned_to: { id: $id } } }
@@ -210,6 +209,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
       institution {
         id
         name
+        medha_area
         assigned_to {
           id
           username
