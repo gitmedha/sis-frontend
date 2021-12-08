@@ -156,11 +156,11 @@ const ProgramEnrollments = (props) => {
 
 
   const onRowClick = (programEnrollment) => {
-    history.push(`/institution/${programEnrollment.institution.id}`);
+    history.push(`/student/${programEnrollment.student.id}`);
   };
 
   return (
-    <Collapse title="Program Enrollments" type="plain" opened={true}>
+    <Collapse title="New Program Enrollments" type="plain" opened={true}>
       <div className="row m-3">
         <div className="d-flex justify-content-between align-items-center mb-2 px-0">
           {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}

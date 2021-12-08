@@ -185,7 +185,9 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
     sort:"created_at:desc"
     start: $start
     limit: $limit
-    where: { institution: { assigned_to: { id: $id } } }
+    where: { institution: { assigned_to: { id: $id } },
+             status:"Enrollment Request Received" 
+            }
   ) {
     values {
       id
@@ -223,6 +225,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
         }
       }
       student{
+        id
         full_name
       }
     }
