@@ -230,8 +230,8 @@ const Home = () => {
             </div>
           </div>
       </Collapsible>
-      <ProgramEnrollments/>
       <Opportunities />
+      <ProgramEnrollments/>
       <Students />
     </DashboardStyled>
   );
