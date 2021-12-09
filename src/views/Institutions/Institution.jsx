@@ -48,6 +48,7 @@ const Institute = (props) => {
   const {setAlert} = props;
   const { address, contacts, ...rest } = instituteData;
   const instituteID = props.match.params.id;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -108,6 +109,7 @@ const Institute = (props) => {
   const getProgramEnrollments = async () => {
     getInstitutionProgramEnrollments(instituteID).then(data => {
       setInstitutionProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
       console.log("getInstitutionProgramEnrollments Error", err);
     });
@@ -161,8 +163,8 @@ const Institute = (props) => {
         {/* <Collapsible title="Batches">
           <InstitutionBatches />
         </Collapsible> */}
-        <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} />
+        <Collapsible title="Program Enrollments"  badge={programEnrollmentAggregate.count}>
+          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} id={instituteID}/>
         </Collapsible>
         <InstitutionForm
           {...instituteData}

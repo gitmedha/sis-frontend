@@ -392,9 +392,9 @@ const programEnrollmentFields = `
 export const GET_INSTITUTION_PROGRAM_ENROLLMENTS = `
 query GET_INSTITUTION_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
   programEnrollmentsConnection (
-    sort: $sort
-    start: $start
-    limit: $limit
+    sort: $sort,
+    start: $start,
+    limit: $limit,
     where: {
       institution: {
         id: $id
