@@ -212,7 +212,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       NP.done();
-      onDataUpdate();
+      getInstitutionProgramEnrollments();
     });
     setCreateModalShow(false);
   };
@@ -240,7 +240,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
        NP.done();
-      onDataUpdate();
+       getInstitutionProgramEnrollments();
     });
     setUpdateModalShow(false);
   };
@@ -254,7 +254,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
-      onDataUpdate();
+      getInstitutionProgramEnrollments();
        NP.done();
        history.push("/institutions");
     });

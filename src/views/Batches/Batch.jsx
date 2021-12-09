@@ -48,6 +48,7 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
   const {setAlert} = props;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const getThisBatch = async () => {
     try {
@@ -202,6 +203,7 @@ const Batch = (props) => {
   const getProgramEnrollments = async () => {
     getBatchProgramEnrollments(batchID).then(data => {
       setBatchProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
       console.log("getInstitutionProgramEnrollments Error", err);
     });
@@ -245,8 +247,8 @@ const Batch = (props) => {
             <Details batch={batch} sessions={sessions} />
           </Collapsible>
         )}
-        <Collapsible title="Program Enrollments" badge={batchProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={batchProgramEnrollments} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} batch={batch} />
+        <Collapsible title="Program Enrollments" badge={programEnrollmentAggregate.count}>
+          <ProgramEnrollments programEnrollments={batchProgramEnrollments} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
         </Collapsible>
         <Collapsible title="Sessions & Attendance" badge={sessions.length.toString()}>
           <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />

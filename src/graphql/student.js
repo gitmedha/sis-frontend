@@ -198,9 +198,9 @@ export const DELETE_STUDENT = `
 export const GET_STUDENT_PROGRAM_ENROLLMENTS = `
 query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
   programEnrollmentsConnection (
-    sort: $sort
-    start: $start
-    limit: $limit
+    sort: $sort,
+    start: $start,
+    limit: $limit,
     where: {
       student: {
         id: $id
