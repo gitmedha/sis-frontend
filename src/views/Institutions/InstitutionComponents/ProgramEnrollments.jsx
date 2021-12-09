@@ -54,7 +54,6 @@ const ProgramEnrollments = (props) => {
   const {setAlert} = props;
   const history = useHistory();
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
-  // const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
   const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
@@ -274,7 +273,6 @@ const ProgramEnrollments = (props) => {
         </div>
       </div>
       <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={true} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-      {/* <Table columns={columns} data={programEnrollmentsTableData} paginationPageSize={programEnrollmentsTableData.length} totalRecords={programEnrollmentsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} /> */}
       <ProgramEnrollment
         show={viewModalShow}
         onHide={hideViewModal}
