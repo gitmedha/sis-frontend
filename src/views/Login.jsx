@@ -91,6 +91,7 @@ p{
     font-size: 15px;
     padding: 13px 30px 12px 29px;
     margin:  31px -60px 17px 8px;
+    justify-content: center;
   }
 }
 
@@ -98,7 +99,7 @@ p{
   .row-box-2{
     display: flex;
     justify-content:start;
-    height: 630px;
+    height: 100vh;
   }
   
  
@@ -121,26 +122,71 @@ p{
   }
   .image{
     max-height: 100%;
-    height: 100%;
+    height: 100vh;
     width: 100%
   }
   .btn-ms-login {
     font-size: 15px;
     padding: 14px 25px 12px 23px;
     margin: 64px -52px 48px -7px;
+    justify-content: center;
   }
   p{
     text-align: initial;
     font-size: 70px;
   }
 }
-@media screen and (min-width:1024px)   {
+@media (min-width:1024px) and (max-width:1440px)   {
   .row-box-2{
     display: flex;
     justify-content:start;
-    height: 645px;
+    height: 100vh;
   }
   
+  .row-box{
+    color: black;
+    font-size: 40px;
+    line-height: 1.25;
+    margin: 173px 39px 1px 19px;
+    width:90%;
+  }
+
+  .logo {
+    position:absolute; 
+	  top:0; 
+	  left:22px; 
+  }
+  
+  .line-box{
+    border: 2px solid #32b89d;
+    margin:10px 235px 0px 15px;
+  }
+
+  .image{
+    max-height: 100%;
+    height: 100vh;
+    width: 100%
+  }
+
+  .btn-ms-login {
+    font-size: 18px;
+    padding: 18px 57px 15px 49px;
+    margin: 55px -40px 43px -8px;
+    justify-content: center;
+  }
+
+  p{
+    text-align: initial;
+    font-size: 70px;
+  }
+}
+
+@media screen and (min-width:1440px)   {
+  .row-box-2{
+    display: flex;
+    justify-content:start;
+    height: 100vh;
+  }
  
   .row-box{
     color: black;
@@ -149,6 +195,7 @@ p{
     margin: 173px 39px 1px 19px;
     width:90%;
   }
+
   .logo {
     position:absolute; 
 	  top:0; 
@@ -159,21 +206,26 @@ p{
     border: 2px solid #32b89d;
     margin: 9px 400px 0px 15px;
   }
+
   .image{
     max-height: 100%;
-    height: 100%;
+    height: 100vh;
     width: 100%
   }
+
   .btn-ms-login {
-    font-size: 16px;
+    position:absolute; 
+	  bottom:-10px; 
+    font-size: 18px;
     padding: 18px 57px 15px 49px;
-    margin: 89px 115px 43px -8px;
+    margin: 100px -30px 43px -8px;
+    justify-content: center;
   }
+  
   p{
     text-align: initial;
     font-size: 70px;
   }
-
 }
 `;
 
