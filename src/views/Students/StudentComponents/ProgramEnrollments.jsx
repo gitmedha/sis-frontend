@@ -272,7 +272,7 @@ const ProgramEnrollments = (props) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={true} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+      <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={programEnrollmentAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
         show={viewModalShow}
         onHide={hideViewModal}

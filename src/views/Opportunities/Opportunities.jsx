@@ -90,7 +90,7 @@ const tabPickerOptions = [
       },
       {
         Header: 'District',
-        accessor: 'state',
+        accessor: 'district',
       },
       {
         Header: 'Type',

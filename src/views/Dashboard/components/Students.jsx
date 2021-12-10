@@ -19,6 +19,7 @@ import {studentStatusOptions} from "../../Students/StudentComponents/StudentConf
 import Collapse from "../../../components/content/CollapsiblePanels";
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import moment from "moment";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "test-1" },
@@ -46,12 +47,11 @@ const Styled = styled.div`
 const Students = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [students, setStudents] = useState([]);
+  const [programEnrollments, setStudents] = useState([]);
   const [studentsAggregate, setStudentsAggregate] = useState([]);
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [activeStatus, setActiveStatus] = useState('certified');
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const userId = parseInt(localStorage.getItem('user_id'))
@@ -60,57 +60,56 @@ const Students = (props) => {
     () => [
       {
         Header: 'Student',
-        accessor: 'avatar',
+        accessor: 'student_name',
         disableSortBy: true,
       },
       {
         Header: 'Program',
-        accessor: '',
+        accessor: 'program_name',
         disableSortBy: true,
       },
       {
         Header: 'Program Status',
-        accessor: '',
+        accessor: 'program_status',
         disableSortBy: true,
       },
       {
         Header: 'Area',
-        accessor: 'city',
+        accessor: 'area',
         disableSortBy: true,
       },
       {
         Header: 'Institution',
-        accessor: 'institution',
+        accessor: 'institution_name',
+        disableSortBy: true,
+      },
+      {
+        Header: 'Course Type',
+        accessor: 'type',
         disableSortBy: true,
       },
       {
         Header: 'Certification Date',
-        accessor: 'certification_date_latest',
+        accessor: 'certification_date_formatted',
         disableSortBy: true,
       },
     ],
     []
   );
 
-  const getStudents = async (status = 'All', limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getStudents = async (limit = 10) => {
     nProgress.start();
     setLoading(true);
     let variables = {
       limit,
-      start: offset,
-      id: userId,
-      sort: `${sortBy}:${sortOrder}`,
-    }
-    if (status !== 'All') {
-      variables.status = studentStatusOptions.find(tabStatus => tabStatus.title.toLowerCase() === status.toLowerCase()).picklistMatch;
     }
     await api.post("/graphql", {
       query: GET_STUDENTS,
       variables,
     })
     .then(data => {
-      setStudents(data?.data?.data?.studentsConnection.values);
-      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+      setStudents(data?.data?.data?.programEnrollmentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(error => {
       return Promise.reject(error);
@@ -139,51 +138,45 @@ const Students = (props) => {
           sortByField = 'full_name';
           break;
       }
-      getStudents(activeStatus, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getStudents( pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getStudents(activeStatus, pageSize, pageSize * pageIndex);
+      getStudents( pageSize, pageSize * pageIndex);
     }
-  }, [activeStatus]);
-
-  useEffect(() => {
-    getStudentsPickList().then(data => setPickList(data));
-    fetchData(0, paginationPageSize, []);
   }, []);
 
   useEffect(() => {
-    setPaginationPageIndex(0);
-  }, [activeTab, activeStatus]);
+    getProgramEnrollmentsPickList().then(data => {
+      setPickList(data);
+    });
+  }, []);
 
   useEffect(() => {
-    if (students) {
-      let data = students;
-      data = data.map(student => {
-        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
+    if (programEnrollments) {
+      let data = programEnrollments;
+      data = data.map(programEnrollment => {
         return {
-          ...student,
-          avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
-          link: <TableRowDetailLink value={student.id} to={'student'} />,
-          gridLink: `/student/${student.id}`,
-          status: <Badge value={student.status} pickList={pickList.status || []} />,
-          category: <Badge value={student.category} pickList={pickList.category || []} />,
-          gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
-          statusIcon: studentStatusData?.icon,
-          title: student.full_name,
-          progressPercent: studentStatusData?.progress,
-          certification_date_latest: student.certification_date_latest ?  moment(student.certification_date_latest).format("DD MMM YYYY"): '',
+          ...programEnrollment,
+          student_name: programEnrollment.student?.full_name,
+          area: programEnrollment.student?.medha_area,
+          registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+          batch_name: programEnrollment?.batch?.name,
+          program_name: programEnrollment.batch?.program?.name,
+          program_status: <Badge value={programEnrollment.status} pickList={pickList.status} />,
+          created_at:moment(programEnrollment.created_at).format("DD MMM YYYY"),
+          institution_name: programEnrollment.institution?.name,
+          status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
+          fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
+          assigned : programEnrollment?.institution?.assigned_to.username,
+          type: <Badge value={programEnrollment.course_type} pickList={pickList.course_type} />,
         }
       });
       setStudentsData(data);
     }
-  }, [students, pickList]);
+  }, [programEnrollments, pickList]);
 
-  const onRowClick = (row) => {
-    history.push(`/student/${row.id}`)
-  }
-
-  const handleStudentStatusTabChange = (activeTab) => {
-    setActiveStatus(activeTab.title);
-    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex);
+  const onRowClick = (programEnrollment) => {
+    history.push(`/student/${programEnrollment.student.id}`)
   }
 
   return (
