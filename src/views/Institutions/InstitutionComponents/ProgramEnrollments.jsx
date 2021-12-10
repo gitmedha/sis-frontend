@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import moment from 'moment';
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
@@ -9,12 +9,15 @@ import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollme
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import {GET_INSTITUTION_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import ProgramEnrollment from "./ProgramEnrollment";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { urlPath } from "../../../constants";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import NP from "nprogress";
+import nProgress from "nprogress";
+import api from "../../../apis";
 
 const Styled = styled.div`
 .img-profile-container {
@@ -41,7 +44,8 @@ hr {
 `;
 
 const ProgramEnrollments = (props) => {
-  let { programEnrollments, institution, onDataUpdate } = props;
+  let { id, institution, onDataUpdate } = props;
+  const [loading, setLoading] = useState(false);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -49,8 +53,11 @@ const ProgramEnrollments = (props) => {
   const [pickList, setPickList] = useState([]);
   const {setAlert} = props;
   const history = useHistory();
-  const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
+  const [programEnrollments, setProgramEnrollments] = useState([]);
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -58,11 +65,63 @@ const ProgramEnrollments = (props) => {
     });
   }, []);
 
+  const getInstitutionProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='student.full_name', sortOrder = 'asc') => {
+    nProgress.start();
+    setLoading(true);
+    await api.post("/graphql", {
+      query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
+      variables: {
+        id:  Number(id),
+        limit:limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      },
+    })
+    .then(data => {
+      setProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
+    })
+    .catch(err => {
+      console.log("getInstitutionProgramEnrollments Error", err);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+  };
+
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'student.full_name';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'student.full_name':
+          sortByField = sortBy[0].id;
+          break;
+
+        case 'batch_name':
+        case 'program_name':
+        case 'registration_date_formatted':
+        case 'certification_date_formatted':
+        case 'updated_at':
+        case 'status_badge':
+          sortByField = 'updated_at'
+          break;
+        
+        default:
+          sortByField = 'student_name';
+          break;
+      }
+      getInstitutionProgramEnrollments(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+    } else {
+      getInstitutionProgramEnrollments(pageSize, pageSize * pageIndex);
+    }
+  }, []);
+
   useEffect(() => {
     let data = programEnrollments.map(programEnrollment => {
       return {
         ...programEnrollment,
-        student_name: programEnrollment.student?.full_name,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
         certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
         batch_name: programEnrollment?.batch?.name,
@@ -81,7 +140,7 @@ const ProgramEnrollments = (props) => {
     () => [
       {
         Header: 'Student',
-        accessor: 'student_name',
+        accessor: 'student.full_name',
       },
       {
         Header: 'Program ',
@@ -106,11 +165,6 @@ const ProgramEnrollments = (props) => {
       {
         Header: 'Updated At',
         accessor: 'updated_at',
-      },
-      {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
       },
     ],
     []
@@ -158,7 +212,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       NP.done();
-      onDataUpdate();
+      getInstitutionProgramEnrollments();
     });
     setCreateModalShow(false);
   };
@@ -186,7 +240,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
        NP.done();
-      onDataUpdate();
+       getInstitutionProgramEnrollments();
     });
     setUpdateModalShow(false);
   };
@@ -200,7 +254,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
-      onDataUpdate();
+      getInstitutionProgramEnrollments();
        NP.done();
        history.push("/institutions");
     });
@@ -218,7 +272,7 @@ const ProgramEnrollments = (props) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={programEnrollmentsTableData} paginationPageSize={programEnrollmentsTableData.length} totalRecords={programEnrollmentsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={true} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
         show={viewModalShow}
         onHide={hideViewModal}

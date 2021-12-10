@@ -44,6 +44,7 @@ const Student = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = student;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -121,6 +122,7 @@ const Student = (props) => {
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
       console.log("getStudentProgramEnrollments Error", err);
     });
@@ -213,8 +215,8 @@ const Student = (props) => {
         <Collapsible title="Address">
           <Address {...student} />
         </Collapsible>
-        <Collapsible title="Program Enrollments" badge={studentProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} />
+        <Collapsible title="Program Enrollments" badge={programEnrollmentAggregate.count}>
+          <ProgramEnrollments programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} id={studentId}/>
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
