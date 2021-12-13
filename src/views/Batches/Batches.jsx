@@ -126,7 +126,7 @@ const Batches = (props) => {
         accessor: 'status',
       },
       {
-        Header: 'Student Enrolled',
+        Header: 'Students Enrolled',
         accessor: 'students_count',
       },
       {
