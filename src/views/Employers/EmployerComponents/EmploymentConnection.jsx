@@ -71,33 +71,33 @@ const EmploymentConnection = (props) => {
             <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
             <DetailField label="Upload Certificate" value= {
               employmentConnection.internship_certificate &&
-                <div>
-                  <label>Certificate</label>
+            <div>
+                <label>Certificate</label>
                   <p>(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
                 </div> 
              } />
              <div className ="row">
-             <div className="icon-box">
-              <div class=" col-md-1">
-                <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} done={() => onUpdate() } />
-              </div>
-              <div class="col-md-1">
-                { employmentConnection.internship_certificate &&
-                  <div className="col-md-1 d-flex flex-column section-cv">   
-                    <Tooltip placement="top" title="Click Here to View Certificate">
-                      <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" /></a>
-                     </Tooltip>   
-                  </div>   
-                }
-              </div>
-              <div class="col-md-1">
-                { employmentConnection.internship_certificate &&
+              <div className="icon-box">
+                <div class=" col-md-1">
+                  <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} done={() => onUpdate() } />
+                </div>
+                <div class="col-md-1">
+                  { employmentConnection.internship_certificate &&
+                    <div className="col-md-1 d-flex flex-column section-cv">   
+                      <Tooltip placement="top" title="Click Here to View Certificate">
+                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" /></a>
+                      </Tooltip>   
+                    </div>   
+                  }
+                </div>
+                <div class="col-md-1">
+                  { employmentConnection.internship_certificate &&
                   <Tooltip placement="top" title="Click Here to Delete Certificate">
                     <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25"  /> </a>
                   </Tooltip>   
-                }
-              </div>
-            </div> 
+                  }
+                </div>
+              </div> 
             </div>
           </div>
         </div>

@@ -153,7 +153,7 @@ const Students = (props) => {
   useEffect(() => {
     if (programEnrollments) {
       let data = programEnrollments;
-      data = data.map(programEnrollment => {console.log(programEnrollment)
+      data = data.map(programEnrollment => {
         return {
           ...programEnrollment,
           student_name: programEnrollment.student?.full_name,
