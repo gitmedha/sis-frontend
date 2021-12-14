@@ -514,6 +514,7 @@ const programEnrollmentFields = `
   student{
     id
     full_name
+    student_id
   }
   batch {
     id
