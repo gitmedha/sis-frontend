@@ -227,7 +227,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
+            <button className="btn--secondary">MARK AS COMPLETE</button>
           </div>
         </div>
         {batch && (
