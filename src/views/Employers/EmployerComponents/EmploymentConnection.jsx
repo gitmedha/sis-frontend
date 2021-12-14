@@ -85,7 +85,7 @@ const EmploymentConnection = (props) => {
                   { employmentConnection.internship_certificate &&
                     <div className="col-md-1 d-flex flex-column section-cv">   
                       <Tooltip placement="top" title="Click Here to View Certificate">
-                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" /></a>
+                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
                       </Tooltip>   
                     </div>   
                   }
@@ -93,7 +93,7 @@ const EmploymentConnection = (props) => {
                 <div class="col-md-1">
                   { employmentConnection.internship_certificate &&
                   <Tooltip placement="top" title="Click Here to Delete Certificate">
-                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25"  /> </a>
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /> </a>
                   </Tooltip>   
                   }
                 </div>
