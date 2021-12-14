@@ -277,6 +277,12 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       reason_if_rejected
       salary_offered
       updated_at
+      internship_certificate{
+        id
+        url
+        previewUrl
+        updated_at
+      }
       student{
         full_name
         id

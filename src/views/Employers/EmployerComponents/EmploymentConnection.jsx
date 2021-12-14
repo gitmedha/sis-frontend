@@ -3,10 +3,24 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
+import CertificateUpload from "../../../components/content/Certificate";
+import { urlPath } from "../../../constants";
+import Tooltip from "../../../components/content/Tooltip";
+import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "../../Students/StudentComponents/StudentActions";
+import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
+import styled from "styled-components";
+
+const Styled = styled.div`
+.icon-box{
+  display:flex;
+  padding: 5px;
+  justify-content: center;
+}
+`;
 
 const EmploymentConnection = (props) => {
-  let { onHide, show, handleEdit, handleDelete, student, employmentConnection } = props;
+  let {onDelete, onUpdate, onHide, show, handleEdit, handleDelete, student, employmentConnection } = props;
   const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
@@ -39,6 +53,7 @@ const EmploymentConnection = (props) => {
           </h1>
         </Modal.Title>
       </Modal.Header>
+      <Styled>
       <Modal.Body className="bg-white">
         <div className="row">
           <div className="col-md-6 col-sm-12">
@@ -54,6 +69,36 @@ const EmploymentConnection = (props) => {
             <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
             <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
             <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
+            <DetailField label="Upload Certificate" value= {
+              employmentConnection.internship_certificate &&
+                <div>
+                  <label>Certificate</label>
+                  <p>(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
+                </div> 
+             } />
+             <div className ="row">
+             <div className="icon-box">
+              <div class=" col-md-1">
+                <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} done={() => onUpdate() } />
+              </div>
+              <div class="col-md-1">
+                { employmentConnection.internship_certificate &&
+                  <div className="col-md-1 d-flex flex-column section-cv">   
+                    <Tooltip placement="top" title="Click Here to View Certificate">
+                      <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" /></a>
+                     </Tooltip>   
+                  </div>   
+                }
+              </div>
+              <div class="col-md-1">
+                { employmentConnection.internship_certificate &&
+                  <Tooltip placement="top" title="Click Here to Delete Certificate">
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25"  /> </a>
+                  </Tooltip>   
+                }
+              </div>
+            </div> 
+            </div>
           </div>
         </div>
         <div className="row mt-4">
@@ -63,6 +108,7 @@ const EmploymentConnection = (props) => {
           </div>
         </div>
       </Modal.Body>
+      </Styled>
     </Modal>
   );
 };
