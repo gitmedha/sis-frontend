@@ -367,6 +367,8 @@ const programEnrollmentFields = `
   course_name_in_current_sis
   program_selected_by_student
   discount_code_id
+  created_at
+  updated_at
   medha_program_certificate {
     id
     url

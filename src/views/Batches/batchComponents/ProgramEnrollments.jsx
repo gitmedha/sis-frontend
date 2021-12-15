@@ -119,6 +119,7 @@ const ProgramEnrollments = (props) => {
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
+        student_id : programEnrollment.student?.student_id,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
         certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
         batch_name: programEnrollment.batch?.name,
@@ -138,6 +139,10 @@ const ProgramEnrollments = (props) => {
       {
         Header: 'Student',
         accessor: 'student_name',
+      },
+      {
+        Header: 'Student ID',
+        accessor: 'student_id',
       },
       {
         Header: 'Program',

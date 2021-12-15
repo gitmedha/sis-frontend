@@ -8,11 +8,11 @@ import { IMAGE_UPLOADER } from "../../graphql";
 const FileUploader = ({
   handler,
   id = "file_uploader",
-  label = "Upload Cv",
+  label = "Upload",
   initialValue = {},
 }) => {
-  const [cvUrl, setCvUrl] = useState(initialValue.url ? urlPath(initialValue.url.substring(1)) : null);
-  const [cvId, setCvId] = useState(initialValue.id || null);
+  const [fileUrl, setFileUrl] = useState(initialValue.url ? urlPath(initialValue.url.substring(1)) : null);
+  const [fileId, setFileId] = useState(initialValue.id || null);
   const [uploadProgress, setProgress] = useState(0);
   const [isUploading, setUploading] = useState(false);
 
@@ -47,12 +47,12 @@ const FileUploader = ({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      await setCvUrl(urlPath(data.data.upload.url.substring(0)));
-      await setCvId(Number(data.data.upload.id));
+      await setFileUrl(urlPath(data.data.upload.url.substring(0)));
+      await setFileId(Number(data.data.upload.id));
 
       handler({
-        id: cvId || Number(data.data.upload.id),
-        path: cvUrl || urlPath(data.data.upload.url.substring(1)),
+        id: fileId || Number(data.data.upload.id),
+        path: fileUrl || urlPath(data.data.upload.url.substring(1)),
       });
     } catch (err) {
       console.log("UPLOAD_ERR", err);
@@ -63,10 +63,10 @@ const FileUploader = ({
 
   return (
     <div>
-      {!isUploading && !cvUrl && (
+      {!isUploading && !fileUrl && (
         <div className="uploader-container">
           <div className="imageUploader">
-            <p className="upload-helper-text">Click Here To Upload Cv</p>
+            <p className="upload-helper-text">Click Here To Upload </p>
             <div className="upload-helper-icon">
               <FaFileUpload size={30} color={"#257b69"} />
             </div>
@@ -85,11 +85,11 @@ const FileUploader = ({
           </label>
         </div>
       )}
-      {isUploading && !cvUrl && (
+      {isUploading && !fileUrl && (
         <ProgressBar variant="success" now={uploadProgress} />
       )}
-      {cvUrl && (
-        <a class="alert alert-success" >File uploading </a>
+      {fileUrl && (
+        <a class="alert alert-success" >File uploaded </a>
       
       )}
     </div>

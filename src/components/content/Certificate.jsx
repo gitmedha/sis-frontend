@@ -14,15 +14,15 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
       setAlert,
     };
     
-    export const CvUpload = connect(
+    export const CertificateUpload = connect(
       mapStateToProps,
       mapActionsToProps
-    )(({ CV, title, done, query, id, setAlert }) => {
+    )(({ internship_certificate, title, done, query, id, setAlert }) => {
       const [modalShow, setModalShow] = useState(false);
     
-      const modalCloseHandler = async (CvId) => {
+      const modalCloseHandler = async (CertificateId) => {
         try {
-          if (typeof CvId === "object" || CvId === undefined) {
+          if (typeof CertificateId === "object" || CertificateId === undefined) {
             setModalShow(false);
             return;
           }
@@ -30,22 +30,22 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
           await api.post("/graphql", {
             query,
             variables: {
-              data: { CV: CvId },
+              data: { internship_certificate: CertificateId },
               id,
             },
           });
-          setAlert("CV updated successfully.", "success");
+          setAlert("Certificate updated successfully.", "success");
           setModalShow(false);
           done();
         } catch (err) {
-          setAlert("Unable to update the CV.", "error");
+          setAlert("Unable to update the Certificate.", "error");
         }
       };
     
       return (
         <div className=" justify-content-start mb-2">
-          {!CV && (
-            <Tooltip placement="top" title="Click Here to Upload CV">
+          {!internship_certificate && (
+            <Tooltip placement="top" title="Click Here to Upload Certificate">
             <a  href="#" class="menu_links" onClick={() => setModalShow(true)}> <FaUpload  size="25" color='207B69' /> </a>
             </Tooltip>
           )}
@@ -53,16 +53,16 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
           <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
             {title}
           </h1>
-          <CvModal show={modalShow} onHide={modalCloseHandler} />
+          <CertificateModal show={modalShow} onHide={modalCloseHandler} />
         </div>
       );
     });
     
-    const CvModal = (props) => {
+    const CertificateModal = (props) => {
       let { onHide } = props;
-      const [cvId, setFile] = useState(null);
+      const [CertificateId, setFile] = useState(null);
       const handler = (data) => setFile(data.id);
-      const updateFile = () => onHide(cvId);
+      const updateFile = () => onHide(CertificateId);
     
       return (
         <Modal
@@ -77,7 +77,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
               id="contained-modal-title-vcenter"
               className="text--primary latto-bold"
             >
-              Update Cv
+              Update Certificate
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-light">
@@ -100,4 +100,4 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
       );
       };
 
-export default CvUpload;
+export default CertificateUpload;
