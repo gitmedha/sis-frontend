@@ -53,12 +53,12 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
           <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
             {title}
           </h1>
-          <ChangeAvatarModal show={modalShow} onHide={modalCloseHandler} />
+          <CvModal show={modalShow} onHide={modalCloseHandler} />
         </div>
       );
     });
     
-    const ChangeAvatarModal = (props) => {
+    const CvModal = (props) => {
       let { onHide } = props;
       const [cvId, setFile] = useState(null);
       const handler = (data) => setFile(data.id);

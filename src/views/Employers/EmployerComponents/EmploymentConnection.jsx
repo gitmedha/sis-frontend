@@ -71,10 +71,10 @@ const EmploymentConnection = (props) => {
             <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
             <DetailField label="Upload Certificate" value= {
               employmentConnection.internship_certificate &&
-            <div>
+              <div>
                 <label>Certificate</label>
-                  <p>(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
-                </div> 
+                <p>(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
+              </div> 
              } />
              <div className ="row">
               <div className="icon-box">
@@ -108,8 +108,8 @@ const EmploymentConnection = (props) => {
           </div>
         </div>
       </Modal.Body>
-      </Styled>
-    </Modal>
+    </Styled>
+  </Modal>
   );
 };
 
