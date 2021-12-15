@@ -31,7 +31,7 @@ export const createBatch = async (data) => {
   });
 };
 
-export const updateBatch = async (id, data) => {
+export const updateBatch = async (id, data) => {console.log(data)
   return await api.post("/graphql", {
     query: UPDATE_BATCH,
     variables: {
