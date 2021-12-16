@@ -66,7 +66,7 @@ const EmploymentConnections = (props) => {
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? employmentConnection.student.full_name : '',
+        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',  
         institution_name: 'To be added',
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
