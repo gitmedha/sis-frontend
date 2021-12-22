@@ -230,7 +230,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null; 
 
      NP.start();
-    updateProgramEnrollment(Number(id), dataToSave).then(data => {console.log(data)
+    updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_PROGRAM_ENROLLMENT_ERR", err);

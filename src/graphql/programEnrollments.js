@@ -85,30 +85,3 @@ export const UPDATE_PROGRAM_ENROLLMENT = `
     }
   }
 `;
-
-export const GET_STUDENTS_ATTENDANCE = `
-query GET_STUDENT_ATTENDANCE_TOTAL_FOR_BATCH($id: ID!) {
-  attendancesConnection(
-    where: { session: { batch: { id: $id } }, present: true }
-  ) {
-    groupBy {
-      program_enrollment {
-        key
-        connection {
-          aggregate {
-            count
-          }
-        }
-      }
-    }
-  }
-  
-  sessionsConnection (
-     where: { batch: { id: $id } }
-    ) {
-      aggregate {
-        count
-      }
-    }
-}
-`;
