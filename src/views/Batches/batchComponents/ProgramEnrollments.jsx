@@ -5,7 +5,7 @@ import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
-import { getStudentsAttendance, createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment } from "../../ProgramEnrollments/programEnrollmentActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment } from "../../ProgramEnrollments/programEnrollmentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -45,7 +45,7 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = (props) => {
-  let { id, batch, sessions, onDataUpdate } = props;
+  let { id, batch, students, sessions, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -59,9 +59,6 @@ const ProgramEnrollments = (props) => {
   const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
   const [programEnrollments, setProgramEnrollments] = useState([]);
   const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
-  const [attendance, setAttendance] = useState({});
-  const [totalSession, setTotalSession] = useState({});
-
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -117,28 +114,15 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
 
-  getStudentsAttendance(id).then(data => {
-    let value =[]
-    setTotalSession(data.data.data.sessionsConnection.aggregate.count);
-    console.log(programEnrollments.length)
-  for (let i = 0; i <=4; i++) {
-    value.push(data.data.data.attendancesConnection.groupBy.program_enrollment[i].connection.aggregate.count);
-  }
-  setAttendance(value)
-  }).catch(err => {
-    console.log("getStudentAttendance Error", err);
-  });
-
-
   useEffect(() => {
-    let data = programEnrollments.map((programEnrollment, index) => {
-      const studentAttendance = Math.floor((attendance[index]/totalSession) * 100)
+    let data = programEnrollments.map((programEnrollment,index) => {
+      const studentAttendance = Math.floor(students[index].attendancePercent)
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
         student_id : programEnrollment.student?.student_id,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-        certification_dagit te_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
         batch_name: programEnrollment.batch?.name,
         institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
