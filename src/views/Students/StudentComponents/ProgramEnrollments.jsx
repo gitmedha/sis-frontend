@@ -200,7 +200,6 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
    
 
@@ -229,8 +228,6 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
-  
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {

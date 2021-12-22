@@ -18,6 +18,7 @@ import NP from "nprogress";
 import nProgress from "nprogress";
 import api from "../../../apis";
 import {GET_BATCH_PROGRAM_ENROLLMENTS } from "../../../graphql";
+import { ProgressBarField } from "../../../components/content/Utils";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -44,7 +45,7 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = (props) => {
-  let { id, batch, onDataUpdate } = props;
+  let { id, batch, students, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -113,9 +114,9 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
 
-
   useEffect(() => {
-    let data = programEnrollments.map(programEnrollment => {
+    let data = programEnrollments.map((programEnrollment,index) => {
+      const studentAttendance = Math.floor(students[index].attendancePercent)
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
@@ -128,6 +129,7 @@ const ProgramEnrollments = (props) => {
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
+        attendance: <ProgressBarField value={Number.parseInt(studentAttendance)} />,
         updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
@@ -163,6 +165,10 @@ const ProgramEnrollments = (props) => {
       {
         Header: 'Certification Date',
         accessor: 'certification_date_formatted',
+      },
+      {
+        Header: 'Attendance',
+        accessor: 'attendance',
       },
       {
         Header: 'Updated At',
@@ -208,7 +214,6 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
     dataToSave['batch'] = batch.id;
    
      NP.start();
@@ -236,7 +241,6 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
