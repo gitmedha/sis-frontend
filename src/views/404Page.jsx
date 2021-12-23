@@ -7,10 +7,11 @@ img {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 40%;
+  width: 60%;
 }
 h3{
     text-align: center;
+    font-family:Lato;
 }
 .button {
   background-color: #4CAF50;
@@ -25,11 +26,6 @@ h3{
   cursor: pointer;
 }
 `;
-
-function goBack() {
-    window.history.back();
-  }
-
 const PageNotFound = () => {
     return (
         <Styled>
@@ -37,7 +33,7 @@ const PageNotFound = () => {
                 <img src={image} />
                 <div id="info">
                     <h3>The record/page you are looking for does not exist.  
-                    <button onclick="goBack()"> Click Here</button> to go back, or return to the  <a href="/home" class="button">Dashboard </a> 
+                    <a href="/home" class="btn btn-primary"> Click Here </a> to go back, or return to the Dashboard.
                     </h3>
                 </div>
             </div>
