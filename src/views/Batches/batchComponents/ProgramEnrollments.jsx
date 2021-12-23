@@ -273,7 +273,7 @@ const ProgramEnrollments = (props) => {
   return (
     <div className="container-fluid my-3">
       <div className="row">
-      {props.batch.status == 'Enrollment Ongoing' && 'In Progress' &&
+      {((props.batch.status == 'Enrollment Ongoing'|| props.batch.status == "In Progress") &&
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -282,7 +282,7 @@ const ProgramEnrollments = (props) => {
             + Add More
           </button>
         </div>
-      }
+      )}
       </div>
       <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={programEnrollmentAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
