@@ -105,6 +105,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
     discount_code_id:'',
+    fee_amount:'',
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
