@@ -113,10 +113,10 @@ const ProgramEnrollments = (props) => {
       getBatchProgramEnrollments(pageSize, pageSize * pageIndex);
     }
   }, []);
-
+  console.log(students)
   useEffect(() => {
-    let data = programEnrollments.map((programEnrollment,index) => {
-      const studentAttendance = Math.floor(students[index].attendancePercent)
+    let data = programEnrollments.map((programEnrollment, index) => {console.log(students)
+      const studentAttendance = Math.floor(students[index]?.attendancePercent)
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
@@ -129,7 +129,7 @@ const ProgramEnrollments = (props) => {
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
-        attendance: <ProgressBarField value={Number.parseInt(studentAttendance)} />,
+        attendance: studentAttendance ? <ProgressBarField value={Number.parseInt(studentAttendance)} /> : "0",
         updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
@@ -236,7 +236,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let { id, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
+    let { id, student_id, program_name, attendance, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
