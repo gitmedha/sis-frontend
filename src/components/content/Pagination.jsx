@@ -25,10 +25,12 @@ const Styled = styled.div`
     padding: 4px;
     color: #787B96;
     font-weight:bold;
+    margin:4px -12px;
   }
 
   ul.pagination {
     margin: 30px auto;
+    padding:2px 2px 2px 25px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,6 +75,18 @@ const Styled = styled.div`
   }
 
   @media screen and (min-width: 768px) {
+    .count{
+    align-items: center;
+    border-radius: 4px;
+    border-width: 1px;
+    cursor: default;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+    color: #787B96;
+    font-weight:bold;
+    margin:4px 4px;
+  }
     ul.pagination {
 
       .pagination-link-wrapper {
@@ -80,11 +94,14 @@ const Styled = styled.div`
       }
 
       .pagination-link {
-        width: 36px;
+        width: 30px;
         height: 36px;
         font-size: 14px;
       }
     }
+  }
+  .page-box{
+    margin:15px;
   }
 `
 
@@ -132,7 +149,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
   return (
     <Styled>
       <div className="row d-flex align-items-center w-100">
-        <div className="col-md-2">
+        <div className="page-box col-md-2">
           <Select
             value = {pageSizeOptions.filter(option => option.value === pageLimit)}
             options={pageSizeOptions}
@@ -143,7 +160,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
             }}
           />
         </div>
-        <div className="col-md-8">
+        <div className="col-md-7">
           <nav>
             <ul className="pagination">
               <li key='first' className="pagination-link-wrapper">

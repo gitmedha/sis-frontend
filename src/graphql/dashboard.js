@@ -175,6 +175,67 @@ query GET_OPPORTUNITIES($limit: Int, $start: Int, $status: String) {
   }`
 ;
 
+export const GET_DASHBOARD_PROGRAM_ENROLLMENTS = `
+query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
+  $id: Int
+  $limit: Int
+  $start: Int
+) {
+  programEnrollmentsConnection(
+    sort:"created_at:desc"
+    start: $start
+    limit: $limit
+    where: { institution: { assigned_to: { id: $id } },
+             status:"Enrollment Request Received" 
+            }
+  ) {
+    values {
+      id
+      status
+      course_year
+      course_type
+      course_level
+      year_of_course_completion
+      registration_date
+      certification_date
+      fee_status
+      fee_payment_date
+      fee_amount
+      fee_transaction_id
+      fee_refund_status
+      fee_refund_date
+      course_name_in_current_sis
+      created_at
+      updated_at
+      program_selected_by_student
+      institution {
+        id
+        name
+        medha_area
+        assigned_to {
+          id
+          username
+        }
+      }
+      batch {
+        id
+        name
+        program{
+          name
+        }
+      }
+      student{
+        id
+        full_name
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
 const studentFields = `
 id
 full_name
@@ -216,23 +277,63 @@ CV {
 `;
 
 export const GET_STUDENTS = `
-query GET_STUDENTS($limit: Int, $start: Int, $status: String) {
-  studentsConnection (
-    sort:"certification_date_latest:desc"
+query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
+  $limit: Int
+  $start: Int
+) {
+  programEnrollmentsConnection(
+    sort:"certification_date:desc"
     start: $start
     limit: $limit
-    where: {
-      status: $status
+    where: { status:"Certified by Medha"}
+  ) {
+    values {
+      id
+      status
+      course_year
+      course_type
+      course_level
+      year_of_course_completion
+      registration_date
+      certification_date
+      fee_status
+      fee_payment_date
+      fee_amount
+      fee_transaction_id
+      fee_refund_status
+      fee_refund_date
+      course_name_in_current_sis
+      created_at
+      updated_at
+      program_selected_by_student
+      institution {
+        id
+        name
+        medha_area
+        assigned_to {
+          id
+          username
+        }
+      }
+      batch {
+        id
+        name
+        program{
+          name
+          status
+        }
+      }
+      student{
+        id
+        full_name
+        medha_area
+      }
     }
-    ) {
-      values {
-        ${studentFields}
-      }
-      aggregate {
-        count
-      }
+    aggregate {
+      count
     }
   }
+}
 `;
 
 export const GET_MY_DATA_REGISTRATIONS_GRAPH = `

@@ -24,7 +24,16 @@ const studentFields = `
   state
   created_at
   updated_at
+  created_by_frontend{
+    email
+    username
+  }
+  updated_by_frontend{
+    username
+    email
+  }
   district
+  student_id
   assigned_to{
     id
     username
@@ -35,6 +44,7 @@ const studentFields = `
     url
   }
   CV {
+    id
     url
     previewUrl
     updated_at
@@ -57,6 +67,10 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  created_at
+  updated_at
+  program_selected_by_student
+  discount_code_id
   medha_program_certificate {
     id
     url
@@ -83,11 +97,18 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
+  internship_certificate{
+    id
+    url
+    previewUrl
+    updated_at
+  }
   opportunity {
     id
     role_description
     role_or_designation
     type
+    updated_at
     employer {
       id
       name
@@ -183,9 +204,9 @@ export const DELETE_STUDENT = `
 export const GET_STUDENT_PROGRAM_ENROLLMENTS = `
 query GET_STUDENT_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
   programEnrollmentsConnection (
-    sort: $sort
-    start: $start
-    limit: $limit
+    sort: $sort,
+    start: $start,
+    limit: $limit,
     where: {
       student: {
         id: $id

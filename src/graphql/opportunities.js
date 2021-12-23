@@ -16,9 +16,18 @@ state
 pin_code
 medha_area
 district
+created_by_frontend{
+  username
+  email
+}
+updated_by_frontend{
+  username
+  email
+}
 assigned_to {
   id
   username
+  email
 }
 employer{
   id
@@ -41,6 +50,7 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
+  updated_at
   opportunity {
     id
     role_description
@@ -52,8 +62,9 @@ const employmentConnectionFields = `
     }
   }
   student {
-    id
+    student_id
     full_name
+    id
   }
 `;
 

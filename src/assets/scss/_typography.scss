@@ -78,12 +78,23 @@ $green: #207b69;
     U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: "Bebas Neue Book";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/BebasNeueBook.woff2") format("woff2");
+}
+
 .bebas- {
   &normal {
     font-family: Bebas;
   }
   &thick {
     font-family: Bebas Neue;
+  }
+  &book{
+    font-family: Bebas Neue Book;
   }
 }
 

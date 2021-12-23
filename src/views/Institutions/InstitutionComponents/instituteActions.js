@@ -115,7 +115,7 @@ export const getProgramEnrollmentsPickList = async () => {
   });
 }
 
-export const getInstitutionProgramEnrollments = async (instituteID, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getInstitutionProgramEnrollments = async (instituteID, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
     variables: {

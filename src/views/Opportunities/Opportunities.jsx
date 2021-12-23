@@ -89,28 +89,24 @@ const tabPickerOptions = [
         accessor: 'employer',
       },
       {
+        Header: 'District',
+        accessor: 'district',
+      },
+      {
         Header: 'Type',
         accessor: 'opportunity_type',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
       },
       {
         Header: 'Openings',
         accessor: 'number_of_opportunities',
       },
       {
-        Header: 'Date Added',
-        accessor: 'created_at',
-      },
-      {
-        Header: 'Area',
-        accessor: 'medha_area',
-      },
-      {
-        Header: 'State',
-        accessor: 'state',
-      },
-      {
         Header: 'Assigned To',
-        accessor: 'assignedTo',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -180,16 +176,16 @@ const tabPickerOptions = [
     } else {
       getOpportunities(activeTab.key, pageSize, pageSize * pageIndex);
     }
-  }, []);
+  }, [activeTab.key]);
 
   useEffect(() => {
     let data = opportunities;
     data = data.map((opportunitydata, index) => {
       return {
       ...opportunitydata,
-       assignedTo:  <Anchor text={opportunitydata.assigned_to.username} href={'/user/' + opportunitydata.assigned_to.id} />,
        role_or_designation: opportunitydata.role_or_designation,
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
+       status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
        address: opportunitydata.employer ? opportunitydata.employer.address : '',
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
@@ -216,6 +212,7 @@ const tabPickerOptions = [
     nProgress.start();
     createOpportunity(dataToSave).then(data => {
       setAlert("Opportunity created successfully.", "success");
+      history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create opportunity.", "error");
@@ -232,7 +229,7 @@ const tabPickerOptions = [
         <div className="d-flex justify-content-between align-items-center mb-2 px-0">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <div className="d-flex justify-content-center align-items-center">
-            <WidgetUtilTab />
+            {/* <WidgetUtilTab /> */}
             <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}

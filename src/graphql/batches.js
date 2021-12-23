@@ -21,6 +21,9 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
         medha_area
         state
         enrollment_type
+        assigned_to{
+          username
+        }
         logo {
           url
         }
@@ -50,6 +53,14 @@ query GET_BATCH ($id:ID!) {
     end_date
     start_date
     created_at
+    created_by_frontend{
+      username
+      email
+    }
+    updated_by_frontend{
+      username
+      email
+    }
     updated_at
     status
     enrollment_type
@@ -142,6 +153,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
       id
       full_name
       phone
+      student_id
     }
   }
 }
@@ -487,6 +499,9 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  updated_at
+  discount_code_id
+  program_selected_by_student
   medha_program_certificate {
     id
     url
@@ -499,6 +514,7 @@ const programEnrollmentFields = `
   student{
     id
     full_name
+    student_id
   }
   batch {
     id

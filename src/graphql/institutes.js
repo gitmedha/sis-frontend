@@ -244,6 +244,14 @@ query INSTITUTION(
       city
       created_at
       updated_at
+      created_by_frontend{
+        username
+        email
+      }
+      updated_by_frontend{
+        username
+        email
+      }
       district
       logo {
         id
@@ -357,6 +365,10 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  program_selected_by_student
+  discount_code_id
+  created_at
+  updated_at
   medha_program_certificate {
     id
     url
@@ -382,9 +394,9 @@ const programEnrollmentFields = `
 export const GET_INSTITUTION_PROGRAM_ENROLLMENTS = `
 query GET_INSTITUTION_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: String){
   programEnrollmentsConnection (
-    sort: $sort
-    start: $start
-    limit: $limit
+    sort: $sort,
+    start: $start,
+    limit: $limit,
     where: {
       institution: {
         id: $id

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import moment from 'moment';
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
@@ -15,6 +15,9 @@ import { urlPath } from "../../../constants";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import NP from "nprogress";
+import nProgress from "nprogress";
+import api from "../../../apis";
+import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -41,7 +44,8 @@ const Styled = styled.div`
 `;
 
 const ProgramEnrollments = (props) => {
-  let { programEnrollments, student, onDataUpdate } = props;
+  let { id, student, onDataUpdate } = props;
+  const [loading, setLoading] = useState(false);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -49,7 +53,10 @@ const ProgramEnrollments = (props) => {
   const [pickList, setPickList] = useState([]);
   const {setAlert} = props;
   const history = useHistory();
-  const [programEnrollmentsTableData, setProgramEnrollmentsTableData] = useState(programEnrollments);
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
+  const [paginationPageSize, setPaginationPageSize] = useState(10);
+  const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
+  const [programEnrollments, setProgramEnrollments] = useState([]);
   const [selectedProgramEnrollment, setSelectedProgramEnrollment] = useState({});
 
   useEffect(() => {
@@ -58,13 +65,62 @@ const ProgramEnrollments = (props) => {
     });
   }, []);
 
+  const getStudentProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
+    nProgress.start();
+    setLoading(true);
+    await api.post("/graphql", {
+      query: GET_STUDENT_PROGRAM_ENROLLMENTS,
+      variables: {
+        id:  Number(id),
+        limit:limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      },
+    })
+    .then(data => {
+      setProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
+    })
+    .catch(err => {
+      console.log("getInstitutionProgramEnrollments Error", err);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+  };
+
+  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+    if (sortBy.length) {
+      let sortByField = 'certification_date_formatted';
+      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      switch (sortBy[0].id) {
+        case 'institution.name':
+          sortByField = sortBy[0].id;
+          break;
+          
+          case ' institution.name':
+          sortByField = 'registration_date_formatted';
+          break;
+
+        default:
+          sortByField = 'updated_at';
+          break;
+      }
+      getStudentProgramEnrollments(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+    } else {
+      getStudentProgramEnrollments(pageSize, pageSize * pageIndex);
+    }
+  }, []);
+
   useEffect(() => {
     let data = programEnrollments.map(programEnrollment => {
       return {
         ...programEnrollment,
-        registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+        registration_date_formatted: programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY"): '',
+        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+        updated_at:moment(programEnrollment.updated_at).format("DD MMM YYYY"),
         batch_name: programEnrollment?.batch?.name,
-        institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
@@ -77,12 +133,16 @@ const ProgramEnrollments = (props) => {
   const columns = useMemo(
     () => [
       {
+        Header: 'Program',
+        accessor: 'program_name',
+      },
+      {
         Header: 'Batch',
         accessor: 'batch_name',
       },
       {
-        Header: 'Program Name',
-        accessor: 'program_name',
+        Header: 'Institution',
+        accessor: 'institution.name',
       },
       {
         Header: 'Program Status',
@@ -93,21 +153,17 @@ const ProgramEnrollments = (props) => {
         accessor: 'registration_date_formatted',
       },
       {
-        Header: 'Fees Status',
-        accessor: 'fee_status_badge',
+        Header: 'Certification Date',
+        accessor: 'certification_date_formatted',
       },
       {
-        Header: 'Medha Program Certificate',
-        accessor: 'medha_program_certificate_icon',
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
         accessor: 'link',
         disableSortBy: true,
-      },
-      {
-        Header: 'Institute',
-        accessor: 'institution_name',
       },
     ],
     []
@@ -144,7 +200,6 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
    
 
@@ -156,7 +211,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       NP.done();
-      onDataUpdate();
+      getStudentProgramEnrollments();
     });
     setCreateModalShow(false);
   };
@@ -168,13 +223,11 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, certification_date_formatted, created_at, updated_at, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_amount'] = data.fee_refund_date ? Number(data.fee_amount) : null;
-  
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
@@ -184,7 +237,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
        NP.done();
-      onDataUpdate();
+       getStudentProgramEnrollments();
     });
     setUpdateModalShow(false);
   };
@@ -198,7 +251,7 @@ const ProgramEnrollments = (props) => {
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
-      onDataUpdate();
+      getStudentProgramEnrollments();
        NP.done();
        history.push("/students");
     });
@@ -216,7 +269,7 @@ const ProgramEnrollments = (props) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={programEnrollmentsTableData} paginationPageSize={programEnrollmentsTableData.length} totalRecords={programEnrollmentsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={programEnrollmentAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
         show={viewModalShow}
         onHide={hideViewModal}

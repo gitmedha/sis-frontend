@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
-import { OpportunityEmploymentConnectionValidations } from "../../../validations";
+import { EmploymentConnectionValidations } from "../../../validations/Employer";
 import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 
 const Section = styled.div`
@@ -34,41 +34,48 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, opportunity } = props;
+  let { onHide, show , employer} = props;
   const [statusOptions, setStatusOptions] = useState([]);
+  const [employerOptions, setEmployerOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
+  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection ? props.employmentConnection?.opportunities?.type: null);
 
   let initialValues = {
-    student: '',
-    employer_name: opportunity.employer.name,
-    opportunity_name: opportunity.role_or_designation,
+    student_id:'',
+    employer_id:'',
     status: '',
+    salary_offered:'',
+    opportunity_id:'',
     start_date:'',
     end_date:'',
     source:'',
-    salary_offered:'',
   };
-
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
-    initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
-    initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
+    initialValues['employer_id'] = props.employer ? Number(props.employer.id) : null;
+    initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
+    initialValues['employer'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
   
+
+  const onModalClose = () => {
+    if (!props.employmentConnection) {
+      setEmployerOpportunityOptions([]);
+    }
+    onHide();
+  }
+
   useEffect(() => {
     setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
   }, [selectedOpportunityType, selectedStatus]);
 
-  const onModalClose = () => {
-    onHide();
-  }
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -79,9 +86,22 @@ const EnrollmentConnectionForm = (props) => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
+
+
     if (props.employmentConnection && props.employmentConnection.student) {
       filterStudent(props.employmentConnection.student.name).then(data => {
         setStudentOptions(data);
+      });
+    }
+    if (props.employmentConnection && props.employmentConnection.employer) {
+      filterEmployer(props.employmentConnection.employer.name).then(data => {
+        setEmployerOptions(data);
+      });
+    }
+    
+    if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
+      updateEmployerOpportunityOptions({
+        value: Number(props.employmentConnection.opportunity.employer.id),
       });
     }
   }, [props]);
@@ -101,6 +121,33 @@ const EnrollmentConnectionForm = (props) => {
     });
   }
 
+  const filterEmployer = async (filterValue) => {
+    return await meilisearchClient.index('employers').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(employer => {
+        return {
+          ...employer,
+          label: employer.name,
+          value: Number(employer.id),
+        }
+      });
+    });
+  }
+
+  const updateEmployerOpportunityOptions = employer => {
+    setEmployerOpportunityOptions([]);
+    getEmployerOpportunities(Number(employer.value)).then(data => {
+      setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
+        key: opportunity.role_or_designation,
+        label: `${opportunity.role_or_designation} | ${opportunity.type}`,
+        type: opportunity.type,
+        value: opportunity.id,
+      })));
+    });
+  }
+
   return (
     <Modal
       centered
@@ -117,7 +164,7 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection 
+            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -125,7 +172,7 @@ const EnrollmentConnectionForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={OpportunityEmploymentConnectionValidations}
+          validationSchema={EmploymentConnectionValidations}
         >
           {({ setFieldValue }) => (
             <Form>
@@ -146,24 +193,29 @@ const EnrollmentConnectionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2"></div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      control="input"
-                      name="employer_name"
+                      control="lookupAsync"
+                      name="employer_id"
                       label="Employer"
                       className="form-control"
                       placeholder="Employer"
-                      disabled={true}
+                      filterData={filterEmployer}
+                      defaultOptions={props.employmentConnection ? employerOptions : true}
+                      onChange={updateEmployerOpportunityOptions}
+                      
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="input"
-                      name="opportunity_name"
-                      label="Opportunity"
-                      className="form-control"
-                      placeholder={'Opportunity'}
-                      disabled={true}
-                    />
-                  </div>
+                  <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity"
+                        required
+                        options={employerOpportunityOptions}
+                        className="form-control"
+                        placeholder={'Opportunity'}
+                      />
+                      </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"

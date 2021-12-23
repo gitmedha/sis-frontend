@@ -47,6 +47,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -96,7 +97,7 @@ const OpportunityForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.employer.state) {
         onStateChange({
@@ -113,13 +114,13 @@ const OpportunityForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 
@@ -130,12 +131,12 @@ const OpportunityForm = (props) => {
   let initialValues = {
     employer: employer,
     employer_name: employer.name,
-    assigned_to: '',
+    assigned_to: userId.toString(),
     role_or_designation: '',
     type: '',
     compensation_type: '',
     number_of_opportunities: '',
-    status: '',
+    status: 'active',
     department_or_team: '',
     salary: '',
     role_description: '',
@@ -209,6 +210,7 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="type"
                       label="Type"
                       control="lookup"
@@ -246,6 +248,7 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="status"
                       label="Status"
                       control="lookup"
@@ -256,6 +259,7 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="department_or_team"
                       control="lookup"
                       label="Department/Team"
@@ -278,6 +282,7 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      icon="down"
                       name="compensation_type"
                       control="lookup"
                       label="Paid"

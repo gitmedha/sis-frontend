@@ -58,7 +58,7 @@ const Students = (props) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [layout, setLayout] = useState('grid');
+  const [layout, setLayout] = useState('list');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState('All');
   const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
@@ -68,11 +68,6 @@ const Students = (props) => {
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
 
-  useEffect(() => {
-    getStudents(activeTab.key);
-  }, [activeTab]);
-
-
   const columns = useMemo(
     () => [
       {
@@ -80,32 +75,28 @@ const Students = (props) => {
         accessor: 'avatar',
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
-      },
-      {
         Header: 'Student ID',
-        accessor: 'id',
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-      },
-      {
-        Header: 'Latest Course Type',
-        accessor: 'course_type_latest',
+        accessor: 'student_id',
       },
       {
         Header: 'Area',
         accessor: 'medha_area',
       },
       {
-        Header: 'State',
-        accessor: 'state',
+        Header: 'Phone',
+        accessor: 'phone',
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
       },
       {
         Header: 'Assigned To',
-        accessor: 'assignedTo',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -185,10 +176,10 @@ const Students = (props) => {
     if (students) {
       let data = students;
       data = data.map(student => {
-        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch.toLowerCase() === student?.status.toLowerCase());
+        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch?.toLowerCase() === student?.status?.toLowerCase());
         return {
           ...student,
-          assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
+          // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
           gridLink: `/student/${student.id}`,
@@ -224,6 +215,7 @@ const Students = (props) => {
     nProgress.start();
     createStudent(dataToSave).then(data => {
       setAlert("Student created successfully.", "success");
+      history.push(`/student/${data.data.data.createStudent.student.id}`);
     }).catch(err => {
       console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create student.", "error");
@@ -235,9 +227,9 @@ const Students = (props) => {
   };
 
 
-  const handleStudentStatusTabChange = (activeTab) => {
-    setActiveStatus(activeTab.title);
-    getStudents(activeTab.title, paginationPageSize, paginationPageSize * paginationPageIndex, activeStatus);
+  const handleStudentStatusTabChange = (statusTab) => {
+    setActiveStatus(statusTab.title);
+    getStudents(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
   }
 
   return (

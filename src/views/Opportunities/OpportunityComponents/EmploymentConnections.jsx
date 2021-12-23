@@ -10,6 +10,7 @@ import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
+import { connect } from "react-redux";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -42,12 +43,14 @@ const OpportunityIcon = ({opportunity}) => {
   return <></>;
 };
 
-const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdate }) => {
+const EmploymentConnections = (props) => {
+  let { employmentConnections, opportunity, onDataUpdate } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
+  const {setAlert} = props;
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({
     student: {},
@@ -63,7 +66,7 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? employmentConnection.student.full_name : '',
+        student_name:  employmentConnection?.student?.full_name,
         institution_name: 'To be added',
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
@@ -71,6 +74,8 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
+        student_id: employmentConnection.student ? employmentConnection.student.student_id : '',
+        updated_at:  moment(employmentConnection.updated_at).format("DD MMM YYYY"),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -83,8 +88,8 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
         accessor: 'student_name',
       },
       {
-        Header: 'Institution',
-        accessor: 'institution_name',
+        Header: 'Student ID',
+        accessor: 'student_id',
       },
       {
         Header: 'Status',
@@ -93,6 +98,14 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
       {
         Header: 'Start Date',
         accessor: 'start_date',
+      },
+      {
+        Header: 'Source',
+        accessor: 'source',
+      },
+      {
+        Header: 'Updated At',
+        accessor: 'updated_at',
       },
       {
         Header: '',
@@ -154,7 +167,7 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer, date, updated_at, created_at, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
@@ -246,4 +259,10 @@ const EmploymentConnections = ({ employmentConnections, opportunity, onDataUpdat
   );
 };
 
-export default EmploymentConnections;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(EmploymentConnections);

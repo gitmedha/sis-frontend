@@ -56,9 +56,11 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const userId = parseInt(localStorage.getItem('user_id'))
+  
   const [initialValues, setInitialValues] = useState({
     employer: '',
-    assigned_to: '',
+    assigned_to: userId.toString() ,
     role_or_designation: '',
     type: '',
     compensation_type: '',
@@ -75,6 +77,7 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
+  
 
   useEffect(() => {
     if (props.institution) {
@@ -139,7 +142,7 @@ const OpportunityForm = (props) => {
     if (props.id) {
       setInitialValues({
         ...props,
-        assigned_to: props.assigned_to ? props.assigned_to.id : '',
+        assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
       });
     }
@@ -149,7 +152,7 @@ const OpportunityForm = (props) => {
         key: state.id,
         label: state.key,
         value: state.key,
-    })));
+    })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
         onStateChange({
@@ -162,13 +165,19 @@ const OpportunityForm = (props) => {
   const filterEmployer = async (filterValue) => {
     return await meilisearchClient.index('employers').search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ['id', 'name','state','district','city','pin_code','medha_area','address']
     }).then(data => {
       return data.hits.map(employer => {
         return {
           ...employer,
           label: employer.name,
           value: Number(employer.id),
+          state: employer.state,
+          district:employer.district,
+          address: employer.address,
+          city: employer.city,
+          pin_code: employer.pin_code,
+          medha_area: employer.medha_area,
         }
       });
     });
@@ -178,17 +187,27 @@ const OpportunityForm = (props) => {
     onHide(values);
   };
 
-  const handleEmployerChange = (employer) => {
+  
+
+  const handleEmployerChange = (employer) => { 
     setInitialValues({
       ...initialValues,
-      address: employer.details.address,
-      city: employer.details.city,
-      state: employer.details.state,
-      pin_code: employer.details.pin_code,
-      medha_area: employer.details.medha_area,
-      district: employer.details.district,
+      address: employer.address,
+      city: employer.city,
+      state: employer.state,
+      pin_code: employer.pin_code,
+      medha_area: employer.medha_area,
+      district: employer.district,
     });
   }
+  
+  useEffect(() => {
+    if (initialValues.state) {
+      onStateChange({
+        value: initialValues.state,
+      });
+    }
+  }, [initialValues])
 
   const onStateChange = value => {
     setDistrictOptions([]);
@@ -197,13 +216,13 @@ const OpportunityForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 

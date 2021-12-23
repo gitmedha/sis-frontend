@@ -104,6 +104,8 @@ const ProgramEnrollmentForm = (props) => {
     certification_date: null,
     fee_payment_date: null,
     fee_refund_date: null,
+    discount_code_id:'',
+    fee_amount:'',
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
@@ -133,12 +135,12 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'full_name']
+      attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       return data.hits.map(student => {
         return {
           ...student,
-          label:student.full_name,
+          label:`${student.full_name} (${student.student_id})`,
           value:  Number(student.id),
         }
       });

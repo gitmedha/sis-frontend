@@ -8,6 +8,7 @@ import api from "../../apis";
 import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
+// import InstitutionBatches from "./InstitutionComponents/InstitutionBatches";
 import Students from "./InstitutionComponents/Students";
 import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
@@ -17,6 +18,25 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteInstitution, updateInstitution, getInstitutionProgramEnrollments } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+
+.button {
+  font-size: 16px;
+  margin: auto 10px;
+  border-radius: 5px;
+  font-family: Latto-Bold;
+  padding: 6px 43px !important;
+}
+
+@media screen and (max-width: 360px) {
+  .section-badge {
+    margin-left: 2px;
+    padding: 0px 20px !important;
+  }
+}
+`
 
 const Institute = (props) => {
   const [institutionProgramEnrollments, setInstitutionProgramEnrollments] = useState([]);
@@ -28,6 +48,7 @@ const Institute = (props) => {
   const {setAlert} = props;
   const { address, contacts, ...rest } = instituteData;
   const instituteID = props.match.params.id;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -36,7 +57,7 @@ const Institute = (props) => {
     }
 
     // need to remove id and show from the payload
-    let {id, show, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, created_at, updated_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
@@ -88,6 +109,7 @@ const Institute = (props) => {
   const getProgramEnrollments = async () => {
     getInstitutionProgramEnrollments(instituteID).then(data => {
       setInstitutionProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
       console.log("getInstitutionProgramEnrollments Error", err);
     });
@@ -102,9 +124,10 @@ const Institute = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
+      <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
+          <div className="btn-box col-12">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
@@ -134,11 +157,14 @@ const Institute = (props) => {
         <Collapsible title="Address">
           <Address {...instituteData}  id={rest.id} />
         </Collapsible>
-        <Collapsible title="Contacts">
+        <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
           <Contacts contacts={contacts} id={rest.id} />
         </Collapsible>
-        <Collapsible title="Program Enrollments"  badge={institutionProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} />
+        {/* <Collapsible title="Batches">
+          <InstitutionBatches />
+        </Collapsible> */}
+        <Collapsible title="Program Enrollments"  badge={programEnrollmentAggregate.count}>
+          <ProgramEnrollments programEnrollments={institutionProgramEnrollments} onDataUpdate={getProgramEnrollments} institution={instituteData} id={instituteID}/>
         </Collapsible>
         <InstitutionForm
           {...instituteData}
@@ -172,6 +198,7 @@ const Institute = (props) => {
           <p>Are you sure, you want to delete this institution?</p>
         </SweetAlert>
       </>
+      </Styled>
     );
   }
 };

@@ -22,6 +22,20 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
 import { groupBy } from "lodash";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
+import styled from 'styled-components';
+
+const Styled = styled.div`
+.button{
+    padding: 6px 43px !important;
+}
+
+@media screen and (max-width: 360px) {
+  .section-badge {
+    margin-left: 2px;
+    padding: 0px 20px !important;
+    }
+}
+`
 
 const Batch = (props) => {
   const [batchProgramEnrollments, setBatchProgramEnrollments] = useState([]);
@@ -34,6 +48,7 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
   const {setAlert} = props;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const getThisBatch = async () => {
     try {
@@ -99,12 +114,13 @@ const Batch = (props) => {
       });
       let studentsData = data.programEnrollmentsConnection.values;
       getBatchStudentAttendances(batchID).then(data => {
+        let sessionCount= data.data.data.sessionsConnection.aggregate.count
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
           return {
             ...student,
-            attendancePercent: studentAttendancePercent && batch ? Math.floor((studentAttendancePercent.connection.aggregate.count/batch.number_of_sessions_planned) * 100) : 0,
+            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
           }
         });
         setStudents(studentsWithAttendance);
@@ -123,7 +139,7 @@ const Batch = (props) => {
     }
 
     // // need to remove id and show from the payload
-    let {id, show, logo, created_at, updated_at, ...dataToSave} = data;
+    let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
     }
@@ -188,6 +204,7 @@ const Batch = (props) => {
   const getProgramEnrollments = async () => {
     getBatchProgramEnrollments(batchID).then(data => {
       setBatchProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
+      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
       console.log("getInstitutionProgramEnrollments Error", err);
     });
@@ -197,20 +214,21 @@ const Batch = (props) => {
     return <SkeletonLoader />;
   } else {
     return (
-      <>
+      <Styled>
+    <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
-              className="btn--primary"
+              className="button btn--primary"
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            <button className="btn--secondary">MARK AS COMPLETE</button>
+            {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
           </div>
         </div>
         {batch && (
@@ -230,10 +248,10 @@ const Batch = (props) => {
             <Details batch={batch} sessions={sessions} />
           </Collapsible>
         )}
-        <Collapsible title="Program Enrollments" badge={batchProgramEnrollments.length.toString()}>
-          <ProgramEnrollments programEnrollments={batchProgramEnrollments} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} batch={batch} />
+        <Collapsible title="Program Enrollments" badge={programEnrollmentAggregate.count}>
+          <ProgramEnrollments programEnrollments={batchProgramEnrollments} students={students} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
         </Collapsible>
-        <Collapsible title="Sessions" badge={sessions.length.toString()}>
+        <Collapsible title="Sessions & Attendance" badge={sessions.length.toString()}>
           <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
         </Collapsible>
         {batch && <BatchForm
@@ -254,22 +272,23 @@ const Batch = (props) => {
           }
           customButtons={
             <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
+                <button
+                  onClick={() => setShowDeleteAlert(false)}
+                  className="btn btn-secondary mx-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                  Delete
+                </button>
+              </>
+            }
+          >
+            <p>Are you sure, you want to delete this batch?</p>
+          </SweetAlert>
           }
-        >
-          <p>Are you sure, you want to delete this batch?</p>
-        </SweetAlert>
-        }
-      </>
+        </>
+        </Styled>
     );
   }
 };

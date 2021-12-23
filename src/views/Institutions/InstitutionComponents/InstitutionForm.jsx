@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
+import { FaSchool, FaUserFriends } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
@@ -40,6 +40,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {
@@ -72,7 +73,7 @@ const InstitutionForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
         onStateChange({
@@ -90,13 +91,13 @@ const InstitutionForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
-      })));
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 
@@ -117,7 +118,7 @@ const InstitutionForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to:'',
+    assigned_to:userId.toString(),
     state:'',
     pin_code:'',
     city:'',
@@ -130,6 +131,7 @@ const InstitutionForm = (props) => {
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    
   }
 
   if (!props.contacts) {
@@ -186,36 +188,6 @@ const InstitutionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="phone"
-                      label="Phone"
-                      required
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      type="email"
-                      name="email"
-                      label="Email"
-                      required
-                      control="input"
-                      placeholder="Email"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="website"
-                      control="input"
-                      label="Website"
-                      placeholder="Website"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
                         control="lookup"
@@ -225,6 +197,22 @@ const InstitutionForm = (props) => {
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {institutionTypeOpts.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="type"
+                        label="Type"
+                        required
+                        options={institutionTypeOpts}
+                        className="form-control"
+                        placeholder="Type"
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
@@ -247,20 +235,34 @@ const InstitutionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {institutionTypeOpts.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="type"
-                        label="Type"
-                        required
-                        options={institutionTypeOpts}
-                        className="form-control"
-                        placeholder="Type"
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
+                    <Input
+                      name="website"
+                      control="input"
+                      label="Website"
+                      placeholder="Website"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="phone"
+                      label="Phone"
+                      required
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      type="email"
+                      name="email"
+                      label="Email"
+                      required
+                      control="input"
+                      placeholder="Email"
+                      className="form-control"
+                    />
                   </div>
                 </div>
               </Section>

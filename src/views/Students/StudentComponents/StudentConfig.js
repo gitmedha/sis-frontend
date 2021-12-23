@@ -1,10 +1,16 @@
-import { FaClipboardCheck, FaBlackTie, FaBriefcase, FaGraduationCap, FaUserGraduate } from "react-icons/fa";
+import { FaClipboardCheck, FaBlackTie, FaBriefcase, FaGraduationCap, FaUserGraduate, FaEdit } from "react-icons/fa";
 
 export const studentStatusOptions = [
   {
     icon: <FaUserGraduate size={20} color="#31B89D" />,
     title: 'All',
     picklistMatch: '',
+  },
+  {
+    icon: <FaEdit size={20} color="#31B89D" />,
+    title: 'New Request',
+    progress: '0%',
+    picklistMatch: 'New Request',
   },
   {
     icon: <FaClipboardCheck size={20} color="#31B89D" />,

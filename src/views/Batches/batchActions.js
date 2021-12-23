@@ -179,7 +179,7 @@ export const getBatchStudentAttendances = async (batchId) => {
   });
 }
 
-export const getBatchProgramEnrollments = async (batchID, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getBatchProgramEnrollments = async (batchID, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_BATCH_PROGRAM_ENROLLMENTS,
     variables: {
