@@ -113,9 +113,9 @@ const ProgramEnrollments = (props) => {
       getBatchProgramEnrollments(pageSize, pageSize * pageIndex);
     }
   }, []);
-  console.log(students)
+
   useEffect(() => {
-    let data = programEnrollments.map((programEnrollment, index) => {console.log(students)
+    let data = programEnrollments.map((programEnrollment, index) => {
       const studentAttendance = Math.floor(students[index]?.attendancePercent)
       return {
         ...programEnrollment,
