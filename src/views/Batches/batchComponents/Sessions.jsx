@@ -18,7 +18,7 @@ const SessionLink = styled.div`
 `
 
 const Sessions = (props) => {
-  let {sessions, batchID, fetchData, onDataUpdate } = props;
+  let {sessions, batch, batchID, fetchData, onDataUpdate } = props;
   const {setAlert} = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
@@ -167,6 +167,7 @@ const Sessions = (props) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
+      {props.batch.status == 'In Progress' && 
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -175,6 +176,7 @@ const Sessions = (props) => {
             Add Session & Attendance
           </button>
         </div>
+      }
         <div className="col-12 mt-3">
           <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={handleRowClick} showPagination={false} />
         </div>

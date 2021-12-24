@@ -130,6 +130,20 @@ const Batch = (props) => {
     }
   };
 
+  const updateStatus = async () => {
+    NP.start();
+    updateBatch(Number(batchID), {status:'Complete'}).then(data => {
+      setAlert("Batch stutus updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch status.", "error");
+    }).finally(async () => {
+      NP.done();
+      getThisBatch();
+    });
+    setModalShow(false);
+  }
+
   const done = () => getThisBatch();
 
   const hideUpdateModal = async (data) => {
@@ -228,7 +242,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
+            <button onClick={() => updateStatus()} className="btn--secondary">MARK AS COMPLETE</button>
           </div>
         </div>
         {batch && (
@@ -252,7 +266,7 @@ const Batch = (props) => {
           <ProgramEnrollments programEnrollments={batchProgramEnrollments} students={students} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
         </Collapsible>
         <Collapsible title="Sessions & Attendance" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} batch={batch} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
         </Collapsible>
         {batch && <BatchForm
           {...batch}
