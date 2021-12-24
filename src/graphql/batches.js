@@ -154,6 +154,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
       full_name
       phone
       student_id
+      name_of_parent_or_guardian
     }
   }
 }

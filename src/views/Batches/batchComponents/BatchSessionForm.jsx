@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
+import { Anchor} from "../../../components/content/Utils";
 import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
@@ -84,9 +85,11 @@ const BatchSessionForm = (props) => {
       present: false,
       id: rec.student.id,
       program_enrollment_id: Number(rec.id),
-      name: rec.student.full_name,
+      name: <Anchor text={rec.student?.full_name} href={`/student/${rec.student?.id}`} />,
       phone: rec.student.phone,
       student_id: rec.student.student_id,
+      parent_name: rec.student.name_of_parent_or_guardian
+      
     }));
   };
 
@@ -134,6 +137,11 @@ const BatchSessionForm = (props) => {
       {
         Header: 'Phone',
         accessor: 'phone',
+        disableSortBy: true,
+      },
+      {
+        Header: 'Parent Name',
+        accessor: 'parent_name',
         disableSortBy: true,
       },
     ],
