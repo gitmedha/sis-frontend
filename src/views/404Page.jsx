@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from "styled-components";
-import image from '../../src/assets/images/image.png'
 
 const Styled = styled.div`
 img {
@@ -12,6 +11,11 @@ img {
 h3{
     text-align: center;
     font-family:Lato;
+    position: fixed;
+    top: 270px;
+    bottom: 150px;
+    left: 0;
+    right: 0;
 }
 .button {
   background-color: #4CAF50;
@@ -30,10 +34,11 @@ const PageNotFound = () => {
     return (
         <Styled>
             <div id="wrapper">
-                <img src={image} />
                 <div id="info">
                     <h3>The record/page you are looking for does not exist.  
-                    <a href="/home" class="btn btn-primary"> Click Here </a> to go back, or return to the Dashboard.
+                     <br>
+                     </br>
+                     Click Here  to go <a href="javascript: history.go(-1)" class="btn btn-primary"> Back </a>, or return to the <a href="/home" class="btn btn-primary">Dashboard.</a>
                     </h3>
                 </div>
             </div>
