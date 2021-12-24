@@ -131,7 +131,7 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  <PrivateRoute path="/home" exact component={Home} />
+                  <PrivateRoute path="/" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
                   <PrivateRoute path="/institutions" exact component={Institutions} />
@@ -154,8 +154,8 @@ const App = (props) => {
                   <PrivateRoute path="/employers" exact component={Employers} />
                   <PrivateRoute path="/employer/:id" exact component={Employer} />
                   {/* <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } /> */}
-                  <Route path='/404' component={PageNotFound} />
-                  <Redirect to='/404' />
+                  <Route path='/404-page' component={PageNotFound} />
+                  <Redirect to='/404-page' />
                 </Switch>
               </RouteContainer>
             </LayoutContainer>

@@ -38,7 +38,7 @@ const PageNotFound = () => {
                     <h3>The record/page you are looking for does not exist.  
                      <br>
                      </br>
-                     Click Here  to go <a href="javascript: history.go(-1)" class="btn btn-primary"> Back </a>, or return to the <a href="/home" class="btn btn-primary">Dashboard.</a>
+                     Click Here  to go <a href="javascript: history.go(-1)" class="btn btn-primary"> Back </a> or return to the <a href="/home" class="btn btn-primary">Dashboard.</a>
                     </h3>
                 </div>
             </div>

@@ -17,7 +17,7 @@ const iconProps = {
 
 const routes = [
   {
-    to: "/home",
+    to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />
   },
