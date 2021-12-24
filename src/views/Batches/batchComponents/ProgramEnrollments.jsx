@@ -155,6 +155,10 @@ const ProgramEnrollments = (props) => {
         accessor: 'institution.name',
       },
       {
+        Header: 'Attendance',
+        accessor: 'attendance',
+      },
+      {
         Header: 'Program Status',
         accessor: 'status_badge',
       },
@@ -165,10 +169,6 @@ const ProgramEnrollments = (props) => {
       {
         Header: 'Certification Date',
         accessor: 'certification_date_formatted',
-      },
-      {
-        Header: 'Attendance',
-        accessor: 'attendance',
       },
       {
         Header: 'Updated At',
@@ -236,7 +236,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let { id, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
+    let { id, attendance, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
@@ -273,6 +273,7 @@ const ProgramEnrollments = (props) => {
   return (
     <div className="container-fluid my-3">
       <div className="row">
+      {((props.batch.status == 'Enrollment Ongoing'|| props.batch.status == "In Progress") &&
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -281,6 +282,7 @@ const ProgramEnrollments = (props) => {
             + Add More
           </button>
         </div>
+      )}
       </div>
       <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={programEnrollmentAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
