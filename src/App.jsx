@@ -153,7 +153,6 @@ const App = (props) => {
                   />
                   <PrivateRoute path="/employers" exact component={Employers} />
                   <PrivateRoute path="/employer/:id" exact component={Employer} />
-                  {/* <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } /> */}
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
