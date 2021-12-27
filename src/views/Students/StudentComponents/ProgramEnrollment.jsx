@@ -7,6 +7,7 @@ import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
+import { generateCertificate } from "../../../utils/function/certificate";
 
 const Section = styled.div`
   padding-top: 11px;
@@ -47,8 +48,23 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
+  let { onHide, show, handleEdit, handleDelete, student } = props;
   const [pickList, setPickList] = useState([]);
+  const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
+  const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
+
+  const handleGenerateCertificate = async () => {
+    setLoadingCertificationButton(true);
+    let response = await generateCertificate(programEnrollment.id);
+    if (response.programEnrollment) {
+      setProgramEnrollment(response.programEnrollment);
+    }
+    setLoadingCertificationButton(false);
+  }
+
+  useEffect(() => {
+    setProgramEnrollment(props.programEnrollment);
+  }, [props]);
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -132,7 +148,7 @@ const ProgramEnrollment = (props) => {
             <div className="col-md-12 d-flex justify-content-center">
               <button type="button" className="btn-box btn btn-primary" onClick={handleEdit}>EDIT</button>
               <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
-              <button type="button" className="btn-box btn btn-primary" onClick={() => {}}>REGENERATE CERTIFICATE</button>
+              <button type="button" className="btn-box btn btn-primary" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>REGENERATE CERTIFICATE</button>
             </div>
           </div>
           </Section>
