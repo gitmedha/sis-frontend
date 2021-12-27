@@ -7,6 +7,7 @@ import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
+import { generateCertificate } from "../../../utils/function/certificate";
 
 const Section = styled.div`
   padding-top: 11px;
@@ -46,9 +47,24 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onHide, show, handleEdit, handleDelete, student, programEnrollment } = props;
+  let { onHide, show, handleEdit, handleDelete } = props;
   const [pickList, setPickList] = useState([]);
-  
+  const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
+  const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
+
+  const handleGenerateCertificate = async () => {
+    setLoadingCertificationButton(true);
+    let response = await generateCertificate(programEnrollment.id);
+    if (response.programEnrollment) {
+      setProgramEnrollment(response.programEnrollment);
+    }
+    setLoadingCertificationButton(false);
+  }
+
+  useEffect(() => {
+    setProgramEnrollment(props.programEnrollment);
+  }, [props]);
+
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setPickList(data);
@@ -124,14 +140,14 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Certification Date" value={programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY") : ''} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Certificate" value={programEnrollment.medha_program_certificate ? <div><a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div> : ''} />
+              <DetailField label="Certificate" value={programEnrollment.medha_program_certificate ? <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div> : ''} />
             </div>
           </div>
           <div className="row mt-4">
             <div className="col-md-12 d-flex justify-content-center">
               <button type="button" className="btn-box btn btn-primary" onClick={handleEdit}>EDIT</button>
               <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
-              <button type="button" className="btn-box btn btn-primary" onClick={() => {}}>REGENERATE CERTIFICATE</button>
+              <button type="button" className="btn-box btn btn-primary" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>REGENERATE CERTIFICATE</button>
             </div>
           </div>
           </Section>
