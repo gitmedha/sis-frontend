@@ -132,18 +132,31 @@ const ProgramEnrollmentForm = (props) => {
     });
   }, []);
 
+
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      return data.hits.map(student => {
+      let programEnrollmentStudent = props.programEnrollment.student;
+      let programEnrollmentStudentFound = false;
+      let filterData = data.hits.map(student => {
+        if (student.id === programEnrollmentStudent.id) {
+          programEnrollmentStudentFound = true;
+        }
         return {
           ...student,
-          label:`${student.full_name} (${student.student_id})`,
-          value:  Number(student.id),
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
         }
       });
+      if (!programEnrollmentStudentFound) {
+        filterData.unshift({
+          label: programEnrollmentStudent.full_name,
+          value: Number(programEnrollmentStudent.id),
+        });
+      }
+      return filterData;
     });
   }
 
