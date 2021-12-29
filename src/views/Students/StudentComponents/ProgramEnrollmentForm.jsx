@@ -130,10 +130,10 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      let programEnrollmentInstitution = props.programEnrollment.institution;
+      let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let programEnrollmentInstitutionFound = false;
       let filterData = data.hits.map(institution => {
-        if (institution.id === programEnrollmentInstitution.id) {
+        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
           programEnrollmentInstitutionFound = true;
         }
         return {
@@ -142,7 +142,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (!programEnrollmentInstitutionFound) {
+      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
         filterData.unshift({
           label: programEnrollmentInstitution.name,
           value: Number(programEnrollmentInstitution.id),
@@ -157,10 +157,10 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      let programEnrollmentBatch = props.programEnrollment.batch;
+      let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
       let programEnrollmentBatchFound = false;
       let filterData = data.hits.map(batch => {
-        if (batch.id === programEnrollmentBatch.id) {
+        if (props.programEnrollment && batch.id === programEnrollmentBatch.id) {
           programEnrollmentBatchFound = true;
         }
         return {
@@ -169,7 +169,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (!programEnrollmentBatchFound) {
+      if (props.programEnrollment && !programEnrollmentBatchFound) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),

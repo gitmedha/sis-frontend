@@ -107,7 +107,7 @@ const ProgramEnrollmentForm = (props) => {
 
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = Number(props.programEnrollment.batch?.id); 
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
     initialValues['institution'] = Number(props.programEnrollment.institution?.id);
     initialValues['student'] = Number(props.programEnrollment.student?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
@@ -144,10 +144,10 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      let programEnrollmentInstitution = props.programEnrollment.institution;
+      let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let programEnrollmentInstitutionFound = false;
       let filterData = data.hits.map(institution => {
-        if (institution.id === programEnrollmentInstitution.id) {
+        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
           programEnrollmentInstitutionFound = true;
         }
         return {
@@ -156,7 +156,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (!programEnrollmentInstitutionFound) {
+      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
         filterData.unshift({
           label: programEnrollmentInstitution.name,
           value: Number(programEnrollmentInstitution.id),
@@ -171,10 +171,10 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      let programEnrollmentStudent = props.programEnrollment.student;
+      let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let programEnrollmentStudentFound = false;
       let filterData = data.hits.map(student => {
-        if (student.id === programEnrollmentStudent.id) {
+        if (props.programEnrollment && student.id === programEnrollmentStudent.id) {
           programEnrollmentStudentFound = true;
         }
         return {
@@ -183,7 +183,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (!programEnrollmentStudentFound) {
+      if (props.programEnrollment && !programEnrollmentStudentFound) {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
