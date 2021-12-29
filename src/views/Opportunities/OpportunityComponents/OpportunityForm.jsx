@@ -10,6 +10,7 @@ import { OpportunityValidations } from "../../../validations";
 import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
 import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -78,6 +79,11 @@ const OpportunityForm = (props) => {
     district:'',
   });
   
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   useEffect(() => {
     if (props.institution) {
@@ -120,14 +126,6 @@ const OpportunityForm = (props) => {
           value: item.value.toLowerCase(),
         };
       }));
-    });
-
-    getAssigneeOptions().then(data => {
-      setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-          key: assignee.username,
-          label: `${assignee.username} (${assignee.email})`,
-          value: assignee.id,
-      })));
     });
 
     getAllEmployers().then(data => {
@@ -186,8 +184,6 @@ const OpportunityForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
-
-  
 
   const handleEmployerChange = (employer) => { 
     setInitialValues({
@@ -267,7 +263,6 @@ const OpportunityForm = (props) => {
                       className="form-control"
                       filterData={filterEmployer}
                       defaultOptions={props.id ? employerOptions : true}
-                      // options={employerOptions}
                       onChange={handleEmployerChange}
                       required
                     />
@@ -308,10 +303,11 @@ const OpportunityForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
-                        options={assigneeOptions}
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
                         required

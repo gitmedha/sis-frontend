@@ -4,16 +4,12 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
-
 import { Input } from "../../../utils/Form";
 import { StudentValidations } from "../../../validations";
-// import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
-import { getAssigneeOptions } from '../../Institutions/InstitutionComponents/instituteActions';
-import { DateRange } from '@material-ui/icons';
-import { TitleWithLogo } from "../../../components//content/Avatar";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -58,19 +54,17 @@ const StudentForm = (props) => {
   ];
 
   useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
+
+  useEffect(() => {
     getStudentsPickList().then(data => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
-
-    getAssigneeOptions().then(data => {
-      setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-          key: assignee.username,
-          label: `${assignee.username} (${assignee.email})`,
-          value: assignee.id,
-      })));
     });
 
     getAddressOptions().then(data => {
@@ -194,13 +188,14 @@ const StudentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
                         required
-                        options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                       />
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
