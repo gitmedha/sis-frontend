@@ -186,16 +186,20 @@ const InstitutionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="lookupAsync"
-                      name="assigned_to"
-                      label="Assigned To"
-                      required
-                      className="form-control"
-                      placeholder="Assigned To"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                    />
+                    {assigneeOptions.length ? (
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {institutionTypeOpts.length ? (
