@@ -32,7 +32,7 @@ import TableView from "./views/Tables";
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
 import axios from "axios";
-import { urlPath } from "./constants";
+import { apiPath, urlPath } from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 
@@ -71,7 +71,7 @@ const App = (props) => {
   const getUserDetails = () => {
     if (token) {
       // authenticate the token on the server and place set user object
-      axios.get(urlPath('/users/me'), {
+      axios.get(apiPath('/users/me'), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -95,7 +95,7 @@ const App = (props) => {
     // check for full path also.
     if (accessToken) {
       // make api request to fetch JSON
-      axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
+      axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
         let nextUrl = '/';

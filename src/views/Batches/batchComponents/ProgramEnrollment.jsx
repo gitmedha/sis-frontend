@@ -5,7 +5,6 @@ import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionCom
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload } from "react-icons/fa";
-import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import { generateCertificate } from "../../../utils/function/certificate";
 

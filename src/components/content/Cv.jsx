@@ -2,7 +2,6 @@ import api from "../../apis";
 import Tooltip from "./Tooltip";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { urlPath } from "../../constants";
 import FileUploader from "./FileUploader";
 import { FaUpload } from "react-icons/fa";
 
