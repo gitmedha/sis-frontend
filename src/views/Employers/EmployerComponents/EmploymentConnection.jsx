@@ -17,6 +17,17 @@ const Styled = styled.div`
   padding: 5px;
   justify-content: center;
 }
+.cv-icon {
+  margin-right: 20px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #EEE;
+    box-shadow: 0 0 0 1px #C4C4C4;
+  }
+}
 `;
 
 const EmploymentConnection = (props) => {
@@ -73,27 +84,28 @@ const EmploymentConnection = (props) => {
               employmentConnection.internship_certificate &&
               <div>
                 <label>Certificate</label>
-                <p>(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
+                <p className="mb-0">(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
               </div> 
              } />
              <div className ="row">
-              <div className="icon-box">
-                <div class=" col-md-1">
+              <div className="col-md-6"></div>
+              <div className="col-md-6 d-flex">
+                <div className="cv-icon">
                   <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} done={() => onUpdate() } />
                 </div>
-                <div class="col-md-1">
-                  { employmentConnection.internship_certificate &&
+                <div className="cv-icon">
+                  {employmentConnection.internship_certificate &&
                     <div className="col-md-1 d-flex flex-column section-cv">   
                       <Tooltip placement="top" title="Click Here to View Certificate">
-                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="25" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
+                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
                       </Tooltip>   
                     </div>   
                   }
                 </div>
-                <div class="col-md-1">
+                <div className="cv-icon">
                   { employmentConnection.internship_certificate &&
                   <Tooltip placement="top" title="Click Here to Delete Certificate">
-                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /> </a>
+                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
                   </Tooltip>   
                   }
                 </div>
