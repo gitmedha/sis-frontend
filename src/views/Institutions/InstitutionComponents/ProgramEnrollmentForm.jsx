@@ -152,13 +152,25 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(batch => {
+      let programEnrollmentBatch = props.programEnrollment.batch;
+      let programEnrollmentBatchFound = false;
+      let filterData = data.hits.map(batch => {
+        if (batch.id === programEnrollmentBatch.id) {
+          programEnrollmentBatchFound = true;
+        }
         return {
           ...batch,
           label: batch.name,
           value: Number(batch.id),
         }
       });
+      if (!programEnrollmentBatchFound) {
+        filterData.unshift({
+          label: programEnrollmentBatch.name,
+          value: Number(programEnrollmentBatch.id),
+        });
+      }
+      return filterData;
     });
   }
 
