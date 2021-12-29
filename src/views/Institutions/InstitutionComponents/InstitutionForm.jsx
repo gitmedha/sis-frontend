@@ -10,6 +10,7 @@ import { InstituteValidations } from "../../../validations";
 import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { urlPath } from "../../../constants";
+import { filterAssignedTo } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -131,7 +132,7 @@ const InstitutionForm = (props) => {
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
-    
+
   }
 
   if (!props.contacts) {
@@ -190,13 +191,14 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
                         required
                         options={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
+                        filterData={filterAssignedTo}
                       />
                     ) : (
                       <Skeleton count={1} height={45} />

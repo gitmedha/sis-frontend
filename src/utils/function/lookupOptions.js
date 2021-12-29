@@ -7,6 +7,7 @@ import {
   GET_ASSIGNEES_LIST_OPTS,
   GET_ALL_STUDENTS,
   GET_ALL_BATCHES,
+  FILTER_USERS_BY_NAME,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -80,3 +81,16 @@ export const batchLookUpOptions = async () => {
     batchOptions,
   };
 };
+
+export const filterAssignedTo = async (filterValue) => {
+  let data = await queryBuilder({
+    query: FILTER_USERS_BY_NAME,
+    variables: {
+      name: filterValue,
+    },
+  });
+  return data.data.users.map(user => ({
+    label: `${user.username} (${user.email})`,
+    value: user.id,
+  }));
+}

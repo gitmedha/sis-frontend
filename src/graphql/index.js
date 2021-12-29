@@ -1,4 +1,4 @@
-export * from "./assigend";
+export * from "./user";
 export * from "./batches";
 export * from "./helper";
 export * from "./institutes";
