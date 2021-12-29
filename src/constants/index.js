@@ -1,2 +1,2 @@
 export const baseURL = process.env.REACT_APP_STRAPI_API_BASEURL;
-export const urlPath = (url) => baseURL + url;
+export const urlPath = (url) => url;

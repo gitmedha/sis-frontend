@@ -77,7 +77,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
               id="contained-modal-title-vcenter"
               className="text--primary latto-bold"
             >
-              Update Cv
+              Update CV
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-light">
