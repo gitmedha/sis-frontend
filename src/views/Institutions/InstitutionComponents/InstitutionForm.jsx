@@ -3,14 +3,14 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool, FaUserFriends } from "react-icons/fa";
+import { FaSchool } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { InstituteValidations } from "../../../validations";
-import { getInstitutionsPickList, getAssigneeOptions } from "./instituteActions";
+import { getInstitutionsPickList } from "./instituteActions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { urlPath } from "../../../constants";
-import { filterAssignedTo } from '../../../utils/function/lookupOptions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -61,14 +61,6 @@ const InstitutionForm = (props) => {
       }));
     });
 
-    getAssigneeOptions().then(data => {
-      setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-          key: assignee.username,
-          label: `${assignee.username} (${assignee.email})`,
-          value: assignee.id,
-      })));
-    });
-
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
           key: state.id,
@@ -82,8 +74,13 @@ const InstitutionForm = (props) => {
         });
       }
     });
-
   }, [props]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   const onStateChange = value => {
     setDistrictOptions([]);
@@ -119,7 +116,7 @@ const InstitutionForm = (props) => {
     phone:'',
     status:'active',
     address:'',
-    assigned_to:userId.toString(),
+    assigned_to: userId.toString(),
     state:'',
     pin_code:'',
     city:'',
@@ -189,20 +186,16 @@ const InstitutionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {assigneeOptions.length ? (
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        options={assigneeOptions}
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {institutionTypeOpts.length ? (
