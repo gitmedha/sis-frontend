@@ -130,13 +130,25 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(institution => {
+      let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
+      let programEnrollmentInstitutionFound = false;
+      let filterData = data.hits.map(institution => {
+        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
+          programEnrollmentInstitutionFound = true;
+        }
         return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+        filterData.unshift({
+          label: programEnrollmentInstitution.name,
+          value: Number(programEnrollmentInstitution.id),
+        });
+      }
+      return filterData;
     });
   }
 
@@ -145,13 +157,25 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(batch => {
+      let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+      let programEnrollmentBatchFound = false;
+      let filterData = data.hits.map(batch => {
+        if (props.programEnrollment && batch.id === programEnrollmentBatch.id) {
+          programEnrollmentBatchFound = true;
+        }
         return {
           ...batch,
           label: batch.name,
           value: Number(batch.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentBatchFound) {
+        filterData.unshift({
+          label: programEnrollmentBatch.name,
+          value: Number(programEnrollmentBatch.id),
+        });
+      }
+      return filterData;
     });
   }
 
