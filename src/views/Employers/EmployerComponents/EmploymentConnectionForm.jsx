@@ -111,13 +111,25 @@ const EnrollmentConnectionForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      return data.hits.map(student => {
+      let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
+      let employmentConnectionStudentFound = false;
+      let filterData = data.hits.map(student => {
+        if (props.employmentConnection && student.id === employmentConnectionStudent.id) {
+          employmentConnectionStudentFound = true;
+        }
         return {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
         }
       });
+      if (props.employmentConnection && !employmentConnectionStudentFound) {
+        filterData.unshift({
+          label: employmentConnectionStudent.full_name,
+          value: Number(employmentConnectionStudent.id),
+        });
+      }
+      return filterData;
     });
   }
 
@@ -126,13 +138,25 @@ const EnrollmentConnectionForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(employer => {
+      let employmentConnectionEmployer = props.employmentConnection ? props.employmentConnection.employer : null;
+      let employmentConnectionEmployerFound = false;
+      let filterData = data.hits.map(employer => {
+        if (props.employmentConnection && employer.id === employmentConnectionEmployer.id) {
+          employmentConnectionEmployerFound = true;
+        }
         return {
           ...employer,
           label: employer.name,
           value: Number(employer.id),
         }
       });
+      if (props.employmentConnection && !employmentConnectionEmployerFound) {
+        filterData.unshift({
+          label: employmentConnectionEmployer.name,
+          value: Number(employmentConnectionEmployer.id),
+        });
+      }
+      return filterData;
     });
   }
 
