@@ -85,6 +85,8 @@ const App = (props) => {
         }
         setUser(res.data);
         localStorage.setItem("user_id", res.data.id);
+        localStorage.setItem("user_name", res.data.username);
+        localStorage.setItem("user_email", res.data.email);
       });
     }
   }

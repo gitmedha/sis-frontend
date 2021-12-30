@@ -10,6 +10,7 @@ import { BatchValidations } from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,10 +49,17 @@ const BatchForm = (props) => {
   const [programOptions, setProgramOptions] = useState(null);
   const [grantOptions, setGrantOptions] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
   }, [props.enrollment_type]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   let initialValues = {
     name: '',
@@ -234,13 +242,14 @@ const BatchForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
                         required
                         className="form-control"
                         placeholder="Assigned To"
-                        options={options?.assigneesOptions}
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                       />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
