@@ -10,6 +10,7 @@ import { EmployerValidations } from "../../../validations";
 import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
 
 const Section = styled.div`
   padding-top: 30px;
@@ -44,6 +45,12 @@ const EmployerForm = (props) => {
   const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
+
+  useEffect(() => {
     getEmployersPickList().then(data => {
       setStatusOpts(data.status.map((item) => {
         return {
@@ -60,14 +67,6 @@ const EmployerForm = (props) => {
           value: item.value.toLowerCase(),
         };
       }));
-    });
-
-    getAssigneeOptions().then(data => {
-      setAssigneeOptions(data?.data?.data?.users.map((assignee) => ({
-        label: `${assignee.username} (${assignee.email})`,
-        key: assignee.username,
-        value: assignee.id,
-      })));
     });
 
     getAddressOptions().then(data => {
@@ -190,10 +189,11 @@ const EmployerForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
-                        options={assigneeOptions}
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
                         required
@@ -253,16 +253,6 @@ const EmployerForm = (props) => {
                       required
                     />
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="type"
-                      control="input"
-                      label="Type"
-                      placeholder="Type"
-                      className="form-control"
-                      required
-                    />
-                  </div> */}
                 </div>
               </Section>
               <Section>

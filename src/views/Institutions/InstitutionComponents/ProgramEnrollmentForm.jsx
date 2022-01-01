@@ -105,6 +105,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
     discount_code_id:'',
+    fee_amount:'',
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
@@ -131,18 +132,31 @@ const ProgramEnrollmentForm = (props) => {
     });
   }, []);
 
+
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      return data.hits.map(student => {
+      let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
+      let programEnrollmentStudentFound = false;
+      let filterData = data.hits.map(student => {
+        if (props.programEnrollment && student.id === programEnrollmentStudent.id) {
+          programEnrollmentStudentFound = true;
+        }
         return {
           ...student,
-          label:`${student.full_name} (${student.student_id})`,
-          value:  Number(student.id),
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentStudentFound) {
+        filterData.unshift({
+          label: programEnrollmentStudent.full_name,
+          value: Number(programEnrollmentStudent.id),
+        });
+      }
+      return filterData;
     });
   }
 
@@ -151,13 +165,25 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(batch => {
+      let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+      let programEnrollmentBatchFound = false;
+      let filterData = data.hits.map(batch => {
+        if (props.programEnrollment && batch.id === programEnrollmentBatch.id) {
+          programEnrollmentBatchFound = true;
+        }
         return {
           ...batch,
           label: batch.name,
           value: Number(batch.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentBatchFound) {
+        filterData.unshift({
+          label: programEnrollmentBatch.name,
+          value: Number(programEnrollmentBatch.id),
+        });
+      }
+      return filterData;
     });
   }
 

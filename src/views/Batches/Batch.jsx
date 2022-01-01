@@ -114,12 +114,13 @@ const Batch = (props) => {
       });
       let studentsData = data.programEnrollmentsConnection.values;
       getBatchStudentAttendances(batchID).then(data => {
+        let sessionCount= data.data.data.sessionsConnection.aggregate.count
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
           return {
             ...student,
-            attendancePercent: studentAttendancePercent && batch ? Math.floor((studentAttendancePercent.connection.aggregate.count/batch.number_of_sessions_planned) * 100) : 0,
+            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
           }
         });
         setStudents(studentsWithAttendance);
@@ -128,6 +129,20 @@ const Batch = (props) => {
       console.log("ERR", err);
     }
   };
+
+  const updateStatus = async () => {
+    NP.start();
+    updateBatch(Number(batchID), {status:'Complete'}).then(data => {
+      setAlert("Batch stutus updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch status.", "error");
+    }).finally(async () => {
+      NP.done();
+      getThisBatch();
+    });
+    setModalShow(false);
+  }
 
   const done = () => getThisBatch();
 
@@ -227,7 +242,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            {/* <button className="btn--secondary">MARK AS COMPLETE</button> */}
+            <button onClick={() => updateStatus()} className="btn--secondary">MARK AS COMPLETE</button>
           </div>
         </div>
         {batch && (
@@ -248,10 +263,10 @@ const Batch = (props) => {
           </Collapsible>
         )}
         <Collapsible title="Program Enrollments" badge={programEnrollmentAggregate.count}>
-          <ProgramEnrollments programEnrollments={batchProgramEnrollments} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
+          <ProgramEnrollments programEnrollments={batchProgramEnrollments} students={students} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
         </Collapsible>
         <Collapsible title="Sessions & Attendance" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
+          <Sessions sessions={sessions} batchID={props.match.params.id} batch={batch} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
         </Collapsible>
         {batch && <BatchForm
           {...batch}

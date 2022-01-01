@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { urlPath } from "../constants";
+import { apiPath } from "../constants";
 
 const Styled = styled.div`
 
@@ -17,7 +17,7 @@ const Styled = styled.div`
   width: 130px;
   height: 130px;
  }
- 
+
  .row{
   display: flex;
   justify-content: center;
@@ -38,7 +38,7 @@ p{
   font-size: 80px;
   text-align:center;
 }
-  
+
 .box-1, .col{
   display: inline-block;
   overflow: hidden;
@@ -77,7 +77,7 @@ p{
     line-height: 1.25;
     margin: 40px 39px 1px 19px;
     width:90%;
-  }  
+  }
   .line-box{
     border: 2px solid #32b89d;
     margin: 9px 97px 3px 107px;
@@ -101,8 +101,8 @@ p{
     justify-content:start;
     height: 100vh;
   }
-  
- 
+
+
   .row-box{
     color: black;
     font-size: 40px;
@@ -111,11 +111,11 @@ p{
     width:90%;
   }
   .logo {
-    position:absolute; 
-	  top:0; 
-	  left:22px; 
+    position:absolute;
+	  top:0;
+	  left:22px;
   }
-  
+
   .line-box{
     border: 2px solid #32b89d;
     margin: 9px 200px 0px 15px;
@@ -142,7 +142,7 @@ p{
     justify-content:start;
     height: 100vh;
   }
-  
+
   .row-box{
     color: black;
     font-size: 40px;
@@ -152,11 +152,11 @@ p{
   }
 
   .logo {
-    position:absolute; 
-	  top:0; 
-	  left:22px; 
+    position:absolute;
+	  top:0;
+	  left:22px;
   }
-  
+
   .line-box{
     border: 2px solid #32b89d;
     margin:10px 235px 0px 15px;
@@ -187,7 +187,7 @@ p{
     justify-content:start;
     height: 100vh;
   }
- 
+
   .row-box{
     color: black;
     font-size: 40px;
@@ -197,11 +197,11 @@ p{
   }
 
   .logo {
-    position:absolute; 
-	  top:0; 
-	  left:22px; 
+    position:absolute;
+	  top:0;
+	  left:22px;
   }
-  
+
   .line-box{
     border: 2px solid #32b89d;
     margin: 9px 400px 0px 15px;
@@ -214,14 +214,14 @@ p{
   }
 
   .btn-ms-login {
-    position:absolute; 
-	  bottom:-10px; 
+    position:absolute;
+	  bottom:-10px;
     font-size: 18px;
     padding: 18px 57px 15px 49px;
     margin: 100px -30px 43px -8px;
     justify-content: center;
   }
-  
+
   p{
     text-align: initial;
     font-size: 70px;
@@ -247,12 +247,12 @@ const Login = () => {
             </div>
             <div class="line-box"> </div>
             <div class=" button-box" style={{textAlign:"center"}}>
-              <a type="button" href={urlPath('/connect/microsoft')} className="btn-ms-login d-flex">
+              <a type="button" href={apiPath('/connect/microsoft')} className="btn-ms-login d-flex">
                   <img
                     src={require('../assets/images/logo-microsoft.svg').default}
                     alt="Microsoft"
                     className={`mr-5`}
-                    
+
                   />
                   <span style={{fontFamily:"Latto-Regular", textAlign:"center"}}>Login using Microsoft account</span>
               </a>

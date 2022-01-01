@@ -107,7 +107,7 @@ const ProgramEnrollmentForm = (props) => {
 
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = Number(props.programEnrollment.batch?.id); 
+    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
     initialValues['institution'] = Number(props.programEnrollment.institution?.id);
     initialValues['student'] = Number(props.programEnrollment.student?.id);
     initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
@@ -144,28 +144,52 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      return data.hits.map(institution => {
+      let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
+      let programEnrollmentInstitutionFound = false;
+      let filterData = data.hits.map(institution => {
+        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
+          programEnrollmentInstitutionFound = true;
+        }
         return {
           ...institution,
           label: institution.name,
-          value:Number(institution.id),
+          value: Number(institution.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+        filterData.unshift({
+          label: programEnrollmentInstitution.name,
+          value: Number(programEnrollmentInstitution.id),
+        });
+      }
+      return filterData;
     });
   }
 
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'full_name','student_id']
+      attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      return data.hits.map(student => {
+      let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
+      let programEnrollmentStudentFound = false;
+      let filterData = data.hits.map(student => {
+        if (props.programEnrollment && student.id === programEnrollmentStudent.id) {
+          programEnrollmentStudentFound = true;
+        }
         return {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
         }
       });
+      if (props.programEnrollment && !programEnrollmentStudentFound) {
+        filterData.unshift({
+          label: programEnrollmentStudent.full_name,
+          value: Number(programEnrollmentStudent.id),
+        });
+      }
+      return filterData;
     });
   }
 

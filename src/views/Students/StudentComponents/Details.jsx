@@ -12,37 +12,24 @@ import { UPDATE_STUDENT } from "../../../graphql";
 import Tooltip from "../../../components/content/Tooltip";
 
 const Styled = styled.div`
- p, label {
-    color: #787B96;
- }
+  p, label {
+      color: #787B96;
+  }
 
-
-@media screen and (min-width: 425px) {
-  .col-md-1 {
-    flex: 0 0 auto;
-    width: 8.33333%;
-    padding: 0px 33px 0px 4px;
+  @media screen and (min-width: 425px) {
+    .col-md-1 {
+      flex: 0 0 auto;
+      width: 8.33333%;
+      padding: 0px 33px 0px 4px;
     }
-  .icon-box {
-    margin: -15px 20px 0px 0px;
-   }
-}
-
-@media screen and (min-width: 768px) {
-  .icon-box {
-  margin: -15px 20px 0px 210px;
   }
-}
 
-@media screen and (max-width: 360px) {
-  .col-md-1{
-    padding: 0px 15px 0px 0px;
+  @media screen and (max-width: 360px) {
+    .col-md-1{
+      padding: 0px 15px 0px 0px;
+    }
   }
-}
 
-.icon-box{
-  display:flex;
-}
   .container-fluid {
     padding-left: 30px;
     padding-right: 30px;
@@ -82,6 +69,17 @@ const Styled = styled.div`
       margin-left: 15px;
       font-family: 'Latto-Italic';
       color: #787B96;
+    }
+  }
+  .cv-icon {
+    margin-right: 20px;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: #EEE;
+      box-shadow: 0 0 0 1px #C4C4C4;
     }
   }
 `;
@@ -135,7 +133,7 @@ const Details = (props) => {
             &nbsp;
             <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
-            
+
           </div>
           <div className="col-md-4">
             <DetailField label="Assigned To" value={assigned_to?.username} />
@@ -147,7 +145,7 @@ const Details = (props) => {
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
-          
+
           <div className="col-md-3 d-flex justify-content-end">
             <div className="img-profile-container">
               <div className="status-icon">{studentStatusData?.icon}</div>
@@ -164,39 +162,42 @@ const Details = (props) => {
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
           <div className="col-md-4">
-          <DetailField label="Income Level (INR)" value={income_level} />
-          <DetailField label="CV Upload" value=
+            <DetailField label="Income Level (INR)" value={income_level} />
+            <DetailField label="CV Upload" value=
               {CV &&
                 <div>
                   <label>CV</label>
-                  <p>(updated on: {moment(CV.updated_at).format("DD MMM YYYY")})</p>
-                </div> 
+                  <p className="mb-0">(updated on: {moment(CV.updated_at).format("DD MMM YYYY, h:mm a")})</p>
+                </div>
                 }
-                />
-             <div className="icon-box">
-              <div class=" col-md-1">
-                <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
+            />
+            <div className="row">
+              <div className="col-md-6"></div>
+              <div className="col-md-6 d-flex">
+                <div className="cv-icon">
+                  <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
+                </div>
+                <div className="cv-icon">
+                  {CV &&
+                    <div className="d-flex flex-column section-cv">
+                      <Tooltip placement="top" title="Click Here to View CV">
+                        <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
+                        </Tooltip>
+                    </div>
+                  }
+                </div>
+                <div className="cv-icon">
+                  {CV &&
+                    <Tooltip placement="top" title="Click Here to Delete CV">
+                      <a href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                    </Tooltip>
+                  }
+                </div>
               </div>
-              <div class="col-md-1">
-                {CV &&
-                  <div className="col-md-1 d-flex flex-column section-cv">   
-                    <Tooltip placement="top" title="Click Here to View CV">
-                      <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="25" color={CV ? '#207B69' : '#787B96'}/></a>
-                     </Tooltip>   
-                  </div>   
-                }
-              </div>
-              <div class="col-md-1">
-                {CV &&
-                  <Tooltip placement="top" title="Click Here to Delete CV">
-                    <a  href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="25" color={CV ? '#207B69' : '#787B96'} /> </a>
-                  </Tooltip>   
-                }
-              </div>
-            </div> 
+            </div>
           </div>
-         </div>
         </div>
+      </div>
     </Styled>
   );
 };

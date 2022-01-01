@@ -32,8 +32,9 @@ import TableView from "./views/Tables";
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
 import axios from "axios";
-import { urlPath } from "./constants";
+import { apiPath, urlPath } from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
+import PageNotFound from "./views/404Page";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -70,7 +71,7 @@ const App = (props) => {
   const getUserDetails = () => {
     if (token) {
       // authenticate the token on the server and place set user object
-      axios.get(urlPath('/users/me'), {
+      axios.get(apiPath('/users/me'), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -84,6 +85,8 @@ const App = (props) => {
         }
         setUser(res.data);
         localStorage.setItem("user_id", res.data.id);
+        localStorage.setItem("user_name", res.data.username);
+        localStorage.setItem("user_email", res.data.email);
       });
     }
   }
@@ -94,7 +97,7 @@ const App = (props) => {
     // check for full path also.
     if (accessToken) {
       // make api request to fetch JSON
-      axios.get(urlPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
+      axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
         let nextUrl = '/';
@@ -152,7 +155,8 @@ const App = (props) => {
                   />
                   <PrivateRoute path="/employers" exact component={Employers} />
                   <PrivateRoute path="/employer/:id" exact component={Employer} />
-                  <Route path="/" render={() => <Redirect to={token ? '/' : '/login'} /> } />
+                  <Route path='/404-page' component={PageNotFound} />
+                  <Redirect to='/404-page' />
                 </Switch>
               </RouteContainer>
             </LayoutContainer>

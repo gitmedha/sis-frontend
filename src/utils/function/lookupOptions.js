@@ -7,6 +7,8 @@ import {
   GET_ASSIGNEES_LIST_OPTS,
   GET_ALL_STUDENTS,
   GET_ALL_BATCHES,
+  FILTER_USERS_BY_NAME,
+  GET_ALL_USERS,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -80,3 +82,42 @@ export const batchLookUpOptions = async () => {
     batchOptions,
   };
 };
+
+export const getDefaultAssigneeOptions = async () => {
+  let userId = localStorage.getItem("user_id");
+  let data = await queryBuilder({
+    query: GET_ALL_USERS
+  });
+  let userIdFound = false;
+  let filteredData = data.data.users.map(user => {
+    if (userId === user.id) {
+      userIdFound = true;
+    }
+    return {
+      label: `${user.username} (${user.email})`,
+      value: user.id,
+    }
+  });
+  if (!userIdFound) {
+    let userName = localStorage.getItem("user_name");
+    let userEmail = localStorage.getItem("user_email");
+    filteredData.unshift({
+      label: `${userName} (${userEmail})`,
+      value: userId,
+    });
+  }
+  return filteredData;
+}
+
+export const filterAssignedTo = async (filterValue) => {
+  let data = await queryBuilder({
+    query: FILTER_USERS_BY_NAME,
+    variables: {
+      name: filterValue,
+    },
+  });
+  return data.data.users.map(user => ({
+    label: `${user.username} (${user.email})`,
+    value: user.id,
+  }));
+}
