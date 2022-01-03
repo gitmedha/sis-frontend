@@ -42,5 +42,5 @@ jobs:
           # connect_timeout: # optional, default is 30s
           # execute commands on ssh
           script: |
-            cd ~/medha-react-ui/ && git pull && npm install && PUBLIC_URL=https://sis-new.medha.org.in/ npm run build
+            cd ~/medha-react-ui/ && git pull origin release && npm install && PUBLIC_URL=https://sis-new.medha.org.in/ npm run build
             exit
