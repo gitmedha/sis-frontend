@@ -19,7 +19,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete } from "./batchActions";
 import { groupBy } from "lodash";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
@@ -132,8 +132,8 @@ const Batch = (props) => {
 
   const updateStatus = async () => {
     NP.start();
-    updateBatch(Number(batchID), {status:'Complete'}).then(data => {
-      setAlert("Batch stutus updated successfully.", "success");
+    batchMarkAsComplete(Number(batchID)).then(async data => {
+      setAlert("Batch status updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_DETAILS_ERR", err);
       setAlert("Unable to update batch status.", "error");
