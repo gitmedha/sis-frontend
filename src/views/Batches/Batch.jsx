@@ -133,7 +133,6 @@ const Batch = (props) => {
   const updateStatus = async () => {
     NP.start();
     batchMarkAsComplete(Number(batchID)).then(async data => {
-      await getProgramEnrollments();
       setAlert("Batch status updated successfully.", "success");
     }).catch(err => {
       console.log("UPDATE_DETAILS_ERR", err);
