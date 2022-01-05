@@ -114,9 +114,11 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
 
+const arrInfoMap = new Map(students.map(o => [o.student.id, o]))
+const result = programEnrollments.map(o => ({ ...o, ...arrInfoMap.get(o.student.id) }))
+
   useEffect(() => {
-    let data = programEnrollments.map((programEnrollment, index) => {
-      const studentAttendance = Math.floor(students[index]?.attendancePercent)
+    let data = result.map(programEnrollment => {
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
@@ -129,7 +131,7 @@ const ProgramEnrollments = (props) => {
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
-        attendance: studentAttendance ? <ProgressBarField value={Number.parseInt(studentAttendance)} /> : "0",
+        attendance: programEnrollment ? <ProgressBarField value={Number.parseInt(programEnrollment.attendancePercent)} /> : "0",
         updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
