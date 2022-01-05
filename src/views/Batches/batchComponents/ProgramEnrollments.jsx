@@ -114,8 +114,8 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
   
-  const studentarray = new Map(students.map(o => [o.student.id, o]))
-  const result = programEnrollments.map(o => ({ ...o, ...studentarray.get(o.student.id) }))
+  const student_array = new Map(students.map(value => [value.student.id, value]))
+  const result = programEnrollments.map(value => ({ ...value, ...student_array.get(value.student.id) }))
 
   useEffect(() => {
     let data = result.map(programEnrollment => {
@@ -238,7 +238,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let { id, attendance, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
+    let { id, attendancePercent, attendance, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
@@ -330,8 +330,8 @@ const ProgramEnrollments = (props) => {
             </>
           }
         >
-          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.name}</p>
-          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program.name}</p>
+          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch?.name}</p>
+          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program?.name}</p>
         </SweetAlert> 
     </div>
   );
