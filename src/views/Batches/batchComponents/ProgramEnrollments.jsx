@@ -114,8 +114,8 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
 
-  programEnrollments.forEach(function(value) {
-    value.attendance = students.find(x => x.id === value.id).attendancePercent;
+  programEnrollments.forEach(function(program) {
+    program.attendance = students.find(students_id => students_id.id === program.id).attendancePercent;
   });
 
   useEffect(() => {
