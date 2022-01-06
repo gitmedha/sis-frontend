@@ -113,12 +113,13 @@ const ProgramEnrollments = (props) => {
       getBatchProgramEnrollments(pageSize, pageSize * pageIndex);
     }
   }, []);
-  
-  const student_array = new Map(students.map(value => [value.student.id, value]))
-  const result = programEnrollments.map(value => ({ ...value, ...student_array.get(value.student.id) }))
+
+  programEnrollments.forEach(function(value) {
+    value.attendance = students.find(x => x.id === value.id).attendancePercent;
+  });
 
   useEffect(() => {
-    let data = result.map(programEnrollment => {
+    let data = programEnrollments.map(programEnrollment => {
       return {
         ...programEnrollment,
         student_name: programEnrollment.student?.full_name,
@@ -131,7 +132,7 @@ const ProgramEnrollments = (props) => {
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
-        attendance: programEnrollment.attendancePercent==0 ? '0%' : <ProgressBarField value={Number.parseInt(programEnrollment.attendancePercent)} /> ,
+        attendance: programEnrollment.attendance==0 ? '0%' : <ProgressBarField value={Number.parseInt(programEnrollment.attendance)} /> ,
         updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
