@@ -10,7 +10,6 @@ img {
 }
 h3{
     text-align: center;
-    font-family:Lato-Regular !important;
     position: fixed;
     top: 270px;
     bottom: 150px;

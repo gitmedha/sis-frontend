@@ -114,6 +114,10 @@ const ProgramEnrollments = (props) => {
     }
   }, []);
 
+  useEffect(async () => {
+    await getBatchProgramEnrollments();
+  }, [students]);
+
   programEnrollments.forEach(function(program) {
     program.attendance = students.find(students_id => students_id.id === program.id).attendancePercent;
   });
