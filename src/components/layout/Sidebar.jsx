@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserCog, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";

@@ -7,9 +7,7 @@ import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Batch";
-import { getAllInstitutions, getStudentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getAllBatches } from "../batchActions";
-import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
