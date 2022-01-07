@@ -35,6 +35,8 @@ import axios from "axios";
 import { apiPath, urlPath } from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -59,6 +61,17 @@ const App = (props) => {
     localStorage.removeItem('token');
     callback();
   }
+  
+  //add Sentry Plugin for error handling
+  Sentry.init({
+    dsn: "https://86b276c15e5842c48353b938934f69f3@o1107979.ingest.sentry.io/6136338",
+    integrations: [new Integrations.BrowserTracing()],
+  
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  });
 
   useEffect(() => {
     if (props.alert.message && props.alert.variant) {
