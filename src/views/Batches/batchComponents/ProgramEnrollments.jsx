@@ -66,7 +66,7 @@ const ProgramEnrollments = (props) => {
     });
   }, []);
 
-  const getBatchProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
+  const getBatchProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='created_at', sortOrder = 'asc') => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -93,15 +93,12 @@ const ProgramEnrollments = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'certification_date_formatted';
+      let sortByField = 'student.full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
-        case 'institution.name':
-          sortByField = sortBy[0].id;
-          break;
-          
+        case 'student.full_name':
           case 'institution.name':
-          sortByField = 'registration_date_formatted';
+          sortByField = sortBy[0].id;
           break;
 
         default:
@@ -119,7 +116,7 @@ const ProgramEnrollments = (props) => {
   }, [students]);
 
   programEnrollments.forEach(function(program) {
-    program.attendance = students.find(students_id => students_id.id === program.id).attendancePercent;
+    program.attendance = students.find(students_id => students_id.id === program.id)?.attendancePercent;
   });
 
   useEffect(() => {
@@ -147,7 +144,7 @@ const ProgramEnrollments = (props) => {
     () => [
       {
         Header: 'Student',
-        accessor: 'student_name',
+        accessor: 'student.full_name',
       },
       {
         Header: 'Student ID',
