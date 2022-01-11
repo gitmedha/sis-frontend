@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { Dropdown } from 'react-bootstrap';
 
 import {
   GET_BATCH,
@@ -27,6 +28,20 @@ import styled from 'styled-components';
 const Styled = styled.div`
 .button{
     padding: 6px 43px !important;
+}
+,
+.Dropdown{
+  // border-radius: 5px !important;
+  // outline: none;
+  // border: none;
+  // &-regular {
+  //   font-size: 16px;
+  //   margin: auto 10px;
+  //   border-radius: 5px;
+  //   font-family: Latto-Bold;
+  //   padding: 5px 50px !important;
+  // }
+  // outline: 0;
 }
 
 @media screen and (max-width: 360px) {
@@ -229,80 +244,125 @@ const Batch = (props) => {
   } else {
     return (
       <Styled>
-    <>
-        <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
-            <button
-              onClick={() => setModalShow(true)}
-              style={{ marginLeft: "0px" }}
-              className="button btn--primary"
-            >
-              EDIT
-            </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
-              DELETE
-            </button>
-            <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
-          </div>
-        </div>
-        {batch && (
-          <Collapsible
-            titleContent={
-              <TitleWithLogo
-                done={done}
-                id={batch.id}
-                logo={batch.logo}
-                title={batch.name}
-                query={UPDATE_BATCH}
-                icon="batch"
-              />
-            }
-            opened={true}
-          >
-            <Details batch={batch} sessions={sessions} />
-          </Collapsible>
-        )}
-        <Collapsible title="Program Enrollments" badge={programEnrollmentAggregate.count}>
-          <ProgramEnrollments programEnrollments={batchProgramEnrollments} students={students} onDataUpdate={getProgramEnrollments} batch={batch} fetchData={getStudents} id={batchID} />
-        </Collapsible>
-        <Collapsible title="Sessions & Attendance" badge={sessions.length.toString()}>
-          <Sessions sessions={sessions} batchID={props.match.params.id} batch={batch} onDataUpdate={handleSessionDataUpdate} fetchData={getSessions} />
-        </Collapsible>
-        {batch && <BatchForm
-          {...batch}
-          show={modalShow}
-          onHide={hideUpdateModal}
-        />}
-        {batch &&
-        <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete {batch.name}?</span>
-          }
-          customButtons={
-            <>
-                <button
-                  onClick={() => setShowDeleteAlert(false)}
-                  className="btn btn-secondary mx-2 px-4"
+        <>
+          <div className="row" style={{ margin: "30px 0 0" }}>
+            <div className="col-12">
+              <button
+                onClick={() => setModalShow(true)}
+                style={{ marginLeft: "0px" }}
+                className="button btn--primary"
+              >
+                EDIT
+              </button>
+              <button
+                onClick={() => setShowDeleteAlert(true)}
+                className="button btn--primary"
+              >
+                DELETE
+              </button>
+              {/* <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button> */}
+              <Dropdown className="mx-2 px-4">
+                <Dropdown.Toggle
+                  variant="secondary"
+                  id="dropdown-basic"
+                  disabled={batch?.status == "Enrollment Ongoing"}
                 >
-                  Cancel
-                </button>
-                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                  Delete
-                </button>
-              </>
-            }
+                  Complete & Certify
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => updateStatus()}
+                    disabled={batch?.status == "In Progress"}
+                  >
+                    Mark as Complete
+                  </Dropdown.Item>
+                  <Dropdown.Item>Mark as Certified</Dropdown.Item>
+                  <Dropdown.Item>Generate Certificates</Dropdown.Item>
+                  <Dropdown.Item>Email Certificates</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+          {batch && (
+            <Collapsible
+              titleContent={
+                <TitleWithLogo
+                  done={done}
+                  id={batch.id}
+                  logo={batch.logo}
+                  title={batch.name}
+                  query={UPDATE_BATCH}
+                  icon="batch"
+                />
+              }
+              opened={true}
+            >
+              <Details batch={batch} sessions={sessions} />
+            </Collapsible>
+          )}
+          <Collapsible
+            title="Program Enrollments"
+            badge={programEnrollmentAggregate.count}
           >
-            <p>Are you sure, you want to delete this batch?</p>
-          </SweetAlert>
-          }
+            <ProgramEnrollments
+              programEnrollments={batchProgramEnrollments}
+              students={students}
+              onDataUpdate={getProgramEnrollments}
+              batch={batch}
+              fetchData={getStudents}
+              id={batchID}
+            />
+          </Collapsible>
+          <Collapsible
+            title="Sessions & Attendance"
+            badge={sessions.length.toString()}
+          >
+            <Sessions
+              sessions={sessions}
+              batchID={props.match.params.id}
+              batch={batch}
+              onDataUpdate={handleSessionDataUpdate}
+              fetchData={getSessions}
+            />
+          </Collapsible>
+          {batch && (
+            <BatchForm {...batch} show={modalShow} onHide={hideUpdateModal} />
+          )}
+          {batch && (
+            <SweetAlert
+              danger
+              showCancel
+              btnSize="md"
+              show={showDeleteAlert}
+              onConfirm={() => handleDelete()}
+              onCancel={() => setShowDeleteAlert(false)}
+              title={
+                <span className="text--primary latto-bold">
+                  Delete {batch.name}?
+                </span>
+              }
+              customButtons={
+                <>
+                  <button
+                    onClick={() => setShowDeleteAlert(false)}
+                    className="btn btn-secondary mx-2 px-4"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleDelete()}
+                    className="btn btn-danger mx-2 px-4"
+                  >
+                    Delete
+                  </button>
+                </>
+              }
+            >
+              <p>Are you sure, you want to delete this batch?</p>
+            </SweetAlert>
+          )}
         </>
-        </Styled>
+      </Styled>
     );
   }
 };
