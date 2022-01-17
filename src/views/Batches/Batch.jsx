@@ -64,6 +64,7 @@ const Batch = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
+  const role = localStorage.getItem('user_role');
 
   const getThisBatch = async () => {
     try {
@@ -251,12 +252,14 @@ const Batch = (props) => {
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="button btn--primary"
+                // disabled={batch?.status == "Complete"}
               >
                 EDIT
               </button>
               <button
                 onClick={() => setShowDeleteAlert(true)}
                 className="button btn--primary"
+                disabled={batch?.status == "Complete"}
               >
                 DELETE
               </button>
@@ -272,13 +275,19 @@ const Batch = (props) => {
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => updateStatus()}
-                    disabled={batch?.status == "In Progress"}
+                    disabled={batch?.status !== "In Progress"}
                   >
                     Mark as Complete
                   </Dropdown.Item>
-                  <Dropdown.Item>Mark as Certified</Dropdown.Item>
-                  <Dropdown.Item>Generate Certificates</Dropdown.Item>
-                  <Dropdown.Item>Email Certificates</Dropdown.Item>
+                  <Dropdown.Item
+                  disabled = {batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
+                  >Mark as Certified</Dropdown.Item>
+                  <Dropdown.Item
+                  disabled={batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
+                  >Generate Certificates</Dropdown.Item>
+                  <Dropdown.Item
+                  disabled={batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
+                  >Email Certificates</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </div>
