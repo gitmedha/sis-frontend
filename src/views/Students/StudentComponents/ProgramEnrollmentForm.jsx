@@ -160,8 +160,7 @@ const ProgramEnrollmentForm = (props) => {
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
       let programEnrollmentBatchFound = false;
       let filterData = data.hits.map(batch => {
-        console.log(batch.id === programEnrollmentBatch.id);
-        if (props.programEnrollment && batch.id ===  Number(programEnrollmentBatch.id)) {
+        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch.id)) {
           programEnrollmentBatchFound = true;
         }
         return {
@@ -170,8 +169,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-
-      if (props.programEnrollment && programEnrollmentBatchFound === false) {
+      if (props.programEnrollment && !programEnrollmentBatchFound) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
