@@ -142,8 +142,8 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (programEnrollmentInstitution !== null) {
-        if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+        if (programEnrollmentInstitution !== null) {
           filterData.unshift({
             label: programEnrollmentInstitution.name,
             value: Number(programEnrollmentInstitution.id),
@@ -171,14 +171,14 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-     if (programEnrollmentBatch !== null) {
-       if (props.programEnrollment && !programEnrollmentBatchFound) {
-         filterData.unshift({
-           label: programEnrollmentBatch.name,
-           value: Number(programEnrollmentBatch.id),
-         });
-       }
-     }
+      if (props.programEnrollment && !programEnrollmentBatchFound) {
+        if (programEnrollmentBatch !== null) {
+          filterData.unshift({
+            label: programEnrollmentBatch.name,
+            value: Number(programEnrollmentBatch.id),
+          });
+        }
+      }
       return filterData;
     });
   }
@@ -242,7 +242,7 @@ const ProgramEnrollmentForm = (props) => {
                       control="lookupAsync"
                       name="batch"
                       label="Batch"
-                      // required
+                      required
                       filterData={filterBatch}
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"

@@ -123,8 +123,8 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (employmentConnectionStudent !== null) {
-        if (props.employmentConnection && !employmentConnectionStudentFound) {
+      if (props.employmentConnection && !employmentConnectionStudentFound) {
+        if (employmentConnectionStudent !== null) {
           filterData.unshift({
             label: employmentConnectionStudent.full_name,
             value: Number(employmentConnectionStudent.id),
@@ -152,8 +152,8 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(employer.id),
         }
       });
-      if (employmentConnectionEmployer !== null) {
-        if (props.employmentConnection && !employmentConnectionEmployerFound) {
+      if (props.employmentConnection && !employmentConnectionEmployerFound) {
+        if (employmentConnectionEmployer !== null) {
           filterData.unshift({
             label: employmentConnectionEmployer.name,
             value: Number(employmentConnectionEmployer.id),
