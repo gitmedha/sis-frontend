@@ -142,11 +142,13 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
-        filterData.unshift({
-          label: programEnrollmentInstitution.name,
-          value: Number(programEnrollmentInstitution.id),
-        });
+      if (programEnrollmentInstitution !== null) {
+        if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+          filterData.unshift({
+            label: programEnrollmentInstitution.name,
+            value: Number(programEnrollmentInstitution.id),
+          });
+        }
       }
       return filterData;
     });
@@ -160,7 +162,7 @@ const ProgramEnrollmentForm = (props) => {
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
       let programEnrollmentBatchFound = false;
       let filterData = data.hits.map(batch => {
-        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch.id)) {
+        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
           programEnrollmentBatchFound = true;
         }
         return {
@@ -169,12 +171,14 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentBatchFound) {
-        filterData.unshift({
-          label: programEnrollmentBatch.name,
-          value: Number(programEnrollmentBatch.id),
-        });
-      }
+     if (programEnrollmentBatch !== null) {
+       if (props.programEnrollment && !programEnrollmentBatchFound) {
+         filterData.unshift({
+           label: programEnrollmentBatch.name,
+           value: Number(programEnrollmentBatch.id),
+         });
+       }
+     }
       return filterData;
     });
   }
@@ -238,7 +242,7 @@ const ProgramEnrollmentForm = (props) => {
                       control="lookupAsync"
                       name="batch"
                       label="Batch"
-                      required
+                      // required
                       filterData={filterBatch}
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
