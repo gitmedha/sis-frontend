@@ -133,7 +133,7 @@ const ProgramEnrollmentForm = (props) => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let programEnrollmentInstitutionFound = false;
       let filterData = data.hits.map(institution => {
-        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution.id)) {
+        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
           programEnrollmentInstitutionFound = true;
         }
         return {
