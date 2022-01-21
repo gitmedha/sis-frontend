@@ -114,7 +114,7 @@ const EnrollmentConnectionForm = (props) => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let employmentConnectionStudentFound = false;
       let filterData = data.hits.map(student => {
-        if (props.employmentConnection && student.id === employmentConnectionStudent.id) {
+        if (props.employmentConnection && student.id === Number(employmentConnectionStudent.id)) {
           employmentConnectionStudentFound = true;
         }
         return {
@@ -141,7 +141,7 @@ const EnrollmentConnectionForm = (props) => {
       let employmentConnectionEmployer = props.employmentConnection ? props.employmentConnection.employer : null;
       let employmentConnectionEmployerFound = false;
       let filterData = data.hits.map(employer => {
-        if (props.employmentConnection && employer.id === employmentConnectionEmployer.id) {
+        if (props.employmentConnection && employer.id === Number(employmentConnectionEmployer.id)) {
           employmentConnectionEmployerFound = true;
         }
         return {
