@@ -154,13 +154,11 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
-        if (programEnrollmentInstitution !== null) {
+      if (props.programEnrollment && programEnrollmentInstitution !== null) {
           filterData.unshift({
             label: programEnrollmentInstitution.name,
             value: Number(programEnrollmentInstitution.id),
           });
-        }
       }
       return filterData;
     });
@@ -183,13 +181,11 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentStudentFound) {
-        if (programEnrollmentStudent !== null) {
-          filterData.unshift({
-            label: programEnrollmentStudent.full_name,
-            value: Number(programEnrollmentStudent.id),
-          });
-        }
+      if (props.programEnrollment && programEnrollmentStudent !== null) {
+        filterData.unshift({
+          label: programEnrollmentStudent.full_name,
+          value: Number(programEnrollmentStudent.id),
+        });
       }
       return filterData;
     });
