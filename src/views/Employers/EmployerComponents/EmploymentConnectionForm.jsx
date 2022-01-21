@@ -114,7 +114,7 @@ const EnrollmentConnectionForm = (props) => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let employmentConnectionStudentFound = false;
       let filterData = data.hits.map(student => {
-        if (props.employmentConnection && student.id === Number(employmentConnectionStudent.id)) {
+        if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
           employmentConnectionStudentFound = true;
         }
         return {
@@ -123,7 +123,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.employmentConnection && !employmentConnectionStudentFound) {
+      if (props.employmentConnection && employmentConnectionStudent !== null) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),
@@ -141,7 +141,7 @@ const EnrollmentConnectionForm = (props) => {
       let employmentConnectionEmployer = props.employmentConnection ? props.employmentConnection.employer : null;
       let employmentConnectionEmployerFound = false;
       let filterData = data.hits.map(employer => {
-        if (props.employmentConnection && employer.id === Number(employmentConnectionEmployer.id)) {
+        if (props.employmentConnection && employer.id === Number(employmentConnectionEmployer?.id)) {
           employmentConnectionEmployerFound = true;
         }
         return {
@@ -150,7 +150,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(employer.id),
         }
       });
-      if (props.employmentConnection && !employmentConnectionEmployerFound) {
+      if (props.employmentConnection && employmentConnectionEmployer !== null) {
         filterData.unshift({
           label: employmentConnectionEmployer.name,
           value: Number(employmentConnectionEmployer.id),

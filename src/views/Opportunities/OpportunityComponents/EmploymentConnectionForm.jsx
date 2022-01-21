@@ -94,7 +94,7 @@ const EnrollmentConnectionForm = (props) => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let employmentConnectionStudentFound = false;
       let filterData = data.hits.map(student => {
-        if (props.employmentConnection && student.id === Number(employmentConnectionStudent.id)) {
+        if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
           employmentConnectionStudentFound = true;
         }
         return {
@@ -103,7 +103,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.employmentConnection && !employmentConnectionStudentFound) {
+      if (props.employmentConnection && employmentConnectionStudent !== null) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),

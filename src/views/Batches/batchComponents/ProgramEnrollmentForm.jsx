@@ -145,7 +145,7 @@ const ProgramEnrollmentForm = (props) => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let programEnrollmentInstitutionFound = false;
       let filterData = data.hits.map(institution => {
-        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution.id)) {
+        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
           programEnrollmentInstitutionFound = true;
         }
         return {
@@ -154,11 +154,11 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
-        filterData.unshift({
-          label: programEnrollmentInstitution.name,
-          value: Number(programEnrollmentInstitution.id),
-        });
+      if (props.programEnrollment && programEnrollmentInstitution !== null) {
+          filterData.unshift({
+            label: programEnrollmentInstitution.name,
+            value: Number(programEnrollmentInstitution.id),
+          });
       }
       return filterData;
     });
@@ -172,7 +172,7 @@ const ProgramEnrollmentForm = (props) => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let programEnrollmentStudentFound = false;
       let filterData = data.hits.map(student => {
-        if (props.programEnrollment && student.id === Number(programEnrollmentStudent.id)) {
+        if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
           programEnrollmentStudentFound = true;
         }
         return {
@@ -181,7 +181,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentStudentFound) {
+      if (props.programEnrollment && programEnrollmentStudent !== null) {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
