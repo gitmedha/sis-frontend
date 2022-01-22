@@ -150,7 +150,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentStudent !== null) {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !programEnrollmentStudentFound) {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
@@ -177,7 +177,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentBatch !== null) {
+      if (props.programEnrollment && programEnrollmentBatch !== null && !programEnrollmentBatchFound) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),

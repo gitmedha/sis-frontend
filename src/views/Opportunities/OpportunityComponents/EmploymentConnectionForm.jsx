@@ -103,7 +103,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.employmentConnection && employmentConnectionStudent !== null) {
+      if (props.employmentConnection && employmentConnectionStudent !== null && !employmentConnectionStudentFound) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),

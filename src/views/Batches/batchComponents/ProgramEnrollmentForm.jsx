@@ -154,7 +154,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentInstitution !== null) {
+      if (props.programEnrollment && programEnrollmentInstitution !== null && !programEnrollmentInstitutionFound) {
           filterData.unshift({
             label: programEnrollmentInstitution.name,
             value: Number(programEnrollmentInstitution.id),
@@ -181,7 +181,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentStudent !== null) {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !programEnrollmentStudentFound)  {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
