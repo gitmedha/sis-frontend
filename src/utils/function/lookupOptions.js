@@ -109,11 +109,11 @@ export const getDefaultAssigneeOptions = async () => {
   return filteredData;
 }
 
-export const filterAssignedTo = async (filterValue) => {
+export const filterAssignedTo = async (newValue) => {
   let data = await queryBuilder({
     query: FILTER_USERS_BY_NAME,
     variables: {
-      name: filterValue,
+      name: newValue.trim()
     },
   });
   return data.data.users.map(user => ({

@@ -78,9 +78,8 @@ const SelectField = (props) => {
   };
 
   const handleInputChange = (newValue) => {
-    const inputValue = newValue.replace(/\W/g, '');
-    setInputValue(inputValue);
-    return inputValue;
+    setInputValue(newValue);
+    return newValue;
   };
 
   return (
