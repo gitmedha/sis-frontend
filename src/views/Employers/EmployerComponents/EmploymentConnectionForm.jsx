@@ -156,14 +156,14 @@ const EnrollmentConnectionForm = (props) => {
         let employmentConnectionEmployer = props.employer
           ? props.employer
           : null;
-        let EmployerFoundInList = false;
+        let employerFoundInList = false;
 
         let filterData = data.hits.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)
           ) {
-            EmployerFoundInList = true;
+            employerFoundInList = true;
           }
           return {
             ...employer,
@@ -175,7 +175,7 @@ const EnrollmentConnectionForm = (props) => {
         if (
           props.employmentConnection &&
           employmentConnectionEmployer !== null &&
-          !EmployerFoundInList
+          !employerFoundInList
         ) {
           filterData.unshift({
             label: employmentConnectionEmployer?.name,
