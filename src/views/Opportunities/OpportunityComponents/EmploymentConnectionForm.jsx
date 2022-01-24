@@ -92,10 +92,10 @@ const EnrollmentConnectionForm = (props) => {
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
-      let employmentConnectionStudentFound = false;
+      let studentFoundInEmploymentList = false;
       let filterData = data.hits.map(student => {
         if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
-          employmentConnectionStudentFound = true;
+          studentFoundInEmploymentList = true;
         }
         return {
           ...student,
@@ -103,7 +103,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.employmentConnection && employmentConnectionStudent !== null && !employmentConnectionStudentFound) {
+      if (props.employmentConnection && employmentConnectionStudent !== null && !studentFoundInEmploymentList) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),

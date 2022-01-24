@@ -143,10 +143,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
-      let programEnrollmentInstitutionFound = false;
+      let institutionFoundInList = false;
       let filterData = data.hits.map(institution => {
         if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
-          programEnrollmentInstitutionFound = true;
+          institutionFoundInList = true;
         }
         return {
           ...institution,
@@ -154,7 +154,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentInstitution !== null && !programEnrollmentInstitutionFound) {
+      if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
           filterData.unshift({
             label: programEnrollmentInstitution.name,
             value: Number(programEnrollmentInstitution.id),
@@ -170,10 +170,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      let programEnrollmentStudentFound = false;
+      let studentFoundInList = false;
       let filterData = data.hits.map(student => {
         if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
-          programEnrollmentStudentFound = true;
+          studentFoundInList = true;
         }
         return {
           ...student,
@@ -181,7 +181,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentStudent !== null && !programEnrollmentStudentFound)  {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
