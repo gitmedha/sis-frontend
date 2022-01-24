@@ -139,10 +139,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      let programEnrollmentStudentFound = false;
+      let studentFoundInList = false;
       let filterData = data.hits.map(student => {
         if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
-          programEnrollmentStudentFound = true;
+          studentFoundInList = true;
         }
         return {
           ...student,
@@ -150,7 +150,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentStudent !== null) {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList) {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
@@ -165,11 +165,11 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
+      let batchFoundInList = false;
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let programEnrollmentBatchFound = false;
       let filterData = data.hits.map(batch => {
         if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
-          programEnrollmentBatchFound = true;
+          batchFoundInList = true;
         }
         return {
           ...batch,
@@ -177,7 +177,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentBatch !== null) {
+      if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
