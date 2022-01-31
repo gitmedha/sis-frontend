@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
+import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
@@ -27,6 +28,11 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
   const [employerOptions, setEmployerOptions] = useState([]);
@@ -50,7 +56,8 @@ const EnrollmentConnectionForm = (props) => {
 
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['employer_id'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.id : null;
+    initialValues['employer'] = Number(props.employmentConnection?.id);
+    //initialValues['employer_id'] = props.employmentConnection && props.employmentConnection.employer ? props.employmentConnection.opportunity.employer.id : null;
     initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
@@ -76,18 +83,12 @@ const EnrollmentConnectionForm = (props) => {
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
-    getAllEmployers().then(data => {
-      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
-        key: employer.name,
-        label: employer.name,
-        value: employer.id,
-      })));
-      if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
-        updateEmployerOpportunityOptions({
-          value: Number(props.employmentConnection.opportunity.employer.id),
-        });
-      }
-    });
+
+    if ( props.employmentConnection) {
+      filterEmployer(props.employmentConnection.employer_name).then(data => {
+        setEmployerOptions(data);
+      });
+    }
   }, [props]);
 
   const updateEmployerOpportunityOptions = employer => {
@@ -99,6 +100,34 @@ const EnrollmentConnectionForm = (props) => {
         type: opportunity.type,
         value: opportunity.id,
       })));
+    });
+  }
+
+  const filterEmployer = async (filterValue) => {
+    return await meilisearchClient.index('employers').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let employmentConnectionEmployer = props.employmentConnection ? props.employmentConnection : null;
+      let employerFoundInList = false;
+      let filterData = data.hits.map(employer => {
+        if (props.employmentConnection && employer.id === Number(employmentConnectionEmployer?.id)) {
+          employerFoundInList = true;
+        }
+        return {
+          ...employer,
+          label: employer.name,
+          value: Number(employer.id),
+        }
+      });
+      console.log(employerFoundInList)
+      if (props.employmentConnection && employmentConnectionEmployer !== null && !employerFoundInList) {
+        filterData.unshift({
+          label: employmentConnectionEmployer.employer_name,
+          value: Number(employmentConnectionEmployer.id),
+        });
+      }
+      return filterData;
     });
   }
 
@@ -146,11 +175,13 @@ const EnrollmentConnectionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOptions.length ? (
                       <Input
-                        control="lookup"
-                        name="employer_id"
+                        control="lookupAsync"
+                        name="employer"
                         label="Employer"
                         required
-                        options={employerOptions}
+                        // options={employerOptions}
+                        filterData={filterEmployer}
+                        defaultOptions={props.id ? employerOptions : true}
                         className="form-control"
                         placeholder="Employer"
                         onChange={updateEmployerOpportunityOptions}
