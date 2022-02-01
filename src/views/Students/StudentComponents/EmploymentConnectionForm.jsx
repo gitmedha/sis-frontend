@@ -55,7 +55,6 @@ const EnrollmentConnectionForm = (props) => {
   );
   const [showEndDate, setShowEndDate] = useState(false);
 
-  console.log(employerOptions)
   let initialValues = {
     employment_connection_student: student.full_name,
     employer_id: "",
@@ -69,9 +68,9 @@ const EnrollmentConnectionForm = (props) => {
 
   if (props.employmentConnection) {
     initialValues = { ...initialValues, ...props.employmentConnection };
-    initialValues["employer_id"] = props.employmentConnection ? Number(
-      props.employmentConnection.opportunity?.employer.id
-    ) : null;
+    initialValues["employer_id"] = props.employmentConnection
+      ? Number(props.employmentConnection.opportunity?.employer?.id)
+      : null;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
       : null;
@@ -119,12 +118,9 @@ const EnrollmentConnectionForm = (props) => {
       );
     });
 
-    if (
-      props.employmentConnection &&
-      props.employmentConnection.opportunity?.employer.id
-    ) {
+    if (props.employmentConnection) {
       filterEmployer(
-        props.employmentConnection?.opportunity.employer.name
+        Number(props.employmentConnection?.opportunity?.employer?.name)
       ).then((data) => {
         setEmployerOptions(data);
       });
@@ -163,19 +159,14 @@ const EnrollmentConnectionForm = (props) => {
       })
       .then((data) => {
         let employmentConnectionEmployer = props.employmentConnection
-          ? props.employmentConnection.opportunity.employer
+          ? props.employmentConnection.opportunity?.employer
           : null;
-        console.log(
-          employmentConnectionEmployer,
-          "employmentConnectionEmployer"
-        );
-
         let employerFoundInList = false;
 
         let filterData = data.hits.map((employer) => {
           if (
             props.employmentConnection &&
-            employer.id === Number(employmentConnectionEmployer.id)
+            employer.id === Number(employmentConnectionEmployer?.id)
           ) {
             employerFoundInList = true;
           }
@@ -185,15 +176,14 @@ const EnrollmentConnectionForm = (props) => {
             value: Number(employer.id),
           };
         });
-
         if (
           props.employmentConnection &&
           employmentConnectionEmployer !== null &&
           !employerFoundInList
         ) {
           filterData.unshift({
-            label: employmentConnectionEmployer.name,
-            value: Number(employmentConnectionEmployer.id),
+            label: employmentConnectionEmployer?.name,
+            value: Number(employmentConnectionEmployer?.id),
           });
         }
         return filterData;
@@ -218,7 +208,7 @@ const EnrollmentConnectionForm = (props) => {
           <h1 className="text--primary bebas-thick mb-0">
             {props.employmentConnection && props.employmentConnection.id
               ? "Update"
-              : "Add New"}{" "}
+              : "Add New"}
             Employment Connection
           </h1>
         </Modal.Title>
@@ -245,25 +235,19 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2"></div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {employerOptions.length ? (
-                      <Input
-                        control="lookupAsync"
-                        name="employer_id"
-                        label="Employer"
-                        required
-                        filterData={filterEmployer}
-                        defaultOptions={
-                          props.employmentConnection.opportunity.employer.id
-                            ? employerOptions
-                            : true
-                        }
-                        className="form-control"
-                        placeholder="Employer"
-                        onChange={updateEmployerOpportunityOptions}
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
+                    <Input
+                      control="lookupAsync"
+                      name="employer_id"
+                      label="Employer"
+                      required
+                      filterData={filterEmployer}
+                      defaultOptions={
+                        props.employmentConnection?.id ? employerOptions : true
+                      }
+                      className="form-control"
+                      placeholder="Employer"
+                      onChange={updateEmployerOpportunityOptions}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOpportunityOptions.length ? (
