@@ -188,13 +188,12 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, internship_certificate, employer_id, created_at, opportunity_id, updated_at, opportunity_type, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, offer_letter, internship_certificate, employer_id, created_at, opportunity_id, updated_at, opportunity_type, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id;
-  
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
     }).catch(err => {
@@ -207,9 +206,9 @@ const EmploymentConnections = (props) => {
   };
 
 
-  const fileDelete = async () => {
+  const fileDelete = async (value) => {
     NP.start();
-    deleteCv(selectedEmploymentConnection.internship_certificate.id).then(data => {
+    deleteCv(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
       console.log("CERTIFICATE_DELETE_ERR", err);

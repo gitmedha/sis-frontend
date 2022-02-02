@@ -254,7 +254,8 @@ export const DELETE_EMPLOYER = `
       }
     }
   }
-`
+`;
+
 export const GET_EMPLOYER_EMPLOYMENT_CONNECTIONS = `
 query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
   $id: Int
@@ -283,6 +284,12 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
         previewUrl
         updated_at
       }
+      offer_letter{
+        id
+        url
+        previewUrl
+        updated_at
+      }
       student{
         full_name
         id
@@ -303,5 +310,4 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       count
     }
   }
-}`
-;
+}`;

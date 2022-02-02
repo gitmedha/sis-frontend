@@ -249,7 +249,7 @@ const EnrollmentConnectionForm = (props) => {
                       className="form-control"
                       placeholder="Employer"
                       filterData={filterEmployer}
-                      defaultOptions={props.employmentConnection.id ? employerOptions : true}
+                      defaultOptions={props.employmentConnection?.id ? employerOptions : true}
                       onChange={updateEmployerOpportunityOptions}
                       
                     />
