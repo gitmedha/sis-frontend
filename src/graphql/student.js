@@ -102,6 +102,12 @@ const employmentConnectionFields = `
     url
     previewUrl
     updated_at
+  } 
+  offer_letter{
+    id
+    url
+    previewUrl
+    updated_at
   }
   opportunity {
     id
@@ -293,7 +299,7 @@ export const GET_STUDENT_EMPLOYMENT_CONNECTIONS = `
       }
     }
   }
-`
+`;
 
 export const CREATE_EMPLOYMENT_CONNECTION = `
   mutation CREATE_EMPLOYMENT_CONNECTION (
