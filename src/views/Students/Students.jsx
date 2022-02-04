@@ -131,7 +131,6 @@ const Students = (props) => {
       variables,
     })
     .then(data => {
-      console.log(data,'dad')
       setStudents(data?.data?.data?.studentsConnection.values);
       setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
     })

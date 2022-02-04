@@ -48,7 +48,6 @@ const Section = styled.div`
 
 const ProgramEnrollment = (props) => {
   let { onHide, show, handleEdit, handleDelete, student } = props;
-  console.log(props)
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
