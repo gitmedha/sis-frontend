@@ -242,7 +242,7 @@ const StudentForm = (props) => {
                       type="email"
                       name="email"
                       label="Email"
-                      required
+                      // required
                       control="input"
                       placeholder="Email"
                       className="form-control"
