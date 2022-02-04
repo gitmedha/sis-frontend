@@ -95,6 +95,10 @@ const Students = (props) => {
         accessor: 'status',
       },
       {
+        Header: 'Registration Date',
+        accessor: 'registration_date',
+      },
+      {
         Header: 'Assigned To',
         accessor: 'assigned_to.username',
       },
@@ -127,6 +131,7 @@ const Students = (props) => {
       variables,
     })
     .then(data => {
+      console.log(data,'dad')
       setStudents(data?.data?.data?.studentsConnection.values);
       setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
     })
@@ -187,6 +192,7 @@ const Students = (props) => {
           category: <Badge value={student.category} pickList={pickList.category || []} />,
           gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
           statusIcon: studentStatusData?.icon,
+          registration_date: student.registration_date_latest,
           title: student.full_name,
           progressPercent: studentStatusData?.progress,
         }

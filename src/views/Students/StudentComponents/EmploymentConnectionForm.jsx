@@ -207,8 +207,8 @@ const EnrollmentConnectionForm = (props) => {
         >
           <h1 className="text--primary bebas-thick mb-0">
             {props.employmentConnection && props.employmentConnection.id
-              ? "Update"
-              : "Add New"}
+              ? "Update "
+              : "Add New "}
             Employment Connection
           </h1>
         </Modal.Title>
