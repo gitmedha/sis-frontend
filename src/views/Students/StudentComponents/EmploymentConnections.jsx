@@ -8,6 +8,7 @@ import {
   getEmploymentConnectionsPickList,
   updateEmploymentConnection,
   getOpportunitiesPickList,
+  deleteCv,
 } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
@@ -17,6 +18,7 @@ import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
+import NP from "nprogress";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -140,6 +142,11 @@ const EmploymentConnections = (props) => {
     setViewModalShow(false);
   };
 
+  const hideModal = () => {
+    hideViewModal();
+    onDataUpdate();
+  }
+
   const handleViewEdit = () => {
     setViewModalShow(false);
     setUpdateModalShow(true);
@@ -223,6 +230,7 @@ const EmploymentConnections = (props) => {
       opportunity_icon,
       employer_name,
       opportunity_type,
+      internship_certificate,
       assigned_to,
       ...dataToSave
     } = data;
@@ -267,6 +275,20 @@ const EmploymentConnections = (props) => {
       });
   };
 
+  const deleteCertificateFile = async (value) => {
+    NP.start();
+    deleteCv(selectedEmploymentConnection[value].id).then(data => {
+      setAlert("Certificate deleted successfully.", "success");
+    }).catch(err => {
+      console.log("CERTIFICATE_DELETE_ERR", err);
+      setAlert("Unable to delete Certificate.", "error");
+    }).finally(() => {
+      NP.done();
+      onDataUpdate();
+      hideViewModal();
+    });
+  };
+
   return (
     <div className="container-fluid my-3">
       <div className="row">
@@ -296,6 +318,8 @@ const EmploymentConnections = (props) => {
         handleDelete={handleViewDelete}
         student={student}
         employmentConnection={selectedEmploymentConnection}
+        onDelete={deleteCertificateFile}
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}
