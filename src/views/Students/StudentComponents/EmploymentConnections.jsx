@@ -284,7 +284,6 @@ const EmploymentConnections = (props) => {
       setAlert("Unable to delete Certificate.", "error");
     }).finally(() => {
       NP.done();
-      setShowDeleteAlert(false);
       onDataUpdate();
       hideViewModal();
     });
