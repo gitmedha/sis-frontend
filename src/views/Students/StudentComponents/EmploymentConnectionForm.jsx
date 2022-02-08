@@ -343,16 +343,6 @@ const EnrollmentConnectionForm = (props) => {
                       />
                     )}
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="certificate"
-                      control="input"
-                      label="Upload Internship Certificate"
-                      className="form-control"
-                      placeholder="Upload Internship Certificate"
-                      disabled={true}
-                    />
-                  </div> */}
                 </div>
               </Section>
               <div className="row mt-3 py-3">

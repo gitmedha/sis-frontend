@@ -275,7 +275,7 @@ const EmploymentConnections = (props) => {
       });
   };
 
-  const fileDelete = async (value) => {
+  const deleteCertificateFile = async (value) => {
     NP.start();
     deleteCv(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
@@ -319,8 +319,8 @@ const EmploymentConnections = (props) => {
         handleDelete={handleViewDelete}
         student={student}
         employmentConnection={selectedEmploymentConnection}
-        onDelete={fileDelete}
-        onUpdate={hideModal }
+        onDelete={deleteCertificateFile}
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}
