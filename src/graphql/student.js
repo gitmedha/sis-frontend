@@ -70,6 +70,7 @@ const programEnrollmentFields = `
   created_at
   updated_at
   program_selected_by_student
+  medha_program_certificate_status
   discount_code_id
   medha_program_certificate {
     id
@@ -102,7 +103,7 @@ const employmentConnectionFields = `
     url
     previewUrl
     updated_at
-  } 
+  }
   offer_letter{
     id
     url

@@ -503,6 +503,7 @@ const programEnrollmentFields = `
   updated_at
   discount_code_id
   program_selected_by_student
+  medha_program_certificate_status
   medha_program_certificate {
     id
     url

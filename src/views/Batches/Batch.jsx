@@ -137,7 +137,8 @@ const Batch = (props) => {
       setAlert("Unable to update batch status.", "error");
     }).finally(async () => {
       NP.done();
-      getThisBatch();
+      await getThisBatch();
+      await getProgramEnrollments();
     });
     setModalShow(false);
   }
