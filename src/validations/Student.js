@@ -39,7 +39,7 @@ const phone = Yup.string()
   .max(10, "Number is too long")
   .required("Phone Number is required.");
 const name_of_parent_or_guardian = Yup.string().nullable().required("Parent Name or Guardian Name is required.");
-const email  = Yup.string().required("Email is required.");
+// const email  = Yup.string().required("Email is required.");
 const gender  = Yup.string().nullable().required("Gender is required.");
 const date_of_birth  = Yup.date().nullable().required("DOB is required.");
 const category  = Yup.string().nullable().required("Category is required.");
@@ -91,7 +91,7 @@ export const StudentValidations = Yup.object({
   phone,
   name_of_parent_or_guardian,
   category,
-  email,
+  // email,
   gender,
   date_of_birth,
   assigned_to,

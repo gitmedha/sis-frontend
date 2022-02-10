@@ -207,8 +207,8 @@ const EnrollmentConnectionForm = (props) => {
         >
           <h1 className="text--primary bebas-thick mb-0">
             {props.employmentConnection && props.employmentConnection.id
-              ? "Update"
-              : "Add New"}
+              ? "Update "
+              : "Add New "}
             Employment Connection
           </h1>
         </Modal.Title>
@@ -342,16 +342,6 @@ const EnrollmentConnectionForm = (props) => {
                         autoComplete="off"
                       />
                     )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="certificate"
-                      control="input"
-                      label="Upload Internship Certificate"
-                      className="form-control"
-                      placeholder="Upload Internship Certificate"
-                      disabled={true}
-                    />
                   </div>
                 </div>
               </Section>

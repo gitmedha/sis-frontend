@@ -13,14 +13,12 @@ import {
 import { queryBuilder } from "../../apis";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
-import Students from "./batchComponents/Students";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete } from "./batchActions";
-import { groupBy } from "lodash";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 
@@ -152,7 +150,6 @@ const Batch = (props) => {
       return;
     }
 
-    // // need to remove id and show from the payload
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
