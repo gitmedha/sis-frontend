@@ -50,6 +50,7 @@ const ProgramEnrollment = (props) => {
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
+  const [programEnrollmentCertificate, setProgramEnrollmentCertificate] = useState(null);
 
   const handleGenerateCertificate = async () => {
     setLoadingCertificationButton(true);
@@ -62,6 +63,16 @@ const ProgramEnrollment = (props) => {
 
   useEffect(() => {
     setProgramEnrollment(props.programEnrollment);
+
+    if (props.programEnrollment) {
+      let certificateFieldValue = '';
+      if (props.programEnrollment.medha_program_certificate) {
+        certificateFieldValue = <div><a href={props.programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(props.programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
+      } else if (props.programEnrollment.medha_program_certificate_status == 'processing') {
+        certificateFieldValue = 'Processing';
+      }
+      setProgramEnrollmentCertificate(certificateFieldValue);
+    }
   }, [props]);
 
   useEffect(() => {
@@ -139,7 +150,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Certification Date" value={programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY") : ''} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Certificate" value={programEnrollment.medha_program_certificate ? <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div> : ''} />
+              <DetailField label="Certificate" value={programEnrollmentCertificate} />
             </div>
           </div>
           <div className="row mt-4">
