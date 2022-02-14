@@ -320,7 +320,7 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
         logo {
           url
         }
-        address 
+        address
         city
       }
     }
@@ -366,6 +366,7 @@ const programEnrollmentFields = `
   fee_refund_date
   course_name_in_current_sis
   program_selected_by_student
+  medha_program_certificate_status
   discount_code_id
   created_at
   updated_at

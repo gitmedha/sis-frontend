@@ -186,7 +186,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
     start: $start
     limit: $limit
     where: { institution: { assigned_to: { id: $id } },
-             status:"Enrollment Request Received" 
+             status:"Enrollment Request Received"
             }
   ) {
     values {
@@ -208,6 +208,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
       created_at
       updated_at
       program_selected_by_student
+      medha_program_certificate_status
       institution {
         id
         name
@@ -306,6 +307,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
       created_at
       updated_at
       program_selected_by_student
+      medha_program_certificate_status
       institution {
         id
         name
