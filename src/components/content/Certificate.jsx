@@ -88,7 +88,7 @@ const CertificateModal = (props) => {
       </Modal.Header>
       <Modal.Body className="bg-light">
         <div
-          style={{ width: "100%", height: "200px" }}
+          style={{ width: "100%", height: "270px" }}
           className="flex-row-centered"
         >
           <FileUploader handler={handler} />
