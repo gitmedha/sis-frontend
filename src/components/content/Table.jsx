@@ -74,7 +74,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination = true, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -101,6 +101,14 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+
+  const rowClickFunctionExists = typeof onRowClick === 'function';
+
+  const handleRowClick = (row) => {
+    if (typeof onRowClick === 'function') {
+      onRowClick(row.original);
+    }
+  }
 
   React.useEffect(() => {
     fetchData(pageIndex, pageSize, sortBy);
@@ -158,11 +166,11 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                   page.map((row, index) => {
                     prepareRow(row)
                     return (
-                      <tr {...row.getRowProps()} className={`${row.original.href ? 'clickable' : ''}`}>
+                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
                         {indexes &&
                           <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
                             {
-                              row.original.href ? (
+                              row.original.href && !rowClickFunctionExists ? (
                                 <a className="table-row-link" href={row.original.href}>
                                   { pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1 }.
                                 </a>
@@ -206,7 +214,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div key={index} className={`row ${row.original.href ? 'clickable' : ''}`} onClick={() => {}}>
+                <div key={index} className={`row ${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`} onClick={() => {}}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
                       <div key={cellIndex} className="cell">
