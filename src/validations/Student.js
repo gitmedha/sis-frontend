@@ -38,6 +38,11 @@ const phone = Yup.string()
   .min(10, "Number is too short")
   .max(10, "Number is too long")
   .required("Phone Number is required.");
+const alternate_phone = Yup.string()
+  .matches(phoneRegExp, 'Phone number is not valid')
+  .min(10, "Number is too short")
+  .max(10, "Number is too long")
+  .nullable();
 const name_of_parent_or_guardian = Yup.string().nullable().required("Parent Name or Guardian Name is required.");
 // const email  = Yup.string().required("Email is required.");
 const gender  = Yup.string().nullable().required("Gender is required.");
@@ -51,8 +56,7 @@ const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
-  .max(6, "Pincode is too long")
-  .required("Pincode is required.");
+  .max(6, "Pincode is too long");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 
@@ -89,7 +93,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
 export const StudentValidations = Yup.object({
   full_name,
   phone,
-  alternate_phone: phone,
+  alternate_phone,
   name_of_parent_or_guardian,
   category,
   // email,
