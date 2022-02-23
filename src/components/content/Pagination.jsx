@@ -195,7 +195,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
 
         </div>
         <div className="col-md-2" >
-          <span class="count" >Total Records: &nbsp; {totalRecords} </span>
+          <span className="count" >Total Records: &nbsp; {totalRecords} </span>
         </div>
       </div>
     </Styled>

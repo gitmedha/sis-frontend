@@ -45,7 +45,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
         <div className="justify-content-start">
           {!CV && (
             <Tooltip placement="top" title="Click Here to Upload CV">
-            <a  href="#" class="menu_links" onClick={() => setModalShow(true)}> <FaUpload size="27" color='207B69' /> </a>
+            <a  href="#" className="menu_links" onClick={() => setModalShow(true)}> <FaUpload size="27" color='207B69' /> </a>
             </Tooltip>
           )}
 

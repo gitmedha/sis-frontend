@@ -141,19 +141,17 @@ const Institutions = (props) => {
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
-      // institution.assignedTo = <Anchor text={institution?.assigned_to?.username} href={'/user/' + institution?.assigned_to?.id} />
-      institution.avatar = <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />
-      institution.status = <Badge value={institution.status} pickList={pickList.status || []} />
-      institution.type = <Badge value={institution.type} pickList={pickList.type || []} />
-      institution.link = <TableRowDetailLink value={institution.id} to={'institution'} />
-      return institution;
+      return {
+        ...institution,
+        avatar: <Avatar name={institution.name} logo={institution.logo} style={{width: '35px', height: '35px'}} />,
+        status: <Badge value={institution.status} pickList={pickList.status || []} />,
+        type: <Badge value={institution.type} pickList={pickList.type || []} />,
+        link: <TableRowDetailLink value={institution.id} to={'institution'} />,
+        href: `/institution/${institution.id}`,
+      }
     });
     setInstitutionsTableData(data);
   }, [institutions, pickList]);
-
-  const onRowClick = (row) => {
-    history.push(`/institution/${row.id}`);
-  };
 
   const hideCreateModal = async (data) => {
     setFormErrors([]);
@@ -199,7 +197,7 @@ const Institutions = (props) => {
           Add New Institution
         </button>
       </div>
-      <Table columns={columns} data={institutionsTableData} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
+      <Table columns={columns} data={institutionsTableData} totalRecords={institutionsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
       <InstitutionForm
         show={modalShow}
         onHide={hideCreateModal}

@@ -41,7 +41,7 @@ const FileUploader = ({
       );
 
       formdata.append("0", e.target.files[0], e.target.files[0].name);
-    
+
       let { data } = await api.post("/graphql", formdata, {
         onUploadProgress,
         headers: { "Content-Type": "multipart/form-data" },
@@ -72,7 +72,7 @@ const FileUploader = ({
             </div>
             <input
               id={id}
-              accept=".pdf, .docx" 
+              accept=".pdf, .docx"
               type="file"
               multiple={false}
               name="file-uploader"
@@ -89,8 +89,8 @@ const FileUploader = ({
         <ProgressBar variant="success" now={uploadProgress} />
       )}
       {fileUrl && (
-        <a class="alert alert-success" >File uploaded </a>
-      
+        <a className="alert alert-success" >File uploaded </a>
+
       )}
     </div>
   );
