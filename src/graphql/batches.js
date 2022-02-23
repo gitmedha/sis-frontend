@@ -138,6 +138,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
       student {
         id
         phone
+        alternate_phone
         full_name
       }
     }
@@ -153,6 +154,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
       id
       full_name
       phone
+      alternate_phone
       student_id
       name_of_parent_or_guardian
     }
@@ -165,6 +167,7 @@ query GET_STUDENT ($id: ID!){
   student(id: $id){
     name_of_parent_or_guardian
     phone
+    alternate_phone
     status
     gender
     date_of_birth

@@ -316,6 +316,7 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
       student {
         id
         phone
+        alternate_phone
         full_name
         logo {
           url
@@ -337,6 +338,7 @@ query GET_STUDENT ($id: ID!){
     full_name
     name_of_parent_or_guardian
     phone
+    alternate_phone
     status
     gender
     date_of_birth

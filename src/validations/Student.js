@@ -89,6 +89,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
 export const StudentValidations = Yup.object({
   full_name,
   phone,
+  alternate_phone: phone,
   name_of_parent_or_guardian,
   category,
   // email,

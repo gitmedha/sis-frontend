@@ -72,7 +72,7 @@ const StudentForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));      
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
         onStateChange({
@@ -85,7 +85,7 @@ const StudentForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,
@@ -112,6 +112,7 @@ const StudentForm = (props) => {
     batch:'',
     full_name:'',
     phone:'',
+    alternate_phone:'',
     name_of_parent_or_guardian:'',
     category:'',
     email:'',
@@ -136,7 +137,7 @@ const StudentForm = (props) => {
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
-  
+
   return (
     <Modal
       centered
@@ -212,16 +213,6 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="phone"
-                      label="Phone"
-                      required
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
@@ -236,6 +227,25 @@ const StudentForm = (props) => {
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="phone"
+                      label="Phone"
+                      required
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alternate_phone"
+                      label="Alternate Phone"
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
