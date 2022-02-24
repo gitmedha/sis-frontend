@@ -87,14 +87,11 @@ const Opportunities = (props) => {
         employer: employer ? employer.name : '',
         created_at: moment(opportunity.created_at).format("DD MMM YYYY"),
         updated_at: moment(opportunity.updated_at).format("DD MMM YYYY"),
+        href: `/opportunity/${opportunity.id}`,
       }
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
-
-  const handleRowClick = (row) => {
-    history.push(`/opportunity/${row.id}`);
-  };
 
   const hideCreateOpportunityModal = (data) => {
     if (!data || data.isTrusted) {
@@ -131,7 +128,7 @@ const Opportunities = (props) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={opportunitiesTableData} paginationPageSize={opportunitiesTableData.length} totalRecords={opportunitiesTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <Table columns={columns} data={opportunitiesTableData} paginationPageSize={opportunitiesTableData.length} totalRecords={opportunitiesTableData.length} fetchData={() => {}} loading={false} showPagination={false} />
       <OpportunityForm
         show={createOpportunityModalShow}
         onHide={hideCreateOpportunityModal}

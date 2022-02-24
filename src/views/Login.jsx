@@ -232,21 +232,21 @@ p{
 const Login = () => {
   return (
     <Styled>
-      <div class="container-fluid">
-        <div class="row-box-2">
+      <div className="container-fluid">
+        <div className="row-box-2">
           <div className="box-2 col-md-5">
-            <div class="row">
+            <div className="row">
               <img
                   src={require('../assets/images/logo.png').default}
                   alt="Medha SIS"
                   className='logo'
               />
             </div>
-            <div class="row-box">
+            <div className="row-box">
               <p id="text" >STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
             </div>
-            <div class="line-box"> </div>
-            <div class=" button-box" style={{textAlign:"center"}}>
+            <div className="line-box"> </div>
+            <div className=" button-box" style={{textAlign:"center"}}>
               <a type="button" href={apiPath('/connect/microsoft')} className="btn-ms-login d-flex">
                   <img
                     src={require('../assets/images/logo-microsoft.svg').default}

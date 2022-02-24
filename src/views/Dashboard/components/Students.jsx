@@ -169,15 +169,12 @@ const Students = (props) => {
           fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
           assigned : programEnrollment?.institution?.assigned_to.username,
           type: <Badge value={programEnrollment.course_type} pickList={pickList.course_type} />,
+          href: `/student/${programEnrollment.student?.id}`,
         }
       });
       setStudentsData(data);
     }
   }, [programEnrollments, pickList]);
-
-  const onRowClick = (programEnrollment) => {
-    history.push(`/student/${programEnrollment.student.id}`)
-  }
 
   return (
     <Collapse title="Students Awaiting Internships/Employment" type="plain" opened={true}>
@@ -190,7 +187,7 @@ const Students = (props) => {
             </div>
             {/* <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} /> */}
           </div>
-          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
         </div>
       </Styled>
     </Collapse>

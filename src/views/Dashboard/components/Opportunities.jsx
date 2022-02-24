@@ -171,14 +171,11 @@ const Opportunities = (props) => {
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
        assigned_to: opportunitydata.assigned_to ? opportunitydata.assigned_to.username : '',
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
+       href: `/opportunity/${opportunitydata.id}`,
       }
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
-
-  const onRowClick = (row) => {
-    history.push(`/opportunity/${row.id}`);
-  };
 
   return (
     <Collapse title="NEW OPPORTUNITIES" type="plain" opened={true}>
@@ -189,7 +186,7 @@ const Opportunities = (props) => {
             {/* <WidgetUtilTab /> */}
           </div>
         </div>
-        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <Table columns={columns} data={opportunitiesTableData} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       </div>
     </Collapse>
   );
