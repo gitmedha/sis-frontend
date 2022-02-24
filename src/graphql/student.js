@@ -3,6 +3,7 @@ const studentFields = `
   full_name
   email
   phone
+  alternate_phone
   status
   name_of_parent_or_guardian
   date_of_birth
