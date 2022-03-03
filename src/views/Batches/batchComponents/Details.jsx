@@ -90,7 +90,6 @@ const Details = ({ batch, sessions=[] }) => {
           &nbsp;
           <DetailField label="Updated By" value={batch.updated_by_frontend?.username ?`${batch.updated_by_frontend?.username} (${batch.updated_by_frontend?.email})`: ''} />
           <DetailField label="Updated At" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
-          {/* <Table columns={columns} data={batchTableData} paginationPageSize={1} totalRecords={1} fetchData={() => {}} indexes={false} showPagination={false} /> */}
         </div>
       </div>
     </div>

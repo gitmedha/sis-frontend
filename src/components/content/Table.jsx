@@ -1,4 +1,3 @@
-// import { Table } from "react-bootstrap";
 import React from "react";
 import { useTable, usePagination, useSortBy } from 'react-table';
 import styled from 'styled-components';
@@ -61,6 +60,14 @@ const Styles = styled.div`
     }
   }
 
+  .table-row-link {
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
   @media screen and (min-width: 768px) {
     padding-left: 15px;
     padding-right: 15px;
@@ -95,17 +102,17 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
-  React.useEffect(() => {
-    fetchData(pageIndex, pageSize, sortBy);
-  }, [fetchData, pageIndex, pageSize, sortBy]);
-
-  const isRowClickable = typeof onRowClick === 'function';
+  const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
     if (typeof onRowClick === 'function') {
       onRowClick(row.original);
     }
   }
+
+  React.useEffect(() => {
+    fetchData(pageIndex, pageSize, sortBy);
+  }, [fetchData, pageIndex, pageSize, sortBy]);
 
   React.useEffect(() => {
     onPageSizeChange(pageSize);
@@ -159,16 +166,28 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                   page.map((row, index) => {
                     prepareRow(row)
                     return (
-                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
+                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
                         {indexes &&
                           <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
-                            { pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1 }.
+                            {
+                              row.original.href && !rowClickFunctionExists ? (
+                                <a className="table-row-link" href={row.original.href}>
+                                  { pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1 }.
+                                </a>
+                              ) : (
+                                <>{pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1}.</>
+                              )
+                            }
                           </td>
                         }
                         {row.cells.map(cell => {
                           return (
                             <td {...cell.getCellProps()}>
-                              {cell.render('Cell')}
+                              {
+                                row.original.href
+                                ? (<a className="table-row-link" href={row.original.href}>{cell.render('Cell')}</a>)
+                                : cell.render('Cell')
+                              }
                             </td>
                           )
                         })}
@@ -195,7 +214,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div key={index} className={`row ${isRowClickable ? 'clickable' : ''}`} onClick={() => handleRowClick(row)}>
+                <div key={index} className={`row ${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`} onClick={() => {}}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
                       <div key={cellIndex} className="cell">

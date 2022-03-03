@@ -189,7 +189,7 @@ const Details = (props) => {
                 <div className="cv-icon">
                   {CV &&
                     <Tooltip placement="top" title="Click Here to Delete CV">
-                      <a href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
                     </Tooltip>
                   }
                 </div>

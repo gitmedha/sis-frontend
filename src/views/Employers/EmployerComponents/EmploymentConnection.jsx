@@ -78,7 +78,7 @@ const EmploymentConnection = (props) => {
               <div>
                 <label>Certificate</label>
                 <p className="mb-0">(updated on: {moment(employmentConnection.offer_letter.updated_at).format("DD MMM YYYY")})</p>
-              </div> 
+              </div>
              } />
              <div className ="row">
               <div className="col-md-6"></div>
@@ -88,21 +88,21 @@ const EmploymentConnection = (props) => {
                 </div>
                 <div className="cv-icon">
                   {employmentConnection.offer_letter &&
-                    <div className="col-md-1 d-flex flex-column section-cv">   
+                    <div className="col-md-1 d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View Offer Letter">
                         <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
-                      </Tooltip>   
-                    </div>   
+                      </Tooltip>
+                    </div>
                   }
                 </div>
                 <div className="cv-icon">
                   { employmentConnection.offer_letter &&
                   <Tooltip placement="top" title="Click Here to Delete Offer Letter">
-                    <a  href="#" class="menu_links" onClick={() => onDelete('offer_letter')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
-                  </Tooltip>   
+                    <a  href="#" className="menu_links" onClick={() => onDelete('offer_letter')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                  </Tooltip>
                   }
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
           <div className="col-md-6 col-sm-12">
@@ -116,7 +116,7 @@ const EmploymentConnection = (props) => {
               <div>
                 <label>Certificate</label>
                 <p className="mb-0">(updated on: {moment(employmentConnection.internship_certificate.updated_at).format("DD MMM YYYY")})</p>
-              </div> 
+              </div>
              } />
              <div className ="row">
               <div className="col-md-6"></div>
@@ -126,21 +126,21 @@ const EmploymentConnection = (props) => {
                 </div>
                 <div className="cv-icon">
                   {employmentConnection.internship_certificate &&
-                    <div className="col-md-1 d-flex flex-column section-cv">   
+                    <div className="col-md-1 d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View Certificate">
                         <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
-                      </Tooltip>   
-                    </div>   
+                      </Tooltip>
+                    </div>
                   }
                 </div>
                 <div className="cv-icon">
                   { employmentConnection.internship_certificate &&
                   <Tooltip placement="top" title="Click Here to Delete Certificate">
-                    <a  href="#" class="menu_links" onClick={() => onDelete('internship_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
-                  </Tooltip>   
+                    <a  href="#" className="menu_links" onClick={() => onDelete('internship_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                  </Tooltip>
                   }
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
         </div>

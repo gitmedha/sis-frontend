@@ -186,7 +186,6 @@ const Students = (props) => {
           // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: <Avatar name={student.full_name} logo={student.logo} style={{width: '35px', height: '35px'}} icon="student" />,
           link: <TableRowDetailLink value={student.id} to={'student'} />,
-          gridLink: `/student/${student.id}`,
           status: <Badge value={student.status} pickList={pickList.status || []} />,
           category: <Badge value={student.category} pickList={pickList.category || []} />,
           gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
@@ -194,15 +193,12 @@ const Students = (props) => {
           registration_date: moment(student.created_at).format("DD MMM YYYY"),
           title: student.full_name,
           progressPercent: studentStatusData?.progress,
+          href: `/student/${student.id}`,
         }
       });
       setStudentsData(data);
     }
   }, [students, pickList]);
-
-  const onRowClick = (row) => {
-    history.push(`/student/${row.id}`)
-  }
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -258,7 +254,7 @@ const Students = (props) => {
             </button>
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-            <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+            <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
           </div>
           </div>
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">

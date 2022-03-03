@@ -137,27 +137,23 @@ const ProgramEnrollments = (props) => {
       data = data.map(programEnrollment => {
         return {
           ...programEnrollment,
-        student_name: programEnrollment.student?.full_name,
-        area:programEnrollment.institution.medha_area,
-        registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
-        batch_name: programEnrollment?.batch?.name,
-        program_name: programEnrollment.batch?.program?.name,
-        created_at:moment(programEnrollment.created_at).format("DD MMM YYYY"),
-        institution_name: programEnrollment.institution.name,
-        status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
-        fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        assigned : programEnrollment?.institution?.assigned_to.username,
+          student_name: programEnrollment.student?.full_name,
+          area:programEnrollment.institution.medha_area,
+          registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
+          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+          batch_name: programEnrollment?.batch?.name,
+          program_name: programEnrollment.batch?.program?.name,
+          created_at:moment(programEnrollment.created_at).format("DD MMM YYYY"),
+          institution_name: programEnrollment.institution.name,
+          status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
+          fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
+          assigned : programEnrollment?.institution?.assigned_to.username,
+          href: `/student/${programEnrollment.student?.id}`
         }
       });
       setProgramEnrollmentTableData(data);
     }
   }, [programEnrollments, pickList]);
-
-
-  const onRowClick = (programEnrollment) => {
-    history.push(`/student/${programEnrollment.student.id}`);
-  };
 
   return (
     <Collapse title="New Program Enrollments" type="plain" opened={true}>
@@ -168,7 +164,7 @@ const ProgramEnrollments = (props) => {
             {/* <WidgetUtilTab /> */}
           </div>
         </div>
-        <Table columns={columns} data={programEnrollmentTableData} onRowClick={onRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <Table columns={columns} data={programEnrollmentTableData} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       </div>
     </Collapse>
   );

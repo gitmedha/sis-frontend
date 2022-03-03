@@ -95,17 +95,15 @@ const Batches = (props) => {
     let data = batches;
     data = data.map((batch, index) => {
       return {
-        id: batch.id,
+        ...batch,
         assigned_to:batch.assigned_to.username,
-        name: batch.name,
-        students_count: batch.students_count,
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
         program: batch?.program?.name,
         area: batch.medha_area,
-        state:batch.state,
         enrollment_type:<Badge value={batch.enrollment_type} pickList={pickList.enrollment_type || []} />,
-        link: <TableRowDetailLink value={batch.id} to={'batch'} />
+        link: <TableRowDetailLink value={batch.id} to={'batch'} />,
+        href: `/batch/${batch.id}`,
       }
     });
     setBatchesTableData(data);
@@ -174,10 +172,6 @@ const Batches = (props) => {
     }
   }, [activeTab.key]);
 
-  const onRowClick = (row) => {
-    history.push(`/batch/${row.id}`)
-  }
-
   const hideCreateModal = async (data) => {
     setFormErrors([]);
     if (!data || data.isTrusted) {
@@ -224,7 +218,7 @@ const Batches = (props) => {
               Add New Batch
             </button>
         </div>
-      <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
+      <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
       <BatchForm
         show={modalShow}
         onHide={hideCreateModal}
