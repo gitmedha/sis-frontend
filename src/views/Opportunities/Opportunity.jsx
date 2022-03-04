@@ -6,7 +6,6 @@ import api from "../../apis";
 import styled from "styled-components";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
-import { TitleWithLogo } from "../../components/content/Avatar";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -16,6 +15,7 @@ import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportuni
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
+import { deleteFile } from "../../actions/commonActions";
 
 const Styled = styled.div`
 .button{
@@ -135,19 +135,18 @@ const Opportunity = (props) => {
     }, []);
 
     const handleJobDescriptionDelete = async () => {
-      console.log('hello');
-      // NP.start();
-      // deleteCv(student.CV.id).then(data => {
-      //   setAlert("CV deleted successfully.", "success");
-      // }).catch(err => {
-      //   console.log("CV_DELETE_ERR", err);
-      //   setAlert("Unable to delete CV.", "error");
-      // }).finally(() => {
-      //   setShowDeleteAlert(false);
-      //   NP.done();
-      //   history.push("/student/".id);
-      //   getStudent()
-      // });
+      NP.start();
+      deleteFile(opportunityData.job_description_file.id).then(data => {
+        setAlert("File deleted successfully.", "success");
+      }).catch(err => {
+        console.log("FILE_DELETE_ERR", err);
+        setAlert("Unable to delete file.", "error");
+      }).finally(() => {
+        setShowDeleteAlert(false);
+        NP.done();
+        history.push("/opportunity/" . id);
+        getThisOpportunity()
+      });
     };
 
     if (isLoading) {

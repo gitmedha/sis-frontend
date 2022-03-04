@@ -73,7 +73,7 @@ const Details = (props) => {
 
   const mapJobDescriptionFile = async (fileId) => {
     await api.post("/graphql", {
-      UPDATE_OPPORTUNITY,
+      query: UPDATE_OPPORTUNITY,
       variables: {
         data: { job_description_file: fileId },
         id,

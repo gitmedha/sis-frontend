@@ -13,7 +13,7 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteCv, deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -21,6 +21,7 @@ import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
+import { deleteFile } from "../../actions/commonActions";
 
 const Styled = styled.div`
 
@@ -89,7 +90,7 @@ const Student = (props) => {
 
   const fileDelete = async () => {
     NP.start();
-    deleteCv(student.CV.id).then(data => {
+    deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
       console.log("CV_DELETE_ERR", err);

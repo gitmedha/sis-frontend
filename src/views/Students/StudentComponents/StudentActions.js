@@ -1,6 +1,5 @@
 import api from "../../../apis";
 import { GET_ALL_STUDENTS, CREATE_STUDENT, CREATE_EMPLOYMENT_CONNECTION, CREATE_PROGRAM_ENROLLMENT, DELETE_EMPLOYMENT_CONNECTION, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_EMPLOYERS, GET_ALL_INSTITUTES, GET_EMPLOYER_OPPORTUNITIES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_EMPLOYMENT_CONNECTIONS, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_EMPLOYMENT_CONNECTION, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT } from "../../../graphql";
-import { DELETE_CV } from "../../../graphql";
 
 export const getStudentsPickList = async () => {
   return await api.post("/graphql", {
@@ -64,19 +63,6 @@ export const updateStudent = async (id, data) => {
 export const deleteStudent = async (id) => {
   return await api.post('/graphql', {
     query: DELETE_STUDENT,
-    variables: {
-      id
-    },
-  }).then(data => {
-    return data;
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-}
-
-export const deleteCv = async (id) => {
-  return await api.post('/graphql', {
-    query: DELETE_CV,
     variables: {
       id
     },
