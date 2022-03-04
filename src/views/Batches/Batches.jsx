@@ -52,11 +52,11 @@ const Batches = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    if(selectedTab == "my_data"){
+    if(selectedTab === "my_data"){
       Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
+    } else if(selectedTab === "my_state"){
       Object.assign(variables, {state: state})
-    } else if(selectedTab == "my_area"){
+    } else if(selectedTab === "my_area"){
       Object.assign(variables, {area: area})
     }
     await api.post("/graphql", {

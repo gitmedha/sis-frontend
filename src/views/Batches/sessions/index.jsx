@@ -11,7 +11,7 @@ import {
 import Collapsible from "../../../components/content/CollapsiblePanels";
 
 const Sessions = (props) => {
-  const { session, loading, attendances, getSessions, deleteSession, match } =
+  const { session, attendances, getSessions, deleteSession, match } =
     props;
 
   const sessionID = match.params.sessionID;

@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -19,32 +18,8 @@ import NP from "nprogress";
 import nProgress from "nprogress";
 import api from "../../../apis";
 
-const Styled = styled.div`
-.img-profile-container {
-  position: relative;
-  .status-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1px 5px 5px 5px;
-  }
-  .img-profile {
-    width: 160px;
-    margin-left: auto;
-    }
-}
-.separator {
-  background-color: #C4C4C4;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-hr {
-  height: 1px;
-}
-`;
-
 const ProgramEnrollments = (props) => {
-  let { id, institution, onDataUpdate } = props;
+  let { id, institution } = props;
   const [loading, setLoading] = useState(false);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
@@ -107,7 +82,7 @@ const ProgramEnrollments = (props) => {
         case 'status_badge':
           sortByField = 'updated_at'
           break;
-        
+
         default:
           sortByField = 'student_name';
           break;
@@ -129,7 +104,7 @@ const ProgramEnrollments = (props) => {
         // institution_name: programEnrollment.institution.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" rel="noreferrer" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
       };
     });
@@ -227,7 +202,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null; 
+    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
@@ -315,7 +290,7 @@ const ProgramEnrollments = (props) => {
         >
           <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.name}</p>
           <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program.name}</p>
-        </SweetAlert> 
+        </SweetAlert>
     </div>
   );
 };

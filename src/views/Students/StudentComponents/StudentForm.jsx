@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -32,7 +32,6 @@ const Section = styled.div`
 
 const StudentForm = (props) => {
   let { onHide, show } = props;
-  const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -42,7 +41,6 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},

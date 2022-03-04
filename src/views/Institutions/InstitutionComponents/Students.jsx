@@ -6,8 +6,6 @@ import {
   Badge,
   Anchor,
 } from "../../../components/content/Utils";
-import Avatar from "../../../components/content/Avatar";
-import { useHistory } from "react-router-dom";
 import moment from 'moment';
 import { Modal } from "react-bootstrap";
 import SkeletonLoader from "../../../components/content/SkeletonLoader";
@@ -21,7 +19,6 @@ const Students = ({ id }) => {
   const [loading, setLoading] = useState(false);
   const [pickList, setPickList] = useState([]);
   const [studentsTableData, setStudentsTableData] = useState([]);
-  const history = useHistory();
   const paginationPageSize = 10;
   const [showModal, setShowModal] = useState(false);
   const [studentInModal, setStudentInModal] = useState(false);
@@ -167,7 +164,7 @@ const StudentModal = (props) => {
         ) : (
           <div className="row">
             <div className="col-md-5 col-sm-12">
-              <DetailField label="Name" value={<Anchor text={details.full_name} href={`/student/${props.student.id}`}  />} /> 
+              <DetailField label="Name" value={<Anchor text={details.full_name} href={`/student/${props.student.id}`}  />} />
               <DetailField label="Status" value={details.status} />
               <DetailField label="Category" value={details.category} />
               <DetailField label="Gender" value={details.gender} />

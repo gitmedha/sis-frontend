@@ -1,7 +1,6 @@
 import React from "react";
 import styled from 'styled-components';
 import moment from "moment";
-import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 
 import Pagination from "../../../components/content/Pagination";
@@ -142,7 +141,6 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
   const [activeItem, setActiveItem] = React.useState({});
   const [activeBox, setActiveBox] = React.useState(0);
   const [boxesInRow, setBoxesInRow] = React.useState(0);
-  const [isOpen, setIsOpen] = React.useState(isSidebarOpen);
   const [pageIndex, setPageIndex] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(paginationPageSize);
 
@@ -174,7 +172,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
   }, []);
 
   const handleBoxClick = boxNumber => {
-    if(activeBox!= boxNumber) {
+    if(activeBox !== boxNumber) {
       if (boxNumber > Math.floor(data.length/boxesInRow)*boxesInRow) {
         // box is in last row
         // set active box row to the last box index
@@ -271,7 +269,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                     activeItem.CV ? (
                       <div className="d-flex flex-column">
                         <div>
-                          <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
+                          <a href={urlPath(activeItem.CV.url)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-cv-view mb-1">View</a>
                         </div>
                         <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format('DD MMM YYYY')})</div>
                       </div>

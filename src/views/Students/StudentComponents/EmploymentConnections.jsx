@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from "moment";
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
@@ -16,18 +15,8 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import EmploymentConnection from "./EmploymentConnection";
 import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
 import NP from "nprogress";
-
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const EmploymentConnections = (props) => {
   let { employmentConnections, student, onDataUpdate } = props;
@@ -41,7 +30,6 @@ const EmploymentConnections = (props) => {
     useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] =
     useState({});
-  const userId = localStorage.getItem("user_id") || 2;
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
@@ -62,9 +50,6 @@ const EmploymentConnections = (props) => {
           employmentConnection.opportunity.employer
             ? employmentConnection.opportunity.employer.name
             : "",
-        opportunity_type: employmentConnection.opportunity
-          ? employmentConnection.opportunity.type
-          : "",
         status_badge: (
           <Badge
             value={employmentConnection.status}

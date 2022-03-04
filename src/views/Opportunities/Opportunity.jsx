@@ -6,7 +6,6 @@ import api from "../../apis";
 import styled from "styled-components";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
-import { TitleWithLogo } from "../../components/content/Avatar";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -49,7 +48,6 @@ const Opportunity = (props) => {
     const opportunityId = props.match.params.id;
 
     const OpportunityIcon = ({opportunity}) => {
-      let bgColor = '#ffffff';
       let icon = null;
       switch (opportunity.type) {
         case 'Job':

@@ -13,7 +13,7 @@ import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteCv, deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteCv, deleteStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -164,7 +164,7 @@ const Student = (props) => {
       activestep=2
       break;
     case "Placement Complete":
-      activestep =3 
+      activestep =3
       break;
   }
 
@@ -193,7 +193,7 @@ const Student = (props) => {
               DELETE
             </button>
           </div>
-          <div style={{margin:"0px 0px 20px 0px"}}> 
+          <div style={{margin:"0px 0px 20px 0px"}}>
            <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
           </div>
         </div>

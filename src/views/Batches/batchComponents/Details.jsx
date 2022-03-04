@@ -5,7 +5,6 @@ import { Anchor, Badge, ProgressBarField } from "../../../components/content/Uti
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import DetailField from "../../../components/content/DetailField";
 import { getBatchesPickList } from "../batchActions";
-import Table from '../../../components/content/Table';
 import moment from "moment";
 
 const Details = ({ batch, sessions=[] }) => {
@@ -15,35 +14,6 @@ const Details = ({ batch, sessions=[] }) => {
       setPickList(data);
     });
   }, [])
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Sessions planned',
-        accessor: 'sessions_planned',
-        disableSortBy: true,
-      },
-      {
-        Header: 'Per-student fees',
-        accessor: 'per_student_fees',
-        disableSortBy: true,
-      },
-      {
-        Header: 'Seats Available',
-        accessor: 'seats_available',
-        disableSortBy: true,
-      },
-    ],
-    []
-  );
-
-  const batchTableData = [
-    {
-      sessions_planned: batch.number_of_sessions_planned,
-      per_student_fees: batch.per_student_fees,
-      seats_available: batch.seats_available || 0,
-    }
-  ];
 
   let totalSessionAttendancePercentages = 0;
   sessions.map(session => {

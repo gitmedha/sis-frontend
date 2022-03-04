@@ -27,7 +27,7 @@ export const CertificateUpload = connect(
       }
       let data = {internship_certificate: CertificateId};
 
-      if (certificate == "offer_letter") {
+      if (certificate === "offer_letter") {
         data =  { offer_letter: CertificateId };
       }
       await api.post("/graphql", {
@@ -49,10 +49,10 @@ export const CertificateUpload = connect(
     <div className=" justify-content-start mb-2">
       {certificate && (
         <Tooltip placement="top" title="Click Here to Upload Certificate">
-          <a href="#" className="menu_links" onClick={() => setModalShow(true)}>
+          <div className="menu_links" onClick={() => setModalShow(true)}>
             {" "}
             <FaUpload size="25" color="207B69" />{" "}
-          </a>
+          </div>
         </Tooltip>
       )}
 

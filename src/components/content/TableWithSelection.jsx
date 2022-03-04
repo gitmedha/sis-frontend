@@ -126,7 +126,6 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
     rows,
     prepareRow,
     selectedFlatRows,
-    state: { selectedRowIds },
   } = tableInstance;
 
   const isRowClickable = typeof onRowClick === 'function';

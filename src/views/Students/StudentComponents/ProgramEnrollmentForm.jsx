@@ -2,12 +2,11 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
-import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
 
@@ -37,7 +36,6 @@ const meilisearchClient = new MeiliSearch({
 
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, student } = props;
-  const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
@@ -86,9 +84,6 @@ const ProgramEnrollmentForm = (props) => {
     batch: '',
     registration_date: '',
     institution: '',
-    certification_date: '',
-    fee_payment_date: '',
-    fee_refund_date: '',
     course_name_in_current_sis: '',
     fee_transaction_id: '',
     course_type:'',

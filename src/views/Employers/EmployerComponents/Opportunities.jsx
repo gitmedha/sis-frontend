@@ -1,12 +1,9 @@
-import nProgress from "nprogress";
-import api from "../../../apis";
 import moment from "moment";
 import styled from "styled-components";
 import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Table from '../../../components/content/Table';
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityForm";
 import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { setAlert } from "../../../store/reducers/Notifications/actions";

@@ -1,4 +1,3 @@
-import { values } from "lodash";
 import api from "../../../src/apis";
 import { GET_ALL_ADDRESS, GET_ALL_DISTRICTS } from "../../graphql/address";
 

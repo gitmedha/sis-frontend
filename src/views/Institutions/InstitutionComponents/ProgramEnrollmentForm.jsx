@@ -2,15 +2,12 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Institute";
 import { getStudentsPickList } from "./instituteActions";
-import { getAllBatches } from "../../Batches/batchActions";
-import { getAllInstitutions } from "../../Institutions/InstitutionComponents/instituteActions";
-import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
@@ -40,11 +37,9 @@ const meilisearchClient = new MeiliSearch({
 
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, institution } = props;
-  const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
-  const [institutionOptions, setInstitutionOptions] = useState([]);
   const [feeStatusOptions, setFeeStatusOptions] = useState([]);
   const [yearOfCompletionOptions, setYearOfCompletionOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
@@ -91,9 +86,6 @@ const ProgramEnrollmentForm = (props) => {
     status: '',
     batch: '',
     registration_date: '',
-    certification_date: '',
-    fee_payment_date: '',
-    fee_refund_date: '',
     course_name_in_current_sis: '',
     fee_transaction_id: '',
     course_type:'',
