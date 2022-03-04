@@ -1,12 +1,12 @@
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -61,7 +61,7 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
-  
+
   useEffect(() => {
     setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
   }, [selectedOpportunityType, selectedStatus]);
@@ -129,7 +129,7 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection 
+            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>

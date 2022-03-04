@@ -68,7 +68,7 @@ const ProgramEnrollment = (props) => {
       let certificateFieldValue = '';
       if (props.programEnrollment.medha_program_certificate) {
         certificateFieldValue = <div><a href={props.programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(props.programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
-      } else if (props.programEnrollment.medha_program_certificate_status == 'processing') {
+      } else if (props.programEnrollment.medha_program_certificate_status === 'processing') {
         certificateFieldValue = 'Processing';
       }
       setProgramEnrollmentCertificate(certificateFieldValue);

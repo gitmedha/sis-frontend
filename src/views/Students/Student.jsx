@@ -158,6 +158,7 @@ const Student = (props) => {
   let activestep = 0;
   switch(student.status){
     case "Certified":
+    default:
       activestep = 1
       break;
     case "Internship Complete":

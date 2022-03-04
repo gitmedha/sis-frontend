@@ -27,7 +27,6 @@ import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
 import Employer from "./views/Employers/Employer";
 import Employers from "./views/Employers/Employers";
-import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -61,12 +60,12 @@ const App = (props) => {
     localStorage.removeItem('token');
     callback();
   }
-  
+
   //add Sentry Plugin for error handling
   Sentry.init({
     dsn: "https://86b276c15e5842c48353b938934f69f3@o1107979.ingest.sentry.io/6136338",
     integrations: [new Integrations.BrowserTracing()],
-  
+
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production

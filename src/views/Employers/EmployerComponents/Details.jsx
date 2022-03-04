@@ -5,7 +5,7 @@ import { getEmployersPickList } from "./employerAction";
 import moment from "moment";
 
 const Details = (props) => {
-  const { name, phone, assigned_to, website, email, status, type, industry, created_at, updated_at,created_by_frontend, updated_by_frontend} = props;
+  const { name, phone, assigned_to, website, email, status, industry, created_at, updated_at,created_by_frontend, updated_by_frontend} = props;
 
   const [pickList, setPickList] = useState([]);
 
@@ -20,7 +20,7 @@ useEffect(() => {
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
           <DetailField label="Name" value={name} />
-          <DetailField label="Industry" value={<Badge value={industry} pickList={pickList.industry} />} /> 
+          <DetailField label="Industry" value={<Badge value={industry} pickList={pickList.industry} />} />
           <DetailField label="Website" value={ <a href={website} target="_blank" rel="noreferrer" className="latto-regular" > {website} </a> } />
           <DetailField label="Email" value= {<a target="_blank" href={`mailto:${email}`} rel="noreferrer"> {email} </a> } />
           &nbsp;

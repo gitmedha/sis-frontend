@@ -7,7 +7,7 @@ import { FaSchool } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
-import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
+import  {getEmployersPickList} from "./employerAction"
 import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
@@ -35,7 +35,6 @@ const EmployerForm = (props) => {
   let { onHide, show } = props;
   const [industryOptions, setIndustryOptions] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
-  const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
@@ -87,7 +86,7 @@ const EmployerForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,
@@ -109,7 +108,6 @@ const EmployerForm = (props) => {
     }
     onHide(values);
   };
-  const logoUploadHandler = ({ id }) => setLogo(id);
 
   let initialValues = {
     name: '',

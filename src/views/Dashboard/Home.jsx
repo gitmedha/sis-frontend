@@ -1,5 +1,5 @@
 import api from "../../../src/apis";
-import { GET_STATE_METRICS, GET_AREA_METRICS, GET_DISTRICT_METRICS, GET_ALL_METRICS } from "../../graphql";
+import { GET_STATE_METRICS, GET_AREA_METRICS, GET_ALL_METRICS } from "../../graphql";
 import {
   FaBlackTie,
   FaBriefcase,
