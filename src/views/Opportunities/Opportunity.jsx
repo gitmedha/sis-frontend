@@ -110,6 +110,7 @@ const Opportunity = (props) => {
           query: GET_OPPORTUNITY,
           variables: { id: opportunityId },
         });
+        console.log('data.data.opportunity', data.data.opportunity);
         setOpportunityData(data.data.opportunity);
       } catch (err) {
         console.log("ERR", err);
@@ -129,9 +130,25 @@ const Opportunity = (props) => {
     }
 
     useEffect(() => {
-        getThisOpportunity();
-        getEmploymentConnections();
+      getThisOpportunity();
+      getEmploymentConnections();
     }, []);
+
+    const handleJobDescriptionDelete = async () => {
+      console.log('hello');
+      // NP.start();
+      // deleteCv(student.CV.id).then(data => {
+      //   setAlert("CV deleted successfully.", "success");
+      // }).catch(err => {
+      //   console.log("CV_DELETE_ERR", err);
+      //   setAlert("Unable to delete CV.", "error");
+      // }).finally(() => {
+      //   setShowDeleteAlert(false);
+      //   NP.done();
+      //   history.push("/student/".id);
+      //   getStudent()
+      // });
+    };
 
     if (isLoading) {
         return <SkeletonLoader />;
@@ -165,7 +182,7 @@ const Opportunity = (props) => {
                 </div>
               }
             >
-              <Details {...opportunityData}  id={opportunityData.id} />
+              <Details {...opportunityData}  id={opportunityData.id} onJobDescriptionUpdate={getThisOpportunity} onJobDescriptionDelete={handleJobDescriptionDelete} />
             </Collapsible>
             <Collapsible title="Location">
               <Location {...opportunityData} />

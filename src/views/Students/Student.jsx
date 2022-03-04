@@ -164,7 +164,7 @@ const Student = (props) => {
       activestep=2
       break;
     case "Placement Complete":
-      activestep =3 
+      activestep =3
       break;
   }
 
@@ -193,7 +193,7 @@ const Student = (props) => {
               DELETE
             </button>
           </div>
-          <div style={{margin:"0px 0px 20px 0px"}}> 
+          <div style={{margin:"0px 0px 20px 0px"}}>
            <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
           </div>
         </div>

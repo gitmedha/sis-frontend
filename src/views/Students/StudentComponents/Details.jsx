@@ -7,7 +7,7 @@ import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
-import CvUpload from "../../../components/content/Cv";
+import FileUpload from "../../../components/content/FileUpload";
 import { UPDATE_STUDENT } from "../../../graphql";
 import Tooltip from "../../../components/content/Tooltip";
 
@@ -175,7 +175,7 @@ const Details = (props) => {
               <div className="col-md-6"></div>
               <div className="col-md-6 d-flex">
                 <div className="cv-icon">
-                  <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
+                  <FileUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
                 </div>
                 <div className="cv-icon">
                   {CV &&
