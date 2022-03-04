@@ -62,16 +62,16 @@ const App = (props) => {
     callback();
   }
 
-  // //add Sentry Plugin for error handling
-  // Sentry.init({
-  //   dsn: "https://86b276c15e5842c48353b938934f69f3@o1107979.ingest.sentry.io/6136338",
-  //   integrations: [new Integrations.BrowserTracing()],
+  //add Sentry Plugin for error handling
+  Sentry.init({
+    dsn: "https://86b276c15e5842c48353b938934f69f3@o1107979.ingest.sentry.io/6136338",
+    integrations: [new Integrations.BrowserTracing()],
 
-  //   // Set tracesSampleRate to 1.0 to capture 100%
-  //   // of transactions for performance monitoring.
-  //   // We recommend adjusting this value in production
-  //   tracesSampleRate: 1.0,
-  // });
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  });
 
   useEffect(() => {
     if (props.alert.message && props.alert.variant) {
