@@ -8,7 +8,6 @@ import {
   getEmploymentConnectionsPickList,
   updateEmploymentConnection,
   getOpportunitiesPickList,
-  deleteCv,
 } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
@@ -19,6 +18,7 @@ import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
 import NP from "nprogress";
+import { deleteFile } from "../../../actions/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -277,7 +277,7 @@ const EmploymentConnections = (props) => {
 
   const deleteCertificateFile = async (value) => {
     NP.start();
-    deleteCv(selectedEmploymentConnection[value].id).then(data => {
+    deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
       console.log("CERTIFICATE_DELETE_ERR", err);

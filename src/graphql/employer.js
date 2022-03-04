@@ -141,6 +141,11 @@ export const GET_EMPLOYER = `
       city
       created_at
       updated_at
+      mou_file {
+        id
+        url
+        created_at
+      }
       created_by_frontend{
         username
         email

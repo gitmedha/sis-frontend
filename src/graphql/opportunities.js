@@ -16,6 +16,11 @@ state
 pin_code
 medha_area
 district
+job_description_file {
+  id
+  url
+  created_at
+}
 created_by_frontend{
   username
   email

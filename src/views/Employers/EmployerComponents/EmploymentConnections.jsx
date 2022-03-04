@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
 import { Badge } from "../../../components/content/Utils";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import { deleteCv, createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
 import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
@@ -14,6 +14,7 @@ import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponen
 import { connect } from "react-redux";
 import NP from "nprogress";
 import { useHistory } from "react-router-dom";
+import { deleteFile } from "../../../actions/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -77,7 +78,7 @@ const EmploymentConnections = (props) => {
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',  
+        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',
         institution_name: 'To be added',
         opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitypickList.type}/>,
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
@@ -169,7 +170,7 @@ const EmploymentConnections = (props) => {
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id
- 
+
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {
@@ -208,7 +209,7 @@ const EmploymentConnections = (props) => {
 
   const fileDelete = async (value) => {
     NP.start();
-    deleteCv(selectedEmploymentConnection[value].id).then(data => {
+    deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
       console.log("CERTIFICATE_DELETE_ERR", err);

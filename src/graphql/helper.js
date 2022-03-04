@@ -34,7 +34,7 @@ mutation UPLOAD_FILE(
 }
 `;
 
-export const DELETE_CV = `
+export const DELETE_FILE = `
 mutation DELETE_FILE($id: ID!) {
   deleteFile(input: { where: { id: $id } }) {
     file {
@@ -42,7 +42,6 @@ mutation DELETE_FILE($id: ID!) {
     }
   }
 }
-
 `;
 
 export const GET_ASSIGNEES_LIST_OPTS = `
