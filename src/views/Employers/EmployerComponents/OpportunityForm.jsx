@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -109,7 +109,7 @@ const OpportunityForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,

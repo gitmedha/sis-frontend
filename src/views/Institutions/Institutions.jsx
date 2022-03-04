@@ -3,7 +3,6 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -15,7 +14,6 @@ import { getInstitutionsPickList, createInstitution } from "./InstitutionCompone
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import NP from "nprogress";
 import Collapse from "../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
@@ -85,11 +83,11 @@ const Institutions = (props) => {
       sort: `${sortBy}:${sortOrder}`,
     }
 
-    if(selectedTab == "my_data"){
+    if(selectedTab === "my_data"){
       Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
+    } else if(selectedTab === "my_state"){
       Object.assign(variables, {state: state})
-    } else if(selectedTab == "my_area"){
+    } else if(selectedTab === "my_area"){
       Object.assign(variables, {area: area})
     }
     await api.post("/graphql", {

@@ -1,14 +1,13 @@
 import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
 import {
-  getAllEmployers,
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
 } from "./StudentActions";

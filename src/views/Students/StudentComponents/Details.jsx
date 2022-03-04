@@ -99,8 +99,6 @@ const Details = (props) => {
     date_of_birth,
     income_level,
     logo,
-    old_sis_id,
-    course_type_latest,
     medha_champion,
     interested_in_employment_opportunities,
     CV,
@@ -181,7 +179,7 @@ const Details = (props) => {
                   {CV &&
                     <div className="d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View CV">
-                        <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
+                        <a href={urlPath(CV?.url)} rel="noreferrer" target="_blank" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
                         </Tooltip>
                     </div>
                   }
@@ -189,7 +187,7 @@ const Details = (props) => {
                 <div className="cv-icon">
                   {CV &&
                     <Tooltip placement="top" title="Click Here to Delete CV">
-                      <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      <div className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </div>
                     </Tooltip>
                   }
                 </div>

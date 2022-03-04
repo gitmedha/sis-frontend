@@ -22,7 +22,7 @@ const type = Yup.string().required("College type is required.");
 const full_name = Yup.string().required("Name is required.");
 const assigned_to = Yup.string().required("Assignee is required.");
 const designation = Yup.string().required("Designation is required.");
-const website = Yup.string().required("Website of college is required.");
+// const website = Yup.string().required("Website of college is required.");
 const email = Yup.string()
   .email("Please enter a valid email.")
   .required("Email is required.");
@@ -40,13 +40,13 @@ const pin_code = Yup.string("Should be a number.")
   .max(6, "Number is too long")
   .required("Pincode is required.");
 const district= Yup.string().required("District is required.");
-const address_line = Yup.object({
-  state,
-  medha_area,
-  address,
-  pin_code,
-  city
-});
+// const address_line = Yup.object({
+//   state,
+//   medha_area,
+//   address,
+//   pin_code,
+//   city
+// });
 
 const contacts = Yup.array().of(
   Yup.object({

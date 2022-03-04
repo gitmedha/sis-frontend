@@ -6,7 +6,7 @@ import { Anchor, Badge } from "../../../components/content/Utils";
 import CertificateUpload from "../../../components/content/Certificate";
 import { urlPath } from "../../../constants";
 import Tooltip from "../../../components/content/Tooltip";
-import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
+import { FaTrashAlt, FaEye } from "react-icons/fa";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "../../Students/StudentComponents/StudentActions";
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
@@ -90,7 +90,7 @@ const EmploymentConnection = (props) => {
                   {employmentConnection.offer_letter &&
                     <div className="col-md-1 d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View Offer Letter">
-                        <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
+                        <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" rel="noreferrer"><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
                       </Tooltip>
                     </div>
                   }
@@ -128,7 +128,7 @@ const EmploymentConnection = (props) => {
                   {employmentConnection.internship_certificate &&
                     <div className="col-md-1 d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View Certificate">
-                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
+                        <a href={urlPath( employmentConnection.internship_certificate?.url)} target="_blank" rel="noreferrer"><FaEye size="27" color={employmentConnection.internship_certificate ? '#207B69' : '#787B96'} /></a>
                       </Tooltip>
                     </div>
                   }

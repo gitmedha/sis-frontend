@@ -1,4 +1,3 @@
-import moment from "moment";
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
@@ -9,7 +8,7 @@ import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
-import { GET_BATCH_STUDENTS_ONLY, UPDATE_SESSION_ATTENDANCE } from "../../../graphql";
+import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
 import TableWithSelection from '../../../components/content/TableWithSelection';
 import { getSessionAttendance } from "../batchActions";
 
@@ -89,7 +88,7 @@ const BatchSessionForm = (props) => {
       phone: rec.student.phone,
       student_id: rec.student.student_id,
       parent_name: rec.student.name_of_parent_or_guardian
-      
+
     }));
   };
 

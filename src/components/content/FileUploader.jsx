@@ -89,8 +89,7 @@ const FileUploader = ({
         <ProgressBar variant="success" now={uploadProgress} />
       )}
       {fileUrl && (
-        <a className="alert alert-success" >File uploaded </a>
-
+        <div className="alert alert-success" >File uploaded </div>
       )}
     </div>
   );

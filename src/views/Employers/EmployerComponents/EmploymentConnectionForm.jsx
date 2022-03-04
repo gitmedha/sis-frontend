@@ -1,12 +1,12 @@
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations/Employer";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -34,7 +34,7 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show , employer} = props;
+  let { onHide, show} = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
@@ -63,7 +63,7 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
-  
+
 
   const onModalClose = () => {
     if (!props.employmentConnection) {
@@ -98,7 +98,7 @@ const EnrollmentConnectionForm = (props) => {
         setEmployerOptions(data);
       });
     }
-    
+
     if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
       updateEmployerOpportunityOptions({
         value: Number(props.employmentConnection.opportunity.employer.id),
@@ -251,7 +251,7 @@ const EnrollmentConnectionForm = (props) => {
                       filterData={filterEmployer}
                       defaultOptions={props.employmentConnection?.id ? employerOptions : true}
                       onChange={updateEmployerOpportunityOptions}
-                      
+
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

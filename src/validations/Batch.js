@@ -27,12 +27,12 @@ const end_date = Yup.date().nullable().required("End Date of batch is required."
                     );
 const program = Yup.string().required("Program for the batch is required.");
 const start_date = Yup.date().nullable().required("Start Date of batch is required.");
-const institution = Yup.string().required("Institution for batch is required.");
+// const institution = Yup.string().required("Institution for batch is required.");
 const per_student_fees = Yup.string().required("Fees per student is required.");
 const seats_available = Yup.string().required("Seats Available is required.");
-const name_in_current_sis = Yup.string().required(
-  "Name In Current SIS is required."
-);
+// const name_in_current_sis = Yup.string().required(
+//   "Name In Current SIS is required."
+// );
 const number_of_sessions_planned = Yup.string().required(
   "Total number of sessions planned is required."
 );

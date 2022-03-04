@@ -1,8 +1,6 @@
 import nProgress from "nprogress";
 import api from "../../apis";
 import moment from "moment";
-import styled from "styled-components";
-import Avatar from "../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
@@ -115,11 +113,11 @@ const tabPickerOptions = [
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    if(selectedTab == "my_data"){
+    if(selectedTab === "my_data"){
       Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_area"){
+    } else if(selectedTab === "my_area"){
       Object.assign(variables, {area: area})
-    }else if(selectedTab == "my_state"){
+    }else if(selectedTab === "my_state"){
       Object.assign(variables, {state: state})
     }
 

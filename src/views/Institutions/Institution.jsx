@@ -9,7 +9,6 @@ import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
 // import InstitutionBatches from "./InstitutionComponents/InstitutionBatches";
-import Students from "./InstitutionComponents/Students";
 import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";

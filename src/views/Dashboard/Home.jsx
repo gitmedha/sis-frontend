@@ -1,5 +1,5 @@
 import api from "../../../src/apis";
-import { GET_STATE_METRICS, GET_AREA_METRICS, GET_DISTRICT_METRICS, GET_ALL_METRICS } from "../../graphql";
+import { GET_STATE_METRICS, GET_AREA_METRICS, GET_ALL_METRICS } from "../../graphql";
 import {
   FaBlackTie,
   FaBriefcase,
@@ -11,7 +11,6 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import InfoCards from "./components/InfoCards";
 import { ProgramEnrollmentsChart, EmploymentConnectionsChart } from "../../components/content/DashboardCharts";
-import TabPicker from "../../components/content/TabPicker";
 // import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import Opportunities from "./components/Opportunities";

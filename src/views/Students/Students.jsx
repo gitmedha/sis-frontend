@@ -4,7 +4,6 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
@@ -23,7 +22,6 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { SignalCellularNull } from "@material-ui/icons";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -49,7 +47,7 @@ const Styled = styled.div`
 `;
 
 const Students = (props) => {
-  let { isSidebarOpen, batch  } = props;
+  let { isSidebarOpen  } = props;
   const {setAlert} = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -118,11 +116,11 @@ const Students = (props) => {
     if (status !== 'All') {
       variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
     }
-    if(selectedTab == "my_data"){
+    if(selectedTab === "my_data"){
       Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
+    } else if(selectedTab === "my_state"){
       Object.assign(variables, {state: state})
-    } else if(selectedTab == "my_area"){
+    } else if(selectedTab === "my_area"){
       Object.assign(variables, {area: area})
     }
 

@@ -7,7 +7,7 @@ import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
+import  {getOpportunitiesPickList} from "./opportunityAction"
 import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
@@ -58,7 +58,7 @@ const OpportunityForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
-  
+
   const [initialValues, setInitialValues] = useState({
     employer: '',
     assigned_to: userId.toString() ,
@@ -78,7 +78,7 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
-  
+
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
@@ -185,7 +185,7 @@ const OpportunityForm = (props) => {
     onHide(values);
   };
 
-  const handleEmployerChange = (employer) => { 
+  const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
       address: employer.address,
@@ -196,7 +196,7 @@ const OpportunityForm = (props) => {
       district: employer.district,
     });
   }
-  
+
   useEffect(() => {
     if (initialValues.state) {
       onStateChange({

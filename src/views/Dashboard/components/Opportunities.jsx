@@ -1,12 +1,8 @@
 import nProgress from "nprogress";
 import api from "../../../apis";
 import moment from "moment";
-import Avatar from "../../../components/content/Avatar";
-import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import TabPicker from "../../../components/content/TabPicker";
 import Table from '../../../components/content/Table';
-import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
@@ -15,19 +11,17 @@ import { getOpportunitiesPickList } from "../../Opportunities/OpportunityCompone
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { Badge } from "../../../components/content/Utils";
 
-const tabPickerOptions = [
-  { title: "My Data", key: "test-1" },
-  { title: "My Area", key: "test-2" },
-  { title: "My State", key: "test-3" },
-  { title: "All Medha", key: "test-4" },
-];
+// const tabPickerOptions = [
+//   { title: "My Data", key: "test-1" },
+//   { title: "My Area", key: "test-2" },
+//   { title: "My State", key: "test-3" },
+//   { title: "All Medha", key: "test-4" },
+// ];
 
 const Opportunities = (props) => {
-  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [opportunities, setOpportunities] = useState([]);
   const [pickList, setPickList] = useState([]);
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);

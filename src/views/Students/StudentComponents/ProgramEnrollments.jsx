@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -19,33 +18,8 @@ import nProgress from "nprogress";
 import api from "../../../apis";
 import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 
-const Styled = styled.div`
-  .img-profile-container {
-    position: relative;
-    .status-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1px 5px 5px 5px;
-    }
-    .img-profile {
-      width: 160px;
-      margin-left: auto;
-    }
-  }
-  .separator {
-    background-color: #C4C4C4;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  hr {
-    height: 1px;
-  }
-`;
-
 const ProgramEnrollments = (props) => {
-  let { id, student, onDataUpdate } = props;
-  const [loading, setLoading] = useState(false);
+  let { id, student } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -67,7 +41,6 @@ const ProgramEnrollments = (props) => {
 
   const getStudentProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     nProgress.start();
-    setLoading(true);
     await api.post("/graphql", {
       query: GET_STUDENT_PROGRAM_ENROLLMENTS,
       variables: {
@@ -85,7 +58,6 @@ const ProgramEnrollments = (props) => {
       console.log("getInstitutionProgramEnrollments Error", err);
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };
@@ -98,7 +70,7 @@ const ProgramEnrollments = (props) => {
         case 'institution.name':
           sortByField = sortBy[0].id;
           break;
-          
+
           case ' institution.name':
           sortByField = 'registration_date_formatted';
           break;
@@ -123,7 +95,7 @@ const ProgramEnrollments = (props) => {
         batch_name: programEnrollment?.batch?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" rel="noreferrer" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment?.batch?.program?.name,
       };
     });
@@ -201,7 +173,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['student'] = student.id;
-   
+
 
      NP.start();
      createProgramEnrollment(dataToSave).then(data => {

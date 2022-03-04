@@ -107,7 +107,7 @@ const paginationOptions = {
   sizePerPage: 2,
 };
 
-export default () => (
+const TableComponent = () => (
   <div className="card">
     <div className="card-body">
       <BootstrapTable
@@ -120,3 +120,5 @@ export default () => (
     </div>
   </div>
 );
+
+export default TableComponent;

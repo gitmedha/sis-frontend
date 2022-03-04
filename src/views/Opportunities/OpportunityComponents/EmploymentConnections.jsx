@@ -31,6 +31,7 @@ const OpportunityIcon = ({opportunity}) => {
       break;
 
     case 'Internship':
+    default:
       bgColor = '#12314C';
       icon = <FaBlackTie color="#ffffff" size="16" />;
       break;

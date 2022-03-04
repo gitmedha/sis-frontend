@@ -13,7 +13,6 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { connect } from "react-redux";
 import NP from "nprogress";
-import { useHistory } from "react-router-dom";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -34,6 +33,7 @@ const OpportunityIcon = ({opportunity}) => {
       break;
 
     case 'Internship':
+    default:
       bgColor = '#12314C';
       icon = <FaBlackTie color="#ffffff" size="16" />;
       break;
@@ -56,7 +56,6 @@ const EmploymentConnections = (props) => {
   const {setAlert} = props;
   const [opportunitypickList, setopportunityPickList] = useState([]);
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
-  const history = useHistory();
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({
     employer: {},
   });
@@ -77,7 +76,7 @@ const EmploymentConnections = (props) => {
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',  
+        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',
         institution_name: 'To be added',
         opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitypickList.type}/>,
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
@@ -169,7 +168,7 @@ const EmploymentConnections = (props) => {
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id
- 
+
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {
