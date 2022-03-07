@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Address from "./EmployerComponents/Address";
 import Details from "./EmployerComponents/Details";
 import Contacts from "./EmployerComponents/Contacts";
-import Location from "./EmployerComponents/Location";
 import { useState, useEffect } from "react";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -21,6 +20,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
+import { deleteFile } from "../../actions/commonActions";
 
 const Styled = styled.div`
 .button {
@@ -144,6 +144,21 @@ const Employer = (props) => {
     getEmploymentConnections();
   }, [employerId]);
 
+  const handleMouDelete = async () => {
+    NP.start();
+    deleteFile(employerData.mou_file.id).then(data => {
+      setAlert("File deleted successfully.", "success");
+    }).catch(err => {
+      console.log("FILE_DELETE_ERR", err);
+      setAlert("Unable to delete file.", "error");
+    }).finally(() => {
+      setShowDeleteAlert(false);
+      NP.done();
+      history.push("/employer/" . id);
+      getThisEmployer();
+    });
+  };
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -177,7 +192,7 @@ const Employer = (props) => {
             />
           }
         >
-          <Details {...employerData} />
+          <Details {...employerData} onMouUpdate={getThisEmployer} onMouDelete={handleMouDelete} />
         </Collapsible>
         <Collapsible title="Address">
           <Address {...employerData} />
@@ -223,7 +238,7 @@ const Employer = (props) => {
             <p>Are you sure, you want to delete this employer?</p>
           </SweetAlert>
         </>
-      </Styled>  
+      </Styled>
     );
   }
 };
