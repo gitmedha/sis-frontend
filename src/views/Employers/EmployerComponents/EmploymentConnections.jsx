@@ -14,7 +14,7 @@ import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
 import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
-import { deleteFile } from "../../../actions/commonActions";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;

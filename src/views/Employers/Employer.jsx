@@ -20,7 +20,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
-import { deleteFile } from "../../actions/commonActions";
+import { deleteFile } from "../../common/commonActions";
 
 const Styled = styled.div`
 .button {

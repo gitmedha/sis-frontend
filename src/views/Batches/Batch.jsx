@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { isAdmin } from "../../common/commonFunctions";
 
 import {
   GET_BATCH,
@@ -240,7 +241,9 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
+            {isAdmin() &&
+              <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
+            }
           </div>
         </div>
         {batch && (
