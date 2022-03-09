@@ -56,6 +56,18 @@ const employmentConnectionFields = `
   reason_if_rejected
   salary_offered
   updated_at
+  experience_certificate{
+    id
+    url
+    previewUrl
+    updated_at
+  }
+  offer_letter{
+    id
+    url
+    previewUrl
+    updated_at
+  }
   opportunity {
     id
     role_description

@@ -230,7 +230,7 @@ const EmploymentConnections = (props) => {
       opportunity_icon,
       employer_name,
       opportunity_type,
-      internship_certificate,
+      experience_certificate,
       assigned_to,
       ...dataToSave
     } = data;
