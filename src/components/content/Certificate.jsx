@@ -25,7 +25,7 @@ export const CertificateUpload = connect(
         setModalShow(false);
         return;
       }
-      let data = {internship_certificate: CertificateId};
+      let data = {experience_certificate: CertificateId};
 
       if (certificate == "offer_letter") {
         data =  { offer_letter: CertificateId };

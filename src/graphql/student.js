@@ -99,7 +99,7 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
-  internship_certificate{
+  experience_certificate{
     id
     url
     previewUrl

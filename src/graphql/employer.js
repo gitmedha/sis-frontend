@@ -283,7 +283,7 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       reason_if_rejected
       salary_offered
       updated_at
-      internship_certificate{
+      experience_certificate{
         id
         url
         previewUrl
