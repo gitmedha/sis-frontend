@@ -46,6 +46,7 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
   const {setAlert} = props;
+  const userRole = localStorage.getItem('user_role');
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const getThisBatch = async () => {
@@ -240,7 +241,9 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
+            {userRole.toLowerCase() === 'admin' &&
+              <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
+            }
           </div>
         </div>
         {batch && (
