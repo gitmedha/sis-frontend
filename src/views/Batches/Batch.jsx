@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { isAdmin } from "../../common/commonFunctions";
 
 import {
   GET_BATCH,
@@ -46,7 +47,6 @@ const Batch = (props) => {
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
   const {setAlert} = props;
-  const userRole = localStorage.getItem('user_role');
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const getThisBatch = async () => {
@@ -241,7 +241,7 @@ const Batch = (props) => {
             <button onClick={() => setShowDeleteAlert(true)} className="button btn--primary">
               DELETE
             </button>
-            {userRole.toLowerCase() === 'admin' &&
+            {isAdmin() &&
               <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
             }
           </div>

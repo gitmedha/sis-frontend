@@ -12,7 +12,7 @@ import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { deleteFile } from "../../../actions/commonActions";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;

@@ -15,7 +15,7 @@ import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportuni
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
-import { deleteFile } from "../../actions/commonActions";
+import { deleteFile } from "../../common/commonActions";
 
 const Styled = styled.div`
 .button{
