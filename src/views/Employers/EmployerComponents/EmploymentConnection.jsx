@@ -79,8 +79,8 @@ const EmploymentConnection = (props) => {
                 <label>Certificate</label>
                 <p className="mb-0">(updated on: {moment(employmentConnection.offer_letter.updated_at).format("DD MMM YYYY")})</p>
               </div>
-             } />
-             <div className ="row">
+            }/>
+            <div className ="row">
               <div className="col-md-6"></div>
               <div className="col-md-6 d-flex">
                 <div className="cv-icon">
