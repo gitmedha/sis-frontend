@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
+import { connect } from "react-redux";
+import NP from "nprogress";
+import { useHistory } from "react-router-dom";
 import Table from "../../../components/content/Table";
 import { Badge } from "../../../components/content/Utils";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -11,9 +14,6 @@ import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
 import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
-import { connect } from "react-redux";
-import NP from "nprogress";
-import { useHistory } from "react-router-dom";
 import { deleteFile } from "../../../actions/commonActions";
 
 const StyledOpportunityIcon = styled.div`
@@ -255,7 +255,7 @@ const EmploymentConnections = (props) => {
         student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
         onDelete={fileDelete}
-        onUpdate={hideModal }
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}
