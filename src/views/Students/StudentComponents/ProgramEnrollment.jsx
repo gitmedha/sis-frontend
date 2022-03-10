@@ -136,6 +136,16 @@ const ProgramEnrollment = (props) => {
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <h2 className="section-header">Higher Education</h2>
+          <div className="row">
+            <div className="col-md-6 col-sm-12">
+              <DetailField label="Course Name" value={programEnrollment.higher_education_course_name} />
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <DetailField label="Year of Completion" value={<Badge value={programEnrollment.higher_education_year_of_course_completion} pickList={pickList.year_of_completion} />} />
+            </div>
+          </div>
+          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Fee Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
