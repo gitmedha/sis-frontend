@@ -14,6 +14,13 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  higher_education_course_name
+  higher_education_year_of_course_completion
+  higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url
