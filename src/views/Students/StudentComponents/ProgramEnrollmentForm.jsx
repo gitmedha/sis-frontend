@@ -368,7 +368,6 @@ const ProgramEnrollmentForm = (props) => {
                       name="higher_education_course_name"
                       control="input"
                       label="Course Name"
-                      required
                       className="form-control"
                       placeholder="Course Name"
                     />
@@ -379,7 +378,6 @@ const ProgramEnrollmentForm = (props) => {
                       control="lookup"
                       name="higher_education_year_of_course_completion"
                       label="Year of Passing"
-                      required
                       options={yearOfCompletionOptions}
                       className="form-control"
                       placeholder="Year of Passing"
