@@ -21,7 +21,7 @@ import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
-import { deleteFile } from "../../actions/commonActions";
+import { deleteFile } from "../../common/commonActions";
 
 const Styled = styled.div`
 

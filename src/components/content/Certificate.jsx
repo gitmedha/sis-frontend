@@ -25,7 +25,7 @@ export const CertificateUpload = connect(
         setModalShow(false);
         return;
       }
-      let data = {internship_certificate: CertificateId};
+      let data = {experience_certificate: CertificateId};
 
       if (certificate == "offer_letter") {
         data =  { offer_letter: CertificateId };
@@ -48,7 +48,7 @@ export const CertificateUpload = connect(
   return (
     <div className=" justify-content-start mb-2">
       {certificate && (
-        <Tooltip placement="top" title="Click Here to Upload Certificate">
+        <Tooltip placement="top" title="Click Here to upload file">
           <a href="#" className="menu_links" onClick={() => setModalShow(true)}>
             {" "}
             <FaUpload size="25" color="207B69" />{" "}
@@ -83,7 +83,7 @@ const CertificateModal = (props) => {
           id="contained-modal-title-vcenter"
           className="text--primary latto-bold"
         >
-          Update Certificate
+          Upload File
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-light">

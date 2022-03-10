@@ -18,7 +18,7 @@ import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
 import NP from "nprogress";
-import { deleteFile } from "../../../actions/commonActions";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -230,7 +230,7 @@ const EmploymentConnections = (props) => {
       opportunity_icon,
       employer_name,
       opportunity_type,
-      internship_certificate,
+      experience_certificate,
       assigned_to,
       ...dataToSave
     } = data;
