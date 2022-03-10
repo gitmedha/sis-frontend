@@ -122,7 +122,6 @@ const Student = (props) => {
 
   const getProgramEnrollments = async () => {
     getStudentProgramEnrollments(studentId).then(data => {
-      console.log('data', data.data.data);
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
