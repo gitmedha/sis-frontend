@@ -373,6 +373,31 @@ const ProgramEnrollmentForm = (props) => {
                 </div>
               </Section>
               <Section>
+                <h3 className="section-header">Higher Education</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="higher_education_course_name"
+                      control="input"
+                      label="Course Name"
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="higher_education_year_of_course_completion"
+                      label="Year of Passing"
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Passing"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
                 <h3 className="section-header">Fee Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">

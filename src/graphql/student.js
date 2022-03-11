@@ -73,6 +73,13 @@ const programEnrollmentFields = `
   program_selected_by_student
   medha_program_certificate_status
   discount_code_id
+  higher_education_course_name
+  higher_education_year_of_course_completion
+  higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url

@@ -27,8 +27,8 @@ export const CertificateUpload = connect(
       }
       let data = {experience_certificate: CertificateId};
 
-      if (certificate == "offer_letter") {
-        data =  { offer_letter: CertificateId };
+      if (certificate) {
+        data =  { [certificate]: CertificateId };
       }
       await api.post("/graphql", {
         query,
