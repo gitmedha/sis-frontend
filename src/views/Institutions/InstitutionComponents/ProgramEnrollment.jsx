@@ -138,7 +138,7 @@ const ProgramEnrollment = (props) => {
             <div className="col-md-6 col-sm-12">
               <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
               <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
-              <DetailField label="Program Name" value={programEnrollment.program_selected_by_student} />
+              <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
