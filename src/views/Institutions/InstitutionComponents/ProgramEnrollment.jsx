@@ -4,9 +4,32 @@ import moment from "moment";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import { generateCertificate } from "../../../utils/function/certificate";
+import Tooltip from "../../../components/content/Tooltip";
+import CertificateUpload from "../../../components/content/Certificate";
+import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
+import { urlPath } from "../../../constants";
+
+const FileStyled = styled.div`
+.icon-box{
+  display:flex;
+  padding: 5px;
+  justify-content: center;
+}
+.cv-icon {
+  margin-right: 20px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #EEE;
+    box-shadow: 0 0 0 1px #C4C4C4;
+  }
+}
+`;
 
 const Section = styled.div`
   padding-top: 11px;
@@ -46,7 +69,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onHide, show, handleEdit, handleDelete } = props;
+  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete } = props;
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
@@ -132,6 +155,50 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>
+          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <h2 className="section-header">Higher Education</h2>
+          <FileStyled>
+            <div className="row">
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Course Name" value={programEnrollment.higher_education_course_name} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Year of Completion" value={<Badge value={programEnrollment.higher_education_year_of_course_completion} pickList={pickList.year_of_completion} />} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Upload Proof of Enrollment" value= {
+                    programEnrollment.higher_education_proof_of_enrollment &&
+                    <div>
+                      <p className="mb-0">(updated on: {moment(programEnrollment.higher_education_proof_of_enrollment.updated_at).format("DD MMM YYYY")})</p>
+                    </div>
+                }/>
+                <div className ="row">
+                  <div className="col-md-6"></div>
+                  <div className="col-md-6 d-flex">
+                    <div className="cv-icon">
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='higher_education_proof_of_enrollment' done={() => onUpdate() } />
+                    </div>
+                    {programEnrollment.higher_education_proof_of_enrollment &&
+                      <div className="cv-icon">
+                        <div className="col-md-1 d-flex flex-column section-cv">
+                          <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
+                            <a href={urlPath( programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? '#207B69' : '#787B96'} /></a>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    }
+                    {programEnrollment.higher_education_proof_of_enrollment &&
+                      <div div className="cv-icon">
+                        <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
+                          <a  href="#" className="menu_links" onClick={() => onDelete('higher_education_proof_of_enrollment')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                        </Tooltip>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FileStyled>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Fee Details</h2>
           <div className="row">
