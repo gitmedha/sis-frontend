@@ -75,13 +75,23 @@ const StudentForm = (props) => {
       })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
-        onStateChange({
-          value: props.state,
-        });
+        onStateChange({ value: props.state });
+        onMedhaAreaStatechange({ value: props.state });
       }
     });
 
   }, [props]);
+
+  const onMedhaAreaStatechange = value => {
+    getStateDistricts(value).then(data => {
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+        key: area.id,
+        label: area.key,
+        value: area.key,
+      })).sort((a, b) => a.label.localeCompare(b.label)));
+    });
+  };
 
   const onStateChange = value => {
     setDistrictOptions([]);
@@ -90,12 +100,6 @@ const StudentForm = (props) => {
         key: district.id,
         label: district.key,
         value: district.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));
-      setAreaOptions([]);
-      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
-        key: area.id,
-        label: area.key,
-        value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
@@ -124,6 +128,7 @@ const StudentForm = (props) => {
     city:'',
     pin_code:'',
     medha_area:'',
+    medha_area_state:'',
     address:'',
     state:'',
     district:'',
@@ -320,6 +325,47 @@ const StudentForm = (props) => {
                 </div>
               </Section>
               <Section>
+                <h3 className="section-header">Area Details</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {stateOptions.length ? (
+                      <Input
+                        icon="down"
+                        name="medha_area_state"
+                        label="State"
+                        control="lookup"
+                        options={stateOptions}
+                        onChange={onMedhaAreaStatechange}
+                        placeholder="State"
+                        className="form-control"
+                        required
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </Section>
+              <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -350,25 +396,6 @@ const StudentForm = (props) => {
                       placeholder="City"
                       required
                     />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      placeholder="Medha Area"
-                      required
-                      options={areaOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   {stateOptions.length ? (
