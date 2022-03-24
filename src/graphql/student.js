@@ -21,6 +21,7 @@ const studentFields = `
   city
   pin_code
   medha_area
+  medha_area_state
   address
   state
   created_at
