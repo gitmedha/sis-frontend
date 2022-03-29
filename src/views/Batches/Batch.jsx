@@ -245,8 +245,8 @@ const Batch = (props) => {
             </button>
             {isAdmin() &&
               <button onClick={() => {
-                updateStatus();
                 setCompleteCertifyLoading(true);
+                updateStatus();
               }} className="btn--secondary" disabled={completeCertifyLoading}>
                 Complete & Certify
               </button>
