@@ -7,7 +7,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations/Employer";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -43,11 +43,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showEndDate, setShowEndDate] = useState(false);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(
-    props.employmentConnection && props.employmentConnection.opportunity
-      ? props.employmentConnection.opportunity.type
-      : null
-  );
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
 
   let initialValues = {
     student_id:'',
@@ -58,7 +54,9 @@ const EnrollmentConnectionForm = (props) => {
     start_date:'',
     end_date:'',
     source:'',
+    reason_if_rejected: '',
   };
+
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
@@ -76,6 +74,10 @@ const EnrollmentConnectionForm = (props) => {
     }
     onHide();
   }
+
+  useEffect(() => {
+    setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+  }, [props.employmentConnection]);
 
   useEffect(() => {
     setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
