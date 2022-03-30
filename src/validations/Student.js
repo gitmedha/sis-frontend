@@ -56,7 +56,8 @@ const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
-  .max(6, "Pincode is too long");
+  .max(6, "Pincode is too long")
+  .nullable();
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 
