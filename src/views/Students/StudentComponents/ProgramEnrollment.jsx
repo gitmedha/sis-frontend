@@ -143,6 +143,38 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
             </div>
+            <div className="col-md-6 col-sm-12">
+                <DetailField label="Upload Assignment File" value= {
+                    programEnrollment.assignment_file &&
+                    <div>
+                      <p className="mb-0">(updated on: {moment(programEnrollment.assignment_file.updated_at).format("DD MMM YYYY")})</p>
+                    </div>
+                }/>
+                <div className ="row">
+                  <div className="col-md-6"></div>
+                  <div className="col-md-6 d-flex">
+                    <div className="cv-icon">
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='assignment_file' done={() => onUpdate() } />
+                    </div>
+                    {programEnrollment.assignment_file &&
+                      <div className="cv-icon">
+                        <div className="col-md-1 d-flex flex-column section-cv">
+                          <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
+                            <a href={urlPath( programEnrollment.assignment_file?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.assignment_file ? '#207B69' : '#787B96'} /></a>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    }
+                    {programEnrollment.assignment_file &&
+                      <div div className="cv-icon">
+                        <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
+                          <a  href="#" className="menu_links" onClick={() => onDelete('assignment_file')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                        </Tooltip>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Course Details</h2>
