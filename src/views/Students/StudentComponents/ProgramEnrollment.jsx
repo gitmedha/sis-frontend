@@ -132,18 +132,19 @@ const ProgramEnrollment = (props) => {
         <Modal.Body className="bg-white">
         <Section>
           <h2 className="section-header">Enrollment Details</h2>
-          <div className="row">
-            <div className="col-md-6 col-sm-12">
-              <DetailField label="Name" value={student.full_name} />
-              <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
-              <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
-              <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
-              <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
-            </div>
-            <div className="col-md-6 col-sm-12">
+          <FileStyled>
+            <div className="row">
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Name" value={student.full_name} />
+                <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
+                <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
+                <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
+                <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
+              </div>
+              <div className="col-md-6 col-sm-12">
                 <DetailField label="Upload Assignment File" value= {
                     programEnrollment.assignment_file &&
                     <div>
@@ -175,7 +176,8 @@ const ProgramEnrollment = (props) => {
                   </div>
                 </div>
               </div>
-          </div>
+            </div>
+          </FileStyled>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Course Details</h2>
           <div className="row">
