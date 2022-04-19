@@ -11,6 +11,7 @@ import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { assignWith } from 'lodash';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -50,6 +51,10 @@ const BatchForm = (props) => {
   const [grantOptions, setGrantOptions] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const AssignmentFileCertification = [
+    {key: true, value: true, label: "Yes"},
+    {key: false, value: false, label: "No"},
+  ];
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -433,6 +438,18 @@ const BatchForm = (props) => {
                       autoComplete="off"
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="assignment_file"
+                      label="Require Assignment file for certification?"
+                      options={AssignmentFileCertification}
+                      className="form-control"
+                      placeholder=""
+                    />
+                  
+                </div>
                 </div>
               </Section>
               <div className="row mt-3 py-3">
