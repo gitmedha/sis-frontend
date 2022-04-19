@@ -154,6 +154,7 @@ const Batch = (props) => {
       return;
     }
 
+
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);

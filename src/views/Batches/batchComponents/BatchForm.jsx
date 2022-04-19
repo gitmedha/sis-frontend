@@ -156,6 +156,7 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
+    console.log('values', values);
     setFormValues(values);
     onHide(values);
   };
@@ -442,7 +443,7 @@ const BatchForm = (props) => {
                     <Input
                       icon="down"
                       control="lookup"
-                      name="assignment_file"
+                      name="require_assignment_file_for_certification"
                       label="Require Assignment file for certification?"
                       options={AssignmentFileCertification}
                       className="form-control"
