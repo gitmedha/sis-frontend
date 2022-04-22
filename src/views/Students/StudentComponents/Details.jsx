@@ -106,6 +106,7 @@ const Details = (props) => {
     interested_in_employment_opportunities,
     CV,
     assigned_to,
+    registered_by,
     created_at,
     updated_at,
     created_by_frontend,
@@ -148,6 +149,7 @@ const Details = (props) => {
           </div>
           <div className="col-md-4">
             <DetailField label="Assigned To" value={assigned_to?.username} />
+            <DetailField label="Registered By" value={registered_by?.username} />
             <DetailField label=" Student ID" value={student_id} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />

@@ -40,6 +40,11 @@ const studentFields = `
     username
     email
   }
+  registered_by{
+    id
+    username
+    email
+  }
   logo {
     id
     url
