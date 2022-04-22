@@ -110,7 +110,7 @@ const BatchForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));      
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
         onStateChange({
@@ -121,7 +121,7 @@ const BatchForm = (props) => {
   }, []);
 
   const onStateChange = value => {
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
         key: area.id,
@@ -156,7 +156,6 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
-    console.log('values', values);
     setFormValues(values);
     onHide(values);
   };
@@ -449,7 +448,7 @@ const BatchForm = (props) => {
                       className="form-control"
                       placeholder=""
                     />
-                  
+
                 </div>
                 </div>
               </Section>
