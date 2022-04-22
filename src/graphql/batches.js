@@ -515,6 +515,11 @@ const programEnrollmentFields = `
     url
     created_at
   }
+  assignment_file {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url
