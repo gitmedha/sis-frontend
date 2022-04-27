@@ -147,13 +147,21 @@ const tabPickerOptions = [
       switch (sortBy[0].id) {
         case 'employer':
         case 'type':
+        case 'district':
+        case 'status':
           sortByField = sortBy[0].id;
           break;
 
-        case 'created_at':
-        case 'address':
         case 'number_of_opportunities':
-          sortByField = 'number_of_opportunities'
+          sortByField = 'number_of_opportunities';
+          break;
+
+        case 'opportunity_type':
+          sortByField = 'type';
+          break;
+
+        case 'assigned_to.username':
+          sortByField = 'assigned_to.username';
           break;
 
         case 'avatar':
