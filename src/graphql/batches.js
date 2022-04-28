@@ -93,6 +93,7 @@ query GET_BATCH ($id:ID!) {
     per_student_fees
     name_in_current_sis
     number_of_sessions_planned
+    require_assignment_file_for_certification
     seats_available
   }
 }
