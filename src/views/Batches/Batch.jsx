@@ -48,6 +48,7 @@ const Batch = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
+  const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
 
   const getThisBatch = async () => {
     try {
@@ -140,6 +141,7 @@ const Batch = (props) => {
       NP.done();
       await getThisBatch();
       await getProgramEnrollments();
+      setCompleteCertifyLoading(false);
     });
     setModalShow(false);
   }
@@ -151,6 +153,7 @@ const Batch = (props) => {
       setModalShow(false);
       return;
     }
+
 
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
@@ -242,7 +245,12 @@ const Batch = (props) => {
               DELETE
             </button>
             {isAdmin() &&
-              <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button>
+              <button onClick={() => {
+                setCompleteCertifyLoading(true);
+                updateStatus();
+              }} className="btn--secondary" disabled={completeCertifyLoading}>
+                Complete & Certify
+              </button>
             }
           </div>
         </div>

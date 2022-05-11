@@ -93,6 +93,7 @@ query GET_BATCH ($id:ID!) {
     per_student_fees
     name_in_current_sis
     number_of_sessions_planned
+    require_assignment_file_for_certification
     seats_available
   }
 }
@@ -510,6 +511,11 @@ const programEnrollmentFields = `
   higher_education_course_name
   higher_education_year_of_course_completion
   higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
+  assignment_file {
     id
     url
     created_at

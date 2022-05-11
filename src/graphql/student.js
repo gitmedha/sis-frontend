@@ -41,6 +41,11 @@ const studentFields = `
     username
     email
   }
+  registered_by{
+    id
+    username
+    email
+  }
   logo {
     id
     url
@@ -77,6 +82,11 @@ const programEnrollmentFields = `
   higher_education_course_name
   higher_education_year_of_course_completion
   higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
+  assignment_file {
     id
     url
     created_at

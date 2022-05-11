@@ -215,6 +215,7 @@ const EmploymentConnections = (props) => {
     // need to remove some data from the payload that's not accepted by the API
     let {
       id,
+      offer_letter,
       employer,
       employer_id,
       created_at,

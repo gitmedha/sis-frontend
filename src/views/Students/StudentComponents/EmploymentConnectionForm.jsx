@@ -8,7 +8,6 @@ import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
 import {
-  getAllEmployers,
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
 } from "./StudentActions";
@@ -45,11 +44,7 @@ const EnrollmentConnectionForm = (props) => {
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
     []
   );
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(
-    props.employmentConnection && props.employmentConnection.opportunity
-      ? props.employmentConnection.opportunity.type
-      : null
-  );
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
   const [selectedStatus, setSelectedStatus] = useState(
     props.employmentConnection ? props.employmentConnection.status : null
   );
@@ -64,6 +59,7 @@ const EnrollmentConnectionForm = (props) => {
     end_date: "",
     source: "",
     salary_offered: "",
+    reason_if_rejected: "",
   };
 
   if (props.employmentConnection) {
@@ -94,11 +90,12 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
-    setShowEndDate(
-      selectedOpportunityType === "Internship" &&
-        selectedStatus === "Internship Complete"
-    );
-  }, [selectedOpportunityType, selectedStatus]);
+    setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+  }, [props.employmentConnection]);
+
+  useEffect(() => {
+    setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
+  }, [selectedOpportunityType]);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
