@@ -6,7 +6,7 @@ import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
