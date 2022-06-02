@@ -43,6 +43,8 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [alumniServiceTypeOptions, setAlumniServiceTypeOptions] = useState([]);
+  const [alumniServiceLocationOptions, setAlumniServiceLocationOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
@@ -62,10 +64,13 @@ const StudentForm = (props) => {
 
   useEffect(() => {
     getStudentsPickList().then(data => {
+      console.log('getStudentsPickList', data);
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setAlumniServiceTypeOptions(data.alumni_service_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setAlumniServiceLocationOptions(data.alumni_service_location.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
     getAddressOptions().then(data => {
@@ -118,7 +123,7 @@ const StudentForm = (props) => {
     category:'',
     email:'',
     gender:'',
-    assigned_to:userId.toString(),
+    assigned_to: userId.toString(),
     status:'',
     income_level:'',
     date_of_birth:'',
@@ -129,7 +134,15 @@ const StudentForm = (props) => {
     state:'',
     district:'',
     logo:'',
-    registered_by:userId.toString(),
+    alumni_service_type: '',
+    alumni_service_assigned_to: userId.toString(),
+    alumni_service_start_date: '',
+    alumni_service_end_date: '',
+    alumni_service_fee_submission_date: '',
+    alumni_service_fee_amount: '',
+    alumni_service_location: '',
+    alumni_service_receipt_number: '',
+    alumni_service_comments: '',
   };
 
   if (props.id) {
@@ -471,19 +484,19 @@ const StudentForm = (props) => {
                 <h3 className="section-header">Alumni Services</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
+                    {alumniServiceTypeOptions.length ? (
                       <Input
                         icon="down"
                         control="lookup"
                         name="alumni_service_type"
                         label="Alumni Service Type"
-                        options={medhaChampionOptions}
+                        options={alumniServiceTypeOptions}
                         className="form-control"
                         placeholder="Alumni Service Type"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
@@ -502,9 +515,9 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="alumni_service_end_date"
-                      label="End Date"
-                      placeholder="End Date"
+                      name="alumni_service_start_date"
+                      label="Start Date"
+                      placeholder="Start Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -512,9 +525,9 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="alumni_service_start_date"
-                      label="Start Date"
-                      placeholder="Start Date"
+                      name="alumni_service_end_date"
+                      label="End Date"
+                      placeholder="End Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -531,34 +544,30 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="alumni_service_fee_amount"
-                        label="Fee Amount"
-                        options={medhaChampionOptions}
-                        className="form-control"
-                        placeholder="Fee Amount"
-                      />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    <Input
+                      min={0}
+                      type="number"
+                      name="alumni_service_fee_amount"
+                      control="input"
+                      label="Fee Amount (INR)"
+                      className="form-control"
+                      placeholder="Fee Amount"
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
+                    {alumniServiceLocationOptions.length ? (
                       <Input
                         icon="down"
                         control="lookup"
                         name="alumni_service_location"
                         label="Location"
-                        options={medhaChampionOptions}
+                        options={alumniServiceLocationOptions}
                         className="form-control"
                         placeholder="Location"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    ) : (
+                        <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

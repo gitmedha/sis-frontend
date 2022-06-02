@@ -55,7 +55,10 @@ const Student = (props) => {
 
     // need to remove some data from payload
     let {id, show, CV, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : null;
+    dataToSave['alumni_service_start_date'] = data.alumni_service_start_date ? moment(data.alumni_service_start_date).format("YYYY-MM-DD") : null;
+    dataToSave['alumni_service_end_date'] = data.alumni_service_end_date ? moment(data.alumni_service_end_date).format("YYYY-MM-DD") : null;
+    dataToSave['alumni_service_fee_submission_date'] = data.alumni_service_fee_submission_date ? moment(data.alumni_service_fee_submission_date).format("YYYY-MM-DD") : null;
 
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
