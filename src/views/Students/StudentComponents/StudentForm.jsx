@@ -484,7 +484,7 @@ const StudentForm = (props) => {
                   </div>
                 </div>
               </Section>
-              <Section>
+              {props.id && <Section>
                 <h3 className="section-header">Alumni Services</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -592,7 +592,7 @@ const StudentForm = (props) => {
                     />
                   </div>
                 </div>
-              </Section>
+              </Section>}
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
                  <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
