@@ -467,6 +467,119 @@ const StudentForm = (props) => {
                   </div>
                 </div>
               </Section>
+              <Section>
+                <h3 className="section-header">Alumni Services</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="alumni_service_type"
+                        label="Alumni Service Type"
+                        options={medhaChampionOptions}
+                        className="form-control"
+                        placeholder="Alumni Service Type"
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookupAsync"
+                        name="alumni_service_assigned_to"
+                        label="Assigned To"
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alumni_service_end_date"
+                      label="End Date"
+                      placeholder="End Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alumni_service_start_date"
+                      label="Start Date"
+                      placeholder="Start Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alumni_service_fee_submission_date"
+                      label="Fee Submission Date"
+                      placeholder="Fee Submission Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="alumni_service_fee_amount"
+                        label="Fee Amount"
+                        options={medhaChampionOptions}
+                        className="form-control"
+                        placeholder="Fee Amount"
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="alumni_service_location"
+                        label="Location"
+                        options={medhaChampionOptions}
+                        className="form-control"
+                        placeholder="Location"
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alumni_service_receipt_number"
+                      label="Receipt Number"
+                      control="input"
+                      placeholder="Receipt Number"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alumni_service_comments"
+                      label="Comments"
+                      control="input"
+                      placeholder="Comments"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+              </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
                  <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
