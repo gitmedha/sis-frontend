@@ -176,7 +176,6 @@ const EmploymentConnections = (props) => {
       role_or_designation,
       opportunity_icon,
       employer_name,
-      assigned_to,
       ...dataToSave
     } = data;
     dataToSave["start_date"] = data.start_date
