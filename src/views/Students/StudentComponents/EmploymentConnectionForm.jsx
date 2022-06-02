@@ -47,9 +47,7 @@ const EnrollmentConnectionForm = (props) => {
     []
   );
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
-  const [selectedStatus, setSelectedStatus] = useState(
-    props.employmentConnection ? props.employmentConnection.status : null
-  );
+  const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [showEndDate, setShowEndDate] = useState(false);
 
   let initialValues = {
@@ -94,6 +92,7 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+    setSelectedStatus(props.employmentConnection?.status);
   }, [props.employmentConnection]);
 
   useEffect(() => {
@@ -350,6 +349,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
