@@ -232,7 +232,6 @@ const EmploymentConnections = (props) => {
       employer_name,
       opportunity_type,
       experience_certificate,
-      assigned_to,
       ...dataToSave
     } = data;
     dataToSave["start_date"] = data.start_date

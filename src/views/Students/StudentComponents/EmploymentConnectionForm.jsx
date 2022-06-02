@@ -11,6 +11,7 @@ import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
 } from "./StudentActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -38,6 +39,7 @@ const meilisearchClient = new MeiliSearch({
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
@@ -67,6 +69,7 @@ const EnrollmentConnectionForm = (props) => {
     initialValues["employer_id"] = props.employmentConnection
       ? Number(props.employmentConnection.opportunity?.employer?.id)
       : null;
+    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
       : null;
@@ -96,6 +99,12 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
   }, [selectedOpportunityType]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
@@ -230,7 +239,22 @@ const EnrollmentConnectionForm = (props) => {
                       disabled={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2"></div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       control="lookupAsync"
