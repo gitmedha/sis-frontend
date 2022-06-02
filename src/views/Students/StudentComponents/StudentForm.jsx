@@ -64,7 +64,6 @@ const StudentForm = (props) => {
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      console.log('getStudentsPickList', data);
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
