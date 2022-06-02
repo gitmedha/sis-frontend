@@ -25,6 +25,19 @@ const studentFields = `
   state
   created_at
   updated_at
+  alumni_service_type
+  alumni_service_start_date
+  alumni_service_end_date
+  alumni_service_fee_submission_date
+  alumni_service_fee_amount
+  alumni_service_location
+  alumni_service_receipt_number
+  alumni_service_comments
+  alumni_service_assigned_to{
+    id
+    username
+    email
+  }
   created_by_frontend{
     email
     username

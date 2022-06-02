@@ -22,6 +22,7 @@ import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
+import AlumniServiceDetails from "./StudentComponents/AlumniServiceDetails";
 
 const Styled = styled.div`
 
@@ -224,6 +225,9 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
+        </Collapsible>
+        <Collapsible title="Alumni Services">
+          <AlumniServiceDetails {...student} />
         </Collapsible>
         <StudentForm
           {...student}
