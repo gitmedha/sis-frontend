@@ -6,7 +6,8 @@ import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -35,6 +36,7 @@ const meilisearchClient = new MeiliSearch({
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, opportunity } = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
@@ -56,6 +58,7 @@ const EnrollmentConnectionForm = (props) => {
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
@@ -85,6 +88,12 @@ const EnrollmentConnectionForm = (props) => {
       });
     }
   }, [props]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
@@ -155,7 +164,22 @@ const EnrollmentConnectionForm = (props) => {
                       required={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2"></div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       control="input"
@@ -231,6 +255,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

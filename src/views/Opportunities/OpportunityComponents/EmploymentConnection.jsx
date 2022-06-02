@@ -106,6 +106,7 @@ const EmploymentConnection = (props) => {
               </div>
             </div>
             <div className="col-md-6 col-sm-12">
+              <DetailField label="Assigned To" value={employmentConnection.assigned_to ? employmentConnection.assigned_to?.username : ''} />
               <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
               <DetailField label="End Date" value={employmentConnection.end_date ? moment(employmentConnection.end_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />

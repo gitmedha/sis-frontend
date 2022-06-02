@@ -283,6 +283,11 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       reason_if_rejected
       salary_offered
       updated_at
+      assigned_to {
+        id
+        username
+        email
+      }
       experience_certificate{
         id
         url

@@ -129,6 +129,11 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
+  assigned_to {
+    id
+    username
+    email
+  }
   experience_certificate{
     id
     url

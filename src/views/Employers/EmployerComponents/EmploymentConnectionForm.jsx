@@ -8,6 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations/Employer";
 import { getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -35,14 +36,15 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show , employer} = props;
+  let { onHide, show} = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
+  const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
 
   let initialValues = {
@@ -60,6 +62,7 @@ const EnrollmentConnectionForm = (props) => {
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues['employer_id'] = props.employer ? Number(props.employer.id) : null;
     initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
     initialValues['employer'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
@@ -77,12 +80,18 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+    setSelectedStatus(props.employmentConnection?.status);
   }, [props.employmentConnection]);
 
   useEffect(() => {
     setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
   }, [selectedOpportunityType]);
 
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -247,7 +256,22 @@ const EnrollmentConnectionForm = (props) => {
                       required={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2"></div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       control="lookupAsync"
@@ -340,6 +364,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
