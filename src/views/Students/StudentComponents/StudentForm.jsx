@@ -136,9 +136,9 @@ const StudentForm = (props) => {
     logo:'',
     alumni_service_type: '',
     alumni_service_assigned_to: userId.toString(),
-    alumni_service_start_date: '',
-    alumni_service_end_date: '',
-    alumni_service_fee_submission_date: '',
+    alumni_service_start_date: null,
+    alumni_service_end_date: null,
+    alumni_service_fee_submission_date: null,
     alumni_service_fee_amount: '',
     alumni_service_location: '',
     alumni_service_receipt_number: '',
@@ -152,6 +152,10 @@ const StudentForm = (props) => {
     initialValues['registered_by'] = props?.registered_by?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    initialValues['alumni_service_assigned_to'] = props?.alumni_service_assigned_to?.id;
+    initialValues['alumni_service_start_date'] = new Date(props?.alumni_service_start_date);
+    initialValues['alumni_service_end_date'] = new Date(props?.alumni_service_end_date);
+    initialValues['alumni_service_fee_submission_date'] = new Date(props?.alumni_service_fee_submission_date);
   }
 
   return (
