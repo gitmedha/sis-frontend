@@ -42,7 +42,6 @@ const StudentForm = (props) => {
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
-  const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
@@ -77,22 +76,10 @@ const StudentForm = (props) => {
 
       if (props.state) {
         onStateChange({ value: props.state });
-        onMedhaAreaStatechange({ value: props.state });
       }
     });
 
   }, [props]);
-
-  const onMedhaAreaStatechange = value => {
-    getStateDistricts(value).then(data => {
-      setAreaOptions([]);
-      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
-        key: area.id,
-        label: area.key,
-        value: area.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));
-    });
-  };
 
   const onStateChange = value => {
     setDistrictOptions([]);
