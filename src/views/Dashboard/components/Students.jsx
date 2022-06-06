@@ -157,7 +157,7 @@ const Students = (props) => {
         return {
           ...programEnrollment,
           student_name: programEnrollment.student?.full_name,
-          area: programEnrollment.student?.medha_area,
+          area: programEnrollment.student?.assgined_to?.area,
           registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
           certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
           batch_name: programEnrollment?.batch?.name,

@@ -1,6 +1,6 @@
 import DetailField from "../../../components/content/DetailField";
 
-const Address = ({ address, medha_area, pin_code, state, city, district, assigned_to }) => {
+const Address = ({ address, pin_code, state, city, district, assigned_to }) => {
   return (
     <div className="container-fluid my-3">
       <div className="row">

@@ -20,8 +20,6 @@ const studentFields = `
   interested_in_employment_opportunities
   city
   pin_code
-  medha_area
-  medha_area_state
   address
   state
   created_at
