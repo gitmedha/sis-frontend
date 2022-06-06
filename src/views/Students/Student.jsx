@@ -22,7 +22,6 @@ import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
-import AlumniServiceDetails from "./StudentComponents/AlumniServiceDetails";
 
 const Styled = styled.div`
 
@@ -56,10 +55,7 @@ const Student = (props) => {
 
     // need to remove some data from payload
     let {id, show, CV, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : null;
-    dataToSave['alumni_service_start_date'] = data.alumni_service_start_date ? moment(data.alumni_service_start_date).format("YYYY-MM-DD") : null;
-    dataToSave['alumni_service_end_date'] = data.alumni_service_end_date ? moment(data.alumni_service_end_date).format("YYYY-MM-DD") : null;
-    dataToSave['alumni_service_fee_submission_date'] = data.alumni_service_fee_submission_date ? moment(data.alumni_service_fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
 
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
@@ -225,9 +221,6 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
-        </Collapsible>
-        <Collapsible title="Alumni Services">
-          <AlumniServiceDetails {...student} />
         </Collapsible>
         <StudentForm
           {...student}
