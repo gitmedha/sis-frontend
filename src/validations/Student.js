@@ -52,7 +52,6 @@ const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
 const state = Yup.string().required("State is required.");
-const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
@@ -105,7 +104,6 @@ export const StudentValidations = Yup.object({
   income_level,
   city,
   pin_code,
-  medha_area,
   address,
   state,
   district,
