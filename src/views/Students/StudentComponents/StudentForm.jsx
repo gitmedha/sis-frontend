@@ -76,9 +76,7 @@ const StudentForm = (props) => {
       })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
-        onStateChange({
-          value: props.state,
-        });
+        onStateChange({ value: props.state });
       }
     });
 

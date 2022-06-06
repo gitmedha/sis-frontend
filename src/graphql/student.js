@@ -39,6 +39,7 @@ const studentFields = `
     id
     username
     email
+    area
   }
   registered_by{
     id
@@ -154,9 +155,9 @@ export const GET_STUDENTS = `
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id
+          id: $id,
+          area: $area
         },
-        medha_area:$area,
         state:$state,
         status:$status,
       }
