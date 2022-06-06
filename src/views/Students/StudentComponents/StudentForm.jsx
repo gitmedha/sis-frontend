@@ -42,6 +42,7 @@ const StudentForm = (props) => {
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
@@ -89,6 +90,12 @@ const StudentForm = (props) => {
         label: district.key,
         value: district.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+        key: area.id,
+        label: area.key,
+        value: area.key,
+      })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
 
@@ -115,6 +122,7 @@ const StudentForm = (props) => {
     date_of_birth:'',
     city:'',
     pin_code:'',
+    medha_area:'',
     address:'',
     state:'',
     district:'',
@@ -356,6 +364,25 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                    {areaOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="medha_area"
+                        label="Medha Area"
+                        className="form-control"
+                        placeholder="Medha Area"
+                        required
+                        options={areaOptions}
+                      />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                </div>
+                <div className="col-md-6 col-sm-12 mb-2">
                   {stateOptions.length ? (
                     <Input
                       icon="down"

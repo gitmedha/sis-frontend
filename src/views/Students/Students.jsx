@@ -80,7 +80,7 @@ const Students = (props) => {
       },
       {
         Header: 'Area',
-        accessor: 'assigned_to.area',
+        accessor: 'medha_area',
       },
       {
         Header: 'Phone',

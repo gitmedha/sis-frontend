@@ -1,6 +1,6 @@
 import DetailField from "../../../components/content/DetailField";
 
-const Address = ({ address, pin_code, state, city, district, assigned_to }) => {
+const Address = ({ address, medha_area, pin_code, state, city, district }) => {
   return (
     <div className="container-fluid my-3">
       <div className="row">
@@ -11,7 +11,7 @@ const Address = ({ address, pin_code, state, city, district, assigned_to }) => {
         </div>
         <div className="col-6 offset-md-2 col-md-4">
           <DetailField label="Pin Code" value={pin_code} />
-          <DetailField label="Area" value={assigned_to.area} />
+          <DetailField label="Area" value={medha_area} />
           <DetailField label="State" value={state} />
         </div>
       </div>
