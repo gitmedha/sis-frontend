@@ -136,6 +136,7 @@ const StudentForm = (props) => {
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['registered_by'] = props?.registered_by?.id;
     initialValues['district'] = props.district ? props.district: null ;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
 
   return (
@@ -364,25 +365,25 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {areaOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="medha_area"
-                        label="Medha Area"
-                        className="form-control"
-                        placeholder="Medha Area"
-                        required
-                        options={areaOptions}
-                      />
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
                      ) : (
                       <>
                         <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
-                </div>
-                <div className="col-md-6 col-sm-12 mb-2">
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
                   {stateOptions.length ? (
                     <Input
                       icon="down"
