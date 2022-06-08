@@ -10,6 +10,7 @@ import ProgressBar from "../../../src/components/content/ProgressBar";
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
+import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -221,6 +222,9 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
+        </Collapsible>
+        <Collapsible title="Alumni Services" badge={programEnrollmentAggregate.count}>
+          <AlumniServices programEnrollments={studentProgramEnrollments} student={student} onDataUpdate={getProgramEnrollments} id={studentId}/>
         </Collapsible>
         <StudentForm
           {...student}

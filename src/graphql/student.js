@@ -109,6 +109,24 @@ const programEnrollmentFields = `
   }
 `;
 
+const alumniServicesFields = `
+  id
+  type
+  start_date
+  end_date
+  assigned_to {
+    id
+    email
+    username
+  }
+  fee_submission_date
+  location
+  receipt_number
+  fee_amount
+  created_at
+  updated_at
+`;
+
 const employmentConnectionFields = `
   id
   status
@@ -381,6 +399,29 @@ query TO_GET_ALL_STUDENTS {
   students{
     id
     full_name
+  }
+}
+`;
+
+
+export const GET_STUDENT_ALUMNI_SERVICES = `
+query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: String){
+  alumniServicesConnection (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      student: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+    }
+    aggregate {
+      count
+    }
   }
 }
 `;
