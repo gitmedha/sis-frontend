@@ -5,7 +5,7 @@ import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
 import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
 import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
-import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices } from "./StudentActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -19,6 +19,8 @@ import nProgress from "nprogress";
 import api from "../../../apis";
 import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import { deleteFile } from "../../../common/commonActions";
+import AlumniServiceForm from "../../Batches/batchComponents/AlumniServiceForm";
+import AlumniService from "./AlumniService";
 
 const AlumniServices = (props) => {
   let { id, student, onDataUpdate } = props;
@@ -89,7 +91,7 @@ const AlumniServices = (props) => {
         start_date_formatted: alumniService.start_date ? moment(alumniService.start_date).format('DD MMM YYYY') : '',
         end_date_formatted: alumniService.end_date ? moment(alumniService.end_date).format('DD MMM YYYY') : '',
         fee_submission_date_formatted: alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format('DD MMM YYYY') : '',
-        updated_at:moment(alumniService.updated_at).format("DD MMM YYYY"),
+        updated_at: moment(alumniService.updated_at).format("DD MMM YYYY"),
       };
     });
     setAlumniServicesTableData(data);
@@ -154,31 +156,30 @@ const AlumniServices = (props) => {
   }
 
   const hideCreateModal = async (data) => {
-    // if (!data || data.isTrusted) {
-    //   setCreateModalShow(false);
-    //   return;
-    // }
+    if (!data || data.isTrusted) {
+      setCreateModalShow(false);
+      return;
+    }
 
-    // // need to remove some data from the payload that's not accepted by the API
-    // let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
-    // dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
-    // dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    // dataToSave['student'] = student.id;
+    // need to remove some data from the payload that's not accepted by the API
+    let {id, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
+    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave['student'] = student.id;
+    console.log('dataToSave', dataToSave);
 
-
-    //  NP.start();
-    //  createProgramEnrollment(dataToSave).then(data => {
-    //   setAlert("Program Enrollment created successfully.", "success");
-    // }).catch(err => {
-    //   console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
-    //   setAlert("Unable to create program Enrollment.", "error");
-    // }).finally(() => {
-    //   NP.done();
-    //   fetchStudentAlumniServices();
-    // });
-    // setCreateModalShow(false);
+     NP.start();
+     createAlumniService(dataToSave).then(data => {
+      setAlert("Alumni Service created successfully.", "success");
+    }).catch(err => {
+      console.log("Unable to create alumni service: ", err);
+      setAlert("Unable to create Alumni Service.", "error");
+    }).finally(() => {
+      NP.done();
+      fetchStudentAlumniServices();
+    });
+    setCreateModalShow(false);
   };
 
   const hideUpdateModal = async (data) => {
@@ -255,17 +256,16 @@ const AlumniServices = (props) => {
         </div>
       </div>
       <Table columns={columns} data={alumniServicesTableData} onRowClick={handleRowClick} totalRecords={alumniServicesAggregate.count} fetchData={fetchData} showPagination={alumniServicesAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-      {/* <ProgramEnrollment
+      <AlumniService
         show={viewModalShow}
         onHide={hideViewModal}
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
         student={student}
-        programEnrollment={selectedAlumniService}
-        onDelete={fileDeleteProofOfEnrollment}
+        alumniService={selectedAlumniService}
         onUpdate={hideModal}
       />
-      <CreateProgramEnrollmentForm
+      {/* <AlumniServiceForm
         show={createModalShow}
         onHide={hideCreateModal}
         student={student}

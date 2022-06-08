@@ -425,3 +425,53 @@ query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: St
   }
 }
 `;
+
+export const CREATE_ALUMNI_SERVICE = `
+  mutation CREATE_ALUMNI_SERVICE (
+    $data: AlumniServiceInput!
+  ) {
+    createAlumniService (
+      input: {
+        data: $data
+      }
+    ) {
+      programEnrollment {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
+// export const UPDATE_PROGRAM_ENROLLMENT = `
+//   mutation UPDATE_PROGRAM_ENROLLMENT (
+//     $data: editProgramEnrollmentInput!
+//     $id: ID!
+//   ) {
+//     updateProgramEnrollment(
+//       input: {
+//         data: $data,
+//         where: { id: $id }
+//       }
+//     ) {
+//       programEnrollment {
+//         ${programEnrollmentFields}
+//       }
+//     }
+//   }
+// `;
+
+// export const DELETE_PROGRAM_ENROLLMENT = `
+//   mutation DELETE_PROGRAM_ENROLLMENT(
+//     $id: ID!
+//   ) {
+//     deleteProgramEnrollment (
+//       input:{
+//         where: { id: $id }
+//       }
+//     ){
+//       programEnrollment {
+//         id
+//       }
+//     }
+//   }
+// `;
