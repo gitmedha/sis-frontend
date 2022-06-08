@@ -2,24 +2,19 @@ import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
-import { FaDownload } from "react-icons/fa";
-import CreateProgramEnrollmentForm from "./ProgramEnrollmentForm";
-import UpdateProgramEnrollmentForm from "./ProgramEnrollmentForm";
+import CreateAlumniServiceForm from "./AlumniServiceForm";
+import UpdateAlumniServiceForm from "./AlumniServiceForm";
 import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import ProgramEnrollment from "./ProgramEnrollment";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { urlPath } from "../../../constants";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import NP from "nprogress";
 import nProgress from "nprogress";
-import api from "../../../apis";
-import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import { deleteFile } from "../../../common/commonActions";
-import AlumniServiceForm from "../../Batches/batchComponents/AlumniServiceForm";
 import AlumniService from "./AlumniService";
 
 const AlumniServices = (props) => {
@@ -162,10 +157,11 @@ const AlumniServices = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
+    let {id, alumni_service_student, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
     console.log('dataToSave', dataToSave);
 
@@ -265,12 +261,12 @@ const AlumniServices = (props) => {
         alumniService={selectedAlumniService}
         onUpdate={hideModal}
       />
-      {/* <AlumniServiceForm
+      <CreateAlumniServiceForm
         show={createModalShow}
         onHide={hideCreateModal}
         student={student}
       />
-      <UpdateProgramEnrollmentForm
+      {/* <UpdateProgramEnrollmentForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         student={student}

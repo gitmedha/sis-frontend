@@ -435,7 +435,7 @@ export const CREATE_ALUMNI_SERVICE = `
         data: $data
       }
     ) {
-      programEnrollment {
+      alumniService {
         ${alumniServicesFields}
       }
     }

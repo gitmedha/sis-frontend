@@ -118,3 +118,7 @@ export const StudentValidations = Yup.object({
   state,
   district,
 });
+
+export const AlumniServiceValidations = Yup.object({
+  start_date,
+});
