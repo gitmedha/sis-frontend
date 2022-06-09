@@ -8,6 +8,7 @@ import { AlumniServiceValidations } from "../../../validations/Student";
 import { getStudentsPickList } from "./StudentActions";
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -33,8 +34,11 @@ const AlumniServiceForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
-  const [lookUpLoading, setLookUpLoading] = useState(false);
-  const [options, setOptions] = useState(null);
+  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.fee_submission_date || null);
+  const [feeAmountValue, setFeeAmountValue] = useState(props.fee_amount || '');
+  const [receiptNumberValue, setReceiptNumberValue] = useState(props.receipt_number || '');
+  const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
+  const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -46,6 +50,19 @@ const AlumniServiceForm = (props) => {
       setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
+
+  useEffect(() => {
+    let fee_submission_date = Yup.string().nullable().required("Fee submission date is required.");
+    let fee_amount = Yup.string().required("Fee amount is required.");
+    let receipt_number = Yup.string().required("Receipt number is required.");
+    let fieldsRequired = feeSubmissionDateValue !== null || feeAmountValue !== '' || receiptNumberValue !== '';
+    setFeeFieldsRequired(fieldsRequired);
+    if (fieldsRequired) {
+      setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
+    } else {
+      setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
+    }
+  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue])
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
@@ -96,7 +113,7 @@ const AlumniServiceForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={AlumniServiceValidations}
+          validationSchema={validationRules}
         >
           {({ values }) => (
             <Form>
@@ -177,6 +194,8 @@ const AlumniServiceForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                      onInput={value => setFeeSubmissionDateValue(value)}
+                      required={feeFieldsRequired}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -187,6 +206,8 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
+                      onInput={e => setFeeAmountValue(e.target.value)}
+                      required={feeFieldsRequired}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -197,6 +218,8 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
+                      onInput={e => setReceiptNumberValue(e.target.value)}
+                      required={feeFieldsRequired}
                     />
                   </div>
                   <div className="col-md-12 col-sm-12 mt-2">

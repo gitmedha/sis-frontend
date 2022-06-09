@@ -1,20 +1,15 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import CreateAlumniServiceForm from "./AlumniServiceForm";
 import UpdateAlumniServiceForm from "./AlumniServiceForm";
-import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService, updateAlumniService, deleteAlumniService } from "./StudentActions";
+import { getStudentAlumniServices, createAlumniService, updateAlumniService, deleteAlumniService } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { Badge } from "../../../components/content/Utils";
-import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { urlPath } from "../../../constants";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import NP from "nprogress";
 import nProgress from "nprogress";
-import { deleteFile } from "../../../common/commonActions";
 import AlumniService from "./AlumniService";
 
 const AlumniServices = (props) => {
@@ -24,20 +19,12 @@ const AlumniServices = (props) => {
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [pickList, setPickList] = useState([]);
   const {setAlert} = props;
-  const history = useHistory();
   const [alumniServicesAggregate, setAlumniServicesAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [alumniServicesTableData, setAlumniServicesTableData] = useState([]);
   const [alumniServices, setAlumniServices] = useState([]);
   const [selectedAlumniService, setSelectedAlumniService] = useState({});
-
-  useEffect(() => {
-    // getProgramEnrollmentsPickList().then(data => {
-    //   setPickList(data);
-    // });
-  }, []);
 
   const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     nProgress.start();

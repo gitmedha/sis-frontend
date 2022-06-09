@@ -110,8 +110,7 @@ label {
 `;
 
 const DatePicker = (props) => {
-  const { name, showtime, label, required, ...rest } = props;
-
+  const { name, showtime, label, required, onInput: onInputCallback, ...rest } = props;
   const datepickerRef = useRef(null);
   function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
@@ -141,7 +140,12 @@ const DatePicker = (props) => {
                   {...field}
                   {...rest}
                   selected={value}
-                  onChange={(val) => setFieldValue(name, val)}
+                  onChange={(val) => {
+                    setFieldValue(name, val);
+                    if (typeof onInputCallback === 'function') {
+                      onInputCallback(val)
+                    }
+                  }}
                   ref={datepickerRef}
                 />
                 <span className="datepicker-icon" onClick={() => handleClickDatepickerIcon()}>
