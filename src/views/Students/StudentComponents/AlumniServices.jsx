@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import CreateAlumniServiceForm from "./AlumniServiceForm";
 import UpdateAlumniServiceForm from "./AlumniServiceForm";
-import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService } from "./StudentActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService, updateAlumniService } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -180,30 +180,32 @@ const AlumniServices = (props) => {
   };
 
   const hideUpdateModal = async (data) => {
-    // if (!data || data.isTrusted) {
-    //   setUpdateModalShow(false);
-    //   return;
-    // }
+    if (!data || data.isTrusted) {
+      setUpdateModalShow(false);
+      return;
+    }
 
-    // // need to remove some data from the payload that's not accepted by the API
-    // let {id, certification_date_formatted, created_at, updated_at, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, higher_education_proof_of_enrollment, assignment_file, ...dataToSave} = data;
-    // dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
-    // dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    // dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    // need to remove some data from the payload that's not accepted by the API
+    let {id, alumni_service_student, created_at, updated_at, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
+    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
+    dataToSave['student'] = student.id;
+    console.log('dataToSave', dataToSave);
 
-    //  NP.start();
-    // updateProgramEnrollment(Number(id), dataToSave).then(data => {
-    //   setAlert("Program Enrollment updated successfully.", "success");
-    // }).catch(err => {
-    //   console.log("UPDATE_PROGRAM_ENROLLMENT_ERR", err);
-    //   setAlert("Unable to update program Enrollment.", "error");
-    // }).finally(() => {
-    //    NP.done();
-    //    fetchStudentAlumniServices();
-    //    onDataUpdate();
-    // });
-    // setUpdateModalShow(false);
+    NP.start();
+    updateAlumniService(Number(id), dataToSave).then(data => {
+      setAlert("Alumni Service updated successfully.", "success");
+    }).catch(err => {
+      console.log("Error updating alumni service: ", err);
+      setAlert("Unable to update Alumni Service.", "error");
+    }).finally(() => {
+      NP.done();
+      fetchStudentAlumniServices();
+      onDataUpdate();
+    });
+    setUpdateModalShow(false);
   };
 
   const handleDelete = async () => {
@@ -269,12 +271,13 @@ const AlumniServices = (props) => {
         onHide={hideCreateModal}
         student={student}
       />
-      {/* <UpdateProgramEnrollmentForm
+      <UpdateAlumniServiceForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         student={student}
-        programEnrollment={selectedAlumniService}
+        alumniService={selectedAlumniService}
       />
+      {/*
       <SweetAlert
           danger
           showCancel

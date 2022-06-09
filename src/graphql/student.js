@@ -123,6 +123,7 @@ const alumniServicesFields = `
   location
   receipt_number
   fee_amount
+  comments
   created_at
   updated_at
 `;
@@ -442,23 +443,23 @@ export const CREATE_ALUMNI_SERVICE = `
   }
 `;
 
-// export const UPDATE_PROGRAM_ENROLLMENT = `
-//   mutation UPDATE_PROGRAM_ENROLLMENT (
-//     $data: editProgramEnrollmentInput!
-//     $id: ID!
-//   ) {
-//     updateProgramEnrollment(
-//       input: {
-//         data: $data,
-//         where: { id: $id }
-//       }
-//     ) {
-//       programEnrollment {
-//         ${programEnrollmentFields}
-//       }
-//     }
-//   }
-// `;
+export const UPDATE_ALUMNI_SERVICE = `
+  mutation UPDATE_ALUMNI_SERVICE (
+    $data: editAlumniServiceInput!
+    $id: ID!
+  ) {
+    updateAlumniService(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
 
 // export const DELETE_PROGRAM_ENROLLMENT = `
 //   mutation DELETE_PROGRAM_ENROLLMENT(
