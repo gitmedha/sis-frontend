@@ -2,15 +2,15 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getAllBatches } from "../../Batches/batchActions";
-import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getStudentsPickList } from "./StudentActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import Textarea from '../../../utils/Form/Textarea';
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -31,53 +31,24 @@ const Section = styled.div`
   }
 `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 const AlumniServiceForm = (props) => {
-  let { onHide, show, batch } = props;
-  const [loading, setLoading] = useState(false);
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [batchOptions, setBatchOptions] = useState([]);
-  const [studentOptions, setStudentOptions] = useState([]);
-  const [institutionOptions, setInstitutionOptions] = useState(null);
-  const [feeStatusOptions, setFeeStatusOptions] = useState([]);
-  const [yearOfCompletionOptions, setYearOfCompletionOptions] = useState([]);
-  const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
-  const [courseLevelOptions, setCourseLevelOptions] = useState([]);
-  const [courseTypeOptions, setCourseTypeOptions] = useState([]);
-  const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
+  let { onHide, show } = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
 
-  const prepareLookUpFields = async () => {
-    setLookUpLoading(true);
-    let lookUpOpts = await batchLookUpOptions();
-    setOptions(lookUpOpts);
-    setLookUpLoading(false);
-  };
-
   useEffect(() => {
-    // if (props.institution) {
-    //   filterInstitution(props.programEnrollment.institution.name).then(data => {
-    //     setInstitutionOptions(data);
-    //   });
-    // }
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
 
-    // if (props.student) {
-    //   filterStudent(props.programEnrollment.student.full_name).then(data => {
-    //     setStudentOptions(data);
-    //   });
-    // }
-  }, [props]);
-
-  useEffect(() => {
-    if (show && !options) {
-      // prepareLookUpFields();
-    }
-  }, [show, options]);
+    getStudentsPickList().then((data) => {
+      setTypeOptions(data.alumni_service_type.map((item) => ({ key: item.value, value: item.value, label: item.value })));
+      setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
+    });
+  }, []);
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
@@ -93,6 +64,7 @@ const AlumniServiceForm = (props) => {
 
   if (props.alumniService) {
     initialValues = {...initialValues, ...props.alumniService};
+    initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
     initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
     initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
     initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
@@ -101,25 +73,6 @@ const AlumniServiceForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
-
-  useEffect(() => {
-    // getAllBatches().then(data => {
-    //   setBatchOptions(data?.data?.data?.batches.map((batches) => ({
-    //     key: batches.name,
-    //     label: batches.name,
-    //     value: batches.id,
-    //   })));
-    // });
-
-    getProgramEnrollmentsPickList().then(data => {
-    //   setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    //   setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    //   setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    //   setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    //   setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    //   setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
-  }, []);
 
   return (
     <Modal
@@ -163,29 +116,38 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="alumni_service_student"
-                      control="input"
+                      control="lookupAsync"
+                      name="assigned_to"
                       label="Assigned To"
+                      required
                       className="form-control"
                       placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="type"
-                      control="input"
                       label="Type"
+                      options={typeOptions}
                       className="form-control"
                       placeholder="Type"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="location"
-                      control="input"
                       label="Location"
+                      options={typeOptions}
                       className="form-control"
                       placeholder="Location"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -196,6 +158,7 @@ const AlumniServiceForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -212,7 +175,6 @@ const AlumniServiceForm = (props) => {
                     <Input
                       name="fee_submission_date"
                       label="Fee Submission Date"
-                      required
                       placeholder="Fee Submission Date"
                       control="datepicker"
                       className="form-control"
@@ -223,7 +185,6 @@ const AlumniServiceForm = (props) => {
                     <Input
                       name="fee_amount"
                       label="Fee Amount"
-                      required
                       placeholder="Fee Amount"
                       control="input"
                       className="form-control"
@@ -234,7 +195,6 @@ const AlumniServiceForm = (props) => {
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
-                      required
                       placeholder="Receipt Number"
                       control="input"
                       className="form-control"
@@ -245,7 +205,6 @@ const AlumniServiceForm = (props) => {
                     <Textarea
                       name="comments"
                       label="Comments"
-                      required
                       placeholder="Comments"
                       control="input"
                       className="form-control"

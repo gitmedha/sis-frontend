@@ -99,6 +99,10 @@ const AlumniServices = (props) => {
         accessor: 'type',
       },
       {
+        Header: 'Location',
+        accessor: 'location',
+      },
+      {
         Header: 'Start Date',
         accessor: 'start_date_formatted',
       },
@@ -109,10 +113,6 @@ const AlumniServices = (props) => {
       {
         Header: 'Fee Submission Date',
         accessor: 'fee_submission_date_formatted',
-      },
-      {
-        Header: 'Location',
-        accessor: 'location',
       },
       {
         Header: 'Assigned To',
