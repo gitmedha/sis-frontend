@@ -1,14 +1,11 @@
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
 import { getStudentsPickList } from "./StudentActions";
-import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
@@ -60,6 +57,7 @@ const AlumniServiceForm = (props) => {
     start_date: null,
     end_date: null,
     fee_submission_date: null,
+    assigned_to: localStorage.getItem('user_id')
   };
 
   if (props.alumniService) {
@@ -144,7 +142,7 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       name="location"
                       label="Location"
-                      options={typeOptions}
+                      options={locationOptions}
                       className="form-control"
                       placeholder="Location"
                       required
