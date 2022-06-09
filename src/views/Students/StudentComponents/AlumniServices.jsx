@@ -174,6 +174,7 @@ const AlumniServices = (props) => {
     }).finally(() => {
       NP.done();
       fetchStudentAlumniServices();
+      onDataUpdate();
     });
     setCreateModalShow(false);
   };
@@ -200,6 +201,7 @@ const AlumniServices = (props) => {
     // }).finally(() => {
     //    NP.done();
     //    fetchStudentAlumniServices();
+    //    onDataUpdate();
     // });
     // setUpdateModalShow(false);
   };
@@ -214,6 +216,7 @@ const AlumniServices = (props) => {
     // }).finally(() => {
     //   setShowDeleteAlert(false);
     //   fetchStudentAlumniServices();
+    //    onDataUpdate();
     //    NP.done();
     //    history.push("/students");
     // });
