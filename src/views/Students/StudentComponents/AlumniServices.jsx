@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import CreateAlumniServiceForm from "./AlumniServiceForm";
 import UpdateAlumniServiceForm from "./AlumniServiceForm";
-import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService, updateAlumniService } from "./StudentActions";
+import { createProgramEnrollment, deleteProgramEnrollment, updateProgramEnrollment, getStudentAlumniServices, createAlumniService, updateAlumniService, deleteAlumniService } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -209,33 +209,17 @@ const AlumniServices = (props) => {
   };
 
   const handleDelete = async () => {
-    // NP.start();
-    // deleteProgramEnrollment(selectedAlumniService.id).then(data => {
-    //   setAlert("Program Enrollment deleted successfully.", "success");
-    // }).catch(err => {
-    //   console.log("STUDENT_DELETE_ERR", err);
-    //   setAlert("Unable to delete program enrollment.", "error");
-    // }).finally(() => {
-    //   setShowDeleteAlert(false);
-    //   fetchStudentAlumniServices();
-    //    onDataUpdate();
-    //    NP.done();
-    //    history.push("/students");
-    // });
-  };
-
-  const fileDeleteProofOfEnrollment = async (value) => {
     NP.start();
-    deleteFile(selectedAlumniService[value].id).then(data => {
-      setAlert("Proof of enrollment deleted successfully.", "success");
+    deleteAlumniService(selectedAlumniService.id).then(data => {
+      setAlert("Alumni Service deleted successfully.", "success");
     }).catch(err => {
-      console.log("FILE_DELETE_ERR", err);
-      setAlert("Unable to delete proof of enrollment.", "error");
+      console.log("Error deleting alumni service: ", err);
+      setAlert("Unable to delete Alumni Service.", "error");
     }).finally(() => {
-      NP.done();
       setShowDeleteAlert(false);
       fetchStudentAlumniServices();
-      hideViewModal();
+      onDataUpdate();
+      NP.done();
     });
   };
 
@@ -277,34 +261,33 @@ const AlumniServices = (props) => {
         student={student}
         alumniService={selectedAlumniService}
       />
-      {/*
       <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete Program Enrollment?</span>
-          }
-          customButtons={
-            <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
-          }
-        >
-          <p>Batch name: {selectedAlumniService.batch && selectedAlumniService.batch.name}</p>
-          <p>Program name: {selectedAlumniService.batch && selectedAlumniService.batch.program.name}</p>
-        </SweetAlert> */}
+        danger
+        showCancel
+        btnSize="md"
+        show={showDeleteAlert}
+        onConfirm={() => handleDelete()}
+        onCancel={() => setShowDeleteAlert(false)}
+        title={
+          <span className="text--primary latto-bold">Delete Alumni Service?</span>
+        }
+        customButtons={
+          <>
+            <button
+              onClick={() => setShowDeleteAlert(false)}
+              className="btn btn-secondary mx-2 px-4"
+            >
+              Cancel
+            </button>
+            <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+              Delete
+            </button>
+          </>
+        }
+      >
+        <p>Type: {selectedAlumniService.type}</p>
+        <p>Assigned To: {selectedAlumniService?.assigned_to?.username}</p>
+      </SweetAlert>
     </div>
   );
 };

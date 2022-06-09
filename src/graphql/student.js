@@ -461,18 +461,18 @@ export const UPDATE_ALUMNI_SERVICE = `
   }
 `;
 
-// export const DELETE_PROGRAM_ENROLLMENT = `
-//   mutation DELETE_PROGRAM_ENROLLMENT(
-//     $id: ID!
-//   ) {
-//     deleteProgramEnrollment (
-//       input:{
-//         where: { id: $id }
-//       }
-//     ){
-//       programEnrollment {
-//         id
-//       }
-//     }
-//   }
-// `;
+export const DELETE_ALUMNI_SERVICE = `
+  mutation DELETE_ALUMNI_SERVICE(
+    $id: ID!
+  ) {
+    deleteAlumniService (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      alumniService {
+        id
+      }
+    }
+  }
+`;
