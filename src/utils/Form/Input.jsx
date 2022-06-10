@@ -16,7 +16,7 @@ const Input = (props) => {
   let { label, name, required, ...rest } = props;
   return (
     <InputField className="form-group">
-      <label className="text-heading" htmlFor={name}>
+      <label className="text-heading leading-24" htmlFor={name}>
         {label}
         {required && <span className="required">*</span>}
       </label>

@@ -10,10 +10,11 @@ import ProgressBar from "../../../src/components/content/ProgressBar";
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
+import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -38,14 +39,16 @@ const Student = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [student, setStudent] = useState({});
   const [studentProgramEnrollments, setStudentProgramEnrollments] = useState([]);
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [studentEmploymentConnections, setStudentEmploymentConnections] = useState([]);
   const [employmentConnectionsBadge, setEmploymentConnectionsBadge] = useState(<></>);
+  const [studentAlumniServices, setStudentAlumniServices] = useState([]);
+  const [alumniServiceAggregate, setAlumniServiceAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = student;
-  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -139,6 +142,15 @@ const Student = (props) => {
     });
   }
 
+  const getAlumniServices = async () => {
+    getStudentAlumniServices(studentId).then(data => {
+      setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
+      setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
+    }).catch(err => {
+      console.log("Error in getting alumni services: ", err);
+    });
+  }
+
   const updateEmploymentConnectionsBadge = (employmentConnections) => {
     let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Job');
     let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship');
@@ -173,6 +185,7 @@ const Student = (props) => {
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
+    await getAlumniServices();
   }, [studentId]);
 
   if (isLoading) {
@@ -221,6 +234,9 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
+        </Collapsible>
+        <Collapsible title="Alumni Services" badge={alumniServiceAggregate.count}>
+          <AlumniServices student={student} onDataUpdate={getAlumniServices} id={studentId}/>
         </Collapsible>
         <StudentForm
           {...student}

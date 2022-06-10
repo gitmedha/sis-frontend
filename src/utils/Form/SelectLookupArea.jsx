@@ -24,7 +24,7 @@ const SelectLookup = (props) => {
   const { label, name, ...rest } = props;
   return (
     <div className="form-group">
-      <label className="text-heading" htmlFor={name}>
+      <label className="text-heading leading-24" htmlFor={name}>
         {label}
       </label>
       <Field id={name} name={name} component={SelectField} {...rest} />
