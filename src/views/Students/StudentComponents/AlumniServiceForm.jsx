@@ -55,7 +55,7 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string().nullable().required("Fee submission date is required.");
     let fee_amount = Yup.string().required("Fee amount is required.");
     let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired = feeSubmissionDateValue !== null || feeAmountValue !== '' || receiptNumberValue !== '';
+    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
     setFeeFieldsRequired(fieldsRequired);
     if (fieldsRequired) {
       setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
@@ -65,11 +65,9 @@ const AlumniServiceForm = (props) => {
   }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
 
   useEffect(() => {
-    if (props.alumniService) {
-      setFeeSubmissionDateValue(props.alumniService.fee_submission_date || null);
-      setFeeAmountValue(props.alumniService.fee_amount || '');
-      setReceiptNumberValue(props.alumniService.receipt_number || '');
-    }
+    setFeeSubmissionDateValue(props.alumniService ? props.alumniService.fee_submission_date : null);
+    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : '');
+    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : '');
   }, [props]);
 
   let initialValues = {
