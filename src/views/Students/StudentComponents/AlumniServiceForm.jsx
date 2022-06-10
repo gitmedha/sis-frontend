@@ -34,9 +34,9 @@ const AlumniServiceForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
-  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.fee_submission_date || null);
-  const [feeAmountValue, setFeeAmountValue] = useState(props.fee_amount || '');
-  const [receiptNumberValue, setReceiptNumberValue] = useState(props.receipt_number || '');
+  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.alumniService ? props.alumniService.fee_submission_date : null);
+  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : '');
+  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
 
@@ -62,7 +62,15 @@ const AlumniServiceForm = (props) => {
     } else {
       setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
     }
-  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue])
+  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
+
+  useEffect(() => {
+    if (props.alumniService) {
+      setFeeSubmissionDateValue(props.alumniService.fee_submission_date || null);
+      setFeeAmountValue(props.alumniService.fee_amount || '');
+      setReceiptNumberValue(props.alumniService.receipt_number || '');
+    }
+  }, [props]);
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
@@ -200,6 +208,8 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      min={0}
+                      type="number"
                       name="fee_amount"
                       label="Fee Amount"
                       placeholder="Fee Amount"
