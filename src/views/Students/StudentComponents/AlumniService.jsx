@@ -1,16 +1,9 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import DetailField from '../../../components/content/DetailField';
-import { Anchor, Badge } from "../../../components/content/Utils";
-import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
+import { Anchor } from "../../../components/content/Utils";
 import styled from "styled-components";
-import { generateCertificate } from "../../../utils/function/certificate";
-import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
-import { urlPath } from "../../../constants";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
 
 const FileStyled = styled.div`
 .icon-box{
@@ -70,19 +63,12 @@ const Section = styled.div`
 `;
 
 const AlumniService = (props) => {
-  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete, student } = props;
-  const [pickList, setPickList] = useState([]);
+  let { onHide, show, handleEdit, handleDelete, student } = props;
   const [alumniService, setAlumniService] = useState(props.alumniService);
 
   useEffect(() => {
     setAlumniService(props.alumniService);
   }, [props]);
-
-  useEffect(() => {
-    // getProgramEnrollmentsPickList().then(data => {
-    //   setPickList(data);
-    // });
-  }, []);
 
   return (
       <Modal

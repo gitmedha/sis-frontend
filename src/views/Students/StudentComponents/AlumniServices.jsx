@@ -7,14 +7,12 @@ import { getStudentAlumniServices, createAlumniService, updateAlumniService, del
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import NP from "nprogress";
 import nProgress from "nprogress";
 import AlumniService from "./AlumniService";
 
 const AlumniServices = (props) => {
   let { id, student, onDataUpdate } = props;
-  const [loading, setLoading] = useState(false);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -28,7 +26,6 @@ const AlumniServices = (props) => {
 
   const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     nProgress.start();
-    setLoading(true);
     await getStudentAlumniServices(Number(id), limit, offset, sortBy='created_at', sortOrder = 'desc')
     .then(data => {
       setAlumniServices(data.data.data.alumniServicesConnection.values);
@@ -38,7 +35,6 @@ const AlumniServices = (props) => {
       console.log("Error in fetching alumni services: ", err);
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };
