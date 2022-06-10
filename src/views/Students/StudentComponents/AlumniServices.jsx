@@ -26,7 +26,7 @@ const AlumniServices = (props) => {
 
   const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     nProgress.start();
-    await getStudentAlumniServices(Number(id), limit, offset, sortBy='created_at', sortOrder = 'desc')
+    await getStudentAlumniServices(Number(id), limit, offset, sortBy, sortOrder)
     .then(data => {
       setAlumniServices(data.data.data.alumniServicesConnection.values);
       setAlumniServicesAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
@@ -44,12 +44,28 @@ const AlumniServices = (props) => {
       let sortByField = 'certification_date_formatted';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
-        case 'institution.name':
+        case 'type':
+        case 'location':
+        case 'start_date':
+        case 'end_date':
+        case 'fee_submission_date':
           sortByField = sortBy[0].id;
           break;
 
-          case ' institution.name':
-          sortByField = 'registration_date_formatted';
+        case 'start_date_formatted':
+          sortByField = 'start_date';
+          break;
+
+        case 'end_date_formatted':
+          sortByField = 'end_date';
+          break;
+
+        case 'fee_submission_date_formatted':
+          sortByField = 'fee_submission_date';
+          break;
+
+        case 'assigned_to':
+          sortByField = 'assigned_to.name';
           break;
 
         default:
