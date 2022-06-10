@@ -84,8 +84,8 @@ const EnrollmentConnectionForm = (props) => {
   }, [props.employmentConnection]);
 
   useEffect(() => {
-    setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
-  }, [selectedOpportunityType]);
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+  }, [selectedStatus]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
