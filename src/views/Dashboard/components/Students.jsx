@@ -6,18 +6,12 @@ import {
   Badge,
 } from "../../../components/content/Utils";
 import { connect } from "react-redux";
-import Avatar from "../../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../../graphql/dashboard";
-import TabPicker from "../../../components/content/TabPicker";
-import Tabs from "../../../components/content/Tabs";
 import Table from '../../../components/content/Table';
-import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import {studentStatusOptions} from "../../Students/StudentComponents/StudentConfig";
 import Collapse from "../../../components/content/CollapsiblePanels";
-import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import moment from "moment";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 

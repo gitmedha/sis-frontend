@@ -110,8 +110,7 @@ label {
 `;
 
 const DatePicker = (props) => {
-  const { name, showtime, label, required, ...rest } = props;
-
+  const { name, showtime, label, required, onInput: onInputCallback, ...rest } = props;
   const datepickerRef = useRef(null);
   function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
@@ -121,7 +120,7 @@ const DatePicker = (props) => {
   return (
     <DatePickerField>
       <div className="form-group d-flex flex-column date-picker-ui">
-        <label htmlFor={name} className="text-heading">
+        <label htmlFor={name} className="text-heading leading-24">
           {label}
           {required && <span className="required">*</span>}
         </label>
@@ -141,7 +140,12 @@ const DatePicker = (props) => {
                   {...field}
                   {...rest}
                   selected={value}
-                  onChange={(val) => setFieldValue(name, val)}
+                  onChange={(val) => {
+                    setFieldValue(name, val);
+                    if (typeof onInputCallback === 'function') {
+                      onInputCallback(val)
+                    }
+                  }}
                   ref={datepickerRef}
                 />
                 <span className="datepicker-icon" onClick={() => handleClickDatepickerIcon()}>

@@ -1,7 +1,7 @@
 import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { MeiliSearch } from "meilisearch";
 
@@ -43,9 +43,7 @@ const EnrollmentConnectionForm = (props) => {
   const [employerOptions, setEmployerOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
-  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
-    []
-  );
+  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [showEndDate, setShowEndDate] = useState(false);
@@ -96,8 +94,8 @@ const EnrollmentConnectionForm = (props) => {
   }, [props.employmentConnection]);
 
   useEffect(() => {
-    setShowEndDate(selectedOpportunityType && selectedOpportunityType.toLowerCase() === 'internship');
-  }, [selectedOpportunityType]);
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+  }, [selectedStatus]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {

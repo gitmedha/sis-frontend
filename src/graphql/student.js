@@ -109,6 +109,25 @@ const programEnrollmentFields = `
   }
 `;
 
+const alumniServicesFields = `
+  id
+  type
+  start_date
+  end_date
+  assigned_to {
+    id
+    email
+    username
+  }
+  fee_submission_date
+  location
+  receipt_number
+  fee_amount
+  comments
+  created_at
+  updated_at
+`;
+
 const employmentConnectionFields = `
   id
   status
@@ -383,4 +402,77 @@ query TO_GET_ALL_STUDENTS {
     full_name
   }
 }
+`;
+
+
+export const GET_STUDENT_ALUMNI_SERVICES = `
+query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: String){
+  alumniServicesConnection (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      student: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const CREATE_ALUMNI_SERVICE = `
+  mutation CREATE_ALUMNI_SERVICE (
+    $data: AlumniServiceInput!
+  ) {
+    createAlumniService (
+      input: {
+        data: $data
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_ALUMNI_SERVICE = `
+  mutation UPDATE_ALUMNI_SERVICE (
+    $data: editAlumniServiceInput!
+    $id: ID!
+  ) {
+    updateAlumniService(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_ALUMNI_SERVICE = `
+  mutation DELETE_ALUMNI_SERVICE(
+    $id: ID!
+  ) {
+    deleteAlumniService (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      alumniService {
+        id
+      }
+    }
+  }
 `;

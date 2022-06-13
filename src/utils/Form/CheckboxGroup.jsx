@@ -5,7 +5,7 @@ const CheckboxGroup = (props) => {
   const { label, name, options, ...rest } = props;
   return (
     <div className="form-group">
-      <label htmlFor={name} className="text-heading">
+      <label htmlFor={name} className="text-heading leading-24">
         {label}
       </label>
       <div className="d-flex">

@@ -60,6 +60,8 @@ const pin_code = Yup.string("Should be a number.")
   .nullable();
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
+const alumni_service_type= Yup.string().required("Type is required.");
+const alumni_service_location= Yup.string().required("Location is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -117,4 +119,11 @@ export const StudentValidations = Yup.object({
   address,
   state,
   district,
+});
+
+export const AlumniServiceValidations = Yup.object({
+  assigned_to,
+  type: alumni_service_type,
+  location: alumni_service_location,
+  start_date,
 });

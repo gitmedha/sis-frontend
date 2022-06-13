@@ -23,7 +23,6 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { SignalCellularNull } from "@material-ui/icons";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },

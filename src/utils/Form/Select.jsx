@@ -18,7 +18,7 @@ const Select = (props) => {
   return (
     <SelectField>
       <div className="form-group">
-        <label className="text-heading" htmlFor={name}>
+        <label className="text-heading leading-24" htmlFor={name}>
           {label}
           {required && <span className="required">*</span>}
         </label>
