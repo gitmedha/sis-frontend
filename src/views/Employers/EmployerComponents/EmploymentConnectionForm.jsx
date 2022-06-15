@@ -43,6 +43,7 @@ const EnrollmentConnectionForm = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
+  const [endDateMandatory, setEndDateMandatory] = useState(false);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
@@ -85,6 +86,7 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+    setEndDateMandatory(selectedStatus === 'Internship Complete');
   }, [selectedStatus]);
 
   useEffect(() => {
@@ -376,6 +378,7 @@ const EnrollmentConnectionForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                      required={endDateMandatory}
                     />
                   }
                   </div>

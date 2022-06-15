@@ -103,7 +103,7 @@ const AlumniService = (props) => {
                 <DetailField label="Comments" value={alumniService.comments} />
               </div>
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Assigned To" value={<Anchor text={alumniService.assigned_to?.username} href={`/batch/${alumniService.assigned_to?.id}`} />} />
+                <DetailField label="Assigned To" value={alumniService.assigned_to?.username} />
                 <DetailField label="Location" value={alumniService.location} />
                 <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
