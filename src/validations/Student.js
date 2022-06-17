@@ -83,11 +83,11 @@ export const EmploymentConnectionValidations = Yup.object({
   opportunity_id,
   source,
   salary_offered,
-  reason_if_rejected: Yup.string().when("status", {
+  reason_if_rejected: Yup.string().nullable().when("status", {
     is: (status) => status === 'Offer Rejected by Student',
     then: Yup.string().nullable().required('Reason for rejection is required when offer rejected by student.')
   }),
-  end_date: Yup.string().when("status", {
+  end_date: Yup.string().nullable().when("status", {
     is: (status) => status === 'Internship Complete',
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
@@ -99,7 +99,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
   student_id,
   source,
   salary_offered,
-  reason_if_rejected: Yup.string().when("status", {
+  reason_if_rejected: Yup.string().nullable().when("status", {
     is: (status) => status === 'Offer Rejected by Student',
     then: Yup.string().nullable().required('Reason for rejection is required when offer rejected by student.')
   }),
