@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import styled from "styled-components";
 
 import Table from '../../../components/content/Table';
@@ -10,6 +10,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
 import { FaRegEdit } from "react-icons/fa";
 import { connect } from "react-redux";
+import { isAdmin } from "../../../common/commonFunctions";
 
 const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
@@ -20,6 +21,7 @@ const SessionLink = styled.div`
 const Sessions = (props) => {
   let {sessions, batch, batchID, fetchData, onDataUpdate } = props;
   const {setAlert} = props;
+  const [canEditSession, setCanEditSession] = useState(true);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [batchSessionAttendanceFormData, setBatchSessionAttendanceFormData] = useState({});
@@ -53,15 +55,22 @@ const Sessions = (props) => {
     []
   );
 
+  useEffect(() => {
+    setCanEditSession(isAdmin() || batch.status === "In Progress");
+  }, [props])
+
   const sessionTableData = sessions.map(session => {
-    return {
+    let sessionData = {
       id: session.id,
       topics_covered: session.topics_covered,
       date: moment(session.date).format('DD MMM YYYY, hh:mm a'),
       updated_at: moment(session.updated_at).format('DD MMM YYYY'),
-      attendance: <ProgressBarField value={Number.parseInt(session.percent)} />,
-      link: <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>
+      attendance: <ProgressBarField value={Number.parseInt(session.percent)} />
     }
+    if (canEditSession) {
+      sessionData.link = <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>;
+    }
+    return sessionData;
   });
 
   const handleRowClick = session => {
@@ -167,7 +176,7 @@ const Sessions = (props) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-      {props.batch.status == 'In Progress' && 
+      {props.batch.status == 'In Progress' &&
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -178,7 +187,7 @@ const Sessions = (props) => {
         </div>
       }
         <div className="col-12 mt-3">
-          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={handleRowClick} showPagination={false} />
+          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={canEditSession ? handleRowClick : false} showPagination={false} />
         </div>
       </div>
       <CreateBatchSessionForm
