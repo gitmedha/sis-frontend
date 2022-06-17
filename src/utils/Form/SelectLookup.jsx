@@ -76,7 +76,7 @@ export const SelectField = (props) => {
       components={{ DropdownIndicator }}
       onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
       value={
-        options ? options.find((option) => option.value === field.value) : null
+        options && options.find((option) => option.value === field.value) || null
       }
     />
   );
