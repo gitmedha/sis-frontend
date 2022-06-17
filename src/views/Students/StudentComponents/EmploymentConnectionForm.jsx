@@ -148,7 +148,7 @@ const EnrollmentConnectionForm = (props) => {
     if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
       filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
     } else {
-      filteredOptions = allStatusOptions.filter(item => item.value === 'Both');
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
     }
     setStatusOptions(filteredOptions);
   }, [selectedOpportunityType, allStatusOptions]);
