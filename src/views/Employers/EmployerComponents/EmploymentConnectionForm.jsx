@@ -38,6 +38,7 @@ const meilisearchClient = new MeiliSearch({
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
@@ -101,7 +102,14 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setAllStatusOptions(
+        data.status.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
@@ -203,6 +211,16 @@ const EnrollmentConnectionForm = (props) => {
         return filterData;
       });
   };
+
+  useEffect(() => {
+    let filteredOptions = allStatusOptions;
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    } else {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+    }
+    setStatusOptions(filteredOptions);
+  }, [selectedOpportunityType, allStatusOptions]);
 
   const updateEmployerOpportunityOptions = employer => {
     setEmployerOpportunityOptions([]);
