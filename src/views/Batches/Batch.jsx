@@ -20,34 +20,20 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 
 const Styled = styled.div`
 .button{
-    padding: 6px 43px !important;
-}
-,
-.Dropdown{
-  // border-radius: 5px !important;
-  // outline: none;
-  // border: none;
-  // &-regular {
-  //   font-size: 16px;
-  //   margin: auto 10px;
-  //   border-radius: 5px;
-  //   font-family: Latto-Bold;
-  //   padding: 5px 50px !important;
-  // }
-  // outline: 0;
+  padding: 6px 43px !important;
 }
 
 @media screen and (max-width: 360px) {
   .section-badge {
     margin-left: 2px;
     padding: 0px 20px !important;
-    }
+  }
 }
 `
 
@@ -156,7 +142,8 @@ const Batch = (props) => {
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
-      getThisBatch();
+      await getThisBatch();
+      await getProgramEnrollments();
     });
   }
 
@@ -171,7 +158,8 @@ const Batch = (props) => {
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
-      getThisBatch();
+      await getThisBatch();
+      await getProgramEnrollments();
     });
   }
 
@@ -186,24 +174,9 @@ const Batch = (props) => {
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
-      getThisBatch();
-    });
-  }
-
-  const updateStatus = async () => {
-    NP.start();
-    batchMarkAsComplete(Number(batchID)).then(async data => {
-      setAlert("Batch status updated successfully.", "success");
-    }).catch(err => {
-      console.log("UPDATE_DETAILS_ERR", err);
-      setAlert("Unable to update batch status.", "error");
-    }).finally(async () => {
-      NP.done();
       await getThisBatch();
       await getProgramEnrollments();
-      setCompleteCertifyLoading(false);
     });
-    setModalShow(false);
   }
 
   const done = () => getThisBatch();
