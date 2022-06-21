@@ -303,7 +303,7 @@ const Batch = (props) => {
               <button
                 onClick={() => setShowDeleteAlert(true)}
                 className="button btn--primary"
-                disabled={batch?.status === "Complete"}
+                disabled={!isAdmin() && (batch?.status === "Complete" || batch?.status === "Certified")}
               >
                 DELETE
               </button>
