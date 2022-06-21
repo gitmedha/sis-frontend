@@ -11,7 +11,7 @@ import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { assignWith } from 'lodash';
+import { isAdmin } from "../../../common/commonFunctions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -44,6 +44,7 @@ const BatchForm = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
   const [formValues, setFormValues] = useState(null);
@@ -102,7 +103,23 @@ const BatchForm = (props) => {
 
   useEffect(() => {
     getBatchesPickList().then(data => {
-      setEnrollmentTypeOptions(data.enrollment_type.map(enrollment_type => ({ key: enrollment_type.value, value: enrollment_type.value, label: enrollment_type.value })));
+      setEnrollmentTypeOptions(data.enrollment_type.map(enrollment_type => ({
+        key: enrollment_type.value,
+        value: enrollment_type.value,
+        label: enrollment_type.value
+      })));
+
+      let filteredStatusOptions = data.status.filter(status => {
+        // if admin, return all statuses
+        if (isAdmin()) return true;
+        // otherwise return only those status that are applicable to all
+        return status['applicable-to'] === 'All';
+      });
+      setStatusOptions(filteredStatusOptions.map(status => ({
+        key: status.value,
+        value: status.value,
+        label: status.value
+      })));
     });
 
     getAddressOptions().then(data => {
@@ -276,14 +293,15 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
+                        control="lookup"
                         icon="down"
                         name="status"
                         label="Status"
                         required
-                        control="lookup"
-                        placeholder="Status"
+                        placeholder={initialValues.status || "Status"}
                         className="form-control"
-                        options={options?.statusOptions}
+                        options={statusOptions}
+                        isDisabled={!isAdmin() && initialValues.status === 'Certified'}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -361,7 +379,7 @@ const BatchForm = (props) => {
                       placeholder="Name in Current SIS"
                     />
                   </div> */}
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-6 col-sm-12 mt-2">
                   {areaOptions.length ? (
                     <Input
                       icon="down"
@@ -438,7 +456,7 @@ const BatchForm = (props) => {
                       autoComplete="off"
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
