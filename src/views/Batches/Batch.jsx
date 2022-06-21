@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 
@@ -145,6 +145,51 @@ const Batch = (props) => {
     }
   };
 
+  const markAsCertified = async () => {
+    NP.start();
+    updateBatch(batch.id, {
+      status: 'Certified'
+    }).then(data => {
+      setAlert("Batch updated successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch.", "error");
+    }).finally(async () => {
+      NP.done();
+      getThisBatch();
+    });
+  }
+
+  const generateCertificates = async () => {
+    NP.start();
+    batchGenerateCertificates(batch.id, {
+      status: 'Complete'
+    }).then(data => {
+      setAlert("Certificate generation in progress. Please check after some time.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch.", "error");
+    }).finally(async () => {
+      NP.done();
+      getThisBatch();
+    });
+  }
+
+  const emailCertificates = async () => {
+    NP.start();
+    batchEmailCertificates(batch.id, {
+      status: 'Certified'
+    }).then(data => {
+      setAlert("Emails sent successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch.", "error");
+    }).finally(async () => {
+      NP.done();
+      getThisBatch();
+    });
+  }
+
   const updateStatus = async () => {
     NP.start();
     batchMarkAsComplete(Number(batchID)).then(async data => {
@@ -168,7 +213,6 @@ const Batch = (props) => {
       setModalShow(false);
       return;
     }
-
 
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
@@ -264,33 +308,32 @@ const Batch = (props) => {
                 DELETE
               </button>
               {isAdmin() &&
-                // <button onClick={() => {
-                //   setCompleteCertifyLoading(true);
-                //   updateStatus();
-                // }} className="btn--secondary" disabled={completeCertifyLoading}>
-                //   Complete & Certify
-                // </button>
-                <Dropdown className="px-4 d-inline">
+                <Dropdown className="d-inline">
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
                     className="button btn--primary"
                     disabled={batch?.status == "Enrollment Ongoing"}
                   >
-                    Actions
+                    ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => updateStatus()}
-                      className="c-disabled"
+                      onClick={() => markAsCertified()}
                       disabled={batch?.status !== "Complete"}
                     >
                       Mark as Certified
                     </Dropdown.Item>
-                    <Dropdown.Item disabled={batch?.status !== "Certified"}>
+                    <Dropdown.Item
+                      onClick={() => generateCertificates()}
+                      disabled={batch?.status !== "Certified"}
+                    >
                       Generate Certificates
                     </Dropdown.Item>
-                    <Dropdown.Item disabled={batch?.status !== "Certified"}>
+                    <Dropdown.Item
+                      onClick={() => emailCertificates()}
+                      disabled={batch?.status !== "Certified"}
+                    >
                       Email Certificates
                     </Dropdown.Item>
                   </Dropdown.Menu>
