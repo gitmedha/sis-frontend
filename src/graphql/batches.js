@@ -95,8 +95,8 @@ query GET_BATCH ($id:ID!) {
     number_of_sessions_planned
     require_assignment_file_for_certification
     seats_available
-    generated_certificates
-    emailed_certificates
+    certificates_generated_at
+    certificates_emailed_at
   }
 }
 `;
