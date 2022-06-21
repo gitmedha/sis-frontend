@@ -6,7 +6,8 @@ import { MeiliSearch } from 'meilisearch';
 
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -35,10 +36,13 @@ const meilisearchClient = new MeiliSearch({
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, opportunity } = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
+  const [endDateMandatory, setEndDateMandatory] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
 
@@ -56,15 +60,17 @@ const EnrollmentConnectionForm = (props) => {
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
-  
+
   useEffect(() => {
-    setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
-  }, [selectedOpportunityType, selectedStatus]);
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+    setEndDateMandatory(selectedStatus === 'Internship Complete');
+  }, [selectedStatus]);
 
   const onModalClose = () => {
     onHide();
@@ -76,7 +82,14 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setAllStatusOptions(
+        data.status.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     if (props.employmentConnection && props.employmentConnection.student) {
@@ -86,16 +99,33 @@ const EnrollmentConnectionForm = (props) => {
     }
   }, [props]);
 
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    setSelectedStatus(null);
+    let filteredOptions = allStatusOptions;
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    } else {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+    }
+    setStatusOptions(filteredOptions);
+  }, [selectedOpportunityType, allStatusOptions]);
+
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
-      let employmentConnectionStudentFound = false;
+      let studentFoundInEmploymentList = false;
       let filterData = data.hits.map(student => {
-        if (props.employmentConnection && student.id === employmentConnectionStudent.id) {
-          employmentConnectionStudentFound = true;
+        if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
+          studentFoundInEmploymentList = true;
         }
         return {
           ...student,
@@ -103,7 +133,7 @@ const EnrollmentConnectionForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.employmentConnection && !employmentConnectionStudentFound) {
+      if (props.employmentConnection && employmentConnectionStudent !== null && !studentFoundInEmploymentList) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),
@@ -129,7 +159,7 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection 
+            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -155,7 +185,22 @@ const EnrollmentConnectionForm = (props) => {
                       required={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2"></div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {/* {statusOptions.length ? ( */}
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       control="input"
@@ -231,6 +276,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -238,11 +284,11 @@ const EnrollmentConnectionForm = (props) => {
                     <Input
                       name="end_date"
                       label="End Date"
-                      required={true}
                       placeholder="End Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
+                      required={endDateMandatory}
                     />
                   }
                   </div>

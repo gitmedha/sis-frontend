@@ -131,10 +131,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
-      let programEnrollmentInstitutionFound = false;
+      let institutionFoundInList = false;
       let filterData = data.hits.map(institution => {
-        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
-          programEnrollmentInstitutionFound = true;
+        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
+          institutionFoundInList = true;
         }
         return {
           ...institution,
@@ -142,7 +142,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
+      if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
         filterData.unshift({
           label: programEnrollmentInstitution.name,
           value: Number(programEnrollmentInstitution.id),
@@ -158,10 +158,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let programEnrollmentBatchFound = false;
+      let batchFoundInList = false;
       let filterData = data.hits.map(batch => {
-        if (props.programEnrollment && batch.id === programEnrollmentBatch.id) {
-          programEnrollmentBatchFound = true;
+        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
+          batchFoundInList = true;
         }
         return {
           ...batch,
@@ -169,7 +169,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentBatchFound) {
+      if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
@@ -356,6 +356,31 @@ const ProgramEnrollmentForm = (props) => {
                       required
                       className="form-control"
                       placeholder="Course Name"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Higher Education</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="higher_education_course_name"
+                      control="input"
+                      label="Course Name"
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="higher_education_year_of_course_completion"
+                      label="Year of Passing"
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Passing"
                     />
                   </div>
                 </div>

@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
-import WidgetUtilTab from "../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
@@ -15,16 +14,7 @@ import { createOpportunity, getOpportunitiesPickList } from "./OpportunityCompon
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { Anchor, Badge } from "../../components/content/Utils";
-
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import { Badge } from "../../components/content/Utils";
 
 const tabPickerOptions = [
     { title: "My Data", key: "my_data" },
@@ -50,7 +40,6 @@ const tabPickerOptions = [
     const area = localStorage.getItem('user_area')
 
     const OpportunityIcon = ({opportunity, name}) => {
-      let bgColor = '#ffffff';
       let icon = null;
 
       switch (opportunity.type) {
@@ -133,7 +122,7 @@ const tabPickerOptions = [
     }else if(selectedTab == "my_state"){
       Object.assign(variables, {state: state})
     }
-    
+
     await api.post("/graphql", {
       query: GET_OPPORTUNITIES,
       variables,
@@ -158,13 +147,21 @@ const tabPickerOptions = [
       switch (sortBy[0].id) {
         case 'employer':
         case 'type':
+        case 'district':
+        case 'status':
           sortByField = sortBy[0].id;
           break;
 
-        case 'created_at':
-        case 'address':
         case 'number_of_opportunities':
-          sortByField = 'number_of_opportunities'
+          sortByField = 'number_of_opportunities';
+          break;
+
+        case 'opportunity_type':
+          sortByField = 'type';
+          break;
+
+        case 'assigned_to.username':
+          sortByField = 'assigned_to.username';
           break;
 
         case 'avatar':
@@ -191,14 +188,11 @@ const tabPickerOptions = [
        employer: opportunitydata.employer ? opportunitydata.employer.name : '',
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
        avatar:  <OpportunityIcon opportunity={opportunitydata} name={opportunitydata.role_or_designation}> {opportunitydata.role_or_designation} </OpportunityIcon>,
+       href: `/opportunity/${opportunitydata.id}`,
       }
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
-
-  const onRowClick = (row) => {
-    history.push(`/opportunity/${row.id}`);
-  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -239,7 +233,7 @@ const tabPickerOptions = [
             </button>
           </div>
         </div>
-        <Table columns={columns} data={opportunitiesTableData} onRowClick={onRowClick} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+        <Table columns={columns} data={opportunitiesTableData} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
         <OpportunityForm
           show={modalShow}
           onHide={hideCreateModal}

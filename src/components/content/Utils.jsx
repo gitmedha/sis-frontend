@@ -198,13 +198,13 @@ export const Anchor = ({ text, href }) => {
     </div>;
 };
 
-export const ProgressBarField = ({ value, failBelow=30 }) => (
+export const ProgressBarField = ({ value, failBelow=75 }) => (
   <ProgressBarContainer>
     <ProgressBar
-      bgColor={value > failBelow ? "#31B89D" : '#FF3A3A'}
+      bgColor={value < failBelow ? '#FF3A3A' : '#31B89D'}
       completed={value ? value : 0}
-      labelColor={value ? " #fff" : "#1C2833"}
-      baseBgColor={"#EEEFF8"}
+      labelColor={value ? '#fff' : '#1C2833'}
+      baseBgColor={'#EEEFF8'}
     />
   </ProgressBarContainer>
 );

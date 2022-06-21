@@ -7,10 +7,6 @@ import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Institute";
-import { getStudentsPickList } from "./instituteActions";
-import { getAllBatches } from "../../Batches/batchActions";
-import { getAllInstitutions } from "../../Institutions/InstitutionComponents/instituteActions";
-import { getAllStudents } from "../../Students/StudentComponents/StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
@@ -105,7 +101,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
     discount_code_id:'',
-    fee_amount:'',
+    fee_amount: null,
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
@@ -139,10 +135,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      let programEnrollmentStudentFound = false;
+      let studentFoundInList = false;
       let filterData = data.hits.map(student => {
-        if (props.programEnrollment && student.id === programEnrollmentStudent.id) {
-          programEnrollmentStudentFound = true;
+        if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
+          studentFoundInList = true;
         }
         return {
           ...student,
@@ -150,7 +146,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentStudentFound) {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList) {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
@@ -165,11 +161,11 @@ const ProgramEnrollmentForm = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
+      let batchFoundInList = false;
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let programEnrollmentBatchFound = false;
       let filterData = data.hits.map(batch => {
-        if (props.programEnrollment && batch.id === programEnrollmentBatch.id) {
-          programEnrollmentBatchFound = true;
+        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
+          batchFoundInList = true;
         }
         return {
           ...batch,
@@ -177,7 +173,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentBatchFound) {
+      if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
         filterData.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
@@ -364,6 +360,31 @@ const ProgramEnrollmentForm = (props) => {
                       required
                       className="form-control"
                       placeholder="Course Name"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Higher Education</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="higher_education_course_name"
+                      control="input"
+                      label="Course Name"
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="higher_education_year_of_course_completion"
+                      label="Year of Passing"
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Passing"
                     />
                   </div>
                 </div>

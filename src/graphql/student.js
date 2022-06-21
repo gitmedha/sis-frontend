@@ -3,6 +3,7 @@ const studentFields = `
   full_name
   email
   phone
+  alternate_phone
   status
   name_of_parent_or_guardian
   date_of_birth
@@ -38,6 +39,12 @@ const studentFields = `
     id
     username
     email
+    area
+  }
+  registered_by{
+    id
+    username
+    email
   }
   logo {
     id
@@ -70,7 +77,20 @@ const programEnrollmentFields = `
   created_at
   updated_at
   program_selected_by_student
+  medha_program_certificate_status
   discount_code_id
+  higher_education_course_name
+  higher_education_year_of_course_completion
+  higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
+  assignment_file {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url
@@ -89,6 +109,25 @@ const programEnrollmentFields = `
   }
 `;
 
+const alumniServicesFields = `
+  id
+  type
+  start_date
+  end_date
+  assigned_to {
+    id
+    email
+    username
+  }
+  fee_submission_date
+  location
+  receipt_number
+  fee_amount
+  comments
+  created_at
+  updated_at
+`;
+
 const employmentConnectionFields = `
   id
   status
@@ -97,7 +136,18 @@ const employmentConnectionFields = `
   source
   reason_if_rejected
   salary_offered
-  internship_certificate{
+  assigned_to {
+    id
+    username
+    email
+  }
+  experience_certificate{
+    id
+    url
+    previewUrl
+    updated_at
+  }
+  offer_letter{
     id
     url
     previewUrl
@@ -124,9 +174,9 @@ export const GET_STUDENTS = `
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id
+          id: $id,
+          area: $area
         },
-        medha_area:$area,
         state:$state,
         status:$status,
       }
@@ -293,7 +343,7 @@ export const GET_STUDENT_EMPLOYMENT_CONNECTIONS = `
       }
     }
   }
-`
+`;
 
 export const CREATE_EMPLOYMENT_CONNECTION = `
   mutation CREATE_EMPLOYMENT_CONNECTION (
@@ -352,4 +402,77 @@ query TO_GET_ALL_STUDENTS {
     full_name
   }
 }
+`;
+
+
+export const GET_STUDENT_ALUMNI_SERVICES = `
+query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: String){
+  alumniServicesConnection (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      student: {
+        id: $id
+      }
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const CREATE_ALUMNI_SERVICE = `
+  mutation CREATE_ALUMNI_SERVICE (
+    $data: AlumniServiceInput!
+  ) {
+    createAlumniService (
+      input: {
+        data: $data
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_ALUMNI_SERVICE = `
+  mutation UPDATE_ALUMNI_SERVICE (
+    $data: editAlumniServiceInput!
+    $id: ID!
+  ) {
+    updateAlumniService(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_ALUMNI_SERVICE = `
+  mutation DELETE_ALUMNI_SERVICE(
+    $id: ID!
+  ) {
+    deleteAlumniService (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      alumniService {
+        id
+      }
+    }
+  }
 `;

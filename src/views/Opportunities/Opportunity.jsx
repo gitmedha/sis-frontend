@@ -6,7 +6,6 @@ import api from "../../apis";
 import styled from "styled-components";
 import Details from "./OpportunityComponents/Details";
 import { GET_OPPORTUNITY } from "../../graphql";
-import { TitleWithLogo } from "../../components/content/Avatar";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
@@ -16,6 +15,7 @@ import { deleteOpportunity, getOpportunityEmploymentConnections, updateOpportuni
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
+import { deleteFile } from "../../common/commonActions";
 
 const Styled = styled.div`
 .button{
@@ -110,6 +110,7 @@ const Opportunity = (props) => {
           query: GET_OPPORTUNITY,
           variables: { id: opportunityId },
         });
+        console.log('data.data.opportunity', data.data.opportunity);
         setOpportunityData(data.data.opportunity);
       } catch (err) {
         console.log("ERR", err);
@@ -129,9 +130,24 @@ const Opportunity = (props) => {
     }
 
     useEffect(() => {
-        getThisOpportunity();
-        getEmploymentConnections();
+      getThisOpportunity();
+      getEmploymentConnections();
     }, []);
+
+    const handleJobDescriptionDelete = async () => {
+      NP.start();
+      deleteFile(opportunityData.job_description_file.id).then(data => {
+        setAlert("File deleted successfully.", "success");
+      }).catch(err => {
+        console.log("FILE_DELETE_ERR", err);
+        setAlert("Unable to delete file.", "error");
+      }).finally(() => {
+        setShowDeleteAlert(false);
+        NP.done();
+        history.push("/opportunity/" . id);
+        getThisOpportunity()
+      });
+    };
 
     if (isLoading) {
         return <SkeletonLoader />;
@@ -165,7 +181,7 @@ const Opportunity = (props) => {
                 </div>
               }
             >
-              <Details {...opportunityData}  id={opportunityData.id} />
+              <Details {...opportunityData}  id={opportunityData.id} onJobDescriptionUpdate={getThisOpportunity} onJobDescriptionDelete={handleJobDescriptionDelete} />
             </Collapsible>
             <Collapsible title="Location">
               <Location {...opportunityData} />

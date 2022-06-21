@@ -78,9 +78,8 @@ const SelectField = (props) => {
   };
 
   const handleInputChange = (newValue) => {
-    const inputValue = newValue.replace(/\W/g, '');
-    setInputValue(inputValue);
-    return inputValue;
+    setInputValue(newValue);
+    return newValue;
   };
 
   return (
@@ -109,7 +108,7 @@ const SelectLookupAsync = (props) => {
   return (
     <SelectLookupAsyncField>
       <div className="form-group">
-        <label className="text-heading" htmlFor={name}>
+        <label className="text-heading leading-24" htmlFor={name}>
           {label}
           {required && <span className="required">*</span>}
         </label>

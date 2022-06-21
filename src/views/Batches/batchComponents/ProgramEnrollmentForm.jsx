@@ -143,10 +143,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
-      let programEnrollmentInstitutionFound = false;
+      let institutionFoundInList = false;
       let filterData = data.hits.map(institution => {
-        if (props.programEnrollment && institution.id === programEnrollmentInstitution.id) {
-          programEnrollmentInstitutionFound = true;
+        if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
+          institutionFoundInList = true;
         }
         return {
           ...institution,
@@ -154,11 +154,11 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentInstitutionFound) {
-        filterData.unshift({
-          label: programEnrollmentInstitution.name,
-          value: Number(programEnrollmentInstitution.id),
-        });
+      if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
+          filterData.unshift({
+            label: programEnrollmentInstitution.name,
+            value: Number(programEnrollmentInstitution.id),
+          });
       }
       return filterData;
     });
@@ -170,10 +170,10 @@ const ProgramEnrollmentForm = (props) => {
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      let programEnrollmentStudentFound = false;
+      let studentFoundInList = false;
       let filterData = data.hits.map(student => {
-        if (props.programEnrollment && student.id === programEnrollmentStudent.id) {
-          programEnrollmentStudentFound = true;
+        if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
+          studentFoundInList = true;
         }
         return {
           ...student,
@@ -181,7 +181,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(student.id),
         }
       });
-      if (props.programEnrollment && !programEnrollmentStudentFound) {
+      if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
         filterData.unshift({
           label: programEnrollmentStudent.full_name,
           value: Number(programEnrollmentStudent.id),
@@ -368,6 +368,31 @@ const ProgramEnrollmentForm = (props) => {
                       required
                       className="form-control"
                       placeholder="Course Name"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Higher Education</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="higher_education_course_name"
+                      control="input"
+                      label="Course Name"
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="higher_education_year_of_course_completion"
+                      label="Year of Passing"
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Passing"
                     />
                   </div>
                 </div>

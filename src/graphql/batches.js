@@ -93,6 +93,7 @@ query GET_BATCH ($id:ID!) {
     per_student_fees
     name_in_current_sis
     number_of_sessions_planned
+    require_assignment_file_for_certification
     seats_available
   }
 }
@@ -138,6 +139,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!, $sort: String){
       student {
         id
         phone
+        alternate_phone
         full_name
       }
     }
@@ -153,6 +155,7 @@ query GET_STUDENTS_IN_BATCH ($id: ID!){
       id
       full_name
       phone
+      alternate_phone
       student_id
       name_of_parent_or_guardian
     }
@@ -165,6 +168,7 @@ query GET_STUDENT ($id: ID!){
   student(id: $id){
     name_of_parent_or_guardian
     phone
+    alternate_phone
     status
     gender
     date_of_birth
@@ -503,6 +507,19 @@ const programEnrollmentFields = `
   updated_at
   discount_code_id
   program_selected_by_student
+  medha_program_certificate_status
+  higher_education_course_name
+  higher_education_year_of_course_completion
+  higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
+  assignment_file {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url

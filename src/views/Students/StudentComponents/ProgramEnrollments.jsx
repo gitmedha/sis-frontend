@@ -18,6 +18,7 @@ import NP from "nprogress";
 import nProgress from "nprogress";
 import api from "../../../apis";
 import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
+import { deleteFile } from "../../../common/commonActions";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -98,7 +99,7 @@ const ProgramEnrollments = (props) => {
         case 'institution.name':
           sortByField = sortBy[0].id;
           break;
-          
+
           case ' institution.name':
           sortByField = 'registration_date_formatted';
           break;
@@ -201,7 +202,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
     dataToSave['student'] = student.id;
-   
+
 
      NP.start();
      createProgramEnrollment(dataToSave).then(data => {
@@ -223,7 +224,7 @@ const ProgramEnrollments = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, certification_date_formatted, created_at, updated_at, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
+    let {id, certification_date_formatted, created_at, updated_at, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_student, registration_date_formatted, batch_name, institution_name, status_badge, fee_status_badge, higher_education_proof_of_enrollment, assignment_file, ...dataToSave} = data;
     dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
@@ -257,6 +258,26 @@ const ProgramEnrollments = (props) => {
     });
   };
 
+  const fileDeleteProofOfEnrollment = async (value) => {
+    NP.start();
+    deleteFile(selectedProgramEnrollment[value].id).then(data => {
+      setAlert("Proof of enrollment deleted successfully.", "success");
+    }).catch(err => {
+      console.log("FILE_DELETE_ERR", err);
+      setAlert("Unable to delete proof of enrollment.", "error");
+    }).finally(() => {
+      NP.done();
+      setShowDeleteAlert(false);
+      getStudentProgramEnrollments();
+      hideViewModal();
+    });
+  };
+
+  const hideModal = () => {
+    hideViewModal();
+    getStudentProgramEnrollments();
+  }
+
   return (
     <div className="container-fluid my-3">
       <div className="row">
@@ -277,6 +298,8 @@ const ProgramEnrollments = (props) => {
         handleDelete={handleViewDelete}
         student={student}
         programEnrollment={selectedProgramEnrollment}
+        onDelete={fileDeleteProofOfEnrollment}
+        onUpdate={hideModal}
       />
       <CreateProgramEnrollmentForm
         show={createModalShow}

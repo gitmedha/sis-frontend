@@ -1,8 +1,14 @@
 import styled from "styled-components";
-import moment from 'moment';
+import moment from "moment";
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection, getOpportunitiesPickList } from "./StudentActions";
+import {
+  createEmploymentConnection,
+  deleteEmploymentConnection,
+  getEmploymentConnectionsPickList,
+  updateEmploymentConnection,
+  getOpportunitiesPickList,
+} from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { Badge } from "../../../components/content/Utils";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -11,6 +17,8 @@ import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
+import NP from "nprogress";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -28,33 +36,59 @@ const EmploymentConnections = (props) => {
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
-  const {setAlert} = props;
-  const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
-  const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({});
+  const { setAlert } = props;
+  const [employmentConnectionsTableData, setEmploymentConnectionsTableData] =
+    useState(employmentConnections);
+  const [selectedEmploymentConnection, setSelectedEmploymentConnection] =
+    useState({});
   const userId = localStorage.getItem("user_id") || 2;
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then(data => {
+    getEmploymentConnectionsPickList().then((data) => {
       setPickList(data);
     });
-    getOpportunitiesPickList().then(data => {
+    getOpportunitiesPickList().then((data) => {
       setOpportunitiesPickList(data);
     });
   }, []);
 
   useEffect(() => {
-    let data = employmentConnections.map(employmentConnection => {
+    let data = employmentConnections.map((employmentConnection) => {
       return {
         ...employmentConnection,
-        employer_name: employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : '',
-        opportunity_type: employmentConnection.opportunity ? employmentConnection.opportunity.type : '',
-        status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
-        role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
-        registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
-        start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
-        opportunity_type: <Badge value={employmentConnection.opportunity?.type} pickList={opportunitiesPickList?.type} />,
-        updated_at: moment(employmentConnection.updated_at).format("DD MMM YYYY"),
+        employer:
+          employmentConnection.opportunity &&
+          employmentConnection.opportunity.employer
+            ? employmentConnection.opportunity.employer.name
+            : "",
+        opportunity_type: employmentConnection.opportunity
+          ? employmentConnection.opportunity.type
+          : "",
+        status_badge: (
+          <Badge
+            value={employmentConnection.status}
+            pickList={pickList.status}
+          />
+        ),
+        role_or_designation: employmentConnection.opportunity
+          ? employmentConnection.opportunity.role_or_designation
+          : "",
+        registration_date_formatted: moment(
+          employmentConnection.registration_date
+        ).format("DD MMM YYYY"),
+        start_date: moment(employmentConnection.start_date).format(
+          "DD MMM YYYY"
+        ),
+        opportunity_type: (
+          <Badge
+            value={employmentConnection.opportunity?.type}
+            pickList={opportunitiesPickList?.type}
+          />
+        ),
+        updated_at: moment(employmentConnection.updated_at).format(
+          "DD MMM YYYY"
+        ),
       };
     });
     setEmploymentConnectionsTableData(data);
@@ -63,60 +97,65 @@ const EmploymentConnections = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Employer',
-        accessor: 'employer_name',
+        Header: "Employer",
+        accessor: "employer",
       },
       {
-        Header: 'Role/Designation',
-        accessor: 'role_or_designation',
+        Header: "Role/Designation",
+        accessor: "role_or_designation",
       },
       {
-        Header: 'Opportunity Type',
-        accessor: 'opportunity_type',
+        Header: "Opportunity Type",
+        accessor: "opportunity_type",
       },
       {
-        Header: 'Status',
-        accessor: 'status_badge',
+        Header: "Status",
+        accessor: "status_badge",
       },
       {
-        Header: 'Start Date',
-        accessor: 'start_date',
+        Header: "Start Date",
+        accessor: "start_date",
       },
       {
-        Header: 'Source',
-        accessor: 'source',
+        Header: "Source",
+        accessor: "source",
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
     []
   );
 
-  const handleRowClick = programEnrollment => {
+  const handleRowClick = (programEnrollment) => {
     setSelectedEmploymentConnection(programEnrollment);
     setViewModalShow(true);
-  }
+  };
 
   const hideViewModal = () => {
     setViewModalShow(false);
+  };
+
+  const hideModal = () => {
+    hideViewModal();
+    onDataUpdate();
   }
 
   const handleViewEdit = () => {
     setViewModalShow(false);
     setUpdateModalShow(true);
-  }
+  };
 
   const handleViewDelete = () => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
-  }
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -125,22 +164,44 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, employer_id, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, assigned_to, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['student'] = student.id;
+    let {
+      id,
+      employer,
+      employer_id,
+      opportunity_id,
+      employment_connection_student,
+      employment_connection_opportunity,
+      registration_date_formatted,
+      status_badge,
+      role_or_designation,
+      opportunity_icon,
+      employer_name,
+      ...dataToSave
+    } = data;
+    dataToSave["start_date"] = data.start_date
+      ? moment(data.start_date).format("YYYY-MM-DD")
+      : null;
+    dataToSave["end_date"] = data.end_date
+      ? moment(data.end_date).format("YYYY-MM-DD")
+      : null;
+    dataToSave["salary_offered"] = data.salary_offered
+      ? Number(data.salary_offered)
+      : null;
+    dataToSave["opportunity"] = data.opportunity_id;
+    dataToSave["student"] = student.id;
     // dataToSave['assigned_to'] = userId;
 
-    createEmploymentConnection(dataToSave).then(data => {
-      setAlert("Employment Connection created successfully.", "success");
-    }).catch(err => {
-      console.log("CREATE_EMPLOYMENT_CONNECTION_ERR", err);
-      setAlert("Unable to create Employment Connection.", "error");
-    }).finally(() => {
-      onDataUpdate();
-    });
+    createEmploymentConnection(dataToSave)
+      .then((data) => {
+        setAlert("Employment Connection created successfully.", "success");
+      })
+      .catch((err) => {
+        console.log("CREATE_EMPLOYMENT_CONNECTION_ERR", err);
+        setAlert("Unable to create Employment Connection.", "error");
+      })
+      .finally(() => {
+        onDataUpdate();
+      });
     setCreateModalShow(false);
   };
 
@@ -151,33 +212,79 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, employer_id, created_at, updated_at ,updated_by, created_by, opportunity_id, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, employer_name, opportunity_type, assigned_to, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = data.opportunity_id;
+    let {
+      id,
+      offer_letter,
+      employer,
+      employer_id,
+      created_at,
+      updated_at,
+      updated_by,
+      created_by,
+      opportunity_id,
+      employment_connection_student,
+      employment_connection_opportunity,
+      registration_date_formatted,
+      status_badge,
+      role_or_designation,
+      opportunity_icon,
+      employer_name,
+      opportunity_type,
+      experience_certificate,
+      ...dataToSave
+    } = data;
+    dataToSave["start_date"] = data.start_date
+      ? moment(data.start_date).format("YYYY-MM-DD")
+      : null;
+    dataToSave["end_date"] = data.end_date
+      ? moment(data.end_date).format("YYYY-MM-DD")
+      : null;
+    dataToSave["salary_offered"] = data.salary_offered
+      ? Number(data.salary_offered)
+      : null;
+    dataToSave["opportunity"] = data.opportunity_id;
     // dataToSave['assigned_to'] = userId;
 
-    updateEmploymentConnection(Number(id), dataToSave).then(data => {
-      setAlert("Employment Connection updated successfully.", "success");
-    }).catch(err => {
-      console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
-      setAlert("Unable to update Employment Connection.", "error");
-    }).finally(() => {
-      onDataUpdate();
-    });
+    updateEmploymentConnection(Number(id), dataToSave)
+      .then((data) => {
+        setAlert("Employment Connection updated successfully.", "success");
+      })
+      .catch((err) => {
+        console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
+        setAlert("Unable to update Employment Connection.", "error");
+      })
+      .finally(() => {
+        onDataUpdate();
+      });
     setUpdateModalShow(false);
   };
 
   const handleDelete = async () => {
-    deleteEmploymentConnection(selectedEmploymentConnection.id).then(data => {
-      setAlert("Employment Connection deleted successfully.", "success");
+    deleteEmploymentConnection(selectedEmploymentConnection.id)
+      .then((data) => {
+        setAlert("Employment Connection deleted successfully.", "success");
+      })
+      .catch((err) => {
+        console.log("EMPLOYMENT_CONNECTION_DELETE_ERR", err);
+        setAlert("Unable to delete Employment Connection.", "error");
+      })
+      .finally(() => {
+        setShowDeleteAlert(false);
+        onDataUpdate();
+      });
+  };
+
+  const deleteCertificateFile = async (value) => {
+    NP.start();
+    deleteFile(selectedEmploymentConnection[value].id).then(data => {
+      setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
-      console.log("EMPLOYMENT_CONNECTION_DELETE_ERR", err);
-      setAlert("Unable to delete Employment Connection.", "error");
+      console.log("CERTIFICATE_DELETE_ERR", err);
+      setAlert("Unable to delete Certificate.", "error");
     }).finally(() => {
-      setShowDeleteAlert(false);
+      NP.done();
       onDataUpdate();
+      hideViewModal();
     });
   };
 
@@ -193,7 +300,16 @@ const EmploymentConnections = (props) => {
           </button>
         </div>
       </div>
-      <Table columns={columns} data={employmentConnectionsTableData} paginationPageSize={employmentConnectionsTableData.length} totalRecords={employmentConnectionsTableData.length} fetchData={() => {}} loading={false} showPagination={false} onRowClick={handleRowClick} />
+      <Table
+        columns={columns}
+        data={employmentConnectionsTableData}
+        paginationPageSize={employmentConnectionsTableData.length}
+        totalRecords={employmentConnectionsTableData.length}
+        fetchData={() => {}}
+        loading={false}
+        showPagination={false}
+        onRowClick={handleRowClick}
+      />
       <EmploymentConnection
         show={viewModalShow}
         onHide={hideViewModal}
@@ -201,6 +317,8 @@ const EmploymentConnections = (props) => {
         handleDelete={handleViewDelete}
         student={student}
         employmentConnection={selectedEmploymentConnection}
+        onDelete={deleteCertificateFile}
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}
@@ -214,31 +332,36 @@ const EmploymentConnections = (props) => {
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete Employment Connection?</span>
-          }
-          customButtons={
-            <>
-              <button
-                onClick={() => setShowDeleteAlert(false)}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Cancel
-              </button>
-              <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
-                Delete
-              </button>
-            </>
-          }
-        >
-          <p>Are you sure?</p>
-        </SweetAlert>
+        danger
+        showCancel
+        btnSize="md"
+        show={showDeleteAlert}
+        onConfirm={() => handleDelete()}
+        onCancel={() => setShowDeleteAlert(false)}
+        title={
+          <span className="text--primary latto-bold">
+            Delete Employment Connection?
+          </span>
+        }
+        customButtons={
+          <>
+            <button
+              onClick={() => setShowDeleteAlert(false)}
+              className="btn btn-secondary mx-2 px-4"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => handleDelete()}
+              className="btn btn-danger mx-2 px-4"
+            >
+              Delete
+            </button>
+          </>
+        }
+      >
+        <p>Are you sure?</p>
+      </SweetAlert>
     </div>
   );
 };
@@ -249,4 +372,7 @@ const mapActionsToProps = {
   setAlert,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(EmploymentConnections);
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(EmploymentConnections);

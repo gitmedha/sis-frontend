@@ -10,10 +10,11 @@ import ProgressBar from "../../../src/components/content/ProgressBar";
 import Details from "./StudentComponents/Details";
 import Address from "./StudentComponents/Address";
 import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
+import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteCv, deleteStudent, getStudent, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -21,6 +22,7 @@ import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
+import { deleteFile } from "../../common/commonActions";
 
 const Styled = styled.div`
 
@@ -37,14 +39,16 @@ const Student = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [student, setStudent] = useState({});
   const [studentProgramEnrollments, setStudentProgramEnrollments] = useState([]);
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [studentEmploymentConnections, setStudentEmploymentConnections] = useState([]);
   const [employmentConnectionsBadge, setEmploymentConnectionsBadge] = useState(<></>);
+  const [studentAlumniServices, setStudentAlumniServices] = useState([]);
+  const [alumniServiceAggregate, setAlumniServiceAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = student;
-  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -89,7 +93,7 @@ const Student = (props) => {
 
   const fileDelete = async () => {
     NP.start();
-    deleteCv(student.CV.id).then(data => {
+    deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
       console.log("CV_DELETE_ERR", err);
@@ -138,6 +142,15 @@ const Student = (props) => {
     });
   }
 
+  const getAlumniServices = async () => {
+    getStudentAlumniServices(studentId).then(data => {
+      setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
+      setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
+    }).catch(err => {
+      console.log("Error in getting alumni services: ", err);
+    });
+  }
+
   const updateEmploymentConnectionsBadge = (employmentConnections) => {
     let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Job');
     let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship');
@@ -164,7 +177,7 @@ const Student = (props) => {
       activestep=2
       break;
     case "Placement Complete":
-      activestep =3 
+      activestep =3
       break;
   }
 
@@ -172,6 +185,7 @@ const Student = (props) => {
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
+    await getAlumniServices();
   }, [studentId]);
 
   if (isLoading) {
@@ -193,7 +207,7 @@ const Student = (props) => {
               DELETE
             </button>
           </div>
-          <div style={{margin:"0px 0px 20px 0px"}}> 
+          <div style={{margin:"0px 0px 20px 0px"}}>
            <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
           </div>
         </div>
@@ -220,6 +234,9 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Employment Connections" badge={studentEmploymentConnections.length}>
           <EmploymentConnections employmentConnections={studentEmploymentConnections} student={student} onDataUpdate={getEmploymentConnections} />
+        </Collapsible>
+        <Collapsible title="Alumni Services" badge={alumniServiceAggregate.count}>
+          <AlumniServices student={student} onDataUpdate={getAlumniServices} id={studentId}/>
         </Collapsible>
         <StudentForm
           {...student}

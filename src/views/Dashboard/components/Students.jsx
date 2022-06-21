@@ -6,18 +6,12 @@ import {
   Badge,
 } from "../../../components/content/Utils";
 import { connect } from "react-redux";
-import Avatar from "../../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../../graphql/dashboard";
-import TabPicker from "../../../components/content/TabPicker";
-import Tabs from "../../../components/content/Tabs";
 import Table from '../../../components/content/Table';
-import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import {studentStatusOptions} from "../../Students/StudentComponents/StudentConfig";
 import Collapse from "../../../components/content/CollapsiblePanels";
-import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import moment from "moment";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -169,15 +163,12 @@ const Students = (props) => {
           fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
           assigned : programEnrollment?.institution?.assigned_to.username,
           type: <Badge value={programEnrollment.course_type} pickList={pickList.course_type} />,
+          href: `/student/${programEnrollment.student?.id}`,
         }
       });
       setStudentsData(data);
     }
   }, [programEnrollments, pickList]);
-
-  const onRowClick = (programEnrollment) => {
-    history.push(`/student/${programEnrollment.student.id}`)
-  }
 
   return (
     <Collapse title="Students Awaiting Internships/Employment" type="plain" opened={true}>
@@ -190,7 +181,7 @@ const Students = (props) => {
             </div>
             {/* <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} /> */}
           </div>
-          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} onRowClick={onRowClick} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+          <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} showPagination={false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
         </div>
       </Styled>
     </Collapse>

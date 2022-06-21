@@ -3,10 +3,35 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
+import CertificateUpload from "../../../components/content/Certificate";
+import Tooltip from "../../../components/content/Tooltip";
+import { urlPath } from "../../../constants";
+import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "./StudentActions";
+import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
+import styled from "styled-components";
+
+const Styled = styled.div`
+.icon-box{
+  display:flex;
+  padding: 5px;
+  justify-content: center;
+}
+.cv-icon {
+  margin-right: 20px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #EEE;
+    box-shadow: 0 0 0 1px #C4C4C4;
+  }
+}
+`;
 
 const EmploymentConnection = (props) => {
-  let { onHide, show, handleEdit, handleDelete, student, employmentConnection } = props;
+  let { onHide, show, onUpdate, onDelete, handleEdit, handleDelete, student, employmentConnection } = props;
   const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
@@ -44,6 +69,7 @@ const EmploymentConnection = (props) => {
             </h1>
           </Modal.Title>
         </Modal.Header>
+        <Styled>
         <Modal.Body className="bg-white">
           <div className="row">
             <div className="col-md-6 col-sm-12">
@@ -52,13 +78,76 @@ const EmploymentConnection = (props) => {
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
+              <DetailField label="Upload Offer Letter" value= {
+                employmentConnection.offer_letter &&
+                <div>
+                  <label>Certificate</label>
+                  <p className="mb-0">(updated on: {moment(employmentConnection.offer_letter.updated_at).format("DD MMM YYYY")})</p>
+                </div>
+              }/>
+              <div className ="row">
+                <div className="col-md-6"></div>
+                <div className="col-md-6 d-flex">
+                  <div className="cv-icon">
+                    <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} certificate='offer_letter' done={() => onUpdate() } />
+                  </div>
+                  {employmentConnection.offer_letter &&
+                    <div className="cv-icon">
+                        <div className="col-md-1 d-flex flex-column section-cv">
+                          <Tooltip placement="top" title="Click Here to View Offer Letter">
+                            <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
+                          </Tooltip>
+                        </div>
+                    </div>
+                  }
+                  {employmentConnection.offer_letter &&
+                    <div div className="cv-icon">
+                      <Tooltip placement="top" title="Click Here to Delete Offer Letter">
+                        <a  href="#" className="menu_links" onClick={() => onDelete('offer_letter')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      </Tooltip>
+                    </div>
+                  }
+                </div>
+              </div>
             </div>
             <div className="col-md-6 col-sm-12">
+              <DetailField label="Assigned To" value={employmentConnection.assigned_to ? employmentConnection.assigned_to?.username : ''} />
               <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
               <DetailField label="End Date" value={endDate} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
               <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
+              <DetailField label="Upload Certificate" value= {
+              employmentConnection.experience_certificate &&
+              <div>
+                <label>Certificate</label>
+                <p className="mb-0">(updated on: {moment(employmentConnection.experience_certificate.updated_at).format("DD MMM YYYY")})</p>
+              </div>
+             } />
+             <div className ="row">
+              <div className="col-md-6"></div>
+              <div className="col-md-6 d-flex">
+                <div className="cv-icon">
+                  <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} certificate='experience_certificate' done={() => onUpdate() } />
+                </div>
+                <div className="cv-icon">
+                  {employmentConnection.experience_certificate &&
+                    <div className="col-md-1 d-flex flex-column section-cv">
+                      <Tooltip placement="top" title="Click Here to View Certificate">
+                        <a href={urlPath( employmentConnection.experience_certificate?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.experience_certificate ? '#207B69' : '#787B96'} /></a>
+                      </Tooltip>
+                    </div>
+                  }
+                </div>
+                <div className="cv-icon">
+                  { employmentConnection.experience_certificate &&
+                  <Tooltip placement="top" title="Click Here to Delete Certificate">
+                    <a  href="#" className="menu_links" onClick={() => onDelete('experience_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                  </Tooltip>
+                  }
+                </div>
+              </div>
+            </div>
             </div>
           </div>
           <div className="row mt-4">
@@ -68,6 +157,7 @@ const EmploymentConnection = (props) => {
             </div>
           </div>
         </Modal.Body>
+        </Styled>
       </Modal>
   );
 };

@@ -7,9 +7,10 @@ import { urlPath } from "../../../constants";
 import styled from "styled-components";
 import {studentStatusOptions} from "./StudentConfig";
 import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
-import CvUpload from "../../../components/content/Cv";
+import FileUpload from "../../../components/content/FileUpload";
 import { UPDATE_STUDENT } from "../../../graphql";
 import Tooltip from "../../../components/content/Tooltip";
+import api from "../../../apis";
 
 const Styled = styled.div`
   p, label {
@@ -91,6 +92,7 @@ const Details = (props) => {
     student_id,
     full_name,
     phone,
+    alternate_phone,
     name_of_parent_or_guardian,
     category,
     email,
@@ -105,6 +107,7 @@ const Details = (props) => {
     interested_in_employment_opportunities,
     CV,
     assigned_to,
+    registered_by,
     created_at,
     updated_at,
     created_by_frontend,
@@ -120,6 +123,16 @@ const Details = (props) => {
     });
   }, []);
 
+  const mapJobDescriptionFile = async (fileId) => {
+    await api.post("/graphql", {
+      query: UPDATE_STUDENT,
+      variables: {
+        data: { CV: fileId },
+        id,
+      },
+    });
+  }
+
   return (
     <Styled>
       <div className="container-fluid my-3">
@@ -128,6 +141,7 @@ const Details = (props) => {
             <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
+            <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : '-'} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             &nbsp;
@@ -137,6 +151,7 @@ const Details = (props) => {
           </div>
           <div className="col-md-4">
             <DetailField label="Assigned To" value={assigned_to?.username} />
+            <DetailField label="Registered By" value={registered_by?.username} />
             <DetailField label=" Student ID" value={student_id} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
@@ -175,24 +190,24 @@ const Details = (props) => {
               <div className="col-md-6"></div>
               <div className="col-md-6 d-flex">
                 <div className="cv-icon">
-                  <CvUpload query={UPDATE_STUDENT} id={id} done={() => onUpdate()} />
+                  <FileUpload mapFileToEntity={mapJobDescriptionFile} done={() => onUpdate()} />
                 </div>
-                <div className="cv-icon">
-                  {CV &&
+                {CV &&
+                  <div className="cv-icon">
                     <div className="d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View CV">
                         <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
                         </Tooltip>
                     </div>
-                  }
-                </div>
-                <div className="cv-icon">
-                  {CV &&
+                 </div>
+                }
+                {CV &&
+                  <div className="cv-icon">
                     <Tooltip placement="top" title="Click Here to Delete CV">
-                      <a href="#" class="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
                     </Tooltip>
-                  }
-                </div>
+                  </div>
+                }
               </div>
             </div>
           </div>

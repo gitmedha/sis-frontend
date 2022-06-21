@@ -38,8 +38,13 @@ const phone = Yup.string()
   .min(10, "Number is too short")
   .max(10, "Number is too long")
   .required("Phone Number is required.");
+const alternate_phone = Yup.string()
+  .matches(phoneRegExp, 'Phone number is not valid')
+  .min(10, "Number is too short")
+  .max(10, "Number is too long")
+  .nullable();
 const name_of_parent_or_guardian = Yup.string().nullable().required("Parent Name or Guardian Name is required.");
-const email  = Yup.string().required("Email is required.");
+// const email  = Yup.string().required("Email is required.");
 const gender  = Yup.string().nullable().required("Gender is required.");
 const date_of_birth  = Yup.date().nullable().required("DOB is required.");
 const category  = Yup.string().nullable().required("Category is required.");
@@ -52,9 +57,11 @@ const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
   .max(6, "Pincode is too long")
-  .required("Pincode is required.");
+  .nullable();
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
+const alumni_service_type= Yup.string().required("Type is required.");
+const alumni_service_location= Yup.string().required("Location is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -76,6 +83,14 @@ export const EmploymentConnectionValidations = Yup.object({
   opportunity_id,
   source,
   salary_offered,
+  reason_if_rejected: Yup.string().nullable().when("status", {
+    is: (status) => status === 'Offer Rejected by Student',
+    then: Yup.string().nullable().required('Reason for rejection is required when offer rejected by student.')
+  }),
+  end_date: Yup.string().nullable().when("status", {
+    is: (status) => status === 'Internship Complete',
+    then: Yup.string().nullable().required('End date is required when internship complete.')
+  }),
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
@@ -84,14 +99,23 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
   student_id,
   source,
   salary_offered,
+  reason_if_rejected: Yup.string().nullable().when("status", {
+    is: (status) => status === 'Offer Rejected by Student',
+    then: Yup.string().nullable().required('Reason for rejection is required when offer rejected by student.')
+  }),
+  end_date: Yup.string().nullable().when("status", {
+    is: (status) => status === 'Internship Complete',
+    then: Yup.string().nullable().required('End date is required when internship complete.')
+  }),
 });
 
 export const StudentValidations = Yup.object({
   full_name,
   phone,
+  alternate_phone,
   name_of_parent_or_guardian,
   category,
-  email,
+  // email,
   gender,
   date_of_birth,
   assigned_to,
@@ -103,4 +127,11 @@ export const StudentValidations = Yup.object({
   address,
   state,
   district,
+});
+
+export const AlumniServiceValidations = Yup.object({
+  assigned_to,
+  type: alumni_service_type,
+  location: alumni_service_location,
+  start_date,
 });

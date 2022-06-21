@@ -4,9 +4,32 @@ import moment from "moment";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import { generateCertificate } from "../../../utils/function/certificate";
+import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
+import { urlPath } from "../../../constants";
+import CertificateUpload from "../../../components/content/Certificate";
+import Tooltip from "../../../components/content/Tooltip";
+
+const FileStyled = styled.div`
+.icon-box{
+  display:flex;
+  padding: 5px;
+  justify-content: center;
+}
+.cv-icon {
+  margin-right: 20px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #EEE;
+    box-shadow: 0 0 0 1px #C4C4C4;
+  }
+}
+`;
 
 const Section = styled.div`
   padding-top: 11px;
@@ -47,10 +70,12 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onHide, show, handleEdit, handleDelete, student } = props;
+  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete, student } = props;
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
+  const [programEnrollmentCertificate, setProgramEnrollmentCertificate] = useState(null);
+
 
   const handleGenerateCertificate = async () => {
     setLoadingCertificationButton(true);
@@ -63,6 +88,18 @@ const ProgramEnrollment = (props) => {
 
   useEffect(() => {
     setProgramEnrollment(props.programEnrollment);
+
+    if (props.programEnrollment) {
+      let certificateFieldValue = '';
+      if (props.programEnrollment.medha_program_certificate) {
+        certificateFieldValue = <div><a href={props.programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(props.programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
+      } else if (props.programEnrollment.medha_program_certificate_status == 'processing') {
+        certificateFieldValue = 'Processing';
+      } else if (props.programEnrollment.medha_program_certificate_status == 'low-attendance') {
+        certificateFieldValue = 'Failed - Low Attendance';
+      }
+      setProgramEnrollmentCertificate(certificateFieldValue);
+    }
   }, [props]);
 
   useEffect(() => {
@@ -70,6 +107,7 @@ const ProgramEnrollment = (props) => {
       setPickList(data);
     });
   }, []);
+
 
   return (
       <Modal
@@ -94,18 +132,52 @@ const ProgramEnrollment = (props) => {
         <Modal.Body className="bg-white">
         <Section>
           <h2 className="section-header">Enrollment Details</h2>
-          <div className="row">
-            <div className="col-md-6 col-sm-12">
-              <DetailField label="Name" value={student.full_name} />
-              <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
-              <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
+          <FileStyled>
+            <div className="row">
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Name" value={student.full_name} />
+                <DetailField label="Batch" value={<Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} />} />
+                <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
+                <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
+                <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Upload Assignment File" value= {
+                    programEnrollment.assignment_file &&
+                    <div>
+                      <p className="mb-0">(updated on: {moment(programEnrollment.assignment_file.updated_at).format("DD MMM YYYY")})</p>
+                    </div>
+                }/>
+                <div className ="row">
+                  <div className="col-md-6"></div>
+                  <div className="col-md-6 d-flex">
+                    <div className="cv-icon">
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='assignment_file' done={() => onUpdate() } />
+                    </div>
+                    {programEnrollment.assignment_file &&
+                      <div className="cv-icon">
+                        <div className="col-md-1 d-flex flex-column section-cv">
+                          <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
+                            <a href={urlPath( programEnrollment.assignment_file?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.assignment_file ? '#207B69' : '#787B96'} /></a>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    }
+                    {programEnrollment.assignment_file &&
+                      <div div className="cv-icon">
+                        <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
+                          <a  href="#" className="menu_links" onClick={() => onDelete('assignment_file')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                        </Tooltip>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="col-md-6 col-sm-12">
-              <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
-              <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
-              <DetailField label="Program Name" value={programEnrollment.program_selected_by_student} />
-            </div>
-          </div>
+          </FileStyled>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Course Details</h2>
           <div className="row">
@@ -120,6 +192,50 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>
+          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <h2 className="section-header">Higher Education</h2>
+          <FileStyled>
+            <div className="row">
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Course Name" value={programEnrollment.higher_education_course_name} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Year of Completion" value={<Badge value={programEnrollment.higher_education_year_of_course_completion} pickList={pickList.year_of_completion} />} />
+              </div>
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="Upload Proof of Enrollment" value= {
+                    programEnrollment.higher_education_proof_of_enrollment &&
+                    <div>
+                      <p className="mb-0">(updated on: {moment(programEnrollment.higher_education_proof_of_enrollment.updated_at).format("DD MMM YYYY")})</p>
+                    </div>
+                }/>
+                <div className ="row">
+                  <div className="col-md-6"></div>
+                  <div className="col-md-6 d-flex">
+                    <div className="cv-icon">
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='higher_education_proof_of_enrollment' done={() => onUpdate() } />
+                    </div>
+                    {programEnrollment.higher_education_proof_of_enrollment &&
+                      <div className="cv-icon">
+                        <div className="col-md-1 d-flex flex-column section-cv">
+                          <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
+                            <a href={urlPath( programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? '#207B69' : '#787B96'} /></a>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    }
+                    {programEnrollment.higher_education_proof_of_enrollment &&
+                      <div div className="cv-icon">
+                        <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
+                          <a  href="#" className="menu_links" onClick={() => onDelete('higher_education_proof_of_enrollment')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                        </Tooltip>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FileStyled>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
           <h2 className="section-header">Fee Details</h2>
           <div className="row">
@@ -140,7 +256,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Certification Date" value={programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY") : ''} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Certificate" value={programEnrollment.medha_program_certificate ? <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div> : ''} />
+              <DetailField label="Certificate" value={programEnrollmentCertificate} />
             </div>
           </div>
           <div className="row mt-4">

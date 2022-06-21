@@ -1,19 +1,20 @@
 import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect } from "react";
+import { connect } from "react-redux";
+import NP from "nprogress";
+import { useHistory } from "react-router-dom";
 import Table from "../../../components/content/Table";
 import { Badge } from "../../../components/content/Utils";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
-import { deleteCv, createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
+import { createEmploymentConnection, deleteEmploymentConnection, getEmploymentConnectionsPickList, updateEmploymentConnection } from "../../Students/StudentComponents/StudentActions";
 import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
 import  {getOpportunitiesPickList} from "../../Opportunities/OpportunityComponents/opportunityAction";
-import { connect } from "react-redux";
-import NP from "nprogress";
-import { useHistory } from "react-router-dom";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -77,7 +78,7 @@ const EmploymentConnections = (props) => {
     let data = employmentConnections.map(employmentConnection => {
       return {
         ...employmentConnection,
-        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',  
+        student_name: employmentConnection.student ? `${employmentConnection.student?.full_name} ( ${employmentConnection.student.student_id} )`:'',
         institution_name: 'To be added',
         opportunity_type: <Badge value={employmentConnection.opportunity.type} pickList={opportunitypickList.type}/>,
         opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
@@ -163,13 +164,13 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer_id, opportunity_id, opportunity, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer_id, opportunity_id, opportunity, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id
- 
+
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {
@@ -188,13 +189,12 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, internship_certificate, employer_id, created_at, opportunity_id, updated_at, opportunity_type, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, offer_letter, experience_certificate, employer_id, created_at, opportunity_id, updated_at, opportunity_type, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
     dataToSave['opportunity'] = data.opportunity_id;
     dataToSave['student'] = student_id;
-  
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
     }).catch(err => {
@@ -207,9 +207,9 @@ const EmploymentConnections = (props) => {
   };
 
 
-  const fileDelete = async () => {
+  const fileDelete = async (value) => {
     NP.start();
-    deleteCv(selectedEmploymentConnection.internship_certificate.id).then(data => {
+    deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
       console.log("CERTIFICATE_DELETE_ERR", err);
@@ -255,7 +255,7 @@ const EmploymentConnections = (props) => {
         student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
         onDelete={fileDelete}
-        onUpdate={hideModal }
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}

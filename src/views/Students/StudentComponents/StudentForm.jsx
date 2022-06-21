@@ -10,6 +10,7 @@ import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { isAdmin } from "../../../common/commonFunctions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -72,12 +73,10 @@ const StudentForm = (props) => {
           key: state.id,
           label: state.key,
           value: state.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));      
+      })).sort((a, b) => a.label.localeCompare(b.label)));
 
       if (props.state) {
-        onStateChange({
-          value: props.state,
-        });
+        onStateChange({ value: props.state });
       }
     });
 
@@ -85,7 +84,7 @@ const StudentForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,
@@ -112,6 +111,7 @@ const StudentForm = (props) => {
     batch:'',
     full_name:'',
     phone:'',
+    alternate_phone:'',
     name_of_parent_or_guardian:'',
     category:'',
     email:'',
@@ -127,16 +127,18 @@ const StudentForm = (props) => {
     state:'',
     district:'',
     logo:'',
+    registered_by:userId.toString(),
   };
 
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
     initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['registered_by'] = props?.registered_by?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
   }
-  
+
   return (
     <Modal
       centered
@@ -212,16 +214,6 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="phone"
-                      label="Phone"
-                      required
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
@@ -239,10 +231,29 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      name="phone"
+                      label="Phone"
+                      required
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="alternate_phone"
+                      label="Alternate Phone"
+                      control="input"
+                      placeholder="Phone"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
                       type="email"
                       name="email"
                       label="Email"
-                      required
+                      // required
                       control="input"
                       placeholder="Email"
                       className="form-control"
@@ -307,6 +318,18 @@ const StudentForm = (props) => {
                       {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        control="lookupAsync"
+                        name="registered_by"
+                        label="Registered By"
+                        className="form-control"
+                        placeholder="Registered By"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                        isDisabled={!isAdmin()}
+                      />
+                  </div>
                 </div>
               </Section>
               <Section>
@@ -329,7 +352,6 @@ const StudentForm = (props) => {
                       label="Pin Code"
                       placeholder="Pin Code"
                       className="form-control"
-                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">

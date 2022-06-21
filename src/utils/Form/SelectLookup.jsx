@@ -76,7 +76,7 @@ export const SelectField = (props) => {
       components={{ DropdownIndicator }}
       onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
       value={
-        options ? options.find((option) => option.value === field.value) : null
+        options && options.find((option) => option.value === field.value) || null
       }
     />
   );
@@ -87,7 +87,7 @@ const SelectLookup = (props) => {
   return (
     <SelectLookupField>
       <div className="form-group">
-        <label className="text-heading" htmlFor={name}>
+        <label className="text-heading leading-24" htmlFor={name}>
           {label}
           {required && <span className="required">*</span>}
         </label>

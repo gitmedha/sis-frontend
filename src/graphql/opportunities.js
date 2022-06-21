@@ -16,6 +16,11 @@ state
 pin_code
 medha_area
 district
+job_description_file {
+  id
+  url
+  created_at
+}
 created_by_frontend{
   username
   email
@@ -51,6 +56,23 @@ const employmentConnectionFields = `
   reason_if_rejected
   salary_offered
   updated_at
+  assigned_to {
+    id
+    username
+    email
+  }
+  experience_certificate{
+    id
+    url
+    previewUrl
+    updated_at
+  }
+  offer_letter{
+    id
+    url
+    previewUrl
+    updated_at
+  }
   opportunity {
     id
     role_description

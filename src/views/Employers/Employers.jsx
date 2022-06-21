@@ -109,18 +109,17 @@ const Employers = (props) => {
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
-      employer.assignedTo = <Anchor text={employer.assigned_to.username} href={'/user/' + employer.assigned_to.id} />
-      employer.avatar = <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />
-      employer.industry = <Badge value={employer.industry} pickList={pickList.industry || []} />;
-      employer.link =  <TableRowDetailLink value={employer.id} to={"employer"} />
-      return employer;
+      return {
+        ...employer,
+        assignedTo: <Anchor text={employer.assigned_to.username} href={'/user/' + employer.assigned_to.id} />,
+        avatar: <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />,
+        industry: <Badge value={employer.industry} pickList={pickList.industry || []} />,
+        link: <TableRowDetailLink value={employer.id} to={"employer"} />,
+        href: `/employer/${employer.id}`,
+      }
     });
     setEmployersTableData(data);
   }, [employers, pickList]);
-
-  const onRowClick = (row) => {
-    history.push(`/employer/${row.id}`);
-  };
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
@@ -135,7 +134,7 @@ const Employers = (props) => {
         case 'city':
           sortByField = 'city'
           break;
-       
+
         case 'state':
           sortByField = 'state'
           break;
@@ -201,7 +200,6 @@ const Employers = (props) => {
           totalRecords={employersAggregate.count}
           fetchData={fetchData}
           loading={loading}
-          onRowClick={onRowClick}
           onPageSizeChange={setPaginationPageSize}
         />
         <EmployerForm

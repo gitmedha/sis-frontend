@@ -5,6 +5,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { Dropdown } from 'react-bootstrap';
+import { isAdmin } from "../../common/commonFunctions";
 
 import {
   GET_BATCH,
@@ -14,14 +15,12 @@ import {
 import { queryBuilder } from "../../apis";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
-import Students from "./batchComponents/Students";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchMarkAsComplete } from "./batchActions";
-import { groupBy } from "lodash";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 
@@ -64,7 +63,7 @@ const Batch = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
-  const role = localStorage.getItem('user_role');
+  const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
 
   const getThisBatch = async () => {
     try {
@@ -155,7 +154,9 @@ const Batch = (props) => {
       setAlert("Unable to update batch status.", "error");
     }).finally(async () => {
       NP.done();
-      getThisBatch();
+      await getThisBatch();
+      await getProgramEnrollments();
+      setCompleteCertifyLoading(false);
     });
     setModalShow(false);
   }
@@ -168,7 +169,7 @@ const Batch = (props) => {
       return;
     }
 
-    // // need to remove id and show from the payload
+
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
@@ -246,130 +247,135 @@ const Batch = (props) => {
     return (
       <Styled>
         <>
-          <div className="row" style={{ margin: "30px 0 0" }}>
+          <div className="row" style={{margin: '30px 0 0'}}>
             <div className="col-12">
               <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="button btn--primary"
-                // disabled={batch?.status == "Complete"}
               >
                 EDIT
               </button>
               <button
                 onClick={() => setShowDeleteAlert(true)}
                 className="button btn--primary"
-                disabled={batch?.status == "Complete"}
+                disabled={batch?.status === "Complete"}
               >
                 DELETE
               </button>
-              {/* <button onClick={() => updateStatus()} className="btn--secondary">Complete & Certify</button> */}
-              <Dropdown className="mx-2 px-4">
-                <Dropdown.Toggle
-                  variant="secondary"
-                  id="dropdown-basic"
-                  disabled={batch?.status == "Enrollment Ongoing"}
-                >
-                  Complete & Certify
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    onClick={() => updateStatus()}
-                    disabled={batch?.status !== "In Progress"}
+              {isAdmin() &&
+                // <button onClick={() => {
+                //   setCompleteCertifyLoading(true);
+                //   updateStatus();
+                // }} className="btn--secondary" disabled={completeCertifyLoading}>
+                //   Complete & Certify
+                // </button>
+                <Dropdown className="px-4 d-inline">
+                  <Dropdown.Toggle
+                    variant="secondary"
+                    id="dropdown-basic"
+                    className="button btn--primary"
+                    disabled={batch?.status == "Enrollment Ongoing"}
                   >
-                    Mark as Complete
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                  disabled = {batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
-                  >Mark as Certified</Dropdown.Item>
-                  <Dropdown.Item
-                  disabled={batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
-                  >Generate Certificates</Dropdown.Item>
-                  <Dropdown.Item
-                  disabled={batch?.status !== "Complete" || (role !='Admin' && role !=='Advance')}
-                  >Email Certificates</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+                    Actions
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => updateStatus()}
+                      className="c-disabled"
+                      disabled={batch?.status !== "Complete"}
+                    >
+                      Mark as Certified
+                    </Dropdown.Item>
+                    <Dropdown.Item disabled={batch?.status !== "Certified"}>
+                      Generate Certificates
+                    </Dropdown.Item>
+                    <Dropdown.Item disabled={batch?.status !== "Certified"}>
+                      Email Certificates
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              }
             </div>
-          </div>
-          {batch && (
+            {batch && (
+              <Collapsible
+                titleContent={
+                  <TitleWithLogo
+                    done={done}
+                    id={batch.id}
+                    logo={batch.logo}
+                    title={batch.name}
+                    query={UPDATE_BATCH}
+                    icon="batch"
+                  />
+                }
+                opened={true}
+              >
+                <Details batch={batch} sessions={sessions} />
+              </Collapsible>
+            )}
             <Collapsible
-              titleContent={
-                <TitleWithLogo
-                  done={done}
-                  id={batch.id}
-                  logo={batch.logo}
-                  title={batch.name}
-                  query={UPDATE_BATCH}
-                  icon="batch"
-                />
-              }
-              opened={true}
+              title="Program Enrollments"
+              badge={programEnrollmentAggregate.count}
             >
-              <Details batch={batch} sessions={sessions} />
+              <ProgramEnrollments
+                programEnrollments={batchProgramEnrollments}
+                students={students}
+                onDataUpdate={getProgramEnrollments}
+                batch={batch}
+                fetchData={getStudents}
+                id={batchID}
+              />
             </Collapsible>
-          )}
-          <Collapsible
-            title="Program Enrollments"
-            badge={programEnrollmentAggregate.count}
-          >
-            <ProgramEnrollments
-              programEnrollments={batchProgramEnrollments}
-              students={students}
-              onDataUpdate={getProgramEnrollments}
-              batch={batch}
-              fetchData={getStudents}
-              id={batchID}
-            />
-          </Collapsible>
-          <Collapsible
-            title="Sessions & Attendance"
-            badge={sessions.length.toString()}
-          >
-            <Sessions
-              sessions={sessions}
-              batchID={props.match.params.id}
-              batch={batch}
-              onDataUpdate={handleSessionDataUpdate}
-              fetchData={getSessions}
-            />
-          </Collapsible>
-          {batch && (
-            <BatchForm {...batch} show={modalShow} onHide={hideUpdateModal} />
-          )}
-          {batch && (
-            <SweetAlert
-              danger
-              showCancel
-              btnSize="md"
-              show={showDeleteAlert}
-              onConfirm={() => handleDelete()}
-              onCancel={() => setShowDeleteAlert(false)}
-              title={
-                <span className="text--primary latto-bold">
-                  Delete {batch.name}?
-                </span>
-              }
-              customButtons={
-                <>
-                  <button
-                    onClick={() => setShowDeleteAlert(false)}
-                    className="btn btn-secondary mx-2 px-4"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleDelete()}
-                    className="btn btn-danger mx-2 px-4"
-                  >
-                    Delete
-                  </button>
-                </>
-              }
+            <Collapsible
+              title="Sessions & Attendance"
+              badge={sessions.length.toString()}
             >
-              <p>Are you sure, you want to delete this batch?</p>
-            </SweetAlert>
-          )}
+              <Sessions
+                sessions={sessions}
+                batchID={props.match.params.id}
+                batch={batch}
+                onDataUpdate={handleSessionDataUpdate}
+                fetchData={getSessions}
+              />
+            </Collapsible>
+            {batch && (
+              <BatchForm {...batch} show={modalShow} onHide={hideUpdateModal} />
+            )}
+            {batch && (
+              <SweetAlert
+                danger
+                showCancel
+                btnSize="md"
+                show={showDeleteAlert}
+                onConfirm={() => handleDelete()}
+                onCancel={() => setShowDeleteAlert(false)}
+                title={
+                  <span className="text--primary latto-bold">
+                    Delete {batch.name}?
+                  </span>
+                }
+                customButtons={
+                  <>
+                    <button
+                      onClick={() => setShowDeleteAlert(false)}
+                      className="btn btn-secondary mx-2 px-4"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleDelete()}
+                      className="btn btn-danger mx-2 px-4"
+                    >
+                      Delete
+                    </button>
+                  </>
+                }
+              >
+                <p>Are you sure, you want to delete this batch?</p>
+              </SweetAlert>
+            )}
+          </div>
         </>
       </Styled>
     );

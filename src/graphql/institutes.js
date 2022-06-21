@@ -316,11 +316,12 @@ query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: St
       student {
         id
         phone
+        alternate_phone
         full_name
         logo {
           url
         }
-        address 
+        address
         city
       }
     }
@@ -337,6 +338,7 @@ query GET_STUDENT ($id: ID!){
     full_name
     name_of_parent_or_guardian
     phone
+    alternate_phone
     status
     gender
     date_of_birth
@@ -366,9 +368,22 @@ const programEnrollmentFields = `
   fee_refund_date
   course_name_in_current_sis
   program_selected_by_student
+  medha_program_certificate_status
   discount_code_id
   created_at
   updated_at
+  higher_education_course_name
+  higher_education_year_of_course_completion
+  higher_education_proof_of_enrollment {
+    id
+    url
+    created_at
+  }
+  assignment_file {
+    id
+    url
+    created_at
+  }
   medha_program_certificate {
     id
     url

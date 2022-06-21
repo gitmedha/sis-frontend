@@ -1,24 +1,29 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
-import { getAllEmployers, getEmployerOpportunities, getEmploymentConnectionsPickList } from "./StudentActions";
+import {
+  getEmployerOpportunities,
+  getEmploymentConnectionsPickList,
+} from "./StudentActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -27,33 +32,51 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student } = props;
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
+  const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection && props.employmentConnection.opportunity ? props.employmentConnection.opportunity.type : null);
-  const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
+  const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [showEndDate, setShowEndDate] = useState(false);
+  const [endDateMandatory, setEndDateMandatory] = useState(false);
 
   let initialValues = {
     employment_connection_student: student.full_name,
-    employer_id:'',
-    opportunity_id:'',
-    status: '',
-    start_date:'',
-    end_date:'',
-    source:'',
-    salary_offered:'',
+    employer_id: "",
+    opportunity_id: "",
+    status: "",
+    start_date: "",
+    end_date: "",
+    source: "",
+    salary_offered: "",
+    reason_if_rejected: "",
   };
 
   if (props.employmentConnection) {
-    initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['employer_id'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.id : null;
-    initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
-    initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
-    initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
+    initialValues = { ...initialValues, ...props.employmentConnection };
+    initialValues["employer_id"] = props.employmentConnection
+      ? Number(props.employmentConnection.opportunity?.employer?.id)
+      : null;
+    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
+    initialValues["opportunity_id"] = props.employmentConnection.opportunity
+      ? props.employmentConnection.opportunity.id
+      : null;
+    initialValues["start_date"] = props.employmentConnection.start_date
+      ? new Date(props.employmentConnection.start_date)
+      : null;
+    initialValues["end_date"] = props.employmentConnection.end_date
+      ? new Date(props.employmentConnection.end_date)
+      : null;
   }
 
   const onModalClose = () => {
@@ -61,46 +84,128 @@ const EnrollmentConnectionForm = (props) => {
       setEmployerOpportunityOptions([]);
     }
     onHide();
-  }
+  };
 
   const onSubmit = async (values) => {
     onHide(values);
   };
 
   useEffect(() => {
-    setShowEndDate(selectedOpportunityType === 'Internship' && selectedStatus === 'Internship Complete');
-  }, [selectedOpportunityType, selectedStatus]);
+    setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+    setSelectedStatus(props.employmentConnection?.status);
+  }, [props.employmentConnection]);
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+    setEndDateMandatory(selectedStatus === 'Internship Complete');
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
     });
-    getAllEmployers().then(data => {
-      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
-        key: employer.name,
-        label: employer.name,
-        value: employer.id,
-      })));
-      if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
-        updateEmployerOpportunityOptions({
-          value: Number(props.employmentConnection.opportunity.employer.id),
-        });
-      }
+  }, []);
+
+  useEffect(() => {
+    getEmploymentConnectionsPickList().then((data) => {
+      setAllStatusOptions(
+        data.status.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      setSourceOptions(
+        data.source.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
+
+    if (props.employmentConnection) {
+      filterEmployer(
+        Number(props.employmentConnection?.opportunity?.employer?.name)
+      ).then((data) => {
+        setEmployerOptions(data);
+      });
+    }
+    if (
+      props.employmentConnection &&
+      props.employmentConnection.opportunity &&
+      props.employmentConnection.opportunity.employer
+    ) {
+      updateEmployerOpportunityOptions({
+        value: Number(props.employmentConnection.opportunity.employer.id),
+      });
+    }
   }, [props]);
 
-  const updateEmployerOpportunityOptions = employer => {
+  useEffect(() => {
+    let filteredOptions = allStatusOptions;
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    } else {
+      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+    }
+    setStatusOptions(filteredOptions);
+  }, [selectedOpportunityType, allStatusOptions]);
+
+  const updateEmployerOpportunityOptions = (employer) => {
     setEmployerOpportunityOptions([]);
-    getEmployerOpportunities(Number(employer.value)).then(data => {
-      setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
-        key: opportunity.role_or_designation,
-        label: `${opportunity.role_or_designation} | ${opportunity.type}`,
-        type: opportunity.type,
-        value: opportunity.id,
-      })));
+    getEmployerOpportunities(Number(employer.value)).then((data) => {
+      setEmployerOpportunityOptions(
+        data?.data?.data?.opportunities.map((opportunity) => ({
+          key: opportunity.role_or_designation,
+          label: `${opportunity.role_or_designation} | ${opportunity.type}`,
+          type: opportunity.type,
+          value: opportunity.id,
+        }))
+      );
     });
-  }
+  };
+
+  const filterEmployer = async (filterValue) => {
+    return await meilisearchClient
+      .index("employers")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let employmentConnectionEmployer = props.employmentConnection
+          ? props.employmentConnection.opportunity?.employer
+          : null;
+        let employerFoundInList = false;
+
+        let filterData = data.hits.map((employer) => {
+          if (
+            props.employmentConnection &&
+            employer.id === Number(employmentConnectionEmployer?.id)
+          ) {
+            employerFoundInList = true;
+          }
+          return {
+            ...employer,
+            label: employer.name,
+            value: Number(employer.id),
+          };
+        });
+        if (
+          props.employmentConnection &&
+          employmentConnectionEmployer !== null &&
+          !employerFoundInList
+        ) {
+          filterData.unshift({
+            label: employmentConnectionEmployer?.name,
+            value: Number(employmentConnectionEmployer?.id),
+          });
+        }
+        return filterData;
+      });
+  };
 
   return (
     <Modal
@@ -118,7 +223,10 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection 
+            {props.employmentConnection && props.employmentConnection.id
+              ? "Update "
+              : "Add New "}
+            Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -142,22 +250,36 @@ const EnrollmentConnectionForm = (props) => {
                       disabled={true}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2"></div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {employerOptions.length ? (
+                    {/* {statusOptions.length ? ( */}
                       <Input
-                        control="lookup"
-                        name="employer_id"
-                        label="Employer"
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
                         required
-                        options={employerOptions}
                         className="form-control"
-                        placeholder="Employer"
-                        onChange={updateEmployerOpportunityOptions}
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                       />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
+                    {/* ) : ( */}
+                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* )} */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      control="lookupAsync"
+                      name="employer_id"
+                      label="Employer"
+                      required
+                      filterData={filterEmployer}
+                      defaultOptions={
+                        props.employmentConnection?.id ? employerOptions : true
+                      }
+                      className="form-control"
+                      placeholder="Employer"
+                      onChange={updateEmployerOpportunityOptions}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {employerOpportunityOptions.length ? (
@@ -169,12 +291,17 @@ const EnrollmentConnectionForm = (props) => {
                         required
                         options={employerOpportunityOptions}
                         className="form-control"
-                        placeholder={'Opportunity'}
-                        onChange = {(e) => setSelectedOpportunityType(e.type)}
+                        placeholder={"Opportunity"}
+                        onChange={(e) => setSelectedOpportunityType(e.type)}
                       />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Opportunity (select an employer first)</label>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Opportunity (select an employer first)
+                        </label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -189,7 +316,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange = {(e) => setSelectedStatus(e.value)}
+                      onChange={(e) => setSelectedStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -234,10 +361,11 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {showEndDate &&
+                    {showEndDate && (
                       <Input
                         name="end_date"
                         label="End Date"
@@ -245,33 +373,27 @@ const EnrollmentConnectionForm = (props) => {
                         control="datepicker"
                         className="form-control"
                         autoComplete="off"
+                        required={endDateMandatory}
                       />
-                    }
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="certificate"
-                      control="input"
-                      label="Upload Internship Certificate"
-                      className="form-control"
-                      placeholder="Upload Internship Certificate"
-                      disabled={true}
-                    />
+                    )}
                   </div>
                 </div>
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">
-                      SAVE
-                    </button>
-                    <button
-                      type="button"
-                      onClick={onModalClose}
-                      className="btn btn-secondary btn-regular mr-2"
-                    >
-                      CANCEL
-                    </button>
+                  <button
+                    className="btn btn-primary btn-regular mx-0"
+                    type="submit"
+                  >
+                    SAVE
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onModalClose}
+                    className="btn btn-secondary btn-regular mr-2"
+                  >
+                    CANCEL
+                  </button>
                 </div>
               </div>
             </Form>

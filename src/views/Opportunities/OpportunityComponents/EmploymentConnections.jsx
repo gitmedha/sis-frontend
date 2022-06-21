@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import moment from 'moment';
+import NP from "nprogress";
 import { useState, useMemo, useEffect } from "react";
+import { connect } from "react-redux";
+import SweetAlert from "react-bootstrap-sweetalert";
 import Table from "../../../components/content/Table";
 import { Badge } from "../../../components/content/Utils";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -9,8 +12,7 @@ import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import EmploymentConnection from "./EmploymentConnection";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
-import { connect } from "react-redux";
+import { deleteFile } from "../../../common/commonActions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -142,7 +144,7 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
@@ -167,7 +169,7 @@ const EmploymentConnections = (props) => {
     }
 
     // need to remove some data from the payload that's not accepted by the API
-    let {id, employer, date, updated_at, created_at, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, assigned_to, ...dataToSave} = data;
+    let {id, employer, date, updated_at, created_at, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
     dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
     dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
     dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
@@ -197,6 +199,26 @@ const EmploymentConnections = (props) => {
     });
   };
 
+  const hideModal = () => {
+    hideViewModal();
+    onDataUpdate();
+  }
+
+  const fileDelete = async (value) => {
+    NP.start();
+    deleteFile(selectedEmploymentConnection[value].id).then(data => {
+      setAlert("Certificate deleted successfully.", "success");
+    }).catch(err => {
+      console.log("CERTIFICATE_DELETE_ERR", err);
+      setAlert("Unable to delete Certificate.", "error");
+    }).finally(() => {
+      NP.done();
+      setShowDeleteAlert(false);
+      onDataUpdate();
+      hideViewModal();
+    });
+  };
+
   return (
     <div className="container-fluid my-3">
       <div className="row">
@@ -217,6 +239,8 @@ const EmploymentConnections = (props) => {
         handleDelete={handleViewDelete}
         student={selectedEmploymentConnection.student}
         employmentConnection={selectedEmploymentConnection}
+        onDelete={fileDelete}
+        onUpdate={hideModal}
       />
       <CreateEmploymentConnectionForm
         show={createModalShow}

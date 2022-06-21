@@ -141,6 +141,11 @@ export const GET_EMPLOYER = `
       city
       created_at
       updated_at
+      mou_file {
+        id
+        url
+        created_at
+      }
       created_by_frontend{
         username
         email
@@ -254,7 +259,8 @@ export const DELETE_EMPLOYER = `
       }
     }
   }
-`
+`;
+
 export const GET_EMPLOYER_EMPLOYMENT_CONNECTIONS = `
 query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
   $id: Int
@@ -277,7 +283,18 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       reason_if_rejected
       salary_offered
       updated_at
-      internship_certificate{
+      assigned_to {
+        id
+        username
+        email
+      }
+      experience_certificate{
+        id
+        url
+        previewUrl
+        updated_at
+      }
+      offer_letter{
         id
         url
         previewUrl
@@ -303,5 +320,4 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
       count
     }
   }
-}`
-;
+}`;
