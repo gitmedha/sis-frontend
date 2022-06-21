@@ -65,7 +65,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Grant" value={batch.grant?.name} />
           &nbsp;
           <DetailField label="Session Planned" value={batch.number_of_sessions_planned} />
-          <DetailField label="Seats Avaiable" value={ batch.seats_available || 0} />
+          <DetailField label="Seats Available" value={ batch.seats_available || 0} />
           &nbsp;
           <DetailField label="Created By" value={batch.created_by_frontend?.username ?`${batch.created_by_frontend?.username} (${batch.created_by_frontend?.email})`: ''} />
           <DetailField label="Created At" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
