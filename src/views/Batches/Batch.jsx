@@ -23,6 +23,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
+import { FaCheckCircle } from "react-icons/fa";
 
 const Styled = styled.div`
 .button{
@@ -294,20 +295,24 @@ const Batch = (props) => {
                     <Dropdown.Item
                       onClick={() => markAsCertified()}
                       disabled={batch?.status !== "Complete"}
+                      className="d-flex align-items-center"
                     >
-                      Mark as Certified
+                      <FaCheckCircle size="20" color={batch?.status === 'Certified' ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Mark as Certified</span>
                     </Dropdown.Item>
                     <Dropdown.Item
                       onClick={() => generateCertificates()}
                       disabled={batch?.status !== "Certified"}
                     >
-                      Generate Certificates
+                      <FaCheckCircle size="20" color={batch?.generated_certificates === true ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Generate Certificates</span>
                     </Dropdown.Item>
                     <Dropdown.Item
                       onClick={() => emailCertificates()}
-                      disabled={batch?.status !== "Certified"}
+                      disabled={batch?.status !== "Certified" || batch?.generated_certificates !== true}
                     >
-                      Email Certificates
+                      <FaCheckCircle size="20" color={batch?.emailed_certificates === true ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Email Certificates</span>
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
