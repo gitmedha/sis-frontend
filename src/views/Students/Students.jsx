@@ -189,7 +189,7 @@ const Students = (props) => {
           category: <Badge value={student.category} pickList={pickList.category || []} />,
           gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
           statusIcon: studentStatusData?.icon,
-          registration_date: moment(student.created_at).format("DD MMM YYYY"),
+          registration_date: student.registration_date_latest ? moment(student.registration_date_latest).format("DD MMM YYYY") : null,
           title: student.full_name,
           progressPercent: studentStatusData?.progress,
           href: `/student/${student.id}`,
