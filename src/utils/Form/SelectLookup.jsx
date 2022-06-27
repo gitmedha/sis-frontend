@@ -62,6 +62,7 @@ export const SelectField = (props) => {
     placeholder,
     onChange = () => {},
     isSearchable = false,
+    isDisabled,
   } = props;
 
   return (
@@ -73,10 +74,11 @@ export const SelectField = (props) => {
       onBlur={field.onBlur}
       placeholder={placeholder}
       isSearchable={isSearchable || icon !== 'down'}
+      isDisabled={isDisabled}
       components={{ DropdownIndicator }}
       onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
       value={
-        options ? options.find((option) => option.value === field.value) : null
+        options && options.find((option) => option.value === field.value) || null
       }
     />
   );
