@@ -49,14 +49,14 @@ const InstitutionForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
       setStatusOpts(data.status.map((item) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
     });

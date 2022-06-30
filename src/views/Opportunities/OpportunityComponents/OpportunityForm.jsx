@@ -58,7 +58,7 @@ const OpportunityForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
-  
+
   const [initialValues, setInitialValues] = useState({
     employer: '',
     assigned_to: userId.toString() ,
@@ -78,7 +78,7 @@ const OpportunityForm = (props) => {
     medha_area: '',
     district:'',
   });
-  
+
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
@@ -99,7 +99,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
@@ -115,7 +115,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
@@ -123,7 +123,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
     });
@@ -185,7 +185,7 @@ const OpportunityForm = (props) => {
     onHide(values);
   };
 
-  const handleEmployerChange = (employer) => { 
+  const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
       address: employer.address,
@@ -196,7 +196,7 @@ const OpportunityForm = (props) => {
       district: employer.district,
     });
   }
-  
+
   useEffect(() => {
     if (initialValues.state) {
       onStateChange({
