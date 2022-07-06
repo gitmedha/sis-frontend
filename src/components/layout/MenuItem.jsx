@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NavHashLink as NavLink } from 'react-router-hash-link';
+import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect } from 'react';
 import {BsChevronDown, BsChevronRight} from 'react-icons/bs';
@@ -13,7 +13,7 @@ const MenuEl = styled.div`
 const MenuItem = (props) => {
   const location = useLocation();
 
-  const { icon, to, title, isOpen, aliases=[] } = props;
+  const { icon, to, title, isOpen, newTab = false, aliases=[] } = props;
   const [isActiveFirstLevel, setIsActiveFirstLevel] = useState(location.pathname === to || props.activeFirstLevel === props.title);
   const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveFirstLevel);
   const showSubMenuIcon = isOpen && props.children?.length;
@@ -32,18 +32,19 @@ const MenuItem = (props) => {
     } else {
       setIsActiveFirstLevel(false);
     }
-  }, [location, to, aliases])
+  }, [location, to, aliases]);
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
       <NavLink
-        to={to}
+        to={{ pathname: to }}
         className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
         style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
         isActive={() => isActiveFirstLevel}
         activeClassName="sidebar-link-active"
         activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
         onClick={() => props.menuItemClickHandler(props.title)}
+        target={newTab ? "_blank" : ""}
       >
         <div className="d-flex align-items-center w-100 justify-content-start">
           <div data-tip={isOpen ? '' : props.title}>

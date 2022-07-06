@@ -94,5 +94,9 @@ body {
 .leading-24 {
   line-height: 24px;
 }
+.metabase-icon {
+  width: 24px;
+  filter: grayscale(100%);
+}
 
 @import './media/md.scss';
