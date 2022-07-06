@@ -5,6 +5,7 @@ import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
+import { urlPath } from "../../constants";
 
 const iconStyle = {
   marginRight: "5px",
@@ -50,6 +51,18 @@ const routes = [
     title: "Opportunities",
     aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />
+  },
+  {
+    to: "https://data.medha.org.in/",
+    title: "Metabase",
+    aliases: ['metabase'],
+    icon: <img
+      className={"metabase-icon"}
+      src={require('../../assets/images/logo-metabase.png').default}
+      alt={`metabase-logo`}
+      style={{}}
+    />,
+    newTab: true
   },
   // {
   //   to: "/admin",
