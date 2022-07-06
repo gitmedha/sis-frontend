@@ -55,7 +55,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
@@ -63,7 +63,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
@@ -71,7 +71,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
 
@@ -79,7 +79,7 @@ const OpportunityForm = (props) => {
         return {
           key: item.value,
           label: item.value,
-          value: item.value.toLowerCase(),
+          value: item.value,
         };
       }));
     });
@@ -109,7 +109,7 @@ const OpportunityForm = (props) => {
 
   const onStateChange = value => {
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => { 
+    getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,
