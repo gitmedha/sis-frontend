@@ -54,6 +54,7 @@ query GET_BATCH ($id:ID!) {
     start_date
     created_at
     created_by_frontend{
+      id
       username
       email
     }
