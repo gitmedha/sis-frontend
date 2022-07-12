@@ -46,6 +46,7 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
 
+  const userId = localStorage.getItem('user_id');
   let initialValues = {
     student: '',
     employer_name: opportunity.employer.name,
@@ -55,6 +56,7 @@ const EnrollmentConnectionForm = (props) => {
     end_date:'',
     source:'',
     salary_offered:'',
+    assigned_to: userId,
   };
 
   if (props.employmentConnection) {

@@ -41,7 +41,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem('user_id'));
 
   useEffect(() => {
     getInstitutionsPickList().then(data => {

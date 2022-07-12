@@ -50,6 +50,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
 
+  const userId = localStorage.getItem('user_id');
   let initialValues = {
     employment_connection_student: student.full_name,
     employer_id: "",
@@ -60,6 +61,7 @@ const EnrollmentConnectionForm = (props) => {
     source: "",
     salary_offered: "",
     reason_if_rejected: "",
+    assigned_to: userId,
   };
 
   if (props.employmentConnection) {
@@ -251,7 +253,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {/* {statusOptions.length ? ( */}
+                    {assigneeOptions.length ? (
                       <Input
                         control="lookupAsync"
                         name="assigned_to"
@@ -262,9 +264,9 @@ const EnrollmentConnectionForm = (props) => {
                         filterData={filterAssignedTo}
                         defaultOptions={assigneeOptions}
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

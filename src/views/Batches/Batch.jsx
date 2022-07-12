@@ -51,6 +51,7 @@ const Batch = (props) => {
   const {setAlert} = props;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
+  const userId = localStorage.getItem("user_id");
 
   const getThisBatch = async () => {
     try {
@@ -277,7 +278,7 @@ const Batch = (props) => {
               <button
                 onClick={() => setShowDeleteAlert(true)}
                 className="button btn--primary"
-                disabled={!isAdmin() && (batch?.status === "Complete" || batch?.status === "Certified")}
+                disabled={!isAdmin() && (batch?.created_by_frontend?.id !== userId || (batch?.status === "In Progress" || batch?.status === "Complete" || batch?.status === "Certified"))}
               >
                 DELETE
               </button>
