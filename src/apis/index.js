@@ -7,12 +7,10 @@ const api = axios.create({
 
 // Add a request interceptor
 api.interceptors.request.use(function (config) {
-  // Do something before request is sent
-  if (config.url === '/graphql') {
-    let token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
+  // Add authorization header token before request is sent
+  let token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 }, function (error) {

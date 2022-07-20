@@ -208,22 +208,18 @@ export const getAllBatches = async () => {
 
 export const batchGenerateCertificates = async (batchId) => {
   let url = `${process.env.REACT_APP_STRAPI_API_BASEURL}/batch/${batchId}/generate-certificates`;
-  let response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+  return await api.post(url).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
   });
-  return await response.json();
 };
 
 export const batchEmailCertificates = async (batchId) => {
   let url = `${process.env.REACT_APP_STRAPI_API_BASEURL}/batch/${batchId}/email-certificates`;
-  let response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+  return await api.post(url).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
   });
-  return await response.json();
 };
