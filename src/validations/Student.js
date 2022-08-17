@@ -62,6 +62,7 @@ const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 const alumni_service_type= Yup.string().required("Type is required.");
 const alumni_service_location= Yup.string().required("Location is required.");
+const work_engagement = Yup.string().nullable().required("Work Engagement is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -91,6 +92,7 @@ export const EmploymentConnectionValidations = Yup.object({
     is: (status) => status === 'Internship Complete',
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
+  work_engagement,
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
