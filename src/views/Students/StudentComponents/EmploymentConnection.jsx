@@ -78,6 +78,8 @@ const EmploymentConnection = (props) => {
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
+              <DetailField label="Work Engagement" value={employmentConnection.work_engagement} />
+              <DetailField label="No. of internship hours" value={employmentConnection.number_of_internship_hours} />
               <DetailField label="Upload Offer Letter" value= {
                 employmentConnection.offer_letter &&
                 <div>

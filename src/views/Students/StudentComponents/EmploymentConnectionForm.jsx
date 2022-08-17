@@ -45,6 +45,7 @@ const EnrollmentConnectionForm = (props) => {
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [showEndDate, setShowEndDate] = useState(false);
@@ -110,6 +111,14 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
+      setWorkEngagementOptions(
+        data.work_engagement.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
       setAllStatusOptions(
         data.status.map((item) => ({
           ...item,
@@ -280,7 +289,10 @@ const EnrollmentConnectionForm = (props) => {
                       }
                       className="form-control"
                       placeholder="Employer"
-                      onChange={updateEmployerOpportunityOptions}
+                      onChange={employer => {
+                        setSelectedOpportunityType(null);
+                        updateEmployerOpportunityOptions(employer);
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -378,6 +390,31 @@ const EnrollmentConnectionForm = (props) => {
                         required={endDateMandatory}
                       />
                     )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="work_engagement"
+                      label="Work Engagement"
+                      options={workEngagementOptions}
+                      className="form-control"
+                      placeholder="Work Engagement"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {selectedOpportunityType === 'Internship' &&
+                      <Input
+                        min={0}
+                        type="number"
+                        control="input"
+                        name="number_of_internship_hours"
+                        className="form-control"
+                        label="Number of Internship hours"
+                        placeholder="Number of Internship hours"
+                      />
+                    }
                   </div>
                 </div>
               </Section>
