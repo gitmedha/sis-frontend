@@ -72,6 +72,8 @@ const EmploymentConnection = (props) => {
               <DetailField label="Employer" value={<Anchor text={employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`}  />} />
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
+              <DetailField label="Work Engagement" value={employmentConnection.work_engagement} />
+              {employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && <DetailField label="No. of internship hours" value={employmentConnection.number_of_internship_hours} />}
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
               <DetailField label="Upload Offer Letter" value= {
                 employmentConnection.offer_letter &&
