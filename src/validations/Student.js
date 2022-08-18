@@ -109,6 +109,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
     is: (status) => status === 'Internship Complete',
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
+  work_engagement,
 });
 
 export const StudentValidations = Yup.object({

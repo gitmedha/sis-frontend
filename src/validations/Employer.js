@@ -41,6 +41,7 @@ const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.number().nullable().required("Salary Offered is required.")
                           .min(0, 'Min value 0.')
                           .max(1000000, 'Salary should be in range of between 0 to 10 Lakh.');
+const work_engagement = Yup.string().nullable().required("Work Engagement is required.");
 
 const contacts = Yup.array().of(
   Yup.object({
@@ -67,6 +68,7 @@ export const EmploymentConnectionValidations = Yup.object({
     is: (status) => status === 'Internship Complete',
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
+  work_engagement,
 });
 
 export const EmployerValidations = Yup.object({
