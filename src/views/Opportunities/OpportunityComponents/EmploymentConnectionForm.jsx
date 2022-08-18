@@ -291,19 +291,6 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {showEndDate &&
-                    <Input
-                      name="end_date"
-                      label="End Date"
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                      required={endDateMandatory}
-                    />
-                  }
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
@@ -315,8 +302,21 @@ const EnrollmentConnectionForm = (props) => {
                       required
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedOpportunityType === 'Internship' &&
+                  {showEndDate && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        required={endDateMandatory}
+                      />
+                    </div>
+                  )}
+                  {selectedOpportunityType === 'Internship' &&
+                    <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}
                         type="number"
@@ -326,8 +326,8 @@ const EnrollmentConnectionForm = (props) => {
                         label="Number of Internship hours"
                         placeholder="Number of Internship hours"
                       />
-                    }
-                  </div>
+                    </div>
+                  }
                 </div>
               </Section>
               <div className="row mt-3 py-3">
