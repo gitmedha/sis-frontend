@@ -229,6 +229,8 @@ const BatchSessionForm = (props) => {
                         CANCEL
                       </button>
                   </div>
+                  {
+                  onDelete &&
                   <button
                     type="button"
                     onClick={() => {setShowDeleteAlert(true)}}
@@ -236,6 +238,7 @@ const BatchSessionForm = (props) => {
                   >
                     DELETE
                   </button>
+                  }
                 </div>
               </div>
             </Form>
