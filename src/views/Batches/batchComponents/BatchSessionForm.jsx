@@ -9,9 +9,10 @@ import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
-import { GET_BATCH_STUDENTS_ONLY, UPDATE_SESSION_ATTENDANCE } from "../../../graphql";
+import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
 import TableWithSelection from '../../../components/content/TableWithSelection';
 import { getSessionAttendance } from "../batchActions";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -33,12 +34,13 @@ const Section = styled.div`
 `;
 
 const BatchSessionForm = (props) => {
-  let { onHide, show, batchId } = props;
+  let { onHide, show, batchId, onDelete } = props;
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedRows, setSelectedRows] = useState({});
   const [sessionAttendance, setSessionAttendance] = useState([]);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   let initialValues = {
     topics: '',
@@ -89,7 +91,7 @@ const BatchSessionForm = (props) => {
       phone: rec.student.phone,
       student_id: rec.student.student_id,
       parent_name: rec.student.name_of_parent_or_guardian
-      
+
     }));
   };
 
@@ -173,8 +175,9 @@ const BatchSessionForm = (props) => {
           onSubmit={onSubmit}
           initialValues={initialValues}
           validationSchema={sessionValidations}
+          enableReinitialize
         >
-          {({ values }) => (
+          {({ isSubmitting }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -214,8 +217,13 @@ const BatchSessionForm = (props) => {
                 </div>
               </Section>
               <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex justify-content-start">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular mx-0"
+                      disabled={isSubmitting}
+                    >
                       SAVE
                     </button>
                     <button
@@ -225,11 +233,54 @@ const BatchSessionForm = (props) => {
                     >
                       CANCEL
                     </button>
+                  </div>
+                  {
+                  onDelete &&
+                  <button
+                    type="button"
+                    onClick={() => {setShowDeleteAlert(true)}}
+                    className="btn btn-danger btn-regular ml-auto"
+                  >
+                    DELETE
+                  </button>
+                  }
                 </div>
               </div>
             </Form>
           )}
         </Formik>
+        <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          title={
+            <span className="text--primary latto-bold">
+              Delete session?
+            </span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteAlert(false);
+                  onDelete();
+                }}
+                className="btn btn-danger mx-2 px-4"
+              >
+                Delete
+              </button>
+            </>
+          }
+        >
+        <p>Are you sure, you want to delete this session?</p>
+      </SweetAlert>
       </Modal.Body>
     </Modal>
   );

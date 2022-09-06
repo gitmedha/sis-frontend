@@ -373,6 +373,16 @@ mutation UPDATE_SESSION(
 }
 `;
 
+export const DELETE_SESSION_QUERY = `
+mutation DELETE_SESSION($session: ID!) {
+  deleteSession(input: { where: { id: $session } }) {
+    session {
+      id
+    }
+  }
+}
+`;
+
 export const GET_SESSION_ATTENDANCE_STATS = `
 query GET_SESSION_ATTENDANCE_TEST($id: ID!) {
   attendancesConnection(
