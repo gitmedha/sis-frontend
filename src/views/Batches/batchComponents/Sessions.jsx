@@ -7,7 +7,7 @@ import { ProgressBarField } from "../../../components/content/Utils";
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, deleteSession, updateAttendance, updateSession } from "../batchActions";
 import { FaRegEdit } from "react-icons/fa";
 import { connect } from "react-redux";
 import { isAdmin } from "../../../common/commonFunctions";
@@ -149,6 +149,18 @@ const Sessions = (props) => {
     });
   };
 
+  const onDelete = async () => {
+    deleteSession(batchSessionAttendanceFormData.id).then(() => {
+      setAlert("Session deleted successfully.", "success");
+    }).catch(err => {
+      console.log("DELETE_SESSION_ERR", err);
+      setAlert("Unable to delete session.", "error");
+    }).finally(() => {
+      onDataUpdate();
+      setUpdateModalShow(false);
+    });
+  };
+
   const refetchSessions = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'topics_covered';
@@ -198,6 +210,7 @@ const Sessions = (props) => {
       <UpdateBatchSessionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
+        onDelete={onDelete}
         batchId={batchID}
         session={batchSessionAttendanceFormData}
       />
