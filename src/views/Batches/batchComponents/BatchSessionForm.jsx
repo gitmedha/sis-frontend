@@ -175,8 +175,9 @@ const BatchSessionForm = (props) => {
           onSubmit={onSubmit}
           initialValues={initialValues}
           validationSchema={sessionValidations}
+          enableReinitialize
         >
-          {({ values }) => (
+          {({ isSubmitting }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -218,16 +219,20 @@ const BatchSessionForm = (props) => {
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-between">
                   <div className="d-flex justify-content-start">
-                      <button className="btn btn-primary btn-regular mx-0" type="submit">
-                        SAVE
-                      </button>
-                      <button
-                        type="button"
-                        onClick={onHide}
-                        className="btn btn-secondary btn-regular mr-2"
-                      >
-                        CANCEL
-                      </button>
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular mx-0"
+                      disabled={isSubmitting}
+                    >
+                      SAVE
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onHide}
+                      className="btn btn-secondary btn-regular mr-2"
+                    >
+                      CANCEL
+                    </button>
                   </div>
                   {
                   onDelete &&
