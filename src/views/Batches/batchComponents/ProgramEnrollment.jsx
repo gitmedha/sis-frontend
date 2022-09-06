@@ -76,9 +76,9 @@ const ProgramEnrollment = (props) => {
 
   const handleGenerateCertificate = async () => {
     setLoadingCertificationButton(true);
-    let response = await generateCertificate(programEnrollment.id);
-    if (response.programEnrollment) {
-      setProgramEnrollment(response.programEnrollment);
+    let { data } = await generateCertificate(programEnrollment.id);
+    if (data.programEnrollment) {
+      setProgramEnrollment(data.programEnrollment);
     }
     setLoadingCertificationButton(false);
   }

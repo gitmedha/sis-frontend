@@ -135,6 +135,8 @@ const employmentConnectionFields = `
   end_date
   source
   reason_if_rejected
+  work_engagement
+  number_of_internship_hours
   salary_offered
   assigned_to {
     id
