@@ -88,7 +88,7 @@ const Sessions = (props) => {
     let {show, students, ...dataToSave} = data;
     dataToSave['date'] = new Date(data.date).toISOString();
 
-    createBatchSession(batchID, dataToSave).then(async data => {
+    await createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
       let sessionId = Number(data.data.data.createSession.session.id);
       await students.forEach(async (student) => {
@@ -115,7 +115,7 @@ const Sessions = (props) => {
     dataToSave['topics_covered'] = data.topics;
     dataToSave['date'] = new Date(data.date).toISOString();
 
-    updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
+    await updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session updated successfully.", "success");
 
       // map session attendance id to program enrollment id to connect student with their attendance
@@ -150,7 +150,7 @@ const Sessions = (props) => {
   };
 
   const onDelete = async () => {
-    deleteSession(batchSessionAttendanceFormData.id).then(() => {
+    await deleteSession(batchSessionAttendanceFormData.id).then(() => {
       setAlert("Session deleted successfully.", "success");
     }).catch(err => {
       console.log("DELETE_SESSION_ERR", err);
