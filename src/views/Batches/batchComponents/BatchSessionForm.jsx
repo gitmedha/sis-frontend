@@ -53,7 +53,7 @@ const BatchSessionForm = (props) => {
 
   const onSubmit = async (values) => {
     let selectedStudentIds = selectedStudents.map(student => student.id);
-    onHide({
+    await onHide({
       ...values,
       sessionAttendance,
       students: students.map(student => {
