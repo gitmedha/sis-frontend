@@ -68,7 +68,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete } = props;
+  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete, onCertificateUpdate } = props;
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
@@ -79,7 +79,7 @@ const ProgramEnrollment = (props) => {
       setLoadingCertificationButton(true);
       let { data } = await generateCertificate(programEnrollment.id);
       if (data.programEnrollment) {
-        setProgramEnrollment(data.programEnrollment);
+        await onCertificateUpdate(data.programEnrollment);
       }
     } catch (error) {
       console.log('CERTIFICATE_GENERATION_ERROR: ', error);
@@ -93,7 +93,7 @@ const ProgramEnrollment = (props) => {
       setLoadingCertificationButton(true);
       let { data } = await deleteCertificate(programEnrollment.id);
       if (data.programEnrollment) {
-        setProgramEnrollment(data.programEnrollment);
+        await onCertificateUpdate(data.programEnrollment);
       }
     } catch (error) {
       console.log('CERTIFICATE_DELETE_ERROR: ', error);
