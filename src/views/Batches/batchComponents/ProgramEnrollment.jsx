@@ -6,7 +6,7 @@ import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
-import { generateCertificate, deleteCertificate } from "../../../utils/function/certificate";
+import { deleteCertificate, generateCertificate } from "../../../utils/function/certificate";
 import Tooltip from "../../../components/content/Tooltip";
 import CertificateUpload from "../../../components/content/Certificate";
 import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
