@@ -6,7 +6,7 @@ import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
-import { generateCertificate } from "../../../utils/function/certificate";
+import { generateCertificate, deleteCertificate } from "../../../utils/function/certificate";
 import Tooltip from "../../../components/content/Tooltip";
 import CertificateUpload from "../../../components/content/Certificate";
 import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
@@ -80,6 +80,14 @@ const ProgramEnrollment = (props) => {
     if (data.programEnrollment) {
       setProgramEnrollment(data.programEnrollment);
     }
+    setLoadingCertificationButton(false);
+  }
+
+  const handleDeleteCertificate = async () => {
+    setLoadingCertificationButton(true);
+    await new Promise(r => setTimeout(r, 2000));
+    // api call to delete
+    await deleteCertificate(programEnrollment.id);
     setLoadingCertificationButton(false);
   }
 
@@ -256,10 +264,15 @@ const ProgramEnrollment = (props) => {
             </div>
           </div>
           <div className="row mt-4">
-            <div className="col-md-12 d-flex justify-content-center">
-              <button type="button" className="btn-box btn btn-primary" onClick={handleEdit}>EDIT</button>
-              <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
-              <button type="button" className="btn-box btn btn-primary" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>REGENERATE CERTIFICATE</button>
+            <div className="col-md-12 d-flex justify-content-between">
+              <div className="d-flex">
+                <button type="button" className="btn btn-primary" onClick={handleEdit}>EDIT</button>
+                <button type="button" className="btn btn-danger mx-2" onClick={handleDelete}>DELETE</button>
+              </div>
+              <div className="d-flex">
+                <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>REGENERATE CERTIFICATE</button>
+                <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
+              </div>
             </div>
           </div>
           </Section>
