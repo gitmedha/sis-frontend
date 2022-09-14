@@ -92,7 +92,7 @@ const ProgramEnrollments = (props) => {
     });
   };
 
-  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+  const fetchData = useCallback(async (pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'student.full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -106,9 +106,9 @@ const ProgramEnrollments = (props) => {
           sortByField = 'updated_at';
           break;
       }
-      getBatchProgramEnrollments(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      await getBatchProgramEnrollments(pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getBatchProgramEnrollments(pageSize, pageSize * pageIndex);
+      await getBatchProgramEnrollments(pageSize, pageSize * pageIndex);
     }
   }, []);
 
@@ -207,6 +207,11 @@ const ProgramEnrollments = (props) => {
     setShowDeleteAlert(true);
   }
 
+  const handleCertificateUpdateAction = async (programEnrollment) => {
+    setSelectedProgramEnrollment(programEnrollment);
+    await getBatchProgramEnrollments();
+  }
+
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
       setCreateModalShow(false);
@@ -227,9 +232,9 @@ const ProgramEnrollments = (props) => {
     }).catch(err => {
       console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to create program Enrollment.", "error");
-    }).finally(() => {
+    }).finally(async () => {
       NP.done();
-      getBatchProgramEnrollments();
+      await getBatchProgramEnrollments();
     });
     setCreateModalShow(false);
   };
@@ -253,9 +258,9 @@ const ProgramEnrollments = (props) => {
     }).catch(err => {
       console.log("UPDATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to update program Enrollment.", "error");
-    }).finally(() => {
-       NP.done();
-       getBatchProgramEnrollments();
+    }).finally(async () => {
+      NP.done();
+      await getBatchProgramEnrollments();
     });
     setUpdateModalShow(false);
   };
@@ -267,11 +272,11 @@ const ProgramEnrollments = (props) => {
     }).catch(err => {
       console.log("STUDENT_DELETE_ERR", err);
       setAlert("Unable to delete program enrollment.", "error");
-    }).finally(() => {
+    }).finally(async () => {
       setShowDeleteAlert(false);
-      getBatchProgramEnrollments();
-       NP.done();
-       history.push("/batches");
+      await getBatchProgramEnrollments();
+      NP.done();
+      history.push("/batches");
     });
   };
 
@@ -282,17 +287,17 @@ const ProgramEnrollments = (props) => {
     }).catch(err => {
       console.log("FILE_DELETE_ERR", err);
       setAlert("Unable to delete proof of enrollment.", "error");
-    }).finally(() => {
+    }).finally(async () => {
       NP.done();
       setShowDeleteAlert(false);
-      getBatchProgramEnrollments();
+      await getBatchProgramEnrollments();
       hideViewModal();
     });
   };
 
-  const hideModal = () => {
+  const hideModal = async () => {
     hideViewModal();
-    getBatchProgramEnrollments();
+    await getBatchProgramEnrollments();
   }
 
   return (
@@ -319,6 +324,7 @@ const ProgramEnrollments = (props) => {
         programEnrollment={selectedProgramEnrollment}
         onDelete={fileDeleteProofOfEnrollment}
         onUpdate={hideModal}
+        onCertificateUpdate={handleCertificateUpdateAction}
       />
       <CreateProgramEnrollmentForm
         show={createModalShow}

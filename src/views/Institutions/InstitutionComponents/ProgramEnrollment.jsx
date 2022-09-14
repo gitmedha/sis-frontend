@@ -6,7 +6,7 @@ import DetailField from '../../../components/content/DetailField';
 import { Anchor, Badge } from "../../../components/content/Utils";
 import { FaDownload, FaEye, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
-import { generateCertificate } from "../../../utils/function/certificate";
+import { deleteCertificate, generateCertificate } from "../../../utils/function/certificate";
 import Tooltip from "../../../components/content/Tooltip";
 import CertificateUpload from "../../../components/content/Certificate";
 import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
@@ -76,29 +76,50 @@ const ProgramEnrollment = (props) => {
   const [programEnrollmentCertificate, setProgramEnrollmentCertificate] = useState(null);
 
   const handleGenerateCertificate = async () => {
-    setLoadingCertificationButton(true);
-    let { data } = await generateCertificate(programEnrollment.id);
-    if (data.programEnrollment) {
-      setProgramEnrollment(data.programEnrollment);
+    try {
+      setLoadingCertificationButton(true);
+      let { data } = await generateCertificate(programEnrollment.id);
+      if (data.programEnrollment) {
+        setProgramEnrollment(data.programEnrollment);
+      }
+    } catch (error) {
+      console.log('CERTIFICATE_GENERATION_ERROR: ', error);
+    } finally {
+      setLoadingCertificationButton(false);
     }
-    setLoadingCertificationButton(false);
+  }
+
+  const handleDeleteCertificate = async () => {
+    try {
+      setLoadingCertificationButton(true);
+      let { data } = await deleteCertificate(programEnrollment.id);
+      if (data.programEnrollment) {
+        setProgramEnrollment(data.programEnrollment);
+      }
+    } catch (error) {
+      console.log('CERTIFICATE_DELETE_ERROR: ', error);
+    } finally {
+      setLoadingCertificationButton(false);
+    }
   }
 
   useEffect(() => {
     setProgramEnrollment(props.programEnrollment);
+  }, [props]);
 
-    if (props.programEnrollment) {
+  useEffect(() => {
+    if (programEnrollment) {
       let certificateFieldValue = '';
-      if (props.programEnrollment.medha_program_certificate) {
-        certificateFieldValue = <div><a href={props.programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(props.programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
-      } else if (props.programEnrollment.medha_program_certificate_status == 'processing') {
+      if (programEnrollment.medha_program_certificate) {
+        certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
+      } else if (programEnrollment.medha_program_certificate_status == 'processing') {
         certificateFieldValue = 'Processing';
-      } else if (props.programEnrollment.medha_program_certificate_status == 'low-attendance') {
+      } else if (programEnrollment.medha_program_certificate_status == 'low-attendance') {
         certificateFieldValue = 'Failed - Low Attendance';
       }
       setProgramEnrollmentCertificate(certificateFieldValue);
     }
-  }, [props]);
+  }, [programEnrollment])
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -257,10 +278,19 @@ const ProgramEnrollment = (props) => {
             </div>
           </div>
           <div className="row mt-4">
-            <div className="col-md-12 d-flex justify-content-center">
-              <button type="button" className="btn-box btn btn-primary" onClick={handleEdit}>EDIT</button>
-              <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
-              <button type="button" className="btn-box btn btn-primary" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>REGENERATE CERTIFICATE</button>
+            <div className="col-md-12 d-flex justify-content-between">
+              <div className="d-flex">
+                <button type="button" className="btn btn-primary" onClick={handleEdit}>EDIT</button>
+                <button type="button" className="btn btn-danger mx-2" onClick={handleDelete}>DELETE</button>
+              </div>
+              <div className="d-flex">
+                <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
+                  {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
+                </button>
+                {programEnrollment.medha_program_certificate &&
+                  <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
+                }
+              </div>
             </div>
           </div>
           </Section>
