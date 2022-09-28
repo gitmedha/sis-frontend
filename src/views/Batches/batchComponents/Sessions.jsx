@@ -205,13 +205,13 @@ const Sessions = (props) => {
       <CreateBatchSessionForm
         show={createModalShow}
         onHide={hideCreateModal}
-        batchId={batchID}
+        batch={batch}
       />
       <UpdateBatchSessionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         onDelete={onDelete}
-        batchId={batchID}
+        batch={batch}
         session={batchSessionAttendanceFormData}
       />
     </div>

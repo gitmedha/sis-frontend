@@ -34,7 +34,7 @@ const Section = styled.div`
 `;
 
 const BatchSessionForm = (props) => {
-  let { onHide, show, batchId, onDelete } = props;
+  let { onHide, show, batch, onDelete } = props;
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -71,7 +71,7 @@ const BatchSessionForm = (props) => {
       let { data } = await api.post("/graphql", {
         query: GET_BATCH_STUDENTS_ONLY,
         variables: {
-          id: batchId,
+          id: batch.id,
         },
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
@@ -235,7 +235,7 @@ const BatchSessionForm = (props) => {
                     </button>
                   </div>
                   {
-                  onDelete &&
+                  batch.status === 'In Progress' && onDelete &&
                   <button
                     type="button"
                     onClick={() => {setShowDeleteAlert(true)}}
