@@ -134,7 +134,8 @@ const ProgramEnrollments = (props) => {
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
         medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment.batch?.program?.name,
-        attendance: programEnrollment.attendance==0 ? '0%' : <ProgressBarField value={Number.parseInt(programEnrollment.attendance)} /> ,
+        attendanceValue: programEnrollment.attendance,
+        attendance: programEnrollment.attendance==0 ? '0%' : <ProgressBarField value={Number.parseInt(programEnrollment.attendance)} />,
         updated_at: moment(programEnrollment.updated_at).format("DD MMM YYYY"),
       };
     });
