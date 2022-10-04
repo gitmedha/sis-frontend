@@ -11,6 +11,7 @@ import Tooltip from "../../../components/content/Tooltip";
 import CertificateUpload from "../../../components/content/Certificate";
 import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
 import { urlPath } from "../../../constants";
+import { isAdmin } from "../../../common/commonFunctions";
 
 const FileStyled = styled.div`
 .icon-box{
@@ -68,7 +69,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollment = (props) => {
-  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete, onCertificateUpdate } = props;
+  let { onUpdate, onDelete, onHide, show, handleEdit, handleDelete, onCertificateUpdate, batch } = props;
   const [pickList, setPickList] = useState([]);
   const [loadingCertificationButton, setLoadingCertificationButton] = useState(false);
   const [programEnrollment, setProgramEnrollment] = useState(props.programEnrollment);
@@ -153,13 +154,13 @@ const ProgramEnrollment = (props) => {
             <div className="row">
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Name" value={<Anchor text={programEnrollment.student?.full_name} href={`/student/${programEnrollment.student?.id}`} />} />
-                <DetailField label="Batch" value={programEnrollment.batch?.name} />
+                <DetailField label="Batch" value={batch?.name} />
                 <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
                 <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
-                <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
+                <DetailField label="Program Name" value={batch?.program.name} />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Upload Assignment File" value= {
@@ -282,14 +283,19 @@ const ProgramEnrollment = (props) => {
                 <button type="button" className="btn btn-primary" onClick={handleEdit}>EDIT</button>
                 <button type="button" className="btn btn-danger mx-2" onClick={handleDelete}>DELETE</button>
               </div>
-              <div className="d-flex">
-                <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
-                  {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
-                </button>
-                {programEnrollment.medha_program_certificate &&
-                  <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
-                }
-              </div>
+              {
+                isAdmin() &&
+                batch.status === 'Certified' &&
+                programEnrollment.attendanceValue >= 75 &&
+                <div className="d-flex">
+                  <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
+                    {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
+                  </button>
+                  {programEnrollment.medha_program_certificate &&
+                    <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
+                  }
+                </div>
+              }
             </div>
           </div>
           </Section>
