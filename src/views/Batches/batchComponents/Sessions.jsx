@@ -7,7 +7,7 @@ import { ProgressBarField } from "../../../components/content/Utils";
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import { createBatchSession, createSessionAttendance, updateAttendance, updateSession } from "../batchActions";
+import { createBatchSession, createSessionAttendance, deleteSession, updateAttendance, updateSession } from "../batchActions";
 import { FaRegEdit } from "react-icons/fa";
 import { connect } from "react-redux";
 import { isAdmin } from "../../../common/commonFunctions";
@@ -88,7 +88,7 @@ const Sessions = (props) => {
     let {show, students, ...dataToSave} = data;
     dataToSave['date'] = new Date(data.date).toISOString();
 
-    createBatchSession(batchID, dataToSave).then(async data => {
+    await createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
       let sessionId = Number(data.data.data.createSession.session.id);
       await students.forEach(async (student) => {
@@ -115,7 +115,7 @@ const Sessions = (props) => {
     dataToSave['topics_covered'] = data.topics;
     dataToSave['date'] = new Date(data.date).toISOString();
 
-    updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
+    await updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session updated successfully.", "success");
 
       // map session attendance id to program enrollment id to connect student with their attendance
@@ -143,6 +143,18 @@ const Sessions = (props) => {
     }).catch(err => {
       console.log("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update session.", "error");
+    }).finally(() => {
+      onDataUpdate();
+      setUpdateModalShow(false);
+    });
+  };
+
+  const onDelete = async () => {
+    await deleteSession(batchSessionAttendanceFormData.id).then(() => {
+      setAlert("Session deleted successfully.", "success");
+    }).catch(err => {
+      console.log("DELETE_SESSION_ERR", err);
+      setAlert("Unable to delete session.", "error");
     }).finally(() => {
       onDataUpdate();
       setUpdateModalShow(false);
@@ -193,12 +205,13 @@ const Sessions = (props) => {
       <CreateBatchSessionForm
         show={createModalShow}
         onHide={hideCreateModal}
-        batchId={batchID}
+        batch={batch}
       />
       <UpdateBatchSessionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
-        batchId={batchID}
+        onDelete={onDelete}
+        batch={batch}
         session={batchSessionAttendanceFormData}
       />
     </div>

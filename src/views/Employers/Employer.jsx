@@ -55,7 +55,7 @@ const Employer = (props) => {
       setModalShow(false);
       return;
     }
-    let {id, show, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
+    let {id, show, created_at, created_by_frontend, updated_by_frontend, updated_at, mou_file, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
