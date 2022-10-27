@@ -7,6 +7,7 @@ import DatePicker from "./DatePicker";
 import SelectLookup from "./SelectLookup";
 import SelectLookupAsync from "./SelectLookupAsync";
 import CheckboxGroup from "./CheckboxGroup";
+import FileUploadInput from "./FileUploadInput";
 
 const FormController = (props) => {
   const { control, ...rest } = props;
@@ -28,6 +29,8 @@ const FormController = (props) => {
       return <SelectLookup {...rest} />;
     case "lookupAsync":
       return <SelectLookupAsync {...rest} />;
+    case "file":
+      return <FileUploadInput {...rest} />;
     default:
       return null;
   }

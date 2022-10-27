@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -172,7 +172,7 @@ const StudentForm = (props) => {
           initialValues={initialValues}
           validationSchema={StudentValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <h3 className="section-header">Basic Info</h3>
@@ -319,16 +319,28 @@ const StudentForm = (props) => {
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
-                        control="lookupAsync"
-                        name="registered_by"
-                        label="Registered By"
-                        className="form-control"
-                        placeholder="Registered By"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                        isDisabled={!isAdmin()}
-                      />
+                    <Input
+                      control="lookupAsync"
+                      name="registered_by"
+                      label="Registered By"
+                      className="form-control"
+                      placeholder="Registered By"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                      isDisabled={!isAdmin()}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="file"
+                      name="cv_upload"
+                      label="CV"
+                      className="form-control"
+                      placeholder="CV"
+                      onChange={(event) => {
+                        setFieldValue("cv_file", event.currentTarget.files[0]);
+                      }}
+                    />
                   </div>
                 </div>
               </Section>
