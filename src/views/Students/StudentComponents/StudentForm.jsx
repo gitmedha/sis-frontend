@@ -33,7 +33,6 @@ const Section = styled.div`
 
 const StudentForm = (props) => {
   let { onHide, show } = props;
-  const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -43,7 +42,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -103,7 +102,9 @@ const StudentForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    onHide(values);
+    setDisableSaveButton(true);
+    await onHide(values);
+    setDisableSaveButton(false);
   };
 
   let initialValues = {
@@ -337,6 +338,7 @@ const StudentForm = (props) => {
                       label="CV"
                       className="form-control"
                       placeholder="CV"
+                      accept=".pdf, .docx"
                       onChange={(event) => {
                         setFieldValue("cv_file", event.currentTarget.files[0]);
                       }}
@@ -479,7 +481,7 @@ const StudentForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                 <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
                     <button
                       type="button"
                       onClick={onHide}

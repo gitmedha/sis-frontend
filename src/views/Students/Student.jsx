@@ -67,7 +67,6 @@ const Student = (props) => {
 
     if (cv_file) {
       uploadFile(data.cv_file).then(data => {
-        console.log('uploadfile cv data...', data);
         dataToSave['CV'] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
