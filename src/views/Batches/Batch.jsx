@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import moment from "moment";
 import NP from "nprogress";
 import { useState, useEffect } from "react";
@@ -289,7 +288,7 @@ const Batch = (props) => {
                     variant="secondary"
                     id="dropdown-basic"
                     className="button btn--primary"
-                    disabled={batch?.status === "Enrollment Ongoing"}
+                    disabled={batch?.status == "Enrollment Ongoing"}
                   >
                     ACTIONS
                   </Dropdown.Toggle>
