@@ -88,7 +88,7 @@ const BatchForm = (props) => {
     initialValues = {...props}
     initialValues['grant'] = Number(props.grant?.id);
     initialValues['program'] = Number(props.program?.id);
-    initialValues['institution'] = props.institution?.id ? Number(props.institution?.name): null ;
+    initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
     initialValues['assigned_to'] = props.assigned_to?.id;
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -146,6 +146,16 @@ const BatchForm = (props) => {
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
     });
+  };
+
+  const onEnrollmentTypeChange = e => {
+    setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
+
+    if(e.value.toLowerCase() === 'multi institution') {
+      console.log('-----BEFORE institutionOptions----', institutionOptions)
+      setInstitutionOptions(null)
+      console.log('-----AFTER institutionOptions----', institutionOptions)
+    }
   };
 
   useEffect(() => {
@@ -333,7 +343,10 @@ const BatchForm = (props) => {
                       placeholder="Enrollment Type"
                       className="form-control"
                       options={enrollmentTypeOptions}
-                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
+                      onChange = {
+                        // (e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution'),
+                        (e) => onEnrollmentTypeChange(e)
+                      }
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -347,6 +360,7 @@ const BatchForm = (props) => {
                         placeholder="Institution"
                         className="form-control"
                         isDisabled={!enrollmentType}
+                        isClearable
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
