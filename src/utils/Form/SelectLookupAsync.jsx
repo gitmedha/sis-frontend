@@ -93,7 +93,10 @@ const SelectField = (props) => {
         placeholder={placeholder}
         isSearchable={isSearchable || icon !== 'down'}
         components={{ DropdownIndicator }}
-        onChange={(option) => {form.setFieldValue(field.name, (option) ? option.value : null); onChange(option);}}
+        onChange={(option) => {
+          form.setFieldValue(field.name, 
+            (option) ? option.value : null); 
+            onChange(option);}}
         value={
           options ? options.find((option) => option.value === field.value) : null
         }
