@@ -148,6 +148,13 @@ const BatchForm = (props) => {
     });
   };
 
+  const onEnrollmentTypeChange = e => {
+    setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
+    // if(e.value.toLowerCase() === 'multi institution') {
+    //   setInstitutionOptions(null)   // TODO automatically clear the institution field when 'multi-institution' is selected.
+    // }
+  };
+
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then(data => {
@@ -333,7 +340,9 @@ const BatchForm = (props) => {
                       placeholder="Enrollment Type"
                       className="form-control"
                       options={enrollmentTypeOptions}
-                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
+                      onChange = {
+                        (e) => onEnrollmentTypeChange(e)
+                      }
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -347,6 +356,7 @@ const BatchForm = (props) => {
                         placeholder="Institution"
                         className="form-control"
                         isDisabled={!enrollmentType}
+                        isClearable
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
