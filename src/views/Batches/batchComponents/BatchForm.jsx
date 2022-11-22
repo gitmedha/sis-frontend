@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
@@ -56,6 +56,12 @@ const BatchForm = (props) => {
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
   ];
+  const selectRef = useRef(null);
+  console.log('---selectRef---', selectRef, '----selectRef.current', selectRef.select?.current)
+  const clearInstitutionField = () => {
+    console.log('---- before clear value ----')
+    selectRef.current?.select?.clearValue();
+  };
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -149,26 +155,18 @@ const BatchForm = (props) => {
   };
 
   const onEnrollmentTypeChange = e => {
-    console.log('-----e---->', e)
+    clearInstitutionField('')
     setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
-    console.log('---institutionOptions--->', institutionOptions)
-    console.log('----enrollmentTypeOptions--->', enrollmentTypeOptions)
-    console.log('----enrollmentType--->', enrollmentType)
-
     if(e.value.toLowerCase() === 'multi institution') {
-    //   // console.log('---- inside the function........')
-      setInstitutionOptions(null)   // TODO automatically clear the institution field when 'multi-institution' is selected.
-    //   // console.log('---institutionOptions AFTER UPDATE--->', institutionOptions)
-    //   // throw new Error("Something went badly wrong!");
+      setInstitutionOptions(null)
     }
   }
 
 
   useEffect(() => {
     if (props.institution) {
-      console.log('props.institution---', props.institution)
       filterInstitution(props.institution.name).then(data => {
-        setInstitutionOptions(enrollmentType ? data: '');
+        setInstitutionOptions(data);
       });
     }
     if (props.program) {
@@ -362,11 +360,12 @@ const BatchForm = (props) => {
                         name="institution"
                         label="Institution"
                         filterData={filterInstitution}
-                        defaultOptions={props.id ? institutionOptions: true}
+                        defaultOptions={props.id ? institutionOptions : true}
                         placeholder="Institution"
                         className="form-control"
                         isClearable
                         isDisabled={!enrollmentType}
+                        ref2={selectRef}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -385,7 +384,7 @@ const BatchForm = (props) => {
                       options={stateOptions}
                       onChange={onStateChange}
                     />
-                     ) : (
+                    ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>

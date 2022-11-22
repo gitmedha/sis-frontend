@@ -67,7 +67,9 @@ const SelectField = (props) => {
     defaultOptions,
     isDisabled,
     isClearable,
+    ref,
   } = props;
+  console.log('ref', ref)
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
@@ -96,7 +98,9 @@ const SelectField = (props) => {
         onChange={(option) => {
           form.setFieldValue(field.name, 
             (option) ? option.value : null); 
-            onChange(option);}}
+            onChange(option);
+          }}
+
         value={
           options ? options.find((option) => option.value === field.value) : null
         }
@@ -104,20 +108,22 @@ const SelectField = (props) => {
         cacheOptions
         isDisabled={isDisabled}
         isClearable={isClearable}
+        ref={ref}
       />
   );
 };
 
 const SelectLookupAsync = (props) => {
-  const { label, name, required, ...rest } = props;
+  const { label, name, required, ref2, ...rest } = props;
   return (
     <SelectLookupAsyncField>
+
       <div className="form-group">
         <label className="text-heading leading-24" htmlFor={name}>
           {label}
           {required && <span className="required">*</span>}
         </label>
-        <Field id={name} name={name} component={SelectField} {...rest} />
+        <Field id={name} name={name} component={(props) => <SelectField ref={ref2} {...props} />}{...rest} />
         <ErrorMessage name={name} component={InputErr} />
       </div>
     </SelectLookupAsyncField>
