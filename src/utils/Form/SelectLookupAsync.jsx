@@ -69,7 +69,6 @@ const SelectField = (props) => {
     isClearable,
     ref,
   } = props;
-  console.log('ref', ref)
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
@@ -123,7 +122,7 @@ const SelectLookupAsync = (props) => {
           {label}
           {required && <span className="required">*</span>}
         </label>
-        <Field id={name} name={name} component={(props) => <SelectField ref={ref2} {...props} />}{...rest} />
+        <Field id={name} name={name} component={(props) => <SelectField ref={ref2} {...props} />}{...rest}/>
         <ErrorMessage name={name} component={InputErr} />
       </div>
     </SelectLookupAsyncField>

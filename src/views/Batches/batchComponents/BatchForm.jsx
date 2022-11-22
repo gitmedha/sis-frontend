@@ -57,9 +57,7 @@ const BatchForm = (props) => {
     {key: false, value: false, label: "No"},
   ];
   const selectRef = useRef(null);
-  console.log('---selectRef---', selectRef, '----selectRef.current', selectRef.select?.current)
   const clearInstitutionField = () => {
-    console.log('---- before clear value ----')
     selectRef.current?.select?.clearValue();
   };
 
@@ -95,6 +93,7 @@ const BatchForm = (props) => {
     initialValues['grant'] = Number(props.grant?.id);
     initialValues['program'] = Number(props.program?.id);
     initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
+    // initialValues['institution'] = props.enrollment_type === 'Multi Institution' ? null : (props.institution?.id ? Number(props.institution?.id): null)
     initialValues['assigned_to'] = props.assigned_to?.id;
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -155,10 +154,10 @@ const BatchForm = (props) => {
   };
 
   const onEnrollmentTypeChange = e => {
-    clearInstitutionField('')
+    clearInstitutionField()
     setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
     if(e.value.toLowerCase() === 'multi institution') {
-      setInstitutionOptions(null)
+      setInstitutionOptions()
     }
   }
 
