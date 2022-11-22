@@ -148,13 +148,6 @@ const BatchForm = (props) => {
     });
   };
 
-  const onEnrollmentTypeChange = e => {
-    setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
-    // if(e.value.toLowerCase() === 'multi institution') {
-    //   setInstitutionOptions(null)   // TODO automatically clear the institution field when 'multi-institution' is selected.
-    // }
-  };
-
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then(data => {
@@ -255,7 +248,7 @@ const BatchForm = (props) => {
           initialValues={initialValues}
           validationSchema={BatchValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -341,7 +334,13 @@ const BatchForm = (props) => {
                       className="form-control"
                       options={enrollmentTypeOptions}
                       onChange = {
-                        (e) => onEnrollmentTypeChange(e)
+                        (selectedOption) => {
+                          const selectedEnrollmentType = selectedOption.value.toLowerCase();
+                          setEnrollmentType(selectedEnrollmentType !== 'multi institution');
+                          if (selectedEnrollmentType === 'multi institution') {
+                            setFieldValue('institution', null);
+                          }
+                        }
                       }
                     />
                   </div>
@@ -355,8 +354,8 @@ const BatchForm = (props) => {
                         defaultOptions={props.id ? institutionOptions : true}
                         placeholder="Institution"
                         className="form-control"
-                        isDisabled={!enrollmentType}
                         isClearable
+                        isDisabled={!enrollmentType}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -375,7 +374,7 @@ const BatchForm = (props) => {
                       options={stateOptions}
                       onChange={onStateChange}
                     />
-                     ) : (
+                    ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
@@ -401,7 +400,7 @@ const BatchForm = (props) => {
                       required
                       options={areaOptions}
                     />
-                     ) : (
+                    ) : (
                       <>
                         <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
