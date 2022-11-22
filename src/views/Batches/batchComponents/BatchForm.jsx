@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect} from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
@@ -56,10 +56,6 @@ const BatchForm = (props) => {
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
   ];
-  const selectRef = useRef(null);
-  const clearInstitutionField = () => {
-    selectRef.current?.select?.clearValue();
-  };
 
   useEffect(() => {
     setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
@@ -93,7 +89,6 @@ const BatchForm = (props) => {
     initialValues['grant'] = Number(props.grant?.id);
     initialValues['program'] = Number(props.program?.id);
     initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
-    // initialValues['institution'] = props.enrollment_type === 'Multi Institution' ? null : (props.institution?.id ? Number(props.institution?.id): null)
     initialValues['assigned_to'] = props.assigned_to?.id;
     initialValues['start_date'] = new Date(props.start_date);
     initialValues['end_date'] = new Date(props.end_date);
@@ -152,15 +147,6 @@ const BatchForm = (props) => {
       })).sort((a, b) => a.label.localeCompare(b.label)));
     });
   };
-
-  const onEnrollmentTypeChange = e => {
-    clearInstitutionField()
-    setEnrollmentType(e.value.toLowerCase() !== 'multi institution')
-    if(e.value.toLowerCase() === 'multi institution') {
-      setInstitutionOptions()
-    }
-  }
-
 
   useEffect(() => {
     if (props.institution) {
@@ -262,7 +248,7 @@ const BatchForm = (props) => {
           initialValues={initialValues}
           validationSchema={BatchValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -348,7 +334,13 @@ const BatchForm = (props) => {
                       className="form-control"
                       options={enrollmentTypeOptions}
                       onChange = {
-                        (e) => onEnrollmentTypeChange(e)
+                        (selectedOption) => {
+                          const selectedEnrollmentType = selectedOption.value.toLowerCase();
+                          setEnrollmentType(selectedEnrollmentType !== 'multi institution');
+                          if (selectedEnrollmentType === 'multi institution') {
+                            setFieldValue('institution', null);
+                          }
+                        }
                       }
                     />
                   </div>
@@ -364,7 +356,6 @@ const BatchForm = (props) => {
                         className="form-control"
                         isClearable
                         isDisabled={!enrollmentType}
-                        ref2={selectRef}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
