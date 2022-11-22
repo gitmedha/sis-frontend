@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
@@ -400,7 +400,7 @@ const BatchForm = (props) => {
                       required
                       options={areaOptions}
                     />
-                     ) : (
+                    ) : (
                       <>
                         <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />

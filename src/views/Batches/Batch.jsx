@@ -193,7 +193,8 @@ const Batch = (props) => {
 
     if(data.institution === null){
       dataToSave['institution'] = null
-    } else if (typeof data.institution === 'object') {
+    } 
+    else if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
     }
     if (typeof data.program === 'object') {
