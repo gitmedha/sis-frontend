@@ -21,7 +21,7 @@ export const GET_PICKLIST = `
 }
 */
 
-export const IMAGE_UPLOADER = `
+export const FILE_UPLOAD = `
 mutation UPLOAD_FILE(
   $file: Upload!
 ) {

@@ -5,6 +5,7 @@ import {
   TableRowDetailLink,
   Badge,
   Anchor,
+  uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
@@ -206,12 +207,26 @@ const Students = (props) => {
     }
 
     // need to remove `show` from the payload
-    let {show, institution, batch, ...dataToSave} = data;
+    let {show, institution, batch, cv_file, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
     if (typeof data.CV === 'object') {
       dataToSave['CV'] = data.CV?.url;
     }
 
+    if (cv_file) {
+      uploadFile(data.cv_file).then(data => {
+        dataToSave['CV'] = data.data.data.upload.id;
+        createStudentApi(dataToSave);
+      }).catch(err => {
+        console.log("CV_UPLOAD_ERR", err);
+        setAlert("Unable to upload CV.", "error");
+      });
+    } else {
+      createStudentApi(dataToSave);
+    }
+  };
+
+  const createStudentApi = dataToSave => {
     nProgress.start();
     createStudent(dataToSave).then(data => {
       setAlert("Student created successfully.", "success");
@@ -224,7 +239,7 @@ const Students = (props) => {
       setStudents();
     });
     setModalShow(false);
-  };
+  }
 
 
   const handleStudentStatusTabChange = (statusTab) => {
