@@ -38,6 +38,7 @@ const InstitutionForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
@@ -104,7 +105,9 @@ const InstitutionForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    onHide(values);
+    setDisableSaveButton(true);
+    await onHide(values);
+    setDisableSaveButton(false);
   };
 
   const logoUploadHandler = ({ id }) => setLogo(id);
@@ -170,7 +173,7 @@ const InstitutionForm = (props) => {
           initialValues={initialValues}
           validationSchema={InstituteValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <h3 className="section-header">Details</h3>
@@ -263,6 +266,17 @@ const InstitutionForm = (props) => {
                       className="form-control"
                     />
                   </div>
+                  <Input
+                      control="file"
+                      name="mou_upload"
+                      label="MoU"
+                      className="form-control"
+                      placeholder="MoU"
+                      accept=".pdf, .docx"
+                      onChange={(event) => {
+                        setFieldValue("MoU_file", event.currentTarget.files[0]);
+                      }}
+                    />
                 </div>
               </Section>
               <Section>
@@ -440,7 +454,7 @@ const InstitutionForm = (props) => {
                   }
                 </div>
                 <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
                     <button
                       type="button"
                       onClick={onHide}

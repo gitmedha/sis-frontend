@@ -10,6 +10,7 @@ import SkeletonLoader from "./SkeletonLoader";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { FILE_UPLOAD, GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
+import { MoU_UPLOAD } from "../../graphql"
 
 const ProgressBarContainer = styled.div`
   span {
@@ -241,4 +242,27 @@ export const uploadFile = async file => {
 
   // await setFileUrl(urlPath(data.data.upload.url.substring(0)));
   // await setFileId(Number(data.data.upload.id));
+}
+export const uploadMoU = async file => {
+  let formdata = new FormData();
+  const queryString = {
+    query: MoU_UPLOAD,
+    variables: {
+      file: null,
+    },
+  };
+
+  formdata.append("operations", JSON.stringify(queryString));
+  formdata.append(
+    "map",
+    JSON.stringify({
+      0: ["variables.file"],
+    })
+  );
+
+  formdata.append("0", file, file.name);
+
+  return await api.post("/graphql", formdata, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 }

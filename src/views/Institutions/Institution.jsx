@@ -18,6 +18,7 @@ import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteInstitution, updateInstitution, getInstitutionProgramEnrollments } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
+import { uploadMoU } from "../../components/content/Utils";
 import styled from 'styled-components';
 
 const Styled = styled.div`
@@ -57,11 +58,25 @@ const Institute = (props) => {
     }
 
     // need to remove id and show from the payload
-    let {id, show, created_at, updated_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
+    let {id, show, mou_file, MoU, created_at, updated_at, created_by_frontend, updated_by_frontend, ...dataToSave} = data;
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
 
+    if (mou_file) {
+      uploadMoU(data.mou_file).then(data => {
+        dataToSave['MoU'] = data.data.data.upload.id;
+        updateInstitutionApi(id, dataToSave);
+      }).catch(err => {
+        console.log("MoU_UPLOAD_ERR", err);
+        setAlert("Unable to upload MoU.", "error");
+      });
+    } else {
+      updateInstitutionApi(id, dataToSave);
+    }
+  };
+
+  const updateInstitutionApi = (id, dataToSave) => {
     NP.start();
     updateInstitution(Number(id), dataToSave).then(data => {
       setAlert("Institution updated successfully.", "success");
@@ -73,7 +88,7 @@ const Institute = (props) => {
       getThisInstitution();
     });
     setModalShow(false);
-  };
+  }
 
   const handleDelete = async () => {
     NP.start();
