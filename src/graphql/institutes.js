@@ -100,6 +100,7 @@ mutation CREATE_INSTITUTIONS(
       medha_area
       district
       city
+      MoU_file
       logo{
         url
       }
@@ -107,6 +108,9 @@ mutation CREATE_INSTITUTIONS(
         full_name
         email
         phone
+      }
+      MoU_file {
+        id
       }
     }
   }
@@ -164,11 +168,15 @@ mutation UPDATE_INSTITUTIONS(
         medha_area
         city
         district
+        MoU_file {
+          id
+        }
         contacts {
           full_name
           email
           phone
         }
+
       }
   }
 }
@@ -271,6 +279,9 @@ query INSTITUTION(
         phone
         full_name
         designation
+      }
+      MoU_file {
+        id
       }
     }
   }

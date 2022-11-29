@@ -4,6 +4,7 @@ import {
   TableRowDetailLink,
   Badge,
   Anchor,
+  uploadMoU,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -162,8 +163,22 @@ const Institutions = (props) => {
     }
 
     // need to remove `show` from the payload
-    let {show, ...dataToSave} = data;
+    let {show, mou_file, ...dataToSave} = data;
 
+    if (mou_file) {
+      uploadMoU(data.mou_file).then(data => {
+        dataToSave['MoU'] = data.data.data.upload.id;
+        createInstitutionApi(dataToSave);
+      }).catch(err => {
+        console.log("MoU_UPLOAD_ERR", err);
+        setAlert("Unable to upload MoU.", "error");
+      });
+    } else {
+      createInstitutionApi(dataToSave);
+    }
+  };
+
+  const createInstitutionApi = dataToSave => {
     nProgress.start();
     createInstitution(dataToSave).then(data => {
       if (data.data.errors) {
