@@ -13,13 +13,14 @@ const FileUploadInputField = styled.div`
 `;
 
 const FileUploadInput = (props) => {
-  let { label, name, required, ...rest } = props;
+  let { label, subLabel = <></>, name, required, ...rest } = props;
   return (
     <FileUploadInputField className="form-group">
       <label className="text-heading leading-24" htmlFor={name}>
         {label}
         {required && <span className="required">*</span>}
       </label>
+      {subLabel}
       <input
         type="file"
         id={name}
