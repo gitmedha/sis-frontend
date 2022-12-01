@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -33,7 +33,6 @@ const Section = styled.div`
 
 const StudentForm = (props) => {
   let { onHide, show } = props;
-  const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -43,7 +42,8 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -80,6 +80,8 @@ const StudentForm = (props) => {
       }
     });
 
+    setShowCVSubLabel(props.CV && props.CV.url);
+
   }, [props]);
 
   const onStateChange = value => {
@@ -103,7 +105,9 @@ const StudentForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    onHide(values);
+    setDisableSaveButton(true);
+    await onHide(values);
+    setDisableSaveButton(false);
   };
 
   let initialValues = {
@@ -130,6 +134,7 @@ const StudentForm = (props) => {
     registered_by:userId.toString(),
   };
 
+  let fileName = '';
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
@@ -137,6 +142,11 @@ const StudentForm = (props) => {
     initialValues['registered_by'] = props?.registered_by?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+
+    if (props.CV && props.CV.url) {
+      const cvUrlSplit = props.CV.url.split('/');
+      fileName = cvUrlSplit[cvUrlSplit.length - 1];
+    }
   }
 
   return (
@@ -172,7 +182,7 @@ const StudentForm = (props) => {
           initialValues={initialValues}
           validationSchema={StudentValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <h3 className="section-header">Basic Info</h3>
@@ -319,16 +329,33 @@ const StudentForm = (props) => {
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
-                        control="lookupAsync"
-                        name="registered_by"
-                        label="Registered By"
-                        className="form-control"
-                        placeholder="Registered By"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                        isDisabled={!isAdmin()}
-                      />
+                    <Input
+                      control="lookupAsync"
+                      name="registered_by"
+                      label="Registered By"
+                      className="form-control"
+                      placeholder="Registered By"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                      isDisabled={!isAdmin()}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="file"
+                      name="cv_upload"
+                      label="CV"
+                      subLabel={showCVSubLabel && <div className="mb-1">
+                        {fileName}
+                      </div>}
+                      className="form-control"
+                      placeholder="CV"
+                      accept=".pdf, .docx"
+                      onChange={(event) => {
+                        setFieldValue("cv_file", event.currentTarget.files[0]);
+                        setShowCVSubLabel(false);
+                      }}
+                    />
                   </div>
                 </div>
               </Section>
@@ -467,7 +494,7 @@ const StudentForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                 <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
                     <button
                       type="button"
                       onClick={onHide}

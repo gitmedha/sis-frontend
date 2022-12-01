@@ -3,7 +3,7 @@ import { useState } from "react";
 import { urlPath } from "../../constants";
 import { FaFileUpload } from "react-icons/fa";
 import { ProgressBar } from "react-bootstrap";
-import { IMAGE_UPLOADER } from "../../graphql";
+import { FILE_UPLOAD } from "../../graphql";
 
 const FileUploader = ({
   handler,
@@ -26,7 +26,7 @@ const FileUploader = ({
       setUploading(true);
       let formdata = new FormData();
       const queryString = {
-        query: IMAGE_UPLOADER,
+        query: FILE_UPLOAD,
         variables: {
           file: null,
         },
