@@ -43,6 +43,7 @@ const StudentForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -131,6 +132,7 @@ const StudentForm = (props) => {
     registered_by:userId.toString(),
   };
 
+  let fileName = '';
   if (props.id) {
     initialValues = {...props};
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
@@ -138,6 +140,11 @@ const StudentForm = (props) => {
     initialValues['registered_by'] = props?.registered_by?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+
+    if (props.CV && props.CV.url) {
+      const cvUrlSplit = props.CV.url.split('/');
+      fileName = cvUrlSplit[cvUrlSplit.length - 1];
+    }
   }
 
   return (
@@ -336,11 +343,15 @@ const StudentForm = (props) => {
                       control="file"
                       name="cv_upload"
                       label="CV"
+                      subLabel={showCVSubLabel && <div className="mb-1">
+                        {fileName}
+                      </div>}
                       className="form-control"
                       placeholder="CV"
                       accept=".pdf, .docx"
                       onChange={(event) => {
                         setFieldValue("cv_file", event.currentTarget.files[0]);
+                        setShowCVSubLabel(false);
                       }}
                     />
                   </div>
