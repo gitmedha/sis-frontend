@@ -80,6 +80,8 @@ const StudentForm = (props) => {
       }
     });
 
+    setShowCVSubLabel(props.CV && props.CV.url);
+
   }, [props]);
 
   const onStateChange = value => {
