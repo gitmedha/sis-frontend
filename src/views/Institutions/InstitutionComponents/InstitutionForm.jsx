@@ -274,7 +274,7 @@ const InstitutionForm = (props) => {
                       placeholder="MoU"
                       accept=".pdf, .docx"
                       onChange={(event) => {
-                        setFieldValue("MoU_file", event.currentTarget.files[0]);
+                        setFieldValue("MoU", event.currentTarget.files[0]);
                       }}
                     />
                 </div>
