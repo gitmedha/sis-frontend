@@ -268,18 +268,44 @@ const InstitutionForm = (props) => {
                   </div>
                   <Section>
                   <h3 className="section-header">MoU</h3>
+                <div className="row">
+                    <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="start_date"
+                      label="Start Date of MoU"
+                      // required
+                      placeholder="Start Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="end_date"
+                      label="End Date of MoU"
+                      placeholder="End Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                       control="file"
                       name="mou_upload"
                       label="MoU"
+                      subLabel={showMoUSubLabel && <div classname="mb-1">
+                      {fileName} </div>}
                       className="form-control"
                       placeholder="MoU"
                       accept=".pdf, .docx"
                       onChange={(event) => {
                         setFieldValue("MoU", event.currentTarget.files[0]);
+                        setShowMoUSubLabel(false);
                       }}
                     />
+                    </div>
                     </div>
                     </Section>
                 </div>
