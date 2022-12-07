@@ -266,6 +266,9 @@ const InstitutionForm = (props) => {
                       className="form-control"
                     />
                   </div>
+                  <Section>
+                  <h3 className="section-header">MoU</h3>
+                  <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                       control="file"
                       name="mou_upload"
@@ -277,6 +280,8 @@ const InstitutionForm = (props) => {
                         setFieldValue("MoU", event.currentTarget.files[0]);
                       }}
                     />
+                    </div>
+                    </Section>
                 </div>
               </Section>
               <Section>

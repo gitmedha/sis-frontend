@@ -3,9 +3,16 @@ import { Badge } from "../../../components/content/Utils";
 import { getInstitutionsPickList } from "./instituteActions";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
+import { Tooltip } from "react-bootstrap";
+import { FaEye, FaTrashAlt } from "react-icons/fa";
+import FileUpload from "../../../components/content/FileUpload";
+import api from "../../../apis";
+import { UPDATE_INSTITUTION } from "../../../graphql";
+import { urlPath } from "../../../constants";
 
 const Details = (props) => {
   const {
+    id,
     name,
     phone,
     assigned_to,
@@ -13,10 +20,13 @@ const Details = (props) => {
     email,
     status,
     type,
+    mou_file,
     created_at,
     updated_at,
     created_by_frontend,
-    updated_by_frontend
+    updated_by_frontend,
+    onMouUpdate,
+    onMouDelete
   } = props;
 
   const [pickList, setPickList] = useState([]);
