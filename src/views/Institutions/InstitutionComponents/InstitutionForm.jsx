@@ -273,7 +273,6 @@ const InstitutionForm = (props) => {
                     <Input
                       name="start_date"
                       label="Start Date of MoU"
-                      // required
                       placeholder="Start Date"
                       control="datepicker"
                       className="form-control"
@@ -336,7 +335,7 @@ const InstitutionForm = (props) => {
                       placeholder="State"
                       className="form-control"
                     />
-                     ) : (
+                    ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
@@ -481,7 +480,7 @@ const InstitutionForm = (props) => {
                         ))}
                       </ul>
                     </div>
-                   :null
+                    :null
                   }
                 </div>
                 <div className="d-flex justify-content-start">
