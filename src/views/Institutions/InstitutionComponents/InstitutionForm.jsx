@@ -132,7 +132,6 @@ const InstitutionForm = (props) => {
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['district'] = props.district ? props.district: null ;
     initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
-
   }
 
   if (!props.contacts) {
@@ -266,10 +265,12 @@ const InstitutionForm = (props) => {
                       className="form-control"
                     />
                   </div>
-                  <Section>
-                  <h3 className="section-header">MoU</h3>
+                </div>
+              </Section>
+              <Section>
+              <h3 className="section-header">MoU</h3>
                 <div className="row">
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12">
                     <Input
                       name="start_date"
                       label="Start Date of MoU"
@@ -292,22 +293,17 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                       control="file"
-                      name="mou_upload"
+                      name="mou_file"
                       label="MoU"
-                      subLabel={showMoUSubLabel && <div classname="mb-1">
-                      {fileName} </div>}
                       className="form-control"
                       placeholder="MoU"
                       accept=".pdf, .docx"
                       onChange={(event) => {
-                        setFieldValue("MoU", event.currentTarget.files[0]);
-                        setShowMoUSubLabel(false);
+                        setFieldValue("mou_file", event.currentTarget.files[0]);
                       }}
                     />
                     </div>
                     </div>
-                    </Section>
-                </div>
               </Section>
               <Section>
                 <h3 className="section-header">Address</h3>
