@@ -85,7 +85,6 @@ const Institute = (props) => {
       setAlert("Unable to update institution.", "error");
     }).finally(() => {
       NP.done();
-      getThisInstitution();
     });
     setModalShow(false);
   }
@@ -101,6 +100,7 @@ const Institute = (props) => {
       setShowDeleteAlert(false);
       NP.done();
       history.push("/institutions");
+      getThisInstitution();
     });
   };
 

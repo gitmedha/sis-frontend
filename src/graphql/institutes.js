@@ -169,7 +169,6 @@ mutation UPDATE_INSTITUTIONS(
           email
           phone
         }
-
       }
   }
 }

@@ -163,22 +163,22 @@ const Institutions = (props) => {
     }
 
     // need to remove `show` from the payload
-    let {show, mou_file, ...dataToSave} = data;
+    let {show, ...dataToSave} = data;
 
-    if (mou_file) {
-      uploadMoU(data.mou_file).then(data => {
-        dataToSave['MoU'] = data.data.data.upload.id;
-        createInstitutionApi(dataToSave);
-      }).catch(err => {
-        console.log("MoU_UPLOAD_ERR", err);
-        setAlert("Unable to upload MoU.", "error");
-      });
-    } else {
-      createInstitutionApi(dataToSave);
-    }
-  };
+    // if (mou_file) {
+    //   uploadMoU(data.mou_file).then(data => {
+    //     dataToSave['mou_file'] = data.data.data.upload.id;
+    //     createInstitutionApi(dataToSave);
+    //   }).catch(err => {
+    //     console.log("MoU_UPLOAD_ERR", err);
+    //     setAlert("Unable to upload MoU.", "error");
+    //   });
+    // } else {
+      // createInstitutionApi(dataToSave);
+    // }
+  // };
 
-  const createInstitutionApi = dataToSave => {
+  // const createInstitutionApi = dataToSave => {
     nProgress.start();
     createInstitution(dataToSave).then(data => {
       if (data.data.errors) {

@@ -293,7 +293,7 @@ const InstitutionForm = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                   <Input
                       control="file"
-                      name="mou_file"
+                      name="mou_upload"
                       label="MoU"
                       className="form-control"
                       placeholder="MoU"
