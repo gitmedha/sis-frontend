@@ -169,6 +169,10 @@ mutation UPDATE_INSTITUTIONS(
           email
           phone
         }
+        mou {
+          id
+          url
+        }
       }
   }
 }
