@@ -111,7 +111,7 @@ const ProgramEnrollment = (props) => {
     if (programEnrollment) {
       let certificateFieldValue = '';
       if (programEnrollment.medha_program_certificate) {
-        certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block" rel="noreferrer"><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96'}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
+        certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block"><FaDownload size="20" color="#6C6D78" /></a><div style={{ fontSize: '12px', fontFamily: 'Latto-Italic', color: '#787B96' }}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
       } else if (programEnrollment.medha_program_certificate_status == 'processing') {
         certificateFieldValue = 'Processing';
       } else if (programEnrollment.medha_program_certificate_status == 'low-attendance') {
@@ -128,26 +128,26 @@ const ProgramEnrollment = (props) => {
   }, []);
 
   return (
-      <Modal
-        centered
-        size="lg"
-        show={show}
-        onHide={onHide}
-        animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
-        className="form-modal"
-      >
-        <Modal.Header className="bg-white">
-          <Modal.Title
-            id="contained-modal-title-vcenter"
-            className="d-flex align-items-center"
-          >
-            <h1 className="text--primary bebas-thick mb-0">
-              Program Enrollment Details
-            </h1>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="bg-white">
+    <Modal
+      centered
+      size="lg"
+      show={show}
+      onHide={onHide}
+      animation={false}
+      aria-labelledby="contained-modal-title-vcenter"
+      className="form-modal"
+    >
+      <Modal.Header className="bg-white">
+        <Modal.Title
+          id="contained-modal-title-vcenter"
+          className="d-flex align-items-center"
+        >
+          <h1 className="text--primary bebas-thick mb-0">
+            Program Enrollment Details
+          </h1>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="bg-white">
         <Section>
           <h2 className="section-header">Enrollment Details</h2>
           <FileStyled>
@@ -163,23 +163,23 @@ const ProgramEnrollment = (props) => {
                 <DetailField label="Program Name" value={batch?.program.name} />
               </div>
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Upload Assignment File" value= {
-                    programEnrollment.assignment_file &&
-                    <div>
-                      <p className="mb-0">(updated on: {moment(programEnrollment.assignment_file.updated_at).format("DD MMM YYYY")})</p>
-                    </div>
-                }/>
-                <div className ="row">
+                <DetailField label="Upload Assignment File" value={
+                  programEnrollment.assignment_file &&
+                  <div>
+                    <p className="mb-0">(updated on: {moment(programEnrollment.assignment_file.updated_at).format("DD MMM YYYY")})</p>
+                  </div>
+                } />
+                <div className="row">
                   <div className="col-md-6"></div>
                   <div className="col-md-6 d-flex">
                     <div className="cv-icon">
-                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='assignment_file' done={() => onUpdate() } />
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='assignment_file' done={() => onUpdate()} />
                     </div>
                     {programEnrollment.assignment_file &&
                       <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
-                            <a href={urlPath( programEnrollment.assignment_file?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={programEnrollment.assignment_file ? '#207B69' : '#787B96'} /></a>
+                            <a href={urlPath(programEnrollment.assignment_file?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.assignment_file ? '#207B69' : '#787B96'} /></a>
                           </Tooltip>
                         </div>
                       </div>
@@ -187,7 +187,7 @@ const ProgramEnrollment = (props) => {
                     {programEnrollment.assignment_file &&
                       <div div className="cv-icon">
                         <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
-                          <a  href="#" className="menu_links" onClick={() => onDelete('assignment_file')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                          <a href="#" className="menu_links" onClick={() => onDelete('assignment_file')}> <FaTrashAlt size="27" color='#787B96' /> </a>
                         </Tooltip>
                       </div>
                     }
@@ -196,7 +196,7 @@ const ProgramEnrollment = (props) => {
               </div>
             </div>
           </FileStyled>
-          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <hr className="mb-4 opacity-1" style={{ color: '#C4C4C4' }} />
           <h2 className="section-header">Course Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
@@ -210,7 +210,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>
-          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <hr className="mb-4 opacity-1" style={{ color: '#C4C4C4' }} />
           <h2 className="section-header">Higher Education</h2>
           <FileStyled>
             <div className="row">
@@ -221,23 +221,23 @@ const ProgramEnrollment = (props) => {
                 <DetailField label="Year of Completion" value={<Badge value={programEnrollment.higher_education_year_of_course_completion} pickList={pickList.year_of_completion} />} />
               </div>
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Upload Proof of Enrollment" value= {
-                    programEnrollment.higher_education_proof_of_enrollment &&
-                    <div>
-                      <p className="mb-0">(updated on: {moment(programEnrollment.higher_education_proof_of_enrollment.updated_at).format("DD MMM YYYY")})</p>
-                    </div>
-                }/>
-                <div className ="row">
+                <DetailField label="Upload Proof of Enrollment" value={
+                  programEnrollment.higher_education_proof_of_enrollment &&
+                  <div>
+                    <p className="mb-0">(updated on: {moment(programEnrollment.higher_education_proof_of_enrollment.updated_at).format("DD MMM YYYY")})</p>
+                  </div>
+                } />
+                <div className="row">
                   <div className="col-md-6"></div>
                   <div className="col-md-6 d-flex">
                     <div className="cv-icon">
-                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='higher_education_proof_of_enrollment' done={() => onUpdate() } />
+                      <CertificateUpload query={UPDATE_PROGRAM_ENROLLMENT} id={programEnrollment.id} certificate='higher_education_proof_of_enrollment' done={() => onUpdate()} />
                     </div>
                     {programEnrollment.higher_education_proof_of_enrollment &&
                       <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
-                            <a href={urlPath( programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? '#207B69' : '#787B96'} /></a>
+                            <a href={urlPath(programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? '#207B69' : '#787B96'} /></a>
                           </Tooltip>
                         </div>
                       </div>
@@ -245,7 +245,7 @@ const ProgramEnrollment = (props) => {
                     {programEnrollment.higher_education_proof_of_enrollment &&
                       <div div className="cv-icon">
                         <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
-                          <a  href="#" className="menu_links" onClick={() => onDelete('higher_education_proof_of_enrollment')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                          <a href="#" className="menu_links" onClick={() => onDelete('higher_education_proof_of_enrollment')}> <FaTrashAlt size="27" color='#787B96' /> </a>
                         </Tooltip>
                       </div>
                     }
@@ -254,7 +254,7 @@ const ProgramEnrollment = (props) => {
               </div>
             </div>
           </FileStyled>
-          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <hr className="mb-4 opacity-1" style={{ color: '#C4C4C4' }} />
           <h2 className="section-header">Fee Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
@@ -268,7 +268,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Fee Refund Date" value={programEnrollment.fee_refund_date ? moment(programEnrollment.fee_refund_date).format("DD MMM YYYY") : ''} />
             </div>
           </div>
-          <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
+          <hr className="mb-4 opacity-1" style={{ color: '#C4C4C4' }} />
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Certification Date" value={programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY") : ''} />
@@ -298,9 +298,9 @@ const ProgramEnrollment = (props) => {
               }
             </div>
           </div>
-          </Section>
-        </Modal.Body>
-      </Modal>
+        </Section>
+      </Modal.Body>
+    </Modal>
   );
 };
 

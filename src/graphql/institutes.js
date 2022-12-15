@@ -169,8 +169,6 @@ mutation UPDATE_INSTITUTIONS(
           email
           phone
         }
-        start_date
-        end_date
         mou {
           id
           url

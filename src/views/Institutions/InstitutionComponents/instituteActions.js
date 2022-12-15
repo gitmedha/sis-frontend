@@ -54,7 +54,6 @@ export const createInstitution = async (data) => {
 }
 
 export const updateInstitution = async (id, data) => {
-  console.log('--- id->', id, '--- data is updateInstitution-->', data)
   return await api.post('/graphql', {
     query: UPDATE_INSTITUTION,
     variables: {

@@ -10,13 +10,13 @@ import SkeletonLoader from "./SkeletonLoader";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { FILE_UPLOAD, GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
-import { MoU_UPLOAD } from "../../graphql"
+import { MoU_UPLOAD } from "../../graphql";
 
 const ProgressBarContainer = styled.div`
   span {
     font-size: 12px !important;
   }
-`
+`;
 
 const badgeStyle = {
   height: "22px",
@@ -29,15 +29,17 @@ const badgeStyle = {
   justifyContent: "center",
 };
 
-export const Badge = ({ value, pickList=[] }) => {
-
+export const Badge = ({ value, pickList = [] }) => {
   const config = pickList.filter((item) => {
-    return item.value.toLowerCase() === (typeof value === 'string' ? value.toLowerCase() : value);
+    return (
+      item.value.toLowerCase() ===
+      (typeof value === "string" ? value.toLowerCase() : value)
+    );
   });
   const badgeConfig = {
-    color: config.length ? config[0]['text-color'] : '#000000',
-    backgroundColor: config.length ? config[0]['highlight-color'] : '#FFFFFF',
-    text: config.length ? config[0]['value'] : value,
+    color: config.length ? config[0]["text-color"] : "#000000",
+    backgroundColor: config.length ? config[0]["highlight-color"] : "#FFFFFF",
+    text: config.length ? config[0]["value"] : value,
   };
   return (
     <div className="d-flex align-items-center h-100">
@@ -186,26 +188,43 @@ const StudentModal = (props) => {
 };
 
 export const SerialNumberRenderer = ({ node }) => {
-  return <div className="h-100 d-flex align-items-center"><p className="mb-0" style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>{node.rowIndex + 1}.</p></div>;
+  return (
+    <div className="h-100 d-flex align-items-center">
+      <p
+        className="mb-0"
+        style={{ color: "#787B96", fontFamily: "Latto-Bold" }}
+      >
+        {node.rowIndex + 1}.
+      </p>
+    </div>
+  );
 };
 
 export const TextRenderer = ({ value }) => {
-    return <div className="h-100 d-flex align-items-center"><p className="mb-0">{ value }</p></div>;
+  return (
+    <div className="h-100 d-flex align-items-center">
+      <p className="mb-0">{value}</p>
+    </div>
+  );
 };
 
 export const Anchor = ({ text, href }) => {
-    return <div className="h-100 d-flex align-items-center">
-      <a href={href} className="mb-0" style={{color: '#00ADEF'}}>{ text }</a>
-    </div>;
+  return (
+    <div className="h-100 d-flex align-items-center">
+      <a href={href} className="mb-0" style={{ color: "#00ADEF" }}>
+        {text}
+      </a>
+    </div>
+  );
 };
 
-export const ProgressBarField = ({ value, failBelow=75 }) => (
+export const ProgressBarField = ({ value, failBelow = 75 }) => (
   <ProgressBarContainer>
     <ProgressBar
-      bgColor={value < failBelow ? '#FF3A3A' : '#31B89D'}
+      bgColor={value < failBelow ? "#FF3A3A" : "#31B89D"}
       completed={value ? value : 0}
-      labelColor={value ? '#fff' : '#1C2833'}
-      baseBgColor={'#EEEFF8'}
+      labelColor={value ? "#fff" : "#1C2833"}
+      baseBgColor={"#EEEFF8"}
     />
   </ProgressBarContainer>
 );
@@ -217,7 +236,7 @@ export const cellStyle = {
   fontFamily: "Latto-Regular",
 };
 
-export const uploadFile = async file => {
+export const uploadFile = async (file) => {
   let formdata = new FormData();
   const queryString = {
     query: FILE_UPLOAD,
@@ -242,11 +261,11 @@ export const uploadFile = async file => {
 
   // await setFileUrl(urlPath(data.data.upload.url.substring(0)));
   // await setFileId(Number(data.data.upload.id));
-}
-export const uploadMoU = async file => {
+};
+export const uploadMoU = async (file) => {
   let formdata = new FormData();
   const queryString = {
-    query: MoU_UPLOAD,
+    query: FILE_UPLOAD,
     variables: {
       file: null,
     },
@@ -265,4 +284,4 @@ export const uploadMoU = async file => {
   return await api.post("/graphql", formdata, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-}
+};

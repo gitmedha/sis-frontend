@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import Table from "../../../components/content/Table";
-// import { Anchor } from "../../../components/content/Utils";
+
 const MoUs = ({ mou }) => {
   mou = mou.map((Mou) => {
     return Mou;
@@ -9,12 +9,12 @@ const MoUs = ({ mou }) => {
   const columns = useMemo(
     () => [
       {
-        Header: "Full Name",
-        accessor: "full_name",
+        Header: "ID",
+        accessor: "id",
       },
       {
         Header: "Mou",
-        accessor: "designation",
+        accessor: "url",
       },
     ],
     []

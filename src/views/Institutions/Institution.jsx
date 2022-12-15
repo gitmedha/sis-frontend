@@ -3,13 +3,10 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
-
 import api from "../../apis";
 import Address from "./InstitutionComponents/Address";
 import Contacts from "./InstitutionComponents/Contacts";
 import Details from "./InstitutionComponents/Details";
-// import InstitutionBatches from "./InstitutionComponents/InstitutionBatches";
-// import Students from "./InstitutionComponents/Students";
 import ProgramEnrollments from "./InstitutionComponents/ProgramEnrollments";
 import { GET_INSTITUTE, UPDATE_INSTITUTION } from "../../graphql";
 import { TitleWithLogo } from "../../components/content/Avatar";
@@ -96,7 +93,6 @@ const Institute = (props) => {
 
   const updateInstitutionApi = (id, dataToSave) => {
     NP.start();
-    console.log("--dataToSave---", dataToSave);
     updateInstitution(Number(id), dataToSave)
       .then((data) => {
         setAlert("Institution updated successfully.", "success");
@@ -107,8 +103,9 @@ const Institute = (props) => {
       })
       .finally(() => {
         NP.done();
+      getThisInstitution();
       });
-    setModalShow(false);
+          setModalShow(false);
   };
 
   const handleDelete = async () => {
@@ -125,7 +122,6 @@ const Institute = (props) => {
         setShowDeleteAlert(false);
         NP.done();
         history.push("/institutions");
-        getThisInstitution();
       });
   };
 

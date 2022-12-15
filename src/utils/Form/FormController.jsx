@@ -8,8 +8,6 @@ import SelectLookup from "./SelectLookup";
 import SelectLookupAsync from "./SelectLookupAsync";
 import CheckboxGroup from "./CheckboxGroup";
 import FileUploadInput from "./FileUploadInput";
-import MouUploadInput from "./MouUploadInput";
-
 
 const FormController = (props) => {
   const { control, ...rest } = props;
@@ -33,8 +31,6 @@ const FormController = (props) => {
       return <SelectLookupAsync {...rest} />;
     case "file":
       return <FileUploadInput {...rest} />;
-      case "MoU":
-        return <MouUploadInput {...rest} />;
     default:
       return null;
   }

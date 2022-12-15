@@ -34,19 +34,6 @@ mutation UPLOAD_FILE(
 }
 `;
 
-export const MoU_UPLOAD = `
-mutation UPLOAD_MOU(
-  $file: Upload!
-) {
-  upload(
-    file: $file
-  ) {
-    id
-    url
-  }
-}
-`;
-
 export const DELETE_FILE = `
 mutation DELETE_FILE($id: ID!) {
   deleteFile(input: { where: { id: $id } }) {
