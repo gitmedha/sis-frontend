@@ -109,7 +109,11 @@ mutation CREATE_INSTITUTIONS(
         phone
       }
       mou_list {
-        id
+        mou {
+          id
+        }
+        start_date
+        end_date
       }
     }
   }
@@ -175,7 +179,6 @@ mutation UPDATE_INSTITUTIONS(
         mou_list {
           mou {
             id
-            url
           }
             start_date
             end_date
