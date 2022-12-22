@@ -271,7 +271,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                     activeItem.CV ? (
                       <div className="d-flex flex-column">
                         <div>
-                          <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1" rel="noreferrer">View</a>
+                          <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
                         </div>
                         <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format('DD MMM YYYY')})</div>
                       </div>
