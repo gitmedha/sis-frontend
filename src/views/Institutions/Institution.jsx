@@ -19,7 +19,7 @@ import {
   getInstitutionProgramEnrollments,
 } from "./InstitutionComponents/instituteActions";
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
-import { uploadMoU } from "../../components/content/Utils";
+import { uploadFile } from "../../components/content/Utils";
 import styled from "styled-components";
 import MoUs from "./InstitutionComponents/MoUs";
 
@@ -49,7 +49,7 @@ const Institute = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
   const { setAlert } = props;
-  const { address, contacts, mou, ...rest } = instituteData;
+  const { address, contacts, mou_list, ...rest } = instituteData;
   const instituteID = props.match.params.id;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState(
     []
@@ -77,9 +77,9 @@ const Institute = (props) => {
     }
 
     if (mou) {
-      uploadMoU(data.mou)
+      uploadFile(data.mou)
         .then((data) => {
-          dataToSave["mou"] = data.data.data.upload.id;
+          dataToSave["mou_list"] = data.data.data.upload.id;
           updateInstitutionApi(id, dataToSave);
         })
         .catch((err) => {
@@ -202,8 +202,8 @@ const Institute = (props) => {
           <Collapsible title="Address">
             <Address {...instituteData} id={rest.id} />
           </Collapsible>
-          <Collapsible title="MoU" badge={instituteData?.mou?.length}>
-            <MoUs mou={mou} id={rest.id} />
+          <Collapsible title="MoU" badge={instituteData?.mou_list?.length}>
+            <MoUs mou_list={mou_list} id={rest.id} />
           </Collapsible>
           <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
             <Contacts contacts={contacts} id={rest.id} />

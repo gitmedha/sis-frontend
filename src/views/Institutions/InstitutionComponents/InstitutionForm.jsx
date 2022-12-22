@@ -161,9 +161,9 @@ const InstitutionForm = (props) => {
     initialValues["contacts"] = [];
   }
 
-  if (!props.mou) {
+  if (!props.mou_list) {
     // create an empty MoU if no MoUs are present
-    initialValues["mou"] = [];
+    initialValues["mou_list"] = [];
   }
 
   return (
@@ -300,54 +300,19 @@ const InstitutionForm = (props) => {
               </Section>
               <Section>
                 <h3 className="section-header">MoU</h3>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12">
-                    <Input
-                      name="start_date"
-                      label="Start Date of MoU"
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="end_date"
-                      label="End Date of MoU"
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="file"
-                      name="mou_upload"
-                      label="MoU"
-                      className="form-control"
-                      placeholder="MoU"
-                      accept=".pdf, .docx"
-                      onChange={(event) => {
-                        setFieldValue("mou", event.currentTarget.files[0]);
-                      }}
-                    />
-                  </div>
-                </div>
-                <FieldArray name="mou">
+                <FieldArray name="mou_list">
                   {({ insert, remove, push }) => (
                     <div>
-                      {values.mou &&
-                        values.mou.length > 0 &&
-                        values.mou.map((Mou, index) => (
+                      {values.mou_list &&
+                        values.mou_list.length > 0 &&
+                        values.mou_list.map((mou, index) => (
                           <div
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
                           >
                             <div className="col-md-6 col-sm-12">
                               <Input
-                                name="start_date"
+                                name={`mou_list.${index}.start_date`}
                                 label="Start Date of MoU"
                                 placeholder="Start Date"
                                 control="datepicker"
@@ -357,7 +322,7 @@ const InstitutionForm = (props) => {
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
-                                name="end_date"
+                                name={`mou_list.${index}.end_date`}
                                 label="End Date of MoU"
                                 placeholder="End Date"
                                 control="datepicker"
@@ -368,7 +333,7 @@ const InstitutionForm = (props) => {
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
                                 control="file"
-                                name="mou_upload"
+                                name={`mou_list.${index}.mou`}
                                 label="MoU"
                                 className="form-control"
                                 placeholder="MoU"
@@ -398,7 +363,7 @@ const InstitutionForm = (props) => {
                             push({
                               start_date: "",
                               end_date: "",
-                              Mou: "",
+                              mou: "",
                             });
                           }}
                         >
