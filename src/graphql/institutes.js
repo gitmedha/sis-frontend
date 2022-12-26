@@ -289,6 +289,7 @@ query INSTITUTION(
       mou_list {
         mou {
           id
+          url
         }
           start_date
           end_date

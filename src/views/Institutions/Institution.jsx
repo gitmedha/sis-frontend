@@ -93,16 +93,14 @@ const Institute = (props) => {
               ...mouData,
               mou: uploadedMouId
             })
-
           } catch (err) {
           console.log('mou upload err', err)
           setAlert("Unable to upload MoU.", "error")
           }
         })
       )
-    } else {
-      updateInstitutionApi(id, dataToSave);
     }
+    updateInstitutionApi(id, dataToSave);
   };
 
   const updateInstitutionApi = (id, dataToSave) => {

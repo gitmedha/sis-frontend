@@ -4,15 +4,15 @@ import { Anchor } from "../../../components/content/Utils";
 
 const MoUs = ({ mou_list }) => {
   mou_list = mou_list.map((mou) => {
-    mou.id = <Anchor text = {mou.id} href = {mou.id} />;
+    mou.mou.url = <Anchor text={mou.mou.url} href={mou.mou.url} />;
     return mou;
   });
 
   const columns = useMemo(
     () => [
       {
-        Header: 'URL',
-        accessor: 'mou',
+        Header: 'Name',
+        accessor: 'mou.url',
       },
       {
         Header: 'Start Date',
