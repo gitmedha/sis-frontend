@@ -65,7 +65,7 @@ const Institute = (props) => {
     let {
       id,
       show,
-      mou,
+      mou_list,
       created_at,
       updated_at,
       created_by_frontend,
@@ -76,16 +76,30 @@ const Institute = (props) => {
       dataToSave["logo"] = data.logo?.id;
     }
 
-    if (mou) {
-      uploadFile(data.mou)
-        .then((data) => {
-          dataToSave["mou_list"] = data.data.data.upload.id;
-          updateInstitutionApi(id, dataToSave);
+    if (mou_list && mou_list.length) {
+      dataToSave['mou_list'] = []
+      await Promise.all(
+        mou_list.map(async (mouData) => {
+          try  {
+            const {
+              data: {
+                data: {
+                    upload: { id: uploadedMouId }
+                  }
+              }
+            } = await uploadFile(mouData.mou)
+
+            dataToSave['mou_list'].push({
+              ...mouData,
+              mou: uploadedMouId
+            })
+
+          } catch (err) {
+          console.log('mou upload err', err)
+          setAlert("Unable to upload MoU.", "error")
+          }
         })
-        .catch((err) => {
-          console.log("MOU_UPLOAD_ERR", err);
-          setAlert("Unable to upload MoU.", "error");
-        });
+      )
     } else {
       updateInstitutionApi(id, dataToSave);
     }

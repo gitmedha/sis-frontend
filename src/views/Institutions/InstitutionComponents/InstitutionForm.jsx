@@ -340,7 +340,7 @@ const InstitutionForm = (props) => {
                                 accept=".pdf, .docx"
                                 onChange={(event) => {
                                   setFieldValue(
-                                    "mou",
+                                    `mou_list.${index}.mou`,
                                     event.currentTarget.files[0]
                                   );
                                 }}
