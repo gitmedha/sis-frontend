@@ -3,6 +3,7 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
+  uploadFile,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -190,7 +191,28 @@ const Institutions = (props) => {
     }
 
     // need to remove `show` from the payload
-    let { show, ...dataToSave } = data;
+    let { id, show, mou, ...dataToSave } = data;
+    if (mou && mou.length) {
+      dataToSave["mou"] = [];
+      await Promise.all(
+        mou.map(async (mouData) => {
+          try {
+            const response = await uploadFile(mouData.mou_file);
+            dataToSave["mou"].push({
+              ...mouData,
+              mou_file: response.data.data.upload.id,
+            });
+          } catch (err) {
+            console.log("mou upload err", err);
+            setAlert("Unable to upload MoU.", "error");
+          }
+        })
+      );
+    }
+    createInstitutionApi(id, dataToSave);
+  };
+
+  const createInstitutionApi = (id, dataToSave) => {
     nProgress.start();
     createInstitution(dataToSave)
       .then((data) => {

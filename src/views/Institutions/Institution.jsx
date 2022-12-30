@@ -49,7 +49,7 @@ const Institute = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const history = useHistory();
   const { setAlert } = props;
-  const { address, contacts, mou_list, ...rest } = instituteData;
+  const { address, contacts, mou, ...rest } = instituteData;
   const instituteID = props.match.params.id;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState(
     []
@@ -65,7 +65,7 @@ const Institute = (props) => {
     let {
       id,
       show,
-      mou_list,
+      mou,
       created_at,
       updated_at,
       created_by_frontend,
@@ -76,29 +76,22 @@ const Institute = (props) => {
       dataToSave["logo"] = data.logo?.id;
     }
 
-    if (mou_list && mou_list.length) {
-      dataToSave['mou_list'] = []
+    if (mou && mou.length) {
+      dataToSave["mou"] = [];
       await Promise.all(
-        mou_list.map(async (mouData) => {
-          try  {
-            const {
-              data: {
-                data: {
-                    upload: { id: uploadedMouId }
-                  }
-              }
-            } = await uploadFile(mouData.mou)
-
-            dataToSave['mou_list'].push({
+        mou.map(async (mouData) => {
+          try {
+            const response = await uploadFile(mouData.mou_file);
+            dataToSave["mou"].push({
               ...mouData,
-              mou: uploadedMouId
-            })
+              mou_file: response.data.data.upload.id,
+            });
           } catch (err) {
-          console.log('mou upload err', err)
-          setAlert("Unable to upload MoU.", "error")
+            console.log("mou upload err", err);
+            setAlert("Unable to upload MoU.", "error");
           }
         })
-      )
+      );
     }
     updateInstitutionApi(id, dataToSave);
   };
@@ -115,9 +108,9 @@ const Institute = (props) => {
       })
       .finally(() => {
         NP.done();
-      getThisInstitution();
+        getThisInstitution();
       });
-          setModalShow(false);
+    setModalShow(false);
   };
 
   const handleDelete = async () => {
@@ -214,8 +207,8 @@ const Institute = (props) => {
           <Collapsible title="Address">
             <Address {...instituteData} id={rest.id} />
           </Collapsible>
-          <Collapsible title="MoU" badge={instituteData?.mou_list?.length}>
-            <MoUs mou_list={mou_list} id={rest.id} />
+          <Collapsible title="MoU" badge={instituteData?.mou?.length}>
+            <MoUs mou={mou} id={rest.id} />
           </Collapsible>
           <Collapsible title="Contacts" badge={instituteData?.contacts?.length}>
             <Contacts contacts={contacts} id={rest.id} />

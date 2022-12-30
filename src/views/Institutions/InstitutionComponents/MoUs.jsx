@@ -2,17 +2,17 @@ import { useMemo } from "react";
 import Table from "../../../components/content/Table";
 import { Anchor } from "../../../components/content/Utils";
 
-const MoUs = ({ mou_list }) => {
-  mou_list = mou_list.map((mou) => {
-    mou.mou.url = <Anchor text={mou.mou.url} href={mou.mou.url} />;
-    return mou;
+const MoUs = ({ mou }) => {
+  mou = mou.map((mou_file) => {
+    mou_file.mou_file.url = <Anchor text={mou_file.mou_file.url} href={mou_file.mou_file.url} />;
+    return mou_file;
   });
 
   const columns = useMemo(
     () => [
       {
         Header: 'Name',
-        accessor: 'mou.url',
+        accessor: 'mou_file.url',
       },
       {
         Header: 'Start Date',
@@ -30,9 +30,9 @@ const MoUs = ({ mou_list }) => {
     <div className="container-fluid my-3">
       <Table
         columns={columns}
-        data={mou_list}
-        paginationPageSize={mou_list.length}
-        totalRecords={mou_list.length}
+        data={mou}
+        paginationPageSize={mou.length}
+        totalRecords={mou.length}
         fetchData={() => {}}
         loading={false}
         showPagination={false}

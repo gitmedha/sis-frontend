@@ -161,9 +161,9 @@ const InstitutionForm = (props) => {
     initialValues["contacts"] = [];
   }
 
-  if (!props.mou_list) {
+  if (!props.mou) {
     // create an empty MoU if no MoUs are present
-    initialValues["mou_list"] = [];
+    initialValues["mou"] = [];
   }
 
   return (
@@ -300,19 +300,19 @@ const InstitutionForm = (props) => {
               </Section>
               <Section>
                 <h3 className="section-header">MoU</h3>
-                <FieldArray name="mou_list">
-                  {({ insert, remove, push }) => (
+                <FieldArray name="mou">
+                  {({ remove, push }) => (
                     <div>
-                      {values.mou_list &&
-                        values.mou_list.length > 0 &&
-                        values.mou_list.map((mou, index) => (
+                      {values.mou &&
+                        values.mou.length > 0 &&
+                        values.mou.map((mou_file, index) => (
                           <div
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
                           >
                             <div className="col-md-6 col-sm-12">
                               <Input
-                                name={`mou_list.${index}.start_date`}
+                                name={`mou.${index}.start_date`}
                                 label="Start Date of MoU"
                                 placeholder="Start Date"
                                 control="datepicker"
@@ -322,7 +322,7 @@ const InstitutionForm = (props) => {
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
-                                name={`mou_list.${index}.end_date`}
+                                name={`mou.${index}.end_date`}
                                 label="End Date of MoU"
                                 placeholder="End Date"
                                 control="datepicker"
@@ -333,14 +333,14 @@ const InstitutionForm = (props) => {
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
                                 control="file"
-                                name={`mou_list.${index}.mou`}
+                                name={`mou.${index}.mou_file`}
                                 label="MoU"
                                 className="form-control"
                                 placeholder="MoU"
                                 accept=".pdf, .docx"
                                 onChange={(event) => {
                                   setFieldValue(
-                                    `mou_list.${index}.mou`,
+                                    `mou.${index}.mou_file`,
                                     event.currentTarget.files[0]
                                   );
                                 }}
@@ -363,7 +363,7 @@ const InstitutionForm = (props) => {
                             push({
                               start_date: "",
                               end_date: "",
-                              mou: "",
+                              mou_file: "",
                             });
                           }}
                         >
