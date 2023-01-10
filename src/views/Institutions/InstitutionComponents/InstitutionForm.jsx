@@ -310,7 +310,7 @@ const InstitutionForm = (props) => {
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
                           >
-                            <div className="col-md-6 col-sm-12">
+                            <div className="col-md-6 col-sm-12 mb-2">
                               <Input
                                 name={`mou.${index}.start_date`}
                                 label="Start Date of MoU"
@@ -345,6 +345,9 @@ const InstitutionForm = (props) => {
                                   );
                                 }}
                               />
+                            </div>
+                            &nbsp;
+                            <div className="col-md-6 col-sm-12 mb-2">
                               <button
                                 className="btn btn-danger btn-sm"
                                 type="button"

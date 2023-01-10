@@ -1,31 +1,31 @@
-import { useMemo } from "react";
 import Table from "../../../components/content/Table";
-import { Anchor } from "../../../components/content/Utils";
 
 const MoUs = ({ mou }) => {
-  mou = mou.map((mou_file) => {
-    mou_file.mou_file.url = <Anchor text={mou_file.mou_file.url} href={mou_file.mou_file.url} />;
-    return mou_file;
-  });
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Name',
-        accessor: 'mou_file.url',
-      },
-      {
-        Header: 'Start Date',
-        accessor: 'start_date',
-      },
-      {
-        Header: 'End Date',
-        accessor: 'end_date',
-      },
-    ],
-    []
-  );
-
+  if (Array.isArray(mou) && mou.length > 0) {
+    mou = mou.map((mou_obj) => {
+      if (mou_obj.mou_file.hasOwnProperty("url")) {
+        let url = mou_obj.mou_file.url;
+        if (typeof url === "string") {
+          let file_name = url.split("/").pop();
+          mou_obj.mou_file.url = (
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {file_name}
+            </a>
+          );
+        }
+      } else {
+        mou_obj.mou_file.url = "No Data Found";
+      }
+      return mou_obj;
+    });
+  } else {
+    console.log("No Data found");
+  }
+  const columns = [
+    { Header: "Name", accessor: "mou_file.url" },
+    { Header: "Start Date", accessor: "start_date" },
+    { Header: "End Date", accessor: "end_date" },
+  ];
   return (
     <div className="container-fluid my-3">
       <Table
