@@ -15,11 +15,16 @@ const MoUs = ({ mou }) => {
     } else {
       mou_obj.mou_file.url = "No Data Found";
     }
-    mou_obj.start_date = mou_obj.start_date.split("/").reverse().join("/");
-    mou_obj.end_date = mou_obj.end_date.split("/").reverse().join("/");
+
+    const formatDate = (date) => {
+      return date.split("/").reverse().join("/");
+    };
+    mou_obj.start_date = formatDate(mou_obj.start_date);
+    mou_obj.end_date = formatDate(mou_obj.end_date);
 
     mou_obj.start_date = new Date(mou_obj.start_date).toLocaleDateString();
     mou_obj.end_date = new Date(mou_obj.end_date).toLocaleDateString();
+
     return mou_obj;
   });
   const columns = [
