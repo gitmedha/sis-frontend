@@ -83,13 +83,13 @@ const InstitutionForm = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
 
-      if (props.state) {
+      if (props.state !== undefined && props.state !== null) {
         onStateChange({
           value: props.state,
         });
       }
     });
-  }, [props]);
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
