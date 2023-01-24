@@ -51,26 +51,29 @@ const InstitutionForm = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
-    getInstitutionsPickList().then((data) => {
-      setInstitutionTypeOpts(
-        data.type.map((item) => {
-          return {
-            key: item.value,
-            label: item.value,
-            value: item.value,
-          };
-        })
-      );
-      setStatusOpts(
-        data.status.map((item) => {
-          return {
-            key: item.value,
-            label: item.value,
-            value: item.value,
-          };
-        })
-      );
-    });
+    getInstitutionsPickList().then(
+      (data) => {
+        setInstitutionTypeOpts(
+          data.type.map((item) => {
+            return {
+              key: item.value,
+              label: item.value,
+              value: item.value,
+            };
+          })
+        );
+        setStatusOpts(
+          data.status.map((item) => {
+            return {
+              key: item.value,
+              label: item.value,
+              value: item.value,
+            };
+          })
+        );
+      },
+      [props.state]
+    );
 
     getAddressOptions().then((data) => {
       setStateOptions(
@@ -305,7 +308,7 @@ const InstitutionForm = (props) => {
                     <div>
                       {values.mou &&
                         values.mou.length > 0 &&
-                        values.mou.map((mou_file, index) => (
+                        values.mou.map((mou_file, index, setFieldValue) => (
                           <div
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
@@ -318,6 +321,7 @@ const InstitutionForm = (props) => {
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
+                                setFieldValue={setFieldValue}
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -328,6 +332,7 @@ const InstitutionForm = (props) => {
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
+                                setFieldValue={setFieldValue}
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
