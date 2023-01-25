@@ -308,7 +308,7 @@ const InstitutionForm = (props) => {
                     <div>
                       {values.mou &&
                         values.mou.length > 0 &&
-                        values.mou.map((mou_file, index, setFieldValue) => (
+                        values.mou.map((mou_file, index) => (
                           <div
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
@@ -316,23 +316,36 @@ const InstitutionForm = (props) => {
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
                                 name={`mou.${index}.start_date`}
+                                value={values.mou[index].start_date}
                                 label="Start Date of MoU"
                                 placeholder="Start Date"
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
-                                setFieldValue={setFieldValue}
+                                onChange={(event) => {
+                                  setFieldValue(
+                                    `mou.${index}.start_date`,
+                                    event.target.value
+                                  );
+                                }}
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
                               <Input
                                 name={`mou.${index}.end_date`}
+                                value={values.mou[index].end_date}
                                 label="End Date of MoU"
                                 placeholder="End Date"
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
-                                setFieldValue={setFieldValue}
+                                onChange={(event) => {
+                                  console.log("-----", event);
+                                  setFieldValue(
+                                    `mou.${index}.end_date`,
+                                    event.target.value
+                                  );
+                                }}
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -369,8 +382,8 @@ const InstitutionForm = (props) => {
                           type="button"
                           onClick={() => {
                             push({
-                              start_date: "",
-                              end_date: "",
+                              start_date: new Date(),
+                              end_date: new Date(),
                               mou_file: "",
                             });
                           }}
