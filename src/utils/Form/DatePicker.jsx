@@ -9,38 +9,30 @@ const DatePickerField = styled.div`
   .react-datepicker {
     font-size: 0.8em;
   }
-
   .react-datepicker__header {
     padding-top: 0.9em;
   }
-
   .react-datepicker__month {
     margin: 1em 1em;
   }
-
   .react-datepicker__day-name,
   .react-datepicker__day {
     width: 2.2em;
     margin: 0.3em;
   }
-
   .react-datepicker__current-month {
     font-size: 1em;
   }
-
   .react-datepicker__navigation {
     overflow: visible;
   }
-
   .react-datepicker__navigation--next--with-time {
     top: 13px !important;
     right: 100px;
   }
-
   .react-datepicker__day {
     padding: 4px;
   }
-
   .react-datepicker__time-container
     .react-datepicker__time
     .react-datepicker__time-box
@@ -48,11 +40,9 @@ const DatePickerField = styled.div`
     li.react-datepicker__time-list-item--selected {
     background-color: #257b69;
   }
-
   label {
     color: #787b96;
   }
-
   .datepicker-wrapper {
     position: relative;
     .datepicker-icon {
@@ -69,17 +59,14 @@ const DatePickerField = styled.div`
       z-index: 0;
     }
   }
-
   .required {
     color: red;
     font-size: 16px;
   }
-
   .react-datepicker__day--outside-month {
     color: transparent;
     pointer-events: none;
   }
-
   .react-datepicker__month-read-view--down-arrow {
     border-color: #ccc;
     border-style: solid;
@@ -93,30 +80,32 @@ const DatePickerField = styled.div`
     margin-right: 1px;
     padding: 2px;
   }
-
   .react-datepicker__year-read-view {
     border: 1px solid transparent;
     border-radius: 0.3rem;
     position: relative;
     margin-left: 25px;
   }
-
   .date-picker-ui .react-datepicker__month-option--selected_month {
     color: #257b69;
   }
-
   .react-datepicker__month-dropdown {
     background-color: white;
   }
-
   .react-datepicker__month-option {
     color: black;
   }
 `;
 
 const DatePicker = (props) => {
-  const { name, showtime, label, required, ...rest } = props;
-
+  const {
+    name,
+    showtime,
+    label,
+    required,
+    onInput: onInputCallback,
+    ...rest
+  } = props;
   const datepickerRef = useRef(null);
   function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
@@ -146,7 +135,12 @@ const DatePicker = (props) => {
                   {...field}
                   {...rest}
                   selected={value}
-                  onChange={(val) => setFieldValue(name, val)}
+                  onChange={(val) => {
+                    setFieldValue(name, val);
+                    if (typeof onInputCallback === "function") {
+                      onInputCallback(val);
+                    }
+                  }}
                   ref={datepickerRef}
                 />
                 <span
