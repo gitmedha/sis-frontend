@@ -3,8 +3,7 @@ import DateView from "react-datepicker";
 import { Field, ErrorMessage } from "formik";
 import styled from "styled-components";
 import { FaCalendarAlt } from "react-icons/fa";
-import { useCallback, useRef } from "react";
-import moment from "moment";
+import { useRef } from "react";
 
 const DatePickerField = styled.div`
   .react-datepicker {
@@ -116,27 +115,13 @@ const DatePickerField = styled.div`
 `;
 
 const DatePicker = (props) => {
-  const {
-    name,
-    showtime,
-    label,
-    required,
-    onInput: onInputCallback,
-    setFieldValue,
-    ...rest
-  } = props;
-  const datepickerRef = useRef(null);
+  const { name, showtime, label, required, ...rest } = props;
 
-  const handleClickDatepickerIcon = useCallback(() => {
+  const datepickerRef = useRef(null);
+  function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
     datepickerElement.setFocus(true);
-  }, []);
-
-  const handleDateChange = (val) => {
-    if (typeof onInputCallback === "function") {
-      onInputCallback(val);
-    }
-  };
+  }
 
   return (
     <DatePickerField>
@@ -161,9 +146,7 @@ const DatePicker = (props) => {
                   {...field}
                   {...rest}
                   selected={value}
-                  onChange={(val) =>
-                    handleDateChange(val, setFieldValue, name, onInputCallback)
-                  }
+                  onChange={(val) => setFieldValue(name, val)}
                   ref={datepickerRef}
                 />
                 <span
