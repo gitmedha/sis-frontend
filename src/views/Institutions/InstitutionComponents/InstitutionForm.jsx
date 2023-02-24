@@ -154,6 +154,14 @@ const InstitutionForm = (props) => {
     initialValues["assigned_to"] = props?.assigned_to?.id;
     initialValues["district"] = props.district ? props.district : null;
     initialValues["medha_area"] = props.medha_area ? props.medha_area : null;
+
+    if (props.mou) {
+      initialValues['mou'] = props.mou.map(mou => ({
+        ...mou,
+        start_date: mou.start_date ? new Date(mou.start_date) : null,
+        end_date: mou.end_date ? new Date(mou.end_date) : null,
+      }));
+    }
   }
 
   if (!props.contacts) {
