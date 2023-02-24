@@ -81,11 +81,18 @@ const Institute = (props) => {
       await Promise.all(
         mou.map(async (mouData) => {
           try {
-            const response = await uploadFile(mouData.mou_file);
-            dataToSave["mou"].push({
-              ...mouData,
-              mou_file: response.data.data.upload.id,
-            });
+            if (mouData.mou_file && mouData.mou_file.id) {
+              dataToSave["mou"].push({
+                ...mouData,
+                mou_file: mouData.mou_file.id,
+              });
+            } else {
+              const response = await uploadFile(mouData.mou_file);
+              dataToSave["mou"].push({
+                ...mouData,
+                mou_file: response.data.data.upload.id,
+              });
+            }
           } catch (err) {
             console.log("mou upload err", err);
             setAlert("Unable to upload MoU.", "error");

@@ -154,6 +154,14 @@ const InstitutionForm = (props) => {
     initialValues["assigned_to"] = props?.assigned_to?.id;
     initialValues["district"] = props.district ? props.district : null;
     initialValues["medha_area"] = props.medha_area ? props.medha_area : null;
+
+    if (props.mou) {
+      initialValues['mou'] = props.mou.map(mou => ({
+        ...mou,
+        start_date: mou.start_date ? new Date(mou.start_date) : null,
+        end_date: mou.end_date ? new Date(mou.end_date) : null,
+      }));
+    }
   }
 
   if (!props.contacts) {
@@ -305,7 +313,7 @@ const InstitutionForm = (props) => {
                     <div>
                       {values.mou &&
                         values.mou.length > 0 &&
-                        values.mou.map((mou_file, index) => (
+                        values.mou.map((mou, index) => (
                           <div
                             key={index}
                             className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
@@ -331,22 +339,29 @@ const InstitutionForm = (props) => {
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                control="file"
-                                name={`mou.${index}.mou_file`}
-                                label="MoU"
-                                className="form-control"
-                                placeholder="MoU"
-                                accept=".pdf, .docx"
-                                onChange={(event) => {
-                                  setFieldValue(
-                                    `mou.${index}.mou_file`,
-                                    event.currentTarget.files[0]
-                                  );
-                                }}
-                              />
+                              {mou && mou.mou_file && mou.mou_file.url ? (
+                                <div>
+                                  <label className="text-label leading-24">MoU</label>
+                                  <div>{mou.mou_file.url.substring(mou.mou_file.url.lastIndexOf('/')+1)}</div>
+                                </div>
+                              ) : (
+                                <Input
+                                  control="file"
+                                  name={`mou.${index}.mou_file`}
+                                  label="MoU"
+                                  className="form-control"
+                                  placeholder="MoU"
+                                  accept=".pdf, .docx"
+                                  onChange={(event) => {
+                                    setFieldValue(
+                                      `mou.${index}.mou_file`,
+                                      event.currentTarget.files[0]
+                                    );
+                                  }}
+                                />
+                              )}
                               <button
-                                className="btn btn-danger btn-sm"
+                                className="btn btn-danger btn-sm mt-3"
                                 type="button"
                                 onClick={() => remove(index)}
                               >
