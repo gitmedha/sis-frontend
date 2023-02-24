@@ -207,10 +207,11 @@ export const TextRenderer = ({ value }) => {
   );
 };
 
-export const Anchor = ({ text, href }) => {
+export const Anchor = (props) => {
+  const { text, href, ...otherProps } = props;
   return (
     <div className="h-100 d-flex align-items-center">
-      <a href={href} className="mb-0" style={{ color: "#00ADEF" }}>
+      <a href={href} className="mb-0" style={{ color: "#00ADEF" }} {...otherProps}>
         {text}
       </a>
     </div>

@@ -346,7 +346,7 @@ const InstitutionForm = (props) => {
                                 }}
                               />
                               <button
-                                className="btn btn-danger btn-sm"
+                                className="btn btn-danger btn-sm mt-3"
                                 type="button"
                                 onClick={() => remove(index)}
                               >
