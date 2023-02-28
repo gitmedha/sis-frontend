@@ -76,8 +76,8 @@ const Institute = (props) => {
       dataToSave["logo"] = data.logo?.id;
     }
 
+    dataToSave["mou"] = [];
     if (mou && mou.length) {
-      dataToSave["mou"] = [];
       await Promise.all(
         mou.map(async (mouData) => {
           try {

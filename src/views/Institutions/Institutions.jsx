@@ -192,8 +192,8 @@ const Institutions = (props) => {
 
     // need to remove `show` from the payload
     let { id, show, mou, ...dataToSave } = data;
+    dataToSave["mou"] = [];
     if (mou && mou.length) {
-      dataToSave["mou"] = [];
       await Promise.all(
         mou.map(async (mouData) => {
           try {
