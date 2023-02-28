@@ -188,6 +188,7 @@ const OpportunityForm = (props) => {
   const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
+      employer: employer.id,
       address: employer.address,
       city: employer.city,
       state: employer.state,
