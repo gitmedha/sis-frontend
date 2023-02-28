@@ -19,6 +19,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
 import NP from "nprogress";
 import { deleteFile } from "../../../common/commonActions";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
@@ -290,7 +291,7 @@ const EmploymentConnections = (props) => {
 
   return (
     <div className="container-fluid my-3">
-      <div className="row">
+      {(isSRM() || isAdmin()) && <div className="row">
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -299,7 +300,7 @@ const EmploymentConnections = (props) => {
             + Add More
           </button>
         </div>
-      </div>
+      </div>}
       <Table
         columns={columns}
         data={employmentConnectionsTableData}
