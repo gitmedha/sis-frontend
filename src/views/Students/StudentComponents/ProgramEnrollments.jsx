@@ -19,6 +19,7 @@ import nProgress from "nprogress";
 import api from "../../../apis";
 import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import { deleteFile } from "../../../common/commonActions";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const Styled = styled.div`
   .img-profile-container {
@@ -124,7 +125,7 @@ const ProgramEnrollments = (props) => {
         batch_name: programEnrollment?.batch?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer" rel="noreferrer"><FaDownload size="20" color="#31B89D" /></a> : '',
         program_name: programEnrollment?.batch?.program?.name,
       };
     });
@@ -280,7 +281,7 @@ const ProgramEnrollments = (props) => {
 
   return (
     <div className="container-fluid my-3">
-      <div className="row">
+      {(isSRM() || isAdmin()) && <div className="row">
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
@@ -289,7 +290,7 @@ const ProgramEnrollments = (props) => {
             + Add More
           </button>
         </div>
-      </div>
+      </div>}
       <Table columns={columns} data={programEnrollmentTableData} onRowClick={handleRowClick} totalRecords={programEnrollmentAggregate.count} fetchData={fetchData} showPagination={programEnrollmentAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
       <ProgramEnrollment
         show={viewModalShow}

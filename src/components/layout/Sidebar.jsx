@@ -6,6 +6,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { urlPath } from "../../constants";
+import { isAdmin, isSRM } from '../../common/commonFunctions';
 
 const iconStyle = {
   marginRight: "5px",
@@ -20,37 +21,43 @@ const routes = [
   {
     to: "/",
     title: "Dashboard",
-    icon: <MdDashboard {...iconProps} />
+    icon: <MdDashboard {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "/students",
     title: "Students & Alumni",
     aliases: ['student'],
-    icon: <FaUserGraduate {...iconProps} />
+    icon: <FaUserGraduate {...iconProps} />,
+    show: true,
   },
   {
     to: "/institutions",
     title: "Institutions",
     aliases: ['institution'],
-    icon: <FaSchool {...iconProps} />
+    icon: <FaSchool {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "/batches",
     title: "Batches",
     aliases: ['batch'],
     icon: <FaChalkboardTeacher {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "/employers",
     title: "Employers",
     aliases: ['employer'],
-    icon: <FaUserTie {...iconProps} />
+    icon: <FaUserTie {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "/opportunities",
     title: "Opportunities",
     aliases: ['opportunity'],
-    icon: <FaBriefcase {...iconProps} />
+    icon: <FaBriefcase {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "https://data.medha.org.in/",
@@ -62,7 +69,8 @@ const routes = [
       alt={`metabase-logo`}
       style={{}}
     />,
-    newTab: true
+    newTab: true,
+    show: isSRM() || isAdmin(),
   },
   // {
   //   to: "/admin",
@@ -126,7 +134,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
           style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
         />
         <>
-          {routes.map((route) => (
+          {routes.filter(route => route.show).map((route) => (
             <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} menuItemClickHandler={menuItemClickHandler}  />
           ))}
         </>
