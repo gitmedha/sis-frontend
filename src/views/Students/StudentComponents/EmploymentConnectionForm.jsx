@@ -356,6 +356,19 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Salary Offered"
                     />
                   </div>
+                  {showEndDate && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        required={endDateMandatory}
+                      />
+                    </div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
@@ -390,19 +403,7 @@ const EnrollmentConnectionForm = (props) => {
                       required
                     />
                   </div>
-                  {showEndDate && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="end_date"
-                        label="End Date"
-                        placeholder="End Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                        required={endDateMandatory}
-                      />
-                    </div>
-                  )}
+                  
                   {selectedOpportunityType === 'Internship' &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
