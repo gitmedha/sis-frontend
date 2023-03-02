@@ -6,10 +6,11 @@ import { Anchor, Badge } from "../../../components/content/Utils";
 import CertificateUpload from "../../../components/content/Certificate";
 import Tooltip from "../../../components/content/Tooltip";
 import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
+import { FaTrashAlt, FaEye } from "react-icons/fa";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "./StudentActions";
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const Styled = styled.div`
 .icon-box{
@@ -49,6 +50,8 @@ const EmploymentConnection = (props) => {
     });
   }, []);
 
+  const employerName = employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''
+
   return (
       <Modal
         centered
@@ -74,7 +77,7 @@ const EmploymentConnection = (props) => {
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Student" value={student.full_name} />
-              <DetailField label="Employer" value={<Anchor text={employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`} />} />
+              <DetailField label="Employer" value={(isSRM() || isAdmin()) ? <Anchor text={employerName} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`} /> : employerName} />
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
@@ -90,19 +93,19 @@ const EmploymentConnection = (props) => {
               <div className ="row">
                 <div className="col-md-6"></div>
                 <div className="col-md-6 d-flex">
-                  <div className="cv-icon">
+                  {(isSRM() || isAdmin()) && <div className="cv-icon">
                     <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} certificate='offer_letter' done={() => onUpdate() } />
-                  </div>
+                  </div>}
                   {employmentConnection.offer_letter &&
                     <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Offer Letter">
-                            <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
+                            <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
                           </Tooltip>
                         </div>
                     </div>
                   }
-                  {employmentConnection.offer_letter &&
+                  {(isSRM() || isAdmin()) && employmentConnection.offer_letter &&
                     <div div className="cv-icon">
                       <Tooltip placement="top" title="Click Here to Delete Offer Letter">
                         <a  href="#" className="menu_links" onClick={() => onDelete('offer_letter')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
@@ -129,35 +132,35 @@ const EmploymentConnection = (props) => {
              <div className ="row">
               <div className="col-md-6"></div>
               <div className="col-md-6 d-flex">
-                <div className="cv-icon">
+                {(isSRM() || isAdmin()) && <div className="cv-icon">
                   <CertificateUpload query={UPDATE_EMPLOYMENT_CONNECTION} id={employmentConnection.id} certificate='experience_certificate' done={() => onUpdate() } />
-                </div>
-                <div className="cv-icon">
-                  {employmentConnection.experience_certificate &&
-                    <div className="col-md-1 d-flex flex-column section-cv">
-                      <Tooltip placement="top" title="Click Here to View Certificate">
-                        <a href={urlPath( employmentConnection.experience_certificate?.url)} target="_blank" ><FaEye size="27" color={employmentConnection.experience_certificate ? '#207B69' : '#787B96'} /></a>
-                      </Tooltip>
-                    </div>
-                  }
-                </div>
-                <div className="cv-icon">
-                  { employmentConnection.experience_certificate &&
-                  <Tooltip placement="top" title="Click Here to Delete Certificate">
-                    <a  href="#" className="menu_links" onClick={() => onDelete('experience_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
-                  </Tooltip>
-                  }
-                </div>
+                </div>}
+                {employmentConnection.experience_certificate &&
+                  <div className="cv-icon">
+                      <div className="col-md-1 d-flex flex-column section-cv">
+                        <Tooltip placement="top" title="Click Here to View Certificate">
+                          <a href={urlPath( employmentConnection.experience_certificate?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.experience_certificate ? '#207B69' : '#787B96'} /></a>
+                        </Tooltip>
+                      </div>
+                  </div>
+                }
+                {(isSRM() || isAdmin()) && employmentConnection.experience_certificate &&
+                  <div className="cv-icon">
+                    <Tooltip placement="top" title="Click Here to Delete Certificate">
+                      <a  href="#" className="menu_links" onClick={() => onDelete('experience_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                    </Tooltip>
+                  </div>
+                }
               </div>
             </div>
             </div>
           </div>
-          <div className="row mt-4">
+          {(isSRM() || isAdmin()) && <div className="row mt-4">
             <div className="col-md-12 d-flex justify-content-center">
               <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button>
               <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button>
             </div>
-          </div>
+          </div>}
         </Modal.Body>
         </Styled>
       </Modal>
