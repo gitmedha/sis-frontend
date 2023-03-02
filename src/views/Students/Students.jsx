@@ -24,6 +24,7 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
+import { isAdmin, isSRM } from "../../common/commonFunctions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -259,13 +260,13 @@ const Students = (props) => {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
-            <button
+            {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
               style={{marginLeft: '15px'}}
             >
               Add New Student
-            </button>
+            </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
             <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
