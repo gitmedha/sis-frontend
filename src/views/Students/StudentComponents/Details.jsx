@@ -11,6 +11,7 @@ import FileUpload from "../../../components/content/FileUpload";
 import { UPDATE_STUDENT } from "../../../graphql";
 import Tooltip from "../../../components/content/Tooltip";
 import api from "../../../apis";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const Styled = styled.div`
   p, label {
@@ -189,19 +190,19 @@ const Details = (props) => {
             <div className="row">
               <div className="col-md-6"></div>
               <div className="col-md-6 d-flex">
-                <div className="cv-icon">
+                {(isSRM() || isAdmin()) && <div className="cv-icon">
                   <FileUpload mapFileToEntity={mapJobDescriptionFile} done={() => onUpdate()} />
-                </div>
+                </div>}
                 {CV &&
                   <div className="cv-icon">
                     <div className="d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View CV">
-                        <a href={urlPath(CV?.url)} target="_blank" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
+                        <a href={urlPath(CV?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
                         </Tooltip>
                     </div>
                  </div>
                 }
-                {CV &&
+                {(isSRM() || isAdmin()) && CV &&
                   <div className="cv-icon">
                     <Tooltip placement="top" title="Click Here to Delete CV">
                       <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>

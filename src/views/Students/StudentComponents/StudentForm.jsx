@@ -10,7 +10,7 @@ import { urlPath } from "../../../constants";
 import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin } from "../../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -340,7 +340,7 @@ const StudentForm = (props) => {
                       isDisabled={!isAdmin()}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  {(isSRM() || isAdmin()) && <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="file"
                       name="cv_upload"
@@ -356,7 +356,7 @@ const StudentForm = (props) => {
                         setShowCVSubLabel(false);
                       }}
                     />
-                  </div>
+                  </div>}
                 </div>
               </Section>
               <Section>
