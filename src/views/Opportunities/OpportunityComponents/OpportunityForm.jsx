@@ -188,12 +188,13 @@ const OpportunityForm = (props) => {
   const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
-      address: employer.address,
-      city: employer.city,
-      state: employer.state,
-      pin_code: employer.pin_code,
-      medha_area: employer.medha_area,
-      district: employer.district,
+      employer: employer.value || '',
+      address: employer.address || '',
+      city: employer.city || '',
+      state: employer.state || '',
+      pin_code: employer.pin_code || '',
+      medha_area: employer.medha_area || '',
+      district: employer.district || '',
     });
   }
 

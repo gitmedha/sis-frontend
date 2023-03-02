@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import {GET_ALL_INSTITUTES, GET_INSTITUTION_PROGRAM_ENROLLMENTS, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import { GET_ALL_INSTITUTES, GET_INSTITUTION_PROGRAM_ENROLLMENTS, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -20,16 +20,16 @@ export const getInstitutionsPickList = async () => {
       table: 'institutions'
     },
   })
-  .then(data => {
-    let pickList = {};
-    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
-      pickList[item.field] = item.values;
+    .then(data => {
+      let pickList = {};
+      data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+        pickList[item.field] = item.values;
+      });
+      return pickList;
+    })
+    .catch(error => {
+      return Promise.reject(error);
     });
-    return pickList;
-  })
-  .catch(error => {
-    return Promise.reject(error);
-  });
 };
 
 export const getAssigneeOptions = async () => {
@@ -45,7 +45,7 @@ export const getAssigneeOptions = async () => {
 export const createInstitution = async (data) => {
   return await api.post('/graphql', {
     query: CREATE_NEW_INSTITUTE,
-    variables: {data},
+    variables: { data },
   }).then(data => {
     return data;
   }).catch(error => {
@@ -80,7 +80,7 @@ export const deleteInstitution = async (id) => {
   });
 }
 
-export const getInstitutionStudents = async (institutionId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getInstitutionStudents = async (institutionId, limit = 10, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_INSTITUTION_STUDENTS,
     variables: {
@@ -103,19 +103,19 @@ export const getProgramEnrollmentsPickList = async () => {
       table: 'program_enrollments'
     },
   })
-  .then(data => {
-    let pickList = {};
-    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
-      pickList[item.field] = item.values;
+    .then(data => {
+      let pickList = {};
+      data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+        pickList[item.field] = item.values;
+      });
+      return pickList;
+    })
+    .catch(error => {
+      return Promise.reject(error);
     });
-    return pickList;
-  })
-  .catch(error => {
-    return Promise.reject(error);
-  });
 }
 
-export const getInstitutionProgramEnrollments = async (instituteID, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getInstitutionProgramEnrollments = async (instituteID, limit = 100, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
     variables: {
@@ -140,4 +140,4 @@ export const getAllInstitutions = async () => {
     return Promise.reject(error);
   });
 }
-;
+  ;

@@ -186,6 +186,13 @@ $green: #207b69;
   @extend .text--primary;
 }
 
+.text-label {
+  margin-bottom: 0;
+  color: $gray;
+  @extend .text--md;
+  @extend .latto-bold;
+}
+
 .error--text {
   @extend .mt-1;
   @extend.text--md;

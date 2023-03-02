@@ -98,7 +98,7 @@ const Opportunity = (props) => {
       }).finally(() => {
         setShowDeleteAlert(false);
         NP.done();
-        history.push("/opportunities");
+        history.goBack();
       });
     }
 
