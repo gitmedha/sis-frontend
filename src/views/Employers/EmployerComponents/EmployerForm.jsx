@@ -11,6 +11,7 @@ import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
 import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
+import { yesOrNoOptions } from '../../../common/commonConstants';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -414,6 +415,66 @@ const EmployerForm = (props) => {
                     </div>
                   )}
                 </FieldArray>
+              </Section>
+              <Section>
+                <h3 className="section-header">Additional Info</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="paid_leaves"
+                      label="Paid Leaves"
+                      options={yesOrNoOptions}
+                      className="form-control"
+                      placeholder="Paid Leaves"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="employee_benefits"
+                      label="Employee Benefits"
+                      options={yesOrNoOptions}
+                      className="form-control"
+                      placeholder="Employee Benefits"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="employment_contract"
+                      label="Employment Contract"
+                      options={yesOrNoOptions}
+                      className="form-control"
+                      placeholder="Employment Contract"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="offer_letter"
+                      label="Offer Letter"
+                      options={yesOrNoOptions}
+                      className="form-control"
+                      placeholder="Offer Letter"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_partner"
+                      label="Medha Partner"
+                      options={yesOrNoOptions}
+                      className="form-control"
+                      placeholder="Medha Partner"
+                    />
+                  </div>
+                </div>
               </Section>
               <div className="row mt-3 py-3">
               <div className="col-12">

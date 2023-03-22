@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaTrashAlt, FaEye, FaCheckCircle } from "react-icons/fa";
 import { Badge } from "../../../components/content/Utils";
 import DetailField from "../../../components/content/DetailField";
 import { getEmployersPickList } from "./employerAction";
@@ -49,7 +49,6 @@ const Details = (props) => {
     website,
     email,
     status,
-    type,
     industry,
     created_at,
     updated_at,created_by_frontend,
@@ -57,7 +56,13 @@ const Details = (props) => {
     mou_file,
     onMouUpdate,
     onMouDelete,
+    paid_leaves,
+    employee_benefits,
+    employment_contract,
+    offer_letter,
+    medha_partner,
   } = props;
+
 
   const [pickList, setPickList] = useState([]);
 
@@ -87,14 +92,18 @@ const Details = (props) => {
             <DetailField label="Website" value={ <a href={website} target="_blank" rel="noreferrer" className="latto-regular" > {website} </a> } />
             <DetailField label="Email" value= {<a target="_blank" href={`mailto:${email}`} rel="noreferrer"> {email} </a> } />
             &nbsp;
-            <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
-            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            <DetailField label="Paid Leaves" value={<FaCheckCircle size="20" color={paid_leaves ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Employee Benefits" value={<FaCheckCircle size="20" color={employee_benefits ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Employment Contract" value={<FaCheckCircle size="20" color={employment_contract ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Offer Letter" value={<FaCheckCircle size="20" color={offer_letter ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Medha Partner" value={<FaCheckCircle size="20" color={medha_partner ? '#207B69' : '#E0E0E8'} />} />
           </div>
           <div className="col-6 offset-md-2 col-md-4">
-            {/* <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} /> */}
             <DetailField label="Assigned To" value={assigned_to?.username} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Phone number" value={<a href="tel:+91">{phone} </a>} />
+            <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
+            <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="MoU File Upload" value=
@@ -114,7 +123,7 @@ const Details = (props) => {
                       <div className="file-icon">
                         <div className="d-flex flex-column section-file">
                           <Tooltip placement="top" title="Click Here to View MoU">
-                            <a href={urlPath(mou_file?.url)} target="_blank" ><FaEye size="27" color={mou_file ? '#207B69' : '#787B96'}/></a>
+                            <a href={urlPath(mou_file?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={mou_file ? '#207B69' : '#787B96'}/></a>
                             </Tooltip>
                         </div>
                       </div>
