@@ -37,6 +37,7 @@ import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { isAdmin, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -52,10 +53,6 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("user_id");
-  localStorage.setItem("user_state" , user?.state);
-  localStorage.setItem("user_area", user?.area);
-  localStorage.setItem("user_role", user?.role.name);
 
   const logout = (callback = () => {}) => {
     setUser(null);
@@ -153,25 +150,29 @@ const App = (props) => {
                   <PrivateRoute path="/" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
-                  <PrivateRoute path="/institutions" exact component={Institutions} />
-                  <PrivateRoute path="/institution/:id" exact component={Institution} />
-                  <PrivateRoute path="/batches" exact component={Batches} />
-                  <PrivateRoute path="/batch/:id" exact component={Batch} />
-                  <PrivateRoute path="/opportunities" exact component={Opportunities} />
-                  <PrivateRoute path="/opportunity/:id" exact component={Opportunity} />
-                  <PrivateRoute
-                    exact
-                    component={AddSession}
-                    path="/new-session/:batchId"
-                  />
-                  <PrivateRoute path="/session/:sessionID" exact component={Session} />
-                  <PrivateRoute
-                    exact
-                    component={updateSession}
-                    path="/update-session/:sessionID"
-                  />
-                  <PrivateRoute path="/employers" exact component={Employers} />
-                  <PrivateRoute path="/employer/:id" exact component={Employer} />
+                  {(isSRM() || isAdmin()) &&
+                  <>
+                    <PrivateRoute path="/institutions" exact component={Institutions} />
+                    <PrivateRoute path="/institution/:id" exact component={Institution} />
+                    <PrivateRoute path="/batches" exact component={Batches} />
+                    <PrivateRoute path="/batch/:id" exact component={Batch} />
+                    <PrivateRoute path="/opportunities" exact component={Opportunities} />
+                    <PrivateRoute path="/opportunity/:id" exact component={Opportunity} />
+                    <PrivateRoute
+                      exact
+                      component={AddSession}
+                      path="/new-session/:batchId"
+                    />
+                    <PrivateRoute path="/session/:sessionID" exact component={Session} />
+                    <PrivateRoute
+                      exact
+                      component={updateSession}
+                      path="/update-session/:sessionID"
+                    />
+                    <PrivateRoute path="/employers" exact component={Employers} />
+                    <PrivateRoute path="/employer/:id" exact component={Employer} />
+                  </>
+                  }
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>

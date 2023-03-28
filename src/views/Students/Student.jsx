@@ -24,6 +24,7 @@ import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
+import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
 
 const Styled = styled.div`
 
@@ -218,9 +219,9 @@ const Student = (props) => {
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
-            </button>
+            </button>}
           </div>
           <div style={{margin:"0px 0px 20px 0px"}}>
            <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
