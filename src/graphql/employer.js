@@ -1,3 +1,60 @@
+const employerFields = `
+  id
+  name
+  phone
+  status
+  website
+  email
+  type
+  industry
+  paid_leaves
+  employee_benefits
+  employment_contract
+  offer_letter
+  medha_partner
+  address
+  district
+  pin_code
+  state
+  medha_area
+  address
+  city
+  created_at
+  updated_at
+  logo {
+    id
+    url
+  }
+  assigned_to{
+    id
+    username
+    email
+  }
+  mou_file {
+    id
+    url
+    created_at
+  }
+  created_by_frontend{
+    username
+    email
+  }
+  updated_by_frontend{
+    username
+    email
+  }
+  logo {
+    url
+  }
+  contacts {
+    id
+    email
+    phone
+    full_name
+    designation
+  }
+`;
+
 export const GET_ALL_EMPLOYERS = `
   query GET_ALL_EMPLOYERS {
     employers {
@@ -116,55 +173,7 @@ export const GET_USER_EMPLOYERS = `
 export const GET_EMPLOYER = `
   query EMPLOYER($id: ID!) {
     employer(id: $id) {
-      id
-      name
-      phone
-      status
-      website
-      email
-      type
-      industry
-      logo {
-        id
-        url
-      }
-      assigned_to{
-        id
-        username
-        email
-      }
-      address
-      pin_code
-      state
-      medha_area
-      address
-      city
-      created_at
-      updated_at
-      mou_file {
-        id
-        url
-        created_at
-      }
-      created_by_frontend{
-        username
-        email
-      }
-      updated_by_frontend{
-        username
-        email
-      }
-      district
-      logo {
-        url
-      }
-      contacts {
-        id
-        email
-        phone
-        full_name
-        designation
-      }
+      ${employerFields}
     }
   }
 `;
@@ -179,28 +188,7 @@ export const CREATE_EMPLOYER = `
       }
     ) {
       employer {
-        id
-        name
-        website
-        type
-        phone
-        status
-        industry
-        address
-        pin_code
-        city
-        state
-        medha_area
-        district
-        assigned_to{
-          username
-        }
-        contacts {
-          full_name
-          email
-          phone
-          designation
-        }
+        ${employerFields}
       }
     }
   }
@@ -218,28 +206,7 @@ export const UPDATE_EMPLOYER = `
       }
     ) {
       employer{
-        id
-        name
-        website
-        type
-        phone
-        status
-        industry
-        address
-        pin_code
-        city
-        state
-        medha_area
-        district
-        assigned_to{
-          username
-        }
-        contacts {
-          full_name
-          email
-          phone
-          designation
-        }
+        ${employerFields}
       }
     }
   }

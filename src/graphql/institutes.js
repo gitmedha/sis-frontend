@@ -108,6 +108,14 @@ mutation CREATE_INSTITUTIONS(
         email
         phone
       }
+      mou {
+        mou_file
+        {
+          id
+        }
+        start_date
+        end_date
+      }
     }
   }
 }
@@ -168,6 +176,14 @@ mutation UPDATE_INSTITUTIONS(
           full_name
           email
           phone
+        }
+        mou {
+          mou_file
+          {
+            id
+          }
+          start_date
+          end_date
         }
       }
   }
@@ -271,6 +287,15 @@ query INSTITUTION(
         phone
         full_name
         designation
+      }
+      mou {
+        mou_file
+        {
+          id
+          url
+        }
+        start_date
+        end_date
       }
     }
   }

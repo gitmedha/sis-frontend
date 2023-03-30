@@ -23,6 +23,8 @@ import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
+import { uploadFile } from "../../components/content/Utils";
+import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
 
 const Styled = styled.div`
 
@@ -57,13 +59,27 @@ const Student = (props) => {
     }
 
     // need to remove some data from payload
-    let {id, show, CV, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
+    let {id, show, CV, cv_file, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
 
     if (typeof data.logo === 'object') {
       dataToSave['logo'] = data.logo?.id;
     }
 
+    if (cv_file) {
+      uploadFile(data.cv_file).then(data => {
+        dataToSave['CV'] = data.data.data.upload.id;
+        updateStudentApi(id, dataToSave);
+      }).catch(err => {
+        console.log("CV_UPLOAD_ERR", err);
+        setAlert("Unable to upload CV.", "error");
+      });
+    } else {
+      updateStudentApi(id, dataToSave);
+    }
+  };
+
+  const updateStudentApi = (id, dataToSave) => {
     NP.start();
     updateStudent(Number(id), dataToSave).then(data => {
       setAlert("Student updated successfully.", "success");
@@ -75,7 +91,7 @@ const Student = (props) => {
       getStudent();
     });
     setModalShow(false);
-  };
+  }
 
   const handleDelete = async () => {
     NP.start();
@@ -203,9 +219,9 @@ const Student = (props) => {
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
               DELETE
-            </button>
+            </button>}
           </div>
           <div style={{margin:"0px 0px 20px 0px"}}>
            <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />

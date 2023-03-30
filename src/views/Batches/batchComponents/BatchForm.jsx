@@ -248,7 +248,7 @@ const BatchForm = (props) => {
           initialValues={initialValues}
           validationSchema={BatchValidations}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -333,7 +333,15 @@ const BatchForm = (props) => {
                       placeholder="Enrollment Type"
                       className="form-control"
                       options={enrollmentTypeOptions}
-                      onChange = {(e) => setEnrollmentType(e.value.toLowerCase() !== 'multi institution')}
+                      onChange = {
+                        (selectedOption) => {
+                          const selectedEnrollmentType = selectedOption.value.toLowerCase();
+                          setEnrollmentType(selectedEnrollmentType !== 'multi institution');
+                          if (selectedEnrollmentType === 'multi institution') {
+                            setFieldValue('institution', null);
+                          }
+                        }
+                      }
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -346,6 +354,7 @@ const BatchForm = (props) => {
                         defaultOptions={props.id ? institutionOptions : true}
                         placeholder="Institution"
                         className="form-control"
+                        isClearable
                         isDisabled={!enrollmentType}
                       />
                     ) : (
@@ -365,7 +374,7 @@ const BatchForm = (props) => {
                       options={stateOptions}
                       onChange={onStateChange}
                     />
-                     ) : (
+                    ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
@@ -391,7 +400,7 @@ const BatchForm = (props) => {
                       required
                       options={areaOptions}
                     />
-                     ) : (
+                    ) : (
                       <>
                         <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />

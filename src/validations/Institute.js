@@ -39,7 +39,7 @@ const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, 'Pincode is not valid')
   .max(6, "Number is too long")
   .required("Pincode is required.");
-const district= Yup.string().required("District is required.");
+const district = Yup.string().required("District is required.");
 const address_line = Yup.object({
   state,
   medha_area,

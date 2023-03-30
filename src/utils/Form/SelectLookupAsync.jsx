@@ -65,7 +65,8 @@ const SelectField = (props) => {
     isSearchable = false,
     filterData,
     defaultOptions,
-    isDisabled
+    isDisabled,
+    isClearable,
   } = props;
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
@@ -92,13 +93,18 @@ const SelectField = (props) => {
         placeholder={placeholder}
         isSearchable={isSearchable || icon !== 'down'}
         components={{ DropdownIndicator }}
-        onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}
+        onChange={option => {
+            form.setFieldValue(field.name, option ? option.value : null);
+            onChange(option);
+          }
+        }
         value={
-          options ? options.find((option) => option.value === field.value) : null
+          options ? options.find((option) => option.value === field.value) || null : null
         }
         defaultOptions={defaultOptions}
         cacheOptions
         isDisabled={isDisabled}
+        isClearable={isClearable}
       />
   );
 };

@@ -5,6 +5,7 @@ import {
   TableRowDetailLink,
   Badge,
   Anchor,
+  uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
@@ -23,6 +24,7 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import {studentStatusOptions} from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
+import { isAdmin, isSRM } from "../../common/commonFunctions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -206,12 +208,26 @@ const Students = (props) => {
     }
 
     // need to remove `show` from the payload
-    let {show, institution, batch, ...dataToSave} = data;
+    let {show, institution, batch, cv_file, ...dataToSave} = data;
     dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
     if (typeof data.CV === 'object') {
       dataToSave['CV'] = data.CV?.url;
     }
 
+    if (cv_file) {
+      uploadFile(data.cv_file).then(data => {
+        dataToSave['CV'] = data.data.data.upload.id;
+        createStudentApi(dataToSave);
+      }).catch(err => {
+        console.log("CV_UPLOAD_ERR", err);
+        setAlert("Unable to upload CV.", "error");
+      });
+    } else {
+      createStudentApi(dataToSave);
+    }
+  };
+
+  const createStudentApi = dataToSave => {
     nProgress.start();
     createStudent(dataToSave).then(data => {
       setAlert("Student created successfully.", "success");
@@ -224,7 +240,7 @@ const Students = (props) => {
       setStudents();
     });
     setModalShow(false);
-  };
+  }
 
 
   const handleStudentStatusTabChange = (statusTab) => {
@@ -244,13 +260,13 @@ const Students = (props) => {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <Tabs options={studentStatusOptions} onTabChange={handleStudentStatusTabChange} />
-            <button
+            {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
               style={{marginLeft: '15px'}}
             >
               Add New Student
-            </button>
+            </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
             <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
