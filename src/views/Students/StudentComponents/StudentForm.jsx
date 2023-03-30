@@ -457,10 +457,10 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="medha_champion"
-                        label="Medha Member"
+                        label="Medhavi Member"
                         options={medhaChampionOptions}
                         className="form-control"
-                        placeholder="Medha Member"
+                        placeholder="Medhavi Member"
                       />
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
