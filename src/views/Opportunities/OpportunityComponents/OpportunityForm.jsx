@@ -59,6 +59,10 @@ const OpportunityForm = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
+  
+
+
+
   const [initialValues, setInitialValues] = useState({
     employer: '',
     assigned_to: userId.toString() ,
@@ -129,6 +133,7 @@ const OpportunityForm = (props) => {
     });
 
     getAllEmployers().then(data => {
+    
       setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
         key: employer.name,
         label: employer.name,
@@ -182,6 +187,7 @@ const OpportunityForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+    console.log("click",values);
     onHide(values);
   };
 
@@ -246,7 +252,7 @@ const OpportunityForm = (props) => {
         <Formik
          onSubmit={onSubmit}
          initialValues={initialValues}
-         validationSchema={OpportunityValidations}
+        //  validationSchema={OpportunityValidations}
          enableReinitialize={true}
         >
           {({ values }) => (
@@ -264,7 +270,7 @@ const OpportunityForm = (props) => {
                       filterData={filterEmployer}
                       defaultOptions={props.id ? employerOptions : true}
                       onChange={handleEmployerChange}
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -274,7 +280,7 @@ const OpportunityForm = (props) => {
                       control="input"
                       placeholder="Role/Designation"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -286,7 +292,7 @@ const OpportunityForm = (props) => {
                       placeholder="Type"
                       options={typeOptions}
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -297,7 +303,7 @@ const OpportunityForm = (props) => {
                       label="No. of opportunities"
                       placeholder="No. of opportunities"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -310,7 +316,7 @@ const OpportunityForm = (props) => {
                         defaultOptions={assigneeOptions}
                         className="form-control"
                         placeholder="Assigned To"
-                        required
+                        // required
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
@@ -324,7 +330,7 @@ const OpportunityForm = (props) => {
                       control="lookup"
                       options={statusOptions}
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -335,7 +341,7 @@ const OpportunityForm = (props) => {
                       label="Department/Team"
                       placeholder="Department/Team"
                       className="form-control"
-                      required
+                      // required
                       options={departmentOptions}
                     />
                   </div>
@@ -347,7 +353,7 @@ const OpportunityForm = (props) => {
                       label="Salary"
                       placeholder="Salary"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -359,7 +365,7 @@ const OpportunityForm = (props) => {
                       placeholder="Paid"
                       options={compensationTypeOptions}
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -369,7 +375,7 @@ const OpportunityForm = (props) => {
                       label="Skills Required"
                       placeholder="Skills Required"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-sm-12 mb-2">
@@ -379,7 +385,7 @@ const OpportunityForm = (props) => {
                       label="Description"
                       placeholder="Description"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                 </div>
@@ -395,7 +401,7 @@ const OpportunityForm = (props) => {
                       name="address"
                       placeholder="Address"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -408,7 +414,7 @@ const OpportunityForm = (props) => {
                       className="form-control"
                       options={stateOptions}
                       onChange={onStateChange}
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -421,7 +427,7 @@ const OpportunityForm = (props) => {
                       placeholder="District"
                       options={districtOptions}
                       className="form-control"
-                      required
+                      // required
                     />
                     ) : (
                       <>
@@ -440,7 +446,7 @@ const OpportunityForm = (props) => {
                       className="form-control"
                       options={areaOptions}
                       placeholder="Medha Area"
-                      required
+                      // required
                     />
                     ) : (
                       <>
@@ -456,7 +462,7 @@ const OpportunityForm = (props) => {
                       label="City"
                       className="form-control"
                       placeholder="City"
-                      required
+                      // required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -466,7 +472,7 @@ const OpportunityForm = (props) => {
                       label="Pin Code"
                       placeholder="Pin Code"
                       className="form-control"
-                      required
+                      // required
                     />
                   </div>
                 </div>
