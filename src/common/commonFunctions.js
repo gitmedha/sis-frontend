@@ -1,6 +1,6 @@
 export const isSRM = () => {
   const userRole = localStorage.getItem('user_role');
-  return userRole && userRole.toLowerCase() === 'basic';
+  return userRole && userRole.toLowerCase() === 'srm';
 }
 
 export const isAdmin = () => {
@@ -11,4 +11,9 @@ export const isAdmin = () => {
 export const isChapterHead = () => {
   const userRole = localStorage.getItem('user_role');
   return userRole && userRole.toLowerCase() === 'chapter head';
+}
+
+export const isPartnership = () => {
+  const userRole = localStorage.getItem('user_role');
+  return userRole && userRole.toLowerCase() === 'partnership';
 }
