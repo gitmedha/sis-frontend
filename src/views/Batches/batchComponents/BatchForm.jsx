@@ -11,7 +11,7 @@ import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin } from "../../../common/commonFunctions";
+import { isAdmin, isPartnership, isSRM } from "../../../common/commonFunctions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -67,7 +67,22 @@ const BatchForm = (props) => {
     });
   }, []);
 
-  let initialValues = {
+  const filterGrant = async (filterValue) => {
+    return await meilisearchClient.index('grants').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name', 'donor']
+    }).then(data => {
+      return data.hits.map(grant => {
+        return {
+          ...grant,
+          label: `${grant.name} | ${grant.donor}`,
+          value: Number(grant.id),
+        }
+      });
+    });
+  }
+
+  const [initialValues, setInitialValues] = useState({
     name: '',
     // name_in_current_sis: '',
     assigned_to: userId.toString(),
@@ -83,16 +98,7 @@ const BatchForm = (props) => {
     enrollment_type:'',
     state:'',
     medha_area:'',
-  };
-  if (props.id) {
-    initialValues = {...props}
-    initialValues['grant'] = Number(props.grant?.id);
-    initialValues['program'] = Number(props.program?.id);
-    initialValues['institution'] = props.institution?.id ? Number(props.institution?.id): null ;
-    initialValues['assigned_to'] = props.assigned_to?.id;
-    initialValues['start_date'] = new Date(props.start_date);
-    initialValues['end_date'] = new Date(props.end_date);
-  }
+  });
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -149,6 +155,27 @@ const BatchForm = (props) => {
   };
 
   useEffect(() => {
+    if (props.id) {
+      setInitialValues({
+        ...props,
+        grant: Number(props.grant?.id),
+        program: Number(props.program?.id),
+        institution: props.institution?.id ? Number(props.institution?.id): null ,
+        assigned_to: props.assigned_to?.id,
+        start_date: new Date(props.start_date),
+        end_date: new Date(props.end_date),
+      })
+    } else {
+      // get default grant for SRMs
+      if (!isAdmin() && !isPartnership()) {
+        filterGrant('None').then(data => {
+          setGrantOptions(data);
+          if (data.length) {
+            initialValues['grant'] = Number(data[0].id);
+          }
+        });
+      }
+    }
     if (props.institution) {
       filterInstitution(props.institution.name).then(data => {
         setInstitutionOptions(data);
@@ -202,21 +229,6 @@ const BatchForm = (props) => {
           ...program,
           label: program.name,
           value: Number(program.id),
-        }
-      });
-    });
-  }
-
-  const filterGrant = async (filterValue) => {
-    return await meilisearchClient.index('grants').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name', 'donor']
-    }).then(data => {
-      return data.hits.map(grant => {
-        return {
-          ...grant,
-          label: `${grant.name} | ${grant.donor}`,
-          value: Number(grant.id),
         }
       });
     });
@@ -318,6 +330,7 @@ const BatchForm = (props) => {
                         control="lookupAsync"
                         filterData={filterGrant}
                         defaultOptions={props.id ? grantOptions : true}
+                        isDisabled={!isAdmin() && !isPartnership()}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
