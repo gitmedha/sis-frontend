@@ -112,7 +112,9 @@ const Details = (props) => {
     created_at,
     updated_at,
     created_by_frontend,
-    updated_by_frontend
+    updated_by_frontend,
+    how_did_you_hear_about_us,
+    how_did_you_hear_about_us_other
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -148,6 +150,7 @@ const Details = (props) => {
             &nbsp;
             <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            <DetailField label="How did you hear about us?" value={how_did_you_hear_about_us === 'other' ? how_did_you_hear_about_us_other : how_did_you_hear_about_us} />
 
           </div>
           <div className="col-md-4">

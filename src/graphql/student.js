@@ -23,6 +23,8 @@ const studentFields = `
   medha_area
   address
   state
+  how_did_you_hear_about_us
+  how_did_you_hear_about_us_other
   created_at
   updated_at
   created_by_frontend{
