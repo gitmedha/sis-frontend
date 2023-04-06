@@ -27,6 +27,7 @@ import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
 import Employer from "./views/Employers/Employer";
 import Employers from "./views/Employers/Employers";
+
 import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
