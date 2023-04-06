@@ -187,7 +187,7 @@ const OpportunityForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    console.log("click",values);
+    
     onHide(values);
   };
 
