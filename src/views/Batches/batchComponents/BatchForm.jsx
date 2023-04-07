@@ -234,6 +234,12 @@ const BatchForm = (props) => {
     });
   }
 
+  const paymentOptions = [
+    { value: "free", label: "Free" },
+    { value: "paid_by_college", label: "Paid by College" },
+    { value: "paid_by_students", label: "Paid by Students" }
+  ];
+
   return (
     <Modal
       centered
@@ -489,7 +495,19 @@ const BatchForm = (props) => {
                       placeholder=""
                     />
 
-                </div>
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                       <Input
+                        control="lookup"
+                        icon="down"
+                        name="Mode_of_Payment"
+                        label="Mode of Payment"
+                        required
+                        placeholder="Mode of Payment"
+                        className="form-control"
+                        options={paymentOptions}
+                      />
+                  </div>
                 </div>
               </Section>
               <div className="row mt-3 py-3">
