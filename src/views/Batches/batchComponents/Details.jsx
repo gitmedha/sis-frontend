@@ -86,6 +86,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Donor" value={batch.grant.donor} />
           &nbsp;
           <DetailField label="Per-student Fees" value={batch.per_student_fees} />
+          <DetailField label="Mode of Payment" value={batch.mode_of_payment} />
           <div>&nbsp; &nbsp;</div>
           &nbsp;
           <DetailField label="Updated By" value={batch.updated_by_frontend?.username ?`${batch.updated_by_frontend?.username} (${batch.updated_by_frontend?.email})`: ''} />

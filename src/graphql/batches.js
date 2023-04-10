@@ -19,6 +19,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
         end_date
         status
         medha_area
+        mode_of_payment
         state
         enrollment_type
         assigned_to{
@@ -67,6 +68,7 @@ query GET_BATCH ($id:ID!) {
     enrollment_type
     state
     medha_area
+    mode_of_payment
     program {
       id
       name

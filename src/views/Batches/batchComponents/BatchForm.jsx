@@ -235,9 +235,9 @@ const BatchForm = (props) => {
   }
 
   const paymentOptions = [
-    { value: "free", label: "Free" },
-    { value: "paid_by_college", label: "Paid by College" },
-    { value: "paid_by_students", label: "Paid by Students" }
+    { value: "Free", label: "Free" },
+    { value: "Paid by College", label: "Paid by College" },
+    { value: "Paid by Students", label: "Paid by Students" }
   ];
 
   return (
@@ -500,7 +500,7 @@ const BatchForm = (props) => {
                        <Input
                         control="lookup"
                         icon="down"
-                        name="Mode_of_Payment"
+                        name="mode_of_payment"
                         label="Mode of Payment"
                         required
                         placeholder="Mode of Payment"
