@@ -135,6 +135,7 @@ const employmentConnectionFields = `
   status
   start_date
   end_date
+  updated_at
   source
   reason_if_rejected
   work_engagement
