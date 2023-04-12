@@ -14,6 +14,7 @@ const course_type = Yup.string().nullable().required("Course Type is required.")
 const year_of_course_completion = Yup.string().nullable().required("Year of Completion is required.");
 const registration_date = Yup.date().nullable().required("Registration Date is required.");
 const fee_status = Yup.string().required("Fee Status is required.");
+const how_did_you_hear_about_us = Yup.string().required("How did you hear about us is required.");
 
 // Employment Connection form fields.
 const start_date = Yup.date().nullable().required("Start Date is required.");
@@ -130,6 +131,11 @@ export const StudentValidations = Yup.object({
   address,
   state,
   district,
+  how_did_you_hear_about_us,
+  how_did_you_hear_about_us_other: Yup.string().nullable().when("how_did_you_hear_about_us", {
+    is: (how_did_you_hear_about_us) => how_did_you_hear_about_us?.toLowerCase() === 'other',
+    then: Yup.string().nullable().required('Other option is required.')
+  }),
 });
 
 export const AlumniServiceValidations = Yup.object({
