@@ -1,3 +1,24 @@
+const batchesFields = `
+  id
+  name
+  start_date
+  end_date
+  status
+  medha_area
+  mode_of_payment
+  state
+  enrollment_type
+  assigned_to{
+    username
+  }
+  logo {
+    url
+  }
+  number_of_sessions_planned
+  program {
+    name
+`;
+
 export const GET_BATCHES = `
 query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state:String, $area:String ){
     batchesConnection(
@@ -13,25 +34,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
       }
     ) {
       values {
-        id
-        name
-        start_date
-        end_date
-        status
-        medha_area
-        mode_of_payment
-        state
-        enrollment_type
-        assigned_to{
-          username
-        }
-        logo {
-          url
-        }
-        number_of_sessions_planned
-        program {
-          name
-        }
+        ${batchesFields}
       }
       aggregate {
         count

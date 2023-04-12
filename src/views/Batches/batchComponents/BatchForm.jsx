@@ -45,6 +45,7 @@ const BatchForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [paymentOptions, setPaymentOptions] = useState([]);
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
   const [formValues, setFormValues] = useState(null);
@@ -121,6 +122,13 @@ const BatchForm = (props) => {
         // otherwise return only those status that are applicable to all
         return status['applicable-to'] === 'All';
       });
+
+      let modeOfPayment = data.mode_of_payment;
+      setPaymentOptions(modeOfPayment.map(mode_of_payment => ({
+        value: mode_of_payment.value,
+        label: mode_of_payment.value
+      })));
+
       setStatusOptions(filteredStatusOptions.map(status => ({
         key: status.value,
         value: status.value,
@@ -234,11 +242,6 @@ const BatchForm = (props) => {
     });
   }
 
-  const paymentOptions = [
-    { value: "Free", label: "Free" },
-    { value: "Paid by College", label: "Paid by College" },
-    { value: "Paid by Students", label: "Paid by Students" }
-  ];
 
   return (
     <Modal
