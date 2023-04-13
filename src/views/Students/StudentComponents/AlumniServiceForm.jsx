@@ -5,10 +5,11 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList } from "./StudentActions";
+import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import * as Yup from "yup";
+import { get } from 'lodash';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,6 +40,18 @@ const AlumniServiceForm = (props) => {
   const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [peerLearningOptions, setPeerLearningOptions] = useState();
+  const [categoryOptions, setCategoryOptions] = useState();
+  const [youthLeadershipOptions, setYouthLeadershipOptions] = useState();
+
+  useEffect(() => {
+    getAlumniServicePickList().then((data) => {
+      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
+      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
+      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
+    });
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -94,6 +107,23 @@ const AlumniServiceForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.value);
+  };
+  
+  const programOptions = [
+    { value: "Offline", label: "Offline" },
+    { value: "Online", label: "Online" },
+  ];
+
+  const ideationClubOptions = [
+    {value:" Weekends With Walter",label:" Weekends With Walter"},
+  ];
+
+  const giveBackOptions = [
+    {value:"BEAM ",label:"BEAM "},
+  ];
 
   return (
     <Modal
@@ -230,6 +260,81 @@ const AlumniServiceForm = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="program_mode"
+                      label="Program Mode"
+                      placeholder="Program Mode"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={programOptions}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="Category"
+                      label="Category"
+                      placeholder="category"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={categoryOptions}
+                      onChange={handleCategoryChange}
+                    />
+                  </div>
+                  {selectedCategory === "Youth Leadership" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                      icon="down"
+                      control="lookup"
+                      name="youth_leadership"
+                      label="Youth Leadership"
+                      options={youthLeadershipOptions}
+                      className="form-control"
+                      placeholder="Youth Leadership"
+                      />
+                    </div>
+                  )}
+                  {selectedCategory === "Peer-Learning" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                      name="peer_learning"
+                      label="Peer-Learning"
+                      placeholder="Peer-Learning"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={peerLearningOptions}
+                      />
+                    </div>
+                  )}
+                  {selectedCategory === "Ideation Club" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                      name="ideation_club"
+                      label="Ideation Club"
+                      placeholder="Ideation Club"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={ideationClubOptions}
+                      />
+                    </div>
+                  )}
+                  {selectedCategory === "Giveback" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                      name="giveback"
+                      label="Giveback"
+                      placeholder="Giveback"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={giveBackOptions}
+                      />
+                    </div>
+                  )}
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
