@@ -273,7 +273,7 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="Category"
+                      name="category"
                       label="Category"
                       placeholder="category"
                       control="lookup"

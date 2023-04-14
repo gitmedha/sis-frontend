@@ -70,6 +70,8 @@ const AlumniService = (props) => {
     setAlumniService(props.alumniService);
   }, [props]);
 
+  const selectedCategory = props.alumniService.category;
+
   return (
       <Modal
         centered
@@ -107,6 +109,20 @@ const AlumniService = (props) => {
                 <DetailField label="Location" value={alumniService.location} />
                 <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
+                <DetailField label="Program Mode" value={alumniService.program_mode}/>
+                <DetailField label="Category" value={alumniService.category}/>
+                {selectedCategory === "Youth Leadership" && (
+                  <DetailField label={alumniService.category} value={alumniService.youth_leadership}/>
+                )}
+                {selectedCategory === "Peer-Learning" && (
+                  <DetailField label={alumniService.category} value={alumniService.peer_learning}/>
+                )}
+                {selectedCategory === "Ideation Club" && (
+                  <DetailField label={alumniService.category} value={alumniService.ideation_club}/>
+                )}
+                {selectedCategory === "Giveback" && (
+                  <DetailField label={alumniService.category} value={alumniService.giveback}/>
+                )}
               </div>
             </div>
           </FileStyled>
