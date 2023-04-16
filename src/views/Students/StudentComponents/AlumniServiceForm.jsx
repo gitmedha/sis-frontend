@@ -44,14 +44,7 @@ const AlumniServiceForm = (props) => {
   const [peerLearningOptions, setPeerLearningOptions] = useState();
   const [categoryOptions, setCategoryOptions] = useState();
   const [youthLeadershipOptions, setYouthLeadershipOptions] = useState();
-
-  useEffect(() => {
-    getAlumniServicePickList().then((data) => {
-      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
-      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
-      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
-    });
-  }, []);
+  // const [programOptions, setProgramOptions] = useState();
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -124,6 +117,16 @@ const AlumniServiceForm = (props) => {
   const giveBackOptions = [
     {value:"BEAM ",label:"BEAM "},
   ];
+
+  useEffect(() => {
+    getAlumniServicePickList().then((data) => {
+      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
+      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
+      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
+      // setProgramOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
+    });
+  }, []);
+  
 
   return (
     <Modal
@@ -296,12 +299,12 @@ const AlumniServiceForm = (props) => {
                       />
                     </div>
                   )}
-                  {selectedCategory === "Peer-Learning" && (
+                  {selectedCategory === "Peer Learning" && (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                       name="peer_learning"
-                      label="Peer-Learning"
-                      placeholder="Peer-Learning"
+                      label="Peer Learning"
+                      placeholder="Peer Learning"
                       control="lookup"
                       icon="down"
                       className="form-control"

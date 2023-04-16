@@ -114,7 +114,7 @@ const AlumniService = (props) => {
                 {selectedCategory === "Youth Leadership" && (
                   <DetailField label={alumniService.category} value={alumniService.youth_leadership}/>
                 )}
-                {selectedCategory === "Peer-Learning" && (
+                {selectedCategory === "Peer Learning" && (
                   <DetailField label={alumniService.category} value={alumniService.peer_learning}/>
                 )}
                 {selectedCategory === "Ideation Club" && (
