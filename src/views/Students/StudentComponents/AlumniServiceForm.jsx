@@ -44,7 +44,20 @@ const AlumniServiceForm = (props) => {
   const [peerLearningOptions, setPeerLearningOptions] = useState();
   const [categoryOptions, setCategoryOptions] = useState();
   const [youthLeadershipOptions, setYouthLeadershipOptions] = useState();
-  // const [programOptions, setProgramOptions] = useState();
+  const [programOptions, setProgramOptions] = useState();
+  const [ideationClub, setideationClub] = useState();
+  const [giveback, setgiveback] = useState();
+
+  useEffect(() => {
+    getAlumniServicePickList().then((data) => {
+      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
+      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
+      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
+      setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
+      setideationClub(data.ideation_club.map((item)=> ({value: item.value, label: item.value})));
+      setgiveback(data.giveback.map((item)=> ({value: item.value, label: item.value})));
+    });
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -101,31 +114,24 @@ const AlumniServiceForm = (props) => {
     onHide(values);
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.value);
-  };
+  // const handleCategoryChange = (e) => {
+  //   setSelectedCategory(e.value);
+  // };
   
-  const programOptions = [
-    { value: "Offline", label: "Offline" },
-    { value: "Online", label: "Online" },
-  ];
+  // const programOptions = [
+  //   { value: "Offline", label: "Offline" },
+  //   { value: "Online", label: "Online" },
+  // ];
 
-  const ideationClubOptions = [
-    {value:" Weekends With Walter",label:" Weekends With Walter"},
-  ];
+  // const ideationClubOptions = [
+  //   {value:" Weekends With Walter",label:" Weekends With Walter"},
+  // ];
 
-  const giveBackOptions = [
-    {value:"BEAM ",label:"BEAM "},
-  ];
+  // const giveBackOptions = [
+  //   {value:"BEAM ",label:"BEAM "},
+  // ];
 
-  useEffect(() => {
-    getAlumniServicePickList().then((data) => {
-      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
-      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
-      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
-      // setProgramOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
-    });
-  }, []);
+
   
 
   return (
@@ -283,7 +289,8 @@ const AlumniServiceForm = (props) => {
                       icon="down"
                       className="form-control"
                       options={categoryOptions}
-                      onChange={handleCategoryChange}
+                      // onChange={handleCategoryChange}
+                      onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
                   {selectedCategory === "Youth Leadership" && (
@@ -321,7 +328,7 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       icon="down"
                       className="form-control"
-                      options={ideationClubOptions}
+                      options={ideationClub}
                       />
                     </div>
                   )}
@@ -334,7 +341,7 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       icon="down"
                       className="form-control"
-                      options={giveBackOptions}
+                      options={giveback}
                       />
                     </div>
                   )}
