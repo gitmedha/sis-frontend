@@ -112,7 +112,9 @@ const Details = (props) => {
     created_at,
     updated_at,
     created_by_frontend,
-    updated_by_frontend
+    updated_by_frontend,
+    how_did_you_hear_about_us,
+    how_did_you_hear_about_us_other
   } = props;
 
   const [pickList, setPickList] = useState([]);
@@ -148,6 +150,7 @@ const Details = (props) => {
             &nbsp;
             <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
+            <DetailField label="How did you hear about us?" value={how_did_you_hear_about_us?.toLowerCase() === 'other' ? how_did_you_hear_about_us_other : how_did_you_hear_about_us} />
 
           </div>
           <div className="col-md-4">
@@ -172,7 +175,7 @@ const Details = (props) => {
         <hr className="separator" />
         <div className="row">
           <div className="col-md-5">
-            <DetailField label="Medha Member" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Medhavi Member" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}

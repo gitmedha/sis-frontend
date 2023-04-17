@@ -38,6 +38,8 @@ const StudentForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
+  const [howDidYouHearAboutUsOptions, setHowDidYouHearAboutUsOptions] = useState([]);
+  const [selectedHowDidYouHearAboutUs, setSelectedHowDidYouHearAboutUs] = useState(props?.how_did_you_hear_about_us);
   const [logo, setLogo] = useState(null);
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
@@ -66,6 +68,7 @@ const StudentForm = (props) => {
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
     getAddressOptions().then(data => {
@@ -132,6 +135,8 @@ const StudentForm = (props) => {
     district:'',
     logo:'',
     registered_by:userId.toString(),
+    how_did_you_hear_about_us: '',
+    how_did_you_hear_about_us_other: '',
   };
 
   let fileName = '';
@@ -140,8 +145,8 @@ const StudentForm = (props) => {
     initialValues['date_of_birth'] = new Date(props?.date_of_birth);
     initialValues['assigned_to'] = props?.assigned_to?.id;
     initialValues['registered_by'] = props?.registered_by?.id;
-    initialValues['district'] = props.district ? props.district: null ;
-    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    initialValues['district'] = props.district ? props.district: null;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area: null;
 
     if (props.CV && props.CV.url) {
       const cvUrlSplit = props.CV.url.split('/');
@@ -340,22 +345,53 @@ const StudentForm = (props) => {
                       isDisabled={!isAdmin()}
                     />
                   </div>
-                  {(isSRM() || isAdmin()) && <div className="col-md-6 col-sm-12 mb-2">
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {howDidYouHearAboutUsOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="how_did_you_hear_about_us"
+                        label="How did you hear about us?"
+                        options={howDidYouHearAboutUsOptions}
+                        className="form-control"
+                        placeholder="How did you hear about us?"
+                        onChange={option => {
+                          setSelectedHowDidYouHearAboutUs(option.value);
+                        }}
+                        required
+                      />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="file"
-                      name="cv_upload"
-                      label="CV"
-                      subLabel={showCVSubLabel && <div className="mb-1">
-                        {fileName}
-                      </div>}
+                      name="how_did_you_hear_about_us_other"
+                      label="If Other, Specify"
+                      control="input"
+                      placeholder="If Other, Specify"
                       className="form-control"
-                      placeholder="CV"
-                      accept=".pdf, .docx"
-                      onChange={(event) => {
-                        setFieldValue("cv_file", event.currentTarget.files[0]);
-                        setShowCVSubLabel(false);
-                      }}
+                      required
                     />
+                  </div>}
+                  {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
+                    <div className="col-md-6">
+                      <Input
+                        control="file"
+                        name="cv_upload"
+                        label="CV"
+                        subLabel={showCVSubLabel && <div className="mb-1">
+                          {fileName}
+                        </div>}
+                        className="form-control"
+                        placeholder="CV"
+                        accept=".pdf, .docx"
+                        onChange={(event) => {
+                          setFieldValue("cv_file", event.currentTarget.files[0]);
+                          setShowCVSubLabel(false);
+                        }}
+                      />
+                    </div>
                   </div>}
                 </div>
               </Section>
@@ -457,10 +493,10 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="medha_champion"
-                        label="Medha Member"
+                        label="Medhavi Member"
                         options={medhaChampionOptions}
                         className="form-control"
-                        placeholder="Medha Member"
+                        placeholder="Medhavi Member"
                       />
                     {/* ) : ( */}
                       {/* <Skeleton count={1} height={45} /> */}
