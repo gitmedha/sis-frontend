@@ -114,25 +114,6 @@ const AlumniServiceForm = (props) => {
     onHide(values);
   };
 
-  // const handleCategoryChange = (e) => {
-  //   setSelectedCategory(e.value);
-  // };
-  
-  // const programOptions = [
-  //   { value: "Offline", label: "Offline" },
-  //   { value: "Online", label: "Online" },
-  // ];
-
-  // const ideationClubOptions = [
-  //   {value:" Weekends With Walter",label:" Weekends With Walter"},
-  // ];
-
-  // const giveBackOptions = [
-  //   {value:"BEAM ",label:"BEAM "},
-  // ];
-
-
-  
 
   return (
     <Modal
@@ -289,7 +270,6 @@ const AlumniServiceForm = (props) => {
                       icon="down"
                       className="form-control"
                       options={categoryOptions}
-                      // onChange={handleCategoryChange}
                       onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
