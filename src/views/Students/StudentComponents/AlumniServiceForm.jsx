@@ -114,6 +114,34 @@ const AlumniServiceForm = (props) => {
     onHide(values);
   };
 
+  let subCategoryName;
+  let subCategoryLabel;
+  let subCategoryOptions = [];
+
+  switch (selectedCategory) {
+    case 'Youth Leadership':
+      subCategoryName = 'youth_leadership';
+      subCategoryLabel = 'Youth Leadership';
+      subCategoryOptions = youthLeadershipOptions;
+      break;
+    case "Peer Learning":
+      subCategoryName = 'peer_learning';
+      subCategoryLabel = "Peer Learning";
+      subCategoryOptions = peerLearningOptions;
+      break;
+    case "Ideation Club":
+        subCategoryName = 'ideation_club';
+        subCategoryLabel = "Ideation Club";
+        subCategoryOptions = ideationClub;
+        break;
+    case "Giveback":
+        subCategoryName = 'giveback';
+        subCategoryLabel = "Giveback";
+        subCategoryOptions = giveback;
+        break;
+      default:
+        break;
+  }
 
   return (
     <Modal
@@ -269,62 +297,23 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       icon="down"
                       className="form-control"
-                      options={categoryOptions}
+                      options={categoryOptions} 
                       onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
-                  {selectedCategory === "Youth Leadership" && (
+                  {selectedCategory ?
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
-                      icon="down"
-                      control="lookup"
-                      name="youth_leadership"
-                      label="Youth Leadership"
-                      options={youthLeadershipOptions}
-                      className="form-control"
-                      placeholder="Youth Leadership"
+                        name={subCategoryName}
+                        label={subCategoryLabel}
+                        placeholder={subCategoryLabel}
+                        control="lookup"
+                        icon="down"
+                        className="form-control"
+                        options={subCategoryOptions} 
                       />
-                    </div>
-                  )}
-                  {selectedCategory === "Peer Learning" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                      name="peer_learning"
-                      label="Peer Learning"
-                      placeholder="Peer Learning"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={peerLearningOptions}
-                      />
-                    </div>
-                  )}
-                  {selectedCategory === "Ideation Club" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                      name="ideation_club"
-                      label="Ideation Club"
-                      placeholder="Ideation Club"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={ideationClub}
-                      />
-                    </div>
-                  )}
-                  {selectedCategory === "Giveback" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                      name="giveback"
-                      label="Giveback"
-                      placeholder="Giveback"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={giveback}
-                      />
-                    </div>
-                  )}
+                    </div> 
+                  : null }
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
