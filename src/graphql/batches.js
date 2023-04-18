@@ -17,6 +17,7 @@ const batchesFields = `
   number_of_sessions_planned
   program {
     name
+  }
 `;
 
 export const GET_BATCHES = `
@@ -52,10 +53,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
 export const GET_BATCH = `
 query GET_BATCH ($id:ID!) {
   batch(id: $id) {
-    id
-    name
-    end_date
-    start_date
+    ${batchesFields}
     created_at
     created_by_frontend{
       id
@@ -67,11 +65,6 @@ query GET_BATCH ($id:ID!) {
       email
     }
     updated_at
-    status
-    enrollment_type
-    state
-    medha_area
-    mode_of_payment
     program {
       id
       name
@@ -84,9 +77,6 @@ query GET_BATCH ($id:ID!) {
       email
       username
     }
-    logo {
-      url
-    }
     grant {
       id
       name
@@ -98,7 +88,6 @@ query GET_BATCH ($id:ID!) {
     }
     per_student_fees
     name_in_current_sis
-    number_of_sessions_planned
     require_assignment_file_for_certification
     seats_available
     certificates_generated_at
