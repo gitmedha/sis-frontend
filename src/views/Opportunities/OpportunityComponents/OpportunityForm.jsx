@@ -57,7 +57,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const [newValue, setNewValue] = useState([]);
+  const [newValues, setNewValues] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -224,10 +224,6 @@ const OpportunityForm = (props) => {
     });
   };
 
-  employerOptions.pop();
-  employerOptions.push(newValue);
-  
-  useEffect(() => {
     if (props.id) {
       const searchedemployed = employerOptions.find((option) => option.label === props.employer.name);
       if (!searchedemployed) {
@@ -235,21 +231,11 @@ const OpportunityForm = (props) => {
           key: props.employer.name,
           label: props.employer.name,
           value: Number(props.employer.id),
-          details: {
-            address: props.employer.address,
-            city: " ",
-            district: props.employer.district,
-            id: props.employer.id,
-            medha_area: props.employer.medha_area,
-            name: props.employer.name,
-            pin_code: "0",
-            state: props.employer.state,
-          }
         };
-        setNewValue(newvalue);
+        setNewValues(newvalue);
+        employerOptions.push(newValues);
       }
     }
-  }, []);
 
   return (
     <Modal
