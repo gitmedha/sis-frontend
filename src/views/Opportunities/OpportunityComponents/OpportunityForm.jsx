@@ -92,17 +92,6 @@ const OpportunityForm = (props) => {
       });
     }
 
-    if (props.id) {
-      const searchedEmployer = employerOptions.find((option) => option.label === props.employer.name);
-      if (!searchedEmployer) {
-        const newvalue = {
-          key: props.employer.name,
-          label: props.employer.name,
-          value: Number(props.employer.id),
-        };
-        employerOptions.push(newvalue);
-      }
-    }
   }, [props])
 
   useEffect(() => {
@@ -155,6 +144,16 @@ const OpportunityForm = (props) => {
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
       });
+
+      const searchedEmployer = employerOptions.find((option) => option.label === props.employer.name);
+      if (!searchedEmployer) {
+        const newvalue = {
+          key: props.employer.name,
+          label: props.employer.name,
+          value: Number(props.employer.id),
+        };
+        employerOptions.push(newvalue);
+      }
     }
 
     getAddressOptions().then(data => {
