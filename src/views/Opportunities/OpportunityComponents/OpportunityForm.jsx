@@ -129,13 +129,26 @@ const OpportunityForm = (props) => {
       }));
     });
 
-    getAllEmployers().then(data => {
-      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
+    getAllEmployers().then((data) => {
+      const employersData = data?.data?.data?.employers.map((employer) => ({
         key: employer.name,
         label: employer.name,
         value: Number(employer.id),
         details: employer,
-      })));
+      }));
+      if (props.id) {
+        const searchedEmployer = employersData.find(
+          (option) => option.value === Number(props.employer.id)
+        );
+        if (!searchedEmployer) {
+          employersData.push({
+            key: props.employer.name,
+            label: props.employer.name,
+            value: Number(props.employer.id),
+          });
+        }
+      }
+      setEmployerOptions(employersData);
     });
 
     if (props.id) {
@@ -144,16 +157,6 @@ const OpportunityForm = (props) => {
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
       });
-
-      const searchedEmployer = employerOptions.find((option) => option.label === props.employer.name);
-      if (!searchedEmployer) {
-        const newvalue = {
-          key: props.employer.name,
-          label: props.employer.name,
-          value: Number(props.employer.id),
-        };
-        employerOptions.push(newvalue);
-      }
     }
 
     getAddressOptions().then(data => {
