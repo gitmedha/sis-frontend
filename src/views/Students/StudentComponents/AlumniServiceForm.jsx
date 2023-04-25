@@ -45,8 +45,8 @@ const AlumniServiceForm = (props) => {
   const [categoryOptions, setCategoryOptions] = useState();
   const [youthLeadershipOptions, setYouthLeadershipOptions] = useState();
   const [programOptions, setProgramOptions] = useState();
-  const [ideationClub, setideationClub] = useState();
-  const [giveback, setgiveback] = useState();
+  const [ideationClubOptions, setIdeationClubOptions] = useState();
+  const [givebackOptions , setGivebackOptions] = useState();
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
@@ -54,8 +54,8 @@ const AlumniServiceForm = (props) => {
       setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
       setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
       setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
-      setideationClub(data.ideation_club.map((item)=> ({value: item.value, label: item.value})));
-      setgiveback(data.giveback.map((item)=> ({value: item.value, label: item.value})));
+      setIdeationClubOptions(data.ideation_club.map((item)=> ({value: item.value, label: item.value})));
+      setGivebackOptions(data.giveback.map((item)=> ({value: item.value, label: item.value})));
     });
   }, []);
 
@@ -132,12 +132,12 @@ const AlumniServiceForm = (props) => {
     case "Ideation Club":
         subCategoryName = 'ideation_club';
         subCategoryLabel = "Ideation Club";
-        subCategoryOptions = ideationClub;
+        subCategoryOptions = ideationClubOptions;
         break;
     case "Giveback":
         subCategoryName = 'giveback';
         subCategoryLabel = "Giveback";
-        subCategoryOptions = giveback;
+        subCategoryOptions = givebackOptions;
         break;
       default:
         break;
