@@ -123,9 +123,9 @@ const BatchForm = (props) => {
         return status['applicable-to'] === 'All';
       });
 
-      setPaymentOptions(data.mode_of_payment.map(mode_of_payment => ({
-        value: mode_of_payment.value,
-        label: mode_of_payment.value
+      setPaymentOptions(data.mode_of_payment.map(modeOfPayment => ({
+        value: modeOfPayment.value,
+        label: modeOfPayment.value
       })));
 
       setStatusOptions(filteredStatusOptions.map(status => ({

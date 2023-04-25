@@ -8,6 +8,44 @@ const batchesFields = `
   mode_of_payment
   state
   enrollment_type
+  created_at
+  updated_at
+  per_student_fees
+  name_in_current_sis
+  require_assignment_file_for_certification
+  seats_available
+  certificates_generated_at
+  certificates_emailed_at
+  grant {
+    id
+    name
+    donor
+  }
+  assigned_to {
+    id
+    email
+    username
+  }
+  updated_by_frontend{
+    username
+    email
+  }
+  institution {
+    id
+    name
+  }
+  program {
+    id
+    name
+    status
+    start_date
+    end_date
+  }
+  created_by_frontend{
+    id
+    username
+    email
+  }
   assigned_to{
     username
   }
@@ -54,44 +92,6 @@ export const GET_BATCH = `
 query GET_BATCH ($id:ID!) {
   batch(id: $id) {
     ${batchesFields}
-    created_at
-    created_by_frontend{
-      id
-      username
-      email
-    }
-    updated_by_frontend{
-      username
-      email
-    }
-    updated_at
-    program {
-      id
-      name
-      status
-      start_date
-      end_date
-    }
-    assigned_to {
-      id
-      email
-      username
-    }
-    grant {
-      id
-      name
-      donor
-    }
-    institution {
-      id
-      name
-    }
-    per_student_fees
-    name_in_current_sis
-    require_assignment_file_for_certification
-    seats_available
-    certificates_generated_at
-    certificates_emailed_at
   }
 }
 `;

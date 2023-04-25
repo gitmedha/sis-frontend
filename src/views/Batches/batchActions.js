@@ -21,7 +21,6 @@ export const getBatchesPickList = async () => {
 };
 
 export const createBatch = async (data) => {
-  console.log(data, "rajat")
   return await api.post('/graphql', {
     query: CREATE_NEW_BATCH,
     variables: {data},
