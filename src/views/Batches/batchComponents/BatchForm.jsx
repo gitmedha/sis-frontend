@@ -45,6 +45,7 @@ const BatchForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [paymentOptions, setPaymentOptions] = useState([]);
   const [enrollmentTypeOptions, setEnrollmentTypeOptions] = useState([]);
   const [enrollmentType, setEnrollmentType] = useState(true);
   const [formValues, setFormValues] = useState(null);
@@ -121,6 +122,12 @@ const BatchForm = (props) => {
         // otherwise return only those status that are applicable to all
         return status['applicable-to'] === 'All';
       });
+
+      setPaymentOptions(data.mode_of_payment.map(modeOfPayment => ({
+        value: modeOfPayment.value,
+        label: modeOfPayment.value
+      })));
+
       setStatusOptions(filteredStatusOptions.map(status => ({
         key: status.value,
         value: status.value,
@@ -233,6 +240,7 @@ const BatchForm = (props) => {
       });
     });
   }
+
 
   return (
     <Modal
@@ -489,7 +497,19 @@ const BatchForm = (props) => {
                       placeholder=""
                     />
 
-                </div>
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                       <Input
+                        control="lookup"
+                        icon="down"
+                        name="mode_of_payment"
+                        label="Mode of Payment"
+                        required
+                        placeholder="Mode of Payment"
+                        className="form-control"
+                        options={paymentOptions}
+                      />
+                  </div>
                 </div>
               </Section>
               <div className="row mt-3 py-3">
