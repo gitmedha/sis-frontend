@@ -262,14 +262,14 @@ const ProgramEnrollment = (props) => {
           <h2 className="section-header">Fee Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Fee Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
+              <DetailField label="Contribution Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
               <DetailField label="Discount Code ID" value={programEnrollment.discount_code_id} />
-              <DetailField label="Fee Amount (INR)" value={programEnrollment.fee_amount} />
+              <DetailField label="Contribution Amount (INR)" value={programEnrollment.fee_amount} />
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Fee Payment Date" value={programEnrollment.fee_payment_date ? moment(programEnrollment.fee_payment_date).format("DD MMM YYYY") : ''} />
+              <DetailField label="Contribution Payment Date" value={programEnrollment.fee_payment_date ? moment(programEnrollment.fee_payment_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Transaction ID / Receipt No." value={programEnrollment.fee_transaction_id} />
-              <DetailField label="Fee Refund Date" value={programEnrollment.fee_refund_date ? moment(programEnrollment.fee_refund_date).format("DD MMM YYYY") : ''} />
+              <DetailField label="Contribution Refund Date" value={programEnrollment.fee_refund_date ? moment(programEnrollment.fee_refund_date).format("DD MMM YYYY") : ''} />
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
