@@ -68,7 +68,7 @@ const StudentForm = (props) => {
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
     getAddressOptions().then(data => {
