@@ -99,6 +99,7 @@ const BatchForm = (props) => {
     enrollment_type:'',
     state:'',
     medha_area:'',
+    mode_of_payment:''
   });
 
   const prepareLookUpFields = async () => {
@@ -240,7 +241,6 @@ const BatchForm = (props) => {
       });
     });
   }
-
 
   return (
     <Modal
