@@ -386,7 +386,7 @@ const ProgramEnrollmentForm = (props) => {
                 </div>
               </Section>
               <Section>
-                <h3 className="section-header">Fee Details</h3>
+                <h3 className="section-header">Contribution Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
