@@ -259,7 +259,7 @@ const ProgramEnrollment = (props) => {
             </div>
           </FileStyled>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />
-          <h2 className="section-header">Fee Details</h2>
+          <h2 className="section-header">Contribution Details</h2>
           <div className="row">
             <div className="col-md-6 col-sm-12">
               <DetailField label="Contribution Status" value={<Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />} />
