@@ -119,11 +119,10 @@ const OpportunityForm = (props) => {
           value: item.value,
         };
       }));
-
       setCompensationTypeOptions(data.paid.map((item) => {
         return {
           key: item.value,
-          label: item.value,
+          label: item.value == "Yes" ? "Paid":"unPaid" ,
           value: item.value,
         };
       }));
@@ -253,7 +252,7 @@ const OpportunityForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.role_or_designation : 'Add New Opportunity'}
+            {props.id ? props.role_or_designation : 'Add New Opportunity '}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -370,7 +369,7 @@ const OpportunityForm = (props) => {
                       icon="down"
                       name="compensation_type"
                       control="lookup"
-                      label="Paid"
+                      label="Compensation type"
                       placeholder="Paid"
                       options={compensationTypeOptions}
                       className="form-control"
