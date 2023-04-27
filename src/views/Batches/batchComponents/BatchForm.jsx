@@ -447,9 +447,9 @@ const BatchForm = (props) => {
                       control="input"
                       name="per_student_fees"
                       className="form-control"
-                      label="Per Student Fees"
+                      label="Per Student Contribution"
                       required
-                      placeholder="Per Student Fees"
+                      placeholder="Per Student Contribution"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
