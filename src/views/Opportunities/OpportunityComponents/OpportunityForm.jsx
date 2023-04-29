@@ -91,6 +91,7 @@ const OpportunityForm = (props) => {
         setEmployerOptions(data);
       });
     }
+
   }, [props])
 
   useEffect(() => {
@@ -128,13 +129,26 @@ const OpportunityForm = (props) => {
       }));
     });
 
-    getAllEmployers().then(data => {
-      setEmployerOptions(data?.data?.data?.employers.map((employer) => ({
+    getAllEmployers().then((data) => {
+      const employersData = data?.data?.data?.employers.map((employer) => ({
         key: employer.name,
         label: employer.name,
         value: Number(employer.id),
         details: employer,
-      })));
+      }));
+      if (props.id) {
+        const searchedEmployer = employersData.find(
+          (option) => option.value === Number(props.employer.id)
+        );
+        if (!searchedEmployer) {
+          employersData.push({
+            key: props.employer.name,
+            label: props.employer.name,
+            value: Number(props.employer.id),
+          });
+        }
+      }
+      setEmployerOptions(employersData);
     });
 
     if (props.id) {
