@@ -9,7 +9,6 @@ import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import * as Yup from "yup";
-import { get } from 'lodash';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -301,7 +300,7 @@ const AlumniServiceForm = (props) => {
                       onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
-                  {selectedCategory ?
+                  {selectedCategory &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         name={subCategoryName}
@@ -313,7 +312,7 @@ const AlumniServiceForm = (props) => {
                         options={subCategoryOptions} 
                       />
                     </div> 
-                  : null }
+                   }
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
