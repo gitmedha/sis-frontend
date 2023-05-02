@@ -63,6 +63,7 @@ const Section = styled.div`
 `;
 
 const AlumniService = (props) => {
+
   let { onHide, show, handleEdit, handleDelete, student } = props;
   const [alumniService, setAlumniService] = useState(props.alumniService);
 

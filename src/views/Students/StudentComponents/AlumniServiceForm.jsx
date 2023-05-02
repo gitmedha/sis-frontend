@@ -292,7 +292,7 @@ const AlumniServiceForm = (props) => {
                     <Input
                       name="category"
                       label="Category"
-                      placeholder="category"
+                      placeholder="Category"
                       control="lookup"
                       icon="down"
                       className="form-control"
