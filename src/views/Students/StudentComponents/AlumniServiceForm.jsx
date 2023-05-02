@@ -40,12 +40,12 @@ const AlumniServiceForm = (props) => {
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [peerLearningOptions, setPeerLearningOptions] = useState();
-  const [categoryOptions, setCategoryOptions] = useState();
-  const [youthLeadershipOptions, setYouthLeadershipOptions] = useState();
-  const [programOptions, setProgramOptions] = useState();
-  const [ideationClubOptions, setIdeationClubOptions] = useState();
-  const [givebackOptions , setGivebackOptions] = useState();
+  const [peerLearningOptions, setPeerLearningOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [youthLeadershipOptions, setYouthLeadershipOptions] = useState([]);
+  const [programOptions, setProgramOptions] = useState([]);
+  const [ideationClubOptions, setIdeationClubOptions] = useState([]);
+  const [givebackOptions , setGivebackOptions] = useState([]);
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
