@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList } from "./StudentActions";
+import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import * as Yup from "yup";
@@ -39,6 +39,24 @@ const AlumniServiceForm = (props) => {
   const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [peerLearningOptions, setPeerLearningOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [youthLeadershipOptions, setYouthLeadershipOptions] = useState([]);
+  const [programOptions, setProgramOptions] = useState([]);
+  const [ideationClubOptions, setIdeationClubOptions] = useState([]);
+  const [givebackOptions , setGivebackOptions] = useState([]);
+
+  useEffect(() => {
+    getAlumniServicePickList().then((data) => {
+      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
+      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
+      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
+      setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
+      setIdeationClubOptions(data.ideation_club.map((item)=> ({value: item.value, label: item.value})));
+      setGivebackOptions(data.giveback.map((item)=> ({value: item.value, label: item.value})));
+    });
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -94,6 +112,35 @@ const AlumniServiceForm = (props) => {
   const onSubmit = async (values) => {
     onHide(values);
   };
+
+  let subCategoryName;
+  let subCategoryLabel;
+  let subCategoryOptions = [];
+
+  switch (selectedCategory) {
+    case 'Youth Leadership':
+      subCategoryName = 'youth_leadership';
+      subCategoryLabel = 'Youth Leadership';
+      subCategoryOptions = youthLeadershipOptions;
+      break;
+    case "Peer Learning":
+      subCategoryName = 'peer_learning';
+      subCategoryLabel = "Peer Learning";
+      subCategoryOptions = peerLearningOptions;
+      break;
+    case "Ideation Club":
+        subCategoryName = 'ideation_club';
+        subCategoryLabel = "Ideation Club";
+        subCategoryOptions = ideationClubOptions;
+        break;
+    case "Giveback":
+        subCategoryName = 'giveback';
+        subCategoryLabel = "Giveback";
+        subCategoryOptions = givebackOptions;
+        break;
+      default:
+        break;
+  }
 
   return (
     <Modal
@@ -230,6 +277,42 @@ const AlumniServiceForm = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="program_mode"
+                      label="Program Mode"
+                      placeholder="Program Mode"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={programOptions}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="category"
+                      label="Category"
+                      placeholder="category"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={categoryOptions} 
+                      onChange={(e) => setSelectedCategory(e.value)}
+                    />
+                  </div>
+                  {selectedCategory &&
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name={subCategoryName}
+                        label={subCategoryLabel}
+                        placeholder={subCategoryLabel}
+                        control="lookup"
+                        icon="down"
+                        className="form-control"
+                        options={subCategoryOptions} 
+                      />
+                    </div> 
+                   }
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
