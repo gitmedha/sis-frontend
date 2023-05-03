@@ -147,6 +147,30 @@ const AlumniServiceForm = (props) => {
     }
   }
 
+  const setSubCategoryValues = (values, valuesCategory) => {
+
+    if(valuesCategory === 'Peer Learning') {
+     values.youth_leadership = null;
+     values.giveback = null;
+     values.ideation_club = null;
+    }
+    if(valuesCategory === "Youth Leadership") {
+      values.peer_learning = null;
+      values.giveback = null;
+      values.ideation_club = null;
+     }
+    if(valuesCategory === "Ideation Club") {
+      values.peer_learning = null;
+      values.giveback = null;
+      values.youth_leadership = null;
+     }
+    if(valuesCategory === "Giveback") {
+      values.peer_learning = null;
+      values.ideation_club = null;
+      values.youth_leadership = null;
+     }
+  }
+
   return (
     <Modal
       centered
@@ -316,6 +340,7 @@ const AlumniServiceForm = (props) => {
                         className="form-control"
                         options={subCategoryOptions} 
                       />
+                      {setSubCategoryValues(values,values.category)}
                     </div> 
                    }
                   <div className="col-md-12 col-sm-12 mt-2">
