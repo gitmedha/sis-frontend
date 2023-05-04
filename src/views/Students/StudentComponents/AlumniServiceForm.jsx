@@ -115,8 +115,34 @@ const AlumniServiceForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+    setSubCategoryValues(values,values.category);
     onHide(values);
   };
+
+  const setSubCategoryValues = (values, valuesCategory) => {
+    switch (valuesCategory) {
+      case 'Youth Leadership':
+        values.peer_learning = null;
+        values.giveback = null;
+        values.ideation_club = null;
+        break;
+      case "Peer Learning":
+        values.youth_leadership = null;
+        values.giveback = null;
+        values.ideation_club = null;
+        break;
+      case "Ideation Club":
+        values.peer_learning = null;
+        values.giveback = null;
+        values.youth_leadership = null;
+          break;
+      case "Giveback":
+        values.peer_learning = null;
+        values.ideation_club = null;
+        values.youth_leadership = null;
+          break;
+    }
+  }
 
   let subCategoryName;
   let subCategoryLabel;
@@ -145,30 +171,6 @@ const AlumniServiceForm = (props) => {
           subCategoryOptions = givebackOptions;
           break;
     }
-  }
-
-  const setSubCategoryValues = (values, valuesCategory) => {
-
-    if(valuesCategory === 'Peer Learning') {
-     values.youth_leadership = null;
-     values.giveback = null;
-     values.ideation_club = null;
-    }
-    if(valuesCategory === "Youth Leadership") {
-      values.peer_learning = null;
-      values.giveback = null;
-      values.ideation_club = null;
-     }
-    if(valuesCategory === "Ideation Club") {
-      values.peer_learning = null;
-      values.giveback = null;
-      values.youth_leadership = null;
-     }
-    if(valuesCategory === "Giveback") {
-      values.peer_learning = null;
-      values.ideation_club = null;
-      values.youth_leadership = null;
-     }
   }
 
   return (
@@ -340,7 +342,6 @@ const AlumniServiceForm = (props) => {
                         className="form-control"
                         options={subCategoryOptions} 
                       />
-                      {setSubCategoryValues(values,values.category)}
                     </div> 
                    }
                   <div className="col-md-12 col-sm-12 mt-2">
