@@ -116,7 +116,6 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSubCategoryValues(values,values.category);
-    
     onHide(values);
   };
 
