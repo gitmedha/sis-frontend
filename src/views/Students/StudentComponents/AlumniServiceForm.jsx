@@ -46,6 +46,20 @@ const AlumniServiceForm = (props) => {
   const [ideationClubOptions, setIdeationClubOptions] = useState([]);
   const [givebackOptions , setGivebackOptions] = useState([]);
 
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+
+  const [selectedYouthLeadership, setSelectedYouthLeadership] = useState('');
+  const [selectedPeerLearning, setSelectedPeerLearning] = useState('');
+  const [selectedIdeationClub, setSelectedIdeationClub] = useState('');
+  const [selectedGiveback, setSelectedGiveback] = useState('');
+
+  useEffect(() => {
+    if (props.alumniService) {
+      setSelectedCategory(props.alumniService ? props.alumniService.category : "");
+    }
+  },[props.alumniService,show]);
+
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
       setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
@@ -115,62 +129,74 @@ const AlumniServiceForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    setSubCategoryValues(values,values.category);
-    onHide(values);
+    onHide({
+      ...values,
+      peer_learning: selectedPeerLearning,
+      youth_leadership: selectedYouthLeadership,
+      ideation_club: selectedIdeationClub,
+      giveback: selectedGiveback,
+    });
   };
 
-  const setSubCategoryValues = (values, valuesCategory) => {
-    switch (valuesCategory) {
+  useEffect(()=>{
+    switch (selectedCategory) {
       case 'Youth Leadership':
-        values.peer_learning = null;
-        values.giveback = null;
-        values.ideation_club = null;
+        setSelectedYouthLeadership(selectedSubCategory);
+        setSelectedPeerLearning("");
+        setSelectedGiveback("");
+        setSelectedIdeationClub("");
         break;
       case "Peer Learning":
-        values.youth_leadership = null;
-        values.giveback = null;
-        values.ideation_club = null;
+        setSelectedPeerLearning(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedGiveback("");
+        setSelectedIdeationClub("");
         break;
-      case "Ideation Club":
-        values.peer_learning = null;
-        values.giveback = null;
-        values.youth_leadership = null;
-          break;
+      case  "Ideation Club":
+        setSelectedIdeationClub(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedGiveback("");
+        setSelectedPeerLearning("");
+        break;
       case "Giveback":
-        values.peer_learning = null;
-        values.ideation_club = null;
-        values.youth_leadership = null;
-          break;
+        setSelectedGiveback(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedIdeationClub("");
+        setSelectedPeerLearning("");
+        break;
     }
-  }
+  },[selectedSubCategory])
 
+  
   let subCategoryName;
   let subCategoryLabel;
   let subCategoryOptions = [];
 
-  const setSubCategory = (category) => {
-    switch (category) {
-      case 'Youth Leadership':
-        subCategoryName = 'youth_leadership';
-        subCategoryLabel = 'Youth Leadership';
-        subCategoryOptions = youthLeadershipOptions;
+  switch (selectedCategory) {
+    case 'Youth Leadership':
+      subCategoryName = 'youth_leadership';
+      subCategoryLabel = 'Youth Leadership';
+      subCategoryOptions = youthLeadershipOptions;
+
+      break;
+    case "Peer Learning":
+      subCategoryName = 'peer_learning';
+      subCategoryLabel = "Peer Learning";
+      subCategoryOptions = peerLearningOptions;
+
+      break;
+    case "Ideation Club":
+        subCategoryName = 'ideation_club';
+        subCategoryLabel = "Ideation Club";
+        subCategoryOptions = ideationClubOptions;
+
         break;
-      case "Peer Learning":
-        subCategoryName = 'peer_learning';
-        subCategoryLabel = "Peer Learning";
-        subCategoryOptions = peerLearningOptions;
+    case "Giveback":
+        subCategoryName = 'giveback';
+        subCategoryLabel = "Giveback";
+        subCategoryOptions = givebackOptions;
+
         break;
-      case "Ideation Club":
-          subCategoryName = 'ideation_club';
-          subCategoryLabel = "Ideation Club";
-          subCategoryOptions = ideationClubOptions;
-          break;
-      case "Giveback":
-          subCategoryName = 'giveback';
-          subCategoryLabel = "Giveback";
-          subCategoryOptions = givebackOptions;
-          break;
-    }
   }
 
   return (
@@ -328,11 +354,11 @@ const AlumniServiceForm = (props) => {
                       icon="down"
                       className="form-control"
                       options={categoryOptions} 
+                      onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
-                  {values.category &&
+                  { selectedCategory &&
                     <div className="col-md-6 col-sm-12 mt-2">
-                      {setSubCategory(values.category)}
                       <Input
                         name={subCategoryName}
                         label={subCategoryLabel}
@@ -341,6 +367,7 @@ const AlumniServiceForm = (props) => {
                         icon="down"
                         className="form-control"
                         options={subCategoryOptions} 
+                        onChange={(e) => setSelectedSubCategory(e.value)}
                       />
                     </div> 
                    }
