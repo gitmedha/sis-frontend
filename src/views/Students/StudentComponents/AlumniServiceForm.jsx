@@ -39,13 +39,26 @@ const AlumniServiceForm = (props) => {
   const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [peerLearningOptions, setPeerLearningOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [youthLeadershipOptions, setYouthLeadershipOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
   const [ideationClubOptions, setIdeationClubOptions] = useState([]);
   const [givebackOptions , setGivebackOptions] = useState([]);
+
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+
+  const [selectedYouthLeadership, setSelectedYouthLeadership] = useState('');
+  const [selectedPeerLearning, setSelectedPeerLearning] = useState('');
+  const [selectedIdeationClub, setSelectedIdeationClub] = useState('');
+  const [selectedGiveback, setSelectedGiveback] = useState('');
+
+  useEffect(() => {
+    if (props.alumniService) {
+      setSelectedCategory(props.alumniService ? props.alumniService.category : "");
+    }
+  },[props.alumniService,show]);
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
@@ -98,7 +111,12 @@ const AlumniServiceForm = (props) => {
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id')
+    assigned_to: localStorage.getItem('user_id'),
+    category: null,
+    peer_learning: null,
+    giveback: null,
+    ideation_club: null,
+    youth_leadership: null,
   };
 
   if (props.alumniService) {
@@ -107,12 +125,49 @@ const AlumniServiceForm = (props) => {
     initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
     initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
     initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
+    initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
   }
 
   const onSubmit = async (values) => {
-    onHide(values);
+    onHide({
+      ...values,
+      peer_learning: selectedPeerLearning,
+      youth_leadership: selectedYouthLeadership,
+      ideation_club: selectedIdeationClub,
+      giveback: selectedGiveback,
+    });
   };
 
+  useEffect(()=>{
+    switch (selectedCategory) {
+      case 'Youth Leadership':
+        setSelectedYouthLeadership(selectedSubCategory);
+        setSelectedPeerLearning("");
+        setSelectedGiveback("");
+        setSelectedIdeationClub("");
+        break;
+      case "Peer Learning":
+        setSelectedPeerLearning(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedGiveback("");
+        setSelectedIdeationClub("");
+        break;
+      case  "Ideation Club":
+        setSelectedIdeationClub(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedGiveback("");
+        setSelectedPeerLearning("");
+        break;
+      case "Giveback":
+        setSelectedGiveback(selectedSubCategory)
+        setSelectedYouthLeadership("");
+        setSelectedIdeationClub("");
+        setSelectedPeerLearning("");
+        break;
+    }
+  },[selectedSubCategory])
+
+  
   let subCategoryName;
   let subCategoryLabel;
   let subCategoryOptions = [];
@@ -122,23 +177,25 @@ const AlumniServiceForm = (props) => {
       subCategoryName = 'youth_leadership';
       subCategoryLabel = 'Youth Leadership';
       subCategoryOptions = youthLeadershipOptions;
+
       break;
     case "Peer Learning":
       subCategoryName = 'peer_learning';
       subCategoryLabel = "Peer Learning";
       subCategoryOptions = peerLearningOptions;
+
       break;
     case "Ideation Club":
         subCategoryName = 'ideation_club';
         subCategoryLabel = "Ideation Club";
         subCategoryOptions = ideationClubOptions;
+
         break;
     case "Giveback":
         subCategoryName = 'giveback';
         subCategoryLabel = "Giveback";
         subCategoryOptions = givebackOptions;
-        break;
-      default:
+
         break;
   }
 
@@ -292,7 +349,7 @@ const AlumniServiceForm = (props) => {
                     <Input
                       name="category"
                       label="Category"
-                      placeholder="category"
+                      placeholder="Category"
                       control="lookup"
                       icon="down"
                       className="form-control"
@@ -300,7 +357,7 @@ const AlumniServiceForm = (props) => {
                       onChange={(e) => setSelectedCategory(e.value)}
                     />
                   </div>
-                  {selectedCategory &&
+                  { selectedCategory &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         name={subCategoryName}
@@ -310,6 +367,7 @@ const AlumniServiceForm = (props) => {
                         icon="down"
                         className="form-control"
                         options={subCategoryOptions} 
+                        onChange={(e) => setSelectedSubCategory(e.value)}
                       />
                     </div> 
                    }
