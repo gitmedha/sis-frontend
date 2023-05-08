@@ -167,7 +167,6 @@ const AlumniServiceForm = (props) => {
     }
   },[selectedSubCategory])
 
-  
   let subCategoryName;
   let subCategoryLabel;
   let subCategoryOptions = [];
@@ -190,13 +189,13 @@ const AlumniServiceForm = (props) => {
         subCategoryLabel = "Ideation Club";
         subCategoryOptions = ideationClubOptions;
 
-        break;
+      break;
     case "Giveback":
         subCategoryName = 'giveback';
         subCategoryLabel = "Giveback";
         subCategoryOptions = givebackOptions;
 
-        break;
+      break;
   }
 
   return (
