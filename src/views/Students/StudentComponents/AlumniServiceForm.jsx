@@ -176,21 +176,25 @@ const AlumniServiceForm = (props) => {
       subCategoryName = 'youth_leadership';
       subCategoryLabel = 'Youth Leadership';
       subCategoryOptions = youthLeadershipOptions;
+
       break;
     case "Peer Learning":
       subCategoryName = 'peer_learning';
       subCategoryLabel = "Peer Learning";
       subCategoryOptions = peerLearningOptions;
+
       break;
     case "Ideation Club":
         subCategoryName = 'ideation_club';
         subCategoryLabel = "Ideation Club";
         subCategoryOptions = ideationClubOptions;
+
         break;
     case "Giveback":
         subCategoryName = 'giveback';
         subCategoryLabel = "Giveback";
         subCategoryOptions = givebackOptions;
+        
         break;
   }
 
