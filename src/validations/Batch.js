@@ -64,6 +64,23 @@ export const BatchValidations = Yup.object({
   enrollment_type,
 });
 
+export const alterBatchValidations = Yup.object({
+  name,
+  grant,
+  status,
+  program,
+  end_date,
+  start_date,
+  assigned_to,
+  mode_of_payment,
+  // name_in_current_sis,
+  number_of_sessions_planned,
+  seats_available,
+  state,
+  medha_area,
+  enrollment_type,
+})
+
 export const ProgramEnrollmentValidations = Yup.object({
   student,
   institution: program_enrollment_institution,

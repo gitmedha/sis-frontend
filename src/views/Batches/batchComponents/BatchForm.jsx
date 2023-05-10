@@ -6,12 +6,13 @@ import { useState, useEffect } from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
-import { BatchValidations } from "../../../validations";
+import { BatchValidations ,alterBatchValidations} from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isPartnership, isSRM } from "../../../common/commonFunctions";
+
 
 const Section = styled.div`
   padding-top: 30px;
@@ -53,6 +54,7 @@ const BatchForm = (props) => {
   const [grantOptions, setGrantOptions] = useState(null);
   const userId = parseInt(localStorage.getItem('user_id'))
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [modeOfPayment,setModeOfPayment] = useState('')
   const AssignmentFileCertification = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -123,11 +125,18 @@ const BatchForm = (props) => {
         // otherwise return only those status that are applicable to all
         return status['applicable-to'] === 'All';
       });
+      
+      
+      
+
+
 
       setPaymentOptions(data.mode_of_payment.map(modeOfPayment => ({
         value: modeOfPayment.value,
         label: modeOfPayment.value
       })));
+
+     
 
       setStatusOptions(filteredStatusOptions.map(status => ({
         key: status.value,
@@ -136,6 +145,7 @@ const BatchForm = (props) => {
       })));
     });
 
+    
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
           key: state.id,
@@ -208,10 +218,20 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
+    
+    if(values.mode_of_payment === 'Free'){
+      values.per_student_fees = 0
+
+    }
+
     setFormValues(values);
-    onHide(values);
+    // onHide(values);
   };
 
+const getModeOfPayment = (event) =>{
+  setModeOfPayment(event.value)
+}
+  
   const filterInstitution = async (filterValue) => {
     return await meilisearchClient.index('institutions').search(filterValue, {
       limit: 100,
@@ -266,7 +286,7 @@ const BatchForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={BatchValidations}
+          validationSchema={modeOfPayment == "Free"?alterBatchValidations:BatchValidations}
         >
           {({ values, setFieldValue }) => (
             <Form>
@@ -322,6 +342,7 @@ const BatchForm = (props) => {
                         className="form-control"
                         options={statusOptions}
                         isDisabled={!isAdmin() && initialValues.status === 'Certified'}
+                   
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -440,8 +461,23 @@ const BatchForm = (props) => {
                       placeholder="Number of sessions planned"
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                 {modeOfPayment == 'Free'? 
+                 <div className="col-md-6 col-sm-12 mt-2">
+                 <Input
+                     min={0}
+                     type="number"
+                     control="input"
+                     name="per_student_fees"
+                     className="form-control"
+                     label="Per Student Contribution"
+                     placeholder="0"
+                     disabled={true}
+                     value={0}
+                     
+                   />
+                 </div>:
+                 <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
                       min={0}
                       type="number"
                       control="input"
@@ -450,8 +486,9 @@ const BatchForm = (props) => {
                       label="Per Student Contribution"
                       required
                       placeholder="Per Student Contribution"
+                      
                     />
-                  </div>
+                  </div>}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       min={0}
@@ -508,6 +545,7 @@ const BatchForm = (props) => {
                         placeholder="Mode of Payment"
                         className="form-control"
                         options={paymentOptions}
+                        onChange = {(e)=>getModeOfPayment(e)}
                       />
                   </div>
                 </div>
