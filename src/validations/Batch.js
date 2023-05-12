@@ -21,56 +21,56 @@ const assigned_to = Yup.string().required("Assignee is required.");
 const grant = Yup.string().required("Grant for batch is required.");
 const status = Yup.string().required("Status of batch is required.");
 const end_date = Yup.date().nullable().required("End Date of batch is required.")
-                    .when(
-                        "start_date",
-                        (start_date, schema) => start_date && schema.min(start_date, "End date can't be before Start date")
-                    );
+    .when(
+        "start_date",
+        (start_date, schema) => start_date && schema.min(start_date, "End date can't be before Start date")
+    );
 const program = Yup.string().required("Program for the batch is required.");
 const start_date = Yup.date().nullable().required("Start Date of batch is required.");
-const institution = Yup.string().required("Institution for batch is required.");
+const institution = Yup.string().required("Institution for batch is required."); // eslint-disable-line no-unused-vars
 const per_student_fees = Yup.string().required("Fees per student is required.");
 const seats_available = Yup.string().required("Seats Available is required.");
-const name_in_current_sis = Yup.string().required(
-  "Name In Current SIS is required."
-);
+const name_in_current_sis = Yup.string().required(  // eslint-disable-line no-unused-vars
+    "Name In Current SIS is required."
+); // eslint-disable-line no-unused-vars
 const number_of_sessions_planned = Yup.string().required(
-  "Total number of sessions planned is required."
+    "Total number of sessions planned is required."
 );
 const state = Yup.string().required("State is required.");
 const medha_area = Yup.string().required("Medha area is required.");
 const enrollment_type = Yup.string().required("Enrollment Type is required.");
 
 export const sessionValidations = Yup.object({
-  date,
-  topics,
+    date,
+    topics,
 });
 
 export const BatchValidations = Yup.object({
-  name,
-  grant,
-  status,
-  program,
-  end_date,
-  start_date,
-  assigned_to,
-  per_student_fees,
-  // name_in_current_sis,
-  number_of_sessions_planned,
-  seats_available,
-  state,
-  medha_area,
-  enrollment_type,
+    name,
+    grant,
+    status,
+    program,
+    end_date,
+    start_date,
+    assigned_to,
+    per_student_fees,
+    // name_in_current_sis,
+    number_of_sessions_planned,
+    seats_available,
+    state,
+    medha_area,
+    enrollment_type,
 });
 
 export const ProgramEnrollmentValidations = Yup.object({
-  student,
-  institution: program_enrollment_institution,
-  status: program_enrollment_status,
-  course_year,
-  course_name_in_current_sis,
-  course_level,
-  course_type,
-  year_of_course_completion,
-  registration_date,
-  fee_status,
+    student,
+    institution: program_enrollment_institution,
+    status: program_enrollment_status,
+    course_year,
+    course_name_in_current_sis,
+    course_level,
+    course_type,
+    year_of_course_completion,
+    registration_date,
+    fee_status,
 });

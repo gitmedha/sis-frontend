@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import DetailField from '../../../components/content/DetailField';
+import DetailField from "../../../components/content/DetailField";
 import { Anchor } from "../../../components/content/Utils";
 import styled from "styled-components";
 
@@ -71,41 +71,41 @@ const AlumniService = (props) => {
   }, [props]);
 
   return (
-      <Modal
-        centered
-        size="lg"
-        show={show}
-        onHide={onHide}
-        animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
-        className="form-modal"
-      >
-        <Modal.Header className="bg-white">
-          <Modal.Title
-            id="contained-modal-title-vcenter"
-            className="d-flex align-items-center"
-          >
-            <h1 className="text--primary bebas-thick mb-0">
-              Alumni Service Details
-            </h1>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="bg-white">
+    <Modal
+      centered
+      size="lg"
+      show={show}
+      onHide={onHide}
+      animation={false}
+      aria-labelledby="contained-modal-title-vcenter"
+      className="form-modal"
+    >
+      <Modal.Header className="bg-white">
+        <Modal.Title
+          id="contained-modal-title-vcenter"
+          className="d-flex align-items-center"
+        >
+          <h1 className="text--primary bebas-thick mb-0">
+            Alumni Service Details
+          </h1>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="bg-white">
         <Section>
           <FileStyled>
             <div className="row">
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Name" value={student.full_name} />
                 <DetailField label="Type" value={alumniService.type} />
-                <DetailField label="Start Date" value={alumniService.start_date ? moment(alumniService.start_date).format("DD MMM YYYY") : ''} />
-                <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ''} />
+                <DetailField label="Start Date" value={alumniService.start_date ? moment(alumniService.start_date).format("DD MMM YYYY") : ""} />
+                <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ""} />
                 <DetailField label="Receipt Number" value={alumniService.receipt_number} />
                 <DetailField label="Comments" value={alumniService.comments} />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Assigned To" value={alumniService.assigned_to?.username} />
                 <DetailField label="Location" value={alumniService.location} />
-                <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
+                <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ""} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
               </div>
             </div>
@@ -116,9 +116,9 @@ const AlumniService = (props) => {
               <button type="button" className="btn-box btn btn-danger" onClick={handleDelete}>DELETE</button>
             </div>
           </div>
-          </Section>
-        </Modal.Body>
-      </Modal>
+        </Section>
+      </Modal.Body>
+    </Modal>
   );
 };
 

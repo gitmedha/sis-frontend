@@ -1,16 +1,16 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
-import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
+import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction";
+import { getAllEmployers } from "../../Students/StudentComponents/StudentActions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -57,26 +57,26 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   const [initialValues, setInitialValues] = useState({
-    employer: '',
+    employer:"",
     assigned_to: userId.toString() ,
-    role_or_designation: '',
-    type: '',
-    compensation_type: '',
-    number_of_opportunities: '',
-    status: '',
-    department_or_team: '',
-    salary: '',
-    role_description: '',
-    skills_required: '',
-    address: '',
-    city: '',
-    state: '',
-    pin_code: '',
-    medha_area: '',
-    district:'',
+    role_or_designation: "",
+    type: "",
+    compensation_type: "",
+    number_of_opportunities: "",
+    status: "",
+    department_or_team: "",
+    salary: "",
+    role_description: "",
+    skills_required: "",
+    address: "",
+    city: "",
+    state: "",
+    pin_code: "",
+    medha_area: "",
+    district:"",
   });
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const OpportunityForm = (props) => {
         setEmployerOptions(data);
       });
     }
-  }, [props])
+  }, [props]);
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -141,7 +141,7 @@ const OpportunityForm = (props) => {
       setInitialValues({
         ...props,
         assigned_to: props?.assigned_to?.id,
-        employer: props.employer ? Number(props.employer.id) : '',
+        employer: props.employer ? Number(props.employer.id) : "",
       });
     }
 
@@ -161,9 +161,9 @@ const OpportunityForm = (props) => {
   }, [props]);
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient.index('employers').search(filterValue, {
+    return await meilisearchClient.index("employers").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name','state','district','city','pin_code','medha_area','address']
+      attributesToRetrieve: ["id", "name","state","district","city","pin_code","medha_area","address"]
     }).then(data => {
       return data.hits.map(employer => {
         return {
@@ -176,10 +176,10 @@ const OpportunityForm = (props) => {
           city: employer.city,
           pin_code: employer.pin_code,
           medha_area: employer.medha_area,
-        }
+        };
       });
     });
-  }
+  };
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -188,13 +188,13 @@ const OpportunityForm = (props) => {
   const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
-      employer: employer.value || '',
-      address: employer.address || '',
-      city: employer.city || '',
-      state: employer.state || '',
-      pin_code: employer.pin_code || '',
-      medha_area: employer.medha_area || '',
-      district: employer.district || '',
+      employer: employer.value || "",
+      address: employer.address || "",
+      city: employer.city || "",
+      state: employer.state || "",
+      pin_code: employer.pin_code || "",
+      medha_area: employer.medha_area || "",
+      district: employer.district || "",
     });
   }
 
@@ -204,7 +204,7 @@ const OpportunityForm = (props) => {
         value: initialValues.state,
       });
     }
-  }, [initialValues])
+  }, [initialValues]);
 
   const onStateChange = value => {
     setDistrictOptions([]);
@@ -239,7 +239,7 @@ const OpportunityForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.role_or_designation : 'Add New Opportunity'}
+            {props.id ? props.role_or_designation : "Add New Opportunity"}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -426,7 +426,7 @@ const OpportunityForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Districts</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -445,7 +445,7 @@ const OpportunityForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}

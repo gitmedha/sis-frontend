@@ -1,27 +1,49 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true
+        "browser": true   ,
+        "es2021": true,
+        "node": true,
+        "es6": true
     },
     "extends": [
-        "plugin:react/recommended",
-        "standard"
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
     "overrides": [
     ],
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
     "parserOptions": {
-        "ecmaVersion": "latest",
+        "ecmaFeatures": {
+            "jsx": true
+          },
+        "ecmaVersion": 2020,
         "sourceType": "module"
     },
     "plugins": [
         "react"
     ],
     "rules": {
-        "react/react-in-jsx-scope": 0
-    },
-      "settings": {
-        "react": {
-          "version": "detect"
-        }
-      }
+        "react/prop-types": "off",
+        "react/jsx-uses-react": 2,
+        "react/jsx-uses-vars": 2,
+        "react/react-in-jsx-scope": "off",
+        "strict": [2, "never"],
+        "no-tabs": 0,
+        "indent": 0,
+        "linebreak-style": "off",
+        "quotes": [
+            "error",
+            "double",
+            { "avoidEscape": true }
+      ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-unused-vars":"warn"
+    }
 }

@@ -6,7 +6,7 @@ import { Anchor, Badge } from "../../../components/content/Utils";
 import DetailField from "../../../components/content/DetailField";
 import FileUpload from "../../../components/content/FileUpload";
 import Tooltip from "../../../components/content/Tooltip";
-import {getOpportunitiesPickList} from "./opportunityAction"
+import {getOpportunitiesPickList} from "./opportunityAction";
 import { urlPath } from "../../../constants";
 import { UPDATE_OPPORTUNITY } from "../../../graphql";
 import api from "../../../apis";
@@ -79,7 +79,7 @@ const Details = (props) => {
         id,
       },
     });
-  }
+  };
 
   return (
     <Styled>
@@ -87,23 +87,23 @@ const Details = (props) => {
         <div className="row latto-regular">
           <div className="col-6 col-md-4">
             <DetailField label="Role/Designation" value={role_or_designation} />
-            <DetailField label="Employer" value={<Anchor text={employer ? employer.name : ''} href={`/employer/${employer?.id}`}  />} />
-            {/* <DetailField label="Location" value={employer ? employer.address : ''} /> */}
+            <DetailField label="Employer" value={<Anchor text={employer ? employer.name : ""} href={`/employer/${employer?.id}`}  />} />
+            {/* <DetailField label="Location" value={employer ? employer.address : ""} /> */}
             <DetailField label="No. of openings" value={number_of_opportunities} />
-            <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == 'yes' ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == "yes" ? "#207B69" : "#E0E0E8"} />} />
             <DetailField label="Monthly Salary" value={salary} />
             <DetailField label="Role Description" value={role_description} />
             &nbsp;
-            <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
+            <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ""} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
           </div>
           <div className="col-6 offset-md-2 col-md-4">
             <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
-            <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ''} />
+            <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ""} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
             <DetailField label="Skills Required" value={skills_required} />
-            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
+            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ""} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="Job Description File Upload" value=
                 {job_description_file &&
@@ -122,7 +122,7 @@ const Details = (props) => {
                     <div className="file-icon">
                       <div className="d-flex flex-column section-file">
                         <Tooltip placement="top" title="Click Here to View Job Description">
-                          <a href={urlPath(job_description_file?.url)} target="_blank" ><FaEye size="27" color={job_description_file ? '#207B69' : '#787B96'}/></a>
+                          <a href={urlPath(job_description_file?.url)} target="_blank" ><FaEye size="27" color={job_description_file ? "#207B69" : "#787B96"}/></a>
                           </Tooltip>
                       </div>
                     </div>
@@ -130,7 +130,7 @@ const Details = (props) => {
                   {job_description_file &&
                     <div className="file-icon">
                         <Tooltip placement="top" title="Click Here to Delete Job Description">
-                          <a href="#" className="menu_links" onClick={() => onJobDescriptionDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                          <a href="#" className="menu_links" onClick={() => onJobDescriptionDelete()}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                         </Tooltip>
                     </div>
                   }

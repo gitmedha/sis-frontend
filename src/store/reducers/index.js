@@ -5,9 +5,9 @@ import sessionAttendance from "./sessionAttendances";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
-  auth: Auth,
-  notification,
-  sessionAttendance,
+    auth: Auth,
+    notification,
+    sessionAttendance,
 });
 
 export default rootReducer;

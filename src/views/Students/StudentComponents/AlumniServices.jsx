@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from "moment";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import CreateAlumniServiceForm from "./AlumniServiceForm";
@@ -23,7 +23,7 @@ const AlumniServices = (props) => {
   const [alumniServices, setAlumniServices] = useState([]);
   const [selectedAlumniService, setSelectedAlumniService] = useState({});
 
-  const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
+  const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy="updated_at", sortOrder = "asc") => {
     NP.start();
     await getStudentAlumniServices(Number(id), limit, offset, sortBy, sortOrder)
     .then(data => {
@@ -40,35 +40,35 @@ const AlumniServices = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'certification_date_formatted';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "certification_date_formatted";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'type':
-        case 'location':
-        case 'start_date':
-        case 'end_date':
-        case 'fee_submission_date':
+        case "type":
+        case "location":
+        case "start_date":
+        case "end_date":
+        case "fee_submission_date":
           sortByField = sortBy[0].id;
           break;
 
-        case 'start_date_formatted':
-          sortByField = 'start_date';
+        case "start_date_formatted":
+          sortByField = "start_date";
           break;
 
-        case 'end_date_formatted':
-          sortByField = 'end_date';
+        case "end_date_formatted":
+          sortByField = "end_date";
           break;
 
-        case 'fee_submission_date_formatted':
-          sortByField = 'fee_submission_date';
+        case "fee_submission_date_formatted":
+          sortByField = "fee_submission_date";
           break;
 
-        case 'assigned_to':
-          sortByField = 'assigned_to.name';
+        case "assigned_to":
+          sortByField = "assigned_to.name";
           break;
 
         default:
-          sortByField = 'updated_at';
+          sortByField = "updated_at";
           break;
       }
       fetchStudentAlumniServices(pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -81,9 +81,9 @@ const AlumniServices = (props) => {
     let data = alumniServices.map(alumniService => {
       return {
         ...alumniService,
-        start_date_formatted: alumniService.start_date ? moment(alumniService.start_date).format('DD MMM YYYY') : '',
-        end_date_formatted: alumniService.end_date ? moment(alumniService.end_date).format('DD MMM YYYY') : '',
-        fee_submission_date_formatted: alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format('DD MMM YYYY') : '',
+        start_date_formatted: alumniService.start_date ? moment(alumniService.start_date).format("DD MMM YYYY") : "",
+        end_date_formatted: alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : "",
+        fee_submission_date_formatted: alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : "",
         updated_at: moment(alumniService.updated_at).format("DD MMM YYYY"),
       };
     });
@@ -93,36 +93,36 @@ const AlumniServices = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Type',
-        accessor: 'type',
+        Header: "Type",
+        accessor: "type",
       },
       {
-        Header: 'Location',
-        accessor: 'location',
+        Header: "Location",
+        accessor: "location",
       },
       {
-        Header: 'Start Date',
-        accessor: 'start_date_formatted',
+        Header: "Start Date",
+        accessor: "start_date_formatted",
       },
       {
-        Header: 'End Date',
-        accessor: 'end_date_formatted',
+        Header: "End Date",
+        accessor: "end_date_formatted",
       },
       {
-        Header: 'Fee Submission Date',
-        accessor: 'fee_submission_date_formatted',
+        Header: "Fee Submission Date",
+        accessor: "fee_submission_date_formatted",
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assigned_to.username',
+        Header: "Assigned To",
+        accessor: "assigned_to.username",
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
@@ -132,21 +132,21 @@ const AlumniServices = (props) => {
   const handleRowClick = alumniService => {
     setSelectedAlumniService(alumniService);
     setViewModalShow(true);
-  }
+  };
 
   const hideViewModal = () => {
     setViewModalShow(false);
-  }
+  };
 
   const handleViewEdit = () => {
     setViewModalShow(false);
     setUpdateModalShow(true);
-  }
+  };
 
   const handleViewDelete = () => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
-  }
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -156,12 +156,12 @@ const AlumniServices = (props) => {
 
     // need to remove some data from the payload that's not accepted by the API
     let {id, alumni_service_student, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave["start_date"] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave["end_date"] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_submission_date"] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
     dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
-    dataToSave['student'] = student.id;
-    console.log('dataToSave', dataToSave);
+    dataToSave["student"] = student.id;
+    console.log("dataToSave", dataToSave);
 
      NP.start();
      createAlumniService(dataToSave).then(data => {
@@ -185,12 +185,12 @@ const AlumniServices = (props) => {
 
     // need to remove some data from the payload that's not accepted by the API
     let {id, alumni_service_student, created_at, updated_at, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
+    dataToSave["start_date"] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave["end_date"] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_submission_date"] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
     dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
-    dataToSave['student'] = student.id;
-    console.log('dataToSave', dataToSave);
+    dataToSave["student"] = student.id;
+    console.log("dataToSave", dataToSave);
 
     NP.start();
     updateAlumniService(Number(id), dataToSave).then(data => {

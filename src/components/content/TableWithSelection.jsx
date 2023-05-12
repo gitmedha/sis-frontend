@@ -1,6 +1,6 @@
 import React from "react";
-import { useTable, useRowSelect } from 'react-table';
-import styled from 'styled-components';
+import { useTable, useRowSelect } from "react-table";
+import styled from "styled-components";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 const StyledCheckbox = styled.div`
@@ -96,18 +96,18 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
     hooks => {
       hooks.visibleColumns.push(columns => [
         ...columns,
-        // Let's make a column for selection
+        // Let"s make a column for selection
         {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
+          id: "selection",
+          // The header can use the table"s getToggleAllRowsSelectedProps method
           // to render a checkbox
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <label htmlFor="selectAllRows" className="d-flex align-items-center justify-content-start mb-0">
               <IndeterminateCheckbox id="selectAllRows" {...getToggleAllRowsSelectedProps()} />
-              <span style={{marginLeft: '5px'}}>{selectAllHeader}</span>
+              <span style={{marginLeft: "5px"}}>{selectAllHeader}</span>
             </label>
           ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
+          // The cell can use the individual row"s getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
             <div>
@@ -129,10 +129,10 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
     state: { selectedRowIds },
   } = tableInstance;
 
-  const isRowClickable = typeof onRowClick === 'function';
+  const isRowClickable = typeof onRowClick === "function";
 
   const handleRowClick = (row) => {
-    if (typeof onRowClick === 'function') {
+    if (typeof onRowClick === "function") {
       onRowClick(row.original);
     }
   }
@@ -152,13 +152,13 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                   {indexes && <th>#</th>}
                   {headerGroup.headers.map(column => (
                     <th {...column.getHeaderProps()}>
-                      {column.render('Header')}
+                      {column.render("Header")}
                       <span>
                         {column.isSorted
                           ? column.isSortedDesc
                             ? <FaLongArrowAltDown />
                             : <FaLongArrowAltUp />
-                          : ''}
+                          : ""}
                       </span>
                     </th>
                   ))}
@@ -170,16 +170,16 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                 rows.map((row, index) => {
                   prepareRow(row)
                   return (
-                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? 'clickable' : ''}`}>
+                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? "clickable" : ""}`}>
                       {indexes &&
-                        <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                        <td style={{ color: "#787B96", fontFamily: "Latto-Bold"}}>
                           {index + 1}.
                         </td>
                       }
                       {row.cells.map(cell => {
                         return (
                           <td {...cell.getCellProps()}>
-                            {cell.render('Cell')}
+                            {cell.render("Cell")}
                           </td>
                         )
                       })}
@@ -188,8 +188,8 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                 })
               ) : (
                 <tr>
-                  <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
-                    <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
+                  <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: "#787B96", fontFamily: "Latto-Bold", textAlign: "center"}}>
+                    <span style={{fontStyle: "italic", fontFamily: "Latto-Regular"}}>No entries found.</span>
                   </td>
                 </tr>
               )}
@@ -200,11 +200,11 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
           {rows.map((row, index) => {
             prepareRow(row)
             return (
-              <div key={index} className={`row ${isRowClickable ? 'clickable' : ''}`} onClick={() => handleRowClick(row)}>
+              <div key={index} className={`row ${isRowClickable ? "clickable" : ""}`} onClick={() => handleRowClick(row)}>
                 {row.cells.map((cell, cellIndex) => {
                   return (
                     <div key={cellIndex} className="cell">
-                      {cell.render('Cell')}
+                      {cell.render("Cell")}
                     </div>
                   )
                 })}

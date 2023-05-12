@@ -1,15 +1,15 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -68,7 +68,7 @@ const ProgramEnrollmentForm = (props) => {
         setBatchOptions(data);
       });
     }
-  }, [props])
+  }, [props]);
 
   useEffect(() => {
     if (show && !options) {
@@ -77,37 +77,37 @@ const ProgramEnrollmentForm = (props) => {
   }, [show, options]);
 
   useEffect(() => {
-    setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
+    setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=="free");
   }, [props.programEnrollment]);
 
   let initialValues = {
     program_enrollment_student: student.full_name,
-    status: '',
-    batch: '',
-    registration_date: '',
-    institution: '',
-    certification_date: '',
-    fee_payment_date: '',
-    fee_refund_date: '',
-    course_name_in_current_sis: '',
-    fee_transaction_id: '',
-    course_type:'',
-    course_level:'',
-    course_year:'',
-    year_of_course_completion:'',
-    fee_status:'',
-    certification_date: null,
+    status: "",
+    batch: "",
+    registration_date: "",
+    institution: "",
+
+    fee_payment_date: "",
+
+    course_name_in_current_sis: "",
+    fee_transaction_id: "",
+    course_type:"",
+    course_level:"",
+    course_year:"",
+    year_of_course_completion:"",
+    fee_status:"",
+    certification_date: null,// eslint-disable-next-line no-dupe-keys
     fee_payment_date: null,
-    fee_refund_date: null,
+    fee_refund_date: null, // eslint-disable-next-line no-dupe-keys
   };
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
-    initialValues['institution'] = Number(props.programEnrollment.institution?.id);
-    initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
-    initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
-    initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
-    initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
+    initialValues["batch"] = Number(props.programEnrollment.batch?.id);
+    initialValues["institution"] = Number(props.programEnrollment.institution?.id);
+    initialValues["registration_date"] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
+    initialValues["certification_date"] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
+    initialValues["fee_payment_date"] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
+    initialValues["fee_refund_date"] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
   }
 
   const onSubmit = async (values) => {
@@ -126,9 +126,9 @@ const ProgramEnrollmentForm = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
+    return await meilisearchClient.index("institutions").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ["id", "name"]
     }).then(data => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let institutionFoundInList = false;
@@ -140,7 +140,7 @@ const ProgramEnrollmentForm = (props) => {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
-        }
+        };
       });
       if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
         filterData.unshift({
@@ -150,12 +150,12 @@ const ProgramEnrollmentForm = (props) => {
       }
       return filterData;
     });
-  }
+  };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient.index('batches').search(filterValue, {
+    return await meilisearchClient.index("batches").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ["id", "name"]
     }).then(data => {
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
       let batchFoundInList = false;
@@ -167,7 +167,7 @@ const ProgramEnrollmentForm = (props) => {
           ...batch,
           label: batch.name,
           value: Number(batch.id),
-        }
+        };
       });
       if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
         filterData.unshift({
@@ -177,7 +177,7 @@ const ProgramEnrollmentForm = (props) => {
       }
       return filterData;
     });
-  }
+  };
 
   return (
     <Modal
@@ -195,7 +195,7 @@ const ProgramEnrollmentForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.programEnrollment && props.programEnrollment.id ? 'Update' : 'Add New'} Program Enrollment
+            {props.programEnrollment && props.programEnrollment.id ? "Update" : "Add New"} Program Enrollment
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -398,7 +398,7 @@ const ProgramEnrollmentForm = (props) => {
                       options={feeStatusOptions}
                       className="form-control"
                       placeholder="Fees Status"
-                      onChange = {(e) => setRequiresFee(e.value.toLowerCase() !== 'waived off')}
+                      onChange = {(e) => setRequiresFee(e.value.toLowerCase() !== "waived off")}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

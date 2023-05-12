@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -7,9 +7,9 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
-import { getStudentsPickList } from './StudentActions';
+import { getStudentsPickList } from "./StudentActions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const Section = styled.div`
@@ -44,7 +44,7 @@ const StudentForm = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
     {key: false, value: false, label: "No"},
@@ -111,40 +111,40 @@ const StudentForm = (props) => {
   };
 
   let initialValues = {
-    institution:'',
-    batch:'',
-    full_name:'',
-    phone:'',
-    alternate_phone:'',
-    name_of_parent_or_guardian:'',
-    category:'',
-    email:'',
-    gender:'',
+    institution:"",
+    batch:"",
+    full_name:"",
+    phone:"",
+    alternate_phone:"",
+    name_of_parent_or_guardian:"",
+    category:"",
+    email:"",
+    gender:"",
     assigned_to:userId.toString(),
-    status:'',
-    income_level:'',
-    date_of_birth:'',
-    city:'',
-    pin_code:'',
-    medha_area:'',
-    address:'',
-    state:'',
-    district:'',
-    logo:'',
+    status:"",
+    income_level:"",
+    date_of_birth:"",
+    city:"",
+    pin_code:"",
+    medha_area:"",
+    address:"",
+    state:"",
+    district:"",
+    logo:"",
     registered_by:userId.toString(),
   };
 
-  let fileName = '';
+  let fileName = "";
   if (props.id) {
     initialValues = {...props};
-    initialValues['date_of_birth'] = new Date(props?.date_of_birth);
-    initialValues['assigned_to'] = props?.assigned_to?.id;
-    initialValues['registered_by'] = props?.registered_by?.id;
-    initialValues['district'] = props.district ? props.district: null ;
-    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    initialValues["date_of_birth"] = new Date(props?.date_of_birth);
+    initialValues["assigned_to"] = props?.assigned_to?.id;
+    initialValues["registered_by"] = props?.registered_by?.id;
+    initialValues["district"] = props.district ? props.district: null ;
+    initialValues["medha_area"] = props.medha_area ? props.medha_area: null ;
 
     if (props.CV && props.CV.url) {
-      const cvUrlSplit = props.CV.url.split('/');
+      const cvUrlSplit = props.CV.url.split("/");
       fileName = cvUrlSplit[cvUrlSplit.length - 1];
     }
   }
@@ -172,7 +172,7 @@ const StudentForm = (props) => {
           </div>
           )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.full_name : 'Add New Student'}
+            {props.id ? props.full_name : "Add New Student"}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -405,7 +405,7 @@ const StudentForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -428,88 +428,88 @@ const StudentForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                  {districtOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      className="form-control"
-                      required
-                      options={districtOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
-                        <Skeleton count={1} height={35} />
-                      </>
+                                    {districtOptions.length ? (
+                                        <Input
+                                          icon="down"
+                                          control="lookup"
+                                          name="district"
+                                          label="District"
+                                          placeholder="District"
+                                          className="form-control"
+                                          required
+                                          options={districtOptions}
+                                          />
+                                        ) : (
+                                            <>
+                                                <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Districts</label>
+                                                <Skeleton count={1} height={35} />
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </Section>
+                            <Section>
+                                <h3 className="section-header">Additional Info</h3>
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-12 mb-2">
+                                        {/* {statusOptions.length ? ( */}
+                                            <Input
+                                                icon="down"
+                                                control="lookup"
+                                                name="medha_champion"
+                                                label="Medhavi Member"
+                                                options={medhaChampionOptions}
+                                                className="form-control"
+                                                placeholder="Medhavi Member"
+                                            />
+                    {/* ) : ( */}
+                                            {/* <Skeleton count={1} height={45} /> */}
+                              {/* )} */}
+                                    </div>
+                                    <div className="col-md-6 col-sm-12 mb-2">
+                                        {/* {statusOptions.length ? ( */}
+                                            <Input
+                                                icon="down"
+                                                control="lookup"
+                                                name="interested_in_employment_opportunities"
+                                                label="Interested in Employment Opportunities"
+                                                options={interestedInEmploymentOpportunitiesOptions}
+                                                className="form-control"
+                                                placeholder="Interested in Employment Opportunities"
+                                            />
+                                        {/* ) : ( */}
+                                          {/* <Skeleton count={1} height={45} /> */}
+                                        {/* )} */}
+                                    </div>
+                                    <div className="col-md-6 col-sm-12 mb-2">
+                                        <Input
+                                            name="old_sis_id"
+                                            label="ID in SIS 2.0"
+                                            control="input"
+                                            placeholder="ID in SIS 2.0"
+                                            className="form-control"
+                                        />
+                                    </div>
+                                </div>
+                            </Section>
+                            <div className="row mt-3 py-3">
+                                <div className="d-flex justify-content-start">
+                                   <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
+                                    <button
+                                            type="button"
+                                            onClick={onHide}
+                                  className="btn btn-secondary btn-regular mr-2"
+                                    >
+                                      CANCEL
+                                        </button>
+                                </div>
+                            </div>
+                        </Form>
                     )}
-                  </div>
-                </div>
-              </Section>
-              <Section>
-                <h3 className="section-header">Additional Info</h3>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="medha_champion"
-                        label="Medhavi Member"
-                        options={medhaChampionOptions}
-                        className="form-control"
-                        placeholder="Medhavi Member"
-                      />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="interested_in_employment_opportunities"
-                        label="Interested in Employment Opportunities"
-                        options={interestedInEmploymentOpportunitiesOptions}
-                        className="form-control"
-                        placeholder="Interested in Employment Opportunities"
-                      />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="old_sis_id"
-                      label="ID in SIS 2.0"
-                      control="input"
-                      placeholder="ID in SIS 2.0"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              </Section>
-              <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
-                    <button
-                      type="button"
-                      onClick={onHide}
-                      className="btn btn-secondary btn-regular mr-2"
-                    >
-                      CANCEL
-                    </button>
-                </div>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Modal.Body>
-    </Modal>
-  );
+                </Formik>
+            </Modal.Body>
+        </Modal>
+    );
 };
 
 export default StudentForm;

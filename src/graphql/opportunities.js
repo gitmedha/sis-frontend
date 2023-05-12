@@ -172,7 +172,7 @@ export const DELETE_OPPORTUNITY = `
       }
     }
   }
-`
+`;
 
 export const GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS = `
   query GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS ($id: Int, $limit: Int, $start: Int, $sort: String){
@@ -194,4 +194,4 @@ export const GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS = `
       }
     }
   }
-`
+`;

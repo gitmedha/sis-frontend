@@ -9,7 +9,7 @@ query GET_ALL_ADDRESS {
   }
 }
   `;
-  export const GET_ALL_DISTRICTS = `
+export const GET_ALL_DISTRICTS = `
   query GET_GEOGRAPHIES($state: String) {
     geographiesConnection(where: { state: $state }) {
       groupBy {

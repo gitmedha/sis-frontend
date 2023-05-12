@@ -1,9 +1,9 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Batch";
@@ -21,7 +21,7 @@ const Section = styled.div`
 
   .section-header {
     color: #207B69;
-    font-family: 'Latto-Regular';
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -70,7 +70,7 @@ const ProgramEnrollmentForm = (props) => {
         setStudentOptions(data);
       });
     }
-  }, [props])
+  }, [props]);
 
   useEffect(() => {
     if (show && !options) {
@@ -79,25 +79,22 @@ const ProgramEnrollmentForm = (props) => {
   }, [show, options]);
 
   useEffect(() => {
-    setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
+    setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=="free");
   }, [props.programEnrollment]);
 
   let initialValues = {
     program_enrollment_batch: batch?.name,
-    student:'',
-    status: '',
-    registration_date: '',
-    institution: '',
-    certification_date: '',
-    fee_payment_date: '',
-    fee_refund_date: '',
-    course_name_in_current_sis: '',
-    fee_transaction_id: '',
-    course_type:'',
-    course_level:'',
-    course_year:'',
-    year_of_course_completion:'',
-    fee_status:'',
+    student:"",
+    status: "",
+    registration_date: "",
+    institution: "",
+    course_name_in_current_sis: "",
+    fee_transaction_id: "",
+    course_type:"",
+    course_level:"",
+    course_year:"",
+    year_of_course_completion:"",
+    fee_status:"",
     certification_date: null,
     fee_payment_date: null,
     fee_refund_date: null,
@@ -105,13 +102,13 @@ const ProgramEnrollmentForm = (props) => {
 
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
-    initialValues['batch'] = Number(props.programEnrollment.batch?.id);
-    initialValues['institution'] = Number(props.programEnrollment.institution?.id);
-    initialValues['student'] = Number(props.programEnrollment.student?.id);
-    initialValues['registration_date'] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
-    initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
-    initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
-    initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
+    initialValues["batch"] = Number(props.programEnrollment.batch?.id);
+    initialValues["institution"] = Number(props.programEnrollment.institution?.id);
+    initialValues["student"] = Number(props.programEnrollment.student?.id);
+    initialValues["registration_date"] = props.programEnrollment.registration_date ? new Date(props.programEnrollment.registration_date) : null;
+    initialValues["certification_date"] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
+    initialValues["fee_payment_date"] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
+    initialValues["fee_refund_date"] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
   }
 
   const onSubmit = async (values) => {
@@ -138,9 +135,9 @@ const ProgramEnrollmentForm = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
+    return await meilisearchClient.index("institutions").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ["id", "name"]
     }).then(data => {
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let institutionFoundInList = false;
@@ -165,9 +162,9 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
+    return await meilisearchClient.index("students").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
+      attributesToRetrieve: ["id", "full_name", "student_id"]
     }).then(data => {
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let studentFoundInList = false;
@@ -207,7 +204,7 @@ const ProgramEnrollmentForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.programEnrollment && props.programEnrollment.id ? 'Update' : 'Add New'} Program Enrollment
+            {props.programEnrollment && props.programEnrollment.id ? "Update" : "Add New"} Program Enrollment
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -410,7 +407,7 @@ const ProgramEnrollmentForm = (props) => {
                       options={feeStatusOptions}
                       className="form-control"
                       placeholder="Fees Status"
-                      onChange = {(e) => setRequiresFee(e.value.toLowerCase() !== 'waived off')}
+                      onChange = {(e) => setRequiresFee(e.value.toLowerCase() !== "waived off")}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

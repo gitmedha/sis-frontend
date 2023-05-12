@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import moment from 'moment';
+import moment from "moment";
 import NP from "nprogress";
 import { useState, useMemo, useEffect } from "react";
 import { connect } from "react-redux";
@@ -24,16 +24,16 @@ const StyledOpportunityIcon = styled.div`
 `;
 
 const OpportunityIcon = ({opportunity}) => {
-  let bgColor = '#FF9700';
+  let bgColor = "#FF9700";
   let icon = null;
   switch (opportunity.type) {
-    case 'Job':
-      bgColor = '#FF9700';
+    case "Job":
+      bgColor = "#FF9700";
       icon = <FaBriefcase color="#ffffff" size="16" />;
       break;
 
-    case 'Internship':
-      bgColor = '#12314C';
+    case "Internship":
+      bgColor = "#12314C";
       icon = <FaBlackTie color="#ffffff" size="16" />;
       break;
   }
@@ -69,14 +69,14 @@ const EmploymentConnections = (props) => {
       return {
         ...employmentConnection,
         student_name:  employmentConnection?.student?.full_name,
-        institution_name: 'To be added',
-        opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : '',
+        institution_name: "To be added",
+        opportunity_icon: employmentConnection.opportunity ? <OpportunityIcon opportunity={employmentConnection.opportunity} /> : "",
         status_badge: <Badge value={employmentConnection.status} pickList={pickList.status} />,
-        role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : '',
+        role_or_designation: employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : "",
         registration_date_formatted: moment(employmentConnection.registration_date).format("DD MMM YYYY"),
         date: moment(employmentConnection.created_at).format("DD MMM YYYY"),
         start_date: moment(employmentConnection.start_date).format("DD MMM YYYY"),
-        student_id: employmentConnection.student ? employmentConnection.student.student_id : '',
+        student_id: employmentConnection.student ? employmentConnection.student.student_id : "",
         updated_at:  moment(employmentConnection.updated_at).format("DD MMM YYYY"),
       };
     });
@@ -86,32 +86,32 @@ const EmploymentConnections = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Student',
-        accessor: 'student_name',
+        Header: "Student",
+        accessor: "student_name",
       },
       {
-        Header: 'Student ID',
-        accessor: 'student_id',
+        Header: "Student ID",
+        accessor: "student_id",
       },
       {
-        Header: 'Status',
-        accessor: 'status_badge',
+        Header: "Status",
+        accessor: "status_badge",
       },
       {
-        Header: 'Start Date',
-        accessor: 'start_date',
+        Header: "Start Date",
+        accessor: "start_date",
       },
       {
-        Header: 'Source',
-        accessor: 'source',
+        Header: "Source",
+        accessor: "source",
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
@@ -121,21 +121,21 @@ const EmploymentConnections = (props) => {
   const handleRowClick = employmentConnection => {
     setSelectedEmploymentConnection(employmentConnection);
     setViewModalShow(true);
-  }
+  };
 
   const hideViewModal = () => {
     setViewModalShow(false);
-  }
+  };
 
   const handleViewEdit = () => {
     setViewModalShow(false);
     setUpdateModalShow(true);
-  }
+  };
 
   const handleViewDelete = () => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
-  }
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -143,13 +143,13 @@ const EmploymentConnections = (props) => {
       return;
     }
 
-    // need to remove some data from the payload that's not accepted by the API
+    // need to remove some data from the payload that"s not accepted by the API
     let {id, employer, date, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = opportunity.id;
-    dataToSave['student'] = student_id;
+    dataToSave["start_date"] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave["end_date"] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave["salary_offered"] = data.salary_offered ? Number(data.salary_offered) : null;
+    dataToSave["opportunity"] = opportunity.id;
+    dataToSave["student"] = student_id;
 
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
@@ -168,13 +168,13 @@ const EmploymentConnections = (props) => {
       return;
     }
 
-    // need to remove some data from the payload that's not accepted by the API
+    // need to remove some data from the payload that"s not accepted by the API
     let {id, employer, date, updated_at, created_at, student_id, student_name, institution_name, employer_name, opportunity_name, employment_connection_student, employment_connection_opportunity, registration_date_formatted, status_badge, role_or_designation, opportunity_icon, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['salary_offered'] = data.salary_offered ? Number(data.salary_offered) : null;
-    dataToSave['opportunity'] = data.opportunity_id;
-    dataToSave['student'] = student_id;
+    dataToSave["start_date"] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
+    dataToSave["end_date"] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
+    dataToSave["salary_offered"] = data.salary_offered ? Number(data.salary_offered) : null;
+    dataToSave["opportunity"] = data.opportunity_id;
+    dataToSave["student"] = student_id;
 
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
@@ -202,7 +202,7 @@ const EmploymentConnections = (props) => {
   const hideModal = () => {
     hideViewModal();
     onDataUpdate();
-  }
+  };
 
   const fileDelete = async (value) => {
     NP.start();

@@ -237,9 +237,9 @@ const Login = () => {
           <div className="box-2 col-md-5">
             <div className="row">
               <img
-                  src={require('../assets/images/logo.png').default}
+                  src={require("../assets/images/logo.png").default}
                   alt="Medha SIS"
-                  className='logo'
+                  className="logo"
               />
             </div>
             <div className="row-box">
@@ -247,11 +247,11 @@ const Login = () => {
             </div>
             <div className="line-box"> </div>
             <div className=" button-box" style={{textAlign:"center"}}>
-              <a type="button" href={apiPath('/connect/microsoft')} className="btn-ms-login d-flex">
+              <a type="button" href={apiPath("/connect/microsoft")} className="btn-ms-login d-flex">
                   <img
-                    src={require('../assets/images/logo-microsoft.svg').default}
+                    src={require("../assets/images/logo-microsoft.svg").default}
                     alt="Microsoft"
-                    className={`mr-5`}
+                    className="mr-5"
 
                   />
                   <span style={{fontFamily:"Latto-Regular", textAlign:"center"}}>Login using Microsoft account</span>
@@ -260,9 +260,9 @@ const Login = () => {
         </div>
         <div className="box-1 col-md-7">
           <img
-              src={require('../assets/images/web-image.png').default}
+              src={require("../assets/images/web-image.png").default}
               alt="Medha SIS"
-              className='image'
+              className="image"
               width="400" height="400"
           />
         </div>

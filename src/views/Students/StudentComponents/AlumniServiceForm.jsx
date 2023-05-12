@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
@@ -6,8 +6,8 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
 import { getStudentsPickList } from "./StudentActions";
-import Textarea from '../../../utils/Form/Textarea';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import Textarea from "../../../utils/Form/Textarea";
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
 
 const Section = styled.div`
@@ -35,8 +35,8 @@ const AlumniServiceForm = (props) => {
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
   const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.alumniService ? props.alumniService.fee_submission_date : null);
-  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : '');
-  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
+  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : "");
+  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : "");
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
 
@@ -55,40 +55,40 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string().nullable().required("Fee submission date is required.");
     let fee_amount = Yup.string().required("Fee amount is required.");
     let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
+    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== "") || (feeAmountValue !== null && feeAmountValue !== "") || (receiptNumberValue !== null && receiptNumberValue !== "");
     setFeeFieldsRequired(fieldsRequired);
     if (fieldsRequired) {
       setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
     } else {
-      setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
+      setValidationRules(AlumniServiceValidations.omit(["fee_submission_date", "fee_amount", "receipt_number"]));
     }
   }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
 
   useEffect(() => {
     setFeeSubmissionDateValue(props.alumniService ? props.alumniService.fee_submission_date : null);
-    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : '');
-    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : '');
+    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : "");
+    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : "");
   }, [props]);
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    type:'',
-    location:'',
-    receipt_number:'',
-    fee_amount:'',
-    comments:'',
+    type:"",
+    location:"",
+    receipt_number:"",
+    fee_amount:"",
+    comments:"",
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id')
+    assigned_to: localStorage.getItem("user_id")
   };
 
   if (props.alumniService) {
     initialValues = {...initialValues, ...props.alumniService};
-    initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
-    initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
-    initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
-    initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
+    initialValues["assigned_to"] = props.alumniService?.assigned_to?.id;
+    initialValues["start_date"] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
+    initialValues["end_date"] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
+    initialValues["fee_submission_date"] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
   }
 
   const onSubmit = async (values) => {
@@ -111,7 +111,7 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Service
+            {props.alumniService && props.alumniService.id ? "Update" : "Add New"} Alumni Service
           </h1>
         </Modal.Title>
       </Modal.Header>

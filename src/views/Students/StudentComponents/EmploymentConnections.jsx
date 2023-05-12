@@ -146,7 +146,7 @@ const EmploymentConnections = (props) => {
   const hideModal = () => {
     hideViewModal();
     onDataUpdate();
-  }
+  };
 
   const handleViewEdit = () => {
     setViewModalShow(false);

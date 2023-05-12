@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { connectHits } from 'react-instantsearch-dom';
+import { connectHits } from "react-instantsearch-dom";
 import { useHistory } from "react-router-dom";
 
-import SearchHighlight from './SearchHighlight';
+import SearchHighlight from "./SearchHighlight";
 
 const SearchHitsContainer = styled.div`
   height: 320px;
@@ -88,8 +88,8 @@ const SearchHits = props => {
   let tableData = <></>;
 
   switch (searchIndex) {
-    case 'employers':
-      columns = ['Name','District','State','Industry','Assigned To'];
+    case "employers":
+      columns = ["Name","District","State","Industry","Assigned To"];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
@@ -111,8 +111,8 @@ const SearchHits = props => {
       ))
       break;
 
-    case 'batches':
-      columns = ['Name', 'Program', 'Status', 'Student Enrolled', 'Start Date', 'Enrollment Type', 'Area', 'Assigned To'];
+    case "batches":
+      columns = ["Name", "Program", "Status", "Student Enrolled", "Start Date", "Enrollment Type", "Area", "Assigned To"];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
@@ -143,21 +143,21 @@ const SearchHits = props => {
       ));
       break;
 
-    case 'institutions':
-      columns = ['Name', 'Area', 'State', 'Type', 'Status', 'Assigned To'];
+    case "institutions":
+      columns = ["Name", "Area", "State", "Type", "Status", "Assigned To"];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
           </td>
           <td>
-            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ''}
+            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ""}
           </td>
           <td>
-            {hit.state ? <SearchHighlight hit={hit} attribute="state" /> : ''}
+            {hit.state ? <SearchHighlight hit={hit} attribute="state" /> : ""}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ""}
           </td>
           <td>
             {hit?.status}
@@ -169,9 +169,9 @@ const SearchHits = props => {
       ))
       break;
 
-    case 'students':
+    case "students":
     default:
-      columns = ['Name', 'Student ID','Area', 'Phone', 'Email', 'Status','Assigned To'];
+      columns = ["Name", "Student ID","Area", "Phone", "Email", "Status","Assigned To"];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
@@ -199,8 +199,8 @@ const SearchHits = props => {
       ));
       break;
 
-    case 'opportunities':
-      columns = ['Role/Designation', 'Employer', 'District', 'Type', 'Status', 'Opening', 'Assigned To'];
+    case "opportunities":
+      columns = ["Role/Designation", "Employer", "District", "Type", "Status", "Opening", "Assigned To"];
       tableData = hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
@@ -213,7 +213,7 @@ const SearchHits = props => {
             {hit?.district}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ""}
           </td>
           <td>
             {hit?.status}
@@ -232,26 +232,26 @@ const SearchHits = props => {
   const clickHandler = hit => {
     props.setSearchState({
       ...props.searchState,
-      query: '',
+      query: "",
     });
     switch (searchIndex) {
-      case 'employers':
+      case "employers":
         history.push(`/employer/${hit.id}`);
         break;
 
-      case 'batches':
+      case "batches":
         history.push(`/batch/${hit.id}`);
         break;
 
-      case 'institutions':
+      case "institutions":
         history.push(`/institution/${hit.id}`);
         break;
       
-      case 'opportunities':
+      case "opportunities":
         history.push(`/opportunity/${hit.id}`);
         break;
 
-      case 'students':
+      case "students":
       default:
         history.push(`/student/${hit.id}`);
         break;

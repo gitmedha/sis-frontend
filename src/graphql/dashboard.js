@@ -237,46 +237,48 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
 }
 `;
 
-const studentFields = `
-id
-full_name
-email
-phone
-alternate_phone
-status
-name_of_parent_or_guardian
-date_of_birth
-category
-gender
-registration_date_latest
-certification_date_latest
-internship_date_latest
-placement_date_latest
-course_type_latest
-income_level
-old_sis_id
-medha_champion
-interested_in_employment_opportunities
-city
-pin_code
-medha_area
-address
-state
-assigned_to{
-  id
-  username
-  email
-}
-logo {
-  id
-  url
-}
-CV {
-  url
-  previewUrl
-  updated_at
-}
-`;
+// eslint-disable-line no-unused-vars
+// this may be use later 
+// const studentFields = `
+// id
+// full_name
+// email
+// phone
+// alternate_phone
+// status
+// name_of_parent_or_guardian
+// date_of_birth
+// category
+// gender
+// registration_date_latest
+// certification_date_latest
+// internship_date_latest
+// placement_date_latest
+// course_type_latest
+// income_level
+// old_sis_id
+// medha_champion
+// interested_in_employment_opportunities
+// city
+// pin_code
+// medha_area
+// address
+// state
+// assigned_to{
+//   id
+//   username
+//   email
+// }
+// logo {
+//   id
+//   url
+// }
+// CV {
+//   url
+//   previewUrl
+//   updated_at
+// }
+// `;  // eslint-disable-line no-unused-vars
 
 export const GET_STUDENTS = `
 query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
@@ -337,7 +339,7 @@ query GET_DASHBOARD_PROGRAM_ENROLLMENTS(
     }
   }
 }
-`;
+`;  
 
 export const GET_MY_DATA_REGISTRATIONS_GRAPH = `
   query GET_MY_DATA_REGISTRATIONS_GRAPH ($user: Int){

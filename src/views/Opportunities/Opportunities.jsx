@@ -6,7 +6,7 @@ import Avatar from "../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
-import Table from '../../components/content/Table';
+import Table from "../../components/content/Table";
 import { GET_OPPORTUNITIES } from "../../graphql";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
@@ -31,34 +31,34 @@ const tabPickerOptions = [
     const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
     const {setAlert} = props;
     const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
-    const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+    const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
     const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
     const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
     const [modalShow, setModalShow] = useState(false);
-    const userId = parseInt(localStorage.getItem('user_id'))
-    const state = localStorage.getItem('user_state');
-    const area = localStorage.getItem('user_area')
+    const userId = parseInt(localStorage.getItem("user_id"));
+    const state = localStorage.getItem("user_state");
+    const area = localStorage.getItem("user_area");
 
     const OpportunityIcon = ({opportunity, name}) => {
       let icon = null;
 
       switch (opportunity.type) {
-        case 'Job':
+        case "Job":
           icon = <FaBriefcase size="20" color="#808080"/>;
           break;
 
-        case 'Internship':
+        case "Internship":
           icon = <FaBlackTie size="20" color="#808080"/>;
           break;
       }
       if (icon) {
         return (
         <div className="d-flex align-items-center justify-content-start h-100">
-          <div className="flex-row-centered avatar avatar-default " style ={{ width: '35px', height: '35px'}} >
+          <div className="flex-row-centered avatar avatar-default " style ={{ width: "35px", height: "35px"}} >
             {icon}
           </div>
-          <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
-        </div>)
+          <p className="mb-0 latto-regular" style={{ color: "#787B96"}}>{name}</p>
+        </div>);
       }
       return <></>;
     };
@@ -70,32 +70,32 @@ const tabPickerOptions = [
   const columns = useMemo(
     () => [
       {
-        Header: 'Role/Designation',
-        accessor: 'avatar',
+        Header: "Role/Designation",
+        accessor: "avatar",
       },
       {
-        Header: 'Employer',
-        accessor: 'employer',
+        Header: "Employer",
+        accessor: "employer",
       },
       {
-        Header: 'District',
-        accessor: 'district',
+        Header: "District",
+        accessor: "district",
       },
       {
-        Header: 'Type',
-        accessor: 'opportunity_type',
+        Header: "Type",
+        accessor: "opportunity_type",
       },
       {
-        Header: 'Status',
-        accessor: 'status',
+        Header: "Status",
+        accessor: "status",
       },
       {
-        Header: 'Openings',
-        accessor: 'number_of_opportunities',
+        Header: "Openings",
+        accessor: "number_of_opportunities",
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assigned_to.username',
+        Header: "Assigned To",
+        accessor: "assigned_to.username",
       },
     ],
     []
@@ -105,22 +105,22 @@ const tabPickerOptions = [
     getOpportunitiesPickList().then(data => {
       setPickList(data);
     });
-  }, [])
+  }, []);
 
-  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = "type", sortOrder = "desc") => {
     nProgress.start();
     setLoading(true);
     let variables = {
       limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
-    }
+    };
     if(selectedTab == "my_data"){
-      Object.assign(variables, {id: userId})
+      Object.assign(variables, {id: userId});
     } else if(selectedTab == "my_area"){
-      Object.assign(variables, {area: area})
+      Object.assign(variables, {area: area});
     }else if(selectedTab == "my_state"){
-      Object.assign(variables, {state: state})
+      Object.assign(variables, {state: state});
     }
 
     await api.post("/graphql", {
@@ -142,31 +142,31 @@ const tabPickerOptions = [
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'role';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "role";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'employer':
-        case 'type':
-        case 'district':
-        case 'status':
+        case "employer":
+        case "type":
+        case "district":
+        case "status":
           sortByField = sortBy[0].id;
           break;
 
-        case 'number_of_opportunities':
-          sortByField = 'number_of_opportunities';
+        case "number_of_opportunities":
+          sortByField = "number_of_opportunities";
           break;
 
-        case 'opportunity_type':
-          sortByField = 'type';
+        case "opportunity_type":
+          sortByField = "type";
           break;
 
-        case 'assigned_to.username':
-          sortByField = 'assigned_to.username';
+        case "assigned_to.username":
+          sortByField = "assigned_to.username";
           break;
 
-        case 'avatar':
+        case "avatar":
         default:
-          sortByField = 'role_or_designation';
+          sortByField = "role_or_designation";
           break;
       }
       getOpportunities(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -184,12 +184,12 @@ const tabPickerOptions = [
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
        status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
-       address: opportunitydata.employer ? opportunitydata.employer.address : '',
-       employer: opportunitydata.employer ? opportunitydata.employer.name : '',
+       address: opportunitydata.employer ? opportunitydata.employer.address : "",
+       employer: opportunitydata.employer ? opportunitydata.employer.name : "",
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
        avatar:  <OpportunityIcon opportunity={opportunitydata} name={opportunitydata.role_or_designation}> {opportunitydata.role_or_designation} </OpportunityIcon>,
        href: `/opportunity/${opportunitydata.id}`,
-      }
+      };
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
@@ -227,7 +227,7 @@ const tabPickerOptions = [
             <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
-              style={{marginLeft: '15px'}}
+              style={{marginLeft: "15px"}}
             >
               Add New Opportunity
             </button>

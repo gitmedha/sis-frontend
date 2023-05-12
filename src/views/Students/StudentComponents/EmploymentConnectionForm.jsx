@@ -11,7 +11,7 @@ import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
 } from "./StudentActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -51,7 +51,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
 
-  const userId = localStorage.getItem('user_id');
+  const userId = localStorage.getItem("user_id");
   let initialValues = {
     employment_connection_student: student.full_name,
     employer_id: "",
@@ -70,7 +70,7 @@ const EnrollmentConnectionForm = (props) => {
     initialValues["employer_id"] = props.employmentConnection
       ? Number(props.employmentConnection.opportunity?.employer?.id)
       : null;
-    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
+    initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
       : null;
@@ -99,8 +99,8 @@ const EnrollmentConnectionForm = (props) => {
   }, [props.employmentConnection]);
 
   useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-    setEndDateMandatory(selectedStatus === 'Internship Complete');
+    setShowEndDate(selectedStatus === "Internship Complete" || selectedStatus === "Offer Accepted by Student");
+    setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus]);
 
   useEffect(() => {
@@ -156,10 +156,10 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    if (selectedOpportunityType === "Job" || selectedOpportunityType === "Internship") {
+      filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === selectedOpportunityType || item["applicable-to"] === "Both");
     } else {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+      filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === "Both");
     }
     setStatusOptions(filteredOptions);
   }, [selectedOpportunityType, allStatusOptions]);
@@ -388,7 +388,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
+                      required={selectedStatus === "Offer Rejected by Student"}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -404,7 +404,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   
-                  {selectedOpportunityType === 'Internship' &&
+                  {selectedOpportunityType === "Internship" &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}

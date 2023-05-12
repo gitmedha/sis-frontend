@@ -2,6 +2,7 @@
   "name": "medha-rc",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
@@ -18,16 +19,9 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "clsx": "^1.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.20.3",
-    "eslint-plugin-standard": "^4.0.1",
     "formik": "^2.2.8",
     "framer-motion": "^4.1.17",
     "google-map-react": "^2.1.9",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.11",
     "lodash": "^4.17.21",
     "material-ui": "^0.20.2",
     "meilisearch": "^0.20.0",
@@ -46,7 +40,6 @@
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-instantsearch-dom": "^6.12.0",
-    "react-json-view": "^1.21.3",
     "react-loading-skeleton": "^2.2.0",
     "react-moment": "^1.1.1",
     "react-onclickoutside": "^6.11.2",
@@ -61,7 +54,6 @@
     "react-toast-notifications": "^2.5.0",
     "react-tooltip": "^4.2.21",
     "redux": "^4.1.0",
-    "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.3.0",
@@ -73,8 +65,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint ./",
-    "lint-fix": "eslint ./ --fix"
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -94,24 +86,12 @@
       "last 1 safari version"
     ]
   },
-  "lint-staged": {
-    "*.js": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "devDependencies": {
     "@babel/eslint-parser": "^7.21.8",
+    "@babel/eslint-plugin": "^7.19.1",
     "eslint": "^7.11.0",
-    "eslint-config-standard": "^14.1.1"
-  },
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 12,
-    "sourceType": "module"
+    "eslint-plugin-react": "^7.32.2",
+    "react-json-view": "^1.21.3",
+    "redux-devtools-extension": "^2.13.9"
   }
 }

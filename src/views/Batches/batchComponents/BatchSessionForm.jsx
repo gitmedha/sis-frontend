@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ import api from "../../../apis";
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
 import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
-import TableWithSelection from '../../../components/content/TableWithSelection';
+import TableWithSelection from "../../../components/content/TableWithSelection";
 import { getSessionAttendance } from "../batchActions";
 import SweetAlert from "react-bootstrap-sweetalert";
 
@@ -24,7 +24,7 @@ const Section = styled.div`
 
   .section-header {
     color: #207B69;
-    font-family: 'Latto-Regular';
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -43,12 +43,12 @@ const BatchSessionForm = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   let initialValues = {
-    topics: '',
-    date: '',
+    topics: "",
+    date: "",
   };
   if (props.session) {
-    initialValues['topics'] = props.session.topics_covered;
-    initialValues['date'] = new Date(props.session.date);
+    initialValues["topics"] = props.session.topics_covered;
+    initialValues["date"] = new Date(props.session.date);
   }
 
   const onSubmit = async (values) => {
@@ -120,30 +120,30 @@ const BatchSessionForm = (props) => {
         setSelectedRows(checkedRows);
       }).finally(() => {
         setLoading(false);
-      })
+      });
     }
   }, [props.session]);
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Name',
-        accessor: 'name',
+        Header: "Name",
+        accessor: "name",
         disableSortBy: true,
       },
       {
-        Header: 'Student ID',
-        accessor: 'student_id',
+        Header: "Student ID",
+        accessor: "student_id",
         disableSortBy: true,
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
+        Header: "Phone",
+        accessor: "phone",
         disableSortBy: true,
       },
       {
-        Header: 'Parent Name',
-        accessor: 'parent_name',
+        Header: "Parent Name",
+        accessor: "parent_name",
         disableSortBy: true,
       },
     ],
@@ -166,7 +166,7 @@ const BatchSessionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.session && props.session.id ? 'Update' : 'Add New'} Session and Attendance
+            {props.session && props.session.id ? "Update" : "Add New"} Session and Attendance
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -235,7 +235,7 @@ const BatchSessionForm = (props) => {
                     </button>
                   </div>
                   {
-                  batch.status === 'In Progress' && onDelete &&
+                  batch.status === "In Progress" && onDelete &&
                   <button
                     type="button"
                     onClick={() => {setShowDeleteAlert(true)}}

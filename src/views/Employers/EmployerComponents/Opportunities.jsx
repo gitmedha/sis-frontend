@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityForm";
 import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
@@ -36,37 +36,37 @@ const Opportunities = (props) => {
     getOpportunitiesPickList().then(data => {
       setPickList(data);
     });
-  }, [])
+  }, []);
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Role/Designation',
-        accessor: 'avatar',
+        Header: "Role/Designation",
+        accessor: "avatar",
       },
       {
-        Header: 'Type',
-        accessor: 'opportunity_type',
+        Header: "Type",
+        accessor: "opportunity_type",
       },
       {
-        Header: 'Status',
-        accessor: 'status',
+        Header: "Status",
+        accessor: "status",
       },
       {
-        Header: 'Openings',
-        accessor: 'number_of_opportunities',
+        Header: "Openings",
+        accessor: "number_of_opportunities",
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assigned_to.username',
+        Header: "Assigned To",
+        accessor: "assigned_to.username",
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
@@ -78,17 +78,17 @@ const Opportunities = (props) => {
       return {
         ...opportunity,
         id: opportunity.id,
-        avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="opportunity" /> : <></>,
+        avatar: employer ? <Avatar name={`${opportunity.role_or_designation}`} logo={employer.logo} style={{width: "35px", height: "35px"}} icon="opportunity" /> : <></>,
         role_or_designation: opportunity.role_or_designation,
         opportunity_type: <Badge value={opportunity.type} pickList={pickList.type}/>,
         status:<Badge value={opportunity.status} pickList={pickList.status}/>,
         number_of_opportunities: opportunity.number_of_opportunities,
-        address: employer ? employer.address : '',
-        employer: employer ? employer.name : '',
+        address: employer ? employer.address : "",
+        employer: employer ? employer.name : "",
         created_at: moment(opportunity.created_at).format("DD MMM YYYY"),
         updated_at: moment(opportunity.updated_at).format("DD MMM YYYY"),
         href: `/opportunity/${opportunity.id}`,
-      }
+      };
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);
@@ -101,7 +101,7 @@ const Opportunities = (props) => {
 
     // need to remove `show` from the payload
     let {show, employer_name, ...dataToSave} = data;
-    dataToSave['employer'] = data.employer.id;
+    dataToSave["employer"] = data.employer.id;
 
     NP.start();
     createOpportunity(dataToSave).then(data => {
@@ -114,7 +114,7 @@ const Opportunities = (props) => {
       onDataUpdate();
     });
     setCreateOpportunityModalShow(false);
-  }
+  };
 
   return (
     <div className="container-fluid my-3">

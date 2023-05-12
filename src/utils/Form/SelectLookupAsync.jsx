@@ -1,10 +1,10 @@
 import InputErr from "./InputErr";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
 import { components } from "react-select";
-import AsyncSelect from 'react-select/async';
+import AsyncSelect from "react-select/async";
 
 const SelectLookupAsyncField = styled.div`
   label {
@@ -26,15 +26,15 @@ const style = {
     },
   }),
   singleValue: (provided, state) => {
-    if (state.selectProps.icon === 'down') {
-      // don't do anything if it's a dropdown
+    if (state.selectProps.icon === "down") {
+      // don"t do anything if it"s a dropdown
       return {};
     }
     // when the menu is open, remove the text displayed in the input
     // this is done to make lookup field as type & search
     return {
-      display: state.selectProps.menuIsOpen ? 'none' : 'block',
-    }
+      display: state.selectProps.menuIsOpen ? "none" : "block",
+    };
   }
 };
 
@@ -68,7 +68,7 @@ const SelectField = (props) => {
     isDisabled,
     isClearable,
   } = props;
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
   const loadOptions = (inputValue, callback) => {
@@ -91,7 +91,7 @@ const SelectField = (props) => {
         loadOptions={loadOptions}
         onInputChange={handleInputChange}
         placeholder={placeholder}
-        isSearchable={isSearchable || icon !== 'down'}
+        isSearchable={isSearchable || icon !== "down"}
         components={{ DropdownIndicator }}
         onChange={option => {
             form.setFieldValue(field.name, option ? option.value : null);

@@ -5,7 +5,7 @@ import { Anchor, Badge, ProgressBarField } from "../../../components/content/Uti
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import DetailField from "../../../components/content/DetailField";
 import { getBatchesPickList } from "../batchActions";
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import moment from "moment";
 
 const Details = ({ batch, sessions=[] }) => {
@@ -14,23 +14,23 @@ const Details = ({ batch, sessions=[] }) => {
     getBatchesPickList().then(data => {
       setPickList(data);
     });
-  }, [])
+  }, []);
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Sessions planned',
-        accessor: 'sessions_planned',
+        Header: "Sessions planned",
+        accessor: "sessions_planned",
         disableSortBy: true,
       },
       {
-        Header: 'Per-student fees',
-        accessor: 'per_student_fees',
+        Header: "Per-student fees",
+        accessor: "per_student_fees",
         disableSortBy: true,
       },
       {
-        Header: 'Seats Available',
-        accessor: 'seats_available',
+        Header: "Seats Available",
+        accessor: "seats_available",
         disableSortBy: true,
       },
     ],
@@ -67,10 +67,10 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Session Planned" value={batch.number_of_sessions_planned} />
           <DetailField label="Seats Available" value={ batch.seats_available || 0} />
           &nbsp;
-          <DetailField label="Created By" value={batch.created_by_frontend?.username ?`${batch.created_by_frontend?.username} (${batch.created_by_frontend?.email})`: ''} />
+          <DetailField label="Created By" value={batch.created_by_frontend?.username ?`${batch.created_by_frontend?.username} (${batch.created_by_frontend?.email})`: ""} />
           <DetailField label="Created At" value={moment(batch.created_at).format("DD MMM YYYY, h:mm a")} />
           <div className="mt-2">
-            <div style={{color: '#787B96', fontFamily: 'Latto-Regular', fontSize: '14px', lineHeight: 2.2, marginBottom: '10px', marginTop: '10px'}}>
+            <div style={{color: "#787B96", fontFamily: "Latto-Regular", fontSize: "14px", lineHeight: 2.2, marginBottom: "10px", marginTop: "10px"}}>
               Average Attendance Across All Sessions
             </div>
             <ProgressBarField value={averageAttendancePercent} />
@@ -88,7 +88,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Per-student Fees" value={batch.per_student_fees} />
           <div>&nbsp; &nbsp;</div>
           &nbsp;
-          <DetailField label="Updated By" value={batch.updated_by_frontend?.username ?`${batch.updated_by_frontend?.username} (${batch.updated_by_frontend?.email})`: ''} />
+          <DetailField label="Updated By" value={batch.updated_by_frontend?.username ?`${batch.updated_by_frontend?.username} (${batch.updated_by_frontend?.email})`: ""} />
           <DetailField label="Updated At" value={moment(batch.updated_at).format("DD MMM YYYY, h:mm a")} />
         </div>
       </div>

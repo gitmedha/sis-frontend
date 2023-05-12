@@ -24,15 +24,15 @@ const style = {
     },
   }),
   singleValue: (provided, state) => {
-    if (state.selectProps.icon === 'down') {
-      // don't do anything if it's a dropdown
+    if (state.selectProps.icon === "down") {
+      // don"t do anything if it"s a dropdown
       return {};
     }
     // when the menu is open, remove the text displayed in the input
     // this is done to make lookup field as type & search
     return {
-      display: state.selectProps.menuIsOpen ? 'none' : 'block',
-    }
+      display: state.selectProps.menuIsOpen ? "none" : "block",
+    };
   }
 };
 
@@ -73,7 +73,7 @@ export const SelectField = (props) => {
       options={options}
       onBlur={field.onBlur}
       placeholder={placeholder}
-      isSearchable={isSearchable || icon !== 'down'}
+      isSearchable={isSearchable || icon !== "down"}
       isDisabled={isDisabled}
       components={{ DropdownIndicator }}
       onChange={(option) => {form.setFieldValue(field.name, option.value); onChange(option);}}

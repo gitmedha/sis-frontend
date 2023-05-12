@@ -1,249 +1,249 @@
-import { Formik, Form } from 'formik';
-import { Modal } from "react-bootstrap";
-import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch';
-import Skeleton from "react-loading-skeleton";
+  import { Formik, Form } from "formik";
+  import { Modal } from "react-bootstrap";
+  import styled from "styled-components";
+  import { useState, useEffect, useMemo } from "react";
+  import { MeiliSearch } from "meilisearch";
+  import Skeleton from "react-loading-skeleton";
 
-import { Input } from "../../../utils/Form";
-import { EmploymentConnectionValidations } from "../../../validations/Employer";
-import { getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+  import { Input } from "../../../utils/Form";
+  import { EmploymentConnectionValidations } from "../../../validations/Employer";
+  import { getEmployerOpportunities, getEmploymentConnectionsPickList } from "../../Students/StudentComponents/StudentActions";
+  import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
-const Section = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
+  const Section = styled.div`
+    padding-top: 30px;
+    padding-bottom: 30px;
 
-  &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
-  }
+    &:not(:first-child) {
+      border-top: 1px solid #C4C4C4;
+    }
 
-  .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
-  }
-`;
+    .section-header {
+      color: #207B69;
+      font-family: 'Latto-Regular';
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 18px;
+      margin-bottom: 15px;
+    }
+  `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
-
-const EnrollmentConnectionForm = (props) => {
-  let { onHide, show} = props;
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [allStatusOptions, setAllStatusOptions] = useState([]);
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [employerOptions, setEmployerOptions] = useState([]);
-  const [studentOptions, setStudentOptions] = useState([]);
-  const [sourceOptions, setSourceOptions] = useState([]);
-  const [showEndDate, setShowEndDate] = useState(false);
-  const [endDateMandatory, setEndDateMandatory] = useState(false);
-  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
-  const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
-
-  const userId = localStorage.getItem('user_id');
-  let initialValues = {
-    student_id:'',
-    employer_id:'',
-    status: '',
-    salary_offered:'',
-    opportunity_id:'',
-    start_date:'',
-    end_date:'',
-    source:'',
-    reason_if_rejected: '',
-    assigned_to: userId,
-  };
-
-  if (props.employmentConnection) {
-    initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
-    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
-    initialValues['employer_id'] = props.employer ? Number(props.employer.id) : null;
-    initialValues['opportunity_id'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
-    initialValues['employer'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
-    initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
-    initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
-  }
+  const meilisearchClient = new MeiliSearch({
+    host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+    apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+  });
 
 
-  const onModalClose = () => {
-    if (!props.employmentConnection) {
+  const EnrollmentConnectionForm = (props) => {
+    let { onHide, show} = props;
+    const [assigneeOptions, setAssigneeOptions] = useState([]);
+    const [allStatusOptions, setAllStatusOptions] = useState([]);
+    const [statusOptions, setStatusOptions] = useState([]);
+    const [employerOptions, setEmployerOptions] = useState([]);
+    const [studentOptions, setStudentOptions] = useState([]);
+    const [sourceOptions, setSourceOptions] = useState([]);
+    const [showEndDate, setShowEndDate] = useState(false);
+    const [endDateMandatory, setEndDateMandatory] = useState(false);
+    const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+    const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
+    const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
+    const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
+
+    const userId = localStorage.getItem("user_id");
+    let initialValues = {
+      student_id:"",
+      employer_id:"",
+      status: "",
+      salary_offered:"",
+      opportunity_id:"",
+      start_date:"",
+      end_date:"",
+      source:"",
+      reason_if_rejected: "",
+      assigned_to: userId,
+    };
+
+    if (props.employmentConnection) {
+      initialValues = {...initialValues, ...props.employmentConnection};
+      initialValues["student_id"] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+      initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
+      initialValues["employer_id"] = props.employer ? Number(props.employer.id) : null;
+      initialValues["opportunity_id"] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.id : null;
+      initialValues["employer"] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
+      initialValues["start_date"] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
+      initialValues["end_date"] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
+    }
+
+
+    const onModalClose = () => {
+      if (!props.employmentConnection) {
+        setEmployerOpportunityOptions([]);
+      }
+      onHide();
+    }
+
+    useEffect(() => {
+      setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
+      setSelectedStatus(props.employmentConnection?.status);
+    }, [props.employmentConnection]);
+
+    useEffect(() => {
+      setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+      setEndDateMandatory(selectedStatus === 'Internship Complete');
+    }, [selectedStatus]);
+
+    useEffect(() => {
+      getDefaultAssigneeOptions().then(data => {
+        setAssigneeOptions(data);
+      });
+    }, []);
+
+    const onSubmit = async (values) => {
+      onHide(values);
+    };
+
+    useEffect(() => {
+      getEmploymentConnectionsPickList().then(data => {
+        setWorkEngagementOptions(
+          data.work_engagement.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setAllStatusOptions(
+          data.status.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      });
+
+
+      if (props.employmentConnection && props.employmentConnection.student) {
+        filterStudent(props.employmentConnection.student.name).then(data => {
+          setStudentOptions(data);
+        });
+      }
+      if (props.employmentConnection && props.employmentConnection.employer) {
+        filterEmployer(props.employmentConnection.employer.name).then(data => {
+          setEmployerOptions(data);
+        });
+      }
+
+      if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
+        updateEmployerOpportunityOptions({
+          value: Number(props.employmentConnection.opportunity.employer.id),
+        });
+      }
+    }, [props]);
+
+    const filterStudent = async (filterValue) => {
+      return await meilisearchClient
+        .index("students")
+        .search(filterValue, {
+          limit: 100,
+          attributesToRetrieve: ["id", "full_name", "student_id"],
+        })
+        .then((data) => {
+          let employmentConnectionStudent = props.employmentConnection
+            ? props.employmentConnection.student
+            : null;
+          let studentFoundInList = false;
+          let filterData = data.hits.map((student) => {
+            if (
+              props.employmentConnection &&
+              student.id === Number(employmentConnectionStudent?.id)
+            ) {
+              studentFoundInList = true;
+            }
+            return {
+              ...student,
+              label: `${student.full_name} (${student.student_id})`,
+              value: Number(student.id),
+            };
+          });
+          if (
+            props.employmentConnection &&
+            employmentConnectionStudent !== null &&
+            !studentFoundInList
+          ) {
+            filterData.unshift({
+              label: employmentConnectionStudent.full_name,
+              value: Number(employmentConnectionStudent.id),
+            });
+          }
+          return filterData;
+        });
+    };
+
+    const filterEmployer = async (filterValue) => {
+      return await meilisearchClient
+        .index("employers")
+        .search(filterValue, {
+          limit: 100,
+          attributesToRetrieve: ["id", "name"],
+        })
+        .then((data) => {
+          let employmentConnectionEmployer = props.employer
+            ? props.employer
+            : null;
+          let employerFoundInList = false;
+
+          let filterData = data.hits.map((employer) => {
+            if (
+              props.employmentConnection &&
+              employer.id === Number(employmentConnectionEmployer?.id)
+            ) {
+              employerFoundInList = true;
+            }
+            return {
+              ...employer,
+              label: employer.name,
+              value: Number(employer.id),
+            };
+          });
+
+          if (
+            props.employmentConnection &&
+            employmentConnectionEmployer !== null &&
+            !employerFoundInList
+          ) {
+            filterData.unshift({
+              label: employmentConnectionEmployer?.name,
+              value: Number(employmentConnectionEmployer?.id),
+            });
+          }
+          return filterData;
+        });
+    };
+
+    useEffect(() => {
+      let filteredOptions = allStatusOptions;
+      if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
+        filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+      } else {
+        filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+      }
+      setStatusOptions(filteredOptions);
+    }, [selectedOpportunityType, allStatusOptions]);
+
+    const updateEmployerOpportunityOptions = employer => {
       setEmployerOpportunityOptions([]);
-    }
-    onHide();
-  }
-
-  useEffect(() => {
-    setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
-    setSelectedStatus(props.employmentConnection?.status);
-  }, [props.employmentConnection]);
-
-  useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-    setEndDateMandatory(selectedStatus === 'Internship Complete');
-  }, [selectedStatus]);
-
-  useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
-      setAssigneeOptions(data);
-    });
-  }, []);
-
-  const onSubmit = async (values) => {
-    onHide(values);
-  };
-
-  useEffect(() => {
-    getEmploymentConnectionsPickList().then(data => {
-      setWorkEngagementOptions(
-        data.work_engagement.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setAllStatusOptions(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
-
-
-    if (props.employmentConnection && props.employmentConnection.student) {
-      filterStudent(props.employmentConnection.student.name).then(data => {
-        setStudentOptions(data);
+      getEmployerOpportunities(Number(employer.value)).then(data => {
+        setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
+          key: opportunity.role_or_designation,
+          label: `${opportunity.role_or_designation} | ${opportunity.type}`,
+          type: opportunity.type,
+          value: opportunity.id,
+        })));
       });
     }
-    if (props.employmentConnection && props.employmentConnection.employer) {
-      filterEmployer(props.employmentConnection.employer.name).then(data => {
-        setEmployerOptions(data);
-      });
-    }
-
-    if (props.employmentConnection && props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer) {
-      updateEmployerOpportunityOptions({
-        value: Number(props.employmentConnection.opportunity.employer.id),
-      });
-    }
-  }, [props]);
-
-  const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      })
-      .then((data) => {
-        let employmentConnectionStudent = props.employmentConnection
-          ? props.employmentConnection.student
-          : null;
-        let studentFoundInList = false;
-        let filterData = data.hits.map((student) => {
-          if (
-            props.employmentConnection &&
-            student.id === Number(employmentConnectionStudent?.id)
-          ) {
-            studentFoundInList = true;
-          }
-          return {
-            ...student,
-            label: `${student.full_name} (${student.student_id})`,
-            value: Number(student.id),
-          };
-        });
-        if (
-          props.employmentConnection &&
-          employmentConnectionStudent !== null &&
-          !studentFoundInList
-        ) {
-          filterData.unshift({
-            label: employmentConnectionStudent.full_name,
-            value: Number(employmentConnectionStudent.id),
-          });
-        }
-        return filterData;
-      });
-  };
-
-  const filterEmployer = async (filterValue) => {
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let employmentConnectionEmployer = props.employer
-          ? props.employer
-          : null;
-        let employerFoundInList = false;
-
-        let filterData = data.hits.map((employer) => {
-          if (
-            props.employmentConnection &&
-            employer.id === Number(employmentConnectionEmployer?.id)
-          ) {
-            employerFoundInList = true;
-          }
-          return {
-            ...employer,
-            label: employer.name,
-            value: Number(employer.id),
-          };
-        });
-
-        if (
-          props.employmentConnection &&
-          employmentConnectionEmployer !== null &&
-          !employerFoundInList
-        ) {
-          filterData.unshift({
-            label: employmentConnectionEmployer?.name,
-            value: Number(employmentConnectionEmployer?.id),
-          });
-        }
-        return filterData;
-      });
-  };
-
-  useEffect(() => {
-    let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
-    } else {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
-    }
-    setStatusOptions(filteredOptions);
-  }, [selectedOpportunityType, allStatusOptions]);
-
-  const updateEmployerOpportunityOptions = employer => {
-    setEmployerOpportunityOptions([]);
-    getEmployerOpportunities(Number(employer.value)).then(data => {
-      setEmployerOpportunityOptions(data?.data?.data?.opportunities.map((opportunity) => ({
-        key: opportunity.role_or_designation,
-        label: `${opportunity.role_or_designation} | ${opportunity.type}`,
-        type: opportunity.type,
-        value: opportunity.id,
-      })));
-    });
-  }
 
   return (
     <Modal

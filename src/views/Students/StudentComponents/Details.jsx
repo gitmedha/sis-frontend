@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import moment from 'moment';
+import moment from "moment";
 import { Badge } from "../../../components/content/Utils";
 import DetailField from "../../../components/content/DetailField";
 import { getStudentsPickList } from "./StudentActions";
@@ -69,7 +69,7 @@ const Styled = styled.div`
       line-height: 1.25;
       margin-bottom: 0;
       margin-left: 15px;
-      font-family: 'Latto-Italic';
+      font-family: "Latto-Italic";
       color: #787B96;
     }
   }
@@ -132,7 +132,7 @@ const Details = (props) => {
         id,
       },
     });
-  }
+  };
 
   return (
     <Styled>
@@ -142,11 +142,11 @@ const Details = (props) => {
             <DetailField label="Name" value={full_name} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
-            <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : '-'} />
+            <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : "-"} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
             <DetailField label="Date of Birth" value={moment(date_of_birth).format("DD MMM YYYY")} />
             &nbsp;
-            <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
+            <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:""} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
 
           </div>
@@ -158,7 +158,7 @@ const Details = (props) => {
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
             <DetailField label="Category" value={<Badge value={category} pickList={pickList.category || []} />} />
             &nbsp;
-            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
+            <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ""} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
           </div>
 
@@ -172,8 +172,8 @@ const Details = (props) => {
         <hr className="separator" />
         <div className="row">
           <div className="col-md-5">
-            <DetailField label="Medhavi Member" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
-            <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
+            <DetailField label="Medhavi Member" value={<FaCheckCircle size="20" color={medha_champion ? "#207B69" : "#E0E0E8"} />} />
+            <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? "#207B69" : "#E0E0E8"} />} />
             {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
             {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
           </div>
@@ -197,7 +197,7 @@ const Details = (props) => {
                   <div className="cv-icon">
                     <div className="d-flex flex-column section-cv">
                       <Tooltip placement="top" title="Click Here to View CV">
-                        <a href={urlPath(CV?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={CV ? '#207B69' : '#787B96'}/></a>
+                        <a href={urlPath(CV?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={CV ? "#207B69" : "#787B96"}/></a>
                         </Tooltip>
                     </div>
                  </div>
@@ -205,7 +205,7 @@ const Details = (props) => {
                 {(isSRM() || isAdmin()) && CV &&
                   <div className="cv-icon">
                     <Tooltip placement="top" title="Click Here to Delete CV">
-                      <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      <a href="#" className="menu_links" onClick={() => onDelete()}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                     </Tooltip>
                   </div>
                 }

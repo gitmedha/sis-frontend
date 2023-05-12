@@ -1,13 +1,13 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch';
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { getEmploymentConnectionsPickList } from "../../Students/StudentComponents/StudentActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -47,37 +47,37 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
 
-  const userId = localStorage.getItem('user_id');
+  const userId = localStorage.getItem("user_id");
   let initialValues = {
-    student: '',
+    student: "",
     employer_name: opportunity.employer.name,
     opportunity_name: opportunity.role_or_designation,
-    status: '',
-    start_date:'',
-    end_date:'',
-    source:'',
-    salary_offered:'',
+    status: "",
+    start_date:"",
+    end_date:"",
+    source:"",
+    salary_offered:"",
     assigned_to: userId,
   };
 
   if (props.employmentConnection) {
     initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
-    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
-    initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
-    initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
-    initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
-    initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
+    initialValues["student_id"] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
+    initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
+    initialValues["employer_name"] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
+    initialValues["opportunity_name"] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
+    initialValues["start_date"] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
+    initialValues["end_date"] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
   }
 
   useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-    setEndDateMandatory(selectedStatus === 'Internship Complete');
+    setShowEndDate(selectedStatus === "Internship Complete" || selectedStatus === "Offer Accepted by Student");
+    setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus]);
 
   const onModalClose = () => {
     onHide();
-  }
+  };
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -119,18 +119,18 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setSelectedStatus(null);
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    if (selectedOpportunityType === "Job" || selectedOpportunityType === "Internship") {
+      filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === selectedOpportunityType || item["applicable-to"] === "Both");
     } else {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+      filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === "Both");
     }
     setStatusOptions(filteredOptions);
   }, [selectedOpportunityType, allStatusOptions]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
+    return await meilisearchClient.index("students").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
+      attributesToRetrieve: ["id", "full_name", "student_id"]
     }).then(data => {
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let studentFoundInEmploymentList = false;
@@ -170,7 +170,7 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
+            {props.employmentConnection && props.employmentConnection.id ? "Update" : "Add New"} Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -228,7 +228,7 @@ const EnrollmentConnectionForm = (props) => {
                       name="opportunity_name"
                       label="Opportunity"
                       className="form-control"
-                      placeholder={'Opportunity'}
+                      placeholder={"Opportunity"}
                       disabled={true}
                     />
                   </div>
@@ -300,7 +300,7 @@ const EnrollmentConnectionForm = (props) => {
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
+                      required={selectedStatus === "Offer Rejected by Student"}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -316,7 +316,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                  
-                  {selectedOpportunityType === 'Internship' &&
+                  {selectedOpportunityType === "Internship" &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}
