@@ -1,5 +1,5 @@
 import nProgress from "nprogress";
-import styled from 'styled-components';
+import styled from "styled-components";
 import api from "../../../apis";
 import {
   TableRowDetailLink,
@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../../graphql/dashboard";
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import Collapse from "../../../components/content/CollapsiblePanels";
 import moment from "moment";
@@ -48,43 +48,43 @@ const Students = (props) => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Student',
-        accessor: 'student_name',
+        Header: "Student",
+        accessor: "student_name",
         disableSortBy: true,
       },
       {
-        Header: 'Program',
-        accessor: 'program_name',
+        Header: "Program",
+        accessor: "program_name",
         disableSortBy: true,
       },
       {
-        Header: 'Program Status',
-        accessor: 'program_status',
+        Header: "Program Status",
+        accessor: "program_status",
         disableSortBy: true,
       },
       {
-        Header: 'Area',
-        accessor: 'area',
+        Header: "Area",
+        accessor: "area",
         disableSortBy: true,
       },
       {
-        Header: 'Institution',
-        accessor: 'institution_name',
+        Header: "Institution",
+        accessor: "institution_name",
         disableSortBy: true,
       },
       {
-        Header: 'Course Type',
-        accessor: 'type',
+        Header: "Course Type",
+        accessor: "type",
         disableSortBy: true,
       },
       {
-        Header: 'Certification Date',
-        accessor: 'certification_date_formatted',
+        Header: "Certification Date",
+        accessor: "certification_date_formatted",
         disableSortBy: true,
       },
     ],
@@ -96,7 +96,7 @@ const Students = (props) => {
     setLoading(true);
     let variables = {
       limit,
-    }
+    };
     await api.post("/graphql", {
       query: GET_STUDENTS,
       variables,
@@ -116,20 +116,20 @@ const Students = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'full_name';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "full_name";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'status':
-        case 'phone':
-        case 'city':
-        case 'id':
-        case 'course_type_latest':
+        case "status":
+        case "phone":
+        case "city":
+        case "id":
+        case "course_type_latest":
           sortByField = sortBy[0].id;
           break;
 
-        case 'avatar':
+        case "avatar":
         default:
-          sortByField = 'full_name';
+          sortByField = "full_name";
           break;
       }
       getStudents( pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -153,7 +153,7 @@ const Students = (props) => {
           student_name: programEnrollment.student?.full_name,
           area: programEnrollment.student?.medha_area,
           registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):"",
           batch_name: programEnrollment?.batch?.name,
           program_name: programEnrollment.batch?.program?.name,
           program_status: <Badge value={programEnrollment.status} pickList={pickList.status} />,
@@ -164,7 +164,7 @@ const Students = (props) => {
           assigned : programEnrollment?.institution?.assigned_to.username,
           type: <Badge value={programEnrollment.course_type} pickList={pickList.course_type} />,
           href: `/student/${programEnrollment.student?.id}`,
-        }
+        };
       });
       setStudentsData(data);
     }

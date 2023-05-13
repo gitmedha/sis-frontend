@@ -1,16 +1,16 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { MeiliSearch } from "meilisearch";
 
 import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { isAdmin, isPartnership, isSRM } from "../../../common/commonFunctions";
 
 const Section = styled.div`
@@ -23,7 +23,7 @@ const Section = styled.div`
 
   .section-header {
     color: #207B69;
-    font-family: 'Latto-Regular';
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -50,7 +50,7 @@ const BatchForm = (props) => {
   const [formValues, setFormValues] = useState(null);
   const [programOptions, setProgramOptions] = useState(null);
   const [grantOptions, setGrantOptions] = useState(null);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const AssignmentFileCertification = [
     {key: true, value: true, label: "Yes"},
@@ -58,7 +58,7 @@ const BatchForm = (props) => {
   ];
 
   useEffect(() => {
-    setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
+    setEnrollmentType(props?.enrollment_type?.toLowerCase() !=="multi institution");
   }, [props.enrollment_type]);
 
   useEffect(() => {
@@ -68,36 +68,36 @@ const BatchForm = (props) => {
   }, []);
 
   const filterGrant = async (filterValue) => {
-    return await meilisearchClient.index('grants').search(filterValue, {
+    return await meilisearchClient.index("grants").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name', 'donor']
+      attributesToRetrieve: ["id", "name", "donor"]
     }).then(data => {
       return data.hits.map(grant => {
         return {
           ...grant,
           label: `${grant.name} | ${grant.donor}`,
           value: Number(grant.id),
-        }
+        };
       });
     });
-  }
+  };
 
   const [initialValues, setInitialValues] = useState({
-    name: '',
-    // name_in_current_sis: '',
+    name: "",
+    // name_in_current_sis: "",
     assigned_to: userId.toString(),
-    program: '',
-    grant: '',
-    institution: '',
-    status: '',
-    number_of_sessions_planned: '',
-    per_student_fees: '',
-    seats_available: '',
-    start_date: '',
-    end_date: '',
-    enrollment_type:'',
-    state:'',
-    medha_area:'',
+    program: "",
+    grant: "",
+    institution: "",
+    status: "",
+    number_of_sessions_planned: "",
+    per_student_fees: "",
+    seats_available: "",
+    start_date: "",
+    end_date: "",
+    enrollment_type:"",
+    state:"",
+    medha_area:"",
   });
 
   const prepareLookUpFields = async () => {
@@ -119,7 +119,7 @@ const BatchForm = (props) => {
         // if admin, return all statuses
         if (isAdmin()) return true;
         // otherwise return only those status that are applicable to all
-        return status['applicable-to'] === 'All';
+        return status["applicable-to"] === "All";
       });
       setStatusOptions(filteredStatusOptions.map(status => ({
         key: status.value,
@@ -164,14 +164,14 @@ const BatchForm = (props) => {
         assigned_to: props.assigned_to?.id,
         start_date: new Date(props.start_date),
         end_date: new Date(props.end_date),
-      })
+      });
     } else {
       // get default grant for SRMs
       if (!isAdmin() && !isPartnership()) {
-        filterGrant('None').then(data => {
+        filterGrant("None").then(data => {
           setGrantOptions(data);
           if (data.length) {
-            initialValues['grant'] = Number(data[0].id);
+            initialValues["grant"] = Number(data[0].id);
           }
         });
       }
@@ -191,7 +191,7 @@ const BatchForm = (props) => {
         setGrantOptions(data);
       });
     }
-  }, [props])
+  }, [props]);
 
   useEffect(() => {
     if (show && !options) {
@@ -205,34 +205,34 @@ const BatchForm = (props) => {
   };
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
+    return await meilisearchClient.index("institutions").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ["id", "name"]
     }).then(data => {
       return data.hits.map(institution => {
         return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
-        }
+        };
       });
     });
-  }
+  };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
+    return await meilisearchClient.index("programs").search(filterValue, {
       limit: 100,
-      attributesToRetrieve: ['id', 'name']
+      attributesToRetrieve: ["id", "name"]
     }).then(data => {
       return data.hits.map(program => {
         return {
           ...program,
           label: program.name,
           value: Number(program.id),
-        }
+        };
       });
     });
-  }
+  };
 
   return (
     <Modal
@@ -250,7 +250,7 @@ const BatchForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.name : 'Add New Batch'}
+            {props.id ? props.name : "Add New Batch"}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -313,7 +313,7 @@ const BatchForm = (props) => {
                         placeholder={initialValues.status || "Status"}
                         className="form-control"
                         options={statusOptions}
-                        isDisabled={!isAdmin() && initialValues.status === 'Certified'}
+                        isDisabled={!isAdmin() && initialValues.status === "Certified"}
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -349,9 +349,9 @@ const BatchForm = (props) => {
                       onChange = {
                         (selectedOption) => {
                           const selectedEnrollmentType = selectedOption.value.toLowerCase();
-                          setEnrollmentType(selectedEnrollmentType !== 'multi institution');
-                          if (selectedEnrollmentType === 'multi institution') {
-                            setFieldValue('institution', null);
+                          setEnrollmentType(selectedEnrollmentType !== "multi institution");
+                          if (selectedEnrollmentType === "multi institution") {
+                            setFieldValue("institution", null);
                           }
                         }
                       }
@@ -415,7 +415,7 @@ const BatchForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -499,7 +499,7 @@ const BatchForm = (props) => {
                       <span>There are some errors. Please resolve them and save again:</span>
                       <ul className="mb-0">
                         {props.errors.map((error, index) => (
-                          <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
+                          <li key={index}>{error.message.toLowerCase() === "duplicate entry" ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
                         ))}
                       </ul>
                     </div>

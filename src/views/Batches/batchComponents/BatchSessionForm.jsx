@@ -238,7 +238,7 @@ const BatchSessionForm = (props) => {
                   batch.status === "In Progress" && onDelete &&
                   <button
                     type="button"
-                    onClick={() => {setShowDeleteAlert(true)}}
+                    onClick={() => {setShowDeleteAlert(true);}}
                     className="btn btn-danger btn-regular ml-auto"
                   >
                     DELETE

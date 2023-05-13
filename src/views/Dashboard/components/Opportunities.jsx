@@ -5,7 +5,7 @@ import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../../components/content/TabPicker";
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import { GET_OPPORTUNITIES } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -31,29 +31,29 @@ const Opportunities = (props) => {
   const [opportunitiesAggregate, setOpportunitiesAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
-  const userId  = parseInt(localStorage.getItem('user_id'))
+  const userId  = parseInt(localStorage.getItem("user_id"));
 
   const OpportunityIcon = ({opportunity, name}) => {
-    let bgColor = '#ffffff';
+    let bgColor = "#ffffff";
     let icon = null;
 
     switch (opportunity.type) {
-      case 'Job':
+      case "Job":
         icon = <FaBriefcase size="20" color="#808080"/>;
         break;
 
-      case 'Internship':
+      case "Internship":
         icon = <FaBlackTie size="20" color="#808080"/>;
         break;
     }
     if (icon) {
       return (
       <div className="d-flex align-items-center justify-content-start h-100">
-        <div className="flex-row-centered avatar avatar-default " style ={{ width: '35px', height: '35px'}} >
+        <div className="flex-row-centered avatar avatar-default " style ={{ width: "35px", height: "35px"}} >
           {icon}
         </div>
-        <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
-      </div>)
+        <p className="mb-0 latto-regular" style={{ color: "#787B96"}}>{name}</p>
+      </div>);
     }
     return <></>;
   };
@@ -61,38 +61,38 @@ const Opportunities = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Role/Designation',
-        accessor: 'avatar',
+        Header: "Role/Designation",
+        accessor: "avatar",
         disableSortBy: true,
       },
       {
-        Header: 'Employer',
-        accessor: 'employer',
+        Header: "Employer",
+        accessor: "employer",
         disableSortBy: true,
       },
       {
-        Header: 'Type',
-        accessor: 'opportunity_type',
+        Header: "Type",
+        accessor: "opportunity_type",
         disableSortBy: true,
       },
       {
-        Header: 'Status',
-        accessor: 'status',
+        Header: "Status",
+        accessor: "status",
         disableSortBy: true,
       },
       {
-        Header: 'Openings',
-        accessor: 'number_of_opportunities',
+        Header: "Openings",
+        accessor: "number_of_opportunities",
         disableSortBy: true,
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assigned_to',
+        Header: "Assigned To",
+        accessor: "assigned_to",
         disableSortBy: true,
       },
       {
-        Header: 'Created At',
-        accessor: 'created_at',
+        Header: "Created At",
+        accessor: "created_at",
         disableSortBy: true,
       },
     ],
@@ -103,9 +103,9 @@ const Opportunities = (props) => {
     getOpportunitiesPickList().then(data => {
       setPickList(data);
     });
-  }, [])
+  }, []);
 
-  const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+  const getOpportunities = async (limit = paginationPageSize, offset = 0, sortBy = "type", sortOrder = "desc") => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -132,23 +132,23 @@ const Opportunities = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'role';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "role";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'employer':
-        case 'type':
+        case "employer":
+        case "type":
           sortByField = sortBy[0].id;
           break;
 
-        case 'created_at':
-        case 'address':
-        case 'number_of_opportunities':
-          sortByField = 'number_of_opportunities'
+        case "created_at":
+        case "address":
+        case "number_of_opportunities":
+          sortByField = "number_of_opportunities";
           break;
 
-        case 'avatar':
+        case "avatar":
         default:
-          sortByField = 'role_or_designation';
+          sortByField = "role_or_designation";
           break;
       }
       getOpportunities(pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -167,12 +167,12 @@ const Opportunities = (props) => {
        status: <Badge value={opportunitydata.status} pickList={pickList.status} />,
        opportunity_type: <Badge value={opportunitydata.type} pickList={pickList.type} />,
        number_of_opportunities: opportunitydata.number_of_opportunities,
-       address: opportunitydata.employer ? opportunitydata.employer.address : '',
-       employer: opportunitydata.employer ? opportunitydata.employer.name : '',
-       assigned_to: opportunitydata.assigned_to ? opportunitydata.assigned_to.username : '',
+       address: opportunitydata.employer ? opportunitydata.employer.address : "",
+       employer: opportunitydata.employer ? opportunitydata.employer.name : "",
+       assigned_to: opportunitydata.assigned_to ? opportunitydata.assigned_to.username : "",
        created_at: moment(opportunitydata.created_at).format("DD MMM YYYY"),
        href: `/opportunity/${opportunitydata.id}`,
-      }
+      };
     });
     setOpportunitiesTableData(data);
   }, [opportunities, pickList]);

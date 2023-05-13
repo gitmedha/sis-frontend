@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, FieldArray, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -7,11 +7,11 @@ import { FaSchool } from "react-icons/fa";
 
 import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
-import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
+import  {getEmployersPickList, getAssigneeOptions} from "./employerAction";
 import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
-import { yesOrNoOptions } from '../../../common/commonConstants';
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { yesOrNoOptions } from "../../../common/commonConstants";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -43,7 +43,7 @@ const EmployerForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -113,30 +113,30 @@ const EmployerForm = (props) => {
   const logoUploadHandler = ({ id }) => setLogo(id);
 
   let initialValues = {
-    name: '',
-    industry:'',
-    email:'',
-    phone:'',
-    status:'active',
-    address:'',
+    name: "",
+    industry:"",
+    email:"",
+    phone:"",
+    status:"active",
+    address:"",
     assigned_to:userId.toString(),
-    state:'',
-    pin_code:'',
-    city:'',
-    medha_area:'',
-    district:'',
+    state:"",
+    pin_code:"",
+    city:"",
+    medha_area:"",
+    district:"",
   };
 
   if (props.id) {
     initialValues = {...props};
-    initialValues['assigned_to'] = props?.assigned_to?.id;
-    initialValues['district'] = props.district ? props.district: null ;
-    initialValues['medha_area'] = props.medha_area ? props.medha_area: null ;
+    initialValues["assigned_to"] = props?.assigned_to?.id;
+    initialValues["district"] = props.district ? props.district: null ;
+    initialValues["medha_area"] = props.medha_area ? props.medha_area: null ;
   }
 
   if (!props.contacts) {
     // create an empty contact if no contacts are present
-    initialValues['contacts'] = [];
+    initialValues["contacts"] = [];
   }
 
   return (
@@ -162,7 +162,7 @@ const EmployerForm = (props) => {
           </div>
           )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.name : 'Add New Employer'}
+            {props.id ? props.name : "Add New Employer"}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -303,7 +303,7 @@ const EmployerForm = (props) => {
                     />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Medha Areas</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -322,7 +322,7 @@ const EmployerForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
+                        <label className="text-heading" style={{color: "#787B96"}}>Please select State to view Districts</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -407,7 +407,7 @@ const EmployerForm = (props) => {
                             email: "",
                             phone: "",
                             designation: "",
-                          })
+                          });
                         }}>
                           Add Contact
                         </button>
@@ -483,7 +483,7 @@ const EmployerForm = (props) => {
                       <span>There are some errors. Please resolve them and save again:</span>
                       <ul className="mb-0">
                         {props.errors.map((error, index) => (
-                          <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Employer with "${formValues.name}" already exists.` : error.message}</li>
+                          <li key={index}>{error.message.toLowerCase() === "duplicate entry" ? `Employer with "${formValues.name}" already exists.` : error.message}</li>
                         ))}
                       </ul>
                     </div>

@@ -2,12 +2,12 @@ import { Redirect, Route } from "react-router";
 
 // screen if you're not yet authenticated.
 export const PrivateRoute = ({ children, ...rest }) => {
-  let token = localStorage.getItem('token');
+  let token = localStorage.getItem("token");
   if (!token) {
     if (rest.location.pathname) {
-      localStorage.setItem('next_url', rest.location.pathname);
+      localStorage.setItem("next_url", rest.location.pathname);
     }
-    return <Redirect to={{pathname: '/login'}} />
+    return <Redirect to={{pathname: "/login"}} />;
   }
   return (
     <Route
@@ -15,4 +15,4 @@ export const PrivateRoute = ({ children, ...rest }) => {
       render={() => children}
     />
   );
-}
+};

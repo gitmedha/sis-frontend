@@ -81,7 +81,7 @@
         setEmployerOpportunityOptions([]);
       }
       onHide();
-    }
+    };
 
     useEffect(() => {
       setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
@@ -89,8 +89,8 @@
     }, [props.employmentConnection]);
 
     useEffect(() => {
-      setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-      setEndDateMandatory(selectedStatus === 'Internship Complete');
+      setShowEndDate(selectedStatus === "Internship Complete" || selectedStatus === "Offer Accepted by Student");
+      setEndDateMandatory(selectedStatus === "Internship Complete");
     }, [selectedStatus]);
 
     useEffect(() => {
@@ -225,10 +225,10 @@
 
     useEffect(() => {
       let filteredOptions = allStatusOptions;
-      if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
-        filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+      if (selectedOpportunityType === "Job" || selectedOpportunityType === "Internship") {
+        filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === selectedOpportunityType || item["applicable-to"] === "Both");
       } else {
-        filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+        filteredOptions = allStatusOptions.filter(item => item["applicable-to"] === "Both");
       }
       setStatusOptions(filteredOptions);
     }, [selectedOpportunityType, allStatusOptions]);
@@ -243,7 +243,7 @@
           value: opportunity.id,
         })));
       });
-    }
+    };
 
   return (
     <Modal
@@ -261,7 +261,7 @@
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
+            {props.employmentConnection && props.employmentConnection.id ? "Update" : "Add New"} Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -328,7 +328,7 @@
                       required
                       options={employerOpportunityOptions}
                       className="form-control"
-                      placeholder={'Opportunity'}
+                      placeholder={"Opportunity"}
                       onChange={(e) => setSelectedOpportunityType(e.type)}
                     />
                   ) : (
@@ -412,7 +412,7 @@
                       label="Reason if Rejected"
                       className="form-control"
                       placeholder="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
+                      required={selectedStatus === "Offer Rejected by Student"}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -428,7 +428,7 @@
                     />
                   </div>
                   
-                  {selectedOpportunityType === 'Internship' &&
+                  {selectedOpportunityType === "Internship" &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}

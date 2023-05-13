@@ -18,7 +18,7 @@ import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
-import styled from 'styled-components';
+import styled from "styled-components";
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 import { deleteFile } from "../../common/commonActions";
 
@@ -36,7 +36,7 @@ const Styled = styled.div`
    padding: 0px 20px !important;
   }
 }
-`
+`;
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
@@ -56,8 +56,8 @@ const Employer = (props) => {
       return;
     }
     let {id, show, created_at, created_by_frontend, updated_by_frontend, updated_at, mou_file, ...dataToSave} = data;
-    if (typeof data.logo === 'object') {
-      dataToSave['logo'] = data.logo?.id;
+    if (typeof data.logo === "object") {
+      dataToSave["logo"] = data.logo?.id;
     }
 
     NP.start();
@@ -85,7 +85,7 @@ const Employer = (props) => {
       NP.done();
       history.push("/employers");
     });
-  }
+  };
 
   const getThisEmployer = async () => {
     setLoading(true);
@@ -105,22 +105,22 @@ const Employer = (props) => {
   };
 
   const updateOpportunitiesBadge = (opportunities) => {
-    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
-    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === "job");
+    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === "internship");
     setOpportunitiesBadge(
       <>
        <Tooltip  placement="top" title="Internships">
         <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
       </Tooltip>
-        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
+        <span style={{margin: "0 20px 0 10px", color: "#FFFFFF", fontSize: "16px"}}>{internshipOpportunities.length}</span>
       <Tooltip placement="top" title="Jobs">
         <FaBriefcase width="15" color="#D7D7E0" />
       </Tooltip>
-      <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+      <span style={{margin: "0 0 0 10px", color: "#FFFFFF", fontSize: "16px"}}>{jobOpportunities.length}</span>
 
       </>
     );
-  }
+  };
 
   const getEmploymentConnections = async () => {
     getEmployerEmploymentConnections(employerId).then(data => {
@@ -129,14 +129,14 @@ const Employer = (props) => {
     }).catch(err => {
       console.log("getStudentEmploymentConnections Error", err);
     });
-  }
+  };
 
   const getOpportunities = () => {
     getEmployerOpportunities(employerId).then(data => {
       setEmployerOpportunities(data.data.data.opportunities);
       updateOpportunitiesBadge(data.data.data.opportunities);
     });
-  }
+  };
 
   useEffect(() => {
     getThisEmployer();
@@ -165,7 +165,7 @@ const Employer = (props) => {
     return (
       <Styled>
         <>
-        <div className="row" style={{margin: '30px 0 0'}}>
+        <div className="row" style={{margin: "30px 0 0"}}>
           <div className="btn-box col-12">
             <button
               onClick={() => setModalShow(true)}

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import moment from 'moment';
+import moment from "moment";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
 import { FaDownload } from "react-icons/fa";
@@ -67,7 +67,7 @@ const ProgramEnrollments = (props) => {
     });
   }, []);
 
-  const getBatchProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='created_at', sortOrder = 'asc') => {
+  const getBatchProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy="created_at", sortOrder = "asc") => {
     nProgress.start();
     setLoading(true);
     await api.post("/graphql", {
@@ -94,16 +94,16 @@ const ProgramEnrollments = (props) => {
 
   const fetchData = useCallback(async (pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'student.full_name';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "student.full_name";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'student.full_name':
-          case 'institution.name':
+        case "student.full_name":
+          case "institution.name":
           sortByField = sortBy[0].id;
           break;
 
         default:
-          sortByField = 'updated_at';
+          sortByField = "updated_at";
           break;
       }
       await getBatchProgramEnrollments(pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -127,12 +127,13 @@ const ProgramEnrollments = (props) => {
         student_name: programEnrollment.student?.full_name,
         student_id : programEnrollment.student?.student_id,
         registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+        certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):"",
         batch_name: programEnrollment.batch?.name,
         institution_name: programEnrollment.institution?.name,
         status_badge: <Badge value={programEnrollment.status} pickList={pickList.status} />,
         fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
-        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : '',
+        medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" rel="noreferrer" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : "",
+        // medha_program_certificate_icon: programEnrollment.medha_program_certificate ? <a href={urlPath(programEnrollment.medha_program_certificate.url)} target="_blank" className="c-pointer"><FaDownload size="20" color="#31B89D" /></a> : "",
         program_name: programEnrollment.batch?.program?.name,
         attendanceValue: programEnrollment.attendance,
         attendance: programEnrollment.attendance==0 ? '0%' : <ProgressBarField value={Number.parseInt(programEnrollment.attendance)} />,
@@ -145,44 +146,44 @@ const ProgramEnrollments = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Student',
-        accessor: 'student.full_name',
+        Header: "Student",
+        accessor: "student.full_name",
       },
       {
-        Header: 'Student ID',
-        accessor: 'student_id',
+        Header: "Student ID",
+        accessor: "student_id",
       },
       {
-        Header: 'Program',
-        accessor: 'program_name',
+        Header: "Program",
+        accessor: "program_name",
       },
       {
-        Header: 'Institution',
-        accessor: 'institution.name',
+        Header: "Institution",
+        accessor: "institution.name",
       },
       {
-        Header: 'Attendance',
-        accessor: 'attendance',
+        Header: "Attendance",
+        accessor: "attendance",
       },
       {
-        Header: 'Program Status',
-        accessor: 'status_badge',
+        Header: "Program Status",
+        accessor: "status_badge",
       },
       {
-        Header: 'Registration Date',
-        accessor: 'registration_date_formatted',
+        Header: "Registration Date",
+        accessor: "registration_date_formatted",
       },
       {
-        Header: 'Certification Date',
-        accessor: 'certification_date_formatted',
+        Header: "Certification Date",
+        accessor: "certification_date_formatted",
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
@@ -192,40 +193,40 @@ const ProgramEnrollments = (props) => {
   const handleRowClick = programEnrollment => {
     setSelectedProgramEnrollment(programEnrollment);
     setViewModalShow(true);
-  }
+  };
 
   const hideViewModal = () => {
     setViewModalShow(false);
-  }
+  };
 
   const handleViewEdit = () => {
     setViewModalShow(false);
     setUpdateModalShow(true);
-  }
+  };
 
   const handleViewDelete = () => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
-  }
+  };
 
   const handleCertificateUpdateAction = async (programEnrollment) => {
     setSelectedProgramEnrollment(programEnrollment);
     await getBatchProgramEnrollments();
-  }
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
       setCreateModalShow(false);
       return;
-    }
+    };
 
     // need to remove some data from the payload that's not accepted by the API
     let {id, program_name, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted,student_name, batch_name, institution_name, status_badge, fee_status_badge, ...dataToSave} = data;
-    dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
-    dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
-    dataToSave['batch'] = batch.id;
+    dataToSave["registration_date"] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
+    dataToSave["certification_date"] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_payment_date"] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_refund_date"] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave["batch"] = batch.id;
 
      NP.start();
      createProgramEnrollment(dataToSave).then(data => {
@@ -248,10 +249,10 @@ const ProgramEnrollments = (props) => {
 
     // need to remove some data from the payload that's not accepted by the API
     let { id, attendancePercent, attendanceValue, attendance, student_id, program_name, updated_at, created_at, certification_date_formatted, medha_program_certificate, medha_program_certificate_icon, program_enrollment_batch, registration_date_formatted, student_name, batch_name, institution_name,  status_badge, fee_status_badge, higher_education_proof_of_enrollment, assignment_file, ...dataToSave} = data;
-    dataToSave['registration_date'] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
-    dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave["registration_date"] = data.registration_date ? moment(data.registration_date).format("YYYY-MM-DD") : null;
+    dataToSave["certification_date"] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_payment_date"] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
+    dataToSave["fee_refund_date"] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
 
     NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
@@ -299,7 +300,7 @@ const ProgramEnrollments = (props) => {
   const hideModal = async () => {
     hideViewModal();
     await getBatchProgramEnrollments();
-  }
+  };
 
   return (
     <div className="container-fluid my-3">

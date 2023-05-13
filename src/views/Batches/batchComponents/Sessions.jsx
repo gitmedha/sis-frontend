@@ -2,7 +2,7 @@ import moment from "moment";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import styled from "styled-components";
 
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import { ProgressBarField } from "../../../components/content/Utils";
 import CreateBatchSessionForm from "./BatchSessionForm";
 import UpdateBatchSessionForm from "./BatchSessionForm";
@@ -29,26 +29,26 @@ const Sessions = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Topics covered',
-        accessor: 'topics_covered',
+        Header: "Topics covered",
+        accessor: "topics_covered",
       },
       {
-        Header: 'Date',
-        accessor: 'date',
+        Header: "Date",
+        accessor: "date",
       },
       {
-        Header: 'Attendance',
-        accessor: 'attendance',
+        Header: "Attendance",
+        accessor: "attendance",
         disableSortBy: true,
       },
       {
-        Header: 'Updated At',
-        accessor: 'updated_at',
+        Header: "Updated At",
+        accessor: "updated_at",
         disableSortBy: true,
       },
       {
-        Header: '',
-        accessor: 'link',
+        Header: "",
+        accessor: "link",
         disableSortBy: true,
       },
     ],
@@ -57,16 +57,16 @@ const Sessions = (props) => {
 
   useEffect(() => {
     setCanEditSession(isAdmin() || batch.status === "In Progress");
-  }, [props])
+  }, [props]);
 
   const sessionTableData = sessions.map(session => {
     let sessionData = {
       id: session.id,
       topics_covered: session.topics_covered,
-      date: moment(session.date).format('DD MMM YYYY, hh:mm a'),
-      updated_at: moment(session.updated_at).format('DD MMM YYYY'),
+      date: moment(session.date).format("DD MMM YYYY, hh:mm a"),
+      updated_at: moment(session.updated_at).format("DD MMM YYYY"),
       attendance: <ProgressBarField value={Number.parseInt(session.percent)} />
-    }
+    };
     if (canEditSession) {
       sessionData.link = <SessionLink><FaRegEdit size="20" color="#31B89D" /></SessionLink>;
     }
@@ -76,7 +76,7 @@ const Sessions = (props) => {
   const handleRowClick = session => {
     setBatchSessionAttendanceFormData(session);
     setUpdateModalShow(true);
-  }
+  };
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -84,9 +84,9 @@ const Sessions = (props) => {
       return;
     }
 
-    // need to remove 'show' and 'students' from the payload
+    // need to remove "show" and "students" from the payload
     let {show, students, ...dataToSave} = data;
-    dataToSave['date'] = new Date(data.date).toISOString();
+    dataToSave["date"] = new Date(data.date).toISOString();
 
     await createBatchSession(batchID, dataToSave).then(async data => {
       setAlert("Session created successfully.", "success");
@@ -109,11 +109,11 @@ const Sessions = (props) => {
       return;
     }
 
-    // need to remove some data from the payload that's not accepted by the API
+    // need to remove some data from the payload that"s not accepted by the API
     let {show, students, sessionAttendance} = data;
     let dataToSave = {};
-    dataToSave['topics_covered'] = data.topics;
-    dataToSave['date'] = new Date(data.date).toISOString();
+    dataToSave["topics_covered"] = data.topics;
+    dataToSave["date"] = new Date(data.date).toISOString();
 
     await updateSession(batchSessionAttendanceFormData.id, dataToSave).then(async data => {
       setAlert("Session updated successfully.", "success");
@@ -163,20 +163,20 @@ const Sessions = (props) => {
 
   const refetchSessions = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'topics_covered';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "topics_covered";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'topics_covered':
-        case 'date':
+        case "topics_covered":
+        case "date":
           sortByField = sortBy[0].id;
           break;
 
-        case 'attendance':
-          sortByField = 'percent'
+        case "attendance":
+          sortByField = "percent";
           break;
 
         default:
-          sortByField = 'topics_covered';
+          sortByField = "topics_covered";
           break;
       }
       fetchData(sortByField, sortOrder);
@@ -188,7 +188,7 @@ const Sessions = (props) => {
   return (
     <div className="py-2 px-3">
       <div className="row">
-      {props.batch.status == 'In Progress' &&
+      {props.batch.status == "In Progress" &&
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
