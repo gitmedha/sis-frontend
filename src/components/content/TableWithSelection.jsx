@@ -168,7 +168,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
             <tbody {...getTableBodyProps()}>
               {rows.length ? (
                 rows.map((row, index) => {
-                  prepareRow(row)
+                  prepareRow(row);
                   return (
                     <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? "clickable" : ""}`}>
                       {indexes &&

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { connectSearchBox } from 'react-instantsearch-dom';
+import { connectSearchBox } from "react-instantsearch-dom";
 import { FaSearch } from "react-icons/fa";
 
 const SearchInput = styled.div`
