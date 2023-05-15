@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Styled = styled.div`
   .tab {
@@ -39,7 +39,7 @@ const Tabs = ({ options, onTabChange }) => {
     <Styled>
       <div className="navbar">
         {options.map((tab, key) => (
-          <div className={`tab ${activeTab === key ? 'active' : ''}`} onClick={() => handleClick(key)} >
+          <div className={`tab ${activeTab === key ? "active" : ""}`} onClick={() => handleClick(key)} >
             {tab.icon && <span className="icon">{tab.icon}</span>}
             <span className="title">{tab.title}</span>
           </div>

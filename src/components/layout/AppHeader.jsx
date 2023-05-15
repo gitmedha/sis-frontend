@@ -24,7 +24,7 @@ const AppHeader = styled.div`
 
 const Header = ({ isOpen, toggleMenu }) => {
   return (
-    <AppHeader style={{width: isOpen ? 'calc(100vw - 275px)' : 'calc(100vw - 80px)'}}>
+    <AppHeader style={{width: isOpen ? "calc(100vw - 275px)" : "calc(100vw - 80px)"}}>
       <SearchBar />
       <Userbox />
     </AppHeader>

@@ -5,7 +5,7 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 const StyledCheckbox = styled.div`
   display: flex;
-`
+`;
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, id="", ...rest }, ref) => {
@@ -13,16 +13,16 @@ const IndeterminateCheckbox = React.forwardRef(
     const resolvedRef = ref || defaultRef;
 
     React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate
+      resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
 
     return (
       <StyledCheckbox>
         <input type="checkbox" id={id} ref={resolvedRef} {...rest} />
       </StyledCheckbox>
-    )
+    );
   }
-)
+);
 
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;
@@ -83,7 +83,7 @@ const Styles = styled.div`
     padding-left: 15px;
     padding-right: 15px;
   }
-`
+`;
 
 const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=true, selectAllHeader="", setSelectedRows = () => {}, selectedRows = {} }) => {
   const tableInstance = useTable(
@@ -115,7 +115,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
             </div>
           ),
         },
-      ])
+      ]);
     }
   );
 
@@ -135,7 +135,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
     if (typeof onRowClick === "function") {
       onRowClick(row.original);
     }
-  }
+  };
 
   React.useEffect(() => {
     setSelectedRows(selectedFlatRows.map(row => row.original));
@@ -181,10 +181,10 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                           <td {...cell.getCellProps()}>
                             {cell.render("Cell")}
                           </td>
-                        )
+                        );
                       })}
                     </tr>
-                  )
+                  );
                 })
               ) : (
                 <tr>
@@ -198,7 +198,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
         </div>
         <div className="d-md-none mobile">
           {rows.map((row, index) => {
-            prepareRow(row)
+            prepareRow(row);
             return (
               <div key={index} className={`row ${isRowClickable ? "clickable" : ""}`} onClick={() => handleRowClick(row)}>
                 {row.cells.map((cell, cellIndex) => {
@@ -206,15 +206,15 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                     <div key={cellIndex} className="cell">
                       {cell.render("Cell")}
                     </div>
-                  )
+                  );
                 })}
               </div>
-            )
+            );
           })}
         </div>
       </Styles>
     </>
-  )
+  );
 };
 
 export default TableWithSelection;
