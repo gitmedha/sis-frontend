@@ -107,7 +107,7 @@ const paginationOptions = {
     sizePerPage: 2,
 };
 
-export default () => (
+function ProductTable() {
     <div className="card">
         <div className="card-body">
             <BootstrapTable
@@ -118,5 +118,7 @@ export default () => (
                 pagination={paginationFactory(paginationOptions)}
             />
         </div>
-    </div>
-);
+    </div>;
+}
+
+export default ProductTable;

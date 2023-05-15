@@ -149,7 +149,7 @@ const ProgramEnrollmentForm = (props) => {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
-        }
+        };
       });
       if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
           filterData.unshift({
@@ -159,7 +159,7 @@ const ProgramEnrollmentForm = (props) => {
       }
       return filterData;
     });
-  }
+  };
 
   const filterStudent = async (filterValue) => {
     return await meilisearchClient.index("students").search(filterValue, {
@@ -176,7 +176,7 @@ const ProgramEnrollmentForm = (props) => {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
-        }
+        };
       });
       if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
         filterData.unshift({
@@ -186,7 +186,7 @@ const ProgramEnrollmentForm = (props) => {
       }
       return filterData;
     });
-  }
+  };
 
   return (
     <Modal

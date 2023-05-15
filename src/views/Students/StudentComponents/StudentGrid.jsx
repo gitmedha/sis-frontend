@@ -241,7 +241,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                               data.map((item, index) => (
                         <>
                                       <div className={`box-wrapper ${activeBox === index + 1 ? "active" : ""}`} onClick={() => handleBoxClick(index+1)}>
-                                          <div className={`box`} style={{backgroundImage: item.logo ? `url(${urlPath(item.logo?.url)})` : `url(/graduate-default.png)`}}>
+                                      <div className="box" style={{backgroundImage: item.logo ? "url(${urlPath(item.logo?.url)})" : "url(/graduate-default.png)"}}>
                                     <div className="box-icon">
                                         {item.statusIcon}
                                     </div>
@@ -271,7 +271,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                           activeItem.CV ? (
                               <div className="d-flex flex-column">
                                   <div>
-                                      <a href={urlPath(activeItem.CV.url)} target="_blank" className="btn btn-secondary btn-cv-view mb-1">View</a>
+                                      <a href={urlPath(activeItem.CV.url)} target="_blank" rel="noreferrer" className="btn btn-secondary btn-cv-view mb-1">View</a>
                                   </div>
                                   <div className="cv-updated-on">(Updated on: {moment(activeItem.CV.updated_at).format("DD MMM YYYY")})</div>
                           </div>

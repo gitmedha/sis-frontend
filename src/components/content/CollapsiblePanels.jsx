@@ -10,17 +10,17 @@ const CollapsiblePanels = ({
   opened = false,
   type = "default",
   titleContent = null,
-  id = '',
+  id = "",
 }) => {
   const [isOpen, setOpen] = useState(opened);
 
   const clicked = (e) => {
     if (!isOpen) {
-      const mainContent = document.getElementById('main-content');
-      setTimeout(() => { mainContent.scroll(mainContent.scrollLeft, mainContent.scrollTop + 200) }, 100);
+      const mainContent = document.getElementById("main-content");
+      setTimeout(() => { mainContent.scroll(mainContent.scrollLeft, mainContent.scrollTop + 200);}, 100);
     }
     return type === "default" ? setOpen(!isOpen) : null;
-  }
+  };
 
   return (
     <section className="no-border p-2 mt-2" id={id}>

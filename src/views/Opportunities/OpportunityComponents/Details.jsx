@@ -122,7 +122,7 @@ const Details = (props) => {
                     <div className="file-icon">
                       <div className="d-flex flex-column section-file">
                         <Tooltip placement="top" title="Click Here to View Job Description">
-                          <a href={urlPath(job_description_file?.url)} target="_blank" ><FaEye size="27" color={job_description_file ? "#207B69" : "#787B96"}/></a>
+                          <a href={urlPath(job_description_file?.url)} target="_blank" rel="noreferrer"><FaEye size="27" color={job_description_file ? "#207B69" : "#787B96"}/></a>
                           </Tooltip>
                       </div>
                     </div>
