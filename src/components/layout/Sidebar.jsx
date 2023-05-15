@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { MdDashboard } from "react-icons/md";
 import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
 import MenuItem from "./MenuItem";
@@ -6,7 +6,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { urlPath } from "../../constants";
-import { isAdmin, isSRM } from '../../common/commonFunctions';
+import { isAdmin, isSRM } from "../../common/commonFunctions";
 
 const iconStyle = {
   marginRight: "5px",
@@ -27,45 +27,45 @@ const routes = [
   {
     to: "/students",
     title: "Students & Alumni",
-    aliases: ['student'],
+    aliases: ["student"],
     icon: <FaUserGraduate {...iconProps} />,
     show: true,
   },
   {
     to: "/institutions",
     title: "Institutions",
-    aliases: ['institution'],
+    aliases: ["institution"],
     icon: <FaSchool {...iconProps} />,
     show: isSRM() || isAdmin(),
   },
   {
     to: "/batches",
     title: "Batches",
-    aliases: ['batch'],
+    aliases: ["batch"],
     icon: <FaChalkboardTeacher {...iconProps} />,
     show: isSRM() || isAdmin(),
   },
   {
     to: "/employers",
     title: "Employers",
-    aliases: ['employer'],
+    aliases: ["employer"],
     icon: <FaUserTie {...iconProps} />,
     show: isSRM() || isAdmin(),
   },
   {
     to: "/opportunities",
     title: "Opportunities",
-    aliases: ['opportunity'],
+    aliases: ["opportunity"],
     icon: <FaBriefcase {...iconProps} />,
     show: isSRM() || isAdmin(),
   },
   {
     to: "https://data.medha.org.in/",
     title: "Metabase",
-    aliases: ['metabase'],
+    aliases: ["metabase"],
     icon: <img
       className={"metabase-icon"}
-      src={require('../../assets/images/logo-metabase.png').default}
+      src={require("../../assets/images/logo-metabase.png").default}
       alt={`metabase-logo`}
       style={{}}
     />,
@@ -101,9 +101,9 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
   };
 
   return (
-    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? 'open' : ''}`}>
+    <div className={`d-flex flex-column position-relative sidebar-container ${isOpen ? "open" : ""}`}>
       {/* hamburger */}
-      <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? 'position-absolute right-10' : 'position-absolute left-10 top-0 position-md-relative left-md-0'}`}>
+      <div className={`d-flex align-items-center justify-content-center mt-3 z-10 ${isOpen ? "position-absolute right-10" : "position-absolute left-10 top-0 position-md-relative left-md-0"}`}>
         <AnimatePresence>
           {!isOpen ? (
             <motion.div
@@ -128,10 +128,10 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
       </div>
       <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
         <img
-          src={require('../../assets/images/logo.png').default}
+          src={require("../../assets/images/logo.png").default}
           alt="Medha SIS"
-          className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
-          style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
+          className={`mx-auto d-block ${isOpen ? "" : "mt-3"}`}
+          style={{width: isOpen ? "120px" : "60px", marginBottom: "30px"}}
         />
         <>
           {routes.filter(route => route.show).map((route) => (
