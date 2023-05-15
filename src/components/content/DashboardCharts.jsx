@@ -29,8 +29,8 @@ export const ProgramEnrollmentsChart = (props) => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "55%",
-        endingShape: "rounded"
+        columnWidth: '55%',
+        endingShape: 'rounded'
       },
     },
     dataLabels: {
@@ -43,7 +43,7 @@ export const ProgramEnrollmentsChart = (props) => {
     stroke: {
       show: true,
       width: 2,
-      colors: ["transparent"]
+      colors: ['transparent']
     },
     colors: ["#207B69", "#AA223C"],
     fill: {
@@ -63,9 +63,9 @@ export const ProgramEnrollmentsChart = (props) => {
     let startDate = new Date();
     startDate.setMonth(startDate.getMonth() - 5);
     for (let index = 0; index < 6; index++) {
-      chartData[moment(startDate).format("YYYY-MM")] = {
-        "month_formatted": moment(startDate).format("MMM yy"),
-        "count": 0,
+      chartData[moment(startDate).format('YYYY-MM')] = {
+        'month_formatted': moment(startDate).format('MMM yy'),
+        'count': 0,
       };
       startDate.setMonth(startDate.getMonth() + 1);
     }
@@ -78,7 +78,7 @@ export const ProgramEnrollmentsChart = (props) => {
       }
     });
 
-    await getMyDataMetricsGraph(userId, "registrations").then(data => {
+    await getMyDataMetricsGraph(userId, 'registrations').then(data => {
       let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
       // filter out data older than 6 months ago
@@ -91,14 +91,14 @@ export const ProgramEnrollmentsChart = (props) => {
       });
 
       Object.keys(registrationData).sort().forEach(date => {
-        let yearMonth = moment(date).format("YYYY-MM");
+        let yearMonth = moment(date).format('YYYY-MM');
         if (registrationChartData[yearMonth]) {
-          registrationChartData[yearMonth]["count"] += registrationData[date];
+          registrationChartData[yearMonth]['count'] += registrationData[date];
         }
       });
     });
 
-    await getMyDataMetricsGraph(userId, "certifications").then(data => {
+    await getMyDataMetricsGraph(userId, 'certifications').then(data => {
       let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
       // filter out data older than 6 months ago
@@ -111,9 +111,9 @@ export const ProgramEnrollmentsChart = (props) => {
       });
 
       Object.keys(certificationData).sort().forEach(date => {
-        let yearMonth = moment(date).format("YYYY-MM");
+        let yearMonth = moment(date).format('YYYY-MM');
         if (certificationChartData[yearMonth]) {
-          certificationChartData[yearMonth]["count"] += certificationData[date];
+          certificationChartData[yearMonth]['count'] += certificationData[date];
         }
       });
     });
@@ -122,12 +122,12 @@ export const ProgramEnrollmentsChart = (props) => {
       setSeries([
         {
           name: "Registrations",
-          type: "column",
+          type: 'column',
           data: Object.values(registrationChartData).map(data => data.count)
         },
         {
           name: "Certifications",
-          type: "column",
+          type: 'column',
           data: Object.values(certificationChartData).map(data => data.count)
         },
       ]);
@@ -140,21 +140,21 @@ export const ProgramEnrollmentsChart = (props) => {
       series={series}
       type="area"
     />
-  );
+  )
 };
 
 export const EmploymentConnectionsChart = (props) => {
   const userId = Number(localStorage.getItem("user_id")) || 2;
   const [options, setOptions] = useState({
     theme: {
-      palette: "palette2" // upto palette10
+      palette: 'palette2' // upto palette10
     },
     yaxis: {
       floating: false,
       min: 0,
       labels: {
         formatter: function(val) {
-          return Math.floor(val);
+          return Math.floor(val)
         }
       },
     },
@@ -163,7 +163,7 @@ export const EmploymentConnectionsChart = (props) => {
       fontweight: 700,
       fontsize: 12,
       height: 150,
-      type: "bar",
+      type: 'bar',
       toolbar: {
         show: false,
         tools: {
@@ -181,8 +181,8 @@ export const EmploymentConnectionsChart = (props) => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "55%",
-        endingShape: "rounded"
+        columnWidth: '55%',
+        endingShape: 'rounded'
       },
     },
     dataLabels: {
@@ -196,7 +196,7 @@ export const EmploymentConnectionsChart = (props) => {
     stroke: {
       show: true,
       width: 2,
-      colors: ["transparent"]
+      colors: ['transparent']
     },
     fill: {
       type: "solid",
@@ -204,7 +204,7 @@ export const EmploymentConnectionsChart = (props) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return Number(val);
+          return Number(val)
         }
       }
     },
@@ -225,9 +225,9 @@ export const EmploymentConnectionsChart = (props) => {
     let startDate = new Date();
     startDate.setMonth(startDate.getMonth() - 5);
     for (let index = 0; index < 6; index++) {
-      chartData[moment(startDate).format("YYYY-MM")] = {
-        "month_formatted": moment(startDate).format("MMM yy"),
-        "count": 0,
+      chartData[moment(startDate).format('YYYY-MM')] = {
+        'month_formatted': moment(startDate).format('MMM yy'),
+        'count': 0,
       };
       startDate.setMonth(startDate.getMonth() + 1);
     }
@@ -240,7 +240,7 @@ export const EmploymentConnectionsChart = (props) => {
       }
     });
 
-    await getMyDataMetricsGraph(userId, "internships").then(data => {
+    await getMyDataMetricsGraph(userId, 'internships').then(data => {
       let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
       // filter out data older than 6 months ago
@@ -253,14 +253,14 @@ export const EmploymentConnectionsChart = (props) => {
       });
 
       Object.keys(internshipData).sort().forEach(date => {
-        let yearMonth = moment(date).format("YYYY-MM");
+        let yearMonth = moment(date).format('YYYY-MM');
         if (internshipChartData[yearMonth]) {
-          internshipChartData[yearMonth]["count"] += internshipData[date];
+          internshipChartData[yearMonth]['count'] += internshipData[date];
         }
       });
     });
 
-    await getMyDataMetricsGraph(userId, "placements").then(data => {
+    await getMyDataMetricsGraph(userId, 'placements').then(data => {
       let sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
       // filter out data older than 6 months ago
@@ -273,9 +273,9 @@ export const EmploymentConnectionsChart = (props) => {
       });
 
       Object.keys(placementData).sort().forEach(date => {
-        let yearMonth = moment(date).format("YYYY-MM");
+        let yearMonth = moment(date).format('YYYY-MM');
         if (placementChartData[yearMonth]) {
-          placementChartData[yearMonth]["count"] += placementData[date];
+          placementChartData[yearMonth]['count'] += placementData[date];
         }
       });
     });
@@ -284,12 +284,12 @@ export const EmploymentConnectionsChart = (props) => {
       setSeries([
         {
           name: "Internships",
-          type: "column",
+          type: 'column',
           data: Object.values(internshipChartData).map(data => data.count)
         },
         {
           name: "Placements",
-          type: "column",
+          type: 'column',
           data: Object.values(placementChartData).map(data => data.count)
         },
       ]);
@@ -302,5 +302,5 @@ export const EmploymentConnectionsChart = (props) => {
       series={series}
       type="area"
     />
-  );
+  )
 };

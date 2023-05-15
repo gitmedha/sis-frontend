@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { connectHighlight } from "react-instantsearch-dom";
+import { connectHighlight } from 'react-instantsearch-dom';
 
 const HighlightedText = styled.span`
   padding-top: 5px;
@@ -9,7 +9,7 @@ const HighlightedText = styled.span`
 
 const SearchHighlight = ({ highlight, attribute, hit }) => {
   const parsedHit = highlight({
-    highlightProperty: "_highlightResult",
+    highlightProperty: '_highlightResult',
     attribute,
     hit,
   });

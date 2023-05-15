@@ -155,7 +155,7 @@ const Home = () => {
 
   const clearState = () => {
     setUserState("");
-  };
+  }
 
   return (
     <DashboardStyled className="container-fluid">
@@ -187,7 +187,7 @@ const Home = () => {
               type="danger"
               value={userState.certifications? userState.certifications :"0" }
               title="Certifications"
-              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + "% of Registrations"}
+              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + '% of Registrations'}
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>

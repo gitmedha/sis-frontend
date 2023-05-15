@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, useEffect } from "react";
-import {BsChevronDown, BsChevronRight} from "react-icons/bs";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import {BsChevronDown, BsChevronRight} from 'react-icons/bs';
+import { useLocation } from 'react-router-dom';
 
 const MenuEl = styled.div`
   overflow: hidden;
-  justify-content: ${(props) => (props.isOpen ? "start" : "center")};
+  justify-content: ${(props) => (props.isOpen ? `start` : "center")};
 `;
 
 const MenuItem = (props) => {
@@ -38,16 +38,16 @@ const MenuItem = (props) => {
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
       <NavLink
         to={{ pathname: to }}
-        className={`menu-item-link d-flex align-items-center ${isOpen ? "w-100 justify-content-between" : "justify-content-center"}`}
-        style={{paddingLeft: isOpen ? "30px" : "", paddingRight: isOpen ? "30px" : ""}}
+        className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
+        style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
         isActive={() => isActiveFirstLevel}
         activeClassName="sidebar-link-active"
-        activeStyle={{borderRightColor: isOpen ? "#257b69" : "transparent"}}
+        activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
         onClick={() => props.menuItemClickHandler(props.title)}
         target={newTab ? "_blank" : ""}
       >
         <div className="d-flex align-items-center w-100 justify-content-start">
-          <div data-tip={isOpen ? "" : props.title}>
+          <div data-tip={isOpen ? '' : props.title}>
             {icon}
           </div>
           <AnimatePresence>
@@ -67,23 +67,23 @@ const MenuItem = (props) => {
         {showSubMenuIcon && subMenuCollapsed && <BsChevronRight onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
         {showSubMenuIcon && !subMenuCollapsed && <BsChevronDown onClick={() => setSubMenuCollapsed(!subMenuCollapsed)} className="c-pointer" />}
       </NavLink>
-      <div className={`sub-menu d-flex flex-column align-items-start w-100 ${subMenuCollapsed ? "d-none" : ""}`}>
+      <div className={`sub-menu d-flex flex-column align-items-start w-100 ${subMenuCollapsed ? 'd-none' : ''}`}>
         {props.children && props.children.map((child, index) => (
           isOpen && (
             <NavLink
               key={index}
               to={child.to}
               className="menu-item-link d-flex align-items-center w-100"
-              style={{paddingLeft: isOpen ? "40px" : ""}}
+              style={{paddingLeft: isOpen ? '40px' : ''}}
               isActive={(match, location) =>{
                 if (!match) return false;
-                return location.hash.substr(1) === child.to.split("#")[1] || location.pathname === child.to;
+                return location.hash.substr(1) === child.to.split('#')[1] || location.pathname === child.to;
               }}
               activeClassName="sidebar-link-active"
-              activeStyle={{borderRightColor: isOpen ? "#257b69" : "transparent"}}
+              activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
               onClick={() => props.menuItemClickHandler(props.title)}
             >
-              <div className={"d-flex align-items-center w-100 justify-content-start"}>
+              <div className={`d-flex align-items-center w-100 justify-content-start`}>
                 {isOpen && child.icon}
                 <AnimatePresence>
                   {isOpen && (

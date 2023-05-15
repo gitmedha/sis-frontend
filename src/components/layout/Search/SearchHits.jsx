@@ -108,7 +108,7 @@ const SearchHits = props => {
           {hit?.assigned_to?.username}
           </td>
         </tr>
-      ));
+      ))
       break;
 
     case "batches":
@@ -166,7 +166,7 @@ const SearchHits = props => {
             {hit?.assigned_to?.username}
           </td>
         </tr>
-      ));
+      ))
       break;
 
     case "students":
@@ -225,7 +225,7 @@ const SearchHits = props => {
             {hit?.assigned_to?.username}
           </td>
         </tr>
-      ));
+      ))
       break;
   }
 
@@ -271,7 +271,7 @@ const SearchHits = props => {
         </tbody>
       </table>
     </SearchHitsContainer>
-  );
+  )
 };
 
 export default connectHits(SearchHits);

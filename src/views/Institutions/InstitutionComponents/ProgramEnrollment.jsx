@@ -112,8 +112,7 @@ const ProgramEnrollment = (props) => {
     if (programEnrollment) {
       let certificateFieldValue = "";
       if (programEnrollment.medha_program_certificate) {
-        //certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block" ><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: "12px", fontFamily: "Latto-Italic", color: "#787B96"}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
-        certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" rel="noreferrer" className="c-pointer mb-1 d-block" ><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: "12px", fontFamily: "Latto-Italic", color: "#787B96"}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
+        certificateFieldValue = <div><a href={programEnrollment.medha_program_certificate.url} target="_blank" className="c-pointer mb-1 d-block" ><FaDownload size="20" color="#6C6D78" /></a><div style={{fontSize: "12px", fontFamily: "Latto-Italic", color: "#787B96"}}>(updated on: {moment(programEnrollment.medha_program_certificate.created_at).format("DD MMM YYYY")})</div></div>;
       } else if (programEnrollment.medha_program_certificate_status == "processing") {
         certificateFieldValue = "Processing";
       } else if (programEnrollment.medha_program_certificate_status == "low-attendance") {
@@ -121,7 +120,7 @@ const ProgramEnrollment = (props) => {
       }
       setProgramEnrollmentCertificate(certificateFieldValue);
     }
-  }, [programEnrollment]);
+  }, [programEnrollment])
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -181,13 +180,13 @@ const ProgramEnrollment = (props) => {
                       <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
-                            <a href={urlPath( programEnrollment.assignment_file?.url)} target="_blank" rel="noreferrer"><FaEye size="27" color={programEnrollment.assignment_file ? "#207B69" : "#787B96"} /></a>
+                            <a href={urlPath( programEnrollment.assignment_file?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.assignment_file ? "#207B69" : "#787B96"} /></a>
                           </Tooltip>
                         </div>
                       </div>
                     }
                     {programEnrollment.assignment_file &&
-                      <div  className="cv-icon">
+                      <div div className="cv-icon">
                         <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
                           <a  href="#" className="menu_links" onClick={() => onDelete("assignment_file")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                         </Tooltip>
@@ -208,7 +207,7 @@ const ProgramEnrollment = (props) => {
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Year of Completion" value={<Badge value={programEnrollment.year_of_course_completion} pickList={pickList.year_of_completion} />} />
-              <DetailField label="Program Enrollment ID" value={"To Be Decided"} />
+              <DetailField label="Program Enrollment ID" value={`To Be Decided`} />
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>
@@ -239,13 +238,13 @@ const ProgramEnrollment = (props) => {
                       <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Proof of Enrollment">
-                            <a href={urlPath( programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" rel="noreferrer"><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? "#207B69" : "#787B96"} /></a>
+                            <a href={urlPath( programEnrollment.higher_education_proof_of_enrollment?.url)} target="_blank" ><FaEye size="27" color={programEnrollment.higher_education_proof_of_enrollment ? "#207B69" : "#787B96"} /></a>
                           </Tooltip>
                         </div>
                       </div>
                     }
                     {programEnrollment.higher_education_proof_of_enrollment &&
-                      <div className="cv-icon">
+                      <div div className="cv-icon">
                         <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
                           <a  href="#" className="menu_links" onClick={() => onDelete("higher_education_proof_of_enrollment")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                         </Tooltip>

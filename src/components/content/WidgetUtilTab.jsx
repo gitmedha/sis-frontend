@@ -39,7 +39,7 @@ const TabPicker = () => {
           <div
             key={tab.key}
             onClick={() => changeTab(tab)}
-            className={activeTab === tab.key ? "active" : ""}
+            className={activeTab === tab.key ? `active` : ""}
           >
             {tab.title}
           </div>

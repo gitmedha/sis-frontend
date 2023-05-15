@@ -224,7 +224,7 @@ const AlumniServices = (props) => {
   const hideModal = () => {
     hideViewModal();
     fetchStudentAlumniServices();
-  };
+  }
 
   return (
     <div className="container-fluid my-3">

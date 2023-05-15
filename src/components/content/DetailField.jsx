@@ -20,6 +20,6 @@ const DetailField = ({ label, value }) => (
     <div className="mb-1 mb-md-0 col-md-6 detail-label">{label}</div>
     <div className="col-md-6 detail-value">{value}</div>
   </Detail>
-);
+)
 
 export default DetailField;

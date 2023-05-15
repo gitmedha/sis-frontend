@@ -196,7 +196,7 @@ const OpportunityForm = (props) => {
       medha_area: employer.medha_area || "",
       district: employer.district || "",
     });
-  };
+  }
 
   useEffect(() => {
     if (initialValues.state) {

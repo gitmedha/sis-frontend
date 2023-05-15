@@ -1,6 +1,6 @@
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
-const TooltipRenderer = ({ children, title, placement = "right",color = "#000000", textColor = "#ffffff" }) => (
+const TooltipRenderer = ({ children, title, placement = "right",color = '#000000', textColor = '#ffffff' }) => (
   <OverlayTrigger
     delay={{ show: 250, hide: 400 }}
     placement={placement}

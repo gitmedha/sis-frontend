@@ -142,7 +142,7 @@ const EnrollmentConnectionForm = (props) => {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
-        };
+        }
       });
       if (props.employmentConnection && employmentConnectionStudent !== null && !studentFoundInEmploymentList) {
         filterData.unshift({
@@ -152,7 +152,7 @@ const EnrollmentConnectionForm = (props) => {
       }
       return filterData;
     });
-  };
+  }
 
   return (
     <Modal

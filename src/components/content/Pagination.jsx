@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import Select from "react-select";
+import Select from 'react-select'
 
 const Styled = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ const Styled = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Latto-Bold";
+      font-family: 'Latto-Bold';
       width: 30px;
       height: 30px;
       font-size: 12px;
@@ -103,7 +103,7 @@ const Styled = styled.div`
   .page-box{
     margin:15px;
   }
-`;
+`
 
 /**
  * Helper method for creating a range of numbers
@@ -119,7 +119,7 @@ const range = (from, to, step = 1) => {
   }
 
   return range;
-};
+}
 
 const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit}) => {
   const currentPage = pageIndex + 1;
@@ -135,15 +135,15 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
       return range(startPage, endPage);
     }
     return range(1, totalPages);
-  };
+  }
 
   const pages = fetchPageNumbers();
 
   const pageSizeOptions = [
-    { value: 10, label: "Show 10" },
-    { value: 25, label: "Show 25" },
-    { value: 50, label: "Show 50" },
-    { value: 100, label: "Show 100" },
+    { value: 10, label: 'Show 10' },
+    { value: 25, label: 'Show 25' },
+    { value: 50, label: 'Show 50' },
+    { value: 100, label: 'Show 100' },
   ];
 
   return (
@@ -155,38 +155,38 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
             options={pageSizeOptions}
             isSearchable={false}
             onChange={e => {
-              localStorage.setItem("tablePageSize", Number(e.value));
-              setPageLimit(Number(e.value));
+              localStorage.setItem('tablePageSize', Number(e.value));
+              setPageLimit(Number(e.value))
             }}
           />
         </div>
         <div className="col-md-7">
           <nav>
             <ul className="pagination">
-              <li key="first" className="pagination-link-wrapper">
-                <span className={`pagination-link ${currentPage <= 1 ? "disabled" : ""}`} href="#" aria-label="Previous" onClick={() => gotoPage(0)} disabled={currentPage <= 1}>
+              <li key='first' className="pagination-link-wrapper">
+                <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => gotoPage(0)} disabled={currentPage <= 1}>
                   <span className="sr-only"><FaAngleDoubleLeft /></span>
                 </span>
               </li>
-              <li key="previous" className="pagination-link-wrapper">
-                <span className={`pagination-link ${currentPage <= 1 ? "disabled" : ""}`} href="#" aria-label="Previous" onClick={() => previousPage()} disabled={currentPage <= 1}>
+              <li key='previous' className="pagination-link-wrapper">
+                <span className={`pagination-link ${currentPage <= 1 ? 'disabled' : ''}`} href="#" aria-label="Previous" onClick={() => previousPage()} disabled={currentPage <= 1}>
                   <span className="sr-only"><FaAngleLeft /></span>
                 </span>
               </li>
               { pages.map((page, index) => {
                 return (
-                  <li key={index} className={`pagination-link-wrapper ${ currentPage === page ? "active" : ""}`}>
+                  <li key={index} className={`pagination-link-wrapper ${ currentPage === page ? 'active' : ''}`}>
                     <span className="pagination-link" href="#" onClick={() => gotoPage(page - 1)}>{ page }</span>
                   </li>
                 );
               }) }
-              <li key="next" className="pagination-link-wrapper">
-                <span className={`pagination-link ${currentPage >= totalPages ? "disabled" : ""}`} href="#" aria-label="Next" onClick={() => nextPage()} disabled={currentPage >= totalPages}>
+              <li key='next' className="pagination-link-wrapper">
+                <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => nextPage()} disabled={currentPage >= totalPages}>
                   <span className="sr-only"><FaAngleRight /></span>
                 </span>
               </li>
-              <li key="last" className="pagination-link-wrapper">
-                <span className={`pagination-link ${currentPage >= totalPages ? "disabled" : ""}`} href="#" aria-label="Next" onClick={() => gotoPage(totalPages - 1)} disabled={currentPage >= totalPages}>
+              <li key='last' className="pagination-link-wrapper">
+                <span className={`pagination-link ${currentPage >= totalPages ? 'disabled' : ''}`} href="#" aria-label="Next" onClick={() => gotoPage(totalPages - 1)} disabled={currentPage >= totalPages}>
                   <span className="sr-only"><FaAngleDoubleRight /></span>
                 </span>
               </li>
@@ -200,6 +200,6 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
       </div>
     </Styled>
   );
-};
+}
 
 export default Pagination;

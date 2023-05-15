@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Session from "./views/Batches/sessions";
 import { useToasts } from "react-toast-notifications";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
-import ReactTooltip from "react-tooltip";
+import ReactTooltip from 'react-tooltip';
 
 // Layout Components
 import Sidebar from "./components/layout/Sidebar";
@@ -56,9 +56,9 @@ const App = (props) => {
 
   const logout = (callback = () => {}) => {
     setUser(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     callback();
-  };
+  }
 
   //add Sentry Plugin for error handling
   if (process.env.NODE_ENV === "production") {
@@ -84,7 +84,7 @@ const App = (props) => {
   const getUserDetails = () => {
     if (token) {
       // authenticate the token on the server and place set user object
-      axios.get(apiPath("/users/me"), {
+      axios.get(apiPath('/users/me'), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -92,7 +92,7 @@ const App = (props) => {
         // if res comes back not valid, token is not valid
         // delete the token and log the user out on client
         if (res.status !== 200) {
-          localStorage.removeItem("token");
+          localStorage.removeItem('token');
           setUser(null);
           return null;
         }
@@ -103,24 +103,24 @@ const App = (props) => {
         localStorage.setItem("user_role", res.data?.role.name);
       });
     }
-  };
+  }
 
   useEffect(() => {
-    const accessToken = new URL(window.location.href).searchParams.get("access_token");
+    const accessToken = new URL(window.location.href).searchParams.get('access_token');
 
     // check for full path also.
     if (accessToken) {
       // make api request to fetch JSON
-      axios.get(apiPath("/auth/microsoft/callback") + "?access_token=" + accessToken).then(data => {
+      axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
-        let nextUrl = "/";
+        let nextUrl = '/';
         if (localStorage.getItem("next_url")){
           nextUrl = localStorage.getItem("next_url");
         }
         localStorage.removeItem("next_url");
         history.push(nextUrl); // or redirect to next url
-      });
+      })
     }
   }, []);
 

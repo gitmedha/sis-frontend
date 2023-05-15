@@ -16,7 +16,7 @@ const SessionLink = styled.div`
   @media screen and (min-width: 768px) {
     margin-left: 30px;
   }
-`;
+`
 
 const Sessions = (props) => {
   let {sessions, batch, batchID, fetchData, onDataUpdate } = props;

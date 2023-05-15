@@ -9,7 +9,7 @@ import ImageUploader from "./ImageUploader";
 import { connect } from "react-redux";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 
-const Avatar = ({ logo, name, style = {width: "35px", height: "35px"}, icon = "school" }) => {
+const Avatar = ({ logo, name, style = {width: '35px', height: '35px'}, icon = 'school' }) => {
   return (
     <div className="d-flex align-items-center justify-content-start h-100">
       {logo ? (
@@ -21,15 +21,15 @@ const Avatar = ({ logo, name, style = {width: "35px", height: "35px"}, icon = "s
         />
       ) : (
         <div className="flex-row-centered avatar avatar-default" style={style}>
-          {icon === "school" && (<FaSchool size={20} />)}
-          {icon === "student" && (<FaUserGraduate size={20} />)}
-          {icon === "batch" && (<FaChalkboardTeacher size={20} />)}
-          {icon === "employer" && (<FaUserTie size={20} />)}
-          {icon === "opportunity" && (<FaBriefcase size={20} />)}
+          {icon === 'school' && (<FaSchool size={20} />)}
+          {icon === 'student' && (<FaUserGraduate size={20} />)}
+          {icon === 'batch' && (<FaChalkboardTeacher size={20} />)}
+          {icon === 'employer' && (<FaUserTie size={20} />)}
+          {icon === 'opportunity' && (<FaBriefcase size={20} />)}
         </div>
       )}
 
-      <p className="mb-0 latto-regular" style={{ color: "#787B96"}}>{name}</p>
+      <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
     </div>
   );
 };
@@ -88,11 +88,11 @@ export const TitleWithLogo = connect(
             onClick={() => setModalShow(true)}
             className="flex-row-centered avatar avatar-default"
           >
-            {icon === "school" && (<FaSchool size={25} color="#808080" />)}
-            {icon === "student" && (<FaUserGraduate size={25} color="#808080" />)}
-            {icon === "batch" && (<FaChalkboardTeacher size={25} color="#808080" />)}
-            {icon === "employer" && (<FaUserTie size={25} color="#808080" />)}
-            {icon === "opportunity" && (<FaBriefcase size={25} color="#808080" />)}
+            {icon === 'school' && (<FaSchool size={25} color="#808080" />)}
+            {icon === 'student' && (<FaUserGraduate size={25} color="#808080" />)}
+            {icon === 'batch' && (<FaChalkboardTeacher size={25} color="#808080" />)}
+            {icon === 'employer' && (<FaUserTie size={25} color="#808080" />)}
+            {icon === 'opportunity' && (<FaBriefcase size={25} color="#808080" />)}
           </div>
         </Tooltip>
       )}
