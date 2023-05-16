@@ -7,7 +7,7 @@ const StyledCheckbox = styled.div`
   display: flex;
 `;
 
-const IndeterminateCheckbox = React.forwardRef(
+const IndeterminateCheckbox = React.forwardRef(  /* eslint-disable react/display-name */
   ({ indeterminate, id="", ...rest }, ref) => {
     const defaultRef = React.useRef();
     const resolvedRef = ref || defaultRef;
@@ -23,6 +23,8 @@ const IndeterminateCheckbox = React.forwardRef(
     );
   }
 );
+
+IndeterminateCheckbox.displayName = "IndeterminateCheckbox";
 
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;

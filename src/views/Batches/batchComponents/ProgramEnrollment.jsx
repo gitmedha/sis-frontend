@@ -119,7 +119,7 @@ const ProgramEnrollment = (props) => {
       }
       setProgramEnrollmentCertificate(certificateFieldValue);
     }
-  }, [programEnrollment])
+  }, [programEnrollment]);
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {

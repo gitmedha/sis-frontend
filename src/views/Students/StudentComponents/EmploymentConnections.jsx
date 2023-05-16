@@ -63,9 +63,9 @@ const EmploymentConnections = (props) => {
           employmentConnection.opportunity.employer
             ? employmentConnection.opportunity.employer.name
             : "",
-        opportunity_type: employmentConnection.opportunity
-          ? employmentConnection.opportunity.type
-          : "",
+        // opportunity_type: employmentConnection.opportunity
+        //   ? employmentConnection.opportunity.type
+        //   : "",
         status_badge: (
           <Badge
             value={employmentConnection.status}

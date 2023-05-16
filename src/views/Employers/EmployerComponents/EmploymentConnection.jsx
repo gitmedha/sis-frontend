@@ -98,7 +98,7 @@ const EmploymentConnection = (props) => {
                     </div>
                   }
                   {employmentConnection.offer_letter &&
-                    <div div className="cv-icon">
+                    <div className="cv-icon">
                       <Tooltip placement="top" title="Click Here to Delete Offer Letter">
                         <a  href="#" className="menu_links" onClick={() => onDelete("offer_letter")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                       </Tooltip>
