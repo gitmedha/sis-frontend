@@ -136,11 +136,11 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
         <div className="d-none d-md-block">
           <table {...getTableProps()}>
             <thead>
-              {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroups.map((headerGroup,index) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={index} >
                   {indexes && <th>#</th>}
                   {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())} key={index}>
                       {column.render("Header")}
                       <span>
                         {column.isSorted
@@ -166,7 +166,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                   page.map((row, index) => {
                     prepareRow(row);
                     return (
-                      <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? "clickable" : ""}`}>
+                      <tr {...row.getRowProps()} key={index} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? "clickable" : ""}`}>
                         {indexes &&
                           <td style={{ color: "#787B96", fontFamily: "Latto-Bold"}}>
                             {
@@ -180,9 +180,9 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                             }
                           </td>
                         }
-                        {row.cells.map(cell => {
+                        {row.cells.map((cell, index) => {
                           return (
-                            <td {...cell.getCellProps()}>
+                            <td  key={index} {...cell.getCellProps() }>
                               {
                                 row.original.href
                                 ? (<a className="table-row-link" href={row.original.href}>{cell.render("Cell")}</a>)

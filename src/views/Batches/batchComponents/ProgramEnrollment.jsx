@@ -206,7 +206,7 @@ const ProgramEnrollment = (props) => {
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Year of Completion" value={<Badge value={programEnrollment.year_of_course_completion} pickList={pickList.year_of_completion} />} />
-              <DetailField label="Program Enrollment ID" value={`To Be Decided`} />
+              <DetailField label="Program Enrollment ID" value={"To Be Decided"} />
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>

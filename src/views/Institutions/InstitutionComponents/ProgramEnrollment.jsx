@@ -120,7 +120,7 @@ const ProgramEnrollment = (props) => {
       }
       setProgramEnrollmentCertificate(certificateFieldValue);
     }
-  }, [programEnrollment])
+  }, [programEnrollment]);
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -186,7 +186,7 @@ const ProgramEnrollment = (props) => {
                       </div>
                     }
                     {programEnrollment.assignment_file &&
-                      <div div className="cv-icon">
+                      <div className="cv-icon">
                         <Tooltip placement="top" title="Click Here to Delete Proof of Enrollment">
                           <a  href="#" className="menu_links" onClick={() => onDelete("assignment_file")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                         </Tooltip>
@@ -207,7 +207,7 @@ const ProgramEnrollment = (props) => {
             </div>
             <div className="col-md-6 col-sm-12">
               <DetailField label="Year of Completion" value={<Badge value={programEnrollment.year_of_course_completion} pickList={pickList.year_of_completion} />} />
-              <DetailField label="Program Enrollment ID" value={`To Be Decided`} />
+              <DetailField label="Program Enrollment ID" value={"To Be Decided"} />
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
             </div>
           </div>

@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 const MenuEl = styled.div`
   overflow: hidden;
-  justify-content: ${(props) => (props.isOpen ? `start` : "center")};
+  justify-content: ${(props) => (props.isOpen ? "start" : "center")};
 `;
 
 const MenuItem = (props) => {
@@ -83,7 +83,7 @@ const MenuItem = (props) => {
               activeStyle={{borderRightColor: isOpen ? "#257b69" : "transparent"}}
               onClick={() => props.menuItemClickHandler(props.title)}
             >
-              <div className={`d-flex align-items-center w-100 justify-content-start`}>
+              <div className="d-flex align-items-center w-100 justify-content-start">
                 {isOpen && child.icon}
                 <AnimatePresence>
                   {isOpen && (

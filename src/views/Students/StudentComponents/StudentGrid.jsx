@@ -241,7 +241,7 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
                               data.map((item, index) => (
                         <>
                                       <div className={`box-wrapper ${activeBox === index + 1 ? "active" : ""}`} onClick={() => handleBoxClick(index+1)}>
-                                          <div className={`box`} style={{backgroundImage: item.logo ? `url(${urlPath(item.logo?.url)})` : `url(/graduate-default.png)`}}>
+                                          <div className="box" style={{backgroundImage: item.logo ? "url(${urlPath(item.logo?.url)})" : "url(/graduate-default.png)"}}>
                                     <div className="box-icon">
                                         {item.statusIcon}
                                     </div>

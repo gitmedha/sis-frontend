@@ -66,7 +66,7 @@ const routes = [
     icon: <img
       className={"metabase-icon"}
       src={require("../../assets/images/logo-metabase.png").default}
-      alt={`metabase-logo`}
+      alt={"metabase-logo"}
       style={{}}
     />,
     newTab: true,
@@ -126,7 +126,8 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
           )}
         </AnimatePresence>
       </div>
-      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
+      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} data-is-open={isOpen}>
+      {/* <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}> */}
         <img
           src={require("../../assets/images/logo.png").default}
           alt="Medha SIS"

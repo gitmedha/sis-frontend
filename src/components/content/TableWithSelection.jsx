@@ -149,11 +149,11 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
         <div className="d-none d-md-block">
           <table {...getTableProps()}>
             <thead>
-              {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroups.map((headerGroup, index) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={index}>
                   {indexes && <th>#</th>}
                   {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>
+                    <th {...column.getHeaderProps()} key={index}>
                       {column.render("Header")}
                       <span>
                         {column.isSorted
@@ -172,7 +172,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                 rows.map((row, index) => {
                   prepareRow(row);
                   return (
-                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${isRowClickable ? "clickable" : ""}`}>
+                    <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} key={index} className={`${isRowClickable ? "clickable" : ""}`}>
                       {indexes &&
                         <td style={{ color: "#787B96", fontFamily: "Latto-Bold"}}>
                           {index + 1}.
@@ -180,7 +180,7 @@ const TableWithSelection = ({ columns, data, loading, onRowClick=null, indexes=t
                       }
                       {row.cells.map(cell => {
                         return (
-                          <td {...cell.getCellProps()}>
+                          <td {...cell.getCellProps()} key={index}>
                             {cell.render("Cell")}
                           </td>
                         );
