@@ -35,7 +35,7 @@ const ColorlibConnector = withStyles({
 
 const useColorlibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: "#207b69",
+    backgroundColor: "#949695",
     zIndex: 1000,
     color: "#fff",
     width: "35px",
@@ -45,6 +45,12 @@ const useColorlibStepIconStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
   },
+  active: {
+    backgroundColor: '#257b69',
+  },
+  completed: {
+    backgroundColor: '#257b69',
+  },  
 });
 
 function ColorlibStepIcon(props) {

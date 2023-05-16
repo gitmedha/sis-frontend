@@ -386,14 +386,14 @@ const ProgramEnrollmentForm = (props) => {
                 </div>
               </Section>
               <Section>
-                <h3 className="section-header">Fee Details</h3>
+                <h3 className="section-header">Contribution Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
                       name="fee_status"
-                      label="Fees Status"
+                      label="Contribution Status"
                       required
                       options={feeStatusOptions}
                       className="form-control"
@@ -404,8 +404,8 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="fee_payment_date"
-                      label="Fee Payment Date"
-                      placeholder="Fee Payment Date"
+                      label="Contribution Payment Date"
+                      placeholder="Contribution Payment Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -426,9 +426,9 @@ const ProgramEnrollmentForm = (props) => {
                     <Input
                       name="fee_transaction_id"
                       control="input"
-                      label="Fee Transaction ID / Receipt No."
+                      label="Transaction ID / Receipt No."
                       className="form-control"
-                      placeholder="Fee Transaction ID / Receipt No."
+                      placeholder="Transaction ID / Receipt No."
                       disabled={!requiresFee}
                     />
                   </div>
@@ -438,16 +438,16 @@ const ProgramEnrollmentForm = (props) => {
                       type="number"
                       name="fee_amount"
                       control="input"
-                      label="Fee Amount (INR)"
+                      label="Contribution Amount (INR)"
                       className="form-control"
-                      placeholder="Fee Amount"
+                      placeholder="Contribution Amount"
                       disabled={!requiresFee}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="fee_refund_date"
-                      label="Fee Refund Date"
+                      label="Contribution Refund Date"
                       placeholder="Date"
                       control="datepicker"
                       className="form-control"
