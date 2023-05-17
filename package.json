@@ -2,6 +2,7 @@
   "name": "medha-rc",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
@@ -63,7 +64,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -84,6 +87,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.21.8",
+    "@babel/eslint-plugin": "^7.19.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.32.2",
     "react-json-view": "^1.21.3",
     "redux-devtools-extension": "^2.13.9"
   }
