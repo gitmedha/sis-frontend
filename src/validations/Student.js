@@ -133,8 +133,8 @@ export const StudentValidations = Yup.object({
   district,
   how_did_you_hear_about_us,
   how_did_you_hear_about_us_other: Yup.string().nullable().when("how_did_you_hear_about_us", {
-    is: (how_did_you_hear_about_us) => how_did_you_hear_about_us?.toLowerCase() === 'other',
-    then: Yup.string().nullable().required('Other option is required.')
+    is: (how_did_you_hear_about_us) => how_did_you_hear_about_us?.toLowerCase() === "other",
+    then: Yup.string().nullable().required("Other option is required.")
   }),
 });
 

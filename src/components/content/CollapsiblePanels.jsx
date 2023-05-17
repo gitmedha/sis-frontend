@@ -12,7 +12,7 @@ const CollapsiblePanels = ({
   titleContent = null,
   id = "",
 }) => {
-  const [isOpen, setOpen] = useState(opened)
+  const [isOpen, setOpen] = useState(opened);
 
   const clicked = (e) => {
     if (!isOpen) {

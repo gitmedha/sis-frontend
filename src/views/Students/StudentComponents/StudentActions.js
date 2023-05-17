@@ -5,7 +5,7 @@ export const getAlumniServicePickList = async () => {
 return await api.post("/graphql", {
   query : GET_PICKLIST, 
   variables: {
-    table: 'alumni_services'
+    table: "alumni_services"
   }
 }).then(data => {
   let pickList = {};
@@ -16,7 +16,7 @@ return await api.post("/graphql", {
 }).catch(error => {
   return Promise.reject(error);
 });
-}
+};
 
 export const getStudentsPickList = async () => {
     return await api.post("/graphql", {
