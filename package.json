@@ -84,6 +84,7 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.40.0",
     "react-json-view": "^1.21.3",
     "redux-devtools-extension": "^2.13.9"
   }
