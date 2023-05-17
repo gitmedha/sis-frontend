@@ -255,7 +255,6 @@ const ProgramEnrollments = (props) => {
       setShowDeleteAlert(false);
       getStudentProgramEnrollments();
        NP.done();
-       history.push("/students");
     });
   };
 

@@ -6,7 +6,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
 import { urlPath } from "../../constants";
-import { isAdmin, isSRM } from "../../common/commonFunctions";
+import { isAdmin, isPartnership, isSRM } from "../../common/commonFunctions";
+
 
 const iconStyle = {
   marginRight: "5px",
@@ -22,7 +23,7 @@ const routes = [
     to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   {
     to: "/students",
@@ -36,28 +37,28 @@ const routes = [
     title: "Institutions",
     aliases: ["institution"],
     icon: <FaSchool {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   {
     to: "/batches",
     title: "Batches",
     aliases: ["batch"],
     icon: <FaChalkboardTeacher {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   {
     to: "/employers",
     title: "Employers",
     aliases: ["employer"],
     icon: <FaUserTie {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   {
     to: "/opportunities",
     title: "Opportunities",
     aliases: ["opportunity"],
     icon: <FaBriefcase {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   {
     to: "https://data.medha.org.in/",
@@ -70,7 +71,7 @@ const routes = [
       style={{}}
     />,
     newTab: true,
-    show: isSRM() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin(),
   },
   // {
   //   to: "/admin",

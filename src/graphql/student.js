@@ -23,6 +23,8 @@ const studentFields = `
   medha_area
   address
   state
+  how_did_you_hear_about_us
+  how_did_you_hear_about_us_other
   created_at
   updated_at
   created_by_frontend{
@@ -122,6 +124,12 @@ const alumniServicesFields = `
   fee_submission_date
   location
   receipt_number
+  program_mode
+  category
+  youth_leadership
+  peer_learning
+  ideation_club
+  giveback
   fee_amount
   comments
   created_at
@@ -133,6 +141,7 @@ const employmentConnectionFields = `
   status
   start_date
   end_date
+  updated_at
   source
   reason_if_rejected
   work_engagement

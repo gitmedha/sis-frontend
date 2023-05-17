@@ -1,3 +1,63 @@
+const batchesFields = `
+  id
+  name
+  start_date
+  end_date
+  status
+  medha_area
+  mode_of_payment
+  state
+  enrollment_type
+  created_at
+  updated_at
+  per_student_fees
+  name_in_current_sis
+  require_assignment_file_for_certification
+  seats_available
+  certificates_generated_at
+  certificates_emailed_at
+  grant {
+    id
+    name
+    donor
+  }
+  assigned_to {
+    id
+    email
+    username
+  }
+  updated_by_frontend{
+    username
+    email
+  }
+  institution {
+    id
+    name
+  }
+  program {
+    id
+    name
+    status
+    start_date
+    end_date
+  }
+  created_by_frontend{
+    id
+    username
+    email
+  }
+  assigned_to{
+    username
+  }
+  logo {
+    url
+  }
+  number_of_sessions_planned
+  program {
+    name
+  }
+`;
+
 export const GET_BATCHES = `
 query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state:String, $area:String ){
     batchesConnection(
@@ -13,24 +73,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
       }
     ) {
       values {
-        id
-        name
-        start_date
-        end_date
-        status
-        medha_area
-        state
-        enrollment_type
-        assigned_to{
-          username
-        }
-        logo {
-          url
-        }
-        number_of_sessions_planned
-        program {
-          name
-        }
+        ${batchesFields}
       }
       aggregate {
         count
@@ -48,56 +91,7 @@ query GET_ALL_BATCHES ($id: Int, $limit: Int, $start: Int, $sort: String, $state
 export const GET_BATCH = `
 query GET_BATCH ($id:ID!) {
   batch(id: $id) {
-    id
-    name
-    end_date
-    start_date
-    created_at
-    created_by_frontend{
-      id
-      username
-      email
-    }
-    updated_by_frontend{
-      username
-      email
-    }
-    updated_at
-    status
-    enrollment_type
-    state
-    medha_area
-    program {
-      id
-      name
-      status
-      start_date
-      end_date
-    }
-    assigned_to {
-      id
-      email
-      username
-    }
-    logo {
-      url
-    }
-    grant {
-      id
-      name
-      donor
-    }
-    institution {
-      id
-      name
-    }
-    per_student_fees
-    name_in_current_sis
-    number_of_sessions_planned
-    require_assignment_file_for_certification
-    seats_available
-    certificates_generated_at
-    certificates_emailed_at
+    ${batchesFields}
   }
 }
 `;
