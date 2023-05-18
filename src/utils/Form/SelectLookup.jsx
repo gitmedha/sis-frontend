@@ -61,7 +61,7 @@ export const SelectField = (props) => {
     options,
     placeholder,
     onChange = () => {},
-    isSearchable = false,
+    isSearchable = true,
     isDisabled,
   } = props;
 
