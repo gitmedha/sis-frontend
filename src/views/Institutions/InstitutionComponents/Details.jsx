@@ -22,7 +22,7 @@ const Details = (props) => {
     getInstitutionsPickList().then(data => {
       setPickList(data);
     });
-  }, [])
+  }, []);
 
   return (
     <div className="container-fluid my-3">
@@ -32,13 +32,13 @@ const Details = (props) => {
           <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
           <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
           <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
-          <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
+          <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ""} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
           <DetailField label="Assigned To" value={assigned_to?.username} />
           <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
           <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
-          <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
+          <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ""} />
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ const Userbox = () => {
   return (
     <Dropdown className="user-box">
       <Dropdown.Toggle id="dropdown-basic" variant="white">
-       <FaUserAlt size={25} style={{ color: '#787B96'}}/>
+       <FaUserAlt size={25} style={{ color: "#787B96"}}/>
         {/* <img
           alt="user-box"
           className=""

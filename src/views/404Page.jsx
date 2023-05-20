@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
 
 const Styled = styled.div`
@@ -42,7 +42,7 @@ const PageNotFound = () => {
                 </div>
             </div>
         </Styled>
-    )
-}
+    );
+};
 
-export default PageNotFound
+export default PageNotFound;

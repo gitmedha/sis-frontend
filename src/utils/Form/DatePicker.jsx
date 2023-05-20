@@ -142,8 +142,8 @@ const DatePicker = (props) => {
                   selected={value}
                   onChange={(val) => {
                     setFieldValue(name, val);
-                    if (typeof onInputCallback === 'function') {
-                      onInputCallback(val)
+                    if (typeof onInputCallback === "function") {
+                      onInputCallback(val);
                     }
                   }}
                   ref={datepickerRef}

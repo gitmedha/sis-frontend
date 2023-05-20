@@ -32,13 +32,13 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const {setAlert} = props;
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const userId = parseInt(localStorage.getItem('user_id'))
-  const state = localStorage.getItem('user_state');
-  const area = localStorage.getItem('user_area')
+  const userId = parseInt(localStorage.getItem("user_id"));
+  const state = localStorage.getItem("user_state");
+  const area = localStorage.getItem("user_area");
   const [formErrors, setFormErrors] = useState([]);
 
   useEffect(() => {
@@ -71,20 +71,20 @@ const Employers = (props) => {
     []
   );
 
-  const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = "created_at", sortOrder = "desc") => {
     nProgress.start();
     setLoading(true);
     let variables ={
       limit: limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
-    }
+    };
     if(selectedTab == "my_data"){
-      Object.assign(variables, {id: userId})
+      Object.assign(variables, {id: userId});
     } else if(selectedTab == "my_state"){
-      Object.assign(variables, {state: state})
+      Object.assign(variables, {state: state});
     } else if(selectedTab == "my_area"){
-      Object.assign(variables, {area: area})
+      Object.assign(variables, {area: area});
     }
     await api.post("/graphql", {
       query: GET_USER_EMPLOYERS,
@@ -104,44 +104,44 @@ const Employers = (props) => {
   };
   useEffect(() => {
   getEmployersPickList().then(data => setPickList(data));
-}, [])
+}, []);
 
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
       return {
         ...employer,
-        assignedTo: <Anchor text={employer.assigned_to.username} href={'/user/' + employer.assigned_to.id} />,
-        avatar: <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />,
+        assignedTo: <Anchor text={employer.assigned_to.username} href={"/user/" + employer.assigned_to.id} />,
+        avatar: <Avatar name={employer.name} logo={employer.logo} style={{width: "35px", height: "35px"}} icon="employer" />,
         industry: <Badge value={employer.industry} pickList={pickList.industry || []} />,
         link: <TableRowDetailLink value={employer.id} to={"employer"} />,
         href: `/employer/${employer.id}`,
-      }
+      };
     });
     setEmployersTableData(data);
   }, [employers, pickList]);
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'name';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "name";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'employer':
-        case 'industry':
+        case "employer":
+        case "industry":
           sortByField = sortBy[0].id;
           break;
 
-        case 'city':
-          sortByField = 'city'
+        case "city":
+          sortByField = "city";
           break;
 
-        case 'state':
-          sortByField = 'state'
+        case "state":
+          sortByField = "state";
           break;
 
-        case 'avatar':
+        case "avatar":
         default:
-          sortByField = 'name';
+          sortByField = "name";
           break;
       }
       getEmployers(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -188,7 +188,7 @@ const Employers = (props) => {
           <button
             className="btn btn-primary"
             onClick={() => setModalShow(true)}
-            style={{marginLeft: '15px'}}
+            style={{marginLeft: "15px"}}
           >
             Add New Employer
           </button>

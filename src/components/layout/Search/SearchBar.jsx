@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { InstantSearch } from 'react-instantsearch-dom';
-import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
-import SearchField from './SearchField';
-import SearchStateResults from './SearchStateResults';
+import { InstantSearch } from "react-instantsearch-dom";
+import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
+import SearchField from "./SearchField";
+import SearchStateResults from "./SearchStateResults";
 import { useEffect, useState } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { MeiliSearch } from "meilisearch";
 
 const searchClient = instantMeiliSearch(
   process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -17,14 +17,14 @@ const client = new MeiliSearch({
 });
 
 const SearchContainer = styled.div`
-  font-family: 'Latto-Regular';
+  font-family: "Latto-Regular";
   margin-right: auto;
   width: 100%;
 `;
 
 const SearchBar = () => {
   const [searchState, setSearchState] = useState({});
-  const [searchIndexName, setSearchIndexName] = useState('students');
+  const [searchIndexName, setSearchIndexName] = useState("students");
   const [hitsData, setHitsData] = useState({
     students: [],
     institutions: [],
@@ -36,31 +36,31 @@ const SearchBar = () => {
   useEffect(async () => {
     let apiHitsData = {};
 
-    if (searchState.query === '') {
+    if (searchState.query === "") {
       return;
     }
 
     // make api call to students
-    await client.index('students').search(searchState.query).then(async data => {
-      apiHitsData['students'] = data;
+    await client.index("students").search(searchState.query).then(async data => {
+      apiHitsData["students"] = data;
     });
     // make api call to institutions
-    await client.index('institutions').search(searchState.query).then(async data => {
-      apiHitsData['institutions'] = data;
+    await client.index("institutions").search(searchState.query).then(async data => {
+      apiHitsData["institutions"] = data;
     });
     // make api call to batches
-    await client.index('batches').search(searchState.query).then(async data => {
-      apiHitsData['batches'] = data;
+    await client.index("batches").search(searchState.query).then(async data => {
+      apiHitsData["batches"] = data;
     });
     // make api call to employers
-    await client.index('employers').search(searchState.query).then(async data => {
-      apiHitsData['employers'] = data;
+    await client.index("employers").search(searchState.query).then(async data => {
+      apiHitsData["employers"] = data;
     });
-    await client.index('opportunities').search(searchState.query).then(async data => {
-      apiHitsData['opportunities'] = data;
+    await client.index("opportunities").search(searchState.query).then(async data => {
+      apiHitsData["opportunities"] = data;
     });
     setHitsData(apiHitsData);
-  }, [searchState])
+  }, [searchState]);
 
   return (
     <SearchContainer className="mr-auto">
@@ -75,6 +75,6 @@ const SearchBar = () => {
       </InstantSearch>
     </SearchContainer>
   );
-}
+};
 
 export default SearchBar;

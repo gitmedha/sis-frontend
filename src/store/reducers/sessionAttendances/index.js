@@ -1,42 +1,42 @@
 import {
-  IS_LOADING,
-  DELETE_SESSION,
-  GET_SESSION_DETAILS,
-  GET_SESSION_ATTENDANCES,
+    IS_LOADING,
+    DELETE_SESSION,
+    GET_SESSION_DETAILS,
+    GET_SESSION_ATTENDANCES,
 } from "./types";
 
 const initialState = {
-  session: null,
-  loading: false,
-  attendances: [],
+    session: null,
+    loading: false,
+    attendances: [],
 };
 
 const sessionAttendanceReducer = (state = initialState, { type, payload }) => {
-  switch (type) {
+    switch (type) {
     case IS_LOADING:
-      return {
-        ...state,
-        loading: !state.loading,
-      };
+        return {
+            ...state,
+            loading: !state.loading,
+        };
     case GET_SESSION_DETAILS:
-      return {
-        ...state,
-        session: payload,
-      };
+        return {
+            ...state,
+            session: payload,
+        };
     case GET_SESSION_ATTENDANCES:
-      return {
-        ...state,
-        attendances: payload,
-      };
+        return {
+            ...state,
+            attendances: payload,
+        };
     case DELETE_SESSION:
-      return {
-        ...initialState,
-      };
+        return {
+            ...initialState,
+        };
     default:
-      return {
-        ...state,
-      };
-  }
+        return {
+            ...state,
+        };
+    }
 };
 
 export default sessionAttendanceReducer;

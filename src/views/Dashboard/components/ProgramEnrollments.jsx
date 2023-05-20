@@ -5,7 +5,7 @@ import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../../components/content/TabPicker";
-import Table from '../../../components/content/Table';
+import Table from "../../../components/content/Table";
 import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import { GET_DASHBOARD_PROGRAM_ENROLLMENTS, } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -32,43 +32,43 @@ const ProgramEnrollments = (props) => {
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [programEnrollmentTableData, setProgramEnrollmentTableData] = useState([]);
-  const userId  = parseInt(localStorage.getItem('user_id'))
+  const userId  = parseInt(localStorage.getItem("user_id"));
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Student',
-        accessor: 'student_name',
+        Header: "Student",
+        accessor: "student_name",
         disableSortBy: true,
       },
       {
-        Header: 'Program',
-        accessor: 'program_name',
+        Header: "Program",
+        accessor: "program_name",
         disableSortBy: true,
       },
       {
-        Header: 'Batch',
-        accessor: 'batch_name',
+        Header: "Batch",
+        accessor: "batch_name",
         disableSortBy: true,
       },
       {
-        Header: 'Area',
-        accessor: 'area',
+        Header: "Area",
+        accessor: "area",
         disableSortBy: true,
       },
       {
-        Header: 'Institution',
-        accessor: 'institution_name',
+        Header: "Institution",
+        accessor: "institution_name",
         disableSortBy: true,
       },
       {
-        Header: 'Fee Status',
-        accessor: 'fee_status_badge',
+        Header: "Fee Status",
+        accessor: "fee_status_badge",
         disableSortBy: true,
       },
       {
-        Header: 'Created At',
-        accessor: 'created_at',
+        Header: "Created At",
+        accessor: "created_at",
         disableSortBy: true,
       },
     ],
@@ -106,23 +106,23 @@ const ProgramEnrollments = (props) => {
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'role';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+      let sortByField = "role";
+      let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
       switch (sortBy[0].id) {
-        case 'employer':
-        case 'type':
+        case "employer":
+        case "type":
           sortByField = sortBy[0].id;
           break;
 
-        case 'created_at':
-        case 'address':
-        case 'number_of_opportunities':
-          sortByField = 'number_of_opportunities'
+        case "created_at":
+        case "address":
+        case "number_of_opportunities":
+          sortByField = "number_of_opportunities";
           break;
 
-        case 'avatar':
+        case "avatar":
         default:
-          sortByField = 'role_or_designation';
+          sortByField = "role_or_designation";
           break;
       }
       getProgramEnrollment(pageSize, pageSize * pageIndex, sortByField, sortOrder);
@@ -140,7 +140,7 @@ const ProgramEnrollments = (props) => {
           student_name: programEnrollment.student?.full_name,
           area:programEnrollment.institution.medha_area,
           registration_date_formatted: moment(programEnrollment.registration_date).format("DD MMM YYYY"),
-          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):'',
+          certification_date_formatted: programEnrollment.certification_date ? moment(programEnrollment.certification_date).format("DD MMM YYYY"):"",
           batch_name: programEnrollment?.batch?.name,
           program_name: programEnrollment.batch?.program?.name,
           created_at:moment(programEnrollment.created_at).format("DD MMM YYYY"),
@@ -149,7 +149,7 @@ const ProgramEnrollments = (props) => {
           fee_status_badge: <Badge value={programEnrollment.fee_status} pickList={pickList.fee_status} />,
           assigned : programEnrollment?.institution?.assigned_to.username,
           href: `/student/${programEnrollment.student?.id}`
-        }
+        };
       });
       setProgramEnrollmentTableData(data);
     }

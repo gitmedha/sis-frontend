@@ -1,25 +1,25 @@
 import { SET_ALERT, RESET_ALERT } from "./types";
 
 const initialState = {
-  message: null,
-  variant: null,
+    message: null,
+    variant: null,
 };
 
 const NotificationReducer = (state = initialState, { type, payload }) => {
-  switch (type) {
+    switch (type) {
     case SET_ALERT:
-      return {
-        ...state,
-        ...payload,
-      };
+        return {
+            ...state,
+            ...payload,
+        };
     case RESET_ALERT: {
-      return {
-        ...initialState,
-      };
+        return {
+            ...initialState,
+        };
     }
     default:
-      return state;
-  }
+        return state;
+    }
 };
 
 export default NotificationReducer;

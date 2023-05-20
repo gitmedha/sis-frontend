@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import DetailField from '../../../components/content/DetailField';
+import DetailField from "../../../components/content/DetailField";
 import { Anchor, Badge } from "../../../components/content/Utils";
 import CertificateUpload from "../../../components/content/Certificate";
 import Tooltip from "../../../components/content/Tooltip";
@@ -36,8 +36,8 @@ const EmploymentConnection = (props) => {
   const [employmentConnectionsPickList, setEmploymentConnectionsPickList] = useState([]);
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
-  let endDate = '';
-  if (employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && employmentConnection.status === 'Internship Complete') {
+  let endDate = "";
+  if (employmentConnection.opportunity && employmentConnection.opportunity.type === "Internship" && employmentConnection.status === "Internship Complete") {
     endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
   }
 
@@ -50,7 +50,7 @@ const EmploymentConnection = (props) => {
     });
   }, []);
 
-  const employerName = employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : ''
+  const employerName = employmentConnection.opportunity && employmentConnection.opportunity.employer ? employmentConnection.opportunity.employer.name : "";
 
   return (
       <Modal
@@ -78,11 +78,11 @@ const EmploymentConnection = (props) => {
             <div className="col-md-6 col-sm-12">
               <DetailField label="Student" value={student.full_name} />
               <DetailField label="Employer" value={(isSRM() || isAdmin()) ? <Anchor text={employerName} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`} /> : employerName} />
-              <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
-              <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
+              <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ""} />
+              <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ""} />
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
               <DetailField label="Work Engagement" value={employmentConnection.work_engagement} />
-              {employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && <DetailField label="No. of internship hours" value={employmentConnection.number_of_internship_hours} />}
+              {employmentConnection.opportunity && employmentConnection.opportunity.type === "Internship" && <DetailField label="No. of internship hours" value={employmentConnection.number_of_internship_hours} />}
               <DetailField label="Upload Offer Letter" value= {
                 employmentConnection.offer_letter &&
                 <div>
@@ -100,15 +100,15 @@ const EmploymentConnection = (props) => {
                     <div className="cv-icon">
                         <div className="col-md-1 d-flex flex-column section-cv">
                           <Tooltip placement="top" title="Click Here to View Offer Letter">
-                            <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.offer_letter ? '#207B69' : '#787B96'} /></a>
+                            <a href={urlPath( employmentConnection.offer_letter?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.offer_letter ? "#207B69" : "#787B96"} /></a>
                           </Tooltip>
                         </div>
                     </div>
                   }
                   {(isSRM() || isAdmin()) && employmentConnection.offer_letter &&
-                    <div div className="cv-icon">
+                    <div  className="cv-icon">
                       <Tooltip placement="top" title="Click Here to Delete Offer Letter">
-                        <a  href="#" className="menu_links" onClick={() => onDelete('offer_letter')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                        <a  href="#" className="menu_links" onClick={() => onDelete("offer_letter")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                       </Tooltip>
                     </div>
                   }
@@ -116,8 +116,8 @@ const EmploymentConnection = (props) => {
               </div>
             </div>
             <div className="col-md-6 col-sm-12">
-              <DetailField label="Assigned To" value={employmentConnection.assigned_to ? employmentConnection.assigned_to?.username : ''} />
-              <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
+              <DetailField label="Assigned To" value={employmentConnection.assigned_to ? employmentConnection.assigned_to?.username : ""} />
+              <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ""} />
               <DetailField label="End Date" value={endDate} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
@@ -139,7 +139,7 @@ const EmploymentConnection = (props) => {
                   <div className="cv-icon">
                       <div className="col-md-1 d-flex flex-column section-cv">
                         <Tooltip placement="top" title="Click Here to View Certificate">
-                          <a href={urlPath( employmentConnection.experience_certificate?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.experience_certificate ? '#207B69' : '#787B96'} /></a>
+                          <a href={urlPath( employmentConnection.experience_certificate?.url)} target="_blank" rel="noreferrer" ><FaEye size="27" color={employmentConnection.experience_certificate ? "#207B69" : "#787B96"} /></a>
                         </Tooltip>
                       </div>
                   </div>
@@ -147,7 +147,7 @@ const EmploymentConnection = (props) => {
                 {(isSRM() || isAdmin()) && employmentConnection.experience_certificate &&
                   <div className="cv-icon">
                     <Tooltip placement="top" title="Click Here to Delete Certificate">
-                      <a  href="#" className="menu_links" onClick={() => onDelete('experience_certificate')}> <FaTrashAlt  size="27" color='#787B96' /> </a>
+                      <a  href="#" className="menu_links" onClick={() => onDelete("experience_certificate")}> <FaTrashAlt  size="27" color="#787B96" /> </a>
                     </Tooltip>
                   </div>
                 }

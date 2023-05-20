@@ -30,7 +30,7 @@ const Styled = styled.div`
     padding: 0px 20px !important;
 }
 }
-`
+`;
 const StyledOpportunityIcon = styled.div`
   border-radius: 50%;
   display: flex;
@@ -49,14 +49,14 @@ const Opportunity = (props) => {
     const opportunityId = props.match.params.id;
 
     const OpportunityIcon = ({opportunity}) => {
-      let bgColor = '#ffffff';
+      let bgColor = "#ffffff";
       let icon = null;
       switch (opportunity.type) {
-        case 'Job':
+        case "Job":
           icon = <FaBriefcase size="25" color="#808080"/>;
           break;
 
-        case 'Internship':
+        case "Internship":
           icon = <FaBlackTie size="25" color="#808080"/>;
           break;
       }
@@ -100,7 +100,7 @@ const Opportunity = (props) => {
         NP.done();
         history.goBack();
       });
-    }
+    };
 
     const getThisOpportunity = async () => {
       setLoading(true);
@@ -110,7 +110,7 @@ const Opportunity = (props) => {
           query: GET_OPPORTUNITY,
           variables: { id: opportunityId },
         });
-        console.log('data.data.opportunity', data.data.opportunity);
+        console.log("data.data.opportunity", data.data.opportunity);
         setOpportunityData(data.data.opportunity);
       } catch (err) {
         console.log("ERR", err);
@@ -127,7 +127,7 @@ const Opportunity = (props) => {
       }).catch(err => {
         console.log("getStudentEmploymentConnections Error", err);
       });
-    }
+    };
 
     useEffect(() => {
       getThisOpportunity();
@@ -145,7 +145,7 @@ const Opportunity = (props) => {
         setShowDeleteAlert(false);
         NP.done();
         history.push("/opportunity/" . id);
-        getThisOpportunity()
+        getThisOpportunity();
       });
     };
 
@@ -155,7 +155,7 @@ const Opportunity = (props) => {
         return (
         <Styled>
           <>
-            <div className="row" style={{margin: '30px 0 0'}}>
+            <div className="row" style={{margin: "30px 0 0"}}>
               <div className="btn-box col-12">
                 <button
                   onClick={() => setModalShow(true)}

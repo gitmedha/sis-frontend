@@ -16,47 +16,47 @@ const state = Yup.string().required("State is required.");
 const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
-  .matches(pincodeRegExp, 'Pincode is not valid')
-  .max(6, "Pincode is too long")
-  .required("Pincode is required.");
+    .matches(pincodeRegExp, "Pincode is not valid")
+    .max(6, "Pincode is too long")
+    .required("Pincode is required.");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 
 export const OpportunityValidations = Yup.object({
-  status,
-  assigned_to,
-  type,
-  employer,
-  role_or_designation,
-  number_of_opportunities,
-  department_or_team,
-  salary,
-  compensation_type,
-  skills_required,
-  role_description,
-  address,
-  medha_area,
-  district,
-  state,
-  city,
-  pin_code,
+    status,
+    assigned_to,
+    type,
+    employer,
+    role_or_designation,
+    number_of_opportunities,
+    department_or_team,
+    salary,
+    compensation_type,
+    skills_required,
+    role_description,
+    address,
+    medha_area,
+    district,
+    state,
+    city,
+    pin_code,
 });
 
 export const EmployerOpportunityValidations = Yup.object({
-  status,
-  assigned_to,
-  type,
-  role_or_designation,
-  number_of_opportunities,
-  department_or_team,
-  salary,
-  compensation_type,
-  skills_required,
-  role_description,
-  address,
-  medha_area,
-  state,
-  city,
-  pin_code,
-  district,
+    status,
+    assigned_to,
+    type,
+    role_or_designation,
+    number_of_opportunities,
+    department_or_team,
+    salary,
+    compensation_type,
+    skills_required,
+    role_description,
+    address,
+    medha_area,
+    state,
+    city,
+    pin_code,
+    district,
 });

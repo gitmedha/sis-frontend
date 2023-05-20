@@ -21,7 +21,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
 import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
 import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
@@ -34,7 +34,7 @@ const Styled = styled.div`
     padding: 0px 20px !important;
   }
 }
-`
+`;
 
 const Student = (props) => {
   const studentId = props.match.params.id;
@@ -60,15 +60,15 @@ const Student = (props) => {
 
     // need to remove some data from payload
     let {id, show, CV, cv_file, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
+    dataToSave["date_of_birth"] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : "";
 
-    if (typeof data.logo === 'object') {
-      dataToSave['logo'] = data.logo?.id;
+    if (typeof data.logo === "object") {
+      dataToSave["logo"] = data.logo?.id;
     }
 
     if (cv_file) {
       uploadFile(data.cv_file).then(data => {
-        dataToSave['CV'] = data.data.data.upload.id;
+        dataToSave["CV"] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
         console.log("CV_UPLOAD_ERR", err);
@@ -91,7 +91,7 @@ const Student = (props) => {
       getStudent();
     });
     setModalShow(false);
-  }
+  };
 
   const handleDelete = async () => {
     NP.start();
@@ -118,7 +118,7 @@ const Student = (props) => {
       setShowDeleteAlert(false);
       NP.done();
       history.push("/student/".id);
-      getStudent()
+      getStudent();
     });
   };
 
@@ -146,7 +146,7 @@ const Student = (props) => {
     }).catch(err => {
       console.log("getStudentProgramEnrollments Error", err);
     });
-  }
+  };
 
   const getEmploymentConnections = async () => {
     getStudentEmploymentConnections(studentId).then(data => {
@@ -156,7 +156,7 @@ const Student = (props) => {
     }).catch(err => {
       console.log("getStudentEmploymentConnections Error", err);
     });
-  }
+  };
 
   const getAlumniServices = async () => {
     getStudentAlumniServices(studentId).then(data => {
@@ -165,35 +165,35 @@ const Student = (props) => {
     }).catch(err => {
       console.log("Error in getting alumni services: ", err);
     });
-  }
+  };
 
   const updateEmploymentConnectionsBadge = (employmentConnections) => {
-    let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Job');
-    let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship');
+    let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === "Job");
+    let internshipEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === "Internship");
     setEmploymentConnectionsBadge(
       <>
         <Tooltip  placement="top" title="Internships">
           <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
         </Tooltip>
-        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipEmploymentConnections.length}</span>
+        <span style={{margin: "0 20px 0 10px", color: "#FFFFFF", fontSize: "16px"}}>{internshipEmploymentConnections.length}</span>
         <Tooltip placement="top" title="Jobs">
           <FaBriefcase width="15" color="#D7D7E0" />
         </Tooltip>
-        <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobEmploymentConnections.length}</span>
+        <span style={{margin: "0 0 0 10px", color: "#FFFFFF", fontSize: "16px"}}>{jobEmploymentConnections.length}</span>
       </>
     );
-  }
+  };
 
   let activestep = 0;
   switch(student.status){
     case "Certified":
-      activestep = 1
+      activestep = 1;
       break;
     case "Internship Complete":
-      activestep=2
+      activestep=2;
       break;
     case "Placement Complete":
-      activestep =3
+      activestep =3;
       break;
   }
 
@@ -210,7 +210,7 @@ const Student = (props) => {
     return (
       <Styled>
       <>
-        <div className="row" style={{margin: '30px 0 0'}}>
+        <div className="row" style={{margin: "30px 0 0"}}>
           <div className="col-12">
             <button
               onClick={() => setModalShow(true)}
@@ -224,7 +224,7 @@ const Student = (props) => {
             </button>}
           </div>
           <div style={{margin:"0px 0px 20px 0px"}}>
-           <ProgressBar steps={['Registered', 'Certified','Internship Complete','Placement Complete']} activeStep={activestep} />
+           <ProgressBar steps={["Registered", "Certified","Internship Complete","Placement Complete"]} activeStep={activestep} />
           </div>
         </div>
         <Collapsible

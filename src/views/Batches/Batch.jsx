@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from "react-bootstrap";
 import { isAdmin } from "../../common/commonFunctions";
 
 import {
@@ -22,7 +22,7 @@ import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
 
 const Styled = styled.div`
@@ -36,7 +36,7 @@ const Styled = styled.div`
     padding: 0px 20px !important;
   }
 }
-`
+`;
 
 const Batch = (props) => {
   const [batchProgramEnrollments, setBatchProgramEnrollments] = useState([]);
@@ -66,7 +66,7 @@ const Batch = (props) => {
     }
   };
 
-  const getSessions = async (sortBy = 'created_at', sortOrder = 'desc') => {
+  const getSessions = async (sortBy = "created_at", sortOrder = "desc") => {
     getBatchSessions(batchID, sortBy, sortOrder).then(async data => {
       await getAttendanceStats(data.data.data.sessionsConnection.values);
     }).catch(err => {
@@ -97,7 +97,7 @@ const Batch = (props) => {
           present: matchedAttPercentage?.present,
           percent: matchedAttPercentage?.percent,
         };
-      })
+      });
 
       await setSessions(sessionsList);
     }).catch(err => {
@@ -105,7 +105,7 @@ const Batch = (props) => {
     });
   };
 
-  const getStudents = async (sortBy = 'student.full_name', sortOrder = 'desc') => {
+  const getStudents = async (sortBy = "student.full_name", sortOrder = "desc") => {
     try {
       const batchID = props.match.params.id;
       let { data } = await queryBuilder({
@@ -117,14 +117,14 @@ const Batch = (props) => {
       });
       let studentsData = data.programEnrollmentsConnection.values;
       getBatchStudentAttendances(batchID).then(data => {
-        let sessionCount= data.data.data.sessionsConnection.aggregate.count
+        let sessionCount= data.data.data.sessionsConnection.aggregate.count;
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
           return {
             ...student,
             attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
-          }
+          };
         });
         setStudents(studentsWithAttendance);
       });
@@ -136,7 +136,7 @@ const Batch = (props) => {
   const markAsCertified = async () => {
     NP.start();
     updateBatch(batch.id, {
-      status: 'Certified'
+      status: "Certified"
     }).then(data => {
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
@@ -147,12 +147,12 @@ const Batch = (props) => {
       await getThisBatch();
       await getProgramEnrollments();
     });
-  }
+  };
 
   const generateCertificates = async () => {
     NP.start();
     batchGenerateCertificates(batch.id, {
-      status: 'Complete'
+      status: "Complete"
     }).then(data => {
       setAlert("Certificate generation in progress. Please check after some time.", "success");
     }).catch(err => {
@@ -163,12 +163,12 @@ const Batch = (props) => {
       await getThisBatch();
       await getProgramEnrollments();
     });
-  }
+  };
 
   const emailCertificates = async () => {
     NP.start();
     batchEmailCertificates(batch.id, {
-      status: 'Certified'
+      status: "Certified"
     }).then(data => {
       setAlert("Emails sent successfully.", "success");
     }).catch(err => {
@@ -179,7 +179,7 @@ const Batch = (props) => {
       await getThisBatch();
       await getProgramEnrollments();
     });
-  }
+  };
 
   const done = () => getThisBatch();
 
@@ -192,22 +192,22 @@ const Batch = (props) => {
     let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
 
     if(data.institution === null){
-      dataToSave['institution'] = null
+      dataToSave["institution"] = null;
     } 
-    else if (typeof data.institution === 'object') {
-      dataToSave['institution'] = Number(data.institution?.id);
+    else if (typeof data.institution === "object") {
+      dataToSave["institution"] = Number(data.institution?.id);
     }
-    if (typeof data.program === 'object') {
-      dataToSave['program'] = Number(data.program?.id);
+    if (typeof data.program === "object") {
+      dataToSave["program"] = Number(data.program?.id);
     }
-    if (typeof data.grant === 'object') {
-      dataToSave['grant'] = Number(data.grant?.id);
+    if (typeof data.grant === "object") {
+      dataToSave["grant"] = Number(data.grant?.id);
     }
-    if (typeof data.assigned_to === 'object') {
-      dataToSave['assigned_to'] = Number(data.assigned_to?.id);
+    if (typeof data.assigned_to === "object") {
+      dataToSave["assigned_to"] = Number(data.assigned_to?.id);
     }
-    dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
-    dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
+    dataToSave["start_date"] = moment(data.start_date).format("YYYY-MM-DD");
+    dataToSave["end_date"] = moment(data.end_date).format("YYYY-MM-DD");
 
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
@@ -253,7 +253,7 @@ const Batch = (props) => {
   const handleSessionDataUpdate = async () => {
     await getSessions();
     await getStudents();
-  }
+  };
 
   const getProgramEnrollments = async () => {
     getBatchProgramEnrollments(batchID).then(data => {
@@ -262,7 +262,7 @@ const Batch = (props) => {
     }).catch(err => {
       console.log("getInstitutionProgramEnrollments Error", err);
     });
-  }
+  };
 
   if (isLoading) {
     return <SkeletonLoader />;
@@ -270,7 +270,7 @@ const Batch = (props) => {
     return (
       <Styled>
         <>
-          <div className="row" style={{margin: '30px 0 0'}}>
+          <div className="row" style={{margin: "30px 0 0"}}>
             <div className="col-12">
               <button
                 onClick={() => setModalShow(true)}
@@ -301,7 +301,7 @@ const Batch = (props) => {
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"
                     >
-                      <FaCheckCircle size="20" color={batch?.status === 'Certified' ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <FaCheckCircle size="20" color={batch?.status === "Certified" ? "#207B69" : "#E0E0E8"} className="mr-2" />
                       <span>&nbsp;&nbsp;Mark as Certified</span>
                     </Dropdown.Item>
                     <Dropdown.Item
@@ -310,7 +310,7 @@ const Batch = (props) => {
                     >
                       <FaCheckCircle
                         size="20"
-                        color={batch?.status === 'Certified' && batch?.certificates_generated_at ? '#207B69' : '#E0E0E8'}
+                        color={batch?.status === "Certified" && batch?.certificates_generated_at ? "#207B69" : "#E0E0E8"}
                         className="mr-2"
                       />
                       <span>&nbsp;&nbsp;Generate Certificates</span>
@@ -321,7 +321,7 @@ const Batch = (props) => {
                     >
                       <FaCheckCircle
                         size="20"
-                        color={batch?.status === 'Certified' && batch?.certificates_emailed_at > batch?.certificates_generated_at ? '#207B69' : '#E0E0E8'}
+                        color={batch?.status === "Certified" && batch?.certificates_emailed_at > batch?.certificates_generated_at ? "#207B69" : "#E0E0E8"}
                         className="mr-2"
                       />
                       <span>&nbsp;&nbsp;Email Certificates</span>

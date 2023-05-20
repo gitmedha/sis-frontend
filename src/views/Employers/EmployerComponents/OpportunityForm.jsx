@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from 'formik';
+import { Formik, FieldArray, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -47,7 +47,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
@@ -132,15 +132,15 @@ const OpportunityForm = (props) => {
     employer: employer,
     employer_name: employer.name,
     assigned_to: userId.toString(),
-    role_or_designation: '',
-    type: '',
-    compensation_type: '',
-    number_of_opportunities: '',
-    status: 'active',
-    department_or_team: '',
-    salary: '',
-    role_description: '',
-    skills_required: '',
+    role_or_designation: "",
+    type: "",
+    compensation_type: "",
+    number_of_opportunities: "",
+    status: "active",
+    department_or_team: "",
+    salary: "",
+    role_description: "",
+    skills_required: "",
     address: employer.address,
     city: employer.city,
     state: employer.state,
@@ -150,9 +150,9 @@ const OpportunityForm = (props) => {
   };
 
   if (props.id) {
-    initialValues = {...props}
-    initialValues['assigned_to'] = props.assigned_to ? props.assigned_to.id : '';
-    initialValues['employer'] = props.employer ? Number(props.employer.id) : '';
+    initialValues = {...props};
+    initialValues["assigned_to"] = props.assigned_to ? props.assigned_to.id : "";
+    initialValues["employer"] = props.employer ? Number(props.employer.id) : "";
   }
 
   return (
@@ -171,7 +171,7 @@ const OpportunityForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.role_or_designation : 'Add New Opportunity'}
+            {props.id ? props.role_or_designation : "Add New Opportunity"}
           </h1>
         </Modal.Title>
       </Modal.Header>

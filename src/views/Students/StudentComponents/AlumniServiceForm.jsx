@@ -1,13 +1,14 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
-import Textarea from '../../../utils/Form/Textarea';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { getStudentsPickList } from "./StudentActions";
+import Textarea from "../../../utils/Form/Textarea";
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+
 import * as Yup from "yup";
 
 const Section = styled.div`
@@ -35,8 +36,8 @@ const AlumniServiceForm = (props) => {
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
   const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.alumniService ? props.alumniService.fee_submission_date : null);
-  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : '');
-  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
+  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : "");
+  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : "");
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
   const [peerLearningOptions, setPeerLearningOptions] = useState([]);
@@ -46,19 +47,21 @@ const AlumniServiceForm = (props) => {
   const [ideationClubOptions, setIdeationClubOptions] = useState([]);
   const [givebackOptions , setGivebackOptions] = useState([]);
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
-  const [selectedYouthLeadership, setSelectedYouthLeadership] = useState('');
-  const [selectedPeerLearning, setSelectedPeerLearning] = useState('');
-  const [selectedIdeationClub, setSelectedIdeationClub] = useState('');
-  const [selectedGiveback, setSelectedGiveback] = useState('');
+  const [selectedYouthLeadership, setSelectedYouthLeadership] = useState("");
+  const [selectedPeerLearning, setSelectedPeerLearning] = useState("");
+  const [selectedIdeationClub, setSelectedIdeationClub] = useState("");
+  const [selectedGiveback, setSelectedGiveback] = useState("");
 
   useEffect(() => {
     if (props.alumniService) {
       setSelectedCategory(props.alumniService ? props.alumniService.category : "");
     }
   },[props.alumniService,show]);
+
+/* eslint-disable */
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
@@ -70,6 +73,8 @@ const AlumniServiceForm = (props) => {
       setGivebackOptions(data.giveback.map((item)=> ({value: item.value, label: item.value})));
     });
   }, []);
+
+/* eslint-enable */
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -86,32 +91,32 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string().nullable().required("Fee submission date is required.");
     let fee_amount = Yup.string().required("Fee amount is required.");
     let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
+    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== "") || (feeAmountValue !== null && feeAmountValue !== "") || (receiptNumberValue !== null && receiptNumberValue !== "");
     setFeeFieldsRequired(fieldsRequired);
     if (fieldsRequired) {
       setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
     } else {
-      setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
+      setValidationRules(AlumniServiceValidations.omit(["fee_submission_date", "fee_amount", "receipt_number"]));
     }
   }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
 
   useEffect(() => {
     setFeeSubmissionDateValue(props.alumniService ? props.alumniService.fee_submission_date : null);
-    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : '');
-    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : '');
+    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : "");
+    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : "");
   }, [props]);
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    type:'',
-    location:'',
-    receipt_number:'',
-    fee_amount:'',
-    comments:'',
+    type:"",
+    location:"",
+    receipt_number:"",
+    fee_amount:"",
+    comments:"",
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id'),
+    assigned_to: localStorage.getItem("user_id"),
     category: null,
     peer_learning: null,
     giveback: null,
@@ -121,11 +126,12 @@ const AlumniServiceForm = (props) => {
 
   if (props.alumniService) {
     initialValues = {...initialValues, ...props.alumniService};
-    initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
-    initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
-    initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
-    initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
-    initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
+    initialValues["assigned_to"] = props.alumniService?.assigned_to?.id;
+    initialValues["start_date"] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
+    initialValues["end_date"] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
+    initialValues["fee_submission_date"] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
+    initialValues["category"] = props.alumniService.category ? props.alumniService.category : null;
+
   }
 
   const onSubmit = async (values) => {
@@ -140,32 +146,32 @@ const AlumniServiceForm = (props) => {
 
   useEffect(()=>{
     switch (selectedCategory) {
-      case 'Youth Leadership':
+      case "Youth Leadership":
         setSelectedYouthLeadership(selectedSubCategory);
         setSelectedPeerLearning("");
         setSelectedGiveback("");
         setSelectedIdeationClub("");
         break;
       case "Peer Learning":
-        setSelectedPeerLearning(selectedSubCategory)
+        setSelectedPeerLearning(selectedSubCategory);
         setSelectedYouthLeadership("");
         setSelectedGiveback("");
         setSelectedIdeationClub("");
         break;
       case  "Ideation Club":
-        setSelectedIdeationClub(selectedSubCategory)
+        setSelectedIdeationClub(selectedSubCategory);
         setSelectedYouthLeadership("");
         setSelectedGiveback("");
         setSelectedPeerLearning("");
         break;
       case "Giveback":
-        setSelectedGiveback(selectedSubCategory)
+        setSelectedGiveback(selectedSubCategory);
         setSelectedYouthLeadership("");
         setSelectedIdeationClub("");
         setSelectedPeerLearning("");
         break;
     }
-  },[selectedSubCategory])
+  },[selectedSubCategory]);
 
   
   let subCategoryName;
@@ -173,26 +179,26 @@ const AlumniServiceForm = (props) => {
   let subCategoryOptions = [];
 
   switch (selectedCategory) {
-    case 'Youth Leadership':
-      subCategoryName = 'youth_leadership';
-      subCategoryLabel = 'Youth Leadership';
+    case "Youth Leadership":
+      subCategoryName = "youth_leadership";
+      subCategoryLabel = "Youth Leadership";
       subCategoryOptions = youthLeadershipOptions;
 
       break;
     case "Peer Learning":
-      subCategoryName = 'peer_learning';
+      subCategoryName = "peer_learning";
       subCategoryLabel = "Peer Learning";
       subCategoryOptions = peerLearningOptions;
 
       break;
     case "Ideation Club":
-        subCategoryName = 'ideation_club';
+        subCategoryName = "ideation_club";
         subCategoryLabel = "Ideation Club";
         subCategoryOptions = ideationClubOptions;
 
         break;
     case "Giveback":
-        subCategoryName = 'giveback';
+        subCategoryName = "giveback";
         subCategoryLabel = "Giveback";
         subCategoryOptions = givebackOptions;
 
@@ -215,7 +221,7 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Service
+            {props.alumniService && props.alumniService.id ? "Update" : "Add New"} Alumni Service
           </h1>
         </Modal.Title>
       </Modal.Header>

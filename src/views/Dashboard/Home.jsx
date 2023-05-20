@@ -57,8 +57,8 @@ const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const userId = Number(localStorage.getItem("user_id")) || 2;
-  const state = localStorage.getItem('user_state');
-  const area = localStorage.getItem('user_area');
+  const state = localStorage.getItem("user_state");
+  const area = localStorage.getItem("user_area");
   const [userState, setUserState] = useState({});
 
   useEffect(() => {
@@ -82,22 +82,22 @@ const Home = () => {
   const updateMyDataMetrics = async () => {
     setLoading(true);
     const myDataMetrics = {};
-    await getMyDataMetrics(userId, 'registrations').then(data => {
-      myDataMetrics['registrations'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+    await getMyDataMetrics(userId, "registrations").then(data => {
+      myDataMetrics["registrations"] = data.data.data.programEnrollmentsConnection.aggregate.count;
     });
-    await getMyDataMetrics(userId, 'certifications').then(data => {
-      myDataMetrics['certifications'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+    await getMyDataMetrics(userId, "certifications").then(data => {
+      myDataMetrics["certifications"] = data.data.data.programEnrollmentsConnection.aggregate.count;
     });
-    await getMyDataMetrics(userId, 'internships').then(data => {
-      myDataMetrics['internships'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+    await getMyDataMetrics(userId, "internships").then(data => {
+      myDataMetrics["internships"] = data.data.data.employmentConnectionsConnection.aggregate.count;
     });
-    await getMyDataMetrics(userId, 'placements').then(data => {
-      myDataMetrics['placements'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+    await getMyDataMetrics(userId, "placements").then(data => {
+      myDataMetrics["placements"] = data.data.data.employmentConnectionsConnection.aggregate.count;
     });
 
     setUserState(myDataMetrics);
     setLoading(false);
-  }
+  };
 
   const getMyStateMetrics = async () => {
     setLoading(true);
@@ -154,8 +154,8 @@ const Home = () => {
   };
 
   const clearState = () => {
-    setUserState('');
-  }
+    setUserState("");
+  };
 
   return (
     <DashboardStyled className="container-fluid">
@@ -187,7 +187,7 @@ const Home = () => {
               type="danger"
               value={userState.certifications? userState.certifications :"0" }
               title="Certifications"
-              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + '% of Registrations'}
+              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + "% of Registrations"}
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>

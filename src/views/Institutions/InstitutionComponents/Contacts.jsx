@@ -4,27 +4,27 @@ import { Anchor } from "../../../components/content/Utils";
 
 const Contacts = ({ contacts }) => {
   contacts = contacts.map((contact) => {
-    contact.email_id = <Anchor text={contact.email} href={'mailto:' + contact.email} />;
+    contact.email_id = <Anchor text={contact.email} href={"mailto:" + contact.email} />;
     return contact;
   });
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Full Name',
-        accessor: 'full_name',
+        Header: "Full Name",
+        accessor: "full_name",
       },
       {
-        Header: 'Designation',
-        accessor: 'designation',
+        Header: "Designation",
+        accessor: "designation",
       },
       {
-        Header: 'Email',
-        accessor: 'email_id',
+        Header: "Email",
+        accessor: "email_id",
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
+        Header: "Phone",
+        accessor: "phone",
       },
     ],
     []
