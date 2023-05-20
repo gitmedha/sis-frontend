@@ -46,10 +46,10 @@ const useColorlibStepIconStyles = makeStyles({
     alignItems: "center",
   },
   active: {
-    backgroundColor: '#257b69',
+    backgroundColor: "#257b69",
   },
   completed: {
-    backgroundColor: '#257b69',
+    backgroundColor: "#257b69",
   },  
 });
 

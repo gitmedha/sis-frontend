@@ -236,25 +236,25 @@ const SearchHits = props => {
     });
     switch (searchIndex) {
 
-      case 'employers':
-        window.open(`/employer/${hit.id}`, "_blank")
+      case "employers":
+        window.open(`/employer/${hit.id}`, "_blank");
         break;
 
-      case 'batches':
-        window.open(`/batch/${hit.id}`, "_blank")
+      case "batches":
+        window.open(`/batch/${hit.id}`, "_blank");
         break;
 
-      case 'institutions':
-        window.open(`/institution/${hit.id}`, "_blank")
+      case "institutions":
+        window.open(`/institution/${hit.id}`, "_blank");
         break;
       
-      case 'opportunities':
-        window.open(`/opportunity/${hit.id}`, "_blank")
+      case "opportunities":
+        window.open(`/opportunity/${hit.id}`, "_blank");
         break;
 
       case "students":
       default:
-        window.open(`/student/${hit.id}`, "_blank")
+        window.open(`/student/${hit.id}`, "_blank");
         
         break;
     }

@@ -71,13 +71,13 @@ const AlumniService = (props) => {
   }, [props]);
 
   const selectedCategory = props.alumniService.category;
-  let subCategoryLabel = '';
+  let subCategoryLabel = "";
 
   switch (selectedCategory) {
     case "Youth Leadership":
       subCategoryLabel = alumniService.youth_leadership;
       break;
-    case 'Peer Learning':
+    case "Peer Learning":
       subCategoryLabel = alumniService.peer_learning;
       break;
     case "Ideation Club":

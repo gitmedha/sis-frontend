@@ -135,8 +135,8 @@ const StudentForm = (props) => {
     district:"",
     logo:"",
     registered_by:userId.toString(),
-    how_did_you_hear_about_us: '',
-    how_did_you_hear_about_us_other: '',
+    how_did_you_hear_about_us: "",
+    how_did_you_hear_about_us_other: "",
   };
 
   let fileName = "";
@@ -364,7 +364,7 @@ const StudentForm = (props) => {
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
-                  {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
+                  {selectedHowDidYouHearAboutUs?.toLowerCase() === "other" && <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="how_did_you_hear_about_us_other"
                       label="If Other, Specify"
