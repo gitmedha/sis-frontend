@@ -148,11 +148,15 @@ const Students = (props) => {
     if (sortBy.length) {
       let sortByField = 'full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
+    
       switch (sortBy[0].id) {
         case 'status':
         case 'phone':
         case 'city':
         case 'id':
+        case "medha_area":
+        case "student_id":
+        case "assigned_to.username":
         case 'course_type_latest':
           sortByField = sortBy[0].id;
           break;
