@@ -91,6 +91,7 @@ const Employers = (props) => {
       variables,
     })
     .then(data => {
+
       setEmployers(data?.data?.data?.employersConnection.values);
       setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
     })
@@ -128,6 +129,8 @@ const Employers = (props) => {
       switch (sortBy[0].id) {
         case 'employer':
         case 'industry':
+        case 'assigned_to.username':
+        case "district":
           sortByField = sortBy[0].id;
           break;
 
