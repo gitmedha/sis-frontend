@@ -32,7 +32,7 @@ const salary_offered = Yup.number().nullable().required("Salary Offered is requi
                           .min(0, 'Min value 0.')
                           .max(1000000, 'Salary should be in range of between 0 to 10 Lakh.');
 
-const number_of_internship_hours = Yup.number().required("Intership Hour is required.").positive().integer()
+const number_of_internship_hours = Yup.number().required("Intership Hour are required.").positive().integer()
 
 // Student form fields.
 const full_name  = Yup.string().required("Name is required.");
