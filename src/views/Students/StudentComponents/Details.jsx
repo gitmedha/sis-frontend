@@ -120,6 +120,16 @@ const Details = (props) => {
   const [pickList, setPickList] = useState([]);
   const studentStatusData = studentStatusOptions.find(option => option.picklistMatch.toLowerCase() === status?.toLowerCase());
 
+  const capitalizeWords=(str) =>{
+    const words = str?.split(" ");
+    const capitalizedWords = words?.map(word => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+
+    const capitalizedString = capitalizedWords?.join(" ");
+    return capitalizedString ? capitalizedString:[];
+  }
+ 
   useEffect(() => {
     getStudentsPickList().then(data => {
       setPickList(data);
@@ -141,7 +151,7 @@ const Details = (props) => {
       <div className="container-fluid my-3">
         <div className="row latto-regular">
           <div className="col-md-5">
-            <DetailField label="Name" value={full_name} />
+            <DetailField label="Name" value={capitalizeWords(full_name)} />
             <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
             <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : '-'} />
