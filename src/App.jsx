@@ -37,7 +37,13 @@ import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+<<<<<<< Updated upstream
 import { isAdmin, isPartnership, isSRM } from "./common/commonFunctions";
+=======
+import { isAdmin, isSRM } from "./common/commonFunctions";
+import operations from "./views/Operations/Operations";
+import Operation from "./views/Operations/Operation";
+>>>>>>> Stashed changes
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -171,6 +177,9 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
+                    <PrivateRoute path="/Ops" exact component={operations} />
+                    {/* <PrivateRoute path="/Ops" exact component={Operation} /> */}
+
                   </>
                   }
                   <Route path='/404-page' component={PageNotFound} />

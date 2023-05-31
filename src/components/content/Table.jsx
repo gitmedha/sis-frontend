@@ -111,6 +111,11 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
   }
 
   React.useEffect(() => {
+    console.log("getTableBodyProps---------------->",columns);
+  }, []);
+
+
+  React.useEffect(() => {
     fetchData(pageIndex, pageSize, sortBy);
   }, [fetchData, pageIndex, pageSize, sortBy]);
 
