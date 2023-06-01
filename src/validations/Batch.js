@@ -54,7 +54,11 @@ export const BatchValidations = Yup.object({
   end_date,
   start_date,
   assigned_to,
-  per_student_fees,
+  per_student_fees : Yup.string().nullable().when("mode_of_payment",{
+    is:(mode_of_payment) => mode_of_payment === "Free",
+    then:Yup.string().nullable().optional(),
+    otherwise:Yup.string().required("Fees per student is required.")
+  }),
   mode_of_payment,
   // name_in_current_sis,
   number_of_sessions_planned,
@@ -64,22 +68,6 @@ export const BatchValidations = Yup.object({
   enrollment_type,
 });
 
-export const alterBatchValidations = Yup.object({
-  name,
-  grant,
-  status,
-  program,
-  end_date,
-  start_date,
-  assigned_to,
-  mode_of_payment,
-  // name_in_current_sis,
-  number_of_sessions_planned,
-  seats_available,
-  state,
-  medha_area,
-  enrollment_type,
-})
 
 export const ProgramEnrollmentValidations = Yup.object({
   student,

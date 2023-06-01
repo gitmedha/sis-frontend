@@ -68,6 +68,7 @@ const BatchForm = (props) => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+
   }, []);
 
   const filterGrant = async (filterValue) => {
@@ -125,18 +126,11 @@ const BatchForm = (props) => {
         // otherwise return only those status that are applicable to all
         return status['applicable-to'] === 'All';
       });
-      
-      
-      
-
-
 
       setPaymentOptions(data.mode_of_payment.map(modeOfPayment => ({
         value: modeOfPayment.value,
         label: modeOfPayment.value
       })));
-
-     
 
       setStatusOptions(filteredStatusOptions.map(status => ({
         key: status.value,
@@ -267,7 +261,10 @@ const getModeOfPayment = (event) =>{
       centered
       size="lg"
       show={show}
-      onHide={onHide}
+      onHide={async()=>{
+        await setModeOfPayment()
+        onHide()
+      }}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
@@ -286,7 +283,7 @@ const getModeOfPayment = (event) =>{
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={modeOfPayment == "Free"?alterBatchValidations:BatchValidations}
+          validationSchema={BatchValidations}
         >
           {({ values, setFieldValue }) => (
             <Form>
