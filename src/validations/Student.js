@@ -96,6 +96,7 @@ export const EmploymentConnectionValidations = Yup.object({
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
   work_engagement,
+  assigned_to
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
