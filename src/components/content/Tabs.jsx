@@ -33,7 +33,7 @@ const Tabs = ({ options, onTabChange }) => {
 
   const handleClick = (index) => {
     setActiveTab(index);
-    console.log("options--------------->1",options);
+    console.log("options--------------->1",index);
     onTabChange(options[index]);
   };
 

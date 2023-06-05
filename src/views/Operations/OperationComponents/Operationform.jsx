@@ -1,0 +1,460 @@
+import { Formik, Form } from 'formik';
+import { Modal, Table } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
+import { useState, useEffect } from "react";
+import { FaSchool } from "react-icons/fa";
+import { Input } from "../../../utils/Form";
+import { StudentValidations } from "../../../validations";
+import { urlPath } from "../../../constants";
+import { getStudentsPickList } from './StudentActions';
+import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
+
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #C4C4C4;
+  }
+
+  .section-header {
+    color: #207B69;
+    font-family: 'Latto-Regular';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
+
+const Operationform = (props) => {
+  let { onHide, show } = props;
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [genderOptions, setGenderOptions] = useState([]);
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
+  const [howDidYouHearAboutUsOptions, setHowDidYouHearAboutUsOptions] = useState([]);
+  const [selectedHowDidYouHearAboutUs, setSelectedHowDidYouHearAboutUs] = useState(props?.how_did_you_hear_about_us);
+  const [logo, setLogo] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
+  const userId = parseInt(localStorage.getItem('user_id'))
+  const medhaChampionOptions = [
+    { key: true, value: true, label: "Yes" },
+    { key: false, value: false, label: "No" },
+  ];
+  const interestedInEmploymentOpportunitiesOptions = [
+    { key: true, value: true, label: "Yes" },
+    { key: false, value: false, label: "No" },
+  ];
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    getStudentsPickList().then(data => {
+      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
+    });
+
+    getAddressOptions().then(data => {
+      setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
+        key: state.id,
+        label: state.key,
+        value: state.key,
+      })).sort((a, b) => a.label.localeCompare(b.label)));
+
+      if (props.state) {
+        onStateChange({ value: props.state });
+      }
+    });
+
+    setShowCVSubLabel(props.CV && props.CV.url);
+
+  }, [props]);
+
+  const onStateChange = value => {
+    setDistrictOptions([]);
+    getStateDistricts(value).then(data => {
+      setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
+        key: district.id,
+        label: district.key,
+        value: district.key,
+      })).sort((a, b) => a.label.localeCompare(b.label)));
+      setAreaOptions([]);
+      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+        key: area.id,
+        label: area.key,
+        value: area.key,
+      })).sort((a, b) => a.label.localeCompare(b.label)));
+    });
+  };
+
+  const onSubmit = async (values) => {
+    if (logo) {
+      values.logo = logo;
+    }
+    setDisableSaveButton(true);
+    await onHide(values);
+    setDisableSaveButton(false);
+  };
+
+  let initialValues = {
+    institution: '',
+    batch: '',
+    full_name: '',
+    phone: '',
+    alternate_phone: '',
+    name_of_parent_or_guardian: '',
+    category: '',
+    email: '',
+    gender: '',
+    assigned_to: userId.toString(),
+    status: '',
+    income_level: '',
+    date_of_birth: '',
+    city: '',
+    pin_code: '',
+    medha_area: '',
+    address: '',
+    state: '',
+    district: '',
+    logo: '',
+    registered_by: userId.toString(),
+    how_did_you_hear_about_us: '',
+    how_did_you_hear_about_us_other: '',
+  };
+
+  let fileName = '';
+  if (props.id) {
+    initialValues = { ...props };
+    initialValues['date_of_birth'] = new Date(props?.date_of_birth);
+    initialValues['assigned_to'] = props?.assigned_to?.id;
+    initialValues['registered_by'] = props?.registered_by?.id;
+    initialValues['district'] = props.district ? props.district : null;
+    initialValues['medha_area'] = props.medha_area ? props.medha_area : null;
+
+    if (props.CV && props.CV.url) {
+      const cvUrlSplit = props.CV.url.split('/');
+      fileName = cvUrlSplit[cvUrlSplit.length - 1];
+    }
+  }
+
+  return (
+    <Modal
+      centered
+      size="xl"
+      responsive
+      // fullscreen={true}
+      show={show}
+      onHide={onHide}
+      animation={false}
+      aria-labelledby="contained-modal-title-vcenter"
+      className="form-modal"
+    >
+      <Modal.Header className="bg-white">
+        <Modal.Title
+          id="contained-modal-title-vcenter "
+          className="d-flex align-items-center justify-content-between"
+        >
+
+
+          <div className='d-flex justify-content-between'>
+            {/* <h2 className="section-header">Basic Info</h2> */}
+            <div className='d-flex '>
+              {props.id && props.logo ? (
+                <img src={urlPath(props.logo.url)} className="avatar mr-2" alt="Student Profile" />
+              ) : (
+                <div className="flex-row-centered avatar avatar-default mr-2">
+                  <FaSchool size={25} />
+                </div>
+              )}
+              <h2 className="text--primary bebas-thick mb-0">
+                {props.id ? props.full_name : 'Add New Data'}
+              </h2>
+            </div>
+
+            <div className="d-flex justify-content-start between_class">
+              <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
+              <button
+                type="button"
+                onClick={onHide}
+                className="btn btn-secondary btn-regular mr-2"
+              >
+                CANCEL
+              </button>
+
+            </div>
+          </div>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="bg-white">
+        <Formik
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validationSchema={StudentValidations}
+        >
+          {({ values, setFieldValue }) => (
+            <Form>
+              <Section>
+                <div className='d-flex justify-content-between'>
+                  <h2 className="section-header">Basic Info</h2>
+
+
+                </div>
+
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Assigned To</th>
+                      <th>Activity type</th>
+                      <th>Instution</th>
+                      <th>Area</th>
+                      <th>State</th>
+                      <th>State</th>
+                      <th>State</th>
+                      <th>State</th>
+                      <th>State</th>
+                      <th>State</th>
+                      <th>State</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+                </Table>
+
+              </Section>
+
+
+
+
+            </Form>
+          )}
+        </Formik>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export default Operationform;
+
+
+
+// {/* <div className="row">
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="full_name"
+//     label="Name"
+//     required
+//     control="input"
+//     placeholder="Name"
+//     className="form-control"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
+// {/* {statusOptions.length ? ( */}
+// {/* <Input
+//       control="lookupAsync"
+//       name="assigned_to"
+//       label="Assigned To"
+//       required
+//       className="form-control"
+//       placeholder="Assigned To"
+//       filterData={filterAssignedTo}
+//       defaultOptions={assigneeOptions}
+//     /> */}
+// {/* ) : ( */}
+// {/* <Skeleton count={1} height={45} /> */}
+// {/* )} */}
+// {/* </div>  */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="name_of_parent_or_guardian"
+//     label="Parents Name"
+//     required
+//     control="input"
+//     placeholder="Parents Name"
+//     className="form-control"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
+// {/* {statusOptions.length ? ( */}
+// {/* <Input
+//       icon="down"
+//       control="lookup"
+//       name="status"
+//       label="Status"
+//       required
+//       options={statusOptions}
+//       className="form-control"
+//       placeholder="Status"
+//     /> */}
+// {/* ) : ( */}
+// {/* <Skeleton count={1} height={45} /> */}
+// {/* )} */}
+// {/* </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="phone"
+//     label="Phone"
+//     required
+//     control="input"
+//     placeholder="Phone"
+//     className="form-control"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="alternate_phone"
+//     label="Alternate Phone"
+//     control="input"
+//     placeholder="Phone"
+//     className="form-control"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     type="email"
+//     name="email"
+//     label="Email"
+//     // required
+//     control="input"
+//     placeholder="Email"
+//     className="form-control"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
+// {/* {genderOptions.length ? ( */}
+// {/* <Input
+//       icon="down"
+//       control="lookup"
+//       name="gender"
+//       label="Gender_1"
+//       required
+//       options={genderOptions}
+//       className="form-control"
+//       placeholder="Gender"
+//     /> */}
+// {/* ) : ( */}
+// {/* <Skeleton count={1} height={45} /> */}
+// {/* )} */}
+// {/* </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="date_of_birth"
+//     label="Date of Birth"
+//     required
+//     placeholder="Date of Birth"
+//     control="datepicker"
+//     className="form-control"
+//     autoComplete="off"
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
+// {/* {statusOptions.length ? ( */}
+// {/* <Input
+//       icon="down"
+//       control="lookup"
+//       name="category"
+//       label="Category"
+//       required
+//       options={categoryOptions}
+//       className="form-control"
+//       placeholder="Category"
+//     /> */}
+// {/* ) : ( */}
+// {/* <Skeleton count={1} height={45} /> */}
+// {/* )} */}
+// {/* </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
+// {/* {statusOptions.length ? ( */}
+// {/* <Input
+//       icon="down"
+//       control="lookup"
+//       name="income_level"
+//       label="Income Level (INR)"
+//       required
+//       options={incomeLevelOptions}
+//       className="form-control"
+//       placeholder="Income Level (INR)"
+//     /> */}
+// {/* ) : ( */}
+// {/* <Skeleton count={1} height={45} /> */}
+// {/* )} */}
+// {/* </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     control="lookupAsync"
+//     name="registered_by"
+//     label="Registered By"
+//     className="form-control"
+//     placeholder="Registered By"
+//     filterData={filterAssignedTo}
+//     defaultOptions={assigneeOptions}
+//     isDisabled={!isAdmin()}
+//   />
+// </div> */}
+// {/* <div className="col-md-6 col-sm-12 mb-2">
+//   {howDidYouHearAboutUsOptions.length ? (
+//     <Input
+//       icon="down"
+//       control="lookup"
+//       name="how_did_you_hear_about_us"
+//       label="How did you hear about us?"
+//       options={howDidYouHearAboutUsOptions}
+//       className="form-control"
+//       placeholder="How did you hear about us?"
+//       onChange={option => {
+//         setSelectedHowDidYouHearAboutUs(option.value);
+//       }}
+//       required
+//     />
+//   ) : (
+//     <Skeleton count={1} height={45} />
+//   )}
+// </div> */}
+// {/* {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
+//   <Input
+//     name="how_did_you_hear_about_us_other"
+//     label="If Other, Specify"
+//     control="input"
+//     placeholder="If Other, Specify"
+//     className="form-control"
+//     required
+//   />
+// </div>} */}
+// {/* {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
+//   <div className="col-md-6">
+//     <Input
+//       control="file"
+//       name="cv_upload"
+//       label="CV"
+//       subLabel={showCVSubLabel && <div className="mb-1">
+//         {fileName}
+//       </div>}
+//       className="form-control"
+//       placeholder="CV"
+//       accept=".pdf, .docx"
+//       onChange={(event) => {
+//         setFieldValue("cv_file", event.currentTarget.files[0]);
+//         setShowCVSubLabel(false);
+//       }}
+//     />
+//   </div>
+// </div>} */}
+// </div> */}
