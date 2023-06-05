@@ -1,6 +1,6 @@
 import api from "../../apis";
 import Tooltip from "./Tooltip";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
 import { FaSchool, FaUserGraduate, FaUserTie, FaBriefcase, FaChalkboardTeacher } from "react-icons/fa";
@@ -76,10 +76,7 @@ export const TitleWithLogo = connect(
     const capitalizedString = capitalizedWords?.join(" ");
     return capitalizedString ? capitalizedString:[];
   }
-  useEffect(() => {
-    console.log("title",title)
-    // capitalizeWords(title)
-  }, [])
+
 
   return (
     <div className="d-flex align-items-center justify-content-start mb-2">

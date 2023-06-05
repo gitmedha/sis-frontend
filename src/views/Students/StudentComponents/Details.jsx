@@ -152,7 +152,7 @@ const Details = (props) => {
         <div className="row latto-regular">
           <div className="col-md-5">
             <DetailField label="Name" value={capitalizeWords(full_name)} />
-            <DetailField label="Parents Name" value={name_of_parent_or_guardian} />
+            <DetailField label="Parents Name" value={capitalizeWords(name_of_parent_or_guardian)} />
             <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : '-'} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
