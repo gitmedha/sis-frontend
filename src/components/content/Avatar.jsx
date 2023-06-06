@@ -67,15 +67,6 @@ export const TitleWithLogo = connect(
     }
   };
 
-  const capitalizeWords=(str) =>{
-    const words = str?.split(" ");
-    const capitalizedWords = words?.map(word => {
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    });
-
-    const capitalizedString = capitalizedWords?.join(" ");
-    return capitalizedString ? capitalizedString:[];
-  }
 
 
   return (
@@ -108,8 +99,8 @@ export const TitleWithLogo = connect(
         </Tooltip>
       )}
 
-      <h1 className="bebas text--primary mr-3 align-self-center mt-2">
-        {capitalizeWords(title)}
+      <h1 className="bebas text--primary mr-3 align-self-center mt-2 capitalize">
+        {title?.toLowerCase() }
       </h1>
       <ChangeAvatarModal show={modalShow} onHide={modalCloseHandler} />
     </div>
