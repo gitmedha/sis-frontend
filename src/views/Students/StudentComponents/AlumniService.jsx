@@ -107,7 +107,7 @@ const AlumniService = (props) => {
                 <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
                 <DetailField label="Category" value={alumniService.category}/>
-                {props.alumniService.category &&  <DetailField label="Type" value={alumniService.type}/>}
+                {props.alumniService.category &&  <DetailField label="Subcategory" value={alumniService.type}/>}
               </div>
             </div>
           </FileStyled>
