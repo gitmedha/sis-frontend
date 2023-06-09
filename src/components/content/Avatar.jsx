@@ -1,6 +1,6 @@
 import api from "../../apis";
 import Tooltip from "./Tooltip";
-import { useState } from "react";
+import {  useState } from "react";
 import { Modal } from "react-bootstrap";
 import { urlPath } from "../../constants";
 import { FaSchool, FaUserGraduate, FaUserTie, FaBriefcase, FaChalkboardTeacher } from "react-icons/fa";
@@ -67,6 +67,8 @@ export const TitleWithLogo = connect(
     }
   };
 
+
+
   return (
     <div className="d-flex align-items-center justify-content-start mb-2">
       {logo && (
@@ -97,8 +99,8 @@ export const TitleWithLogo = connect(
         </Tooltip>
       )}
 
-      <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2">
-        {title}
+      <h1 className="bebas text--primary mr-3 align-self-center mt-2 capitalize">
+        {title?.toLowerCase() }
       </h1>
       <ChangeAvatarModal show={modalShow} onHide={modalCloseHandler} />
     </div>
