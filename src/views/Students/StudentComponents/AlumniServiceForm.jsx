@@ -39,20 +39,10 @@ const AlumniServiceForm = (props) => {
   const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
-  const [peerLearningOptions, setPeerLearningOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
-  const [youthLeadershipOptions, setYouthLeadershipOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
-  const [ideationClubOptions, setIdeationClubOptions] = useState([]);
-  const [givebackOptions , setGivebackOptions] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubCategory, setSelectedSubCategory] = useState('');
-
-  const [selectedYouthLeadership, setSelectedYouthLeadership] = useState('');
-  const [selectedPeerLearning, setSelectedPeerLearning] = useState('');
-  const [selectedIdeationClub, setSelectedIdeationClub] = useState('');
-  const [selectedGiveback, setSelectedGiveback] = useState('');
 
   useEffect(() => {
     if (props.alumniService) {
@@ -62,12 +52,9 @@ const AlumniServiceForm = (props) => {
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
-      setPeerLearningOptions(data.peer_learning.map((item)=> ({value: item.value, label: item.value})));
+      setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
       setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
-      setYouthLeadershipOptions(data.youth_leadership.map((item)=> ({value: item.value, label: item.value})));
       setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
-      setIdeationClubOptions(data.ideation_club.map((item)=> ({value: item.value, label: item.value})));
-      setGivebackOptions(data.giveback.map((item)=> ({value: item.value, label: item.value})));
     });
   }, []);
 
@@ -77,7 +64,6 @@ const AlumniServiceForm = (props) => {
     });
 
     getStudentsPickList().then((data) => {
-      setTypeOptions(data.alumni_service_type.map((item) => ({ key: item.value, value: item.value, label: item.value })));
       setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
@@ -103,8 +89,8 @@ const AlumniServiceForm = (props) => {
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    type:'',
     location:'',
+    program_mode:'',
     receipt_number:'',
     fee_amount:'',
     comments:'',
@@ -113,10 +99,7 @@ const AlumniServiceForm = (props) => {
     fee_submission_date: null,
     assigned_to: localStorage.getItem('user_id'),
     category: null,
-    peer_learning: null,
-    giveback: null,
-    ideation_club: null,
-    youth_leadership: null,
+    type:'',
   };
 
   if (props.alumniService) {
@@ -129,75 +112,8 @@ const AlumniServiceForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    onHide({
-      ...values,
-      peer_learning: selectedPeerLearning,
-      youth_leadership: selectedYouthLeadership,
-      ideation_club: selectedIdeationClub,
-      giveback: selectedGiveback,
-    });
+    onHide(values);
   };
-
-  useEffect(()=>{
-    switch (selectedCategory) {
-      case 'Youth Leadership':
-        setSelectedYouthLeadership(selectedSubCategory);
-        setSelectedPeerLearning("");
-        setSelectedGiveback("");
-        setSelectedIdeationClub("");
-        break;
-      case "Peer Learning":
-        setSelectedPeerLearning(selectedSubCategory)
-        setSelectedYouthLeadership("");
-        setSelectedGiveback("");
-        setSelectedIdeationClub("");
-        break;
-      case  "Ideation Club":
-        setSelectedIdeationClub(selectedSubCategory)
-        setSelectedYouthLeadership("");
-        setSelectedGiveback("");
-        setSelectedPeerLearning("");
-        break;
-      case "Giveback":
-        setSelectedGiveback(selectedSubCategory)
-        setSelectedYouthLeadership("");
-        setSelectedIdeationClub("");
-        setSelectedPeerLearning("");
-        break;
-    }
-  },[selectedSubCategory])
-
-  
-  let subCategoryName;
-  let subCategoryLabel;
-  let subCategoryOptions = [];
-
-  switch (selectedCategory) {
-    case 'Youth Leadership':
-      subCategoryName = 'youth_leadership';
-      subCategoryLabel = 'Youth Leadership';
-      subCategoryOptions = youthLeadershipOptions;
-
-      break;
-    case "Peer Learning":
-      subCategoryName = 'peer_learning';
-      subCategoryLabel = "Peer Learning";
-      subCategoryOptions = peerLearningOptions;
-
-      break;
-    case "Ideation Club":
-        subCategoryName = 'ideation_club';
-        subCategoryLabel = "Ideation Club";
-        subCategoryOptions = ideationClubOptions;
-
-        break;
-    case "Giveback":
-        subCategoryName = 'giveback';
-        subCategoryLabel = "Giveback";
-        subCategoryOptions = givebackOptions;
-
-        break;
-  }
 
   return (
     <Modal
@@ -253,13 +169,13 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      icon="down"
                       control="lookup"
-                      name="type"
-                      label="Type"
-                      options={typeOptions}
+                      icon="down"
+                      name="program_mode"
+                      label="Program Mode"
+                      options={programOptions}
                       className="form-control"
-                      placeholder="Type"
+                      placeholder="Program Mode"
                       required
                     />
                   </div>
@@ -335,15 +251,6 @@ const AlumniServiceForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="program_mode"
-                      label="Program Mode"
-                      placeholder="Program Mode"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={programOptions}
-                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -353,24 +260,23 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       icon="down"
                       className="form-control"
-                      options={categoryOptions} 
+                      options={categoryOptions}
                       onChange={(e) => setSelectedCategory(e.value)}
+                      required
                     />
                   </div>
-                  { selectedCategory &&
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name={subCategoryName}
-                        label={subCategoryLabel}
-                        placeholder={subCategoryLabel}
-                        control="lookup"
-                        icon="down"
-                        className="form-control"
-                        options={subCategoryOptions} 
-                        onChange={(e) => setSelectedSubCategory(e.value)}
-                      />
-                    </div> 
-                   }
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="type"
+                      label="Subcategory"
+                      options={typeOptions.filter(option => option.category === selectedCategory)}
+                      className="form-control"
+                      placeholder="Subcategory"
+                      required
+                    />
+                  </div>
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
