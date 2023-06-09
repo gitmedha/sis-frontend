@@ -126,10 +126,6 @@ const alumniServicesFields = `
   receipt_number
   program_mode
   category
-  youth_leadership
-  peer_learning
-  ideation_club
-  giveback
   fee_amount
   comments
   created_at

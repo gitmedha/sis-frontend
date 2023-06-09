@@ -111,7 +111,13 @@ const AlumniServiceForm = (props) => {
     initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
   }
 
+  const handleClose = () => {
+    setSelectedCategory('');
+    onHide();
+  }
+
   const onSubmit = async (values) => {
+    setSelectedCategory('');
     onHide(values);
   };
 
@@ -120,7 +126,7 @@ const AlumniServiceForm = (props) => {
       centered
       size="lg"
       show={show}
-      onHide={onHide}
+      onHide={handleClose}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
@@ -166,6 +172,31 @@ const AlumniServiceForm = (props) => {
                       filterData={filterAssignedTo}
                       defaultOptions={assigneeOptions}
                     />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="category"
+                      label="Category"
+                      placeholder="Category"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={categoryOptions}
+                      onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {selectedCategory && <Input
+                      icon="down"
+                      control="lookup"
+                      name="type"
+                      label="Subcategory"
+                      options={typeOptions.filter(option => option.category === selectedCategory)}
+                      className="form-control"
+                      placeholder="Subcategory"
+                      required
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -250,33 +281,6 @@ const AlumniServiceForm = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="category"
-                      label="Category"
-                      placeholder="Category"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={categoryOptions}
-                      onChange={(e) => setSelectedCategory(e.value)}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="type"
-                      label="Subcategory"
-                      options={typeOptions.filter(option => option.category === selectedCategory)}
-                      className="form-control"
-                      placeholder="Subcategory"
-                      required
-                    />
-                  </div>
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
@@ -296,7 +300,7 @@ const AlumniServiceForm = (props) => {
                     </button>
                     <button
                       type="button"
-                      onClick={onHide}
+                      onClick={handleClose}
                       className="btn btn-secondary btn-regular mr-2"
                     >
                       CANCEL
