@@ -89,8 +89,8 @@ const AlumniServiceForm = (props) => {
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    type:'',
     location:'',
+    program_mode:'',
     receipt_number:'',
     fee_amount:'',
     comments:'',
@@ -99,10 +99,7 @@ const AlumniServiceForm = (props) => {
     fee_submission_date: null,
     assigned_to: localStorage.getItem('user_id'),
     category: null,
-    peer_learning: null,
-    giveback: null,
-    ideation_club: null,
-    youth_leadership: null,
+    type:'',
   };
 
   if (props.alumniService) {
@@ -172,13 +169,13 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="program_mode"
-                      label="Program Mode"
-                      placeholder="Program Mode"
                       control="lookup"
                       icon="down"
-                      className="form-control"
+                      name="program_mode"
+                      label="Program Mode"
                       options={programOptions}
+                      className="form-control"
+                      placeholder="Program Mode"
                       required
                     />
                   </div>

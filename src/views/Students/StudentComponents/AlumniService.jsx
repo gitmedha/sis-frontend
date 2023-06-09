@@ -2,7 +2,6 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from '../../../components/content/DetailField';
-import { Anchor } from "../../../components/content/Utils";
 import styled from "styled-components";
 
 const FileStyled = styled.div`
@@ -70,24 +69,6 @@ const AlumniService = (props) => {
     setAlumniService(props.alumniService);
   }, [props]);
 
-  const selectedCategory = props.alumniService.category;
-  let subCategoryLabel = '';
-
-  switch (selectedCategory) {
-    case "Youth Leadership":
-      subCategoryLabel = alumniService.youth_leadership;
-      break;
-    case 'Peer Learning':
-      subCategoryLabel = alumniService.peer_learning;
-      break;
-    case "Ideation Club":
-      subCategoryLabel = alumniService.ideation_club;
-      break;
-    case "Giveback":
-      subCategoryLabel = alumniService.giveback;
-     break;
-  }
-
   return (
       <Modal
         centered
@@ -114,7 +95,7 @@ const AlumniService = (props) => {
             <div className="row">
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Name" value={student.full_name} />
-                <DetailField label="Type" value={alumniService.type} />
+                <DetailField label="Program Mode" value={alumniService.program_mode}/>
                 <DetailField label="Start Date" value={alumniService.start_date ? moment(alumniService.start_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Receipt Number" value={alumniService.receipt_number} />
@@ -125,9 +106,8 @@ const AlumniService = (props) => {
                 <DetailField label="Location" value={alumniService.location} />
                 <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
-                <DetailField label="Program Mode" value={alumniService.program_mode}/>
                 <DetailField label="Category" value={alumniService.category}/>
-                {selectedCategory &&  <DetailField label={alumniService.category} value={subCategoryLabel}/>}
+                {props.alumniService.category &&  <DetailField label="Type" value={alumniService.type}/>}
               </div>
             </div>
           </FileStyled>
