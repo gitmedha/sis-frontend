@@ -104,6 +104,7 @@ const ProgramEnrollments = (props) => {
           case ' institution.name':
           sortByField = 'registration_date_formatted';
           break;
+        
 
         default:
           sortByField = 'updated_at';

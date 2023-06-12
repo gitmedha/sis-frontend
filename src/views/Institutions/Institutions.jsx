@@ -88,6 +88,8 @@ const Institutions = (props) => {
   ) => {
     nProgress.start();
     setLoading(true);
+
+
     let variables = {
       limit: limit,
       start: offset,
@@ -107,6 +109,7 @@ const Institutions = (props) => {
         variables,
       })
       .then((data) => {
+        
         setInstitutions(data?.data?.data?.institutionsConnection.values);
         setInstitutionsAggregate(
           data?.data?.data?.institutionsConnection?.aggregate
@@ -126,9 +129,11 @@ const Institutions = (props) => {
       if (sortBy.length) {
         let sortByField = "name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+
         switch (sortBy[0].id) {
           case "status":
           case "type":
+          case 'medba_area':
             sortByField = sortBy[0].id;
             break;
 
@@ -136,11 +141,19 @@ const Institutions = (props) => {
             sortByField = "assigned_to.username";
             break;
 
+          case "state":
+            sortByField = sortBy[0].id;
+            break
           case "avatar":
           default:
             sortByField = "name";
             break;
         }
+
+        if(sortBy[0].id == "medha_area"){
+          sortByField = sortBy[0].id;
+        }
+
         getInstitutions(
           activeTab.key,
           pageSize,

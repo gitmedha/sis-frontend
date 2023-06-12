@@ -52,6 +52,8 @@ const Batches = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
+
+
     if(selectedTab == "my_data"){
       Object.assign(variables, {id: userId})
     } else if(selectedTab == "my_state"){
@@ -74,6 +76,7 @@ const Batches = (props) => {
             students_count: batchStudentsCount[batch.id],
           }
         });
+
         setBatches(batches);
         setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
       });
@@ -156,6 +159,13 @@ const Batches = (props) => {
         case 'status':
         case 'start_date':
           sortByField = sortBy[0].id;
+          break;
+        case "assigned_to":
+          sortByField = "assigned_to.username";
+          break;
+
+        case "area":
+          sortByField = "medha_area";
           break;
 
         case 'program':

@@ -4,6 +4,7 @@ type
 role_or_designation
 number_of_opportunities
 created_at
+updated_at
 status
 department_or_team
 role_description

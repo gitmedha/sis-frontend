@@ -1,14 +1,12 @@
 import nProgress from "nprogress";
 import api from "../../apis";
 import moment from "moment";
-import styled from "styled-components";
-import Avatar from "../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import { GET_OPPORTUNITIES } from "../../graphql";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import { FaBlackTie, FaBriefcase, FaTools } from "react-icons/fa";
 import OpportunityForm from "./OpportunityComponents/OpportunityForm";
 import { createOpportunity, getOpportunitiesPickList } from "./OpportunityComponents/opportunityAction";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -48,7 +46,13 @@ const tabPickerOptions = [
           break;
 
         case 'Internship':
+        case 'UnPaid GIG':
+        case 'Paid GIG':
           icon = <FaBlackTie size="20" color="#808080"/>;
+          break;
+
+        default:
+          icon = <FaTools size="20" color="#808080"/>;
           break;
       }
       if (icon) {

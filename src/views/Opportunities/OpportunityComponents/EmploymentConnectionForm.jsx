@@ -325,6 +325,7 @@ const EnrollmentConnectionForm = (props) => {
                         name="number_of_internship_hours"
                         className="form-control"
                         label="Number of Internship hours"
+                        required
                         placeholder="Number of Internship hours"
                       />
                     </div>

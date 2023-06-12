@@ -124,6 +124,8 @@ const alumniServicesFields = `
   fee_submission_date
   location
   receipt_number
+  program_mode
+  category
   fee_amount
   comments
   created_at

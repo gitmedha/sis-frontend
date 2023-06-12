@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList } from "./StudentActions";
+import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
 import Textarea from '../../../utils/Form/Textarea';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import * as Yup from "yup";
@@ -39,6 +39,24 @@ const AlumniServiceForm = (props) => {
   const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
   const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [programOptions, setProgramOptions] = useState([]);
+
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  useEffect(() => {
+    if (props.alumniService) {
+      setSelectedCategory(props.alumniService ? props.alumniService.category : "");
+    }
+  },[props.alumniService,show]);
+
+  useEffect(() => {
+    getAlumniServicePickList().then((data) => {
+      setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
+      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
+      setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
+    });
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -46,7 +64,6 @@ const AlumniServiceForm = (props) => {
     });
 
     getStudentsPickList().then((data) => {
-      setTypeOptions(data.alumni_service_type.map((item) => ({ key: item.value, value: item.value, label: item.value })));
       setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
     });
   }, []);
@@ -72,15 +89,17 @@ const AlumniServiceForm = (props) => {
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    type:'',
     location:'',
+    program_mode:'',
     receipt_number:'',
     fee_amount:'',
     comments:'',
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id')
+    assigned_to: localStorage.getItem('user_id'),
+    category: null,
+    type:'',
   };
 
   if (props.alumniService) {
@@ -89,9 +108,16 @@ const AlumniServiceForm = (props) => {
     initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
     initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
     initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
+    initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
+  }
+
+  const handleClose = () => {
+    setSelectedCategory('');
+    onHide();
   }
 
   const onSubmit = async (values) => {
+    setSelectedCategory('');
     onHide(values);
   };
 
@@ -100,7 +126,7 @@ const AlumniServiceForm = (props) => {
       centered
       size="lg"
       show={show}
-      onHide={onHide}
+      onHide={handleClose}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
@@ -149,13 +175,38 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      name="category"
+                      label="Category"
+                      placeholder="Category"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={categoryOptions}
+                      onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {selectedCategory && <Input
                       icon="down"
                       control="lookup"
                       name="type"
-                      label="Type"
-                      options={typeOptions}
+                      label="Subcategory"
+                      options={typeOptions.filter(option => option.category === selectedCategory)}
                       className="form-control"
-                      placeholder="Type"
+                      placeholder="Subcategory"
+                      required
+                    />}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      control="lookup"
+                      icon="down"
+                      name="program_mode"
+                      label="Program Mode"
+                      options={programOptions}
+                      className="form-control"
+                      placeholder="Program Mode"
                       required
                     />
                   </div>
@@ -249,7 +300,7 @@ const AlumniServiceForm = (props) => {
                     </button>
                     <button
                       type="button"
-                      onClick={onHide}
+                      onClick={handleClose}
                       className="btn btn-secondary btn-regular mr-2"
                     >
                       CANCEL
