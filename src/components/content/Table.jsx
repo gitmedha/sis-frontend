@@ -139,7 +139,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     <>
       <Styles>
         <div className="d-none d-md-block">
-          <table {...getTableProps()}>
+          <table {...getTableProps()} responsive="lg">
             <thead>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>

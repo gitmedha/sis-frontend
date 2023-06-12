@@ -14,6 +14,7 @@ const InputField = styled.div`
 
 const Input = (props) => {
   let { label, name, required, ...rest } = props;
+  console.log(props);
   return (
     <InputField className="form-group">
       <label className="text-heading leading-24" htmlFor={name}>

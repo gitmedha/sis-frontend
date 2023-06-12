@@ -240,7 +240,7 @@ const Operations= (props) => {
       });
       setStudentsData([]);
     }
-    console.log("opts",opts);
+    // console.log("opts",opts);
   }, [opts, pickList]);
 
   const hideCreateModal = async (data) => {

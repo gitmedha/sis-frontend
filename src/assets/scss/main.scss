@@ -77,6 +77,35 @@ body {
   cursor: pointer;
 }
 
+#custom-modal{
+  .custom-modal{
+    width: 100vw !important;
+    height: 100vh;
+  }
+}
+
+.fullscreen-modal .modal-dialog  {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: papayawhip;
+}
+
+.fullscreen-modal .modal-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  // background-color: rebeccapurple;
+}
+
+
+
 .left-10 {
   left: 10px;
 }
