@@ -208,7 +208,7 @@ const Student = (props) => {
   }
 
   useEffect(async () => {
-    await testOperationsActions();
+    // await testOperationsActions();
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
