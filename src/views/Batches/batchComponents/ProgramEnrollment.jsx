@@ -284,25 +284,19 @@ const ProgramEnrollment = (props) => {
                 <button type="button" className="btn btn-danger mx-2" onClick={handleDelete}>DELETE</button>
               </div>
               {
-                isAdmin() &&
+                (isAdmin() || isSRM())  &&
                 batch.status === 'Certified' &&
                 programEnrollment.attendanceValue >= 75 &&
                 <div className="d-flex">
                   <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
                     {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
                   </button>
-                  {programEnrollment.medha_program_certificate &&
+                  {
+                    isAdmin() &&
+                    programEnrollment.medha_program_certificate &&
                     <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
                   }
                 </div>
-              }
-              {
-                isSRM() &&
-                batch.status === 'Certified' &&
-                programEnrollment.attendanceValue >= 75 &&
-                <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
-                  {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
-                </button>
               }
             </div>
           </div>
