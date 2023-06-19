@@ -11,7 +11,7 @@ import Tooltip from "../../../components/content/Tooltip";
 import CertificateUpload from "../../../components/content/Certificate";
 import { UPDATE_PROGRAM_ENROLLMENT } from "../../../graphql";
 import { urlPath } from "../../../constants";
-import { isAdmin } from "../../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
 const FileStyled = styled.div`
 .icon-box{
@@ -295,6 +295,14 @@ const ProgramEnrollment = (props) => {
                     <button type="button" className="btn btn-danger" onClick={handleDeleteCertificate} disabled={loadingCertificationButton}>DELETE CERTIFICATE</button>
                   }
                 </div>
+              }
+              {
+                isSRM() &&
+                batch.status === 'Certified' &&
+                programEnrollment.attendanceValue >= 75 &&
+                <button type="button" className="btn btn-primary mx-2" onClick={handleGenerateCertificate} disabled={loadingCertificationButton}>
+                  {programEnrollment.medha_program_certificate ? 'REGENERATE CERTIFICATE' : 'GENERATE CERTIFICATE'}
+                </button>
               }
             </div>
           </div>
