@@ -93,7 +93,11 @@ const AlumniServices = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Type',
+        Header: 'Category',
+        accessor: 'category',
+      },
+      {
+        Header: 'Subcategory',
         accessor: 'type',
       },
       {

@@ -76,6 +76,9 @@ body {
 .c-pointer {
   cursor: pointer;
 }
+.capitalize{
+  text-transform: capitalize !important;
+}
 
 #custom-modal{
   .custom-modal{
