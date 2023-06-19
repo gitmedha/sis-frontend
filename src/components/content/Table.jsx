@@ -110,9 +110,9 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     }
   }
 
-  React.useEffect(() => {
-    console.log("getTableBodyProps---------------->",columns);
-  }, []);
+  // React.useEffect(() => {
+  //   console.log("getTableBodyProps---------------->",columns);
+  // }, []);
 
 
   React.useEffect(() => {
@@ -187,7 +187,9 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
                         }
                         {row.cells.map(cell => {
                           return (
-                            <td {...cell.getCellProps()}>
+                            <td {...cell.getCellProps()} onclick={()=>{
+                              console.log(cell)
+                            }}>
                               {
                                 row.original.href
                                 ? (<a className="table-row-link" href={row.original.href}>{cell.render('Cell')}</a>)

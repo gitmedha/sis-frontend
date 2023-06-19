@@ -29,7 +29,7 @@ const Details = (props) => {
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
           <DetailField label="Name" value={name} />
-          <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
+          <DetailField label="Type" value={<Badge value={'type'} pickList={pickList.type} />} />
           <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
           <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
           <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />

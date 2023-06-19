@@ -1,5 +1,5 @@
 import { Formik, Form } from 'formik';
-import { Modal ,Button} from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
@@ -32,9 +32,23 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+  .table {
+    overflow: auto;
+    display: block;
+    table-layout: auto;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    th{
+      width:15rem
+    }
+    .id{
+      width:3rem !important;
+    }
 `;
 
-const Operationform = (props) => {
+const OperationCreateform = (props) => {
   let { onHide, show } = props;
 
 
@@ -96,7 +110,7 @@ const Operationform = (props) => {
     });
 
     getAddressOptions().then(data => {
-      console.log("data--------------->",data?.data?.data?.geographiesConnection);
+      console.log("data--------------->", data?.data?.data?.geographiesConnection);
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
         key: state?.id,
         label: state?.key,
@@ -135,7 +149,7 @@ const Operationform = (props) => {
     // if (logo) {
     //   values.logo = logo;
     // }
-    console.log("onsubmit values----------->",values);
+    console.log("onsubmit values----------->", values);
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
@@ -146,7 +160,7 @@ const Operationform = (props) => {
   const addRow = () => {
     // const newRowId = data.length + 1;
     if (data.length === 10) {
-      return ;
+      return;
     }
     const newRow = { id: data.length + 1, name: 'rojo', age: 10 };
     // Modify the properties as per your requirements
@@ -176,7 +190,7 @@ const Operationform = (props) => {
         value: state.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
 
-      
+
     });
 
 
@@ -208,10 +222,17 @@ const Operationform = (props) => {
 
   }, []);
 
+
+  const handleRowData = (rowData) => {
+    // Do something with the row data
+    console.log(rowData);
+  };
+
+
   return (
     <Modal
       centered
-      size="lg"
+      size="xl"
       responsive
       // fullscreen={true}
       show={show}
@@ -260,7 +281,7 @@ const Operationform = (props) => {
       </Modal.Header>
       <Modal.Body className="bg-white">
         <Formik
-        // onSubmit={onSubmit}
+          onSubmit={onSubmit}
         // initialValues={initialValues}
         // validationSchema={StudentValidations}
         >
@@ -272,16 +293,16 @@ const Operationform = (props) => {
 
 
             </div>
-            
-            
-            <div className="table-responsive" style={{ overflowX: 'auto' }}>
-              
-              <Table striped bordered responsive >
+
+
+            <div  >
+
+              <Table style={{ width: '150%' }} striped bordered responsive >
 
 
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th className='id'>ID</th>
                     <th>Activity Type</th>
                     <th>Institution</th>
 
@@ -302,23 +323,14 @@ const Operationform = (props) => {
                     {/* Add more th elements for additional columns */}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className='mb-5'>
                   {data && data?.map((row) => (
 
 
                     <tr key={row?.id}>
                       <td>{row.id}</td>
                       <td >
-                        {/* <input
-                          type="text"
-                          value={row?.name}
-                          onChange={(e) => handleValueChange(e, row?.id, 'name')} /> */}
-                        {/* <Form.Control
-              type="text"
-              value={row?.name}
-              onChange={(e) => handleValueChange(e, row?.id, 'name')}
-            /> */}
-                        {/* {row.name} */}
+
                         <Input
                           type="text"
                           name="name"
@@ -521,24 +533,28 @@ const Operationform = (props) => {
                         )}
                       </td>
 
-
+                      <td>
+                        <button onClick={() => handleRowData(row)}>Retrieve Data</button>
+                      </td>
 
                     </tr>
                   ))}
                 </tbody>
+
+                <button className=" btn-primary btn-regular mr-2 mt-5" onClick={addRow}>Add Row</button>
+                <button className="btn btn-secondary btn-regular mr-2 " onClick={handleSubmit}>Submit</button>
+
               </Table>
             </div>
-            
-       
-            <button className=" btn-primary btn-regular mr-2" onClick={addRow}>Add Row</button>
-            <button className="btn btn-secondary btn-regular mr-2" onClick={handleSubmit}>Submit</button>
+
+
 
           </Section>
 
 
 
 
-       
+
 
         </Formik>
       </Modal.Body>
@@ -546,7 +562,7 @@ const Operationform = (props) => {
   );
 };
 
-export default Operationform;
+export default OperationCreateform;
 
 
 
