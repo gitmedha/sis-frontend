@@ -17,19 +17,22 @@ const operationFields = `
     guest
     designation
     organization
-    student_attended
+    students_attended
     other_links
     assigned_to{
     username
   }
-  created_by {
+  Created_by {
+    username
+  }
+  Updated_by {
     username
   }
 `
 
 export const GET_OPERATIONS = `
-    query GET_OPERATIONS ($id: Int, $start:Int, $sort:String){
-        users_ops_activities(
+    query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
+        usersOpsActivitiesConnection(
             sort: $sort,
             start: $start,
             limit:$limit
@@ -43,3 +46,41 @@ export const GET_OPERATIONS = `
         }
     } 
 `;
+
+
+export const CREATE_OPERATION = `
+    mutation CREATE_OPERATION (
+        $data:OperationInpur!
+    ){
+        createUsersOpsActivity(
+            input: {
+                data:$data
+            }
+        ){
+            usersOpsActivity {
+                ${operationFields}
+            }
+        }
+    }
+
+
+`
+
+export const UPDATE_OPERATION = `
+    mutation UPDATE_OPERATION (
+        $data:editOperationInput!
+        $id:ID!
+    ){
+        updateUsersOpsActivity(
+            input: {
+                data:$data,
+                where: {id: $id}
+            }
+        ){
+            usersOpsActivity{
+                ${operationFields}
+            }
+        }
+    }
+
+`
