@@ -12,11 +12,11 @@ import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_STUDENTS } from "../../graphql";
+import { GET_OPERATIONS, GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
-import { getStudentsPickList, createStudent } from "../Students/StudentComponents/StudentActions";
+import { getoperationsPickList, createStudent } from "../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from '@material-ui/core/Switch';
@@ -29,6 +29,7 @@ import { isAdmin, isSRM } from "../../common/commonFunctions";
 // import StudentForm from "./OperationComponents/OperationDataupdateform";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
+import {getAllOperations } from './OperationComponents/operationsActions'
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -61,7 +62,7 @@ const Operations = (props) => {
   const [loading, setLoading] = useState(false);
   const [opts, setOpts] = useState([]);
   const [optsdata, setOptsdata] = useState({});
-  const [studentsAggregate, setStudentsAggregate] = useState([]);
+  const [optsAggregate, setoptsAggregate] = useState([]);
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [students, setStudents] = useState([]);
@@ -80,36 +81,36 @@ const Operations = (props) => {
     () => [
       {
         Header: 'Assigned To',
-        accessor: 'Assigned To',
+        accessor: 'assigned_to.username',
       },
       {
         Header: 'Activity type',
-        accessor: 'Activity Type',
+        accessor: 'activity_type',
       },
-      {
-        Header: 'Instution',
-        accessor: 'Institution',
-      },
+      // {
+      //   Header: 'Instution',
+      //   accessor: 'Institution',
+      // },
       {
         Header: 'Area',
-        accessor: 'Area',
+        accessor: 'area',
       },
       
       {
         Header: 'Batch',
-        accessor: 'Batch',
+        accessor: 'batch.name',
       },
       {
         Header: 'Start Date',
-        accessor: 'Start Date',
+        accessor: 'start_date',
       },
       {
         Header: 'End Date',
-        accessor: 'End Date',
+        accessor: 'end_date',
       },
       {
         Header: 'Topic',
-        accessor: 'Topic',
+        accessor: 'topic',
       },
       // {
       //   Header: 'Donor',
@@ -117,7 +118,7 @@ const Operations = (props) => {
       // },
       {
         Header: 'Guest',
-        accessor: 'Guest',
+        accessor: 'guest',
       },
       // {
       //   Header: 'Designation',
@@ -125,14 +126,14 @@ const Operations = (props) => {
       // },
       {
         Header: 'Organization',
-        accessor: 'Organization',
+        accessor: 'organization',
       },
       
     ],
     []
   );
 
-  const getStudents = async (status = 'All', selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getoperations = async (status = 'All', selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
 
     nProgress.start();
     setLoading(true);
@@ -141,26 +142,25 @@ const Operations = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    if (status !== 'All') {
-      // variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
-    }
-    if (selectedTab == "my_data") {
-      Object.assign(variables, { id: userId })
-    } else if (selectedTab == "my_state") {
-      Object.assign(variables, { state: state })
-    } else if (selectedTab == "my_area") {
-      Object.assign(variables, { area: area })
-    }
+    // if (status !== 'All') {
+    //   // variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
+    // }
+    // if (selectedTab == "my_data") {
+    //   Object.assign(variables, { id: userId })
+    // } else if (selectedTab == "my_state") {
+    //   Object.assign(variables, { state: state })
+    // } else if (selectedTab == "my_area") {
+    //   Object.assign(variables, { area: area })
+    // }
 
     await api.post("/graphql", {
-      query: GET_STUDENTS,
+      query: GET_OPERATIONS,
       variables,
     })
       .then(data => {
-        setOpts([{ "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "NHPC Limited Tanakpur", "Activity Type": "Industry Talk/Expert Talk", "Institution": 304, "Updated At": null, "End Date": "2020-06-19", "Designation": "Junior Engineer", "Start Date": "2020-06-19", "Assigned To": 129, "Other Links": "0", "Topic": "Career challenges and opportunities during/post pandemic of covid-19", "Donor": false, "Batch": 1006, "ID": 2200, "Updated By": null, "Students Attended": 40, "Created By": 2, "State": "Uttar Pradesh", "Area": "Bareilly (City)", "Guest": "Mr. Pradeep Kumar Dubey", "Edit": '' },
-        { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
-        { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Medha", "Activity Type": "Workshop/Training Session/Activity (In/Off campus)", "Institution": 449, "Updated At": null, "End Date": "2020-07-14", "Designation": "Manager", "Start Date": "2020-07-14", "Assigned To": 153, "Other Links": "0", "Topic": "Covid-19: An Awareness Quiz", "Donor": false, "Batch": 455, "ID": 2202, "Updated By": null, "Students Attended": 22, "Created By": 2, "State": "Uttar Pradesh", "Area": "Varanasi (City)", "Guest": "Manju Chetri" },
-        { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "JP Morgan ", "Activity Type": "Industry Talk/Expert Talk", "Institution": 476, "Updated At": null, "End Date": "2020-08-04", "Designation": "N/A", "Start Date": "2020-08-04", "Assigned To": 136, "Other Links": "0", "Topic": "Confidence And Attitude Building", "Donor": true, "Batch": 56, "ID": 2203, "Updated By": null, "Students Attended": 15, "Created By": 2, "State": "Haryana", "Area": "Ambala", "Guest": "Nitin Shinde" }]);
+        console.log("data",data.data.data.usersOpsActivitiesConnection.values)
+        setOpts(data.data.data.usersOpsActivitiesConnection.values);
+        setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         // setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
       })
       .catch(error => {
@@ -177,35 +177,34 @@ const Operations = (props) => {
       let sortByField = 'full_name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
-        case 'status':
-        case 'phone':
-        case 'city':
-        case 'id':
-        case 'course_type_latest':
+        case 'area':
+        case 'start_date':
+        case 'end_date':
+        case 'batch.name':
           sortByField = sortBy[0].id;
           break;
 
-        case 'avatar':
         default:
           sortByField = 'full_name';
           break;
       }
 
-      getStudents(activeStatus, activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      getoperations(activeStatus, activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      getStudents(activeStatus, activeTab.key, pageSize, pageSize * pageIndex);
+      getoperations(activeStatus, activeTab.key, pageSize, pageSize * pageIndex);
     }
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    // getStudentsPickList().then(data => setPickList(data));
+    // getoperationsPickList().then(data => setPickList(data));
     console.log("activeTab_Key", activeTab.key);
     console.log("tabPickerOptions", tabPickerOptions);
     fetchData(0, paginationPageSize, []);
   }, []);
   useEffect(() => {
-    // getStudentsPickList().then(data => setPickList(data));
-    console.log("activeTab_Key", activeTab.key);
+
+    // getAllOperations().then(data => {setPickList(data)});
+    console.log("activeTab_Key", pickList);
     // console.log("tabPickerOptions",tabPickerOptions);
 
   }, [activeTab]);
@@ -310,7 +309,7 @@ const Operations = (props) => {
   const handleStudentStatusTabChange = (statusTab) => {
     console.log(statusTab.title);
     setActiveStatus(statusTab.title);
-    getStudents(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
+    getoperations(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
   }
 
   const showRowData = (data) => {
@@ -339,9 +338,9 @@ const Operations = (props) => {
             </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-            {/* <Table columns={columns} data={studentsData} totalRecords={studentsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} /> */}
+            {/* <Table columns={columns} data={studentsData} totalRecords={optsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} /> */}
 
-            <Table onRowClick={showRowData} columns={columns} data={opts} fetchData={fetchData} />
+            <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
 
           </div>
         </div>
@@ -355,7 +354,7 @@ const Operations = (props) => {
           />
           {showModal && (
             <OperationDataupdateform 
-              data={optsdata}
+              {...optsdata}
               show={showModal}
               onHide={hideShowModal}
             />

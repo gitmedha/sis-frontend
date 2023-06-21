@@ -50,7 +50,7 @@ export const GET_OPERATIONS = `
 
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
-        $data:OperationInpur!
+        $data:OperationInput!
     ){
         createUsersOpsActivity(
             input: {

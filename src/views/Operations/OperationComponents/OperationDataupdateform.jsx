@@ -11,6 +11,7 @@ import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { MeiliSearch } from 'meilisearch'
 
 const Section = styled.div`
   padding-top: 30px;
@@ -31,6 +32,11 @@ const Section = styled.div`
   }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const OperationDataupdateform = (props) => {
   let { onHide, show } = props;
   const [statusOptions, setStatusOptions] = useState([]);
@@ -47,6 +53,8 @@ const OperationDataupdateform = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState([]);
   const medhaChampionOptions = [
     { key: true, value: true, label: "Yes" },
     { key: false, value: false, label: "No" },
@@ -58,19 +66,19 @@ const OperationDataupdateform = (props) => {
 
   useEffect(() => {
     console.log("props", props);
-    getDefaultAssigneeOptions().then(data => {
-      console.log("data", data)
-      setAssigneeOptions(data);
-    });
+      getDefaultAssigneeOptions().then(data => {
+        console.log("data", data)
+        setAssigneeOptions(data);
+      });
   }, []);
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
     getAddressOptions().then(data => {
@@ -85,21 +93,21 @@ const OperationDataupdateform = (props) => {
       }
     });
 
-    setShowCVSubLabel(props.CV && props.CV.url);
+    // setShowCVSubLabel(props.CV && props.CV.url);
 
-  }, [props]);
+  }, []);
 
-  const onStateChange = value => {
+  const onStateChange = async value => {
     console.log("value state", value)
     setDistrictOptions([]);
-    getStateDistricts(value).then(data => {
+   await getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
         key: district.id,
         label: district.key,
         value: district.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
-      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+      setAreaOptions(data?.data?.data?.geographiesConnection?.groupBy?.area.map((area) => ({
         key: area.id,
         label: area.key,
         value: area.key,
@@ -117,52 +125,127 @@ const OperationDataupdateform = (props) => {
     setDisableSaveButton(false);
   };
 
-  // let initialValues = {
-  //   Topic:'',
-  //   batch:'',
-  //   full_name:'',
-  //   phone:'',
-  //   alternate_phone:'',
-  //   name_of_parent_or_guardian:'',
-  //   category:'',
-  //   email:'',
-  //   gender:'',
-  //   assigned_to:userId.toString(),
-  //   status:'',
-  //   income_level:'',
-  //   date_of_birth:'',
-  //   city:'',
-  //   pin_code:'',
-  //   medha_area:'',
-  //   address:'',
-  //   state:'',
-  //   district:'',
-  //   logo:'',
-  //   registered_by:userId.toString(),
-  //   how_did_you_hear_about_us: '',
-  //   how_did_you_hear_about_us_other: '',
-  // };
+
 
   let initialValues = {
-    Topic: ''
+    topic: '',
+    institute_name:'',
+    state:'',
+    activity_type:'',
+    institute_name:'',
+    guest:'',
+    organization:'',
+    updated_at:'',
+    start_date:'',
+    end_date:'',
+    designation:'',
+    updated_by:'',
+    area:'',
+    students_attended:''
   }
+  // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
+
 
   let fileName = '';
-  if (props.data) {
+  if (props) {
     // console.log("props-----", props);
-    initialValues = {...props.data};  
-    console.log(initialValues.Area)
-    // initialValues['date_of_birth'] = new Date(props?.date_of_birth);
-    // initialValues['assigned_to'] = props?.assigned_to?.id;
-    // initialValues['registered_by'] = props?.registered_by?.id;
-    initialValues['state'] = props.data.State ? initialValues.State : null;
+    initialValues = {...props};  
+    console.log("initialValues.......",initialValues)
+    initialValues['state'] = props.state ? initialValues.state : null;
+    initialValues['institute_name']=initialValues?.institute_name?.name
     initialValues['donor']= initialValues.Donor ? initialValues.Donor :"N/A"
     initialValues['area'] = initialValues.Area ? initialValues.Area: null;
-
+    
     // if (props.CV && props.CV.url) {
     //   const cvUrlSplit = props.CV.url.split('/');
     //   fileName = cvUrlSplit[cvUrlSplit.length - 1];
     // }
+  }
+  useEffect(() => {
+    if ( props.institution) {
+      // console.log("props filterInstitution", props.institution)
+      filterInstitution(props.institution.name).then(data => {
+        console.log("data filterInstitution",data)
+        setInstitutionOptions(data);
+      });
+
+      
+    }
+    if ( props.batch) {
+      filterBatch(props.batch.name).then(data => {
+        
+        setBatchOptions(data);
+      });
+    }
+
+    console.log("batch institue props",props)
+  }, [])
+
+
+const filterdata= async (filtervalues)=>{
+  
+
+}
+
+  const filterInstitution = async (filterValue) => {
+    let meilliserachvalue  ;
+    if(filterValue){
+      
+    }
+     
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let filterData = data.hits.map(institution => {
+        
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+      
+      return filterData;
+    });
+  }
+
+
+
+  useEffect(() => {
+      
+
+
+
+
+  }, [])
+  
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+      let batchFoundInList = false;
+      let filterData = data.hits.map(batch => {
+        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
+          batchFoundInList = true;
+        }
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        }
+      });
+      if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
+        filterData.unshift({
+          label: programEnrollmentBatch.name,
+          value: Number(programEnrollmentBatch.id),
+        });
+      }
+      return filterData;
+    });
   }
 
   return (
@@ -206,7 +289,7 @@ const OperationDataupdateform = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
-                      name="insitutte"
+                      name="institute_name"
                       label="Insititute Name"
                       required
                       className="form-control"
@@ -236,7 +319,7 @@ const OperationDataupdateform = (props) => {
 
                     <Input
                       control="input"
-                      name="Topic"
+                      name="activity_type"
                       label="Activity Type"
                       required
                       className="form-control"
@@ -249,21 +332,23 @@ const OperationDataupdateform = (props) => {
 
 
                   <div className="col-md-6 col-sm-12 mb-2">
+                  
                     <Input
-                      control="input"
-                      name="Batch"
+                      control="lookupAsync"
+                      name="batch"
                       label="Batch"
                       required
+                      filterData={filterBatch}
+                      // defaultOptions={ batchOptions }
                       className="form-control"
-                      placeholder="Batch Name"
-                    // filterData={filterAssignedTo}
-
+                      placeholder="Batch"
                     />
+                    
                   </div>
 
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="date_of_birth"
+                      name="start_date"
                       label="Start Date "
                       required
                       placeholder="Date of Birth"
@@ -304,7 +389,7 @@ const OperationDataupdateform = (props) => {
                     {/* {statusOptions.length ? ( */}
                     <Input
                       control="input"
-                      name="Topic"
+                      name="topic"
                       label="Topic"
                       required
                       className="form-control"
@@ -321,7 +406,7 @@ const OperationDataupdateform = (props) => {
                     <Input
                       icon="down"
                       control="input"
-                      name="Guest"
+                      name="guest"
                       label="Guest"
                       required
                       // options={genderOptions}
@@ -337,7 +422,7 @@ const OperationDataupdateform = (props) => {
                     <Input
                       icon="down"
                       control="lookup"
-                      name="gender"
+                      name="designation"
                       label="Designation"
                       required
                       options={genderOptions}
@@ -364,7 +449,7 @@ const OperationDataupdateform = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      name="Students Attended"
+                      name="students_attended"
                       label="Student Attended"
                       // required
                       placeholder="Student atended"

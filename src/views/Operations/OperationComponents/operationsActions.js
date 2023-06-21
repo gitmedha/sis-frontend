@@ -1,9 +1,14 @@
 
-import api from "../../../src/apis";
+import api from "../../../../src/apis";
 
-import {GET_OPERATIONS,CREATE_OPERATION,UPDATE_OPERATION} from "../../graphql/operations";
+import {GET_OPERATIONS,CREATE_OPERATION,UPDATE_OPERATION} from "../../../graphql/operations";
+
 
 export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
+    const authToken =localStorage.getItem('token')
+    console.log('authToken',authToken);
+    const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
+    
     return await api.post('/graphql', {
         query:GET_OPERATIONS,
         variables: {
@@ -11,10 +16,12 @@ export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", s
             start:offset,
             sort: `${sortBy}:${sortOrder}`
         }
-    }).then(data=>{
+        
+    },{headers}).then(data=>{
         console.log("data",data)
         return data;
     }).catch(error=>{
+        console.log("error",error)
         return Promise.reject(error)
     })
 };
