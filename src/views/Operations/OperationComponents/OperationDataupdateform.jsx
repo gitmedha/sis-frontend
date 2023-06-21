@@ -39,47 +39,25 @@ const meilisearchClient = new MeiliSearch({
 
 const OperationDataupdateform = (props) => {
   let { onHide, show } = props;
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [genderOptions, setGenderOptions] = useState([]);
+ 
+ 
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
-  const [howDidYouHearAboutUsOptions, setHowDidYouHearAboutUsOptions] = useState([]);
-  const [selectedHowDidYouHearAboutUs, setSelectedHowDidYouHearAboutUs] = useState(props?.how_did_you_hear_about_us);
-  const [logo, setLogo] = useState(null);
+
   const [stateOptions, setStateOptions] = useState([]);
-  const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
-  const userId = parseInt(localStorage.getItem('user_id'))
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-  const medhaChampionOptions = [
-    { key: true, value: true, label: "Yes" },
-    { key: false, value: false, label: "No" },
-  ];
-  const interestedInEmploymentOpportunitiesOptions = [
-    { key: true, value: true, label: "Yes" },
-    { key: false, value: false, label: "No" },
-  ];
 
   useEffect(() => {
     console.log("props", props);
       getDefaultAssigneeOptions().then(data => {
-        console.log("data", data)
+    
         setAssigneeOptions(data);
       });
   }, []);
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      // setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
 
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
@@ -93,19 +71,14 @@ const OperationDataupdateform = (props) => {
       }
     });
 
-    // setShowCVSubLabel(props.CV && props.CV.url);
+ 
 
   }, []);
 
   const onStateChange = async value => {
     console.log("value state", value)
-    setDistrictOptions([]);
+    
    await getStateDistricts(value).then(data => {
-      setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
-        key: district.id,
-        label: district.key,
-        value: district.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection?.groupBy?.area.map((area) => ({
         key: area.id,
@@ -116,10 +89,7 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values)
-    if (logo) {
-      values.logo = logo;
-    }
+   
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
@@ -145,27 +115,47 @@ const OperationDataupdateform = (props) => {
   }
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
+  function createdDateConvert(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   let fileName = '';
   if (props) {
-    // console.log("props-----", props);
-    initialValues = {...props};  
-    console.log("initialValues.......",initialValues)
-    initialValues['state'] = props.state ? initialValues.state : null;
-    initialValues['institute_name']=initialValues?.institute_name?.name
-    initialValues['donor']= initialValues.Donor ? initialValues.Donor :"N/A"
-    initialValues['area'] = initialValues.Area ? initialValues.Area: null;
+  
+
+
+    console.log("new Date(props.start_date).toISOString()",new Date(props.start_date))
+
+    initialValues['topic'] = props.topic;
+    initialValues['activity_type'] = props.activity_type
+    // initialValues['organization']
+    initialValues['start_date'] = new Date(props.start_date)
+    initialValues['end_date'] = new Date(props.end_date)
+
+   
+  initialValues['created_at'] = props.created_at
     
-    // if (props.CV && props.CV.url) {
-    //   const cvUrlSplit = props.CV.url.split('/');
-    //   fileName = cvUrlSplit[cvUrlSplit.length - 1];
-    // }
+    // initialValues = {
+    //   ...props,
+    //   start_date:,
+    //   end_date:
+    // };  
+ 
+    initialValues['state'] = props.state ? props.state : null;
+    initialValues['institute_name']=props?.institute_name?.name
+    initialValues['donor']= props.Donor ? props.Donor :"N/A"
+    initialValues['area'] = props.area ? props.area: null;
+    
   }
   useEffect(() => {
     if ( props.institution) {
       // console.log("props filterInstitution", props.institution)
       filterInstitution(props.institution.name).then(data => {
-        console.log("data filterInstitution",data)
+        
         setInstitutionOptions(data);
       });
 
@@ -173,25 +163,17 @@ const OperationDataupdateform = (props) => {
     }
     if ( props.batch) {
       filterBatch(props.batch.name).then(data => {
-        
+        console.log("dataBatch1:",data)
         setBatchOptions(data);
       });
     }
 
-    console.log("batch institue props",props)
   }, [])
 
 
-const filterdata= async (filtervalues)=>{
-  
 
-}
 
   const filterInstitution = async (filterValue) => {
-    let meilliserachvalue  ;
-    if(filterValue){
-      
-    }
      
     return await meilisearchClient.index('institutions').search(filterValue, {
       limit: 100,
@@ -210,15 +192,6 @@ const filterdata= async (filtervalues)=>{
     });
   }
 
-
-
-  useEffect(() => {
-      
-
-
-
-
-  }, [])
   
 
   const filterBatch = async (filterValue) => {
@@ -227,23 +200,17 @@ const filterdata= async (filtervalues)=>{
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let batchFoundInList = false;
+  
       let filterData = data.hits.map(batch => {
-        if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
-          batchFoundInList = true;
-        }
+      
         return {
           ...batch,
           label: batch.name,
           value: Number(batch.id),
         }
       });
-      if (props.programEnrollment && programEnrollmentBatch !== null && !batchFoundInList) {
-        filterData.unshift({
-          label: programEnrollmentBatch.name,
-          value: Number(programEnrollmentBatch.id),
-        });
-      }
+     
+      console.log(filterData)
       return filterData;
     });
   }
@@ -339,9 +306,24 @@ const filterdata= async (filtervalues)=>{
                       label="Batch"
                       required
                       filterData={filterBatch}
-                      // defaultOptions={ batchOptions }
+                      defaultOptions={ batchOptions }
                       className="form-control"
                       placeholder="Batch"
+                    />
+                    
+                  </div>
+
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  
+                    <Input
+                      control="lookupAsync"
+                      name="institute"
+                      label="Institute"
+                      required
+                      filterData={filterInstitution}
+                      defaultOptions={ institutionOptions }
+                      className="form-control"
+                      placeholder="Institute"
                     />
                     
                   </div>
@@ -425,7 +407,7 @@ const filterdata= async (filtervalues)=>{
                       name="designation"
                       label="Designation"
                       required
-                      options={genderOptions}
+                      // options={genderOptions}
                       className="form-control"
                       placeholder="Designation"
                     />
@@ -441,7 +423,7 @@ const filterdata= async (filtervalues)=>{
                       name="gender"
                       label="Organization"
                       required
-                      options={genderOptions}
+                      // options={genderOptions}
                       className="form-control"
                       placeholder="Organization"
                     />
