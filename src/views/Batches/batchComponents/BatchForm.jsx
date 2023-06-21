@@ -139,7 +139,7 @@ const BatchForm = (props) => {
       })));
     });
 
-    
+
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
           key: state.id,
@@ -212,20 +212,20 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
-    
+
     if(values.mode_of_payment === 'Free'){
       values.per_student_fees = 0
 
     }
 
     setFormValues(values);
-    // onHide(values);
+    onHide(values);
   };
 
 const getModeOfPayment = (event) =>{
   setModeOfPayment(event.value)
 }
-  
+
   const filterInstitution = async (filterValue) => {
     return await meilisearchClient.index('institutions').search(filterValue, {
       limit: 100,
@@ -339,7 +339,7 @@ const getModeOfPayment = (event) =>{
                         className="form-control"
                         options={statusOptions}
                         isDisabled={!isAdmin() && initialValues.status === 'Certified'}
-                   
+
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -458,7 +458,7 @@ const getModeOfPayment = (event) =>{
                       placeholder="Number of sessions planned"
                     />
                   </div>
-                 {modeOfPayment == 'Free'? 
+                 {modeOfPayment == 'Free'?
                  <div className="col-md-6 col-sm-12 mt-2">
                  <Input
                      min={0}
@@ -470,7 +470,7 @@ const getModeOfPayment = (event) =>{
                      placeholder="0"
                      disabled={true}
                      value={0}
-                     
+
                    />
                  </div>:
                  <div className="col-md-6 col-sm-12 mt-2">
@@ -483,7 +483,7 @@ const getModeOfPayment = (event) =>{
                       label="Per Student Contribution"
                       required
                       placeholder="Per Student Contribution"
-                      
+
                     />
                   </div>}
                   <div className="col-md-6 col-sm-12 mt-2">
