@@ -7,11 +7,12 @@ import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
-import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { MeiliSearch } from 'meilisearch'
+import {getAllOperations } from '../OperationComponents/operationsActions'
+
 
 const Section = styled.div`
   padding-top: 30px;
@@ -50,11 +51,11 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
 
   useEffect(() => {
-    console.log("props", props);
-      getDefaultAssigneeOptions().then(data => {
     
+      getDefaultAssigneeOptions().then(data => {
         setAssigneeOptions(data);
       });
+      // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   useEffect(() => {
@@ -89,17 +90,17 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-   
+    console.log("values----")
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
   };
 
 
-
+  const userId = localStorage.getItem('user_id');
   let initialValues = {
     topic: '',
-    institute_name:'',
+    assigned_to:userId,
     state:'',
     activity_type:'',
     institute_name:'',
@@ -122,31 +123,29 @@ const OperationDataupdateform = (props) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+  
+  
 
-  let fileName = '';
+  
   if (props) {
   
 
-
-    console.log("new Date(props.start_date).toISOString()",new Date(props.start_date))
-
+    // console.log("assigne option ", assigneeOptions);
+    console.log("Batch",props.institution)
+    initialValues['batch']=props.batch.id
     initialValues['topic'] = props.topic;
     initialValues['activity_type'] = props.activity_type
-    // initialValues['organization']
+    initialValues['assigned_to']=props.assigned_to.id
     initialValues['start_date'] = new Date(props.start_date)
     initialValues['end_date'] = new Date(props.end_date)
-
-   
-  initialValues['created_at'] = props.created_at
-    
-    // initialValues = {
-    //   ...props,
-    //   start_date:,
-    //   end_date:
-    // };  
- 
+    initialValues['students_attended']=props?.students_attended
+    initialValues['created_at'] = props.created_at
+    initialValues['organization']=props.organization
+    initialValues['designation']=props.designation
+    initialValues['guest']=props.guest
+    // console.log("props?.institute_name?.name",props?.institution);
     initialValues['state'] = props.state ? props.state : null;
-    initialValues['institute_name']=props?.institute_name?.name
+    initialValues['institute_name']=props?.institution?.id
     initialValues['donor']= props.Donor ? props.Donor :"N/A"
     initialValues['area'] = props.area ? props.area: null;
     
@@ -163,7 +162,7 @@ const OperationDataupdateform = (props) => {
     }
     if ( props.batch) {
       filterBatch(props.batch.name).then(data => {
-        console.log("dataBatch1:",data)
+        console.log("dataBatch1:",data)  
         setBatchOptions(data);
       });
     }
@@ -199,7 +198,7 @@ const OperationDataupdateform = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+      // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
   
       let filterData = data.hits.map(batch => {
       
@@ -253,7 +252,7 @@ const OperationDataupdateform = (props) => {
               <Section>
                 <h3 className="section-header">Basic Info</h3>
                 <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
+                  {/* <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
                       name="institute_name"
@@ -264,23 +263,8 @@ const OperationDataupdateform = (props) => {
                     // filterData={filterAssignedTo}
 
                     />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                    <Input
-                      control="lookupAsync"
-                      name="assigned_to"
-                      label="Assigned To"
-                      required
-                      className="form-control"
-                      placeholder="Assigned To"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                    />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
-                  </div>
+                  </div> */}
+                  
 
                   <div className="col-md-6 col-sm-12 mb-2">
 
@@ -288,13 +272,27 @@ const OperationDataupdateform = (props) => {
                       control="input"
                       name="activity_type"
                       label="Activity Type"
-                      required
+                      // required
                       className="form-control"
                       placeholder="Activity Type"
                     // filterData={filterAssignedTo}
 
                     />
 
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    
+                    <Input
+                     control="lookupAsync"
+                     name="assigned_to"
+                     label="Assigned To"
+                    //  required/
+                     className="form-control"
+                     placeholder="Assigned To"
+                     filterData={filterAssignedTo}
+                     defaultOptions={assigneeOptions}
+                    />
+                    
                   </div>
 
 
@@ -317,13 +315,13 @@ const OperationDataupdateform = (props) => {
                   
                     <Input
                       control="lookupAsync"
-                      name="institute"
-                      label="Institute"
-                      required
-                      filterData={filterInstitution}
-                      defaultOptions={ institutionOptions }
-                      className="form-control"
-                      placeholder="Institute"
+                        name="institution"
+                        label="Institution"
+                        filterData={filterInstitution}
+                        defaultOptions={props.id ? institutionOptions : true}
+                        placeholder="Institution"
+                        className="form-control"
+                        isClearable
                     />
                     
                   </div>
@@ -332,7 +330,7 @@ const OperationDataupdateform = (props) => {
                     <Input
                       name="start_date"
                       label="Start Date "
-                      required
+                      // required
                       placeholder="Date of Birth"
                       control="datepicker"
                       className="form-control"
@@ -343,7 +341,7 @@ const OperationDataupdateform = (props) => {
                     <Input
                       name="end_date"
                       label="End Date"
-                      required
+                      // required
                       placeholder="Date of Birth"
                       control="datepicker"
                       className="form-control"
@@ -352,61 +350,51 @@ const OperationDataupdateform = (props) => {
                   </div>
                   
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
+                    
                     <Input
                       control="input"
                       name="donor"
                       label="Donor"
-                      required
+                      // required
                       className="form-control"
                       placeholder="Donor"
-                      // filterData={filterAssignedTo}
-                      // defaultOptions={assigneeOptions}
+                    
                     />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
+                   
                     <Input
                       control="input"
                       name="topic"
                       label="Topic"
-                      required
+                      // required
                       className="form-control"
                       placeholder="Topic"
-                    // filterData={filterAssignedTo}
-
                     />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {genderOptions.length ? ( */}
+                   
                     <Input
                       icon="down"
                       control="input"
                       name="guest"
                       label="Guest"
-                      required
-                      // options={genderOptions}
+                      // required
                       className="form-control"
                       placeholder="Guest"
                     />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {genderOptions.length ? ( */}
                     <Input
                       icon="down"
-                      control="lookup"
+                      control="input"
                       name="designation"
                       label="Designation"
-                      required
+                      // required
                       // options={genderOptions}
                       className="form-control"
                       placeholder="Designation"
@@ -419,10 +407,10 @@ const OperationDataupdateform = (props) => {
                     {/* {genderOptions.length ? ( */}
                     <Input
                       icon="down"
-                      control="lookup"
-                      name="gender"
+                      control="input"
+                      name="organization"
                       label="Organization"
-                      required
+                      // required
                       // options={genderOptions}
                       className="form-control"
                       placeholder="Organization"
@@ -533,35 +521,7 @@ const OperationDataupdateform = (props) => {
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      label="Address"
-                      name="address"
-                      placeholder="Address"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
-                      className="form-control"
-                    />
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      className="form-control"
-                      placeholder="City"
-                      required
-                    />
-                  </div> */}
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     {stateOptions.length ? (
                       <Input
@@ -573,7 +533,7 @@ const OperationDataupdateform = (props) => {
                         onChange={onStateChange}
                         placeholder="State"
                         className="form-control"
-                        required
+                        // required
                       />
                     ) : (
                       <Skeleton count={1} height={45} />

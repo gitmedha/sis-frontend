@@ -18,7 +18,7 @@ export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", s
         }
         
     },{headers}).then(data=>{
-        console.log("data",data)
+        console.log("data----------------->\n",data)
         return data;
     }).catch(error=>{
         console.log("error",error)

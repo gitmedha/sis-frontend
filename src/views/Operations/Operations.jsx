@@ -201,43 +201,13 @@ const Operations = (props) => {
     console.log("tabPickerOptions", tabPickerOptions);
     fetchData(0, paginationPageSize, []);
   }, []);
-  useEffect(() => {
-
-    // getAllOperations().then(data => {setPickList(data)});
-    console.log("activeTab_Key", pickList);
-    // console.log("tabPickerOptions",tabPickerOptions);
-
-  }, [activeTab]);
+ 
 
   useEffect(() => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
-  useEffect(() => {
-    if (opts) {
-      let data = opts;
-      data = data.map(student => {
-        return []
-        let studentStatusData = studentStatusOptions.find(status => status.picklistMatch?.toLowerCase() === student?.status?.toLowerCase());
-        return {
-          ...student,
-          // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
-          avatar: <Avatar name={student.full_name} logo={student.logo} style={{ width: '35px', height: '35px' }} icon="student" />,
-          link: <TableRowDetailLink value={student.id} to={'student'} />,
-          status: <Badge value={student.status} pickList={pickList.status || []} />,
-          category: <Badge value={student.category} pickList={pickList.category || []} />,
-          gender: <Badge value={student.gender} pickList={pickList.gender || []} />,
-          statusIcon: studentStatusData?.icon,
-          registration_date: student.registration_date_latest ? moment(student.registration_date_latest).format("DD MMM YYYY") : null,
-          title: student.full_name,
-          progressPercent: studentStatusData?.progress,
-          href: `/student/${student.id}`,
-        }
-      });
-      setStudentsData([]);
-    }
-    // console.log("opts",opts);
-  }, [opts, pickList]);
+
 
   const hideShowModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -255,13 +225,13 @@ const Operations = (props) => {
     if (cv_file) {
       uploadFile(data.cv_file).then(data => {
         dataToSave['CV'] = data.data.data.upload.id;
-        createStudentApi(dataToSave);
+        // createStudentApi(dataToSave);
       }).catch(err => {
         console.log("CV_UPLOAD_ERR", err);
         setAlert("Unable to upload CV.", "error");
       });
     } else {
-      createStudentApi(dataToSave);
+      // createStudentApi(dataToSave);
     }
   };
   const hideCreateModal = async (data) => {
@@ -280,30 +250,17 @@ const Operations = (props) => {
     if (cv_file) {
       uploadFile(data.cv_file).then(data => {
         dataToSave['CV'] = data.data.data.upload.id;
-        createStudentApi(dataToSave);
+        // createStudentApi(dataToSave);
       }).catch(err => {
         console.log("CV_UPLOAD_ERR", err);
         setAlert("Unable to upload CV.", "error");
       });
     } else {
-      createStudentApi(dataToSave);
+      // createStudentApi(dataToSave);
     }
   };
 
-  const createStudentApi = dataToSave => {
-    nProgress.start();
-    createStudent(dataToSave).then(data => {
-      setAlert("Student created successfully.", "success");
-      history.push(`/student/${data.data.data.createStudent.student.id}`);
-    }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
-      setAlert("Unable to create student.", "error");
-    }).finally(() => {
-      nProgress.done();
-      setStudents();
-    });
-    setModalShow(false);
-  }
+ 
 
 
   const handleStudentStatusTabChange = (statusTab) => {

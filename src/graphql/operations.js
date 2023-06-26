@@ -4,11 +4,13 @@ const operationFields = `
     created_at
     institution {
         name
+        id
     }
     area
     state
     batch {
         name
+        id
     }
     topic
     start_date
@@ -21,12 +23,15 @@ const operationFields = `
     other_links
     assigned_to{
     username
+    id
   }
   Created_by {
     username
+    id
   }
   Updated_by {
     username
+    id
   }
 `
 
