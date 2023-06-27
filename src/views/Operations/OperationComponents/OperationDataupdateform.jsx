@@ -53,10 +53,13 @@ const OperationDataupdateform = (props) => {
   useEffect(() => {
     
       getDefaultAssigneeOptions().then(data => {
-        setAssigneeOptions(data);
+        setAssigneeOptions(data)
+        console.log("assigneeOptions12",data)
       });
-      // console.log("assigneeOptions ; \n ",assigneeOptions);
+  
   }, []);
+
+  
 
   useEffect(() => {
 
@@ -66,7 +69,6 @@ const OperationDataupdateform = (props) => {
         label: state.key,
         value: state.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
-
       if (props.state) {
         onStateChange({ value: props.state });
       }
@@ -77,7 +79,7 @@ const OperationDataupdateform = (props) => {
   }, []);
 
   const onStateChange = async value => {
-    console.log("value state", value)
+   
     
    await getStateDistricts(value).then(data => {
       setAreaOptions([]);
@@ -90,7 +92,7 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----")
+  
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
@@ -100,7 +102,7 @@ const OperationDataupdateform = (props) => {
   const userId = localStorage.getItem('user_id');
   let initialValues = {
     topic: '',
-    assigned_to:userId,
+    assigned_to:userId.toString(),
     state:'',
     activity_type:'',
     institute_name:'',
@@ -112,7 +114,8 @@ const OperationDataupdateform = (props) => {
     designation:'',
     updated_by:'',
     area:'',
-    students_attended:''
+    students_attended:'',
+   
   }
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -129,13 +132,11 @@ const OperationDataupdateform = (props) => {
   
   if (props) {
   
-
-    // console.log("assigne option ", assigneeOptions);
-    console.log("Batch",props.institution)
+  console.log("props",props)
     initialValues['batch']=props.batch.id
     initialValues['topic'] = props.topic;
     initialValues['activity_type'] = props.activity_type
-    initialValues['assigned_to']=props.assigned_to.id
+    initialValues['assigned_to']=props?.assigned_to?.id;
     initialValues['start_date'] = new Date(props.start_date)
     initialValues['end_date'] = new Date(props.end_date)
     initialValues['students_attended']=props?.students_attended
@@ -143,18 +144,19 @@ const OperationDataupdateform = (props) => {
     initialValues['organization']=props.organization
     initialValues['designation']=props.designation
     initialValues['guest']=props.guest
-    // console.log("props?.institute_name?.name",props?.institution);
     initialValues['state'] = props.state ? props.state : null;
     initialValues['institute_name']=props?.institution?.id
     initialValues['donor']= props.Donor ? props.Donor :"N/A"
     initialValues['area'] = props.area ? props.area: null;
+
+    console.log("initialValues",initialValues)
+    
     
   }
   useEffect(() => {
     if ( props.institution) {
       // console.log("props filterInstitution", props.institution)
       filterInstitution(props.institution.name).then(data => {
-        
         setInstitutionOptions(data);
       });
 
@@ -252,18 +254,6 @@ const OperationDataupdateform = (props) => {
               <Section>
                 <h3 className="section-header">Basic Info</h3>
                 <div className="row">
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="institute_name"
-                      label="Insititute Name"
-                      required
-                      className="form-control"
-                      placeholder="Institue"
-                    // filterData={filterAssignedTo}
-
-                    />
-                  </div> */}
                   
 
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -272,10 +262,9 @@ const OperationDataupdateform = (props) => {
                       control="input"
                       name="activity_type"
                       label="Activity Type"
-                      // required
                       className="form-control"
                       placeholder="Activity Type"
-                    // filterData={filterAssignedTo}
+                 
 
                     />
 
@@ -428,94 +417,6 @@ const OperationDataupdateform = (props) => {
                       autoComplete="off"
                     />
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                  
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="category"
-                        label="Category"
-                        required
-                        options={categoryOptions}
-                        className="form-control"
-                        placeholder="Category"
-                      />
-                   
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="income_level"
-                        label="Income Level (INR)"
-                        required
-                        options={incomeLevelOptions}
-                        className="form-control"
-                        placeholder="Income Level (INR)"
-                      />
-                   
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="lookupAsync"
-                      name="registered_by"
-                      label="Registered By"
-                      className="form-control"
-                      placeholder="Registered By"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                      isDisabled={!isAdmin()}
-                    />
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    {howDidYouHearAboutUsOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="how_did_you_hear_about_us"
-                        label="How did you hear about us?"
-                        options={howDidYouHearAboutUsOptions}
-                        className="form-control"
-                        placeholder="How did you hear about us?"
-                        onChange={option => {
-                          setSelectedHowDidYouHearAboutUs(option.value);
-                        }}
-                        required
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div> */}
-                  {/* {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="how_did_you_hear_about_us_other"
-                      label="If Other, Specify"
-                      control="input"
-                      placeholder="If Other, Specify"
-                      className="form-control"
-                      required
-                    />
-                  </div>} */}
-                  {/* {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
-                    <div className="col-md-6">
-                      <Input
-                        control="file"
-                        name="cv_upload"
-                        label="CV"
-                        subLabel={showCVSubLabel && <div className="mb-1">
-                          {fileName}
-                        </div>}
-                        className="form-control"
-                        placeholder="CV"
-                        accept=".pdf, .docx"
-                        onChange={(event) => {
-                          setFieldValue("cv_file", event.currentTarget.files[0]);
-                          setShowCVSubLabel(false);
-                        }}
-                      />
-                    </div>
-                  </div>} */}
                 </div>
               </Section>
               <Section>
@@ -554,31 +455,11 @@ const OperationDataupdateform = (props) => {
                     />
                     ) : (
                       <>
-                        {/* <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label> */}
+                     
                         <Skeleton count={1} height={45} />
                       </>
                     )}
                   </div>
-
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                  {districtOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      className="form-control"
-                      required
-                      options={districtOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div> */}
                 </div>
               </Section>
 
