@@ -328,11 +328,14 @@ const StudentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
+                      min={0}
+                      type="number"
                       name="family_annual_income"
                       label="Family Annual Income"
                       control="input"
                       placeholder="Family Annual Income"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
