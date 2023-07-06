@@ -142,8 +142,8 @@ const Details = (props) => {
       <div className="container-fluid my-3">
         <div className="row latto-regular">
           <div className="col-md-5">
-            <DetailField label="Name" className="" value={full_name?.toLowerCase()} />
-            <DetailField label="Parents Name" value={name_of_parent_or_guardian?.toLowerCase()} />
+            <DetailField label="Name" className="capitalize" value={full_name?.toLowerCase()} />
+            <DetailField label="Parents Name" className="capitalize" value={name_of_parent_or_guardian?.toLowerCase()} />
             <DetailField label="Phone" value={<a href="tel:+91">{phone}</a>} />
             <DetailField label="Alternate Phone" value={alternate_phone ? <a href="tel:+91">{alternate_phone}</a> : '-'} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
@@ -155,8 +155,8 @@ const Details = (props) => {
 
           </div>
           <div className="col-md-4">
-            <DetailField label="Assigned To" value={assigned_to?.username?.toLowerCase()} />
-            <DetailField label="Registered By" value={registered_by?.username?.toLowerCase()} />
+            <DetailField label="Assigned To" className="capitalize" value={assigned_to?.username?.toLowerCase()} />
+            <DetailField label="Registered By" className="capitalize" value={registered_by?.username?.toLowerCase()} />
             <DetailField label=" Student ID" value={student_id} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Gender" value={<Badge value={gender} pickList={pickList.gender || []} />} />
