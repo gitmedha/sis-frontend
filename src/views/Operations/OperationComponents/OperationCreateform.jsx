@@ -5,15 +5,13 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
-import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { getOpportunitiesPickList } from '../../Opportunities/OpportunityComponents/opportunityAction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Table from 'react-bootstrap/Table';
+import { MeiliSearch } from 'meilisearch'
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,12 +46,29 @@ const Section = styled.div`
     }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
 
 
   const [data, setData] = useState([
-    { id: 1, name: "name", age: "2", inst: "vava" },
+    { id: 1,
+    no_of_student:"",
+    name:"",
+    institution:"",
+    batch:"",
+    state:"",
+    start_date:"",
+    end_date:"",
+    topic:"",
+    donor:"",
+    guest:"",
+    designation:"",
+    organization:"" },
     // Add more initial rows as needed
   ]);
 
@@ -66,48 +81,27 @@ const OperationCreateform = (props) => {
     });
     setData(updatedData);
   };
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [genderOptions, setGenderOptions] = useState([]);
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
-  const [howDidYouHearAboutUsOptions, setHowDidYouHearAboutUsOptions] = useState([]);
-  const [selectedHowDidYouHearAboutUs, setSelectedHowDidYouHearAboutUs] = useState(props?.how_did_you_hear_about_us);
-  const [logo, setLogo] = useState(null);
+
+  const handleDeleteRow = (rowId) => {
+    setData((prevRows) => prevRows.filter((row) => row.id !== rowId));
+    console.log("123",data);
+  };
+
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [typeOptions, setTypeOptions] = useState([]);
   const [show1, setShow1] = useState(false);
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState([]);
+
 
   const handleClose = () => setShow1(false);
   const handleShow = () => setShow1(true);
-  // const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
-  // const userId = parseInt(localStorage.getItem('user_id'))
-  // const medhaChampionOptions = [
-  //   { key: true, value: true, label: "Yes" },
-  //   { key: false, value: false, label: "No" },
-  // ];
-  // const interestedInEmploymentOpportunitiesOptions = [
-  //   { key: true, value: true, label: "Yes" },
-  //   { key: false, value: false, label: "No" },
-  // ];
-
-  // useEffect(() => {
-  //   getDefaultAssigneeOptions().then(data => {
-  //     setAssigneeOptions(data);
-  //   });
-  // }, []);
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
+
 
     getAddressOptions().then(data => {
       console.log("data--------------->", data?.data?.data?.geographiesConnection);
@@ -145,6 +139,19 @@ const OperationCreateform = (props) => {
     });
   };
 
+  const handleInputChange = (e, index, field) => {
+    const { value } = e;
+    console.log(e.target.value);
+    setData((prevRows) =>
+      prevRows.map((row, rowIndex) => {
+        if (rowIndex === index) {
+          return { ...row, [field]: value };
+        }
+        return row;
+      })
+    );
+  };
+
   const onSubmit = async (values) => {
     // if (logo) {
     //   values.logo = logo;
@@ -175,13 +182,6 @@ const OperationCreateform = (props) => {
 
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
 
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
@@ -197,36 +197,78 @@ const OperationCreateform = (props) => {
   }, []);
 
 
-  useEffect(() => {
-    getOpportunitiesPickList().then(data => {
-      setStatusOptions(data.status.map((item) => {
-        return {
-          key: item.value,
-          label: item.value,
-          value: item.value,
-        };
-      }));
 
-      setTypeOptions(data.type.map((item) => {
-        return {
-          key: item.value,
-          label: item.value,
-          value: item.value,
-        };
-      }));
-
-
-    });
-
-
-
-  }, []);
 
 
   const handleRowData = (rowData) => {
     // Do something with the row data
     console.log(rowData);
   };
+
+  useEffect(() => {
+    
+      
+      filterInstitution().then(data => {
+        console.log("data institute",data)
+        setInstitutionOptions(data);
+      });
+
+
+    
+   
+      filterBatch().then(data => {
+        console.log("dataBatch1:", data)
+        setBatchOptions(data);
+      });
+    
+      
+  }, [])
+
+
+
+
+
+  const filterInstitution = async (filterValue) => {
+
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let filterData = data.hits.map(institution => {
+
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+
+      return filterData;
+    });
+  }
+
+
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+
+      let filterData = data.hits.map(batch => {
+
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        }
+      });
+
+      console.log(filterData)
+      return filterData;
+    });
+  }
 
 
   return (
@@ -282,8 +324,6 @@ const OperationCreateform = (props) => {
       <Modal.Body className="bg-white">
         <Formik
           onSubmit={onSubmit}
-        // initialValues={initialValues}
-        // validationSchema={StudentValidations}
         >
 
 
@@ -334,46 +374,44 @@ const OperationCreateform = (props) => {
                         <Input
                           type="text"
                           name="name"
-                          // label="Guest"
-                          // required
+                          label="Name"
                           control="input"
                           placeholder="Name"
                           className="form-control"
+                          onChange={(e)=>console.log(e.target.value)}
                         />
 
                       </td>
                       <td>
 
                         <Input
-                          icon="down"
-                          name="type"
-                          // label="Type"
-                          onChange={(e) => handleValueChange(e, row?.id, 'inst')}
-                          control="lookup"
-                          // placeholder="Type"
-                          options={typeOptions}
+                          control="lookupAsync"
+                          name="institution"
+                          label="Institution"
+                          filterData={filterInstitution}
+                          defaultOptions={institutionOptions}
+                          placeholder="Institution"
                           className="form-control"
-                        // required
+                          isClearable
+                          // onChange={(e)=>console.log(e.target.value)}
                         />
+                        
                       </td>
                       <td>
 
                         <Input
-                          type="Number"
-                          name="guest"
-                          // label="Guest"
-                          // required
-                          control="input"
+                          control="lookupAsync"
+                          name="batch"
+                          label="Batch"
+                          required
+                          filterData={filterBatch}
+                          defaultOptions={batchOptions}
+                          className="form-control"
                           placeholder="Batch"
-                          onChange={(e) => handleValueChange(e, row?.id, 'batch')}
-                          className="form-control"
                         />
+                        
 
-                        {/* <input
-                          type="Number"
-                          value={row?.age}
-                          onChange={(e) => handleValueChange(e, row?.id, 'age')} />
-                       */}
+
                       </td>
 
                       <td>
@@ -395,6 +433,7 @@ const OperationCreateform = (props) => {
                           <Skeleton count={1} height={45} />
                         )}
                       </td>
+                        
                       <td>
 
 
@@ -407,6 +446,7 @@ const OperationCreateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
+                        
                       </td>
                       <td>
 
@@ -421,6 +461,7 @@ const OperationCreateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
+                        
                       </td>
                       <td>
 
@@ -428,17 +469,27 @@ const OperationCreateform = (props) => {
                         <Input
                           type="text"
                           name="topic"
-                          // label="Topic"
+                          label="Topic"
                           // required
                           control="input"
                           placeholder="Topic"
                           className="form-control"
                         />
+                        
+
                       </td>
                       <td>
 
-
-                        {stateOptions.length ? (
+                      <Input
+                          type="text"
+                          name="donor"
+                          label="Donor"
+                          // required
+                          control="input"
+                          placeholder="Topic"
+                          className="form-control"
+                        />
+                        {/* {stateOptions.length ? (
                           <Input
                             icon="down"
                             name="state"
@@ -452,7 +503,7 @@ const OperationCreateform = (props) => {
                           />
                         ) : (
                           <Skeleton count={1} height={45} />
-                        )}
+                        )} */}
                       </td>
                       <td>
 
@@ -465,6 +516,7 @@ const OperationCreateform = (props) => {
                           control="input"
                           placeholder="Guest Name"
                           className="form-control"
+                          onChange={(e)=>handleInputChange(e,row.id,"guest")}
                         />
                       </td>
                       <td>
@@ -478,38 +530,39 @@ const OperationCreateform = (props) => {
                           control="input"
                           placeholder="Designation"
                           className="form-control"
+                          onChange={(e)=>handleInputChange(e,row.id,"designation")}
                         />
                       </td>
                       <td>
+                          
 
-
-                        {stateOptions.length ? (
+                       
                           <Input
                             icon="down"
-                            name="Organization"
+                            control="input"
+                            name="organization"
                             // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
+                           
+                            // options={stateOptions}
+                            onChange={(e)=>handleInputChange(e,row.id,"organization")}
                             placeholder="Organization"
                             className="form-control"
                           // required
                           />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
+                        
                       </td>
                       <td>
 
 
                         <Input
                           type="number"
-                          name="email"
+                          name="no_of_student"
                           // label="Student Attended"
                           // required
                           control="input"
                           placeholder="Number of student"
                           className="form-control"
+                          onChange={(e)=>handleInputChange(e,row.id,"no_of_student")}
                         />
                       </td>
                       <td>
@@ -534,7 +587,7 @@ const OperationCreateform = (props) => {
                       </td>
 
                       <td>
-                        <button onClick={() => handleRowData(row)}>Retrieve Data</button>
+                        <button className="btn btn-secondary btn-regular mr-1" onClick={() => handleDeleteRow(row.id)}>Delete</button>
                       </td>
 
                     </tr>

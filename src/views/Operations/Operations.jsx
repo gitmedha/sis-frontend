@@ -178,8 +178,8 @@ const Operations = (props) => {
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'area':
-        case 'start_date':
-        case 'end_date':
+        case 'assigned_to.username':
+        case 'activity_type':
         case 'batch.name':
           sortByField = sortBy[0].id;
           break;
