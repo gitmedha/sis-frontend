@@ -130,7 +130,11 @@ const Student = (props) => {
         query: GET_STUDENT,
         variables: { id: studentId },
       });
-      setStudent(data.data.student);
+      let values=data.data.student;
+      
+      values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()
+      values.full_name=values.full_name.toLowerCase()
+      setStudent(values);
     } catch (err) {
       console.log("ERR", err);
     } finally {
