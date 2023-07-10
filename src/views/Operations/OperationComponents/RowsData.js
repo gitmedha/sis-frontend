@@ -1,0 +1,217 @@
+import React, { useState } from 'react'
+import Select from 'react-select';
+import DatePicker from "react-datepicker";
+import Skeleton from "react-loading-skeleton";
+import { getStateDistricts } from '../../Address/addressActions';
+
+export const RowsData = (props) => {
+    const [rows, setRows] = useState([
+        {
+            id: 1,
+            no_of_student: "",
+            name: "",
+            institution: "",
+            batch: "",
+            state: "",
+            start_date: "",
+            end_date: "",
+            topic: "",
+            donor: "",
+            guest: "",
+            designation: "",
+            organization: "",
+            activity_type: ""
+        },
+        // Add more initial rows as needed
+    ]);
+    const [row, setRowData] = useState(props.row)
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [areaOptions, setAreaOptions] = useState([]);
+    const handleChange = (options,key) => {
+        console.log(options,key);
+    }
+    const onStateChange = value => {
+
+
+        getStateDistricts(value).then(data => {
+
+            setAreaOptions([]);
+            setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+                key: area.id,
+                label: area.key,
+                value: area.key,
+            })).sort((a, b) => a.label.localeCompare(b.label)));
+        });
+    };
+
+
+    const updateRow = (id, field, value) => {
+        row[field] = value
+        console.log(id,field,value )
+        // props.handleInputChange()
+        // setRows(updatedRows);
+    };
+
+    return (
+        <>
+
+            <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+
+                        // value={row.name}
+                        onChange={(e) => updateRow(row.id, 'activity_type', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <Select
+                        className="basic-single table-input"
+                        classNamePrefix="select"
+                        // defaultValue={institutionOptions[0]}
+                        // isDisabled={isDisabled}
+                        // isLoading={true}
+                        isClearable={true}
+                        // isRtl={isRtl}
+                        isSearchable={true}
+                        name="institute"
+                        options={props.institutiondata}
+                        onChange={props.handleChange}
+
+                    />
+                </td>
+                <td>
+                    <Select
+                        className="basic-single table-input"
+                        classNamePrefix="select"
+                        // defaultValue={batchOptions[0]}
+                        // isDisabled={isDisabled}
+                        // isLoading={true}
+                        isClearable={true}
+                        // isRtl={isRtl}
+                        isSearchable={true}
+                        name="batch"
+                        options={props.batchbdata}
+                        onChange={props.handleChange}
+                    />
+                </td>
+                <td>
+                    <Select
+                        className="basic-single table-input"
+                        classNamePrefix="select"
+                        // defaultValue={stateOptions[0]}
+                        // isDisabled={isDisabled}
+                        // isLoading={true}
+                        isClearable={true}
+                        // isRtl={isRtl}
+                        isSearchable={true}
+                        name="state"
+                        options={props.statedata}
+                        onChange={onStateChange}
+                    />
+                </td>
+                <td>
+                    {areaOptions.length ? (
+                        <Select
+                            className="basic-single table-input"
+                            classNamePrefix="select"
+                            // defaultValue={batchOptions[0]}
+                            // isDisabled={isDisabled}
+                            // isLoading={true}
+                            isClearable={true}
+                            // isRtl={isRtl}
+                            isSearchable={true}
+                            name="area"
+                            options={areaOptions}
+                            onChange={(e)=>props.handleChange(e,e.target)}
+                        />
+                    ) : (
+                        <>
+                            {/* <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label> */}
+                            <Skeleton count={1} height={45} />
+                        </>
+                    )}
+                </td>
+                <td>
+                    <DatePicker 
+                    dateFormat="dd/MM/yyyy"
+                    className="table-input" 
+                    selected={startDate} 
+                    onChange={(date) => {
+                        const d = new Date(date).toLocaleDateString('fr-FR');
+                        setStartDate(date)
+                        props.updateRow(row.id, 'start_date', d)}}
+                    />
+                </td>
+                <td>
+                    <DatePicker 
+                    dateFormat="dd/MM/yyyy"
+                    className="table-input" 
+                    selected={endDate}
+                    onChange={(date) => {
+                        const d = new Date(date).toLocaleDateString('fr-FR');
+                        setEndDate(date)
+                        props.updateRow(row.id, 'end_date', d)}} 
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'topic', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'donor', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'guest', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'designation', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'organization', e.target.value)}
+                    />
+                </td>
+                <td>
+                    <input
+                        className="table-input"
+                        type="text"
+                        value={row.age}
+                        onChange={(e) => props.updateRow(row.id, 'no_of_student', e.target.value)}
+                    />
+                </td>
+                
+                {/* <td>
+                <button onClick={() => setRowid(row.id)}>Delete Row</button>
+              </td> */}
+            </tr>
+
+
+        </>
+    )
+}

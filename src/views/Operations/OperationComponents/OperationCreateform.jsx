@@ -6,13 +6,15 @@ import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { urlPath } from "../../../constants";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Table from 'react-bootstrap/Table';
+import { connect } from "react-redux";
+
 import { MeiliSearch } from 'meilisearch'
 
+import { RowsData } from './RowsData';
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -30,19 +32,47 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
-  .table {
-    overflow: auto;
-    display: block;
-    table-layout: auto;
+  
+
+    // .App {
+    //   margin: 2rem auto;
+    //   width: 80%;
+    // }
+    
+    .create_data_table {
+      border-collapse: collapse !important;
+      width: 100%;
+      overflow:auto;
     }
-    .table-container {
-      overflow-x: auto;
+    
+    th,
+    td {
+      
+      padding: 8px;
+      text-align: left;
     }
-    th{
-      width:15rem
+    
+    th {
+      background-color: #f2f2f2;
     }
-    .id{
-      width:3rem !important;
+    
+    .table-input {
+      border: none;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      background-color: transparent;
+    }
+    
+    button {
+      margin-top: 1rem;
+    }
+    .table-input:focus {
+      outline: none;
+    }
+    .adddeletebtn{
+      display: flex;
+      justify-content: flex-end;
     }
 `;
 
@@ -53,24 +83,106 @@ const meilisearchClient = new MeiliSearch({
 
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
-
+  const {setAlert} = props;
 
   const [data, setData] = useState([
-    { id: 1,
-    no_of_student:"",
-    name:"",
-    institution:"",
-    batch:"",
-    state:"",
-    start_date:"",
-    end_date:"",
-    topic:"",
-    donor:"",
-    guest:"",
-    designation:"",
-    organization:"" },
+    {
+      id: 1,
+      no_of_student: "",
+      name: "",
+      activity_type:"",
+      institution: "",
+      batch: "",
+      state: "",
+      start_date: "",
+      end_date: "",
+      topic: "",
+      donor: "",
+      guest: "",
+      designation: "",
+      organization: ""
+    },
     // Add more initial rows as needed
   ]);
+  const [rows, setRows] = useState([{
+    id: 1,
+    no_of_student: "",
+    name: "",
+    institution: "",
+    batch: "",
+    activity_type: "",
+    state: "",
+    start_date: "",
+    end_date: "",
+    topic: "",
+    donor: "",
+    guest: "",
+    designation: "",
+    organization: ""
+  }]);
+  const [newRow, setNewRow] = useState({
+    id: "",
+    no_of_student: "",
+    name: "",
+    institution: "",
+    batch: "",
+    state: "",
+    start_date: "",
+    activity_type:"",
+    end_date: "",
+    topic: "",
+    donor: "",
+    guest: "",
+    designation: "",
+    organization: ""
+  });
+  const [showLimit, setshowLimit] = useState(false)
+  const addRow = () => {
+    if (rows.length >= 10) {
+      setAlert("You can't Add more than 10 items.", "error");
+    } else {
+      const newRowWithId = { ...newRow, id: rows.length + 1 };
+      setRows([...rows, newRowWithId]);
+      setNewRow({ id: '', name: '', age: '' });
+      console.log(rows)
+    }
+
+  };
+ const updateDate=(field, value)=>{
+  console.log("feild date" ,value)
+    if(field == 'start_date'){
+      setStartDate(value)
+    }else{
+      setEndDate(value)
+    }
+  }
+
+  const updateRow = (id, field, value) => {
+    
+    const updatedRows = rows.map((row) => {
+      if (row.id === id) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    });
+    setRows(updatedRows);
+  };
+
+  const deleteRow = (id) => {
+    if (rows.length == 1) {
+      return rows;
+    }
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+  };
+
+  const deleteTable = () => {
+    setRows([]);
+  };
+
+  const handleSubmit = () => {
+    console.log(rows);
+  };
 
   const handleValueChange = (e, rowId, property) => {
     const updatedData = data.map((row) => {
@@ -84,7 +196,7 @@ const OperationCreateform = (props) => {
 
   const handleDeleteRow = (rowId) => {
     setData((prevRows) => prevRows.filter((row) => row.id !== rowId));
-    console.log("123",data);
+    console.log("123", data);
   };
 
   const [stateOptions, setStateOptions] = useState([]);
@@ -95,7 +207,8 @@ const OperationCreateform = (props) => {
   const [show1, setShow1] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const handleClose = () => setShow1(false);
   const handleShow = () => setShow1(true);
@@ -141,7 +254,7 @@ const OperationCreateform = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value);
+    console.log(e.target.value,"index",index,"feild",field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -153,32 +266,12 @@ const OperationCreateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    // if (logo) {
-    //   values.logo = logo;
-    // }
+   
     console.log("onsubmit values----------->", values);
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
   };
-
-
-
-  const addRow = () => {
-    // const newRowId = data.length + 1;
-    if (data.length === 10) {
-      return;
-    }
-    const newRow = { id: data.length + 1, name: 'rojo', age: 10 };
-    // Modify the properties as per your requirements
-    setData([...data, newRow]);
-  };
-  const handleSubmit = () => {
-    console.log(data); // Logging the data to the console
-  };
-  useEffect(() => {
-    console.log("data", data)
-  }, [])
 
 
   useEffect(() => {
@@ -206,22 +299,22 @@ const OperationCreateform = (props) => {
   };
 
   useEffect(() => {
-    
-      
-      filterInstitution().then(data => {
-        console.log("data institute",data)
-        setInstitutionOptions(data);
-      });
 
 
-    
-   
-      filterBatch().then(data => {
-        console.log("dataBatch1:", data)
-        setBatchOptions(data);
-      });
-    
-      
+    filterInstitution().then(data => {
+      console.log("data institute", data)
+      setInstitutionOptions(data);
+    });
+
+
+
+
+    filterBatch().then(data => {
+      console.log("dataBatch1:", data)
+      setBatchOptions(data);
+    });
+
+
   }, [])
 
 
@@ -270,13 +363,23 @@ const OperationCreateform = (props) => {
     });
   }
 
+  const handleChange = (options,key) => {
+    console.log(options,key);
+    
+  };
+  const onConfirm =()=>{
+    setshowLimit(true)
+  }
+  const onCancel =()=>{
+    setshowLimit(false)
+  }
+
 
   return (
     <Modal
       centered
       size="xl"
       responsive
-      // fullscreen={true}
       show={show}
       onHide={onHide}
       animation={false}
@@ -322,503 +425,65 @@ const OperationCreateform = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
-        <Formik
-          onSubmit={onSubmit}
-        >
+        <div id="CreateOptsData">
+          <div className="adddeletebtn">
+            <button onClick={addRow} >
+              <FaPlusCircle width="15" size={30} color="#000" className="ml-2" />
+            </button>
+            {/* <button onClick={handleSubmit}>Submit</button> */}
+            <button onClick={() => deleteRow(rows.length)}>
+
+              <FaMinusCircle width="15" size={30} color="#000" className="ml-2" />
+            </button>
+            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
+
+          </div>
+          <div className='table-container'>
+            <table className='create_data_table'>
+              <thead>
+                <tr>
+                  <th className='id'>ID</th>
+                  <th>Activity Type</th>
+                  <th>Institution</th>
+
+                  <th>Batch</th>
+                  <th>State</th>
+                  <th>Area</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Topic</th>
+                  <th>Donor</th>
+                  <th>Guest</th>
+                  <th>Designation</th>
+                  <th>Organization</th>
+                  <th>Student Attended</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <RowsData handleInputChange={handleInputChange} handleChange ={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions} />
+                ))}
+              </tbody>
+            </table>
+          </div>
 
 
-          <Section>
-            <div className='d-flex justify-content-between'>
-              <h2 className="section-header">Basic Info</h2>
-
-
-            </div>
-
-
-            <div  >
-
-              <Table style={{ width: '150%' }} striped bordered responsive >
-
-
-                <thead>
-                  <tr>
-                    <th className='id'>ID</th>
-                    <th>Activity Type</th>
-                    <th>Institution</th>
-
-                    <th>Batch</th>
-                    <th>State</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Topic</th>
-                    <th>Donor</th>
-                    <th>Guest</th>
-                    <th>Designation</th>
-                    <th>Organization</th>
-                    <th>Student Attended</th>
-                    <th>Area</th>
-
-
-
-                    {/* Add more th elements for additional columns */}
-                  </tr>
-                </thead>
-                <tbody className='mb-5'>
-                  {data && data?.map((row) => (
-
-
-                    <tr key={row?.id}>
-                      <td>{row.id}</td>
-                      <td >
-
-                        <Input
-                          type="text"
-                          name="name"
-                          label="Name"
-                          control="input"
-                          placeholder="Name"
-                          className="form-control"
-                          onChange={(e)=>console.log(e.target.value)}
-                        />
-
-                      </td>
-                      <td>
-
-                        <Input
-                          control="lookupAsync"
-                          name="institution"
-                          label="Institution"
-                          filterData={filterInstitution}
-                          defaultOptions={institutionOptions}
-                          placeholder="Institution"
-                          className="form-control"
-                          isClearable
-                          // onChange={(e)=>console.log(e.target.value)}
-                        />
-                        
-                      </td>
-                      <td>
-
-                        <Input
-                          control="lookupAsync"
-                          name="batch"
-                          label="Batch"
-                          required
-                          filterData={filterBatch}
-                          defaultOptions={batchOptions}
-                          className="form-control"
-                          placeholder="Batch"
-                        />
-                        
-
-
-                      </td>
-
-                      <td>
-
-
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
-                            className="form-control"
-                          // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </td>
-                        
-                      <td>
-
-
-                        <Input
-                          name="start_date"
-                          // label="Start Date"
-                          // required
-                          placeholder="Start Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                        
-                      </td>
-                      <td>
-
-
-                        <Input
-                          name="end_date"
-                          type='date'
-                          // label="End Date"
-                          // required
-                          placeholder="End Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                        
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="topic"
-                          label="Topic"
-                          // required
-                          control="input"
-                          placeholder="Topic"
-                          className="form-control"
-                        />
-                        
-
-                      </td>
-                      <td>
-
-                      <Input
-                          type="text"
-                          name="donor"
-                          label="Donor"
-                          // required
-                          control="input"
-                          placeholder="Topic"
-                          className="form-control"
-                        />
-                        {/* {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="Donor"
-                            className="form-control"
-                          // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )} */}
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="guest"
-                          // label="Guest"
-                          // required
-                          control="input"
-                          placeholder="Guest Name"
-                          className="form-control"
-                          onChange={(e)=>handleInputChange(e,row.id,"guest")}
-                        />
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="designation"
-                          // label="Designation"
-                          // required
-                          control="input"
-                          placeholder="Designation"
-                          className="form-control"
-                          onChange={(e)=>handleInputChange(e,row.id,"designation")}
-                        />
-                      </td>
-                      <td>
-                          
-
-                       
-                          <Input
-                            icon="down"
-                            control="input"
-                            name="organization"
-                            // label="State"
-                           
-                            // options={stateOptions}
-                            onChange={(e)=>handleInputChange(e,row.id,"organization")}
-                            placeholder="Organization"
-                            className="form-control"
-                          // required
-                          />
-                        
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="number"
-                          name="no_of_student"
-                          // label="Student Attended"
-                          // required
-                          control="input"
-                          placeholder="Number of student"
-                          className="form-control"
-                          onChange={(e)=>handleInputChange(e,row.id,"no_of_student")}
-                        />
-                      </td>
-                      <td>
-
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            control="lookup"
-                            name="medha_area"
-                            label="Medha Area"
-                            className="form-control"
-                            placeholder="Medha Area"
-                            required
-                            options={areaOptions}
-                          />
-                        ) : (
-                          <>
-                            <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label>
-                            <Skeleton count={1} height={35} />
-                          </>
-                        )}
-                      </td>
-
-                      <td>
-                        <button className="btn btn-secondary btn-regular mr-1" onClick={() => handleDeleteRow(row.id)}>Delete</button>
-                      </td>
-
-                    </tr>
-                  ))}
-                </tbody>
-
-                <button className=" btn-primary btn-regular mr-2 mt-5" onClick={addRow}>Add Row</button>
-                <button className="btn btn-secondary btn-regular mr-2 " onClick={handleSubmit}>Submit</button>
-
-              </Table>
-            </div>
-
-
-
-          </Section>
-
-
-
-
-
-
-        </Formik>
+        </div>
       </Modal.Body>
+
+      {/* {showLimit ? <SweetAlert title="You can't dd more than 10 items!" onConfirm={onConfirm} onCancel={()=>onCancel()} /> :""} */}
     </Modal>
   );
 };
 
-export default OperationCreateform;
+// export default OperationCreateform;
 
+const mapStateToProps = (state) => ({});
 
+const mapActionsToProps = {
+  setAlert,
+};
 
-// {/* <div className="row">
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="full_name"
-//     label="Name"
-//     required
-//     control="input"
-//     placeholder="Name"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       control="lookupAsync"
-//       name="assigned_to"
-//       label="Assigned To"
-//       required
-//       className="form-control"
-//       placeholder="Assigned To"
-//       filterData={filterAssignedTo}
-//       defaultOptions={assigneeOptions}
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div>  */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="name_of_parent_or_guardian"
-//     label="Parents Name"
-//     required
-//     control="input"
-//     placeholder="Parents Name"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="status"
-//       label="Status"
-//       required
-//       options={statusOptions}
-//       className="form-control"
-//       placeholder="Status"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="phone"
-//     label="Phone"
-//     required
-//     control="input"
-//     placeholder="Phone"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="alternate_phone"
-//     label="Alternate Phone"
-//     control="input"
-//     placeholder="Phone"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     type="email"
-//     name="email"
-//     label="Email"
-//     // required
-//     control="input"
-//     placeholder="Email"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {genderOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="gender"
-//       label="Gender_1"
-//       required
-//       options={genderOptions}
-//       className="form-control"
-//       placeholder="Gender"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="date_of_birth"
-//     label="Date of Birth"
-//     required
-//     placeholder="Date of Birth"
-//     control="datepicker"
-//     className="form-control"
-//     autoComplete="off"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="category"
-//       label="Category"
-//       required
-//       options={categoryOptions}
-//       className="form-control"
-//       placeholder="Category"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="income_level"
-//       label="Income Level (INR)"
-//       required
-//       options={incomeLevelOptions}
-//       className="form-control"
-//       placeholder="Income Level (INR)"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     control="lookupAsync"
-//     name="registered_by"
-//     label="Registered By"
-//     className="form-control"
-//     placeholder="Registered By"
-//     filterData={filterAssignedTo}
-//     defaultOptions={assigneeOptions}
-//     isDisabled={!isAdmin()}
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   {howDidYouHearAboutUsOptions.length ? (
-//     <Input
-//       icon="down"
-//       control="lookup"
-//       name="how_did_you_hear_about_us"
-//       label="How did you hear about us?"
-//       options={howDidYouHearAboutUsOptions}
-//       className="form-control"
-//       placeholder="How did you hear about us?"
-//       onChange={option => {
-//         setSelectedHowDidYouHearAboutUs(option.value);
-//       }}
-//       required
-//     />
-//   ) : (
-//     <Skeleton count={1} height={45} />
-//   )}
-// </div> */}
-// {/* {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="how_did_you_hear_about_us_other"
-//     label="If Other, Specify"
-//     control="input"
-//     placeholder="If Other, Specify"
-//     className="form-control"
-//     required
-//   />
-// </div>} */}
-// {/* {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
-//   <div className="col-md-6">
-//     <Input
-//       control="file"
-//       name="cv_upload"
-//       label="CV"
-//       subLabel={showCVSubLabel && <div className="mb-1">
-//         {fileName}
-//       </div>}
-//       className="form-control"
-//       placeholder="CV"
-//       accept=".pdf, .docx"
-//       onChange={(event) => {
-//         setFieldValue("cv_file", event.currentTarget.files[0]);
-//         setShowCVSubLabel(false);
-//       }}
-//     />
-//   </div>
-// </div>} */}
-// </div> */}
+export default connect(mapStateToProps, mapActionsToProps)(OperationCreateform);
+

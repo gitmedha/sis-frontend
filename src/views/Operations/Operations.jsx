@@ -9,27 +9,17 @@ import {
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
-import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_OPERATIONS, GET_STUDENTS } from "../../graphql";
+import { GET_OPERATIONS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
-import { getoperationsPickList, createStudent } from "../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaListUl, FaThLarge } from "react-icons/fa";
-import Switch from '@material-ui/core/Switch';
-// import StudentGrid from "./StudentComponents/StudentGrid";
-import { studentStatusOptions } from "../Students/StudentComponents/StudentConfig";
-// import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
-// import StudentGrid from "../Students/StudentComponents/StudentGrid";
-// import StudentForm from "./OperationComponents/OperationDataupdateform";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import {getAllOperations } from './OperationComponents/operationsActions'
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -77,6 +67,7 @@ const Operations = (props) => {
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
 
+  
   const columns = useMemo(
     () => [
       {
@@ -142,16 +133,7 @@ const Operations = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    // if (status !== 'All') {
-    //   // variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
-    // }
-    // if (selectedTab == "my_data") {
-    //   Object.assign(variables, { id: userId })
-    // } else if (selectedTab == "my_state") {
-    //   Object.assign(variables, { state: state })
-    // } else if (selectedTab == "my_area") {
-    //   Object.assign(variables, { area: area })
-    // }
+ 
 
     await api.post("/graphql", {
       query: GET_OPERATIONS,
@@ -214,25 +196,6 @@ const Operations = (props) => {
       setShowModal(false);
       return;
     }
-
-    // need to remove `show` from the payload
-    let { show, institution, batch, cv_file, ...dataToSave } = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
-    if (typeof data.CV === 'object') {
-      dataToSave['CV'] = data.CV?.url;
-    }
-
-    if (cv_file) {
-      uploadFile(data.cv_file).then(data => {
-        dataToSave['CV'] = data.data.data.upload.id;
-        // createStudentApi(dataToSave);
-      }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
-        setAlert("Unable to upload CV.", "error");
-      });
-    } else {
-      // createStudentApi(dataToSave);
-    }
   };
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -240,24 +203,7 @@ const Operations = (props) => {
       return;
     }
 
-    // need to remove `show` from the payload
-    let { show, institution, batch, cv_file, ...dataToSave } = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
-    if (typeof data.CV === 'object') {
-      dataToSave['CV'] = data.CV?.url;
-    }
-
-    if (cv_file) {
-      uploadFile(data.cv_file).then(data => {
-        dataToSave['CV'] = data.data.data.upload.id;
-        // createStudentApi(dataToSave);
-      }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
-        setAlert("Unable to upload CV.", "error");
-      });
-    } else {
-      // createStudentApi(dataToSave);
-    }
+    
   };
 
  
@@ -278,14 +224,9 @@ const Operations = (props) => {
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
-          {/* <div className="d-flex justify-content-end py-2">
-            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
-            <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
-            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
-          </div> */}
+          
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-            {/* <Tabs options={studentStatusOptions}  onTabChange={handleStudentStatusTabChange} /> */}
             {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
@@ -295,16 +236,12 @@ const Operations = (props) => {
             </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-            {/* <Table columns={columns} data={studentsData} totalRecords={optsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} /> */}
-
-            <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+           <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
 
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          {/* <div className={`col-12 ${layout !== 'grid' ? 'd-none' : ''}`}>
-            <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
-          </div> */}
+          
           <OperationCreateform
             show={modalShow}
             onHide={hideCreateModal}
