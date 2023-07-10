@@ -69,8 +69,8 @@ const AlumniServiceForm = (props) => {
   }, []);
 
   useEffect(() => {
-    let fee_submission_date = Yup.string().nullable().required("Fee submission date is required.");
-    let fee_amount = Yup.string().required("Fee amount is required.");
+    let fee_submission_date = Yup.string().nullable().required("Contribution submission date is required.");
+    let fee_amount = Yup.string().required("Contribution amount is required.");
     let receipt_number = Yup.string().required("Receipt number is required.");
     let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
     setFeeFieldsRequired(fieldsRequired);
@@ -246,8 +246,8 @@ const AlumniServiceForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="fee_submission_date"
-                      label="Fee Submission Date"
-                      placeholder="Fee Submission Date"
+                      label="Contribution Submission Date"
+                      placeholder="Contribution Submission Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -260,8 +260,8 @@ const AlumniServiceForm = (props) => {
                       min={0}
                       type="number"
                       name="fee_amount"
-                      label="Fee Amount"
-                      placeholder="Fee Amount"
+                      label="Contribution Amount"
+                      placeholder="Contribution Amount"
                       control="input"
                       className="form-control"
                       autoComplete="off"
