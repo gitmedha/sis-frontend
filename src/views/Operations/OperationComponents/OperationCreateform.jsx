@@ -143,7 +143,7 @@ const OperationCreateform = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      setNewRow({ id: '', name: '', age: '' });
+      // setNewRow({ id: '', name: '', age: '' });
       console.log(rows)
     }
 
@@ -156,7 +156,22 @@ const OperationCreateform = (props) => {
       setEndDate(value)
     }
   }
-
+  const handleChange = (options,key,rowid) => {
+    console.log(options.value);
+    if(key =="state"){
+      getStateDistricts().then(data => {
+        console.log("data",data);
+        setAreaOptions([]);
+        setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+        })).sort((a, b) => a.label.localeCompare(b.label)));
+    });
+    console.log(areaOptions);
+    }
+    updateRow(rowid,key,options.value)
+  };
   const updateRow = (id, field, value) => {
     
     const updatedRows = rows.map((row) => {
@@ -265,12 +280,12 @@ const OperationCreateform = (props) => {
     );
   };
 
-  const onSubmit = async (values) => {
+  const onSubmit =  () => {
    
-    console.log("onsubmit values----------->", values);
-    setDisableSaveButton(true);
-    await onHide(values);
-    setDisableSaveButton(false);
+    console.log("onsubmit values----------->", rows);
+    // setDisableSaveButton(true);
+    // await onHide(values);
+    // setDisableSaveButton(false);
   };
 
 
@@ -363,10 +378,7 @@ const OperationCreateform = (props) => {
     });
   }
 
-  const handleChange = (options,key) => {
-    console.log(options,key);
-    
-  };
+  
   const onConfirm =()=>{
     setshowLimit(true)
   }
@@ -411,7 +423,7 @@ const OperationCreateform = (props) => {
             </div>
 
             <div className="d-flex justify-content-start between_class">
-              <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
+              <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={onSubmit} disabled={disableSaveButton}>SAVE</button>
               <button
                 type="button"
                 onClick={onHide}
@@ -462,7 +474,7 @@ const OperationCreateform = (props) => {
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <RowsData handleInputChange={handleInputChange} handleChange ={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions} />
+                  <RowsData handleInputChange={handleInputChange} handleChange ={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions}  areaOptions={areaOptions}/>
                 ))}
               </tbody>
             </table>

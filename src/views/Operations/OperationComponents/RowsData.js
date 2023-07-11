@@ -31,7 +31,7 @@ export const RowsData = (props) => {
     const handleChange = (options,key) => {
         console.log(options,key);
     }
-    const onStateChange = value => {
+    const onStateChange = (value,rowid,field) => {
 
 
         getStateDistricts(value).then(data => {
@@ -43,6 +43,8 @@ export const RowsData = (props) => {
                 value: area.key,
             })).sort((a, b) => a.label.localeCompare(b.label)));
         });
+        props.updateRow(rowid, field, value.value)
+        
     };
 
 
@@ -79,7 +81,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="institute"
                         options={props.institutiondata}
-                        onChange={props.handleChange}
+                        onChange={(e)=>props.handleChange(e,"institute",row.id)}
 
                     />
                 </td>
@@ -95,7 +97,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="batch"
                         options={props.batchbdata}
-                        onChange={props.handleChange}
+                        onChange={(e)=>props.handleChange(e,"batch",row.id)}
                     />
                 </td>
                 <td>
@@ -110,7 +112,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="state"
                         options={props.statedata}
-                        onChange={onStateChange}
+                        onChange={(e)=>onStateChange(e,row.id,"state")}
                     />
                 </td>
                 <td>
@@ -126,7 +128,7 @@ export const RowsData = (props) => {
                             isSearchable={true}
                             name="area"
                             options={areaOptions}
-                            onChange={(e)=>props.handleChange(e,e.target)}
+                            onChange={(e)=>props.handleChange(e,"area",row.id)}
                         />
                     ) : (
                         <>
