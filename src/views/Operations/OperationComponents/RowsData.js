@@ -3,12 +3,13 @@ import Select from 'react-select';
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from '../../Address/addressActions';
+import { useEffect } from 'react';
+import { getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
 export const RowsData = (props) => {
     const [rows, setRows] = useState([
         {
             id: 1,
-            no_of_student: "",
             name: "",
             institution: "",
             batch: "",
@@ -20,7 +21,8 @@ export const RowsData = (props) => {
             guest: "",
             designation: "",
             organization: "",
-            activity_type: ""
+            activity_type: "",
+            assigned_to:""
         },
         // Add more initial rows as needed
     ]);
@@ -28,6 +30,7 @@ export const RowsData = (props) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [areaOptions, setAreaOptions] = useState([]);
+    const [assigneeOptions, setAssigneeOptions] = useState([]);
     const handleChange = (options,key) => {
         console.log(options,key);
     }
@@ -46,6 +49,14 @@ export const RowsData = (props) => {
         props.updateRow(rowid, field, value.value)
         
     };
+
+    useEffect(() => {
+    
+        getDefaultAssigneeOptions().then(data => {
+          setAssigneeOptions(data);
+        });
+        // console.log("assigneeOptions ; \n ",assigneeOptions);
+    }, []);
 
 
     const updateRow = (id, field, value) => {
@@ -79,9 +90,9 @@ export const RowsData = (props) => {
                         isClearable={true}
                         // isRtl={isRtl}
                         isSearchable={true}
-                        name="institute"
+                        name="institution"
                         options={props.institutiondata}
-                        onChange={(e)=>props.handleChange(e,"institute",row.id)}
+                        onChange={(e)=>props.handleChange(e,"institution",row.id)}
 
                     />
                 </td>
@@ -98,6 +109,17 @@ export const RowsData = (props) => {
                         name="batch"
                         options={props.batchbdata}
                         onChange={(e)=>props.handleChange(e,"batch",row.id)}
+                    />
+                </td>
+                <td>
+                    <Select
+                        className="basic-single table-input"
+                        classNamePrefix="select"
+                        isClearable={true}
+                        isSearchable={true}
+                        name="assigned_to"
+                        options={assigneeOptions}
+                        onChange={(e)=>props.handleChange(e,"assigned_to",row.id)}
                     />
                 </td>
                 <td>
@@ -145,6 +167,7 @@ export const RowsData = (props) => {
                     onChange={(date) => {
                         const d = new Date(date).toLocaleDateString('fr-FR');
                         setStartDate(date)
+                        
                         props.updateRow(row.id, 'start_date', d)}}
                     />
                 </td>
@@ -156,6 +179,8 @@ export const RowsData = (props) => {
                     onChange={(date) => {
                         const d = new Date(date).toLocaleDateString('fr-FR');
                         setEndDate(date)
+
+                        
                         props.updateRow(row.id, 'end_date', d)}} 
                     />
                 </td>
@@ -172,7 +197,7 @@ export const RowsData = (props) => {
                         className="table-input"
                         type="text"
                         value={row.age}
-                        onChange={(e) => props.updateRow(row.id, 'donor', e.target.value)}
+                        onChange={(e) => props.updateRow(row.id, 'donor', true)}
                     />
                 </td>
                 <td>
@@ -204,7 +229,7 @@ export const RowsData = (props) => {
                         className="table-input"
                         type="text"
                         value={row.age}
-                        onChange={(e) => props.updateRow(row.id, 'no_of_student', e.target.value)}
+                        onChange={(e) => props.updateRow(row.id, 'students_attended', e.target.value)}
                     />
                 </td>
                 

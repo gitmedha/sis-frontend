@@ -55,7 +55,7 @@ export const GET_OPERATIONS = `
 
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
-        $data:OperationInput!
+        $data:UsersOpsActivityInput!
     ){
         createUsersOpsActivity(
             input: {
@@ -67,13 +67,11 @@ export const CREATE_OPERATION = `
             }
         }
     }
-
-
 `
 
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
-        $data:editOperationInput!
+        $data:UsersOpsActivityInput!
         $id:ID!
     ){
         updateUsersOpsActivity(

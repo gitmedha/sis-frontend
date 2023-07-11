@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { MeiliSearch } from 'meilisearch'
 
 import { RowsData } from './RowsData';
+import { createOperation } from './operationsActions';
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -83,14 +84,13 @@ const meilisearchClient = new MeiliSearch({
 
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
-  const {setAlert} = props;
+  const { setAlert } = props;
 
   const [data, setData] = useState([
     {
       id: 1,
-      no_of_student: "",
       name: "",
-      activity_type:"",
+      activity_type: "",
       institution: "",
       batch: "",
       state: "",
@@ -100,13 +100,14 @@ const OperationCreateform = (props) => {
       donor: "",
       guest: "",
       designation: "",
-      organization: ""
+      organization: "",
+      assigned_to: "",
     },
     // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([{
     id: 1,
-    no_of_student: "",
+    assigned_to: "",
     name: "",
     institution: "",
     batch: "",
@@ -122,19 +123,19 @@ const OperationCreateform = (props) => {
   }]);
   const [newRow, setNewRow] = useState({
     id: "",
-    no_of_student: "",
     name: "",
     institution: "",
     batch: "",
     state: "",
     start_date: "",
-    activity_type:"",
+    activity_type: "",
     end_date: "",
     topic: "",
     donor: "",
     guest: "",
     designation: "",
-    organization: ""
+    organization: "",
+    assigned_to: "",
   });
   const [showLimit, setshowLimit] = useState(false)
   const addRow = () => {
@@ -148,34 +149,35 @@ const OperationCreateform = (props) => {
     }
 
   };
- const updateDate=(field, value)=>{
-  console.log("feild date" ,value)
-    if(field == 'start_date'){
+  const updateDate = (field, value) => {
+    console.log("feild date", value)
+    if (field == 'start_date') {
       setStartDate(value)
-    }else{
+    } else {
       setEndDate(value)
     }
   }
-  const handleChange = (options,key,rowid) => {
+  const handleChange = (options, key, rowid) => {
     console.log(options.value);
-    if(key =="state"){
+    if (key == "state") {
       getStateDistricts().then(data => {
-        console.log("data",data);
+        console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
+          key: area.id,
+          label: area.key,
+          value: area.key,
         })).sort((a, b) => a.label.localeCompare(b.label)));
-    });
-    console.log(areaOptions);
+      });
+      console.log(areaOptions);
     }
-    updateRow(rowid,key,options.value)
+    updateRow(rowid, key, options.value)
   };
   const updateRow = (id, field, value) => {
-    
+
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
+
         return { ...row, [field]: value };
       }
       return row;
@@ -191,28 +193,7 @@ const OperationCreateform = (props) => {
     setRows(updatedRows);
   };
 
-  const deleteTable = () => {
-    setRows([]);
-  };
-
-  const handleSubmit = () => {
-    console.log(rows);
-  };
-
-  const handleValueChange = (e, rowId, property) => {
-    const updatedData = data.map((row) => {
-      if (row.id === rowId) {
-        return { ...row, [property]: e.target.value };
-      }
-      return row;
-    });
-    setData(updatedData);
-  };
-
-  const handleDeleteRow = (rowId) => {
-    setData((prevRows) => prevRows.filter((row) => row.id !== rowId));
-    console.log("123", data);
-  };
+ 
 
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
@@ -238,19 +219,10 @@ const OperationCreateform = (props) => {
         label: state?.key,
         value: state?.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
-
-      // if (props.state) {
-      //   onStateChange({ value: props.state });
-      // }
     });
-
-    // setShowCVSubLabel(props.CV && props.CV.url);
-
   }, []);
 
   const onStateChange = value => {
-    console.log("--------------------------------------")
-    console.log(value);
     setDistrictOptions([]);
     getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
@@ -269,7 +241,7 @@ const OperationCreateform = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value,"index",index,"feild",field);
+    console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -280,9 +252,43 @@ const OperationCreateform = (props) => {
     );
   };
 
-  const onSubmit =  () => {
-   
-    console.log("onsubmit values----------->", rows);
+  const onSubmit = () => {
+    let data = rows.filter(row => {
+      console.log(row);
+      delete row['id']
+      delete row['name']
+
+      console.log( row['start_date'])
+      // console.log(row.start_date.split('/').reverse().join('-'))
+      row.start_date =row.start_date.split('/').reverse().join('-');
+      row.end_date=row.end_date.split('/').reverse().join('-');
+      
+      row.batch=Number(row.batch);
+      row.assigned_to=Number(row.assigned_to);
+      row.institution=Number(row.institution);
+      row.students_attended=Number(row.students_attended);
+      row.donor =row.donor ? true : false;
+      return row
+    })
+    let data2 = {
+      activity_type:"test activity",
+area:"Agra (City)",
+assigned_to:129,
+batch:1168,
+designation:"test designation",
+donor:true,
+end_date:"2023-07-05",
+guest:"Test Guest",
+institution:328,
+students_attended:10,
+organization:"test org",
+start_date:"2023-01-07",
+state:"Uttar Pradesh",
+topic:"test topic"
+}
+    console.log(data);
+    createOperation(data[0])
+    // console.log("onsubmit values----------->", rows);
     // setDisableSaveButton(true);
     // await onHide(values);
     // setDisableSaveButton(false);
@@ -378,11 +384,11 @@ const OperationCreateform = (props) => {
     });
   }
 
-  
-  const onConfirm =()=>{
+
+  const onConfirm = () => {
     setshowLimit(true)
   }
-  const onCancel =()=>{
+  const onCancel = () => {
     setshowLimit(false)
   }
 
@@ -459,6 +465,7 @@ const OperationCreateform = (props) => {
                   <th>Institution</th>
 
                   <th>Batch</th>
+                  <th>Assigned to</th>
                   <th>State</th>
                   <th>Area</th>
                   <th>Start Date</th>
@@ -469,12 +476,12 @@ const OperationCreateform = (props) => {
                   <th>Designation</th>
                   <th>Organization</th>
                   <th>Student Attended</th>
-                  
+
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <RowsData handleInputChange={handleInputChange} handleChange ={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions}  areaOptions={areaOptions}/>
+                  <RowsData handleInputChange={handleInputChange} handleChange={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions} areaOptions={areaOptions} />
                 ))}
               </tbody>
             </table>
