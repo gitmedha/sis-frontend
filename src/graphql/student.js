@@ -182,9 +182,9 @@ export const GET_STUDENTS = `
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id,
-          area: $area
+          id: $id
         },
+        medha_area: $area
         state:$state,
         status:$status,
       }
