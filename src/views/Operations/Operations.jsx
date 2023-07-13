@@ -2,34 +2,22 @@ import nProgress from "nprogress";
 import styled from 'styled-components';
 import api from "../../apis";
 import {
-  TableRowDetailLink,
-  Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
-import Avatar from "../../components/content/Avatar";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_OPERATIONS, GET_STUDENTS } from "../../graphql";
+import { GET_OPERATIONS} from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
-import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
-import { getoperationsPickList, createStudent } from "../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaListUl, FaThLarge } from "react-icons/fa";
-import Switch from '@material-ui/core/Switch';
-// import StudentGrid from "./StudentComponents/StudentGrid";
-import { studentStatusOptions } from "../Students/StudentComponents/StudentConfig";
-// import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
-// import StudentGrid from "../Students/StudentComponents/StudentGrid";
-// import StudentForm from "./OperationComponents/OperationDataupdateform";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import {getAllOperations } from './OperationComponents/operationsActions'
+import {getAllOperations } from './OperationComponents/operationsActions';
+import axios from 'axios';
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -55,7 +43,6 @@ const Styled = styled.div`
 `;
 
 const Operations = (props) => {
-  let { isSidebarOpen, batch } = props;
   const [showModal, setShowModal] = useState(false);
   const { setAlert } = props;
   const history = useHistory();
@@ -63,9 +50,6 @@ const Operations = (props) => {
   const [opts, setOpts] = useState([]);
   const [optsdata, setOptsdata] = useState({});
   const [optsAggregate, setoptsAggregate] = useState([]);
-  const [studentsData, setStudentsData] = useState([]);
-  const [pickList, setPickList] = useState([]);
-  const [students, setStudents] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState('list');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
@@ -199,7 +183,9 @@ const Operations = (props) => {
     // getoperationsPickList().then(data => setPickList(data));
     console.log("activeTab_Key", activeTab.key);
     console.log("tabPickerOptions", tabPickerOptions);
+    testBulkCreate();
     fetchData(0, paginationPageSize, []);
+
   }, []);
  
 
@@ -272,6 +258,35 @@ const Operations = (props) => {
   const showRowData = (data) => {
     setOptsdata(data)
     setShowModal(true);
+  }
+
+  const testBulkCreate  = async () =>{
+    const dataArray = [
+      {
+        area:"test",
+       state:"test",
+       topic:"test",
+       organization:"test",
+       start_date:"1999-10-27",
+       end_date: "1999-10-28"
+     }, {
+       area:"test1",
+       state:"test2",
+       topic:"test3",
+       organization:"test4",
+       start_date:"1999-10-27",
+       end_date: "1999-10-28"
+     }
+      // Add more objects to the array as needed
+    ];
+    try {
+
+      const data = await api.post('/users-ops-activities/createBulkOperations',dataArray);
+      console.log("data27",data)
+      
+    } catch (error) {
+      console.log("error", error)
+    }
   }
 
   return (
