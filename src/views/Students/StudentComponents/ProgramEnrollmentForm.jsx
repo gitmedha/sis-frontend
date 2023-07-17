@@ -46,6 +46,7 @@ const ProgramEnrollmentForm = (props) => {
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [courseLevelOptions, setCourseLevelOptions] = useState([]);
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
+  const [course,setcourse]=useState([])
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
@@ -111,17 +112,41 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+    console.log(values)
     onHide(values);
   };
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
+      // let coursedata=data.course
+      // console.log(coursedata);
+      // setcourse(coursedata.map(item=>{
+      //   let obj={key:item,value:item,lable:item}
+      //   return obj
+      // }))
+      // console.log("course",course );
+      
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // console.log(statusOptions)
+      // console.log("data=======",data);
+      if(data.course.length > 0 ){
+        let coursedata=[]
+        data.course.forEach((element ) => {
+          let obj={};
+          
+          obj['lable'] = element;
+          obj[`value`] = element;
+          return coursedata.push(obj)
+        });
+        console.log("coursedata",coursedata)
+        setcourse(coursedata)
+      }
+      console.log(course)
     });
   }, []);
 
@@ -365,9 +390,11 @@ const ProgramEnrollmentForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
                       name="higher_education_course_name"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
