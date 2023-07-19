@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -9,9 +9,12 @@ import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import AsyncSelect from 'react-select/async';
 import { MeiliSearch } from 'meilisearch'
-import {getAllOperations } from '../OperationComponents/operationsActions'
+import { Select } from '@material-ui/core';
+// import 'react-select/dist/react-select.css';
+import { MenuItem } from 'material-ui';
+import DetailField from '../../../components/content/DetailField';
 
 
 const Section = styled.div`
@@ -40,8 +43,8 @@ const meilisearchClient = new MeiliSearch({
 
 const OperationDataupdateform = (props) => {
   let { onHide, show } = props;
- 
- 
+
+
   const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   const [stateOptions, setStateOptions] = useState([]);
@@ -51,12 +54,79 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
 
   useEffect(() => {
-    
-      getDefaultAssigneeOptions().then(data => {
-        setAssigneeOptions(data);
-      });
-      // console.log("assigneeOptions ; \n ",assigneeOptions);
+
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
+    // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
+
+  useEffect(() => {
+    if (props.institution) {
+      // console.log("props filterInstitution", props.institution)
+      filterInstitution().then(data => {
+
+        setInstitutionOptions(data);
+      });
+
+
+    }
+    if (props.batch) {
+      filterBatch().then(data => {
+        console.log("dataBatch1:", data)
+        setBatchOptions(data);
+      });
+    }
+
+  }, [props])
+
+
+
+
+  const filterInstitution = async (filterValue) => {
+
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let filterData = data.hits.map(institution => {
+
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+
+      return filterData;
+    });
+  }
+
+
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+
+      let filterData = data.hits.map(batch => {
+
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        }
+      });
+
+      console.log(filterData)
+      return filterData;
+    });
+
+    
+    
+  }
 
   useEffect(() => {
 
@@ -72,14 +142,14 @@ const OperationDataupdateform = (props) => {
       }
     });
 
- 
+
 
   }, []);
 
   const onStateChange = async value => {
     console.log("value state", value)
-    
-   await getStateDistricts(value).then(data => {
+
+    await getStateDistricts(value).then(data => {
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection?.groupBy?.area.map((area) => ({
         key: area.id,
@@ -90,29 +160,32 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----")
+    console.log("values", initialValues)
+    // console.log("values----")
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
   };
 
 
+
   const userId = localStorage.getItem('user_id');
+  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     topic: '',
-    assigned_to:userId,
-    state:'',
-    activity_type:'',
-    institution:'',
-    guest:'',
-    organization:'',
-    updated_at:'',
-    start_date:'',
-    end_date:'',
-    designation:'',
-    updated_by:'',
-    area:'',
-    students_attended:''
+    assigned_to: props.assigned_to.id.toString(),
+    state: '',
+    activity_type: '',
+    institution: '',
+    guest: '',
+    organization: '',
+    updated_at: '',
+    start_date: '',
+    end_date: '',
+    designation: '',
+    updated_by: '',
+    area: '',
+    students_attended: ''
   }
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -123,98 +196,45 @@ const OperationDataupdateform = (props) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
-  
-  
 
-  
+
+
+
   if (props) {
-  
-
-    // console.log("assigne option ", assigneeOptions);
-    console.log("Batch",props.institution)
-    initialValues['batch']=props.batch.id
+    initialValues['batch'] = Number(props.batch.id)
     initialValues['topic'] = props.topic;
     initialValues['activity_type'] = props.activity_type
-    initialValues['assigned_to']=props.assigned_to.id
+    initialValues['assigned_to'] = props.assigned_to.id.toString()
     initialValues['start_date'] = new Date(props.start_date)
     initialValues['end_date'] = new Date(props.end_date)
-    initialValues['students_attended']=props?.students_attended
+    initialValues['students_attended'] = props?.students_attended
     initialValues['created_at'] = props.created_at
-    initialValues['organization']=props.organization
-    initialValues['designation']=props.designation
-    initialValues['guest']=props.guest
-    // console.log("props?.institute_name?.name",props?.institution);
+    initialValues['organization'] = props.organization
+    initialValues['designation'] = props.designation
+    initialValues['guest'] = props.guest
     initialValues['state'] = props.state ? props.state : null;
-    initialValues['institute_name']=props?.institution?.id
-    initialValues['donor']= props.Donor ? props.Donor :"N/A"
-    initialValues['area'] = props.area ? props.area: null;
-    
-  }
-  useEffect(() => {
-    if ( props.institution) {
-      // console.log("props filterInstitution", props.institution)
-      filterInstitution(props.institution.name).then(data => {
-        
-        setInstitutionOptions(data);
-      });
+    initialValues['institute_name'] = Number(props?.institution?.id)
+    initialValues['donor'] = props.Donor ? props.Donor : "N/A"
+    initialValues['area'] = props.area ? props.area : null;
 
-      
-    }
-    if ( props.batch) {
-      filterBatch(props.batch.name).then(data => {
-        console.log("dataBatch1:",data)  
-        setBatchOptions(data);
-      });
-    }
-
-  }, [])
-
-
-
-
-  const filterInstitution = async (filterValue) => {
-     
-    return await meilisearchClient.index('institutions').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      let filterData = data.hits.map(institution => {
-        
-        return {
-          ...institution,
-          label: institution.name,
-          value: Number(institution.id),
-        }
-      });
-      
-      return filterData;
-    });
   }
 
-  
+  console.log("props",initialValues.batch);
 
-  const filterBatch = async (filterValue) => {
-    return await meilisearchClient.index('batches').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-  
-      let filterData = data.hits.map(batch => {
-      
-        return {
-          ...batch,
-          label: batch.name,
-          value: Number(batch.id),
-        }
-      });
-     
-      console.log(filterData)
-      return filterData;
-    });
-  }
+  const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
-  return (
+  const options = [
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+    { value: 'option3', label: 'Option 3' }
+  ];
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+  };
+
+  return (<>
+  { (initialValues && props) &&
     <Modal
       centered
       size="lg"
@@ -252,19 +272,7 @@ const OperationDataupdateform = (props) => {
               <Section>
                 <h3 className="section-header">Basic Info</h3>
                 <div className="row">
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="institute_name"
-                      label="Insititute Name"
-                      required
-                      className="form-control"
-                      placeholder="Institue"
-                    // filterData={filterAssignedTo}
 
-                    />
-                  </div> */}
-                  
 
                   <div className="col-md-6 col-sm-12 mb-2">
 
@@ -281,49 +289,72 @@ const OperationDataupdateform = (props) => {
 
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    
                     <Input
-                     control="lookupAsync"
-                     name="assigned_to"
-                     label="Assigned To"
-                    //  required/
-                     className="form-control"
-                     placeholder="Assigned To"
-                     filterData={filterAssignedTo}
-                     defaultOptions={assigneeOptions}
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
                     />
-                    
                   </div>
 
 
                   <div className="col-md-6 col-sm-12 mb-2">
-                  
+
                     <Input
                       control="lookupAsync"
                       name="batch"
                       label="Batch"
                       required
                       filterData={filterBatch}
-                      defaultOptions={ batchOptions }
-                      className="form-control"
+                      defaultOptions={batchOptions}
+                      className="form-control1"
                       placeholder="Batch"
                     />
-                    
+
+                    {/* <Input
+                      control="lookupAsync"
+                      name="batch"
+                      label="Batch"
+                      required
+                      filterData={filterBatch}
+                      defaultOptions={props.id ? batchOptions : true}
+                      className="form-control"
+                      placeholder="Batch"
+                    /> */}
+                    {/* <Field name="batch">
+                      {({ field, form }) => (
+                        <AsyncSelect
+                          {...field}
+                          options={batchOptions}
+                          placeholder="Select an option"
+                          // isClearable
+                          value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
+                          onChange={filterBatch}
+                          onBlur={() => form.setFieldTouched(field.name, true)}
+                        />
+                      )}
+                    </Field> */}
+
+
                   </div>
 
                   <div className="col-md-6 col-sm-12 mb-2">
-                  
+
                     <Input
                       control="lookupAsync"
-                        name="institution"
-                        label="Institution"
-                        filterData={filterInstitution}
-                        defaultOptions={props.id ? institutionOptions : true}
-                        placeholder="Institution"
-                        className="form-control"
-                        isClearable
+                      name="institution"
+                      label="Institution"
+                      filterData={filterInstitution}
+                      defaultOptions={institutionOptions}
+                      placeholder="Institution"
+                      className="form-control"
+                      isClearable
                     />
-                    
+
                   </div>
 
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -348,9 +379,9 @@ const OperationDataupdateform = (props) => {
                       autoComplete="off"
                     />
                   </div>
-                  
+
                   <div className="col-md-6 col-sm-12 mb-2">
-                    
+
                     <Input
                       control="input"
                       name="donor"
@@ -358,12 +389,12 @@ const OperationDataupdateform = (props) => {
                       // required
                       className="form-control"
                       placeholder="Donor"
-                    
+
                     />
-                    
+
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                   
+
                     <Input
                       control="input"
                       name="topic"
@@ -372,10 +403,10 @@ const OperationDataupdateform = (props) => {
                       className="form-control"
                       placeholder="Topic"
                     />
-                    
+
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                   
+
                     <Input
                       icon="down"
                       control="input"
@@ -385,7 +416,7 @@ const OperationDataupdateform = (props) => {
                       className="form-control"
                       placeholder="Guest"
                     />
-                    
+
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {genderOptions.length ? ( */}
@@ -415,7 +446,7 @@ const OperationDataupdateform = (props) => {
                       className="form-control"
                       placeholder="Organization"
                     />
-                    
+
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
@@ -428,100 +459,13 @@ const OperationDataupdateform = (props) => {
                       autoComplete="off"
                     />
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                  
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="category"
-                        label="Category"
-                        required
-                        options={categoryOptions}
-                        className="form-control"
-                        placeholder="Category"
-                      />
-                   
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="income_level"
-                        label="Income Level (INR)"
-                        required
-                        options={incomeLevelOptions}
-                        className="form-control"
-                        placeholder="Income Level (INR)"
-                      />
-                   
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="lookupAsync"
-                      name="registered_by"
-                      label="Registered By"
-                      className="form-control"
-                      placeholder="Registered By"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                      isDisabled={!isAdmin()}
-                    />
-                  </div> */}
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                    {howDidYouHearAboutUsOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="how_did_you_hear_about_us"
-                        label="How did you hear about us?"
-                        options={howDidYouHearAboutUsOptions}
-                        className="form-control"
-                        placeholder="How did you hear about us?"
-                        onChange={option => {
-                          setSelectedHowDidYouHearAboutUs(option.value);
-                        }}
-                        required
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div> */}
-                  {/* {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="how_did_you_hear_about_us_other"
-                      label="If Other, Specify"
-                      control="input"
-                      placeholder="If Other, Specify"
-                      className="form-control"
-                      required
-                    />
-                  </div>} */}
-                  {/* {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
-                    <div className="col-md-6">
-                      <Input
-                        control="file"
-                        name="cv_upload"
-                        label="CV"
-                        subLabel={showCVSubLabel && <div className="mb-1">
-                          {fileName}
-                        </div>}
-                        className="form-control"
-                        placeholder="CV"
-                        accept=".pdf, .docx"
-                        onChange={(event) => {
-                          setFieldValue("cv_file", event.currentTarget.files[0]);
-                          setShowCVSubLabel(false);
-                        }}
-                      />
-                    </div>
-                  </div>} */}
+
                 </div>
               </Section>
               <Section>
                 <h3 className="section-header">Address</h3>
                 <div className="row">
-                  
+
                   <div className="col-md-6 col-sm-12 mb-2">
                     {stateOptions.length ? (
                       <Input
@@ -533,7 +477,7 @@ const OperationDataupdateform = (props) => {
                         onChange={onStateChange}
                         placeholder="State"
                         className="form-control"
-                        // required
+                      // required
                       />
                     ) : (
                       <Skeleton count={1} height={45} />
@@ -542,16 +486,16 @@ const OperationDataupdateform = (props) => {
                   <div className="col-md-6 col-sm-12 mb-2">
                     {areaOptions.length ? (
                       <Input
-                      icon="down"
-                      name="area"
-                      label="Area"
-                      control="lookup"
-                      options={areaOptions}
-                      // onChange={onStateChange}
-                      placeholder="Area"
-                      className="form-control"
+                        icon="down"
+                        name="area"
+                        label="Area"
+                        control="lookup"
+                        options={areaOptions}
+                        // onChange={onStateChange}
+                        placeholder="Area"
+                        className="form-control"
                       // required
-                    />
+                      />
                     ) : (
                       <>
                         {/* <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label> */}
@@ -560,31 +504,30 @@ const OperationDataupdateform = (props) => {
                     )}
                   </div>
 
-                  {/* <div className="col-md-6 col-sm-12 mb-2">
-                  {districtOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      className="form-control"
-                      required
-                      options={districtOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div> */}
+                </div>
+              </Section>
+
+              <Section>
+                <h3 className="section-header">Other Information</h3>
+                <div className="row">
+
+                  <div className="col-md-6">
+                    <DetailField label="Updated By" value={props.Updated_by?.userName ? props.Updated_by?.userName:props.Created_by?.username} />
+                    <DetailField label="Updated At" value={""} />
+                    
+                  </div>
+                  <div className="col-md-6">
+                    <DetailField label="Creted By" value={props.Created_by?.username?props.Created_by?.username:""} />
+                    <DetailField label="Created At " value={props.created_at} />
+                   
+                  </div>
+
                 </div>
               </Section>
 
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                  <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
+                  <button className="btn btn-primary btn-regular mx-0" onClick={onSubmit} type="submit" disabled={disableSaveButton}>SAVE</button>
                   <button
                     type="button"
                     onClick={onHide}
@@ -599,6 +542,8 @@ const OperationDataupdateform = (props) => {
         </Formik>
       </Modal.Body>
     </Modal>
+  }
+  </>
   );
 };
 

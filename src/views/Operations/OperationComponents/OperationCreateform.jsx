@@ -16,6 +16,7 @@ import { MeiliSearch } from 'meilisearch'
 
 import { RowsData } from './RowsData';
 import { createOperation } from './operationsActions';
+import api from '../../../apis';
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -85,7 +86,7 @@ const meilisearchClient = new MeiliSearch({
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
-
+  let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [data, setData] = useState([
     {
       id: 1,
@@ -193,7 +194,7 @@ const OperationCreateform = (props) => {
     setRows(updatedRows);
   };
 
- 
+  const userId = localStorage.getItem('user_id');
 
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
@@ -252,46 +253,45 @@ const OperationCreateform = (props) => {
     );
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     let data = rows.filter(row => {
       console.log(row);
       delete row['id']
       delete row['name']
 
-      console.log( row['start_date'])
+      console.log(row['start_date'])
       // console.log(row.start_date.split('/').reverse().join('-'))
-      row.start_date =row.start_date.split('/').reverse().join('-');
-      row.end_date=row.end_date.split('/').reverse().join('-');
-      
-      row.batch=Number(row.batch);
-      row.assigned_to=Number(row.assigned_to);
-      row.institution=Number(row.institution);
-      row.students_attended=Number(row.students_attended);
-      row.donor =row.donor ? true : false;
+      // row.start_date =row.start_date.split('/'/
+      row.created_by=Number(userId)
+      row.batch = Number(row.batch);
+      row.assigned_to = Number(row.assigned_to);
+      row.institution = Number(row.institution);
+      row.students_attended = Number(row.students_attended);
+      row.donor = row.donor ? true : false;
       return row
     })
     let data2 = {
-      activity_type:"test activity",
-area:"Agra (City)",
-assigned_to:129,
-batch:1168,
-designation:"test designation",
-donor:true,
-end_date:"2023-07-05",
-guest:"Test Guest",
-institution:328,
-students_attended:10,
-organization:"test org",
-start_date:"2023-01-07",
-state:"Uttar Pradesh",
-topic:"test topic"
-}
-    console.log(data);
-    createOperation(data[0])
-    // console.log("onsubmit values----------->", rows);
-    // setDisableSaveButton(true);
-    // await onHide(values);
-    // setDisableSaveButton(false);
+      activity_type: "test activity",
+      area: "Agra (City)",
+      assigned_to: 129,
+      batch: 1168,
+      designation: "test designation",
+      donor: true,
+      end_date: "2023-07-05",
+      guest: "Test Guest",
+      institution: 328,
+      students_attended: 10,
+      organization: "test org",
+      start_date: "2023-01-07",
+      state: "Uttar Pradesh",
+      topic: "test topic"
+    }
+    try {
+      const value = await api.post('/users-ops-activities/createBulkOperations', data);
+      console.log("data27", value)
+    } catch (error) {
+      console.log("error", error)
+    }
   };
 
 
@@ -420,7 +420,7 @@ topic:"test topic"
                 <img src={urlPath(props.logo.url)} className="avatar mr-2" alt="Student Profile" />
               ) : (
                 <div className="flex-row-centered avatar avatar-default mr-2">
-                  <FaSchool size={25} />
+                  <FaSchool color={'#fff'}size={25} />
                 </div>
               )}
               <h2 className="text--primary bebas-thick mb-0">
@@ -428,30 +428,20 @@ topic:"test topic"
               </h2>
             </div>
 
-            <div className="d-flex justify-content-start between_class">
-              <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={onSubmit} disabled={disableSaveButton}>SAVE</button>
-              <button
-                type="button"
-                onClick={onHide}
-                className="btn btn-secondary btn-regular mr-2"
-              >
-                CANCEL
-              </button>
-
-            </div>
+            
           </div>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-            <button onClick={addRow} >
-              <FaPlusCircle width="15" size={30} color="#000" className="ml-2" />
-            </button>
+            {rows.length ==10? "":<button onClick={addRow} >
+              <FaPlusCircle  style={iconStyles} width="15" size={30} color="#000" className="ml-2" />
+            </button>}
             {/* <button onClick={handleSubmit}>Submit</button> */}
             <button onClick={() => deleteRow(rows.length)}>
 
-              <FaMinusCircle width="15" size={30} color="#000" className="ml-2" />
+              <FaMinusCircle style={iconStyles} width="15" size={30} color="#000" className="ml-2" />
             </button>
             {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
 
@@ -486,7 +476,17 @@ topic:"test topic"
               </tbody>
             </table>
           </div>
+          <div className="d-flex justify-content-start between_class">
+              <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={onSubmit} disabled={disableSaveButton}>SAVE</button>
+              <button
+                type="button"
+                onClick={onHide}
+                className="btn btn-secondary btn-regular mr-2"
+              >
+                CANCEL
+              </button>
 
+            </div>
 
         </div>
       </Modal.Body>

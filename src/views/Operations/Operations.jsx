@@ -133,8 +133,6 @@ const Operations = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
- 
-
     await api.post("/graphql", {
       query: GET_OPERATIONS,
       variables,
@@ -143,7 +141,6 @@ const Operations = (props) => {
         console.log("data",data.data.data.usersOpsActivitiesConnection.values)
         setOpts(data.data.data.usersOpsActivitiesConnection.values);
         setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
-        // setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
       })
       .catch(error => {
         return Promise.reject(error);

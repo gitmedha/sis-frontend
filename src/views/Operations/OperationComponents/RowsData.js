@@ -22,7 +22,7 @@ export const RowsData = (props) => {
             designation: "",
             organization: "",
             activity_type: "",
-            assigned_to:""
+            assigned_to: ""
         },
         // Add more initial rows as needed
     ]);
@@ -31,10 +31,10 @@ export const RowsData = (props) => {
     const [endDate, setEndDate] = useState(new Date());
     const [areaOptions, setAreaOptions] = useState([]);
     const [assigneeOptions, setAssigneeOptions] = useState([]);
-    const handleChange = (options,key) => {
-        console.log(options,key);
+    const handleChange = (options, key) => {
+        console.log(options, key);
     }
-    const onStateChange = (value,rowid,field) => {
+    const onStateChange = (value, rowid, field) => {
 
 
         getStateDistricts(value).then(data => {
@@ -47,13 +47,13 @@ export const RowsData = (props) => {
             })).sort((a, b) => a.label.localeCompare(b.label)));
         });
         props.updateRow(rowid, field, value.value)
-        
+
     };
 
     useEffect(() => {
-    
+
         getDefaultAssigneeOptions().then(data => {
-          setAssigneeOptions(data);
+            setAssigneeOptions(data);
         });
         // console.log("assigneeOptions ; \n ",assigneeOptions);
     }, []);
@@ -61,7 +61,7 @@ export const RowsData = (props) => {
 
     const updateRow = (id, field, value) => {
         row[field] = value
-        console.log(id,field,value )
+        console.log(id, field, value)
         // props.handleInputChange()
         // setRows(updatedRows);
     };
@@ -92,7 +92,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="institution"
                         options={props.institutiondata}
-                        onChange={(e)=>props.handleChange(e,"institution",row.id)}
+                        onChange={(e) => props.handleChange(e, "institution", row.id)}
 
                     />
                 </td>
@@ -108,7 +108,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="batch"
                         options={props.batchbdata}
-                        onChange={(e)=>props.handleChange(e,"batch",row.id)}
+                        onChange={(e) => props.handleChange(e, "batch", row.id)}
                     />
                 </td>
                 <td>
@@ -119,7 +119,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="assigned_to"
                         options={assigneeOptions}
-                        onChange={(e)=>props.handleChange(e,"assigned_to",row.id)}
+                        onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
                     />
                 </td>
                 <td>
@@ -134,7 +134,7 @@ export const RowsData = (props) => {
                         isSearchable={true}
                         name="state"
                         options={props.statedata}
-                        onChange={(e)=>onStateChange(e,row.id,"state")}
+                        onChange={(e) => onStateChange(e, row.id, "state")}
                     />
                 </td>
                 <td>
@@ -150,7 +150,7 @@ export const RowsData = (props) => {
                             isSearchable={true}
                             name="area"
                             options={areaOptions}
-                            onChange={(e)=>props.handleChange(e,"area",row.id)}
+                            onChange={(e) => props.handleChange(e, "area", row.id)}
                         />
                     ) : (
                         <>
@@ -160,28 +160,52 @@ export const RowsData = (props) => {
                     )}
                 </td>
                 <td>
-                    <DatePicker 
-                    dateFormat="dd/MM/yyyy"
-                    className="table-input" 
-                    selected={startDate} 
-                    onChange={(date) => {
-                        const d = new Date(date).toLocaleDateString('fr-FR');
-                        setStartDate(date)
-                        
-                        props.updateRow(row.id, 'start_date', d)}}
+                    {/* <DatePicker
+                        dateFormat="dd/MM/yyyy"
+                        className="table-input"
+                        selected={startDate}
+                        onChange={(date) => {
+                            const d = new Date(date).toLocaleDateString('fr-FR');
+                            setStartDate(date)
+
+                            props.updateRow(row.id, 'start_date', d)
+                        }}
+                    /> */}
+                    <input
+                        type="date"
+                        className="table-input"
+                        defaultValue={startDate}
+                        onChange={(e) => {
+                            console.log(e.target.value);
+                            
+                            setStartDate(e.target.value);
+                            props.updateRow(row.id, 'start_date', e.target.value);
+                        }}
                     />
                 </td>
                 <td>
-                    <DatePicker 
-                    dateFormat="dd/MM/yyyy"
-                    className="table-input" 
-                    selected={endDate}
-                    onChange={(date) => {
-                        const d = new Date(date).toLocaleDateString('fr-FR');
-                        setEndDate(date)
+                    {/* <DatePicker
+                        // dateFormat="dd/MM/yyyy"
+                        // className="table-" 
+                        selected={endDate}
+                        showYearPicker
+                        showMonthYearPicker
+                        onChange={(date) => {
+                            const d = new Date(date).toLocaleDateString('fr-FR');
+                            setEndDate(date)
+                            props.updateRow(row.id, 'end_date', d)}} 
 
-                        
-                        props.updateRow(row.id, 'end_date', d)}} 
+                      
+                    /> */}
+                    <input
+                        type="date"
+                        className="table-input"
+                        value={endDate}
+                        onChange={(event) => {
+                            const date = event.target.value;
+                            setEndDate(date);
+                            props.updateRow(row.id, 'end_date', date);
+                        }}
                     />
                 </td>
                 <td>
@@ -232,7 +256,7 @@ export const RowsData = (props) => {
                         onChange={(e) => props.updateRow(row.id, 'students_attended', e.target.value)}
                     />
                 </td>
-                
+
                 {/* <td>
                 <button onClick={() => setRowid(row.id)}>Delete Row</button>
               </td> */}
