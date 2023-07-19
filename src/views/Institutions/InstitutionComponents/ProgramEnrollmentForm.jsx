@@ -49,6 +49,7 @@ const ProgramEnrollmentForm = (props) => {
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
+  const [course,setcourse]=useState([])
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -119,6 +120,7 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
+      setcourse(data.course.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -355,9 +357,9 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="course_name_in_current_sis"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
-                      required
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
@@ -369,11 +371,14 @@ const ProgramEnrollmentForm = (props) => {
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
                       name="higher_education_course_name"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
+                      
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

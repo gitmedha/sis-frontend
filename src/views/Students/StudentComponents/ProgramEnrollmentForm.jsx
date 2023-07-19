@@ -112,41 +112,18 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    console.log(values)
     onHide(values);
   };
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
-      // let coursedata=data.course
-      // console.log(coursedata);
-      // setcourse(coursedata.map(item=>{
-      //   let obj={key:item,value:item,lable:item}
-      //   return obj
-      // }))
-      // console.log("course",course );
-      
+      setcourse(data.course.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // console.log(statusOptions)
-      // console.log("data=======",data);
-      if(data.course.length > 0 ){
-        let coursedata=[]
-        data.course.forEach((element ) => {
-          let obj={};
-          
-          obj['lable'] = element;
-          obj[`value`] = element;
-          return coursedata.push(obj)
-        });
-        console.log("coursedata",coursedata)
-        setcourse(coursedata)
-      }
-      console.log(course)
     });
   }, []);
 
@@ -376,9 +353,9 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="course_name_in_current_sis"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
-                      required
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
@@ -397,6 +374,7 @@ const ProgramEnrollmentForm = (props) => {
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
+                      
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
