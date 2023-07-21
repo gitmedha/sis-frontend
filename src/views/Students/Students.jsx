@@ -126,7 +126,7 @@ const Students = (props) => {
     } else if(selectedTab == "my_area"){
       Object.assign(variables, {area: area})
     }
-
+    console.log("variables \n   ",variables)
     await api.post("/graphql", {
       query: GET_STUDENTS,
       variables,
