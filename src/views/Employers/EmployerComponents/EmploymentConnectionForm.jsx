@@ -36,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show} = props;
+  let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -49,23 +49,23 @@ const EnrollmentConnectionForm = (props) => {
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
-
+  const [rejectionreason,setrejectionreason]=useState([])
   const userId = localStorage.getItem('user_id');
   let initialValues = {
-    student_id:'',
-    employer_id:'',
+    student_id: '',
+    employer_id: '',
     status: '',
-    salary_offered:'',
-    opportunity_id:'',
-    start_date:'',
-    end_date:'',
-    source:'',
+    salary_offered: '',
+    opportunity_id: '',
+    start_date: '',
+    end_date: '',
+    source: '',
     reason_if_rejected: '',
     assigned_to: userId,
   };
 
   if (props.employmentConnection) {
-    initialValues = {...initialValues, ...props.employmentConnection};
+    initialValues = { ...initialValues, ...props.employmentConnection };
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues['employer_id'] = props.employer ? Number(props.employer.id) : null;
@@ -121,6 +121,7 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
+      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
 
@@ -289,18 +290,18 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {/* {statusOptions.length ? ( */}
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                    />
                     {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -319,29 +320,29 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {employerOpportunityOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="opportunity_id"
-                      label="Opportunity"
-                      required
-                      options={employerOpportunityOptions}
-                      className="form-control"
-                      placeholder={'Opportunity'}
-                      onChange={(e) => setSelectedOpportunityType(e.type)}
-                    />
-                  ) : (
-                    <>
-                      <label
-                        className="text-heading"
-                        style={{ color: "#787B96" }}
-                      >
-                        Opportunity (select an employer first)
-                      </label>
-                      <Skeleton count={1} height={35} />
-                    </>
-                  )}
+                    {employerOpportunityOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity"
+                        required
+                        options={employerOpportunityOptions}
+                        className="form-control"
+                        placeholder={'Opportunity'}
+                        onChange={(e) => setSelectedOpportunityType(e.type)}
+                      />
+                    ) : (
+                      <>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Opportunity (select an employer first)
+                        </label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -353,7 +354,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange = {(e) => setSelectedStatus(e.value)}
+                      onChange={(e) => setSelectedStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -367,7 +368,7 @@ const EnrollmentConnectionForm = (props) => {
                       autoComplete="off"
                     />
                   </div>
-              
+
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       min={0}
@@ -406,13 +407,16 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                    
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="reason_if_rejected"
-                      control="input"
                       label="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
+                      options={rejectionreason}
                       className="form-control"
                       placeholder="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -427,7 +431,7 @@ const EnrollmentConnectionForm = (props) => {
                       required
                     />
                   </div>
-                  
+
                   {selectedOpportunityType === 'Internship' &&
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
@@ -445,16 +449,16 @@ const EnrollmentConnectionForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">
-                      SAVE
-                    </button>
-                    <button
-                      type="button"
-                      onClick={onModalClose}
-                      className="btn btn-secondary btn-regular mr-2"
-                    >
-                      CANCEL
-                    </button>
+                  <button className="btn btn-primary btn-regular mx-0" type="submit">
+                    SAVE
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onModalClose}
+                    className="btn btn-secondary btn-regular mr-2"
+                  >
+                    CANCEL
+                  </button>
                 </div>
               </div>
             </Form>

@@ -9,6 +9,7 @@ import { OpportunityEmploymentConnectionValidations } from "../../../validations
 import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
+
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -46,6 +47,7 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
+  const [rejectionreason,setrejectionreason]=useState([])
 
   const userId = localStorage.getItem('user_id');
   let initialValues = {
@@ -101,6 +103,7 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
+      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     if (props.employmentConnection && props.employmentConnection.student) {
@@ -295,12 +298,14 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      icon="down"
+                      control="lookup"
                       name="reason_if_rejected"
-                      control="input"
                       label="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
+                      options={rejectionreason}
                       className="form-control"
                       placeholder="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
