@@ -16,7 +16,6 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import {getAllOperations ,getAllUsersTots} from './OperationComponents/operationsActions';
 import axios from 'axios';
 
 const tabPickerOptions = [
@@ -126,16 +125,7 @@ const Operations = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    // if (status !== 'All') {
-    //   // variables.status = studentStatusOptions.find(tabStatus => tabStatus.title?.toLowerCase() === status.toLowerCase())?.picklistMatch;
-    // }
-    // if (selectedTab == "my_data") {
-    //   Object.assign(variables, { id: userId })
-    // } else if (selectedTab == "my_state") {
-    //   Object.assign(variables, { state: state })
-    // } else if (selectedTab == "my_area") {
-    //   Object.assign(variables, { area: area })
-    // }
+    
 
     await api.post("/graphql", {
       query: GET_OPERATIONS,
@@ -180,10 +170,7 @@ const Operations = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    // getoperationsPickList().then(data => setPickList(data));
-    console.log("activeTab_Key", activeTab.key);
-    console.log("tabPickerOptions", tabPickerOptions);
-    // testOperationsApis()
+
     fetchData(0, paginationPageSize, []);
 
   }, []);
@@ -260,57 +247,14 @@ const Operations = (props) => {
     setShowModal(true);
   }
 
-  const testBulkCreate  = async () =>{
-    const dataArray = [
-      {
-        area:"test",
-       state:"test",
-       topic:"test",
-       organization:"test",
-       start_date:"1999-10-27",
-       end_date: "1999-10-28"
-     }, {
-       area:"test1",
-       state:"test2",
-       topic:"test3",
-       organization:"test4",
-       start_date:"1999-10-27",
-       end_date: "1999-10-28"
-     }
-      // Add more objects to the array as needed
-    ];
-    try {
-
-      const data = await api.post('/users-ops-activities/createBulkOperations',dataArray);
-      console.log("data27",data)
-      
-    } catch (error) {
-      console.log("error", error)
-    }
-  }
-
-
-  const testOperationsApis = async( )=>{
-    try {
-     await getAllUsersTots()
-    } catch (error) {
-     console.log("errr",error) 
-    }
-    
-  }
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
           
-          {/* <div className="d-flex justify-content-end py-2">
-            <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
-            <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
-            <FaListUl size={22} color={layout === 'list' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('list')} className="c-pointer" />
-          </div> */}
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-            {/* <Tabs options={studentStatusOptions}  onTabChange={handleStudentStatusTabChange} /> */}
+            
             {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
@@ -320,16 +264,13 @@ const Operations = (props) => {
             </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-            {/* <Table columns={columns} data={studentsData} totalRecords={optsAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} /> */}
-
+      
             <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
 
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          {/* <div className={`col-12 ${layout !== 'grid' ? 'd-none' : ''}`}>
-            <StudentGrid data={studentsData} isSidebarOpen={isSidebarOpen} totalRecords={studentsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
-          </div> */}
+         
           <OperationCreateform
             show={modalShow}
             onHide={hideCreateModal}
