@@ -1,7 +1,15 @@
 
 import api from "../../../../src/apis";
 
-import {GET_OPERATIONS,CREATE_OPERATION,UPDATE_OPERATION,GET_USERSTOTS} from "../../../graphql/operations";
+import {
+    GET_OPERATIONS,
+    CREATE_OPERATION,
+    UPDATE_OPERATION,
+    GET_USERSTOTS,
+    CREATE_USER_TOT,
+    UPDATE_USER_TOT
+
+} from "../../../graphql/operations";
 
 
 export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
@@ -18,7 +26,6 @@ export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", s
         }
         
     },{headers}).then(data=>{
-        console.log("data----------------->\n",data)
         return data;
     }).catch(error=>{
         console.log("error",error)
@@ -59,6 +66,14 @@ export const createOperation = async (data)=>{
 
 }
 
+export const createUsersTot = async(data)=>{
+    return await api.post('/graphql', {
+        query:CREATE_USER_TOT,
+        variables: {data}
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error))
+}
+
 
 export const updateOperation = async(id,data)=>{
     return await api.post('/graphql', {
@@ -72,4 +87,15 @@ export const updateOperation = async(id,data)=>{
     }).catch(error=>{
         return Promise.reject(error);
     })
+}
+
+export const updateUserTot = async(id,data)=>{
+    return await api.post('/graphql', {
+        query:UPDATE_USER_TOT,
+        variables: {
+            id,
+            data
+        }
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error));
 }

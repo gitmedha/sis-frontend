@@ -125,6 +125,22 @@ export const CREATE_OPERATION = `
 
 `
 
+export const CREATE_USER_TOT = `
+    mutation CREATE_USER_TOTS (
+        $data:UsersTotInput!
+    ){
+        createUsersTot(
+            input: {
+                data:$data
+            }
+        ){
+            usersTot {
+                ${usersTotsFields}
+            }
+        }
+    }
+`
+
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
         $data:editOperationInput!
@@ -142,4 +158,20 @@ export const UPDATE_OPERATION = `
         }
     }
 
+`
+
+export const UPDATE_USER_TOT = `
+mutation UPDATE_USER_TOT(
+    $data: editUsersTotInput!
+    $id: ID!
+  ) {
+    updateUsersTot(input: {
+      data: $data
+      where: { id: $id }
+    }) {
+      usersTot {
+        ${usersTotsFields}
+      }
+    }
+  }
 `
