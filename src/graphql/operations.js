@@ -39,7 +39,6 @@ const operationFields = `
 const usersTotsFields = `
     id
     created_at
-    updated_at
     user_name
     Created_by {
         id
