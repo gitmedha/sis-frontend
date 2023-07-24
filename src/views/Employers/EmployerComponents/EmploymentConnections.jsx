@@ -72,6 +72,7 @@ const EmploymentConnections = (props) => {
     getEmploymentConnectionsPickList().then(data => {
       setPickList(data);
     });
+    console.log("props.employer",props.employer)
   }, []);
 
   useEffect(() => {
@@ -134,6 +135,7 @@ const EmploymentConnections = (props) => {
   );
 
   const handleRowClick = employmentConnection => {
+    console.log("employmentConnection",employmentConnection);
     setSelectedEmploymentConnection(employmentConnection);
     setViewModalShow(true);
   }
@@ -261,11 +263,13 @@ const EmploymentConnections = (props) => {
         show={createModalShow}
         onHide={hideCreateModal}
         employer={employer}
+        rejectionfeild={false}
       />
       <UpdateEmploymentConnectionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         employer={employer}
+        rejectionfeild={false}
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert

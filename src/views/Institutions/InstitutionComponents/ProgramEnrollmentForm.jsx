@@ -35,7 +35,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, institution } = props;
+  let { onHide, show, institution,programEnrollment } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -50,6 +50,7 @@ const ProgramEnrollmentForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
   const [course,setcourse]=useState([])
+  const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -184,6 +185,19 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
     });
   }
+  const handlechange = (e,target) => {
+    console.log(target);
+    let data={[target]:true}
+    console.log('react-select lost focus',data,({ ...OthertargetValue,}));
+    if(e.value == 'Other'){
+
+      setOthertargetValue({ ...OthertargetValue,[target]:true})
+    }
+    
+  };
+  useEffect(()=>{
+    setOthertargetValue({course1:false,course2:false})
+  },[programEnrollment])
 
   return (
     <Modal
@@ -355,31 +369,55 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                  {OthertargetValue.course1 ?
+                  <Input
                       name="course_name_in_current_sis"
-                      control="lookup"
+                      control="input"
                       label="Course Name"
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
+                     :
+                    <Input
+                      name="course_name_in_current_sis"
+                      control="lookup"
+                      icon="down"
+                      label="Course Name"
+                      options={course}
+                      onChange={(e)=>handlechange(e,"course1")}
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                    }
                   </div>
                 </div>
               </Section>
               <Section>
-                <h3 className="section-header">Higher Education</h3>
+              <h3 className="section-header">Higher Education</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
+                    {OthertargetValue.course2 ? 
                     <Input
+                    name="higher_education_course_name"
+                    control="input"
+                    label="Course Name"
+                    options={course}
+                    className="form-control"
+                    placeholder="Course Name"
+                  />
+                    
+                    :<Input
                       icon="down"
                       name="higher_education_course_name"
                       control="lookup"
                       label="Course Name"
+                      onChange={(e)=>handlechange(e,"course2")}
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
                       
-                    />
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

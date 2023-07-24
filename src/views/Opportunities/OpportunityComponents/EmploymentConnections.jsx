@@ -251,6 +251,7 @@ const EmploymentConnections = (props) => {
         show={updateModalShow}
         onHide={hideUpdateModal}
         opportunity={opportunity}
+        reason={false}
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert

@@ -36,7 +36,8 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show,rejectionfeild,employmentConnection } = props;
+  console.log("employmentConnection",employmentConnection);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -51,6 +52,8 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
   const [rejectionreason,setrejectionreason]=useState([])
   const userId = localStorage.getItem('user_id');
+  console.log(props.employmentConnection)
+  const [otherrejection,setotherrejection]=useState(rejectionfeild)
   let initialValues = {
     student_id: '',
     employer_id: '',
@@ -97,7 +100,12 @@ const EnrollmentConnectionForm = (props) => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+    console.log(rejectionfeild)
   }, []);
+  useEffect(()=>{
+    console.log("otherrejection",otherrejection)
+    setotherrejection(rejectionfeild)
+  },[employmentConnection])
 
   const onSubmit = async (values) => {
     onHide(values);
@@ -245,6 +253,12 @@ const EnrollmentConnectionForm = (props) => {
       })));
     });
   }
+  const handlechange = (e) => {
+    console.log(e.value)
+    if(e.value == 'Others'){
+      setotherrejection(true)
+    }
+  };
 
   return (
     <Modal
@@ -407,8 +421,17 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    
-                    <Input
+                   {otherrejection ? 
+                   <Input
+                   control="input"
+                   name="reason_if_rejected"
+                   label="Reason if Rejected"
+                   required={selectedStatus === 'Offer Rejected by Student'}
+                   className="form-control"
+                  //  onChange={(e)=>handlechange(e)}
+                   placeholder="Reason if Rejected"
+                 />
+                   :<Input
                       icon="down"
                       control="lookup"
                       name="reason_if_rejected"
@@ -416,8 +439,9 @@ const EnrollmentConnectionForm = (props) => {
                       required={selectedStatus === 'Offer Rejected by Student'}
                       options={rejectionreason}
                       className="form-control"
+                      onChange={(e)=>handlechange(e)}
                       placeholder="Reason if Rejected"
-                    />
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
