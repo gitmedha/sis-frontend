@@ -181,9 +181,6 @@ const ProgramEnrollmentForm = (props) => {
     });
   }
   const handlechange = (e,target) => {
-    console.log(target);
-    let data={[target]:true}
-    console.log('react-select lost focus',data,({ ...OthertargetValue,}));
     if(e.value == 'Other'){
 
       setOthertargetValue({ ...OthertargetValue,[target]:true})

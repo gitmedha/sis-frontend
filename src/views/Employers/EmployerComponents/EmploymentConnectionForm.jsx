@@ -37,7 +37,6 @@ const meilisearchClient = new MeiliSearch({
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show,rejectionfeild,employmentConnection } = props;
-  console.log("employmentConnection",employmentConnection);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -52,7 +51,6 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
   const [rejectionreason,setrejectionreason]=useState([])
   const userId = localStorage.getItem('user_id');
-  console.log(props.employmentConnection)
   const [otherrejection,setotherrejection]=useState(rejectionfeild)
   let initialValues = {
     student_id: '',
@@ -100,10 +98,8 @@ const EnrollmentConnectionForm = (props) => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
-    console.log(rejectionfeild)
   }, []);
   useEffect(()=>{
-    console.log("otherrejection",otherrejection)
     setotherrejection(rejectionfeild)
   },[employmentConnection])
 
@@ -254,7 +250,6 @@ const EnrollmentConnectionForm = (props) => {
     });
   }
   const handlechange = (e) => {
-    console.log(e.value)
     if(e.value == 'Others'){
       setotherrejection(true)
     }

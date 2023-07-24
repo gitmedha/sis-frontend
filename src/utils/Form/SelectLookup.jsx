@@ -65,7 +65,6 @@ export const SelectField = (props) => {
     isDisabled,
   } = props;
 
-  // console.log("field ---->\n",field)
   return (
     <Select
       icon={icon}

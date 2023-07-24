@@ -121,7 +121,6 @@ const EnrollmentConnectionForm = (props) => {
    
   }, []);
   useEffect(()=>{
-    console.log("otherrejection",otherrejection)
     setotherrejection(false)
   },[employmentConnection])
 
@@ -163,7 +162,6 @@ const EnrollmentConnectionForm = (props) => {
     });
   }
   const handlechange = (e) => {
-    console.log(e.value)
     if(e.value == 'Others'){
       setotherrejection(true)
     }
