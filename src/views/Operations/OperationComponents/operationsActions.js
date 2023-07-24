@@ -1,7 +1,7 @@
 
 import api from "../../../../src/apis";
 
-import {GET_OPERATIONS,CREATE_OPERATION,UPDATE_OPERATION} from "../../../graphql/operations";
+import {GET_OPERATIONS,CREATE_OPERATION,UPDATE_OPERATION,GET_USERSTOTS} from "../../../graphql/operations";
 
 
 export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
@@ -26,6 +26,26 @@ export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", s
     })
 };
 
+
+export const getAllUsersTots = async (limit=100, offset=0,sortBy="created_at", sortOrder = "desc")=>{
+    const authToken = localStorage.getItem('token');
+    const headers ={ Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
+
+    return await api.post('/graphql', {
+        query:GET_USERSTOTS,
+        variables: {
+            limit: limit,
+            start:offset,
+            sort: `${sortBy}:${sortOrder}`
+        }
+    }, {headers})
+    .then (data=>{
+        return data;
+    }).catch(err=>{
+        return Promise.reject(err)
+    })
+
+}
 
 export const createOperation = async (data)=>{
     return await api.post('/graphql', {

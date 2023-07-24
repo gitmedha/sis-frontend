@@ -16,7 +16,7 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import {getAllOperations } from './OperationComponents/operationsActions';
+import {getAllOperations ,getAllUsersTots} from './OperationComponents/operationsActions';
 import axios from 'axios';
 
 const tabPickerOptions = [
@@ -183,7 +183,7 @@ const Operations = (props) => {
     // getoperationsPickList().then(data => setPickList(data));
     console.log("activeTab_Key", activeTab.key);
     console.log("tabPickerOptions", tabPickerOptions);
-    testBulkCreate();
+    // testOperationsApis()
     fetchData(0, paginationPageSize, []);
 
   }, []);
@@ -289,10 +289,20 @@ const Operations = (props) => {
     }
   }
 
+
+  const testOperationsApis = async( )=>{
+    try {
+     await getAllUsersTots()
+    } catch (error) {
+     console.log("errr",error) 
+    }
+    
+  }
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
+          
           {/* <div className="d-flex justify-content-end py-2">
             <FaThLarge size={22} color={layout === 'grid' ? '#00ADEF' : '#787B96'} onClick={() => setLayout('grid')} className="c-pointer" />
             <Switch size="small" checked={layout === 'list'} onChange={() => setLayout(layout === 'list' ? 'grid' : 'list')} color="default" />
