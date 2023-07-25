@@ -261,11 +261,13 @@ const EmploymentConnections = (props) => {
         show={createModalShow}
         onHide={hideCreateModal}
         employer={employer}
+        rejectionfeild={false}
       />
       <UpdateEmploymentConnectionForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         employer={employer}
+        rejectionfeild={false}
         employmentConnection={selectedEmploymentConnection}
       />
       <SweetAlert

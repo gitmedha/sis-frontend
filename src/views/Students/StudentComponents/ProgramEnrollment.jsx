@@ -164,7 +164,7 @@ const ProgramEnrollment = (props) => {
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Program Status" value={<Badge value={programEnrollment.status} pickList={pickList.status} />} />
                 <DetailField label="Registration Date" value={programEnrollment.registration_date ? moment(programEnrollment.registration_date).format("DD MMM YYYY") : ''} />
-                <DetailField label="Program Name" value={programEnrollment.batch?.program.name} />
+                <DetailField label="Program Name" className="capitalize" value={programEnrollment.batch?.program.name.toLowerCase()} />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Upload Assignment File" value= {

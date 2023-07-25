@@ -36,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, batch } = props;
+  let { onHide, show, batch,programEnrollment } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -50,6 +50,8 @@ const ProgramEnrollmentForm = (props) => {
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
+  const [course,setcourse]=useState([])
+  const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
 
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
@@ -128,6 +130,7 @@ const ProgramEnrollmentForm = (props) => {
     });
 
     getProgramEnrollmentsPickList().then(data => {
+      setcourse(data.course.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -190,6 +193,15 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
     });
   }
+  const handlechange = (e,target) => {
+    if(e.value == 'Other'){
+      setOthertargetValue({ ...OthertargetValue,[target]:true})
+    }
+    
+  };
+  useEffect(()=>{
+    setOthertargetValue({course1:false,course2:false})
+  },[programEnrollment])
 
   return (
     <Modal
@@ -361,28 +373,55 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                  {OthertargetValue.course1 ?
+                  <Input
                       name="course_name_in_current_sis"
                       control="input"
                       label="Course Name"
-                      required
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
+                     :
+                    <Input
+                      name="course_name_in_current_sis"
+                      control="lookup"
+                      icon="down"
+                      label="Course Name"
+                      options={course}
+                      onChange={(e)=>handlechange(e,"course1")}
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                    }
                   </div>
                 </div>
               </Section>
               <Section>
                 <h3 className="section-header">Higher Education</h3>
                 <div className="row">
-                  <div className="col-md-6 col-sm-12 mt-2">
+                <div className="col-md-6 col-sm-12 mt-2">
+                    {OthertargetValue.course2 ? 
                     <Input
+                    name="higher_education_course_name"
+                    control="input"
+                    label="Course Name"
+                    options={course}
+                    className="form-control"
+                    placeholder="Course Name"
+                  />
+                    
+                    :<Input
+                      icon="down"
                       name="higher_education_course_name"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
+                      onChange={(e)=>handlechange(e,"course2")}
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
-                    />
+                      
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -398,26 +437,26 @@ const ProgramEnrollmentForm = (props) => {
                 </div>
               </Section>
               <Section>
-                <h3 className="section-header">Fee Details</h3>
+                <h3 className="section-header">Contribution Details</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
                       name="fee_status"
-                      label="Fees Status"
+                      label="Contribution Status"
                       required
                       options={feeStatusOptions}
                       className="form-control"
-                      placeholder="Fees Status"
+                      placeholder="Contribution Status"
                       onChange = {(e) => setRequiresFee(e.value.toLowerCase() !== 'waived off')}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="fee_payment_date"
-                      label="Fee Payment Date"
-                      placeholder="Fee Payment Date"
+                      label="Contribution Payment Date"
+                      placeholder="Contribution Payment Date"
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
@@ -438,9 +477,9 @@ const ProgramEnrollmentForm = (props) => {
                     <Input
                       name="fee_transaction_id"
                       control="input"
-                      label="Fee Transaction ID / Receipt No."
+                      label="Transaction ID / Receipt No."
                       className="form-control"
-                      placeholder="Fee Transaction ID / Receipt No."
+                      placeholder="Transaction ID / Receipt No."
                       disabled={!requiresFee}
                     />
                   </div>
@@ -450,9 +489,9 @@ const ProgramEnrollmentForm = (props) => {
                       type="number"
                       name="fee_amount"
                       control="input"
-                      label="Fee Amount (INR)"
+                      label="Contribution Amount (INR)"
                       className="form-control"
-                      placeholder="Fee Amount"
+                      placeholder="Contribution Amount"
                       disabled={!requiresFee}
                     />
                   </div>

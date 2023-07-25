@@ -38,7 +38,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, student } = props;
+  let { onHide, show, student ,employmentConnection} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
@@ -50,7 +50,8 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
-
+  const [rejectionreason,setrejectionreason]=useState([])
+  const [otherrejection,setotherrejection]=useState(false)
   const userId = localStorage.getItem('user_id');
   let initialValues = {
     employment_connection_student: student.full_name,
@@ -111,6 +112,7 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
+      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
       setWorkEngagementOptions(
         data.work_engagement.map((item) => ({
           ...item,
@@ -217,6 +219,14 @@ const EnrollmentConnectionForm = (props) => {
         return filterData;
       });
   };
+  const handlechange = (e) => {
+    if(e.value == 'Others'){
+      setotherrejection(true)
+    }
+  };
+  useEffect(()=>{
+    setotherrejection(false)
+  },[employmentConnection])
 
   return (
     <Modal
@@ -382,14 +392,27 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                   {otherrejection ? 
+                   <Input
+                   control="input"
+                   name="reason_if_rejected"
+                   label="Reason if Rejected"
+                   required={selectedStatus === 'Offer Rejected by Student'}
+                   className="form-control"
+                  //  onChange={(e)=>handlechange(e)}
+                   placeholder="Reason if Rejected"
+                 />
+                   :<Input
+                      icon="down"
+                      control="lookup"
                       name="reason_if_rejected"
-                      control="input"
                       label="Reason if Rejected"
-                      className="form-control"
-                      placeholder="Reason if Rejected"
                       required={selectedStatus === 'Offer Rejected by Student'}
-                    />
+                      options={rejectionreason}
+                      className="form-control"
+                      onChange={(e)=>handlechange(e)}
+                      placeholder="Reason if Rejected"
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
