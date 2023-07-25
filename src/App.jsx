@@ -175,7 +175,7 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
-                    <PrivateRoute path="/Ops" exact component={operations} />
+                    <PrivateRoute path="/opreations" exact component={operations} />
                     {/* <PrivateRoute path="/Ops" exact component={Operation} /> */}
 
                   </>

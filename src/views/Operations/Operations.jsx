@@ -8,7 +8,7 @@ import moment from "moment";
 import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_OPERATIONS} from "../../graphql";
+import { GET_OPERATIONS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from '../../components/content/Table';
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -60,6 +60,7 @@ const Operations = (props) => {
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
 
+  
   const columns = useMemo(
     () => [
       {
@@ -70,10 +71,7 @@ const Operations = (props) => {
         Header: 'Activity type',
         accessor: 'activity_type',
       },
-      // {
-      //   Header: 'Instution',
-      //   accessor: 'Institution',
-      // },
+      
       {
         Header: 'Area',
         accessor: 'area',
@@ -95,18 +93,59 @@ const Operations = (props) => {
         Header: 'Topic',
         accessor: 'topic',
       },
-      // {
-      //   Header: 'Donor',
-      //   accessor: 'Donor',
-      // },
+     
       {
         Header: 'Guest',
         accessor: 'guest',
       },
-      // {
-      //   Header: 'Designation',
-      //   accessor: 'Designation',
-      // },
+     
+      {
+        Header: 'Organization',
+        accessor: 'organization',
+      },
+      
+    ],
+    []
+  );
+
+  const columnsUserTot = useMemo(
+    () => [
+      {
+        Header: 'Assigned To',
+        accessor: 'assigned_to.username',
+      },
+      {
+        Header: 'Activity type',
+        accessor: 'activity_type',
+      },
+      
+      {
+        Header: 'Area',
+        accessor: 'area',
+      },
+      
+      {
+        Header: 'Batch',
+        accessor: 'batch.name',
+      },
+      {
+        Header: 'Start Date',
+        accessor: 'start_date',
+      },
+      {
+        Header: 'End Date',
+        accessor: 'end_date',
+      },
+      {
+        Header: 'Topic',
+        accessor: 'topic',
+      },
+     
+      {
+        Header: 'Guest',
+        accessor: 'guest',
+      },
+     
       {
         Header: 'Organization',
         accessor: 'organization',
@@ -125,8 +164,6 @@ const Operations = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     }
-    
-
     await api.post("/graphql", {
       query: GET_OPERATIONS,
       variables,
@@ -135,7 +172,6 @@ const Operations = (props) => {
         console.log("data",data.data.data.usersOpsActivitiesConnection.values)
         setOpts(data.data.data.usersOpsActivitiesConnection.values);
         setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
-        // setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
       })
       .catch(error => {
         return Promise.reject(error);
@@ -152,8 +188,8 @@ const Operations = (props) => {
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
         case 'area':
-        case 'start_date':
-        case 'end_date':
+        case 'assigned_to.username':
+        case 'activity_type':
         case 'batch.name':
           sortByField = sortBy[0].id;
           break;
@@ -187,25 +223,6 @@ const Operations = (props) => {
       setShowModal(false);
       return;
     }
-
-    // need to remove `show` from the payload
-    let { show, institution, batch, cv_file, ...dataToSave } = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
-    if (typeof data.CV === 'object') {
-      dataToSave['CV'] = data.CV?.url;
-    }
-
-    if (cv_file) {
-      uploadFile(data.cv_file).then(data => {
-        dataToSave['CV'] = data.data.data.upload.id;
-        // createStudentApi(dataToSave);
-      }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
-        setAlert("Unable to upload CV.", "error");
-      });
-    } else {
-      // createStudentApi(dataToSave);
-    }
   };
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -213,35 +230,10 @@ const Operations = (props) => {
       return;
     }
 
-    // need to remove `show` from the payload
-    let { show, institution, batch, cv_file, ...dataToSave } = data;
-    dataToSave['date_of_birth'] = data.date_of_birth ? moment(data.date_of_birth).format("YYYY-MM-DD") : '';
-    if (typeof data.CV === 'object') {
-      dataToSave['CV'] = data.CV?.url;
-    }
-
-    if (cv_file) {
-      uploadFile(data.cv_file).then(data => {
-        dataToSave['CV'] = data.data.data.upload.id;
-        // createStudentApi(dataToSave);
-      }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
-        setAlert("Unable to upload CV.", "error");
-      });
-    } else {
-      // createStudentApi(dataToSave);
-    }
+    
   };
 
  
-
-
-  const handleStudentStatusTabChange = (statusTab) => {
-    console.log(statusTab.title);
-    setActiveStatus(statusTab.title);
-    getoperations(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
-  }
-
   const showRowData = (data) => {
     setOptsdata(data)
     setShowModal(true);
@@ -254,7 +246,7 @@ const Operations = (props) => {
           
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-            
+
             {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
@@ -264,16 +256,16 @@ const Operations = (props) => {
             </button>}
           </div>
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
-      
-            <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+           <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
+
 
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-         
           <OperationCreateform
             show={modalShow}
             onHide={hideCreateModal}
+            ModalShow={()=>setModalShow(false)}
           />
           {showModal && (
             <OperationDataupdateform 
