@@ -168,7 +168,6 @@ const BatchForm = (props) => {
 
   useEffect(() => {
     if (props.id) {
-       console.log("Batch",props.institution)
       setInitialValues({
         ...props,
         grant: Number(props.grant?.id),

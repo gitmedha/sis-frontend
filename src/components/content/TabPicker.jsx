@@ -7,14 +7,9 @@ const TabPicker = ({ options, setActiveTab = () => {} }) => {
   const [activeTab, setActive] = useState(options[0].key);
 
   const changeTab = (tab) => {
-    console.log("Tab",tab);
     setActive(tab.key);
     setActiveTab(tab);
   };
-  useEffect(() => {
-    console.log("activeTab",options);
-  }, [])
-  
 
   return (
     <div className="topnav my-3 latto-regular">
