@@ -5,16 +5,18 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
-import { getStudentsPickList } from './StudentActions';
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { getAddressOptions, getStateDistricts } from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { getOpportunitiesPickList } from '../../Opportunities/OpportunityComponents/opportunityAction';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Table from 'react-bootstrap/Table';
+import { connect } from "react-redux";
 
+import { MeiliSearch } from 'meilisearch'
+
+import { RowsData } from './RowsData';
+import { createOperation } from './operationsActions';
+import api from '../../../apis';
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -32,82 +34,177 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
-  .table {
-    overflow: auto;
-    display: block;
-    table-layout: auto;
+  
+
+    // .App {
+    //   margin: 2rem auto;
+    //   width: 80%;
+    // }
+    
+    .create_data_table {
+      border-collapse: collapse !important;
+      width: 100%;
+      overflow:auto;
     }
-    .table-container {
-      overflow-x: auto;
+    
+    th,
+    td {
+      
+      padding: 8px;
+      text-align: left;
     }
-    th{
-      width:15rem
+    
+    th {
+      background-color: #f2f2f2;
     }
-    .id{
-      width:3rem !important;
+    
+    .table-input {
+      border: none;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      background-color: transparent;
+    }
+    
+    button {
+      margin-top: 1rem;
+    }
+    .table-input:focus {
+      outline: none;
+    }
+    .adddeletebtn{
+      display: flex;
+      justify-content: flex-end;
     }
 `;
 
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
-
-
+  const { setAlert } = props;
+  let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [data, setData] = useState([
-    { id: 1, name: "name", age: "2", inst: "vava" },
+    {
+      id: 1,
+      name: "",
+      activity_type: "",
+      institution: "",
+      batch: "",
+      state: "",
+      start_date: "",
+      end_date: "",
+      topic: "",
+      donor: "",
+      guest: "",
+      designation: "",
+      organization: "",
+      assigned_to: "",
+    },
     // Add more initial rows as needed
   ]);
+  const [rows, setRows] = useState([{
+    id: 1,
+    assigned_to: "",
+    name: "",
+    institution: "",
+    batch: "",
+    activity_type: "",
+    state: "",
+    start_date: "",
+    end_date: "",
+    topic: "",
+    donor: "",
+    guest: "",
+    designation: "",
+    organization: ""
+  }]);
+  const [newRow, setNewRow] = useState({
+    id: "",
+    name: "",
+    institution: "",
+    batch: "",
+    state: "",
+    start_date: "",
+    activity_type: "",
+    end_date: "",
+    topic: "",
+    donor: "",
+    guest: "",
+    designation: "",
+    organization: "",
+    assigned_to: "",
+  });
+  const [showLimit, setshowLimit] = useState(false)
+  const addRow = () => {
+    if (rows.length >= 10) {
+      setAlert("You can't Add more than 10 items.", "error");
+    } else {
+      const newRowWithId = { ...newRow, id: rows.length + 1 };
+      setRows([...rows, newRowWithId]);
+      // setNewRow({ id: '', name: '', age: '' });
+      console.log(rows)
+    }
 
-  const handleValueChange = (e, rowId, property) => {
-    const updatedData = data.map((row) => {
-      if (row.id === rowId) {
-        return { ...row, [property]: e.target.value };
+  };
+  
+  const handleChange = (options, key, rowid) => {
+    console.log(options.value);
+    if (key == "state") {
+      getStateDistricts().then(data => {
+        console.log("data", data);
+        setAreaOptions([]);
+        setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+          key: area.id,
+          label: area.key,
+          value: area.key,
+        })).sort((a, b) => a.label.localeCompare(b.label)));
+      });
+      console.log(areaOptions);
+    }
+    updateRow(rowid, key, options.value)
+  };
+  const updateRow = (id, field, value) => {
+
+    const updatedRows = rows.map((row) => {
+      if (row.id === id) {
+
+        return { ...row, [field]: value };
       }
       return row;
     });
-    setData(updatedData);
+    setRows(updatedRows);
   };
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [genderOptions, setGenderOptions] = useState([]);
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [incomeLevelOptions, setIncomeLevelOptions] = useState([]);
-  const [howDidYouHearAboutUsOptions, setHowDidYouHearAboutUsOptions] = useState([]);
-  const [selectedHowDidYouHearAboutUs, setSelectedHowDidYouHearAboutUs] = useState(props?.how_did_you_hear_about_us);
-  const [logo, setLogo] = useState(null);
+
+  const deleteRow = (id) => {
+    if (rows.length == 1) {
+      return rows;
+    }
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+  };
+
+  const userId = localStorage.getItem('user_id');
+
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [typeOptions, setTypeOptions] = useState([]);
   const [show1, setShow1] = useState(false);
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const handleClose = () => setShow1(false);
   const handleShow = () => setShow1(true);
-  // const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
-  // const userId = parseInt(localStorage.getItem('user_id'))
-  // const medhaChampionOptions = [
-  //   { key: true, value: true, label: "Yes" },
-  //   { key: false, value: false, label: "No" },
-  // ];
-  // const interestedInEmploymentOpportunitiesOptions = [
-  //   { key: true, value: true, label: "Yes" },
-  //   { key: false, value: false, label: "No" },
-  // ];
-
-  // useEffect(() => {
-  //   getDefaultAssigneeOptions().then(data => {
-  //     setAssigneeOptions(data);
-  //   });
-  // }, []);
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
+
 
     getAddressOptions().then(data => {
       console.log("data--------------->", data?.data?.data?.geographiesConnection);
@@ -116,19 +213,10 @@ const OperationCreateform = (props) => {
         label: state?.key,
         value: state?.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
-
-      // if (props.state) {
-      //   onStateChange({ value: props.state });
-      // }
     });
-
-    // setShowCVSubLabel(props.CV && props.CV.url);
-
   }, []);
 
   const onStateChange = value => {
-    console.log("--------------------------------------")
-    console.log(value);
     setDistrictOptions([]);
     getStateDistricts(value).then(data => {
       setDistrictOptions(data?.data?.data?.geographiesConnection.groupBy.district.map((district) => ({
@@ -145,43 +233,48 @@ const OperationCreateform = (props) => {
     });
   };
 
-  const onSubmit = async (values) => {
-    // if (logo) {
-    //   values.logo = logo;
-    // }
-    console.log("onsubmit values----------->", values);
-    setDisableSaveButton(true);
-    await onHide(values);
-    setDisableSaveButton(false);
+  const handleInputChange = (e, index, field) => {
+    const { value } = e;
+    console.log(e.target.value, "index", index, "feild", field);
+    setData((prevRows) =>
+      prevRows.map((row, rowIndex) => {
+        if (rowIndex === index) {
+          return { ...row, [field]: value };
+        }
+        return row;
+      })
+    );
   };
 
+  const onSubmit = async () => {
+    let data = rows.filter(row => {
+      console.log(row);
+      delete row['id']
+      delete row['name']
 
-
-  const addRow = () => {
-    // const newRowId = data.length + 1;
-    if (data.length === 10) {
-      return;
+      console.log(row['start_date'])
+      // console.log(row.start_date.split('/').reverse().join('-'))
+      // row.start_date =row.start_date.split('/'/
+      row.created_by=Number(userId)
+      row.updated_by =userId
+      row.batch = Number(row.batch);
+      row.assigned_to = Number(row.assigned_to);
+      row.institution = Number(row.institution);
+      row.students_attended = Number(row.students_attended);
+      row.donor = row.donor ? true : false;
+      return row
+    })
+    
+    try {
+      const value = await api.post('/users-ops-activities/createBulkOperations', data);
+      props.ModalShow()
+    } catch (error) {
+      console.log("error", error)
     }
-    const newRow = { id: data.length + 1, name: 'rojo', age: 10 };
-    // Modify the properties as per your requirements
-    setData([...data, newRow]);
   };
-  const handleSubmit = () => {
-    console.log(data); // Logging the data to the console
-  };
-  useEffect(() => {
-    console.log("data", data)
-  }, [])
 
 
   useEffect(() => {
-    getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-    });
 
     getAddressOptions().then(data => {
       setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
@@ -197,30 +290,7 @@ const OperationCreateform = (props) => {
   }, []);
 
 
-  useEffect(() => {
-    getOpportunitiesPickList().then(data => {
-      setStatusOptions(data.status.map((item) => {
-        return {
-          key: item.value,
-          label: item.value,
-          value: item.value,
-        };
-      }));
 
-      setTypeOptions(data.type.map((item) => {
-        return {
-          key: item.value,
-          label: item.value,
-          value: item.value,
-        };
-      }));
-
-
-    });
-
-
-
-  }, []);
 
 
   const handleRowData = (rowData) => {
@@ -228,13 +298,85 @@ const OperationCreateform = (props) => {
     console.log(rowData);
   };
 
+  useEffect(() => {
+
+
+    filterInstitution().then(data => {
+      console.log("data institute", data)
+      setInstitutionOptions(data);
+    });
+
+
+
+
+    filterBatch().then(data => {
+      console.log("dataBatch1:", data)
+      setBatchOptions(data);
+    });
+
+
+  }, [])
+
+
+
+
+
+  const filterInstitution = async (filterValue) => {
+
+    return await meilisearchClient.index('institutions').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      let filterData = data.hits.map(institution => {
+
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        }
+      });
+
+      return filterData;
+    });
+  }
+
+
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient.index('batches').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+
+      let filterData = data.hits.map(batch => {
+
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        }
+      });
+
+      console.log(filterData)
+      return filterData;
+    });
+  }
+
+
+  const onConfirm = () => {
+    setshowLimit(true)
+  }
+  const onCancel = () => {
+    setshowLimit(false)
+  }
+
 
   return (
     <Modal
       centered
       size="xl"
       responsive
-      // fullscreen={true}
       show={show}
       onHide={onHide}
       animation={false}
@@ -257,7 +399,7 @@ const OperationCreateform = (props) => {
                 <img src={urlPath(props.logo.url)} className="avatar mr-2" alt="Student Profile" />
               ) : (
                 <div className="flex-row-centered avatar avatar-default mr-2">
-                  <FaSchool size={25} />
+                  <FaSchool color={'#fff'}size={25} />
                 </div>
               )}
               <h2 className="text--primary bebas-thick mb-0">
@@ -265,8 +407,56 @@ const OperationCreateform = (props) => {
               </h2>
             </div>
 
-            <div className="d-flex justify-content-start between_class">
-              <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
+            
+          </div>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="bg-white">
+        <div id="CreateOptsData">
+          <div className="adddeletebtn">
+            {rows.length ==10? "":<button onClick={addRow} >
+              <FaPlusCircle  style={iconStyles} width="15" size={30} color="#000" className="ml-2" />
+            </button>}
+            {/* <button onClick={handleSubmit}>Submit</button> */}
+            <button onClick={() => deleteRow(rows.length)}>
+
+              <FaMinusCircle style={iconStyles} width="15" size={30} color="#000" className="ml-2" />
+            </button>
+            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
+
+          </div>
+          <div className='table-container'>
+            <table className='create_data_table'>
+              <thead>
+                <tr>
+                  <th className='id'>ID</th>
+                  <th>Activity Type</th>
+                  <th>Institution</th>
+
+                  <th>Batch</th>
+                  <th>Assigned to</th>
+                  <th>State</th>
+                  <th>Area</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Topic</th>
+                  <th>Donor</th>
+                  <th>Guest</th>
+                  <th>Designation</th>
+                  <th>Organization</th>
+                  <th>Student Attended</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <RowsData handleInputChange={handleInputChange} handleChange={handleChange} row={row} endDate={endDate} startDate={startDate} setStartdate={setStartDate} institutiondata={institutionOptions} batchbdata={batchOptions} updateRow={updateRow} statedata={stateOptions} areaOptions={areaOptions} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="d-flex justify-content-start between_class">
+              <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={onSubmit} disabled={disableSaveButton}>SAVE</button>
               <button
                 type="button"
                 onClick={onHide}
@@ -276,496 +466,22 @@ const OperationCreateform = (props) => {
               </button>
 
             </div>
-          </div>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="bg-white">
-        <Formik
-          onSubmit={onSubmit}
-        // initialValues={initialValues}
-        // validationSchema={StudentValidations}
-        >
 
-
-          <Section>
-            <div className='d-flex justify-content-between'>
-              <h2 className="section-header">Basic Info</h2>
-
-
-            </div>
-
-
-            <div  >
-
-              <Table style={{ width: '150%' }} striped bordered responsive >
-
-
-                <thead>
-                  <tr>
-                    <th className='id'>ID</th>
-                    <th>Activity Type</th>
-                    <th>Institution</th>
-
-                    <th>Batch</th>
-                    <th>State</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Topic</th>
-                    <th>Donor</th>
-                    <th>Guest</th>
-                    <th>Designation</th>
-                    <th>Organization</th>
-                    <th>Student Attended</th>
-                    <th>Area</th>
-
-
-
-                    {/* Add more th elements for additional columns */}
-                  </tr>
-                </thead>
-                <tbody className='mb-5'>
-                  {data && data?.map((row) => (
-
-
-                    <tr key={row?.id}>
-                      <td>{row.id}</td>
-                      <td >
-
-                        <Input
-                          type="text"
-                          name="name"
-                          // label="Guest"
-                          // required
-                          control="input"
-                          placeholder="Name"
-                          className="form-control"
-                        />
-
-                      </td>
-                      <td>
-
-                        <Input
-                          icon="down"
-                          name="type"
-                          // label="Type"
-                          onChange={(e) => handleValueChange(e, row?.id, 'inst')}
-                          control="lookup"
-                          // placeholder="Type"
-                          options={typeOptions}
-                          className="form-control"
-                        // required
-                        />
-                      </td>
-                      <td>
-
-                        <Input
-                          type="Number"
-                          name="guest"
-                          // label="Guest"
-                          // required
-                          control="input"
-                          placeholder="Batch"
-                          onChange={(e) => handleValueChange(e, row?.id, 'batch')}
-                          className="form-control"
-                        />
-
-                        {/* <input
-                          type="Number"
-                          value={row?.age}
-                          onChange={(e) => handleValueChange(e, row?.id, 'age')} />
-                       */}
-                      </td>
-
-                      <td>
-
-
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
-                            className="form-control"
-                          // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </td>
-                      <td>
-
-
-                        <Input
-                          name="start_date"
-                          // label="Start Date"
-                          // required
-                          placeholder="Start Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </td>
-                      <td>
-
-
-                        <Input
-                          name="end_date"
-                          type='date'
-                          // label="End Date"
-                          // required
-                          placeholder="End Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="topic"
-                          // label="Topic"
-                          // required
-                          control="input"
-                          placeholder="Topic"
-                          className="form-control"
-                        />
-                      </td>
-                      <td>
-
-
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="Donor"
-                            className="form-control"
-                          // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="guest"
-                          // label="Guest"
-                          // required
-                          control="input"
-                          placeholder="Guest Name"
-                          className="form-control"
-                        />
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="text"
-                          name="designation"
-                          // label="Designation"
-                          // required
-                          control="input"
-                          placeholder="Designation"
-                          className="form-control"
-                        />
-                      </td>
-                      <td>
-
-
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="Organization"
-                            // label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="Organization"
-                            className="form-control"
-                          // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </td>
-                      <td>
-
-
-                        <Input
-                          type="number"
-                          name="email"
-                          // label="Student Attended"
-                          // required
-                          control="input"
-                          placeholder="Number of student"
-                          className="form-control"
-                        />
-                      </td>
-                      <td>
-
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            control="lookup"
-                            name="medha_area"
-                            label="Medha Area"
-                            className="form-control"
-                            placeholder="Medha Area"
-                            required
-                            options={areaOptions}
-                          />
-                        ) : (
-                          <>
-                            <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label>
-                            <Skeleton count={1} height={35} />
-                          </>
-                        )}
-                      </td>
-
-                      <td>
-                        <button onClick={() => handleRowData(row)}>Retrieve Data</button>
-                      </td>
-
-                    </tr>
-                  ))}
-                </tbody>
-
-                <button className=" btn-primary btn-regular mr-2 mt-5" onClick={addRow}>Add Row</button>
-                <button className="btn btn-secondary btn-regular mr-2 " onClick={handleSubmit}>Submit</button>
-
-              </Table>
-            </div>
-
-
-
-          </Section>
-
-
-
-
-
-
-        </Formik>
+        </div>
       </Modal.Body>
+
+      {/* {showLimit ? <SweetAlert title="You can't dd more than 10 items!" onConfirm={onConfirm} onCancel={()=>onCancel()} /> :""} */}
     </Modal>
   );
 };
 
-export default OperationCreateform;
+// export default OperationCreateform;
 
+const mapStateToProps = (state) => ({});
 
+const mapActionsToProps = {
+  setAlert,
+};
 
-// {/* <div className="row">
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="full_name"
-//     label="Name"
-//     required
-//     control="input"
-//     placeholder="Name"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       control="lookupAsync"
-//       name="assigned_to"
-//       label="Assigned To"
-//       required
-//       className="form-control"
-//       placeholder="Assigned To"
-//       filterData={filterAssignedTo}
-//       defaultOptions={assigneeOptions}
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div>  */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="name_of_parent_or_guardian"
-//     label="Parents Name"
-//     required
-//     control="input"
-//     placeholder="Parents Name"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="status"
-//       label="Status"
-//       required
-//       options={statusOptions}
-//       className="form-control"
-//       placeholder="Status"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="phone"
-//     label="Phone"
-//     required
-//     control="input"
-//     placeholder="Phone"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="alternate_phone"
-//     label="Alternate Phone"
-//     control="input"
-//     placeholder="Phone"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     type="email"
-//     name="email"
-//     label="Email"
-//     // required
-//     control="input"
-//     placeholder="Email"
-//     className="form-control"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {genderOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="gender"
-//       label="Gender_1"
-//       required
-//       options={genderOptions}
-//       className="form-control"
-//       placeholder="Gender"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="date_of_birth"
-//     label="Date of Birth"
-//     required
-//     placeholder="Date of Birth"
-//     control="datepicker"
-//     className="form-control"
-//     autoComplete="off"
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="category"
-//       label="Category"
-//       required
-//       options={categoryOptions}
-//       className="form-control"
-//       placeholder="Category"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2"> */}
-// {/* {statusOptions.length ? ( */}
-// {/* <Input
-//       icon="down"
-//       control="lookup"
-//       name="income_level"
-//       label="Income Level (INR)"
-//       required
-//       options={incomeLevelOptions}
-//       className="form-control"
-//       placeholder="Income Level (INR)"
-//     /> */}
-// {/* ) : ( */}
-// {/* <Skeleton count={1} height={45} /> */}
-// {/* )} */}
-// {/* </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     control="lookupAsync"
-//     name="registered_by"
-//     label="Registered By"
-//     className="form-control"
-//     placeholder="Registered By"
-//     filterData={filterAssignedTo}
-//     defaultOptions={assigneeOptions}
-//     isDisabled={!isAdmin()}
-//   />
-// </div> */}
-// {/* <div className="col-md-6 col-sm-12 mb-2">
-//   {howDidYouHearAboutUsOptions.length ? (
-//     <Input
-//       icon="down"
-//       control="lookup"
-//       name="how_did_you_hear_about_us"
-//       label="How did you hear about us?"
-//       options={howDidYouHearAboutUsOptions}
-//       className="form-control"
-//       placeholder="How did you hear about us?"
-//       onChange={option => {
-//         setSelectedHowDidYouHearAboutUs(option.value);
-//       }}
-//       required
-//     />
-//   ) : (
-//     <Skeleton count={1} height={45} />
-//   )}
-// </div> */}
-// {/* {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
-//   <Input
-//     name="how_did_you_hear_about_us_other"
-//     label="If Other, Specify"
-//     control="input"
-//     placeholder="If Other, Specify"
-//     className="form-control"
-//     required
-//   />
-// </div>} */}
-// {/* {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
-//   <div className="col-md-6">
-//     <Input
-//       control="file"
-//       name="cv_upload"
-//       label="CV"
-//       subLabel={showCVSubLabel && <div className="mb-1">
-//         {fileName}
-//       </div>}
-//       className="form-control"
-//       placeholder="CV"
-//       accept=".pdf, .docx"
-//       onChange={(event) => {
-//         setFieldValue("cv_file", event.currentTarget.files[0]);
-//         setShowCVSubLabel(false);
-//       }}
-//     />
-//   </div>
-// </div>} */}
-// </div> */}
+export default connect(mapStateToProps, mapActionsToProps)(OperationCreateform);
+
