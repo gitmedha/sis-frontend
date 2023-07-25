@@ -2,9 +2,6 @@ import nProgress from "nprogress";
 import styled from 'styled-components';
 import api from "../../apis";
 import {
-  TableRowDetailLink,
-  Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
@@ -13,13 +10,13 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_OPERATIONS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
-import Tabs from "../../components/content/Tabs";
 import Table from '../../components/content/Table';
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
+import axios from 'axios';
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -45,7 +42,6 @@ const Styled = styled.div`
 `;
 
 const Operations = (props) => {
-  let { isSidebarOpen, batch } = props;
   const [showModal, setShowModal] = useState(false);
   const { setAlert } = props;
   const history = useHistory();
@@ -53,9 +49,6 @@ const Operations = (props) => {
   const [opts, setOpts] = useState([]);
   const [optsdata, setOptsdata] = useState({});
   const [optsAggregate, setoptsAggregate] = useState([]);
-  const [studentsData, setStudentsData] = useState([]);
-  const [pickList, setPickList] = useState([]);
-  const [students, setStudents] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState('list');
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
@@ -213,10 +206,9 @@ const Operations = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    // getoperationsPickList().then(data => setPickList(data));
-    console.log("activeTab_Key", activeTab.key);
-    console.log("tabPickerOptions", tabPickerOptions);
+
     fetchData(0, paginationPageSize, []);
+
   }, []);
  
 
@@ -254,6 +246,7 @@ const Operations = (props) => {
           
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+
             {(isSRM() || isAdmin()) && <button
               className="btn btn-primary"
               onClick={() => setModalShow(true)}
@@ -265,10 +258,10 @@ const Operations = (props) => {
           <div className={`${layout !== 'list' ? 'd-none' : ''}`}>
            <Table onRowClick={showRowData} columns={columns} data={opts} totalRecords={optsAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}  paginationPageIndex={paginationPageIndex} onPageIndexChange={setPaginationPageIndex} />
 
+
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          
           <OperationCreateform
             show={modalShow}
             onHide={hideCreateModal}
