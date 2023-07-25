@@ -71,6 +71,70 @@ const usersTotsFields = `
     designation
     published_at
 `
+const studentUpskillingFields = `
+    id
+    created_at
+    assigned_to {
+        id
+        username
+    }
+    student_id{
+        id
+        full_name
+    }
+    institution {
+        id
+        name
+    }
+    batch {
+        id
+        name
+    }
+    start_date
+    end_date
+    course_name
+    certificate_received
+    category
+    sub_category
+    issued_org
+    published_at
+`
+
+const dteSamarthSditFields = `
+    id
+    created_at
+    registration_id
+    registration_date
+    batch_name
+    student_name
+    course_name
+    institution_name
+    district
+    state
+    dob
+    gender
+    father_guardian
+    mobile
+    email
+    annual_income
+    full_address
+    self_employed
+    higher_studies
+    placed
+    apprenticeship
+    doj
+    company_placed
+    monthly_salary
+    data_flag
+    position
+    trade
+    company_apprenticed
+    company_self
+    institute_admitted
+    acad_year
+    result
+    published_at
+`
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -107,6 +171,41 @@ export const GET_USERSTOTS = `
     }
 `
 
+export const GET_STUDENTS_UPSKILLINGS = `
+    query GET_STUDENTS_UPSKILLINGS($limit:Int, $start:Int,$sort: String){
+        studentsUpskillingsConnection(
+            sort:$sort,
+            start:$start,
+            limit:$limit
+        ){
+            values {
+                ${studentUpskillingFields}
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+`
+
+export const GET_DTE_SAMARTH_SDITS = `
+    query GET_DTE_SAMARTH_SDITS($limit:Int,$start:Int,$sort:String) {
+        dteSamarthSditsConnection(
+            sort:$sort,
+            start:$start,
+            limit:$limit
+        ){
+            values {
+                ${dteSamarthSditFields}
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+
+`
+
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
         $data:OperationInput!
@@ -141,6 +240,37 @@ export const CREATE_USER_TOT = `
     }
 `
 
+export const CREATE_STUDENT_UPSKILL = `
+    mutation CREATE_STUDENT_UPSKILL (
+        $data:StudentsUpskillingInput!
+    ){
+        createStudentsUpskilling(
+            input: {
+                data:$data
+            }
+        ){
+            studentsUpskilling {
+                ${studentUpskillingFields}
+            }
+        }
+    }
+`
+
+export const CREATE_SAMARTH_SDIT = `
+    mutation CREATE_SAMARTH_SDIT (
+        $data:DteSamarthSditInput!
+    ) {
+        createDteSamarthSdit(
+            input: {
+                data:$data
+            }
+        ){
+            dteSamarthSdit {
+                ${dteSamarthSditFields}
+            }
+        }
+    }
+`
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
         $data:editOperationInput!
@@ -172,6 +302,38 @@ mutation UPDATE_USER_TOT(
       usersTot {
         ${usersTotsFields}
       }
+    }
+  }
+`
+
+export const UPDATE_STUDENTS_UPSKILLING = `
+  mutation UPDATE_STUDENTS_UPSKILLING(
+    $data:editStudentsUpskillingInput!
+    $id:ID!
+  ){
+    updateStudentsUpskilling(input:{
+        data: $data
+        where: {id: $id}
+    }){
+        studentsUpskilling {
+            ${studentUpskillingFields}
+        }
+    }
+  }
+`
+
+export const UPDATE_SAMARTH_SDIT = `
+  mutation UPDATE_SAMARTH_SDIT(
+    $data:editDteSamarthSditInput!
+    $id:ID!
+  ){
+    updateDteSamarthSdit(input:{
+        data:$data
+        where: { id: $id }
+    }){
+        dteSamarthSdit {
+            ${dteSamarthSditFields}
+        }
     }
   }
 `
