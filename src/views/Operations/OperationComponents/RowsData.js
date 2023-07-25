@@ -6,6 +6,11 @@ import { getStateDistricts } from '../../Address/addressActions';
 import { useEffect } from 'react';
 import { getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
+
+const options = [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' }
+  ]
 export const RowsData = (props) => {
     const [rows, setRows] = useState([
         {
@@ -217,12 +222,22 @@ export const RowsData = (props) => {
                     />
                 </td>
                 <td>
-                    <input
+
+                <Select
+                            className="basic-single table-input"
+                            classNamePrefix="select"
+                           
+                            isSearchable={true}
+                            name="area"
+                            options={options}
+                            onChange={(e) => props.handleChange(e, "donor", row.id)}
+                        />
+                    {/* <input
                         className="table-input"
                         type="text"
                         value={row.age}
                         onChange={(e) => props.updateRow(row.id, 'donor', true)}
-                    />
+                    /> */}
                 </td>
                 <td>
                     <input

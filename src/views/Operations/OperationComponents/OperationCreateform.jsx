@@ -150,14 +150,7 @@ const OperationCreateform = (props) => {
     }
 
   };
-  const updateDate = (field, value) => {
-    console.log("feild date", value)
-    if (field == 'start_date') {
-      setStartDate(value)
-    } else {
-      setEndDate(value)
-    }
-  }
+  
   const handleChange = (options, key, rowid) => {
     console.log(options.value);
     if (key == "state") {
@@ -263,6 +256,7 @@ const OperationCreateform = (props) => {
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
       row.created_by=Number(userId)
+      row.updated_by =userId
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
@@ -270,25 +264,10 @@ const OperationCreateform = (props) => {
       row.donor = row.donor ? true : false;
       return row
     })
-    let data2 = {
-      activity_type: "test activity",
-      area: "Agra (City)",
-      assigned_to: 129,
-      batch: 1168,
-      designation: "test designation",
-      donor: true,
-      end_date: "2023-07-05",
-      guest: "Test Guest",
-      institution: 328,
-      students_attended: 10,
-      organization: "test org",
-      start_date: "2023-01-07",
-      state: "Uttar Pradesh",
-      topic: "test topic"
-    }
+    
     try {
       const value = await api.post('/users-ops-activities/createBulkOperations', data);
-      console.log("data27", value)
+      props.ModalShow()
     } catch (error) {
       console.log("error", error)
     }

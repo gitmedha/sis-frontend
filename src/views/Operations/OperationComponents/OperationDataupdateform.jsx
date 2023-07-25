@@ -15,6 +15,7 @@ import { Select } from '@material-ui/core';
 // import 'react-select/dist/react-select.css';
 import { MenuItem } from 'material-ui';
 import DetailField from '../../../components/content/DetailField';
+import moment from 'moment';
 
 
 const Section = styled.div`
@@ -513,12 +514,12 @@ const OperationDataupdateform = (props) => {
 
                   <div className="col-md-6">
                     <DetailField label="Updated By" value={props.Updated_by?.userName ? props.Updated_by?.userName:props.Created_by?.username} />
-                    <DetailField label="Updated At" value={""} />
+                    <DetailField label="Updated At" value={moment(props.updated_at?props.updated_at:props.created_at).format("DD MMM YYYY, h:mm a")}/>
                     
                   </div>
                   <div className="col-md-6">
                     <DetailField label="Creted By" value={props.Created_by?.username?props.Created_by?.username:""} />
-                    <DetailField label="Created At " value={props.created_at} />
+                    <DetailField label="Created At "  value={moment(props.created_at).format("DD MMM YYYY, h:mm a")} />
                    
                   </div>
 

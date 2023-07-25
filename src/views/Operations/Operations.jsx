@@ -78,10 +78,7 @@ const Operations = (props) => {
         Header: 'Activity type',
         accessor: 'activity_type',
       },
-      // {
-      //   Header: 'Instution',
-      //   accessor: 'Institution',
-      // },
+      
       {
         Header: 'Area',
         accessor: 'area',
@@ -103,18 +100,59 @@ const Operations = (props) => {
         Header: 'Topic',
         accessor: 'topic',
       },
-      // {
-      //   Header: 'Donor',
-      //   accessor: 'Donor',
-      // },
+     
       {
         Header: 'Guest',
         accessor: 'guest',
       },
-      // {
-      //   Header: 'Designation',
-      //   accessor: 'Designation',
-      // },
+     
+      {
+        Header: 'Organization',
+        accessor: 'organization',
+      },
+      
+    ],
+    []
+  );
+
+  const columnsUserTot = useMemo(
+    () => [
+      {
+        Header: 'Assigned To',
+        accessor: 'assigned_to.username',
+      },
+      {
+        Header: 'Activity type',
+        accessor: 'activity_type',
+      },
+      
+      {
+        Header: 'Area',
+        accessor: 'area',
+      },
+      
+      {
+        Header: 'Batch',
+        accessor: 'batch.name',
+      },
+      {
+        Header: 'Start Date',
+        accessor: 'start_date',
+      },
+      {
+        Header: 'End Date',
+        accessor: 'end_date',
+      },
+      {
+        Header: 'Topic',
+        accessor: 'topic',
+      },
+     
+      {
+        Header: 'Guest',
+        accessor: 'guest',
+      },
+     
       {
         Header: 'Organization',
         accessor: 'organization',
@@ -204,14 +242,6 @@ const Operations = (props) => {
   };
 
  
-
-
-  const handleStudentStatusTabChange = (statusTab) => {
-    console.log(statusTab.title);
-    setActiveStatus(statusTab.title);
-    getoperations(statusTab.title, activeTab.key, paginationPageSize, paginationPageSize * paginationPageIndex);
-  }
-
   const showRowData = (data) => {
     setOptsdata(data)
     setShowModal(true);
@@ -242,6 +272,7 @@ const Operations = (props) => {
           <OperationCreateform
             show={modalShow}
             onHide={hideCreateModal}
+            ModalShow={()=>setModalShow(false)}
           />
           {showModal && (
             <OperationDataupdateform 

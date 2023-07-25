@@ -35,12 +35,49 @@ const operationFields = `
   }
 `
 
+
+const usersTotsFields = `
+    id
+    created_at
+    user_name
+    Created_by {
+        id
+        username
+    }
+    Updated_by {
+        id
+        username
+    }
+    trainer_1 {
+        id
+    }
+    start_date
+    end_date
+    project_name
+    certificate_given
+    module_name
+    project_type
+    new_entry
+    trainer_2 {
+        id
+    }
+    partner_dept
+    college
+    city
+    state
+    age
+    gender
+    contact
+    designation
+    published_at
+`
+
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
         usersOpsActivitiesConnection(
             sort: $sort,
             start: $start,
-            limit:$limit
+            limit:$limit,
         ){
             values {
                 ${operationFields}
@@ -53,9 +90,26 @@ export const GET_OPERATIONS = `
 `;
 
 
+export const GET_USERSTOTS = `
+    query GET_USERSTOTS ($limit:Int,$start:Int, $sort:String){
+        usersTotsConnection(
+            sort:$sort,
+            start:$start,
+            limit:$limit,
+        ){
+            values {
+                ${usersTotsFields}
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+`
+
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
-        $data:UsersOpsActivityInput!
+        $data:OperationInput!
     ){
         createUsersOpsActivity(
             input: {
@@ -67,11 +121,29 @@ export const CREATE_OPERATION = `
             }
         }
     }
+
+
+`
+
+export const CREATE_USER_TOT = `
+    mutation CREATE_USER_TOTS (
+        $data:UsersTotInput!
+    ){
+        createUsersTot(
+            input: {
+                data:$data
+            }
+        ){
+            usersTot {
+                ${usersTotsFields}
+            }
+        }
+    }
 `
 
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
-        $data:UsersOpsActivityInput!
+        $data:editOperationInput!
         $id:ID!
     ){
         updateUsersOpsActivity(
@@ -86,4 +158,20 @@ export const UPDATE_OPERATION = `
         }
     }
 
+`
+
+export const UPDATE_USER_TOT = `
+mutation UPDATE_USER_TOT(
+    $data: editUsersTotInput!
+    $id: ID!
+  ) {
+    updateUsersTot(input: {
+      data: $data
+      where: { id: $id }
+    }) {
+      usersTot {
+        ${usersTotsFields}
+      }
+    }
+  }
 `
