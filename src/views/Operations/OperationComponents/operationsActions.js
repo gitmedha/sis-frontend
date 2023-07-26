@@ -17,7 +17,7 @@ import {
 } from "../../../graphql/operations";
 
 
-export const getAllOperations = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
+export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
     const authToken =localStorage.getItem('token')
     console.log('authToken',authToken);
     const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
@@ -100,7 +100,7 @@ export const getAllSamarthSdits = async (limit=100, offset=0,sortBy="created_at"
 
 }
 
-export const createOperation = async (data)=>{
+export const createOpsActivity = async (data)=>{
     return await api.post('/graphql', {
         query:CREATE_OPERATION,
         variables: {data},
@@ -113,6 +113,7 @@ export const createOperation = async (data)=>{
     })
 
 }
+
 
 
 export const createUsersTot = async(data)=>{
@@ -140,7 +141,7 @@ export const createSamarthSdit = async(data)=>{
     .catch(error=>Promise.reject(error))
 }
 
-export const updateOperation = async(id,data)=>{
+export const updateOpsActivity = async(id,data)=>{
     return await api.post('/graphql', {
         query:UPDATE_OPERATION,
         variables: {
@@ -189,3 +190,38 @@ export const updateSamarthSdit =  async (id, data) =>{
 }
 
 
+export const bulkCreateOpsActivities = async (data) =>{
+    try {
+        const response = await api.post('/users-ops-activities/createBulkOperations', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+};
+export const bulkCreateUsersTots = async (data) =>{
+    try {
+        const response = await api.post('/users-tots/createBulkTots', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+};
+export const bulkCreateStudentsUpskillings = async (data) =>{
+    try {
+        const response = await api.post('/students-upskillings/createBulkUpSkills', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+};
+export const bulkCreateSamarth = async (data) =>{
+    try {
+        const response = await api.post('/dte-samarth-sdits/createBulkSamarths', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+};
