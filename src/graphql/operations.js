@@ -135,6 +135,56 @@ const dteSamarthSditFields = `
     result
     published_at
 `
+const alumniQueriesFields = `
+    id
+    created_at
+    Created_by {
+        id
+        username
+    }
+    Updated_by {
+        id
+        username
+    }
+    student_id{
+        id
+        full_name
+    }
+    query_start
+    student_name
+    father_name
+    email
+    phone
+    location
+    query_type
+    query_desc
+    conclusion
+    status
+    query_end
+`
+const collegePitchesFields = `
+    id
+    created_at
+    Created_by {
+        id
+        username
+    }
+    Updated_by {
+        id
+        username
+    }
+    pitch_date
+    student_name
+    course_name
+    course_year
+    college_name
+    phone
+    whatsapp
+    email
+    remarks
+    srm_name
+    area
+`
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -152,7 +202,6 @@ export const GET_OPERATIONS = `
         }
     } 
 `;
-
 
 export const GET_USERSTOTS = `
     query GET_USERSTOTS ($limit:Int,$start:Int, $sort:String){
@@ -205,6 +254,41 @@ export const GET_DTE_SAMARTH_SDITS = `
     }
 
 `
+
+export const GET_ALUMNI_QUERIES = `
+    query GET_ALUMNI_QUERIES($limit:Int,$start:Int,$sort:String) {
+        alumniQueriesConnection(
+            sort:$sort,
+            start:$start,
+            limit:$limit
+        ){
+            values {
+                ${alumniQueriesFields}
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+`
+
+export const GET_COLLEGE_PITCHES = `
+    query GET_COLLEGE_PITCHES($limit:Int,$start:Int,$sort:String) {
+        collegePitchesConnection(
+        sort:$sort,
+        start:$start,
+        limit:$limit
+    ){
+        values {
+            ${collegePitchesFields}
+        }
+        aggregate {
+            count
+        }
+    }
+}
+`
+
 
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
@@ -271,6 +355,39 @@ export const CREATE_SAMARTH_SDIT = `
         }
     }
 `
+
+export const CREATE_ALUMNI_QUERY = `
+    mutation CREATE_ALUMNI_QUERY (
+        $data:AlumniQueryInput!
+    ) {
+        createAlumniQuery(
+            input: {
+                data:$data
+            }
+        ){
+            alumniQuery {
+                ${alumniQueriesFields}
+            }
+        }
+    }
+`
+
+export const CREATE_COLLEGE_PITCH = `
+    mutation CREATE_COLLEGE_PITCH (
+        $data:CollegePitchInput!
+    ) {
+        createCollegePitch(
+            input: {
+                data:$data
+            }
+        ){
+            collegePitch {
+                ${collegePitchesFields}
+            }
+        }
+    }
+`
+
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
         $data:editOperationInput!
@@ -336,4 +453,36 @@ export const UPDATE_SAMARTH_SDIT = `
         }
     }
   }
+`
+
+export const UPDATE_ALUMNI_QUERY = `
+    mutation UPDATE_ALUMNI_QUERY(
+        $data:editAlumniQueryInput!
+        $id:ID!
+    ){
+        updateAlumniQuery(input:{
+            data:$data
+            where: { id: $id }
+        }){
+            alumniQuery {
+                ${alumniQueriesFields}
+            }
+        }
+    }
+`
+
+export const UPDATE_COLLEGE_PITCH = `
+    mutation UPDATE_COLLEGE_PITCH(
+        $data:editCollegePitchInput!
+        $id:ID!
+    ){
+        updateCollegePitch(input:{
+            data:$data
+            where: { id: $id }
+        }){
+            collegePitch {
+                ${collegePitchesFields}
+            }
+        }
+    }
 `
