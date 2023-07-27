@@ -55,12 +55,13 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
 
   useEffect(() => {
-
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
+
   }, []);
+
+  
 
   useEffect(() => {
     if (props.institution) {
@@ -137,7 +138,6 @@ const OperationDataupdateform = (props) => {
         label: state.key,
         value: state.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
-
       if (props.state) {
         onStateChange({ value: props.state });
       }
@@ -148,9 +148,7 @@ const OperationDataupdateform = (props) => {
   }, []);
 
   const onStateChange = async value => {
-    console.log("value state", value)
-
-    await getStateDistricts(value).then(data => {
+   await getStateDistricts(value).then(data => {
       setAreaOptions([]);
       setAreaOptions(data?.data?.data?.geographiesConnection?.groupBy?.area.map((area) => ({
         key: area.id,
@@ -161,8 +159,7 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values", initialValues)
-    // console.log("values----")
+
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
@@ -187,6 +184,7 @@ const OperationDataupdateform = (props) => {
     updated_by: '',
     area: '',
     students_attended: ''
+
   }
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -199,13 +197,12 @@ const OperationDataupdateform = (props) => {
   }
 
 
-
-
   if (props) {
     initialValues['batch'] = Number(props.batch.id)
     initialValues['topic'] = props.topic;
     initialValues['activity_type'] = props.activity_type
     initialValues['assigned_to'] = props.assigned_to.id.toString()
+
     initialValues['start_date'] = new Date(props.start_date)
     initialValues['end_date'] = new Date(props.end_date)
     initialValues['students_attended'] = props?.students_attended
@@ -219,6 +216,15 @@ const OperationDataupdateform = (props) => {
     initialValues['area'] = props.area ? props.area : null;
 
   }
+
+  useEffect(() => {
+    if ( props.institution) {
+      filterInstitution(props.institution.name).then(data => {
+        setInstitutionOptions(data);
+      });
+
+  }})
+
 
   console.log("props",initialValues.batch);
 
@@ -274,17 +280,15 @@ const OperationDataupdateform = (props) => {
                 <h3 className="section-header">Basic Info</h3>
                 <div className="row">
 
-
                   <div className="col-md-6 col-sm-12 mb-2">
 
                     <Input
                       control="input"
                       name="activity_type"
                       label="Activity Type"
-                      // required
                       className="form-control"
                       placeholder="Activity Type"
-                    // filterData={filterAssignedTo}
+                 
 
                     />
 
@@ -460,7 +464,6 @@ const OperationDataupdateform = (props) => {
                       autoComplete="off"
                     />
                   </div>
-
                 </div>
               </Section>
               <Section>
@@ -499,7 +502,7 @@ const OperationDataupdateform = (props) => {
                       />
                     ) : (
                       <>
-                        {/* <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label> */}
+                     
                         <Skeleton count={1} height={45} />
                       </>
                     )}
@@ -522,6 +525,7 @@ const OperationDataupdateform = (props) => {
                     <DetailField label="Created At "  value={moment(props.created_at).format("DD MMM YYYY, h:mm a")} />
                    
                   </div>
+
 
                 </div>
               </Section>

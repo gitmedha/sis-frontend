@@ -2,16 +2,13 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import {
-  TableRowDetailLink,
-  Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_OPERATIONS, GET_USERSTOTS } from "../../graphql";
+import { GET_DTE_SAMARTH_SDITS, GET_OPERATIONS, GET_STUDENTS_UPSKILLINGS, GET_USERSTOTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from "../../components/content/Table";
@@ -20,12 +17,13 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
+import axios from 'axios';
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
   { title: "Users Tot", key: "useTot" },
-  { title: "Upskilling", key: "Upskilling" },
-  { title: "Placements", key: "Placements" },
+  { title: "Upskilling", key: "upskilling" },
+  { title: "DTE-SAMARTHSDITS", key: "dtesamarth" },
 ];
 
 const Styled = styled.div`
@@ -45,7 +43,6 @@ const Styled = styled.div`
 `;
 
 const Operations = (props) => {
-  let { isSidebarOpen, batch } = props;
   const [showModal, setShowModal] = useState(false);
   const { setAlert } = props;
   const history = useHistory();
@@ -137,24 +134,73 @@ const Operations = (props) => {
       {
         Header: "End Date",
         accessor: "module_name",
-      },
-      // {
-      //   Header: 'Topic',
-      //   accessor: 'topic',
-      // },
-
-      // {
-      //   Header: 'Guest',
-      //   accessor: 'guest',
-      // },
-
-      // {
-      //   Header: 'Organization',
-      //   accessor: 'organization',
-      // },
+      }
     ],
-    []
-  );
+    []);
+
+    const columnsUpskilling = useMemo(
+      () => [
+        {
+          Header: "Student Name",
+          accessor: "student_id.full_name",
+        },
+        {
+          Header: "Assigned to",
+          accessor: "assigned_to.username",
+        },
+        {
+          Header: "Institute Name",
+          accessor: "institution.name",
+        },
+        {
+          Header: "Course Name",
+          accessor: "course_name",
+        },
+        {
+          Header: "Batch",
+          accessor: "batch.name",
+        },
+        
+        {
+          Header: "Category",
+          accessor: "category",
+        }
+      ],
+      []);
+      const columnsPlacement = useMemo(
+        () => [
+          {
+            Header: "Student Name",
+            accessor: "student_name",
+          },
+          
+          {
+            Header: "Institute Name",
+            accessor: "institution_name",
+          },
+          {
+            Header: "Course Name",
+            accessor: "course_name",
+          },
+          {
+            Header: "Academic Year",
+            accessor: "acad_year",
+          },
+          {
+            Header: "Company Placed",
+            accessor: "company_placed",
+          },
+          {
+            Header: "Batch",
+            accessor: "batch_name",
+          },
+          
+          {
+            Header: "Result",
+            accessor: "result",
+          }
+        ],
+        []);
 
   const getoperations = async (
     status = "All",
@@ -215,15 +261,15 @@ const Operations = (props) => {
         });
     }
 
-    if (activeTab.key == "Upskilling") {
+    if (activeTab.key == "upskilling") {
       await api
         .post("/graphql", {
-          query: GET_USERSTOTS,
+          query: GET_STUDENTS_UPSKILLINGS,
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.usersTotsConnection.values);
-          setOpts(data.data.data.usersTotsConnection.values);
+          console.log("data12", data.data.data.studentsUpskillingsConnection.values);
+          setOpts(data.data.data.studentsUpskillingsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
         .catch((error) => {
@@ -234,6 +280,26 @@ const Operations = (props) => {
           nProgress.done();
         });
     }
+    if (activeTab.key == "dtesamarth") {
+      await api
+        .post("/graphql", {
+          query: GET_DTE_SAMARTH_SDITS,
+          variables,
+        })
+        .then((data) => {
+          console.log("data12", data.data.data.dteSamarthSditsConnection.values);
+          setOpts(data.data.data.dteSamarthSditsConnection.values);
+          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+    // dtesamarth
   };
 
   const fetchData = useCallback(
@@ -275,9 +341,7 @@ const Operations = (props) => {
   );
 
   useEffect(() => {
-    // getoperationsPickList().then(data => setPickList(data));
-    console.log("activeTab_Key", activeTab.key);
-    console.log("tabPickerOptions", tabPickerOptions);
+
     fetchData(0, paginationPageSize, []);
   }, [activeTab]);
 
@@ -344,9 +408,31 @@ const Operations = (props) => {
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
-            ) : (
-              ""
-            )}
+            ) : activeTab.key == "upskilling" ? (
+              <Table
+                onRowClick={showRowData}
+                columns={columnsUpskilling}
+                data={opts}
+                totalRecords={optsAggregate.count}
+                fetchData={fetchData}
+                paginationPageSize={paginationPageSize}
+                onPageSizeChange={setPaginationPageSize}
+                paginationPageIndex={paginationPageIndex}
+                onPageIndexChange={setPaginationPageIndex}
+              />
+            ) : activeTab.key == "dtesamarth" ? (
+              <Table
+                onRowClick={showRowData}
+                columns={columnsPlacement}
+                data={opts}
+                totalRecords={optsAggregate.count}
+                fetchData={fetchData}
+                paginationPageSize={paginationPageSize}
+                onPageSizeChange={setPaginationPageSize}
+                paginationPageIndex={paginationPageIndex}
+                onPageIndexChange={setPaginationPageIndex}
+              />
+            ) :""}
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">

@@ -116,27 +116,28 @@ const StudentForm = (props) => {
   };
 
   let initialValues = {
-    institution: '',
-    batch: '',
-    full_name: '',
-    phone: '',
-    alternate_phone: '',
-    name_of_parent_or_guardian: '',
-    category: '',
-    email: '',
-    gender: '',
-    assigned_to: userId.toString(),
-    status: '',
-    income_level: '',
-    date_of_birth: '',
-    city: '',
-    pin_code: '',
-    medha_area: '',
-    address: '',
-    state: '',
-    district: '',
-    logo: '',
-    registered_by: userId.toString(),
+    institution:'',
+    batch:'',
+    full_name:'',
+    phone:'',
+    alternate_phone:'',
+    name_of_parent_or_guardian:'',
+    category:'',
+    email:'',
+    gender:'',
+    assigned_to:userId.toString(),
+    status:'',
+    income_level:'',
+    family_annual_income: '',
+    date_of_birth:'',
+    city:'',
+    pin_code:'',
+    medha_area:'',
+    address:'',
+    state:'',
+    district:'',
+    logo:'',
+    registered_by:userId.toString(),
     how_did_you_hear_about_us: '',
     how_did_you_hear_about_us_other: '',
   };
@@ -201,21 +202,22 @@ const StudentForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {/* {statusOptions.length ? ( */}
-                    <Input
-                      control="lookupAsync"
-                      name="assigned_to"
-                      label="Assigned To"
-                      required
-                      className="form-control"
-                      placeholder="Assigned To"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                    />
+
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control capitalize"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
                     {/* ) : ( */}
                     {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
@@ -227,7 +229,7 @@ const StudentForm = (props) => {
                       required
                       control="input"
                       placeholder="Parents Name"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -304,23 +306,19 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="category"
-                      label="Category"
-                      required
-                      options={categoryOptions}
-                      className="form-control"
-                      placeholder="Category"
-                    />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="category"
+                        label="Category"
+                        required
+                        options={categoryOptions}
+                        className="form-control"
+                        placeholder="Category"
+                      />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
                     <Input
                       icon="down"
                       control="lookup"
@@ -331,9 +329,20 @@ const StudentForm = (props) => {
                       className="form-control"
                       placeholder="Income Level (INR)"
                     />
-                    {/* ) : ( */}
-                    {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      min={0}
+                      type="number"
+                      name="family_annual_income"
+                      label="Family Annual Income"
+                      control="input"
+                      placeholder="Family Annual Income"
+                      className="form-control"
+                      required
+                    />
+
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

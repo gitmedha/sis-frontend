@@ -56,6 +56,7 @@ const subcategory  = Yup.string().nullable().required("Subcategory is required."
 const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
+const family_annual_income  = Yup.string().nullable().required("Family Annual Income is required.");
 const state = Yup.string().required("State is required.");
 const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
@@ -131,6 +132,7 @@ export const StudentValidations = Yup.object({
   assigned_to,
   status: student_status,
   income_level,
+  family_annual_income,
   city,
   pin_code,
   medha_area,
