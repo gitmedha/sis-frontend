@@ -16,6 +16,7 @@ import { Select } from '@material-ui/core';
 import { MenuItem } from 'material-ui';
 import DetailField from '../../../components/content/DetailField';
 import moment from 'moment';
+import { updateOpsActivity } from './operationsActions';
 
 
 const Section = styled.div`
@@ -159,7 +160,9 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-
+    console.log("values----------->",values)
+    delete values['institute_name'];
+    const value =await updateOpsActivity(values)
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);
@@ -223,10 +226,10 @@ const OperationDataupdateform = (props) => {
         setInstitutionOptions(data);
       });
 
-  }})
+  }},[])
 
 
-  console.log("props",initialValues.batch);
+  // console.log("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -272,7 +275,7 @@ const OperationDataupdateform = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={StudentValidations}
+          // validationSchema={StudentValidations}
         >
           {({ values, setFieldValue }) => (
             <Form>
@@ -532,7 +535,7 @@ const OperationDataupdateform = (props) => {
 
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                  <button className="btn btn-primary btn-regular mx-0" onClick={onSubmit} type="submit" disabled={disableSaveButton}>SAVE</button>
+                  <button className="btn btn-primary btn-regular mx-0" type="submit" disabled={disableSaveButton}>SAVE</button>
                   <button
                     type="button"
                     onClick={onHide}

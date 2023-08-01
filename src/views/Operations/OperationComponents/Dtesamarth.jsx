@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { MeiliSearch } from "meilisearch";
 
 import { RowsData } from "./RowsData";
-import { createOperation, createSamarthSdit } from "./operationsActions";
+import { bulkCreateSamarth, createOperation, createSamarthSdit } from "./operationsActions";
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
 import DteUpskilingBulk from "./DteUpskilingBulk";
@@ -266,7 +266,7 @@ const Dtesamarth = (props) => {
       });
   
       try {
-        const value = await createSamarthSdit(data)
+        const value = await bulkCreateSamarth(data)
         console.log("vallue",value)
         props.ModalShow();
       } catch (error) {

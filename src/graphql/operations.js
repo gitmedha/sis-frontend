@@ -390,7 +390,7 @@ export const CREATE_COLLEGE_PITCH = `
 
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
-        $data:editOperationInput!
+        $data:editUsersOpsActivityInput!
         $id:ID!
     ){
         updateUsersOpsActivity(

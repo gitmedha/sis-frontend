@@ -13,19 +13,17 @@ const StudentupskilingBulk = (props) => {
   const [rows, setRows] = useState([
     {
       id: 1,
-      name: "",
+      assigned_to: "",
+      student_id: "",
       institution: "",
       batch: "",
-      state: "",
       start_date: "",
       end_date: "",
-      topic: "",
-      donor: "",
-      guest: "",
-      designation: "",
-      organization: "",
-      activity_type: "",
-      assigned_to: "",
+      course_name: "",
+      certificate_received: "",
+      category: "",
+      sub_category: "",
+      issued_org: "",
     },
     // Add more initial rows as needed
   ]);

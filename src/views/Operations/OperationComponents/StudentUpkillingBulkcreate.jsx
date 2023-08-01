@@ -18,7 +18,10 @@ import { connect } from "react-redux";
 import { MeiliSearch } from "meilisearch";
 
 import { RowsData } from "./RowsData";
-import { createOperation } from "./operationsActions";
+import {
+  bulkCreateStudentsUpskillings,
+  createOperation,
+} from "./operationsActions";
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
 
@@ -34,64 +37,49 @@ const StudentUpkillingBulkcreate = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      user_name: "",
-      trainer_1: "",
-      project_name: "",
-      certificate_given: "",
-      module_name: "",
-      project_type: "",
-      new_entry: "",
-      trainer_2: "",
-      partner_dept: "",
-      college: "",
-      city: "",
-      state: "",
-      age: "",
-      gender: "",
-      contact: "",
-      designation: "",
+      assigned_to: "",
+      student_id: "",
+      institution: "",
+      batch: "",
+      start_date: "",
+      end_date: "",
+      course_name: "",
+      certificate_received: "",
+      category: "",
+      sub_category: "",
+      issued_org: "",
     },
     // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([
     {
       id: 1,
-      user_name: "",
-      trainer_1: "",
-      project_name: "",
-      certificate_given: "",
-      module_name: "",
-      project_type: "",
-      new_entry: "",
-      trainer_2: "",
-      partner_dept: "",
-      college: "",
-      city: "",
-      state: "",
-      age: "",
-      gender: "",
-      contact: "",
-      designation: "",
+      assigned_to: "",
+      student_id: "",
+      institution: "",
+      batch: "",
+      start_date: "",
+      end_date: "",
+      course_name: "",
+      certificate_received: "",
+      category: "",
+      sub_category: "",
+      issued_org: "",
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
-    user_name: "",
-    trainer_1: "",
-    project_name: "",
-    certificate_given: "",
-    module_name: "",
-    project_type: "",
-    new_entry: "",
-    trainer_2: "",
-    partner_dept: "",
-    college: "",
-    city: "",
-    state: "",
-    age: "",
-    gender: "",
-    contact: "",
-    designation: "",
+    assigned_to: "",
+    student_id: "",
+    institution: "",
+    batch: "",
+    start_date: "",
+    end_date: "",
+    course_name: "",
+    certificate_received: "",
+    category: "",
+    sub_category: "",
+    issued_org: "",
   });
   const [showLimit, setshowLimit] = useState(false);
   const addRow = () => {
@@ -229,16 +217,13 @@ const StudentUpkillingBulkcreate = (props) => {
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
-      row.students_attended = Number(row.students_attended);
-      row.donor = row.donor ? true : false;
+      row.student_id =Number(row.student_id)
       return row;
     });
+    console.log("data",data)
 
     try {
-      const value = await api.post(
-        "/users-ops-activities/createBulkOperations",
-        data
-      );
+      const value = await bulkCreateStudentsUpskillings(data);
       props.ModalShow();
     } catch (error) {
       console.log("error", error);
