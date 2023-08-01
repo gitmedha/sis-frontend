@@ -1,14 +1,17 @@
 import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
-import {
-  uploadFile,
-} from "../../components/content/Utils";
+import { uploadFile } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { GET_DTE_SAMARTH_SDITS, GET_OPERATIONS, GET_STUDENTS_UPSKILLINGS, GET_USERSTOTS } from "../../graphql";
+import {
+  GET_DTE_SAMARTH_SDITS,
+  GET_OPERATIONS,
+  GET_STUDENTS_UPSKILLINGS,
+  GET_USERSTOTS,
+} from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Tabs from "../../components/content/Tabs";
 import Table from "../../components/content/Table";
@@ -17,7 +20,10 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import axios from 'axios';
+import axios from "axios";
+import UserTot from "./OperationComponents/UserTot";
+import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
+import Dtesamarth from "./OperationComponents/Dtesamarth";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -134,73 +140,76 @@ const Operations = (props) => {
       {
         Header: "End Date",
         accessor: "module_name",
-      }
+      },
     ],
-    []);
+    []
+  );
 
-    const columnsUpskilling = useMemo(
-      () => [
-        {
-          Header: "Student Name",
-          accessor: "student_id.full_name",
-        },
-        {
-          Header: "Assigned to",
-          accessor: "assigned_to.username",
-        },
-        {
-          Header: "Institute Name",
-          accessor: "institution.name",
-        },
-        {
-          Header: "Course Name",
-          accessor: "course_name",
-        },
-        {
-          Header: "Batch",
-          accessor: "batch.name",
-        },
-        
-        {
-          Header: "Category",
-          accessor: "category",
-        }
-      ],
-      []);
-      const columnsPlacement = useMemo(
-        () => [
-          {
-            Header: "Student Name",
-            accessor: "student_name",
-          },
-          
-          {
-            Header: "Institute Name",
-            accessor: "institution_name",
-          },
-          {
-            Header: "Course Name",
-            accessor: "course_name",
-          },
-          {
-            Header: "Academic Year",
-            accessor: "acad_year",
-          },
-          {
-            Header: "Company Placed",
-            accessor: "company_placed",
-          },
-          {
-            Header: "Batch",
-            accessor: "batch_name",
-          },
-          
-          {
-            Header: "Result",
-            accessor: "result",
-          }
-        ],
-        []);
+  const columnsUpskilling = useMemo(
+    () => [
+      {
+        Header: "Student Name",
+        accessor: "student_id.full_name",
+      },
+      {
+        Header: "Assigned to",
+        accessor: "assigned_to.username",
+      },
+      {
+        Header: "Institute Name",
+        accessor: "institution.name",
+      },
+      {
+        Header: "Course Name",
+        accessor: "course_name",
+      },
+      {
+        Header: "Batch",
+        accessor: "batch.name",
+      },
+
+      {
+        Header: "Category",
+        accessor: "category",
+      },
+    ],
+    []
+  );
+  const columnsPlacement = useMemo(
+    () => [
+      {
+        Header: "Student Name",
+        accessor: "student_name",
+      },
+
+      {
+        Header: "Institute Name",
+        accessor: "institution_name",
+      },
+      {
+        Header: "Course Name",
+        accessor: "course_name",
+      },
+      {
+        Header: "Academic Year",
+        accessor: "acad_year",
+      },
+      {
+        Header: "Company Placed",
+        accessor: "company_placed",
+      },
+      {
+        Header: "Batch",
+        accessor: "batch_name",
+      },
+
+      {
+        Header: "Result",
+        accessor: "result",
+      },
+    ],
+    []
+  );
 
   const getoperations = async (
     status = "All",
@@ -268,7 +277,10 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.studentsUpskillingsConnection.values);
+          console.log(
+            "data12",
+            data.data.data.studentsUpskillingsConnection.values
+          );
           setOpts(data.data.data.studentsUpskillingsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -287,7 +299,10 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.dteSamarthSditsConnection.values);
+          console.log(
+            "data12",
+            data.data.data.dteSamarthSditsConnection.values
+          );
           setOpts(data.data.data.dteSamarthSditsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -341,7 +356,6 @@ const Operations = (props) => {
   );
 
   useEffect(() => {
-
     fetchData(0, paginationPageSize, []);
   }, [activeTab]);
 
@@ -432,15 +446,35 @@ const Operations = (props) => {
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
-            ) :""}
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          <OperationCreateform
-            show={modalShow}
+          {activeTab.key == "my_data" ? (
+            <OperationCreateform
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+            // useTot  ---upskilling ---dtesamarth
+          ) :activeTab.key == "useTot" ?(
+            <UserTot show={modalShow} 
             onHide={hideCreateModal}
             ModalShow={() => setModalShow(false)}
-          />
+            />
+          ):activeTab.key == "upskilling"?(
+            <StudentUpkillingBulkcreate show={modalShow} 
+            onHide={hideCreateModal}
+            ModalShow={() => setModalShow(false)}
+            />
+          ):activeTab.key == "dtesamarth" ?(
+            <Dtesamarth show={modalShow} 
+            onHide={hideCreateModal}
+            ModalShow={() => setModalShow(false)}
+            />
+          ):""}
           {showModal && (
             <OperationDataupdateform
               {...optsdata}
