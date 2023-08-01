@@ -13,7 +13,14 @@ import {
     UPDATE_STUDENTS_UPSKILLING,
     GET_DTE_SAMARTH_SDITS,
     CREATE_SAMARTH_SDIT,
-    UPDATE_SAMARTH_SDIT
+    UPDATE_SAMARTH_SDIT,
+    GET_ALUMNI_QUERIES,
+    CREATE_ALUMNI_QUERY,
+    UPDATE_ALUMNI_QUERY,
+    GET_COLLEGE_PITCHES,
+    CREATE_COLLEGE_PITCH,
+    UPDATE_COLLEGE_PITCH
+    
 } from "../../../graphql/operations";
 
 
@@ -100,6 +107,45 @@ export const getAllSamarthSdits = async (limit=100, offset=0,sortBy="created_at"
 
 }
 
+export const getAllAlumniQueries = async (limit=100, offset=0,sortBy="created_at", sortOrder="desc")=>{
+    const authToken = localStorage.getItem('token');
+    const headers ={ Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
+
+    return await api.post('/graphql', {
+        query:GET_ALUMNI_QUERIES,
+        variables: {
+            limit: limit,
+            start:offset,
+            sort: `${sortBy}:${sortOrder}`
+        }
+    }, {headers})
+    .then (data=>{
+        return data;
+    }).catch(err=>{
+        return Promise.reject(err)
+    })
+
+}
+
+export const getAllCollegePitches = async (limit=100, offset=0,sortBy="created_at", sortOrder="desc")=>{
+    const authToken = localStorage.getItem('token');
+    const headers ={ Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
+
+    return await api.post('/graphql', {
+        query:GET_COLLEGE_PITCHES,
+        variables: {
+            limit: limit,
+            start:offset,
+            sort: `${sortBy}:${sortOrder}`
+        }
+    }, {headers})
+    .then (data=>{
+        return data;
+    }).catch(err=>{
+        return Promise.reject(err)
+    })
+
+}
 export const createOpsActivity = async (data)=>{
     return await api.post('/graphql', {
         query:CREATE_OPERATION,
@@ -139,6 +185,24 @@ export const createSamarthSdit = async(data)=>{
         variables: {data}
     }).then(data=> data)
     .catch(error=>Promise.reject(error))
+}
+
+
+export const createAlumniQuery = async(data)=>{
+    return await api.post('/graphql', {
+        query:CREATE_ALUMNI_QUERY,
+        variables: {data}
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error))
+
+}
+
+export const createCollegePitch = async (data)=>{
+    return await api.post('/graphql', {
+        query:CREATE_COLLEGE_PITCH,
+        variables: {data}
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error))   
 }
 
 export const updateOpsActivity = async(id,data)=>{
@@ -189,6 +253,30 @@ export const updateSamarthSdit =  async (id, data) =>{
 
 }
 
+export const updateAlumniQuery = async(id,data)=>{
+    return await api.post('/graphql', {
+        query:UPDATE_ALUMNI_QUERY,
+        variables: {
+            id,
+            data
+        }
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error));
+
+}
+
+export const updateCollegePitch = async(id,data)=>{
+    return await api.post('/graphql', {
+        query:UPDATE_COLLEGE_PITCH,
+        variables: {
+            id,
+            data
+        }
+    }).then(data=> data)
+    .catch(error=>Promise.reject(error));
+
+}
+
 
 export const bulkCreateOpsActivities = async (data) =>{
     try {
@@ -223,5 +311,24 @@ export const bulkCreateSamarth = async (data) =>{
     } catch (error) {
         return console.error(error)
     }
-
 };
+
+export const bulkCreateCollegePitch = async(data)=>{
+    try {
+        const response = await api.post('/college-pitches/create-bulk-college-pitch', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+}
+
+export const bulkCreateAlumniQueries = async(data)=>{
+    try {
+        const response = await api.post('/alumni-queries/create-bulk-alumni-queries', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+}
