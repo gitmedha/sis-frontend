@@ -48,10 +48,9 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-const OperationDataupdateform = (props) => {
-  let { onHide, show,closeopsedit } = props;
+const Dtesamarthedit = (props) => {
+  let { onHide, show } = props;
 
-  console.log("hehheheheh", onHide);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   const [stateOptions, setStateOptions] = useState([]);
@@ -157,120 +156,81 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->", initialValues);
-    delete values["institute_name"];
-    values["assigned_to"] = Number(values["assigned_to"]);
-    values["batch"] = Number(values["batch"]);
-    values["students_attended"] = Number(values["students_attended"]);
-    values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
-    values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-    values["institution"] = Number(values["institution"]);
-    console.log(moment(values["start_date"]).format("YYYY-MM-DD"), "546");
-    console.log(values);
-    let data = {
-      activity_type: values["activity_type"],
-      area: values["area"],
-      assigned_to: values["assigned_to"],
-      batch: values["batch"],
-      designation: values["designation"],
-      donor: values["donor"] ? true : false,
-      end_date: values["end_date"],
-      guest: values["guest"],
-      institution: values["institution"],
-      organization: values["organization"],
-      start_date: values["start_date"],
-      state: values["state"],
-      students_attended: values["students_attended"],
-      topic: values["topic"],
-      Created_by: values["Created_by"] ? Number(values["Created_by"]) : 2,
-      Updated_by: Number(userId),
-    };
-    // console.log("props.id",props.id);
-    const value = await updateOpsActivity(Number(props.id), {
-      activity_type: "Activity type",
-
-      area: 'Lucknow (City)',
-
-      assigned_to: 121,
-
-      batch: 1168,
-
-      designation: "N/A",
-
-      donor: false,
-
-      end_date: "2020-08-04",
-
-      guest: "Nitin Shinde",
-
-      institution: 221,
-
-      organization: "JP Morgan",
-
-      start_date: "2020-08-04",
-
-      state: "Haryana",
-
-      students_attended: 15,
-
-      topic: "Confidence And Attitude Building",
-
-      Created_by: 2,
-
-      Updated_by: 2,
-    });
+    console.log("values----------->", values);
     setDisableSaveButton(true);
-    // onHide(values);
-    closeopsedit()
+    onHide(values);
     setDisableSaveButton(false);
   };
 
   const userId = localStorage.getItem("user_id");
   // console.log("userId", props.assigned_to.id);
   let initialValues = {
-    topic: "",
-    assigned_to: props.assigned_to.id.toString(),
+    registration_id: "",
+    registration_date: "",
+    batch_name: "",
+    student_name: "",
+    course_name: "",
+    institution_name: "",
+    district: "",
     state: "",
-    activity_type: "",
-    institution: "",
-    guest: "",
-    organization: "",
-    updated_at: "",
-    start_date: "",
-    end_date: "",
-    designation: "",
-    updated_by: "",
-    area: "",
-    students_attended: "",
+    dob: "",
+    gender: "",
+    father_guardian: "",
+    mobile: "",
+    email: "",
+    annual_income: "",
+    full_address: "",
+    self_employed: "",
+    higher_studies: "",
+    placed: "",
+    apprenticeship: "",
+    doj: "",
+    company_placed: "",
+    monthly_salary: "",
+    data_flag: "",
+    position: "",
+    trade: "",
+    company_apprenticed: "",
+    company_self: "",
+    institute_admitted: "",
+    acad_year: "",
+    result: "",
+    published_at: "",
   };
-  // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
-  function createdDateConvert(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
+
 
   if (props) {
-    console.log("new123",props);
-    initialValues["batch"] = Number(props.batch.id);
-    initialValues["topic"] = props.topic;
-    initialValues["activity_type"] = props.activity_type;
-    initialValues["assigned_to"] = props.assigned_to.id.toString();
+    // initialValues ={...props.dtedata}
+    initialValues["course_name"] = props.course_name;
+    initialValues["annual_income"] = props.annual_income;
+    initialValues["full_address"] = props.full_address;
+    initialValues["higher_studies"] = props.higher_studies;
+    initialValues["self_employed"] = props.self_employed;
+    initialValues["student_name"] = props.student_name;
+    initialValues["position"] = props.position;
+    initialValues["trade"] = props.trade;
 
-    initialValues["start_date"] = new Date(props.start_date);
-    initialValues["end_date"] = new Date(props.end_date);
-    initialValues["students_attended"] = props?.students_attended;
-    initialValues["created_at"] = props.created_at;
-    initialValues["organization"] = props.organization;
-    initialValues["designation"] = props.designation;
-    initialValues["guest"] = props.guest;
-    initialValues["state"] = props.state ? props.state : null;
-    initialValues["institute_name"] = Number(props?.institution?.id);
-    initialValues["donor"] = props.Donor ? props.Donor : "N/A";
-    initialValues["area"] = props.area ? props.area : null;
+    initialValues["district"] = props.district;
+    initialValues["state"] = props.state;
+    initialValues["gender"] = props.gender;
+    initialValues['result']=props.result
+    initialValues['acad_year']=props.acad_year
+    initialValues['institute_admitted']=props.institute_admitted
+    initialValues['company_self']=props.company_self
+    initialValues["dob"] = props.dob? new Date(props.dob):"";
+    initialValues["doj"] = props.doj ?new Date(props.doj):"";
+    initialValues['published_at']=new Date(props.published_at)
+    initialValues["institution_name"] = props?.institution_name;
+    initialValues["batch_name"] = props.batch_name;
+    initialValues["email"] = props.email;
+    initialValues["mobile"] = props.mobile;
+    initialValues["data_flag"] = props.data_flag;
+    initialValues["company_apprenticed"] = props.company_apprenticed ? props.company_apprenticed : null;
+    initialValues["monthly_salary"] = props.monthly_salary
+    initialValues["company_placed"] = props.company_placed ? props.company_placed : "N/A";
+    initialValues["apprenticeship"] = props.apprenticeship ? props.apprenticeship : null;
+    initialValues['father_guardian']=props.father_guardian
   }
 
   useEffect(() => {
@@ -338,79 +298,49 @@ const OperationDataupdateform = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="activity_type"
-                          label="Activity Type"
+                          name="student_name"
+                          label="Student Name"
                           className="form-control"
-                          placeholder="Activity Type"
+                          placeholder="Student Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="lookupAsync"
-                          name="assigned_to"
-                          label="Assigned To"
-                          required
+                          control="input"
+                          name="course_name"
+                          label="Course Name"
                           className="form-control"
-                          placeholder="Assigned To"
-                          filterData={filterAssignedTo}
-                          defaultOptions={assigneeOptions}
+                          placeholder="Course Name"
                         />
                       </div>
-
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="lookupAsync"
-                          name="batch"
-                          label="Batch"
-                          required
-                          filterData={filterBatch}
-                          defaultOptions={batchOptions}
-                          className="form-control1"
-                          placeholder="Batch"
-                        />
-
-                        {/* <Input
-                      control="lookupAsync"
-                      name="batch"
-                      label="Batch"
-                      required
-                      filterData={filterBatch}
-                      defaultOptions={props.id ? batchOptions : true}
-                      className="form-control"
-                      placeholder="Batch"
-                    /> */}
-                        {/* <Field name="batch">
-                      {({ field, form }) => (
-                        <AsyncSelect
-                          {...field}
-                          options={batchOptions}
-                          placeholder="Select an option"
-                          // isClearable
-                          value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
-                          onChange={filterBatch}
-                          onBlur={() => form.setFieldTouched(field.name, true)}
-                        />
-                      )}
-                    </Field> */}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="lookupAsync"
-                          name="institution"
-                          label="Institution"
-                          filterData={filterInstitution}
-                          defaultOptions={institutionOptions}
-                          placeholder="Institution"
+                          control="input"
+                          name="institution_name"
+                          label="Institution Name"
                           className="form-control"
-                          isClearable
+                          placeholder="Institution Name"
                         />
                       </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="batch_name"
+                          label="Batch Name"
+                          className="form-control"
+                          placeholder="Batch Name"
+                        />
+                      </div>
+                      
+
+                      
+
+                      
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          name="start_date"
-                          label="Start Date "
+                          name="dob"
+                          label=" Date Of Birth "
                           // required
                           placeholder="Date of Birth"
                           control="datepicker"
@@ -420,10 +350,10 @@ const OperationDataupdateform = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          name="end_date"
-                          label="End Date"
+                          name="doj"
+                          label="Date Of Joining"
                           // required
-                          placeholder="Date of Birth"
+                          placeholder="Date of Joining"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -433,18 +363,18 @@ const OperationDataupdateform = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="donor"
-                          label="Donor"
+                          name="gender"
+                          label="Gender"
                           // required
                           className="form-control"
-                          placeholder="Donor"
+                          placeholder="Gender"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="topic"
-                          label="Topic"
+                          name="father_guardian"
+                          label="Father Guardian"
                           // required
                           className="form-control"
                           placeholder="Topic"
@@ -452,13 +382,33 @@ const OperationDataupdateform = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          icon="down"
                           control="input"
-                          name="guest"
-                          label="Guest"
+                          name="mobile"
+                          label="Mobile"
                           // required
                           className="form-control"
-                          placeholder="Guest"
+                          placeholder="Mobile"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="email"
+                          label=" Email"
+                          // required
+                          className="form-control"
+                          placeholder="email"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="input"
+                          name="annual_income"
+                          label="Annual Income"
+                          // required
+                          className="form-control"
+                          placeholder="Annual Income"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -466,12 +416,12 @@ const OperationDataupdateform = (props) => {
                         <Input
                           icon="down"
                           control="input"
-                          name="designation"
-                          label="Designation"
+                          name="self_employed"
+                          label="Self Employed"
                           // required
                           // options={genderOptions}
                           className="form-control"
-                          placeholder="Designation"
+                          placeholder="Self Employed"
                         />
                         {/* ) : ( */}
                         {/* <Skeleton count={1} height={45} /> */}
@@ -482,25 +432,147 @@ const OperationDataupdateform = (props) => {
                         <Input
                           icon="down"
                           control="input"
-                          name="organization"
-                          label="Organization"
+                          name="higher_studies"
+                          label="Higher Studies"
                           // required
                           // options={genderOptions}
                           className="form-control"
-                          placeholder="Organization"
+                          placeholder="Higher Studies"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          name="students_attended"
-                          label="Student Attended"
+                          name="placed"
+                          label="Placed"
                           // required
-                          placeholder="Student atended"
+                          placeholder="Placed"
                           control="input"
                           className="form-control"
                           autoComplete="off"
                         />
                       </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="apprenticeship"
+                          label="Apprenticeship"
+                          // required
+                          placeholder="Apprenticeship"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="company_placed"
+                          label="Company Placed"
+                          // required
+                          placeholder="Company Placed"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="monthly_salary"
+                          label="Monthly Salary"
+                          // required
+                          placeholder="Monthly Salary"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="data_flag"
+                          label="Data Flag"
+                          // required
+                          placeholder="Data Flag"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="position"
+                          label="Position"
+                          // required
+                          placeholder="Position"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="trade"
+                          label="Trade"
+                          // required
+                          placeholder="Trade"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="company_apprenticed"
+                          label="Company Apprenticed"
+                          // required
+                          placeholder="Company Apprenticed"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="company_self"
+                          label="Company Self"
+                          // required
+                          placeholder="Company Self"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="institute_admitted"
+                          label="Institute Admitted"
+                          // required
+                          placeholder="Placed"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="acad_year"
+                          label="Acad Year"
+                          // required
+                          placeholder="Placed"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          name="result"
+                          label="Result"
+                          // required
+                          placeholder="Result"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
+                      
                     </div>
                   </Section>
                   <Section>
@@ -527,12 +599,12 @@ const OperationDataupdateform = (props) => {
                         {areaOptions.length ? (
                           <Input
                             icon="down"
-                            name="area"
-                            label="Area"
+                            name="district"
+                            label="District"
                             control="lookup"
                             options={areaOptions}
                             // onChange={onStateChange}
-                            placeholder="Area"
+                            placeholder="District"
                             className="form-control"
                             // required
                           />
@@ -613,4 +685,4 @@ const OperationDataupdateform = (props) => {
   );
 };
 
-export default OperationDataupdateform;
+export default Dtesamarthedit;

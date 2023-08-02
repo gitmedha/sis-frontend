@@ -48,10 +48,9 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-const OperationDataupdateform = (props) => {
-  let { onHide, show,closeopsedit } = props;
+const UpskillUpdate = (props) => {
+  let { onHide, show } = props;
 
-  console.log("hehheheheh", onHide);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   const [stateOptions, setStateOptions] = useState([]);
@@ -157,121 +156,73 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->", initialValues);
-    delete values["institute_name"];
-    values["assigned_to"] = Number(values["assigned_to"]);
-    values["batch"] = Number(values["batch"]);
-    values["students_attended"] = Number(values["students_attended"]);
-    values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
-    values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-    values["institution"] = Number(values["institution"]);
-    console.log(moment(values["start_date"]).format("YYYY-MM-DD"), "546");
-    console.log(values);
-    let data = {
-      activity_type: values["activity_type"],
-      area: values["area"],
-      assigned_to: values["assigned_to"],
-      batch: values["batch"],
-      designation: values["designation"],
-      donor: values["donor"] ? true : false,
-      end_date: values["end_date"],
-      guest: values["guest"],
-      institution: values["institution"],
-      organization: values["organization"],
-      start_date: values["start_date"],
-      state: values["state"],
-      students_attended: values["students_attended"],
-      topic: values["topic"],
-      Created_by: values["Created_by"] ? Number(values["Created_by"]) : 2,
-      Updated_by: Number(userId),
-    };
-    // console.log("props.id",props.id);
-    const value = await updateOpsActivity(Number(props.id), {
-      activity_type: "Activity type",
-
-      area: 'Lucknow (City)',
-
-      assigned_to: 121,
-
-      batch: 1168,
-
-      designation: "N/A",
-
-      donor: false,
-
-      end_date: "2020-08-04",
-
-      guest: "Nitin Shinde",
-
-      institution: 221,
-
-      organization: "JP Morgan",
-
-      start_date: "2020-08-04",
-
-      state: "Haryana",
-
-      students_attended: 15,
-
-      topic: "Confidence And Attitude Building",
-
-      Created_by: 2,
-
-      Updated_by: 2,
-    });
+    // console.log("values----------->", initialValues);
+    // delete values["institute_name"];
+    // const value = await updateOpsActivity(Number(props.id), {
+    //   activity_type: "Industry Talk/Expert Talk",
+    //   area: "Ambala",
+    //   assigned_to: 136,
+    //   batch: 151,
+    //   designation: "N/A",
+    //   donor: false,
+    //   end_date: "2020-08-04",
+    //   guest: "Nitin Shinde",
+    //   institution: 221,
+    //   organization: "JP Morgan",
+    //   start_date: "2020-08-04",
+    //   state: "Haryana",
+    //   students_attended: 15,
+    //   topic: "Confidence And Attitude Building",
+    //   Created_by: 2,
+    //   Updated_by: 2,
+    // });
     setDisableSaveButton(true);
-    // onHide(values);
-    closeopsedit()
+    onHide(values);
     setDisableSaveButton(false);
   };
+  function formatDateStringToIndianStandardTime(dateString) {
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+      "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+  
+    const date = new Date(dateString);
+    return date
+  }
 
   const userId = localStorage.getItem("user_id");
   // console.log("userId", props.assigned_to.id);
   let initialValues = {
-    topic: "",
-    assigned_to: props.assigned_to.id.toString(),
-    state: "",
-    activity_type: "",
+    assigned_to: "",
+    student_id: "",
     institution: "",
-    guest: "",
-    organization: "",
-    updated_at: "",
+    batch: "",
     start_date: "",
     end_date: "",
-    designation: "",
-    updated_by: "",
-    area: "",
-    students_attended: "",
+    course_name: "",
+    certificate_received: "",
+    category: "",
+    sub_category: "",
+    issued_org: "",
+    published_at: "",
   };
-  // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
-
-  function createdDateConvert(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
   if (props) {
-    console.log("new123",props);
-    initialValues["batch"] = Number(props.batch.id);
-    initialValues["topic"] = props.topic;
-    initialValues["activity_type"] = props.activity_type;
-    initialValues["assigned_to"] = props.assigned_to.id.toString();
-
-    initialValues["start_date"] = new Date(props.start_date);
-    initialValues["end_date"] = new Date(props.end_date);
-    initialValues["students_attended"] = props?.students_attended;
-    initialValues["created_at"] = props.created_at;
-    initialValues["organization"] = props.organization;
-    initialValues["designation"] = props.designation;
-    initialValues["guest"] = props.guest;
-    initialValues["state"] = props.state ? props.state : null;
-    initialValues["institute_name"] = Number(props?.institution?.id);
-    initialValues["donor"] = props.Donor ? props.Donor : "N/A";
-    initialValues["area"] = props.area ? props.area : null;
+    // initialValues = { ...props };
+    console.log(props);
+    initialValues["category"] = props.category;
+    initialValues["sub_category"] = props.sub_category
+    initialValues["certificate_received"] = props.sub_category
+    initialValues['issued_org']=props.issued_org
+    initialValues["start_date"] = formatDateStringToIndianStandardTime(props.start_date);
+    initialValues["end_date"] = formatDateStringToIndianStandardTime(props.end_date);
+    initialValues["published_at"] = new Date(props.published_at);
+    initialValues["assigned_to"] = Number(props?.assigned_to?.id);
+    console.log("initialValues",initialValues);
+    initialValues["institution"] = Number(props?.institution?.id);
+    initialValues["batch"] = Number(props?.batch?.id);
   }
+  
+
 
   useEffect(() => {
     if (props.institution) {
@@ -338,7 +289,7 @@ const OperationDataupdateform = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="activity_type"
+                          name="student_id"
                           label="Activity Type"
                           className="form-control"
                           placeholder="Activity Type"
@@ -368,30 +319,6 @@ const OperationDataupdateform = (props) => {
                           className="form-control1"
                           placeholder="Batch"
                         />
-
-                        {/* <Input
-                      control="lookupAsync"
-                      name="batch"
-                      label="Batch"
-                      required
-                      filterData={filterBatch}
-                      defaultOptions={props.id ? batchOptions : true}
-                      className="form-control"
-                      placeholder="Batch"
-                    /> */}
-                        {/* <Field name="batch">
-                      {({ field, form }) => (
-                        <AsyncSelect
-                          {...field}
-                          options={batchOptions}
-                          placeholder="Select an option"
-                          // isClearable
-                          value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
-                          onChange={filterBatch}
-                          onBlur={() => form.setFieldTouched(field.name, true)}
-                        />
-                      )}
-                    </Field> */}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -412,7 +339,7 @@ const OperationDataupdateform = (props) => {
                           name="start_date"
                           label="Start Date "
                           // required
-                          placeholder="Date of Birth"
+                          placeholder="Start Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -423,7 +350,7 @@ const OperationDataupdateform = (props) => {
                           name="end_date"
                           label="End Date"
                           // required
-                          placeholder="Date of Birth"
+                          placeholder="End Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -433,114 +360,54 @@ const OperationDataupdateform = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="donor"
-                          label="Donor"
+                          name="course_name"
+                          label="Course Name"
                           // required
                           className="form-control"
-                          placeholder="Donor"
+                          placeholder="Course Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="topic"
-                          label="Topic"
+                          name="category"
+                          label="Category"
                           // required
                           className="form-control"
-                          placeholder="Topic"
+                          placeholder="Category"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"
                           control="input"
-                          name="guest"
-                          label="Guest"
+                          name="sub_category"
+                          label="Sub Category"
                           // required
                           className="form-control"
-                          placeholder="Guest"
+                          placeholder="Sub Category"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
                         <Input
                           icon="down"
                           control="input"
-                          name="designation"
-                          label="Designation"
-                          // required
-                          // options={genderOptions}
+                          name="issued_org"
+                          label="Issued Organization"
                           className="form-control"
-                          placeholder="Designation"
-                        />
-                        {/* ) : ( */}
-                        {/* <Skeleton count={1} height={45} /> */}
-                        {/* )} */}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="organization"
-                          label="Organization"
-                          // required
-                          // options={genderOptions}
-                          className="form-control"
-                          placeholder="Organization"
+                          placeholder="Issued Organization"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          name="students_attended"
-                          label="Student Attended"
+                          name="published_at"
+                          label="Publish Date "
                           // required
-                          placeholder="Student atended"
-                          control="input"
+                          placeholder="Publish Date"
+                          control="datepicker"
                           className="form-control"
                           autoComplete="off"
                         />
-                      </div>
-                    </div>
-                  </Section>
-                  <Section>
-                    <h3 className="section-header">Address</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
-                            className="form-control"
-                            // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="area"
-                            label="Area"
-                            control="lookup"
-                            options={areaOptions}
-                            // onChange={onStateChange}
-                            placeholder="Area"
-                            className="form-control"
-                            // required
-                          />
-                        ) : (
-                          <>
-                            <Skeleton count={1} height={45} />
-                          </>
-                        )}
                       </div>
                     </div>
                   </Section>
@@ -613,4 +480,4 @@ const OperationDataupdateform = (props) => {
   );
 };
 
-export default OperationDataupdateform;
+export default UpskillUpdate;

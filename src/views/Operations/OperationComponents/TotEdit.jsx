@@ -1,6 +1,265 @@
-import React from "react";
+import { Formik, Form, Field } from "formik";
+import { Modal } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
+import { useState, useEffect } from "react";
+import { FaSchool } from "react-icons/fa";
+import { Input } from "../../../utils/Form";
+import { StudentValidations } from "../../../validations";
+import { urlPath } from "../../../constants";
+import {
+  getAddressOptions,
+  getStateDistricts,
+} from "../../Address/addressActions";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
+import AsyncSelect from "react-select/async";
+import { MeiliSearch } from "meilisearch";
+import { Select } from "@material-ui/core";
+// import 'react-select/dist/react-select.css';
+import { MenuItem } from "material-ui";
+import DetailField from "../../../components/content/DetailField";
+import moment from "moment";
+import { updateOpsActivity, updateUserTot } from "./operationsActions";
 
-const TotEdit = () => {
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #c4c4c4;
+  }
+
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
+const TotEdit = (props) => {
+  let { onHide, show,operationdata } = props;
+  const currentDate = new Date();
+  console.log("propstot",operationdata)
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState([]);
+
+  useEffect(() => {
+    getDefaultAssigneeOptions().then((data) => {
+      setAssigneeOptions(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (props.institution) {
+      // console.log("props filterInstitution", props.institution)
+      filterInstitution().then((data) => {
+        setInstitutionOptions(data);
+      });
+    }
+    if (props.batch) {
+      filterBatch().then((data) => {
+        console.log("dataBatch1:", data);
+        setBatchOptions(data);
+      });
+    }
+  }, [props]);
+
+  const filterInstitution = async (filterValue) => {
+    return await meilisearchClient
+      .index("institutions")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((institution) => {
+          return {
+            ...institution,
+            label: institution.name,
+            value: Number(institution.id),
+          };
+        });
+
+        return filterData;
+      });
+  };
+
+  const filterBatch = async (filterValue) => {
+    return await meilisearchClient
+      .index("batches")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+
+        let filterData = data.hits.map((batch) => {
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        });
+
+        console.log(filterData);
+        return filterData;
+      });
+  };
+
+  useEffect(() => {
+    getAddressOptions().then((data) => {
+      setStateOptions(
+        data?.data?.data?.geographiesConnection.groupBy.state
+          .map((state) => ({
+            key: state.id,
+            label: state.key,
+            value: state.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+      if (props.state) {
+        onStateChange({ value: props.state });
+      }
+    });
+  }, []);
+
+  const onStateChange = async (value) => {
+    await getStateDistricts(value).then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection?.groupBy?.area
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+  };
+
+  const onSubmit = async (values) => {
+    console.log("values----------->", values);
+
+    values.start_date = values?.start_date ? 
+      values.start_date.toISOString().split('T')[0] : 
+      currentDate.toDateString().split('T')[0];
+
+    values.end_date = values?.end_date ? values.end_date.toISOString().split('T')[0] : "";
+
+    values.published_at = values?.published_at ? values.published_at.toISOString().split('T')[0] : "";
+    const value =await updateUserTot(Number(props.id),values)
+    // delete values["institute_name"];
+    // const value = await updateOpsActivity(Number(props.id), {
+    //   activity_type: "Industry Talk/Expert Talk",
+    //   area: "Ambala",
+    //   assigned_to: 136,
+    //   batch: 151,
+    //   designation: "N/A",
+    //   donor: false,
+    //   end_date: "2020-08-04",
+    //   guest: "Nitin Shinde",
+    //   institution: 221,
+    //   organization: "JP Morgan",
+    //   start_date: "2020-08-04",
+    //   state: "Haryana",
+    //   students_attended: 15,
+    //   topic: "Confidence And Attitude Building",
+    //   Created_by: 2,
+    //   Updated_by: 2,
+    // });
+    setDisableSaveButton(true);
+    onHide(values);
+    setDisableSaveButton(false);
+  };
+
+  const userId = localStorage.getItem("user_id");
+
+  // console.log("userId", props.assigned_to.id);
+  let initialValues = {
+    trainer_1: '',
+    start_date: '',
+    end_date: '',
+    project_name: '',
+    certificate_given: '',
+    module_name: '',
+    project_type: '',
+    new_entry: '',
+    trainer_2: '',
+    partner_dept: '',
+    college: '',
+    city: '',
+    state: '',
+    age: '',
+    gender: '',
+    contact: '',
+    designation: '',
+    published_at: '',
+  };
+  // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
+
+
+  if (props) {
+    initialValues["module_name"] = props.module_name;
+    initialValues["project_type"] = props.project_type;
+    initialValues["new_entry"] = props.new_entry;
+    initialValues["college"] = props.college;
+    initialValues["partner_dept"] = props.partner_dept;
+    initialValues["contact"] = props.contact;
+    initialValues["designation"] = props.designation;
+    // console.log("new Date(props.end_date)",new Date(props.published_at))
+    initialValues["start_date"] = new Date(props.start_date);
+    initialValues["end_date"] = new Date(props.end_date);
+    initialValues["project_name"] = props?.project_name;
+    initialValues["age"] = props.age;
+    initialValues["gender"] = props.gender;
+    // initialValues["designation"] = props.designation;
+    // initialValues["guest"] = props.guest;
+    // initialValues["state"] = props.state ? props.state : null;
+    // initialValues["institute_name"] = Number(props?.institution?.id);
+    // initialValues["donor"] = props.Donor ? props.Donor : "N/A";
+    initialValues["published_at"] = new Date(props.published_at);
+  }
+
+  useEffect(() => {
+    if (props.institution) {
+      filterInstitution(props.institution.name).then((data) => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, []);
+
+  // console.log("props",initialValues.batch);
+
+  const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
+
+  const optionscertgiven = [
+    { value: "Yes", label: "Yes" },
+    { value: "No", label: "No" },
+  ];
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+  };
+
   return (
     <>
       {initialValues && props && (
@@ -30,7 +289,8 @@ const TotEdit = () => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Student"}
+                {console.log(props)}
+                {props.user_name ? props.user_name : `Edit tot Detail`}
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -44,26 +304,49 @@ const TotEdit = () => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="activity_type"
-                          label="Activity Type"
+                          name="project_name"
+                          label="Project Name"
                           className="form-control"
-                          placeholder="Activity Type"
+                          placeholder="Project Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="lookupAsync"
-                          name="assigned_to"
-                          label="Assigned To"
+                          control="input"
+                          name="module_name"
+                          label="Module Name"
                           required
                           className="form-control"
-                          placeholder="Assigned To"
-                          filterData={filterAssignedTo}
-                          defaultOptions={assigneeOptions}
+                          placeholder="Module Name"
+                          // filterData={filterAssignedTo}
+                          // defaultOptions={assigneeOptions}
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="project_type"
+                          label="Project Type"
+                          required
+                          className="form-control"
+                          placeholder="Module Name"
+                          // filterData={filterAssignedTo}
+                          // defaultOptions={assigneeOptions}
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="new_entry"
+                          label="New Entry"
+                          required
+                          className="form-control"
+                          placeholder="Module Name"
+                          
                         />
                       </div>
 
-                      <div className="col-md-6 col-sm-12 mb-2">
+                      {/* <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="lookupAsync"
                           name="batch"
@@ -75,29 +358,7 @@ const TotEdit = () => {
                           placeholder="Batch"
                         />
 
-                        {/* <Input
-                            control="lookupAsync"
-                            name="batch"
-                            label="Batch"
-                            required
-                            filterData={filterBatch}
-                            defaultOptions={props.id ? batchOptions : true}
-                            className="form-control"
-                            placeholder="Batch"
-                          /> */}
-                        {/* <Field name="batch">
-                            {({ field, form }) => (
-                              <AsyncSelect
-                                {...field}
-                                options={batchOptions}
-                                placeholder="Select an option"
-                                // isClearable
-                                value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
-                                onChange={filterBatch}
-                                onBlur={() => form.setFieldTouched(field.name, true)}
-                              />
-                            )}
-                          </Field> */}
+                        
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -111,14 +372,14 @@ const TotEdit = () => {
                           className="form-control"
                           isClearable
                         />
-                      </div>
+                      </div> */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="start_date"
                           label="Start Date "
                           // required
-                          placeholder="Date of Birth"
+                          placeholder="Start Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -129,7 +390,7 @@ const TotEdit = () => {
                           name="end_date"
                           label="End Date"
                           // required
-                          placeholder="Date of Birth"
+                          placeholder="End Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -139,117 +400,81 @@ const TotEdit = () => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="donor"
-                          label="Donor"
+                          name="partner_dept"
+                          label="Partner Department"
                           // required
                           className="form-control"
-                          placeholder="Donor"
+                          placeholder="Partner Department"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
-                          name="topic"
-                          label="Topic"
+                          name="college"
+                          label="College"
                           // required
                           className="form-control"
-                          placeholder="Topic"
+                          placeholder="College"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"
                           control="input"
-                          name="guest"
-                          label="Guest"
+                          name="age"
+                          label="Age"
                           // required
                           className="form-control"
                           placeholder="Guest"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
+                        <Input
+                          icon="down"
+                          control="input"
+                          name="gender"
+                          label="Gender"
+                          className="form-control"
+                          placeholder="Gender"
+                        />
+                     
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="input"
+                          name="contact"
+                          label="Contact"
+                          className="form-control"
+                          placeholder="Contact"
+                        />
+                     
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"
                           control="input"
                           name="designation"
                           label="Designation"
-                          // required
-                          // options={genderOptions}
                           className="form-control"
                           placeholder="Designation"
                         />
-                        {/* ) : ( */}
-                        {/* <Skeleton count={1} height={45} /> */}
-                        {/* )} */}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="organization"
-                          label="Organization"
-                          // required
-                          // options={genderOptions}
-                          className="form-control"
-                          placeholder="Organization"
-                        />
+                     
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          name="students_attended"
-                          label="Student Attended"
+                          name="published_at"
+                          label="Publish Date "
                           // required
-                          placeholder="Student atended"
-                          control="input"
+                          placeholder="Publish Date"
+                          control="datepicker"
                           className="form-control"
                           autoComplete="off"
                         />
                       </div>
                     </div>
                   </Section>
-                  <Section>
-                    <h3 className="section-header">Address</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {stateOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="state"
-                            label="State"
-                            control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
-                            className="form-control"
-                            // required
-                          />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="area"
-                            label="Area"
-                            control="lookup"
-                            options={areaOptions}
-                            // onChange={onStateChange}
-                            placeholder="Area"
-                            className="form-control"
-                            // required
-                          />
-                        ) : (
-                          <>
-                            <Skeleton count={1} height={45} />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Section>
+                 
 
                   <Section>
                     <h3 className="section-header">Other Information</h3>
@@ -320,3 +545,4 @@ const TotEdit = () => {
 };
 
 export default TotEdit;
+

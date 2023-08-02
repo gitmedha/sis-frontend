@@ -107,6 +107,7 @@ const StudentForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    console.log(values, "here mc")
     if (logo) {
       values.logo = logo;
     }

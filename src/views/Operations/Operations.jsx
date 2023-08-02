@@ -25,6 +25,9 @@ import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
+import Totdatafield from "./OperationComponents/Totdatafield";
+import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
+import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -374,9 +377,9 @@ const Operations = (props) => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
-  const hideShowModal = async (data) => {
+  const hideShowModal = async (key,data) => {
     if (!data || data.isTrusted) {
-      setShowModal(false);
+      setShowModal({...showModal,[key]:data});
       return;
     }
   };
@@ -441,7 +444,7 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "upskilling" ? (
               <Table
-                onRowClick={showRowData}
+                onRowClick={(data)=>showRowData('upskilldata',data)}
                 columns={columnsUpskilling}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -453,7 +456,7 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "dtesamarth" ? (
               <Table
-                onRowClick={showRowData}
+                onRowClick={(data)=>showRowData('sditdata',data)}
                 columns={columnsPlacement}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -496,16 +499,31 @@ const Operations = (props) => {
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
-              onHide={hideShowModal}
+              onHide={()=>hideShowModal('opsdata',false)}
             />
           )}
           {showModal.totdata && (
-            <OperationDataupdateform
+            <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
-              onHide={hideShowModal}
+              onHide={()=>hideShowModal('totdata',false)}
             />
           )}
+          {showModal.upskilldata && (
+            <Upskillingdatafield
+              {...optsdata.upskilldata}
+              show={showModal.opsdata}
+              onHide={()=>hideShowModal('upskilldata',false)}
+            />
+          )}
+          {showModal.sditdata && (
+            <Dtesamarthdatafield
+              {...optsdata.sditdata}
+              show={showModal.opsdata}
+              onHide={()=>hideShowModal('sditdata',false)}
+            />
+          )}
+
         </div>
       </Styled>
     </Collapse>
