@@ -153,6 +153,7 @@ const StudentForm = (props) => {
       const cvUrlSplit = props.CV.url.split('/');
       fileName = cvUrlSplit[cvUrlSplit.length - 1];
     }
+    // console.log(props);
   }
 
   return (

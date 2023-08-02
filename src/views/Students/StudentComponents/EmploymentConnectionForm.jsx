@@ -52,6 +52,8 @@ const EnrollmentConnectionForm = (props) => {
   const [endDateMandatory, setEndDateMandatory] = useState(false);
   const [rejectionreason,setrejectionreason]=useState([])
   const [otherrejection,setotherrejection]=useState(false)
+  const [showOther,setShowother]=useState(false)
+  let reject=false
   const userId = localStorage.getItem('user_id');
   let initialValues = {
     employment_connection_student: student.full_name,
@@ -63,6 +65,7 @@ const EnrollmentConnectionForm = (props) => {
     source: "",
     salary_offered: "",
     reason_if_rejected: "",
+    reason_if_rejected_other:"",
     assigned_to: userId,
   };
 
@@ -71,6 +74,20 @@ const EnrollmentConnectionForm = (props) => {
     initialValues["employer_id"] = props.employmentConnection
       ? Number(props.employmentConnection.opportunity?.employer?.id)
       : null;
+    let dataval=rejectionreason.find(obj=>obj.value === employmentConnection.reason_if_rejected);
+    console.log(initialValues.reason_if_rejected);
+    if(dataval){
+      if(dataval.value == employmentConnection.reason_if_rejected){
+        initialValues['reason_if_rejected']=employmentConnection.reason_if_rejected
+      }
+    }
+    // if(initialValues.reason_if_rejected.toLowerCase() =="others"){
+    //   reject =true
+    // }
+    // if(initialValues.reason_if_rejected.toLowerCase() !="others"){
+    //   reject =false
+    // }
+    console.log(initialValues)
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
@@ -91,6 +108,10 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    console.log("values",values)
+    values['reason_if_rejected']=values['reason_if_rejected_other']
+    delete values['reason_if_rejected_other']
+    
     onHide(values);
   };
 
@@ -224,6 +245,12 @@ const EnrollmentConnectionForm = (props) => {
       setotherrejection(true)
     }
   };
+  useEffect(() => {
+    if(initialValues.reason_if_rejected in rejectionreason){
+      setShowother(true)
+    }
+  }, [])
+  
   useEffect(()=>{
     setotherrejection(false)
   },[employmentConnection])
@@ -391,7 +418,7 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Source"
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
+                  {/* <div className="col-md-6 col-sm-12 mt-2">
                    {otherrejection ? 
                    <Input
                    control="input"
@@ -413,7 +440,31 @@ const EnrollmentConnectionForm = (props) => {
                       onChange={(e)=>handlechange(e)}
                       placeholder="Reason if Rejected"
                     />}
+                  </div> */}
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="reason_if_rejected"
+                      label="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
+                      options={rejectionreason}
+                      className="form-control"
+                      onChange={(e)=>console.log("e",e.value)}
+                      placeholder="Reason if Rejected"
+                    />
                   </div>
+                  {otherrejection  && <div className="col-md-6 col-sm-12 mt-2">
+                  <Input
+                   control="input"
+                   name="reason_if_rejected_other"
+                   label="If Other, Specify"
+                   required={selectedStatus === 'Offer Rejected by Student'}
+                   className="form-control"
+                  //  onChange={(e)=>handlechange(e)}
+                   placeholder="Reason if Rejected"
+                 />
+                  </div>}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
