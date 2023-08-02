@@ -268,13 +268,17 @@ const UserTot = (props) => {
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
       row.created_by=Number(userId)
-      row.updated_by =userId
-      
+      row.updated_by =Number(userId)
+      row.trainer_1=Number(row.trainer_1)
+      row.trainer_2=Number(row.trainer_2)
+      delete row.start_date;
+      delete row.end_date
       return row
     })
     
     try {
       const value = await bulkCreateUsersTots(data)
+
       props.ModalShow()
     } catch (error) {
       console.log("error", error)

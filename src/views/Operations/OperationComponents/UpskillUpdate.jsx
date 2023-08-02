@@ -22,7 +22,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity } from "./operationsActions";
+import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -156,7 +156,13 @@ const UpskillUpdate = (props) => {
   };
 
   const onSubmit = async (values) => {
-    // console.log("values----------->", initialValues);
+    console.log("values----------->", values);
+    delete values['start_date']
+    delete values['end_date']
+    delete values['published_at']
+    values['student_id']=57588
+    values['assigned_to']=Number(values['assigned_to'])
+    const value= await updateStudetnsUpskills(Number(props.id),values)
     // delete values["institute_name"];
     // const value = await updateOpsActivity(Number(props.id), {
     //   activity_type: "Industry Talk/Expert Talk",
@@ -211,7 +217,7 @@ const UpskillUpdate = (props) => {
     console.log(props);
     initialValues["category"] = props.category;
     initialValues["sub_category"] = props.sub_category
-    initialValues["certificate_received"] = props.sub_category
+    initialValues["certificate_received"] = props.certificate_received
     initialValues['issued_org']=props.issued_org
     initialValues["start_date"] = formatDateStringToIndianStandardTime(props.start_date);
     initialValues["end_date"] = formatDateStringToIndianStandardTime(props.end_date);
@@ -236,11 +242,14 @@ const UpskillUpdate = (props) => {
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
+  // const optionsYesNo = [
+  //   { key:"1",value: "Yes", label: true },
+  //   { key:"2",value: "No", label: false }
+  // ];
   const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-  ];
+    { value: true, label: "Yes" },
+    { value: false, label: 'No' }
+  ]
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -286,13 +295,17 @@ const UpskillUpdate = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
+                      
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
-                          name="student_id"
-                          label="Activity Type"
+                          control="lookup"
+                          name="certificate_received"
+                          label="Certificate Received"
+                          required
                           className="form-control"
-                          placeholder="Activity Type"
+                          placeholder="Certificate Received"
+                          options={options}
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">

@@ -22,7 +22,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity } from "./operationsActions";
+import { updateOpsActivity, updateSamarthSdit } from "./operationsActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -157,6 +157,9 @@ const Dtesamarthedit = (props) => {
 
   const onSubmit = async (values) => {
     console.log("values----------->", values);
+    delete values['dob']
+    delete values['doj']
+    const value =await updateSamarthSdit(Number(props.id),values)
     setDisableSaveButton(true);
     onHide(values);
     setDisableSaveButton(false);

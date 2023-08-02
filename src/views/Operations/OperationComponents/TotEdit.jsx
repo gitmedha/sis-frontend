@@ -166,6 +166,11 @@ const TotEdit = (props) => {
     values.end_date = values?.end_date ? values.end_date.toISOString().split('T')[0] : "";
 
     values.published_at = values?.published_at ? values.published_at.toISOString().split('T')[0] : "";
+    delete values['start_date']
+    delete values['end_date']
+    delete values['published_at']
+    delete values['trainer_1']
+    delete values['trainer_2']
     const value =await updateUserTot(Number(props.id),values)
     // delete values["institute_name"];
     // const value = await updateOpsActivity(Number(props.id), {
@@ -195,7 +200,7 @@ const TotEdit = (props) => {
 
   // console.log("userId", props.assigned_to.id);
   let initialValues = {
-    trainer_1: '',
+    // trainer_1: '',
     start_date: '',
     end_date: '',
     project_name: '',
@@ -203,7 +208,7 @@ const TotEdit = (props) => {
     module_name: '',
     project_type: '',
     new_entry: '',
-    trainer_2: '',
+    // trainer_2: '',
     partner_dept: '',
     college: '',
     city: '',
