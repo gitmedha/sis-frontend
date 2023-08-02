@@ -117,7 +117,7 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
-      setcourse(data.course.map(item=>({ key: item, value: item, label: item })))
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
