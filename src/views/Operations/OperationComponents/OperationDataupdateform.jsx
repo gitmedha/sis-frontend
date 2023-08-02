@@ -160,11 +160,30 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->",values)
+    console.log("values----------->",initialValues)
     delete values['institute_name'];
-    const value =await updateOpsActivity(values)
+    const value =await updateOpsActivity(Number(props.id),{
+      activity_type: "Industry Talk/Expert Talk",
+      area: "Ambala",
+      assigned_to: 136,
+      batch: 151,
+      designation: "N/A",
+      donor: false,
+      end_date: "2020-08-04",
+      guest: "Nitin Shinde",
+      institution: 221,
+      organization: "JP Morgan",
+      start_date:"2020-08-04",
+      state: "Haryana",
+      students_attended: 15,
+      topic: "Confidence And Attitude Building",
+      Created_by:2,
+      Updated_by: 2
+
+
+})
     setDisableSaveButton(true);
-    await onHide(values);
+    onHide(values);
     setDisableSaveButton(false);
   };
 
@@ -275,7 +294,6 @@ const OperationDataupdateform = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          // validationSchema={StudentValidations}
         >
           {({ values, setFieldValue }) => (
             <Form>

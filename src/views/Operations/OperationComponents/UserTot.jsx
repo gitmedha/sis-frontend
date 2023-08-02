@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { MeiliSearch } from "meilisearch";
 
 import { RowsData } from "./RowsData";
-import { createOperation } from "./operationsActions";
+import { bulkCreateUsersTots, createOperation } from "./operationsActions";
 import api from "../../../apis";
 import UserTotRowdata from "./UserTotRowdata";
 
@@ -269,16 +269,12 @@ const UserTot = (props) => {
       // row.start_date =row.start_date.split('/'/
       row.created_by=Number(userId)
       row.updated_by =userId
-      row.batch = Number(row.batch);
-      row.assigned_to = Number(row.assigned_to);
-      row.institution = Number(row.institution);
-      row.students_attended = Number(row.students_attended);
-      row.donor = row.donor ? true : false;
+      
       return row
     })
     
     try {
-      const value = await api.post('/users-ops-activities/createBulkOperations', data);
+      const value = await bulkCreateUsersTots(data)
       props.ModalShow()
     } catch (error) {
       console.log("error", error)

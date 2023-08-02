@@ -206,6 +206,7 @@ export const createCollegePitch = async (data)=>{
 }
 
 export const updateOpsActivity = async(id,data)=>{
+    console.log("id",id);
     return await api.post('/graphql', {
         query:UPDATE_OPERATION,
         variables: {
@@ -215,6 +216,7 @@ export const updateOpsActivity = async(id,data)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
+        console.log(error)
         return Promise.reject(error);
     })
 }

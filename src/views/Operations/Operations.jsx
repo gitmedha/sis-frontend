@@ -24,6 +24,7 @@ import axios from "axios";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
+import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -49,12 +50,22 @@ const Styled = styled.div`
 `;
 
 const Operations = (props) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({
+    opsdata:false,
+    totdata:false,
+    upskilldata:false,
+    sditdata:false
+  });
   const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [opts, setOpts] = useState([]);
-  const [optsdata, setOptsdata] = useState({});
+  const [optsdata, setOptsdata] = useState({
+    opsdata:{},
+    totdata:{},
+    upskilldata:{},
+    sditdata:{}
+  });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
@@ -376,10 +387,16 @@ const Operations = (props) => {
     }
   };
 
-  const showRowData = (data) => {
-    setOptsdata(data);
-    setShowModal(true);
+  const showRowData = (key,data) => {
+    console.log(key,"key1232")
+    setOptsdata({...optsdata,[key]:data})
+    setShowModal({...showModal,[key]:true});
   };
+  useEffect(()=>{
+  
+    console.log(showModal)
+    
+  },[showModal])
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -400,7 +417,7 @@ const Operations = (props) => {
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <Table
-                onRowClick={showRowData}
+                onRowClick={(data)=>showRowData("opsdata",data)}
                 columns={columns}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -412,7 +429,7 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "useTot" ? (
               <Table
-                onRowClick={showRowData}
+                onRowClick={(data)=>showRowData('totdata',data)}
                 columns={columnsUserTot}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -475,10 +492,17 @@ const Operations = (props) => {
             ModalShow={() => setModalShow(false)}
             />
           ):""}
-          {showModal && (
+          {showModal.opsdata && (
+            <Opsdatafeilds
+              {...optsdata.opsdata}
+              show={showModal.opsdata}
+              onHide={hideShowModal}
+            />
+          )}
+          {showModal.totdata && (
             <OperationDataupdateform
-              {...optsdata}
-              show={showModal}
+              {...optsdata.totdata}
+              show={showModal.opsdata}
               onHide={hideShowModal}
             />
           )}
