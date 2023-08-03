@@ -77,6 +77,7 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  course_name_if_other
   created_at
   updated_at
   program_selected_by_student
@@ -141,6 +142,7 @@ const employmentConnectionFields = `
   updated_at
   source
   reason_if_rejected
+  reason_if_rejected_other
   work_engagement
   number_of_internship_hours
   salary_offered
