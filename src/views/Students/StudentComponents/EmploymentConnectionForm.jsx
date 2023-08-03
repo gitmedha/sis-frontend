@@ -55,7 +55,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showOther,setShowother]=useState(false)
   const [isRejected,setRejected] = useState(false);
   const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
-  let reject=false
+  
   const userId = localStorage.getItem('user_id');
   let initialValues = {
     employment_connection_student: student.full_name,
@@ -83,13 +83,7 @@ const EnrollmentConnectionForm = (props) => {
         initialValues['reason_if_rejected']=employmentConnection.reason_if_rejected
       }
     }
-    // if(initialValues.reason_if_rejected.toLowerCase() =="others"){
-    //   reject =true
-    // }
-    // if(initialValues.reason_if_rejected.toLowerCase() !="others"){
-    //   reject =false
-    // }
-    console.log(initialValues)
+    
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
@@ -110,11 +104,7 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values",values)
-
-    // console.log(values.hasOwnProperty("reason_if_rejected"))
-    // console.log("onHide",onHide) 
-    // onHide(values);
+    onHide(values);
   };
 
   useEffect(() => {
@@ -242,14 +232,11 @@ const EnrollmentConnectionForm = (props) => {
         return filterData;
       });
   };
-  const handlechange = (e) => {
-    if(e.value == 'Others'){
-      setotherrejection(true)
-    }
+  
 
 
 
-  };
+  
   useEffect(() => {
     if(initialValues.reason_if_rejected in rejectionreason){
       setShowother(true)
@@ -444,7 +431,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                
-                  {isRejected && <div className="col-md-6 col-sm-12 mt-2">
+                  {(isRejected || initialValues.reason_if_rejected.length) && <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
@@ -466,30 +453,17 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>}
                   {
-                   ifSelectedOthers && <div className="col-md-6 col-sm-12 mt-2">
+                   (ifSelectedOthers || initialValues.reason_if_rejected_other.length) && <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      type="text"
                       name="reason_if_rejected_other"
                       control="input"
-                      label="Specify the reason"
+                      label="If Other, Specify"
                       required
                       className="form-control"
-                      placeholder="Specify the reason"
-                      onChange={e=>console.log("e",e)}
+                      placeholder="If Other, Specify"
                     />
                   </div>
                   }
-                  {/* {otherrejection  && <div className="col-md-6 col-sm-12 mt-2">
-                  <Input
-                   control="input"
-                   name="reason_if_rejected_other"
-                   label="If Other, Specify"
-                   required={selectedStatus === 'Offer Rejected by Student'}
-                   className="form-control"
-                  //  onChange={(e)=>handlechange(e)}
-                   placeholder="Reason if Rejected"
-                 />
-                  </div>} */}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"

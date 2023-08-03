@@ -91,6 +91,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: '',
     fee_refund_date: '',
     course_name_in_current_sis: '',
+    course_name_if_other:'',
     fee_transaction_id: '',
     course_type:'',
     course_level:'',
@@ -190,6 +191,8 @@ const ProgramEnrollmentForm = (props) => {
   useEffect(()=>{
     setOthertargetValue({course1:false,course2:false})
   },[programEnrollment])
+
+  console.log("course",initialValues.course_name_if_other)
   return (
     <Modal
       centered
@@ -381,6 +384,21 @@ const ProgramEnrollmentForm = (props) => {
                       placeholder="Course Name"
                     />
                     }
+                  </div>
+
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {
+                  ( OthertargetValue.course1 || initialValues.course_name_if_other.length) &&
+                   <Input
+                      name="course_name_if_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    /> 
+                    
+                  }
                   </div>
                 </div>
               </Section>
