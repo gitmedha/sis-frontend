@@ -91,7 +91,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: '',
     fee_refund_date: '',
     course_name_in_current_sis: '',
-    course_name_if_other:'',
+    course_name_other:'',
     fee_transaction_id: '',
     course_type:'',
     course_level:'',
@@ -192,7 +192,7 @@ const ProgramEnrollmentForm = (props) => {
     setOthertargetValue({course1:false,course2:false})
   },[programEnrollment])
 
-  console.log("course",initialValues.course_name_if_other)
+ 
   return (
     <Modal
       centered
@@ -388,9 +388,9 @@ const ProgramEnrollmentForm = (props) => {
 
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || initialValues.course_name_if_other.length) &&
+                  ( OthertargetValue.course1 || initialValues.course_name_other.length) &&
                    <Input
-                      name="course_name_if_other"
+                      name="course_name_other"
                       control="input"
                       label="If Other, Specify"
                       required
