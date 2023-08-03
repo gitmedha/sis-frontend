@@ -34,6 +34,15 @@ const Styled = styled.div`
       box-shadow: 0 0 0 1px #c4c4c4;
     }
   }
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
 `;
 
 const Upskillingdatafield = (props) => {
@@ -48,7 +57,7 @@ const Upskillingdatafield = (props) => {
   };
   useEffect(() => {
     console.log("props", props);
-    setoperationdata(props)
+    setoperationdata(props);
   }, []);
   const updatevalue = () => {
     console.log("hello");
@@ -78,35 +87,149 @@ const Upskillingdatafield = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Styled>
-            <Modal.Body className="bg-white d-flex">
-              <div className="col-md-6 col-sm-12">
+            <Modal.Body className="bg-white">
+              <h4 className="section-header ">Basic Info</h4>
+              <div className="row  ">
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    
+                    label="Certificate received"
+                    value={props.certificate_received ? "Yes" : "No"}
+                  />
+                  <DetailField
+                    
+                    label="Batch"
+                    value={props.batch?.name}
+                  />
+                  <DetailField
+                    
+                    label="Start Date"
+                    value={
+                      moment(props.start_date).format("DD MMM YYYY")
+                        ? moment(props.start_date).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+
+                  <DetailField
+                    
+                    label="End Date"
+                    value={
+                      moment(props.end_date).format("DD MMM YYYY")
+                        ? moment(props.end_date).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+                  <DetailField
+                    
+                    label="Course Name"
+                    value={props.course_name}
+                  />
+                  <DetailField
+                    
+                    label="Category"
+                    value={props.category}
+                  />
+                  <DetailField
+                    
+                    label="Issued Org"
+                    value={props.issued_org}
+                  />
+                  
+                </div>
+
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    
+                    label="Assigned to"
+                    value={
+                      props.assigned_to?.username
+                        ? props.assigned_to?.username
+                        : ""
+                    }
+                  />
+                  <DetailField
+                    
+                    label="Institute"
+                    value={props.institution.name}
+                  />
+                  <DetailField
+                    
+                    label="End Date"
+                    value={
+                      moment(props.end_date).format("DD MMM YYYY")
+                        ? moment(props.end_date).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+                <DetailField
+                    label="Published at"
+                    value={
+                      moment(props.published_at).format("DD MMM YYYY")
+                        ? moment(props.published_at).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+                  <DetailField label="Sub Category" value={props.sub_category} />
+                </div>
+              </div>
+
+              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
+              <h3 className="section-header ">Other Info</h3>
+              <div className="row  ">
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    Bold={""}
+                    label="Created By"
+                    value={
+                      props.Created_by ? props.Created_by.username : "not found"
+                    }
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Created At"
+                    value={moment(
+                      props.updated_at
+                        ? props.created_at
+                        : props.created_at
+                    ).format("DD MMM YYYY, h:mm a")}
+                  />
+                 
+                </div>
+
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    Bold={""}
+                    label="Updated By"
+                    value={
+                      props.Updated_by ? props.Updated_by.username : "not found"
+                    }
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Updated At"
+                    value={moment(
+                      props.updated_at
+                        ? props.updated_at
+                        : props.created_at
+                    ).format("DD MMM YYYY, h:mm a")}
+                  />
+                </div>
+              </div>
+              {/* <div className="col-md-6 col-sm-12">
                 <DetailField Bold={'bold'}
                   label="Student Name "
                   value={
                     props.student_id.full_name ? props.student_id.full_name : ""
                   }
                 />
-                <DetailField Bold={'bold'}
-                  label="Assigned to"
-                  value={
-                    props.assigned_to?.username
-                      ? props.assigned_to?.username
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'} label="Batch" value={props.batch?.name} />
-                <DetailField Bold={'bold'} label="Institute" value={props.institution.name} />
-                <DetailField Bold={'bold'} label="Category" value={props.category} />
+                
                 <DetailField Bold={'bold'} label="Sub Category" value={props.sub_category} />
-                <DetailField Bold={'bold'}
-                  label="Certificate received"
-                  value={props.certificate_received ? "Yes" : "No"}
-                />
                 
-              </div>
-              <div className="col-md-6 col-sm-12">
                 
-                <DetailField Bold={'bold'} label="Course Name" value={props.course_name} />
+              </div> */}
+              {/* <div className="col-md-6 col-sm-12">
+                
                 <DetailField Bold={'bold'}
                   label="Published at"
                   value={
@@ -147,30 +270,28 @@ const Upskillingdatafield = (props) => {
                       : ""
                   }
                 />
-              </div>
-
-              
+              </div> */}
             </Modal.Body>
             {isAdmin() && (
-                <div className="row mt-4 mb-4">
-                  <div className="col-md-12 d-flex justify-content-center">
-                    <button
-                      type="button"
-                      onClick={() => updatevalue()}
-                      className="btn btn-primary px-4 mx-4"
-                    >
-                      EDIT
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onHide()}
-                      className="btn btn-danger px-4 mx-4"
-                    >
-                      Go Back
-                    </button>
-                  </div>
+              <div className="row mt-4 mb-4">
+                <div className="col-md-12 d-flex justify-content-center">
+                  <button
+                    type="button"
+                    onClick={() => updatevalue()}
+                    className="btn btn-primary px-4 mx-4"
+                  >
+                    EDIT
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onHide()}
+                    className="btn btn-danger px-4 mx-4"
+                  >
+                    Go Back
+                  </button>
                 </div>
-              )}
+              </div>
+            )}
           </Styled>
           {/* {showedit &&
           

@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import DetailField  from "../../../components/content/DetailField";
+import DetailField from "../../../components/content/DetailField";
 import { Anchor, Badge } from "../../../components/content/Utils";
 import CertificateUpload from "../../../components/content/Certificate";
 import Tooltip from "../../../components/content/Tooltip";
@@ -32,6 +32,15 @@ const Styled = styled.div`
       background-color: #eee;
       box-shadow: 0 0 0 1px #c4c4c4;
     }
+  }
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
   }
 `;
 
@@ -77,77 +86,113 @@ const Totdatafield = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Styled>
-            <Modal.Body className="bg-white d-flex">
-              <div className="col-md-6 col-sm-12">
-                <DetailField Bold={'bold'} label="Name" value={props.user_name} />
-                <DetailField Bold={'bold'} label="Gender" value={props.gender} />
-                <DetailField Bold={'bold'} label="College" value={props.college} />
-                <DetailField Bold={'bold'} label="Contact" value={props.contact} />
+            <Modal.Body className="bg-white">
+              <h4 className="section-header ">Basic Info</h4>
+              <div className="row  ">
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    label="Project Name"
+                    value={props.project_name}
+                  />
+                  {/* */}
+                  <DetailField
+                    label="Project Type"
+                    value={props.project_type}
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Start Date"
+                    value={
+                      moment(props.start_date).format("DD MMM YYYY")
+                        ? moment(props.start_date).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+                  <DetailField
+                    label="Project Department"
+                    value={props.project_dept}
+                  />
+                  <DetailField label="Age" value={props.age} />
+                  <DetailField label="Contact" value={props.contact} />
+                  <DetailField
+                    label="Published at"
+                    value={
+                      moment(props.published_at).format("DD MMM YYYY")
+                        ? moment(props.published_at).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+                </div>
 
-                <DetailField Bold={'bold'} label="Project Name" value={props.project_name} />
-                <DetailField Bold={'bold'} label="Project Type" value={props.project_type} />
-                <DetailField Bold={'bold'}
-                  label="Project department"
-                  value={props.partner_dept}
-                />
-                <DetailField Bold={'bold'} label="City" value={props.city} />
-                <DetailField Bold={'bold'} label="State" value={props.state} />
-                <DetailField Bold={'bold'} label="Module Name" value={props.module_name} />
+                <div className="col-md-6 col-sm-12">
+                  <DetailField label="Module Name" value={props.module_name} />
+                  <DetailField label="New ENtry" value={props.new_entry} />
+                  <DetailField
+                    Bold={""}
+                    label="End Date"
+                    value={
+                      moment(props.end_date).format("DD MMM YYYY")
+                        ? moment(props.end_date).format("DD MMM YYYY")
+                        : ""
+                    }
+                  />
+
+                  <DetailField label="College" value={props.college} />
+
+                  <DetailField
+                    label="Assigned to"
+                    value={props.gender ? props.gender : ""}
+                    Bold={""}
+                  />
+                  <DetailField label="Designation" value={props.designation} />
+                </div>
+              </div>
+              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
+              <h4 className="section-header">Address Info</h4>
+
+              <div className="row  ">
+                <div className="col-md-6 col-sm-12">
+                  <DetailField Bold={""} label="State" value={props.state} />
+                </div>
+
+                <div className="col-md-6 col-sm-12">
+                  <DetailField Bold={""} label="State" value={props.state} />
+                </div>
               </div>
 
-              <div className="col-md-6 col-sm-12">
-                <DetailField Bold={'bold'}
-                  label="Published at"
-                  value={
-                    moment(props.published_at).format("DD MMM YYYY")
-                      ? moment(props.published_at).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                {/* props.published_at */}
-                <DetailField Bold={'bold'} label="Project Name" value={props.project_name} />
-                <DetailField Bold={'bold'} label="Project Name" value={props.project_type} />
-                <DetailField Bold={'bold'}
-                  label="Start date"
-                  value={
-                    moment(props.start_date).format("DD MMM YYYY")
-                      ? moment(props.start_date).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="End date"
-                  value={
-                    moment(props.end_date).format("DD MMM YYYY")
-                      ? moment(props.end_date).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
+              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
+              <h3 className="section-header ">Other Info</h3>
+              <div className="row  ">
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    Bold={""}
+                    label="Created By"
+                    value={
+                      props.Created_by ? props.Created_by.username : "not found"
+                    }
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Created At"
+                    value={props.Created_at ? props.Created_at : "not found"}
+                  />
+                 
+                </div>
 
-                <DetailField Bold={'bold'}
-                  label="Created At"
-                  value={
-                    moment(props.Created_at).format("DD MMM YYYY")
-                      ? moment(props.end_date).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="Updated At"
-                  value={
-                    moment(props.Updated_at).format("DD MMM YYYY")
-                      ? moment(props.Updated_at).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="Created By"
-                  value={props.Created_by ? props.Created_by.username : ""}
-                />
-                <DetailField Bold={'bold'}
-                  label="Updated By"
-                  value={props.Updated_by ? props.Updated_by.username : ""}
-                />
+                <div className="col-md-6 col-sm-12">
+                  <DetailField
+                    Bold={""}
+                    label="Updated By"
+                    value={
+                      props.Updated_by ? props.Updated_by.username : "not found"
+                    }
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Updated At"
+                    value={props.Updated_at ? props.Updated_at : "not found"}
+                  />
+                </div>
               </div>
             </Modal.Body>
             {isAdmin() && (
@@ -163,9 +208,9 @@ const Totdatafield = (props) => {
                   <button
                     type="button"
                     onClick={onHide}
-                    className="btn btn-danger px-4 mx-4"
+                    className="btn btn-secondary px-4 mx-4"
                   >
-                    Go Back
+                    Close
                   </button>
                 </div>
               </div>

@@ -49,7 +49,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const OperationDataupdateform = (props) => {
-  let { onHide, show,closeopsedit } = props;
+  let { onHide, show, closeopsedit } = props;
 
   console.log("hehheheheh", onHide);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -59,7 +59,7 @@ const OperationDataupdateform = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-
+  const [disablevalue, setdisablevalue] = useState(false);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -189,7 +189,7 @@ const OperationDataupdateform = (props) => {
     const value = await updateOpsActivity(Number(props.id), {
       activity_type: "Activity type",
 
-      area: 'Lucknow (City)',
+      area: "Lucknow (City)",
 
       assigned_to: 121,
 
@@ -221,7 +221,7 @@ const OperationDataupdateform = (props) => {
     });
     setDisableSaveButton(true);
     // onHide(values);
-    closeopsedit()
+    closeopsedit();
     setDisableSaveButton(false);
   };
 
@@ -254,7 +254,7 @@ const OperationDataupdateform = (props) => {
   }
 
   if (props) {
-    console.log("new123",props);
+    console.log("new123", props);
     initialValues["batch"] = Number(props.batch.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
@@ -294,6 +294,9 @@ const OperationDataupdateform = (props) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+  const handleEdit = (key) => {
+    setdisablevalue(key);
+  };
 
   return (
     <>
@@ -310,7 +313,7 @@ const OperationDataupdateform = (props) => {
           <Modal.Header className="bg-white">
             <Modal.Title
               id="contained-modal-title-vcenter"
-              className="d-flex align-items-center"
+              className="d-flex  justify-content-evenly"
             >
               {props.id && props.logo ? (
                 <img
@@ -323,10 +326,11 @@ const OperationDataupdateform = (props) => {
                   <FaSchool size={25} />
                 </div>
               )}
-              <h1 className="text--primary bebas-thick mb-0">
+              {/* <h1 className="text--primary bebas-thick mb-0">
                 {props.id ? props.full_name : "Add New Student"}
-              </h1>
+              </h1> */}
             </Modal.Title>
+            
           </Modal.Header>
           <Modal.Body className="bg-white">
             <Formik onSubmit={onSubmit} initialValues={initialValues}>
@@ -342,6 +346,7 @@ const OperationDataupdateform = (props) => {
                           label="Activity Type"
                           className="form-control"
                           placeholder="Activity Type"
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
