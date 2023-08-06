@@ -246,7 +246,7 @@ const ProgramEnrollments = (props) => {
   };
 
   const handleDelete = async () => {
-     NP.start();
+    NP.start();
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {

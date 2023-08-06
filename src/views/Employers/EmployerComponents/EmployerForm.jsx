@@ -12,6 +12,9 @@ import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
 import { yesOrNoOptions } from '../../../common/commonConstants';
+import {getAllEmployers} from "./employerAction";
+
+
 
 const Section = styled.div`
   padding-top: 30px;
@@ -33,7 +36,7 @@ const Section = styled.div`
 `;
 
 const EmployerForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show ,showExistModal} = props;
   const [industryOptions, setIndustryOptions] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
@@ -46,9 +49,11 @@ const EmployerForm = (props) => {
   const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
+
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+    
   }, []);
 
   useEffect(() => {
@@ -68,6 +73,10 @@ const EmployerForm = (props) => {
           value: item.value,
         };
       }));
+      console.log("getAllEmployers",getAllEmployers)
+      getAllEmployers().then(data=>{
+        console.log("data",data)
+      })
     });
 
     getAddressOptions().then(data => {
@@ -104,6 +113,12 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+   
+    if(props.id){
+     
+      showExistModal()
+    }
+
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -492,6 +507,7 @@ const EmployerForm = (props) => {
                 </div>
                 <div className="d-flex justify-content-start">
                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                {/* <button onClick={showExistModal}> open modal</button> */}
                   <button
                     type="button"
                     onClick={onHide}
@@ -504,6 +520,7 @@ const EmployerForm = (props) => {
               </Form>
               )}
         </Formik>
+      
       </Modal.Body>
     </Modal>
   );
