@@ -70,14 +70,11 @@ const OperationDataupdateform = (props) => {
       });
     }
     if (props.batch) {
-      console.log("hello");
       filterBatch().then((data) => {
-        console.log(data, 'data.....')
         setBatchOptions(data);
       });
     }
   }, [props]);
-  console.log(props, "bactchoptions")
 
   const filterInstitution = async (filterValue) => {
     return await meilisearchClient
