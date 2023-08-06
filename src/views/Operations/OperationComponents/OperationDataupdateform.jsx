@@ -492,7 +492,7 @@ const OperationDataupdateform = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="students_attended"
-                          label="Student Attendedsss"
+                          label="Student Attended"
                           // required
                           placeholder="Student atended"
                           control="input"
