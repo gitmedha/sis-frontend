@@ -334,3 +334,71 @@ export const bulkCreateAlumniQueries = async(data)=>{
     }
 
 }
+
+
+export const deactivate_user_ops = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/users-ops-activities/deactivate-ops/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}
+export const deactivate_user_tots = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/users-tots/deactivate-tot/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}
+export const deactivate_user_dte_samarth = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/dte-samarth-sdits/deactivate-samarth/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}
+export const deactivate_user_students_upskills = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/students-upskillings/deactivate-students-upskills/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}
+export const deactivate_user_alumni_query = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/alumni-queries/deactivate-alumni-query/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}
+export const deactivate_user_college_pitch = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    try {
+        const response = await api.put(`/college-pitches/deactivate-college-pitch/${id}`, {
+            "fieldToUpdate":fieldToUpdate,
+            "newValue":newValue
+        })
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+}

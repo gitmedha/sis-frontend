@@ -15,6 +15,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import OperationDataupdateform from "./OperationDataupdateform";
+import {deactivate_user_ops} from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -76,12 +77,16 @@ const Opsdatafeilds = (props) => {
   };
   useEffect(() => {
     console.log("props", props);
+
+    deactivate_user_ops(2223);
     // setoperationdata(props)
   }, []);
   const updatevalue = () => {
     console.log("hello");
     setShowModal(true);
   };
+
+
 
   return (
     <>
