@@ -166,6 +166,7 @@ const EnrollmentConnectionForm = (props) => {
 
   const updateEmployerOpportunityOptions = (employer) => {
     setEmployerOpportunityOptions([]);
+    
     getEmployerOpportunities(Number(employer.value)).then((data) => {
       setEmployerOpportunityOptions(
         data?.data?.data?.opportunities.map((opportunity) => ({
