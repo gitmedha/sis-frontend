@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import {
+  GET_ALUMNI_QUERIES,
+  GET_COLLEGE_PITCHES,
   GET_DTE_SAMARTH_SDITS,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
@@ -28,12 +30,18 @@ import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
 import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
+import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
+import CollegePitchdata from "./OperationComponents/CollegePitchdata";
+import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
+import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
   { title: "Users Tot", key: "useTot" },
   { title: "Upskilling", key: "upskilling" },
   { title: "DTE-SAMARTHSDITS", key: "dtesamarth" },
+  { title: "AlumniQueries", key: "AlumniQueries" },
+  { title: "CollegePitches", key: "collegePitches" },
 ];
 
 const Styled = styled.div`
@@ -54,20 +62,24 @@ const Styled = styled.div`
 
 const Operations = (props) => {
   const [showModal, setShowModal] = useState({
-    opsdata:false,
-    totdata:false,
-    upskilldata:false,
-    sditdata:false
+    opsdata: false,
+    totdata: false,
+    upskilldata: false,
+    sditdata: false,
+    alumniQueriesdata: false,
+    collegePitches: false,
   });
   const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [opts, setOpts] = useState([]);
   const [optsdata, setOptsdata] = useState({
-    opsdata:{},
-    totdata:{},
-    upskilldata:{},
-    sditdata:{}
+    opsdata: {},
+    totdata: {},
+    upskilldata: {},
+    sditdata: {},
+    alumniQueriesdata: {},
+    collegePitches: {},
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -225,6 +237,76 @@ const Operations = (props) => {
     []
   );
 
+  const columnsAlumuniqueries = useMemo(
+    () => [
+      {
+        Header: "Student Name",
+        accessor: "student_name",
+      },
+      {
+        Header: "Father Name",
+        accessor: "father_name",
+      },
+      {
+        Header: "Mobile",
+        accessor: "phone",
+      },
+      {
+        Header: "Query Description",
+        accessor: "query_desc",
+      },
+      {
+        Header: "Query End",
+        accessor: "query_end",
+      },
+
+      {
+        Header: "Query Start",
+        accessor: "query_start",
+      },
+      {
+        Header: "Query Type",
+        accessor: "query_type",
+      },
+    ],
+    []
+  );
+
+  const columnscollegepitches = useMemo(
+    () => [
+      {
+        Header: "Student Name",
+        accessor: "student_name",
+      },
+      {
+        Header: "Area",
+        accessor: "area",
+      },
+      {
+        Header: "Mobile",
+        accessor: "phone",
+      },
+      {
+        Header: "College Name",
+        accessor: "college_name",
+      },
+      {
+        Header: "Course Name",
+        accessor: "course_name",
+      },
+
+      {
+        Header: "Course Year",
+        accessor: "course_year",
+      },
+      {
+        Header: "Pitch Date",
+        accessor: "pitch_date",
+      },
+    ],
+    []
+  );
+
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -328,6 +410,45 @@ const Operations = (props) => {
           nProgress.done();
         });
     }
+    if (activeTab.key == "AlumniQueries") {
+      await api
+        .post("/graphql", {
+          query: GET_ALUMNI_QUERIES,
+          variables,
+        })
+        .then((data) => {
+          console.log("data12", data.data.data.alumniQueriesConnection);
+          setOpts(data.data.data.alumniQueriesConnection.values);
+          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+    if (activeTab.key == "collegePitches") {
+      await api
+        .post("/graphql", {
+          query: GET_COLLEGE_PITCHES,
+          variables,
+        })
+        .then((data) => {
+          console.log("data12", data.data.data.collegePitchesConnection.values);
+          setOpts(data.data.data.collegePitchesConnection.values);
+          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+    // GET_COLLEGE_PITCHES
     // dtesamarth
   };
 
@@ -377,9 +498,9 @@ const Operations = (props) => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
-  const hideShowModal = async (key,data) => {
+  const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
-      setShowModal({...showModal,[key]:data});
+      setShowModal({ ...showModal, [key]: data });
       return;
     }
   };
@@ -390,16 +511,15 @@ const Operations = (props) => {
     }
   };
 
-  const showRowData = (key,data) => {
-    console.log(key,"key1232")
-    setOptsdata({...optsdata,[key]:data})
-    setShowModal({...showModal,[key]:true});
+  const showRowData = (key, data) => {
+    console.log("key---------------->\n", key);
+    console.log("data---------------->\n", data);
+    setOptsdata({ ...optsdata, [key]: data });
+    setShowModal({ ...showModal, [key]: true });
   };
-  useEffect(()=>{
-  
-    console.log(showModal)
-    
-  },[showModal])
+  useEffect(() => {
+    console.log(showModal);
+  }, [showModal]);
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -420,7 +540,7 @@ const Operations = (props) => {
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <Table
-                onRowClick={(data)=>showRowData("opsdata",data)}
+                onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -432,7 +552,7 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "useTot" ? (
               <Table
-                onRowClick={(data)=>showRowData('totdata',data)}
+                onRowClick={(data) => showRowData("totdata", data)}
                 columns={columnsUserTot}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -444,7 +564,7 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "upskilling" ? (
               <Table
-                onRowClick={(data)=>showRowData('upskilldata',data)}
+                onRowClick={(data) => showRowData("upskilldata", data)}
                 columns={columnsUpskilling}
                 data={opts}
                 totalRecords={optsAggregate.count}
@@ -456,8 +576,32 @@ const Operations = (props) => {
               />
             ) : activeTab.key == "dtesamarth" ? (
               <Table
-                onRowClick={(data)=>showRowData('sditdata',data)}
+                onRowClick={(data) => showRowData("sditdata", data)}
                 columns={columnsPlacement}
+                data={opts}
+                totalRecords={optsAggregate.count}
+                fetchData={fetchData}
+                paginationPageSize={paginationPageSize}
+                onPageSizeChange={setPaginationPageSize}
+                paginationPageIndex={paginationPageIndex}
+                onPageIndexChange={setPaginationPageIndex}
+              />
+            ) : activeTab.key == "AlumniQueries" ? (
+              <Table
+                onRowClick={(data) => showRowData("alumniQueriesdata", data)}
+                columns={columnsAlumuniqueries}
+                data={opts}
+                totalRecords={optsAggregate.count}
+                fetchData={fetchData}
+                paginationPageSize={paginationPageSize}
+                onPageSizeChange={setPaginationPageSize}
+                paginationPageIndex={paginationPageIndex}
+                onPageIndexChange={setPaginationPageIndex}
+              />
+            ) : activeTab.key == "collegePitches" ? (
+              <Table
+                onRowClick={(data) => showRowData("collegePitches", data)}
+                columns={columnscollegepitches}
                 data={opts}
                 totalRecords={optsAggregate.count}
                 fetchData={fetchData}
@@ -478,52 +622,84 @@ const Operations = (props) => {
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-            // useTot  ---upskilling ---dtesamarth
-          ) :activeTab.key == "useTot" ?(
-            <UserTot show={modalShow} 
-            onHide={hideCreateModal}
-            ModalShow={() => setModalShow(false)}
+          ) : // useTot  ---upskilling ---dtesamarth
+          activeTab.key == "useTot" ? (
+            <UserTot
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
             />
-          ):activeTab.key == "upskilling"?(
-            <StudentUpkillingBulkcreate show={modalShow} 
-            onHide={hideCreateModal}
-            ModalShow={() => setModalShow(false)}
+          ) : activeTab.key == "upskilling" ? (
+            <StudentUpkillingBulkcreate
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
             />
-          ):activeTab.key == "dtesamarth" ?(
-            <Dtesamarth show={modalShow} 
-            onHide={hideCreateModal}
-            ModalShow={() => setModalShow(false)}
+          ) : activeTab.key == "dtesamarth" ? (
+            <Dtesamarth
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
             />
-          ):""}
+          ) : activeTab.key == "AlumniQueries" ? (
+            <AllumuniBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ) : activeTab.key == "collegePitches" ? (
+            <CollegepitchesBulkadd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ) : (
+            ""
+          )}
           {showModal.opsdata && (
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
-              onHide={()=>hideShowModal('opsdata',false)}
+              onHide={() => hideShowModal("opsdata", false)}
             />
           )}
           {showModal.totdata && (
             <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
-              onHide={()=>hideShowModal('totdata',false)}
+              onHide={() => hideShowModal("totdata", false)}
             />
           )}
           {showModal.upskilldata && (
             <Upskillingdatafield
               {...optsdata.upskilldata}
               show={showModal.opsdata}
-              onHide={()=>hideShowModal('upskilldata',false)}
+              onHide={() => hideShowModal("upskilldata", false)}
             />
           )}
           {showModal.sditdata && (
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
-              onHide={()=>hideShowModal('sditdata',false)}
+              onHide={() => hideShowModal("sditdata", false)}
             />
           )}
-
+          {showModal.alumniQueriesdata && (
+            <Alumuniqueriesdata
+              {...optsdata.alumniQueriesdata}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("alumniQueriesdata", false)}
+            />
+          )}
+          {showModal.collegePitches && (
+            <CollegePitchdata
+              {...optsdata.collegePitches}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("collegePitches", false)}
+            />
+          )}
+          {/* CollegePitchdata */}
+          {/* collegePitches */}
         </div>
       </Styled>
     </Collapse>
