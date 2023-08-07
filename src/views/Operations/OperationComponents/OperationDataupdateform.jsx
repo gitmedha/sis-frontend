@@ -95,7 +95,7 @@ const OperationDataupdateform = (props) => {
         return filterData;
       });
   };
-  console.log(filterInstitution,"isititution");
+  console.log(institutionOptions,"isititution");
 
   const filterBatch = async (filterValue) => {
     return await meilisearchClient
