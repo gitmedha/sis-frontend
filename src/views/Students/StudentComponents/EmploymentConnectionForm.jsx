@@ -431,7 +431,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                
-                  {(isRejected || initialValues.reason_if_rejected.length) && <div className="col-md-6 col-sm-12 mt-2">
+                  {(isRejected || initialValues.reason_if_rejected.length) ? <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
@@ -451,9 +451,9 @@ const EnrollmentConnectionForm = (props) => {
                       }}
                       placeholder="Reason if Rejected"
                     />
-                  </div>}
+                  </div>:<div></div>}
                   {
-                   (ifSelectedOthers || initialValues.reason_if_rejected_other.length) && <div className="col-md-6 col-sm-12 mt-2">
+                   (ifSelectedOthers || initialValues.reason_if_rejected_other.length) ?<div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="reason_if_rejected_other"
                       control="input"
@@ -462,7 +462,7 @@ const EnrollmentConnectionForm = (props) => {
                       className="form-control"
                       placeholder="If Other, Specify"
                     />
-                  </div>
+                  </div>: <div></div>
                   }
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

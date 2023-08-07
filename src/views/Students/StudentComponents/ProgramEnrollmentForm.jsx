@@ -388,7 +388,7 @@ const ProgramEnrollmentForm = (props) => {
 
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || initialValues.course_name_other.length) &&
+                  ( OthertargetValue.course1 || initialValues.course_name_other.length)?
                    <Input
                       name="course_name_other"
                       control="input"
@@ -396,7 +396,7 @@ const ProgramEnrollmentForm = (props) => {
                       required
                       className="form-control"
                       placeholder="If Other, Specify"
-                    /> 
+                    /> :<div></div>
                     
                   }
                   </div>
