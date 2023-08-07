@@ -337,6 +337,7 @@ export const bulkCreateAlumniQueries = async(data)=>{
 
 
 export const deactivate_user_ops = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    console.log(id,fieldToUpdate,newValue );
     try {
         const response = await api.put(`/users-ops-activities/deactivate-ops/${id}`, {
             "fieldToUpdate":fieldToUpdate,
@@ -370,6 +371,7 @@ export const deactivate_user_dte_samarth = async(id,fieldToUpdate="isActive",new
     }
 }
 export const deactivate_user_students_upskills = async(id,fieldToUpdate="isActive",newValue = false)=>{
+    console.log("id",id);
     try {
         const response = await api.put(`/students-upskillings/deactivate-students-upskills/${id}`, {
             "fieldToUpdate":fieldToUpdate,

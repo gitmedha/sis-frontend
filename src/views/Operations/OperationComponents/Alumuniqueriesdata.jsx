@@ -16,6 +16,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from './AllumuniEdit';
+import { deactivate_user_alumni_query } from './operationsActions';
 
 const Styled = styled.div`
   .icon-box {
@@ -62,6 +63,10 @@ const Alumuniqueriesdata = (props) => {
       console.log("hello");
       setShowModal(true);
     };
+    const closeThepopup =async () =>{
+      deactivate_user_alumni_query(Number(props.id))
+      onHide()
+    }
   
     return (
       <>
@@ -165,10 +170,10 @@ const Alumuniqueriesdata = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={onHide}
+                    onClick={()=>closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
-                    Go Back
+                   Delete 
                   </button>
                 </div>
               </div>

@@ -15,6 +15,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import Dtesamarthedit from "./Dtesamarthedit";
+import { deactivate_user_dte_samarth } from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -62,6 +63,10 @@ const Dtesamarthdatafield = (props) => {
     console.log("hello");
     setShowModal(true);
   };
+  const closeThepopup =async () =>{
+    deactivate_user_dte_samarth(Number(props.id))
+    onHide()
+  }
 
   return (
     <>
@@ -207,7 +212,7 @@ const Dtesamarthdatafield = (props) => {
                 </button>
                 <button
                   type="button"
-                  onClick={onHide}
+                  onClick={()=>closeThepopup()}
                   className="btn btn-danger px-4 mx-4"
                 >
                   Go Back

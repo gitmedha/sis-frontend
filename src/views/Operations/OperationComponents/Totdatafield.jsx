@@ -15,6 +15,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
+import { deactivate_user_tots } from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -62,6 +63,10 @@ const Totdatafield = (props) => {
     console.log("hello");
     setShowModal(true);
   };
+  const closeThepopup =async () =>{
+    deactivate_user_tots(Number(props.id))
+    onHide()
+  }
 
   return (
     <>
@@ -207,10 +212,10 @@ const Totdatafield = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={onHide}
-                    className="btn btn-secondary px-4 mx-4"
+                    onClick={()=>closeThepopup()}
+                    className="btn btn-danger px-4 mx-4"
                   >
-                    Close
+                    Delete
                   </button>
                 </div>
               </div>

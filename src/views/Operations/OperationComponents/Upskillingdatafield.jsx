@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import Opsdatafeilds from "./Opsdatafeilds";
 import UpskillUpdate from "./UpskillUpdate";
+import { deactivate_user_students_upskills } from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -63,6 +64,11 @@ const Upskillingdatafield = (props) => {
     console.log("hello");
     setshowedit(true);
   };
+
+  const closeThepopup =async () =>{
+    deactivate_user_students_upskills(Number(props.id))
+    onHide()
+  }
 
   return (
     <>
@@ -284,10 +290,10 @@ const Upskillingdatafield = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => onHide()}
+                    onClick={() => closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
-                    Go Back
+                    Delete
                   </button>
                 </div>
               </div>

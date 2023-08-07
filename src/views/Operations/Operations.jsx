@@ -34,6 +34,7 @@ import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
+import { deactivate_user_ops } from "./OperationComponents/operationsActions";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -321,6 +322,7 @@ const Operations = (props) => {
       limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
+      isActive:false
     };
     if (activeTab.key == "my_data") {
       await api
@@ -499,10 +501,16 @@ const Operations = (props) => {
   }, [activeTab.key, activeStatus]);
 
   const hideShowModal = async (key, data) => {
+    console.log("Data",data);
     if (!data || data.isTrusted) {
+      
+      // deactivate_user_ops(id,fieldToUpdate="isActive",newValue = false)
+      getoperations()
       setShowModal({ ...showModal, [key]: data });
       return;
     }
+    
+    
   };
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -512,8 +520,6 @@ const Operations = (props) => {
   };
 
   const showRowData = (key, data) => {
-    console.log("key---------------->\n", key);
-    console.log("data---------------->\n", data);
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
   };

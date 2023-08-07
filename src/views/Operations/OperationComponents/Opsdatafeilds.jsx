@@ -73,12 +73,12 @@ const Opsdatafeilds = (props) => {
       setShowModal(false);
       return 0;
     }
-    //  onHide()
+     onHide()
   };
   useEffect(() => {
     console.log("props", props);
 
-    deactivate_user_ops(2223);
+    // deactivate_user_ops(2223);
     // setoperationdata(props)
   }, []);
   const updatevalue = () => {
@@ -86,6 +86,10 @@ const Opsdatafeilds = (props) => {
     setShowModal(true);
   };
 
+  const closeThepopup =async () =>{
+    deactivate_user_ops(Number(props.id))
+    onHide()
+  }
 
 
   return (
@@ -255,8 +259,8 @@ const Opsdatafeilds = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={onHide}
-                    className="btn btn-secondary px-4 mx-4"
+                    onClick={()=>closeThepopup()}
+                    className="btn btn-danger px-4 mx-4"
                   >
                     Close
                   </button>

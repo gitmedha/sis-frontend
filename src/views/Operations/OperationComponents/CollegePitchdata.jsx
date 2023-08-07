@@ -17,6 +17,7 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from './AllumuniEdit';
 import CollepitchesEdit from './CollegepitchesEdit';
+import { deactivate_user_college_pitch } from './operationsActions';
 
 const Styled = styled.div`
   .icon-box {
@@ -66,6 +67,10 @@ const CollegePitchdata = (props) => {
       console.log("hello");
       setShowModal(true);
     };
+    const closeThepopup =async () =>{
+      deactivate_user_college_pitch(Number(props.id))
+      onHide()
+    }
   
     return (
       <>
@@ -170,10 +175,10 @@ const CollegePitchdata = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={onHide}
+                    onClick={()=>closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
-                    Go Back
+                    Delete
                   </button>
                 </div>
               </div>
