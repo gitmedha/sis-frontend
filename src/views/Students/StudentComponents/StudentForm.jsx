@@ -126,6 +126,7 @@ const StudentForm = (props) => {
     assigned_to:userId.toString(),
     status:'',
     income_level:'',
+    family_annual_income: '',
     date_of_birth:'',
     city:'',
     pin_code:'',
@@ -302,7 +303,6 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -313,25 +313,30 @@ const StudentForm = (props) => {
                         className="form-control"
                         placeholder="Category"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="income_level"
-                        label="Income Level (INR)"
-                        required
-                        options={incomeLevelOptions}
-                        className="form-control"
-                        placeholder="Income Level (INR)"
-                      />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="income_level"
+                      label="Income Level (INR)"
+                      required
+                      options={incomeLevelOptions}
+                      className="form-control"
+                      placeholder="Income Level (INR)"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      min={0}
+                      type="number"
+                      name="family_annual_income"
+                      label="Family Annual Income"
+                      control="input"
+                      placeholder="Family Annual Income"
+                      className="form-control"
+                      required
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

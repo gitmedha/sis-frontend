@@ -15,6 +15,7 @@ const studentFields = `
   placement_date_latest
   course_type_latest
   income_level
+  family_annual_income
   old_sis_id
   medha_champion
   interested_in_employment_opportunities
