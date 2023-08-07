@@ -182,8 +182,8 @@ export const GET_STUDENTS = `
       where: {
         assigned_to: {
           id: $id,
-          area: $area
         },
+        medha_area: $area
         state:$state,
         status:$status,
       }

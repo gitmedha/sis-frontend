@@ -284,7 +284,7 @@ const ProgramEnrollment = (props) => {
                 <button type="button" className="btn btn-danger mx-2" onClick={handleDelete}>DELETE</button>
               </div>
               {
-                (isAdmin() || isSRM()) &&
+                (isAdmin() || isSRM())  &&
                 batch.status === 'Certified' &&
                 programEnrollment.attendanceValue >= 75 &&
                 <div className="d-flex">

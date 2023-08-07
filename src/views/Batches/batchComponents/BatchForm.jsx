@@ -215,7 +215,6 @@ const BatchForm = (props) => {
 
     if(values.mode_of_payment === 'Free'){
       values.per_student_fees = 0
-
     }
 
     setFormValues(values);

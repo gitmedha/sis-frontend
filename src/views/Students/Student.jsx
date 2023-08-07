@@ -15,6 +15,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import {getAllOperations} from "../Operations/operationsActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -122,6 +123,15 @@ const Student = (props) => {
     });
   };
 
+  const testOperationsActions = async () =>{
+    try {
+      await getAllOperations();
+    
+  } catch (error) {
+    console.log("thee", error)
+  }
+
+  }
   const getStudent = async () => {
     setLoading(true);
     NP.start();
@@ -198,6 +208,7 @@ const Student = (props) => {
   }
 
   useEffect(async () => {
+    // await testOperationsActions();
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
