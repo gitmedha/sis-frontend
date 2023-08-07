@@ -65,7 +65,7 @@ const OperationDataupdateform = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      filterInstitution().then((data) => {
+      filterInstitution(props.institution.name).then((data) => {
         setInstitutionOptions(data);
       });
     }
@@ -95,6 +95,7 @@ const OperationDataupdateform = (props) => {
         return filterData;
       });
   };
+  console.log(filterInstitution,"isititution");
 
   const filterBatch = async (filterValue) => {
     return await meilisearchClient
@@ -271,6 +272,7 @@ const OperationDataupdateform = (props) => {
   }, []);
 
 
+
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
   const options = [
@@ -353,7 +355,7 @@ const OperationDataupdateform = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {batchOptions &&(
+                        {batchOptions.length &&(
                         <Input
                           control="lookupAsync"
                           name="batch"
@@ -389,8 +391,10 @@ const OperationDataupdateform = (props) => {
                       )}
                     </Field> */}
                       </div>
+                      {/* {console.log(institutionOptions, "options...")} */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
+                        {institutionOptions.length && (
                         <Input
                           control="lookupAsync"
                           name="institution"
@@ -401,6 +405,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           isClearable
                         />
+                       )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
