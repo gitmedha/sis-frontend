@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
 const TabPicker = ({ options, setActiveTab = () => {} }) => {
   // const [tabs, setTabs] = useState(options);

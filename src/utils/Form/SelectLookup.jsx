@@ -65,6 +65,7 @@ export const SelectField = (props) => {
     isDisabled,
   } = props;
 
+  // console.log(props)
   return (
     <Select
       icon={icon}
@@ -86,6 +87,7 @@ export const SelectField = (props) => {
 
 const SelectLookup = (props) => {
   const { label, name, required, ...rest } = props;
+  // console.log("SelectLookup data--------------->\n" ,props.onChange)
   return (
     <SelectLookupField>
       <div className="form-group">

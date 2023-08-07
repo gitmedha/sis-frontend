@@ -110,6 +110,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     }
   }
 
+
   React.useEffect(() => {
     fetchData(pageIndex, pageSize, sortBy);
   }, [fetchData, pageIndex, pageSize, sortBy]);
@@ -134,7 +135,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     <>
       <Styles>
         <div className="d-none d-md-block">
-          <table {...getTableProps()}>
+          <table {...getTableProps()} responsive="lg">
             <thead>
               {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>

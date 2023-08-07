@@ -111,6 +111,7 @@ const SelectField = (props) => {
 
 const SelectLookupAsync = (props) => {
   const { label, name, required, ...rest } = props;
+  // console.log("SelectLookupAsync------------>\n",props)
   return (
     <SelectLookupAsyncField>
       <div className="form-group">
