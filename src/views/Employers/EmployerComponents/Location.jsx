@@ -5,7 +5,7 @@ const Location = ({ name, employer, status, address, phone, email }) => {
     <div className="container-fluid my-3">
       <div className="row">
         <div className="col-6 col-md-4">
-          <DetailField label="Name" value={name} />
+          <DetailField label="Name" className="capitalize"value={name} />
           <DetailField label="Employer" value={employer} />
           <DetailField label="Status" value={status} />
         </div>

@@ -153,7 +153,7 @@ const ProgramEnrollment = (props) => {
           <FileStyled>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Name" value={<Anchor text={programEnrollment.student?.full_name} href={`/student/${programEnrollment.student?.id}`} />} />
+                <DetailField label="Name" className="capitalize"value={<Anchor text={programEnrollment.student?.full_name} href={`/student/${programEnrollment.student?.id}`} />} />
                 <DetailField label="Batch" value={batch?.name} />
                 <DetailField label="Institution" value={<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} />} />
               </div>

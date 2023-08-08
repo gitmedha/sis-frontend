@@ -113,7 +113,7 @@ const AlumniService = (props) => {
           <FileStyled>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Name" value={student.full_name} />
+                <DetailField label="Name" className="capitalize"value={student.full_name} />
                 <DetailField label="Type" value={alumniService.type} />
                 <DetailField label="Start Date" value={alumniService.start_date ? moment(alumniService.start_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ''} />
