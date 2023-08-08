@@ -12,8 +12,7 @@ import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
 import { yesOrNoOptions } from '../../../common/commonConstants';
-import {getAllEmployers} from "./employerAction";
-
+import api from '../../../apis';
 
 
 const Section = styled.div`
@@ -73,10 +72,7 @@ const EmployerForm = (props) => {
           value: item.value,
         };
       }));
-      console.log("getAllEmployers",getAllEmployers)
-      getAllEmployers().then(data=>{
-        console.log("data",data)
-      })
+      
     });
 
     getAddressOptions().then(data => {
@@ -113,11 +109,16 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+
+
+   const isDuplicate =  await FindDuplicate(values.name)
+
+   console.log("isDuplicate",isDuplicate)
+
+   if(isDuplicate){
+    showExistModal()
+   }
    
-    if(props.id){
-     
-      showExistModal()
-    }
 
     setFormValues(values);
     if (logo) {
@@ -152,6 +153,25 @@ const EmployerForm = (props) => {
   if (!props.contacts) {
     // create an empty contact if no contacts are present
     initialValues['contacts'] = [];
+  }
+
+
+  const FindDuplicate = async (name) =>{
+    try {
+      const {data} = await api.post('/employers/findDuplicate', {
+        "name": name
+      })
+
+      if(data === 'Record Found'){
+        return true;
+      }
+      else if(data === 'Record Not Found') {
+        return false
+      }
+      
+    } catch (error) {
+      console.error("error", error)
+    }
   }
 
   return (

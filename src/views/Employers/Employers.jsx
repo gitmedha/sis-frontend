@@ -191,6 +191,11 @@ const Employers = (props) => {
     setShowDeleteAlert(true)
   }
 
+  const closeDuplicateAlertModal = ()=>{
+    setShowDeleteAlert(false);
+    setModalShow(true)
+  }
+
   return (
     <Collapse title="EMPLOYERS" type="plain" opened={true}>
       <div className="row m-3">
@@ -231,7 +236,7 @@ const Employers = (props) => {
           customButtons={
             <>
               <button
-                onClick={() => setModalShow(true)}
+                onClick={closeDuplicateAlertModal}
                 className="btn btn-secondary mx-2 px-4"
               >
                 Enter Again

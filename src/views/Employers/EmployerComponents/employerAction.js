@@ -6,19 +6,8 @@ import {
   DELETE_EMPLOYER,
   CREATE_EMPLOYER,
   GET_EMPLOYER_EMPLOYMENT_CONNECTIONS,
-  GET_ALL_EMPLOYERS
 } from "../../../graphql";
 
-export const getAllEmployers = async()=>{
-  console.log("called")
-  return await api.post('/graphql', {
-    query:GET_ALL_EMPLOYERS,
-  })
-  .then(data=>data)
-
-  .catch(error=>Promise.reject(error))
-
-}
 
 export const getEmployersPickList = async () => {
   return await api
