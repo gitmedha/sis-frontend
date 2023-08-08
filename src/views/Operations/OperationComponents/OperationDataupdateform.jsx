@@ -49,6 +49,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const OperationDataupdateform = (props) => {
+  console.log(props, "props")
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -70,7 +71,7 @@ const OperationDataupdateform = (props) => {
       });
     }
     if (props.batch) {
-      filterBatch().then((data) => {
+      filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
     }
@@ -95,7 +96,6 @@ const OperationDataupdateform = (props) => {
         return filterData;
       });
   };
-  console.log(institutionOptions,"isititution");
 
   const filterBatch = async (filterValue) => {
     return await meilisearchClient
@@ -105,16 +105,25 @@ const OperationDataupdateform = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+        let batchInformtion = props ? props.batch : null;
+        let batchFoundInList = false;
 
         let filterData = data.hits.map((batch) => {
+          if (props && batch.id === Number(batchInformtion?.id)) {
+            batchFoundInList = true;
+          }
           return {
             ...batch,
             label: batch.name,
             value: Number(batch.id),
           };
         });
-
+        if (props && batchInformtion !== null && !batchFoundInList) {
+          filterData.unshift({
+            label: batchInformtion.name,
+            value: Number(batchInformtion.id),
+          });
+        }
         return filterData;
       });
   };
