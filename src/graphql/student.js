@@ -15,6 +15,7 @@ const studentFields = `
   placement_date_latest
   course_type_latest
   income_level
+  family_annual_income
   old_sis_id
   medha_champion
   interested_in_employment_opportunities
@@ -76,6 +77,7 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  course_name_other
   created_at
   updated_at
   program_selected_by_student
@@ -126,10 +128,6 @@ const alumniServicesFields = `
   receipt_number
   program_mode
   category
-  youth_leadership
-  peer_learning
-  ideation_club
-  giveback
   fee_amount
   comments
   created_at
@@ -144,6 +142,7 @@ const employmentConnectionFields = `
   updated_at
   source
   reason_if_rejected
+  reason_if_rejected_other
   work_engagement
   number_of_internship_hours
   salary_offered
@@ -185,9 +184,9 @@ export const GET_STUDENTS = `
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id,
-          area: $area
+          id: $id
         },
+        medha_area: $area
         state:$state,
         status:$status,
       }

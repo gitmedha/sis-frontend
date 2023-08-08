@@ -101,6 +101,7 @@ const Details = (props) => {
     gender,
     date_of_birth,
     income_level,
+    family_annual_income,
     logo,
     old_sis_id,
     course_type_latest,
@@ -120,7 +121,7 @@ const Details = (props) => {
   const [pickList, setPickList] = useState([]);
   const studentStatusData = studentStatusOptions.find(option => option.picklistMatch.toLowerCase() === status?.toLowerCase());
 
- 
+
   useEffect(() => {
     getStudentsPickList().then(data => {
       setPickList(data);
@@ -183,6 +184,7 @@ const Details = (props) => {
           </div>
           <div className="col-md-4">
             <DetailField label="Income Level (INR)" value={income_level} />
+            <DetailField label="Family Annual Income (INR)" value={family_annual_income} />
             <DetailField label="CV Upload" value=
               {CV &&
                 <div>

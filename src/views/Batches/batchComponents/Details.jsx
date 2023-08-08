@@ -85,7 +85,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="Area" value={batch.medha_area} />
           <DetailField label="Donor" value={batch.grant.donor} />
           &nbsp;
-          <DetailField label="Per-student Contribution" value={batch.per_student_fees} />
+          <DetailField label="Per Student Contribution" value={batch.per_student_fees} />
           <DetailField label="Mode of Payment" value={batch.mode_of_payment} />
           <div>&nbsp; &nbsp;</div>
           &nbsp;

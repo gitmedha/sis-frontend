@@ -50,10 +50,13 @@ const name_of_parent_or_guardian = Yup.string().nullable().required("Parent Name
 // const email  = Yup.string().required("Email is required.");
 const gender  = Yup.string().nullable().required("Gender is required.");
 const date_of_birth  = Yup.date().nullable().required("DOB is required.");
+const program_mode  = Yup.string().nullable().required("Program mode is required.");
 const category  = Yup.string().nullable().required("Category is required.");
+const subcategory  = Yup.string().nullable().required("Subcategory is required.");
 const assigned_to = Yup.string().required("Assigned To is required.");
 const student_status  = Yup.string().required("Status is required.");
 const income_level  = Yup.string().nullable().required("Income Level is required.");
+const family_annual_income  = Yup.string().nullable().required("Family Annual Income is required.");
 const state = Yup.string().required("State is required.");
 const medha_area = Yup.string().required("Medha area is required.");
 const address = Yup.string().required("Address is required.");
@@ -63,7 +66,7 @@ const pin_code = Yup.string("Should be a number.")
   .nullable();
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
-const alumni_service_type= Yup.string().required("Type is required.");
+const alumni_service_type = Yup.string().required("Type is required.");
 const alumni_service_location= Yup.string().required("Location is required.");
 const work_engagement = Yup.string().nullable().required("Work Engagement is required.");
 
@@ -96,6 +99,7 @@ export const EmploymentConnectionValidations = Yup.object({
     then: Yup.string().nullable().required('End date is required when internship complete.')
   }),
   work_engagement,
+  assigned_to
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
@@ -128,6 +132,7 @@ export const StudentValidations = Yup.object({
   assigned_to,
   status: student_status,
   income_level,
+  family_annual_income,
   city,
   pin_code,
   medha_area,
@@ -143,7 +148,9 @@ export const StudentValidations = Yup.object({
 
 export const AlumniServiceValidations = Yup.object({
   assigned_to,
-  type: alumni_service_type,
+  type: subcategory,
   location: alumni_service_location,
   start_date,
+  program_mode,
+  category,
 });
