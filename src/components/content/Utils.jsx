@@ -18,10 +18,11 @@ const ProgressBarContainer = styled.div`
 `;
 
 const badgeStyle = {
-  height: "22px",
+  height: "auto", // to fix overflowing issue
   display: "flex",
-  paddingLeft: "12px",
-  paddingRight: "12px",
+  padding: "4px 12px",
+  // paddingLeft: "12px",
+  // paddingRight: "12px",
   borderRadius: "5px",
   alignItems: "center",
   letterSpacing: "0.5px",
