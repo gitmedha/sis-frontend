@@ -233,6 +233,7 @@ const OperationDataupdateform = (props) => {
     updated_by: "",
     area: "",
     students_attended: "",
+    batch: "",
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -246,6 +247,7 @@ const OperationDataupdateform = (props) => {
 
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
+    initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
@@ -405,7 +407,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           isClearable
                         />
-                       )}
+                      )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
