@@ -16,6 +16,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -40,6 +41,8 @@ const Employers = (props) => {
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
   const [formErrors, setFormErrors] = useState([]);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+
 
   useEffect(() => {
     getEmployers(activeTab.key);
@@ -183,6 +186,16 @@ const Employers = (props) => {
     });
   };
 
+  const showExistAlert = async()=>{
+    setModalShow(false);
+    setShowDeleteAlert(true)
+  }
+
+  const closeDuplicateAlertModal = ()=>{
+    setShowDeleteAlert(false);
+    setModalShow(true)
+  }
+
   return (
     <Collapse title="EMPLOYERS" type="plain" opened={true}>
       <div className="row m-3">
@@ -209,7 +222,32 @@ const Employers = (props) => {
           show={modalShow}
           onHide={hideCreateModal}
           errors={formErrors}
+          showExistModal={showExistAlert}
+          employersList={employers}
         />
+        <SweetAlert
+          danger
+          showCancel
+          btnSize="md"
+          show={showDeleteAlert}
+          title={
+            <span className="text--primary latto-bold">Employer Already Exists</span>
+          }
+          customButtons={
+            <>
+              <button
+                onClick={closeDuplicateAlertModal}
+                className="btn btn-secondary mx-2 px-4"
+              >
+                Enter Again
+              </button>
+              <button onClick={() => setShowDeleteAlert(false)} className="btn btn-danger mx-2 px-4">
+                Cancel
+              </button>
+            </>
+          }
+        >
+        </SweetAlert>
       </div>
     </Collapse>
   );
