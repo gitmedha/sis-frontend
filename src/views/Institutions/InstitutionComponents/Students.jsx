@@ -167,7 +167,7 @@ const StudentModal = (props) => {
         ) : (
           <div className="row">
             <div className="col-md-5 col-sm-12">
-              <DetailField label="Name" value={<Anchor text={details.full_name} href={`/student/${props.student.id}`}  />} /> 
+              <DetailField label="Name" className="capitalize"value={<Anchor text={details.full_name} href={`/student/${props.student.id}`}  />} /> 
               <DetailField label="Status" value={details.status} />
               <DetailField label="Category" value={details.category} />
               <DetailField label="Gender" value={details.gender} />

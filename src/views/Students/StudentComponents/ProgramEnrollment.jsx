@@ -157,7 +157,7 @@ const ProgramEnrollment = (props) => {
           <FileStyled>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Name" value={student.full_name} />
+                <DetailField label="Name" className="capitalize"value={student.full_name} />
                 <DetailField label="Batch" value={(isSRM() || isAdmin()) ? <Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} /> : programEnrollment.batch?.name} />
                 <DetailField label="Institution" value={(isSRM() || isAdmin()) ?<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} /> : programEnrollment.institution?.name} />
               </div>
