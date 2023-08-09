@@ -60,6 +60,7 @@ const OperationDataupdateform = (props) => {
   const [disablevalue, setdisablevalue] = useState(false);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
+      console.log("data",data);
       setAssigneeOptions(data);
     });
   }, []);
@@ -161,67 +162,25 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    delete values["institute_name"];
+   
     values["assigned_to"] = Number(values["assigned_to"]);
     values["batch"] = Number(values["batch"]);
     values["students_attended"] = Number(values["students_attended"]);
     values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
     values["institution"] = Number(values["institution"]);
-    let data = {
-      activity_type: values["activity_type"],
-      area: values["area"],
-      assigned_to: values["assigned_to"],
-      batch: values["batch"],
-      designation: values["designation"],
-      donor: values["donor"] ? true : false,
-      end_date: values["end_date"],
-      guest: values["guest"],
-      institution: values["institution"],
-      organization: values["organization"],
-      start_date: values["start_date"],
-      state: values["state"],
-      students_attended: values["students_attended"],
-      topic: values["topic"],
-      Created_by: values["Created_by"] ? Number(values["Created_by"]) : 2,
-      Updated_by: Number(userId),
-    };
-
-    const value = await updateOpsActivity(Number(props.id), {
-      activity_type: "Activity type",
-
-      area: "Lucknow (City)",
-
-      assigned_to: 121,
-
-      batch: 1168,
-
-      designation: "N/A",
-
-      donor: false,
-
-      end_date: "2020-08-04",
-
-      guest: "Nitin Shinde",
-
-      institution: 221,
-
-      organization: "JP Morgan",
-
-      start_date: "2020-08-04",
-
-      state: "Haryana",
-
-      students_attended: 15,
-
-      topic: "Confidence And Attitude Building",
-
-      Created_by: 2,
-
-      Updated_by: 2,
-    });
+    values["donor"]=values["donor"] ? true : false    
+    values['Updated_by'] =Number(userId);
+    delete values['start_date']
+    delete values['updated_by']
+    delete values['updated_at']
+    delete values['created_at']
+    delete values['created_by']
+    delete values["institute_name"];
+    delete values['end_date']
+    const value = await updateOpsActivity(Number(props.id), values);
     setDisableSaveButton(true);
-    // onHide(values);
+    onHide(values);
     closeopsedit();
     setDisableSaveButton(false);
   };

@@ -49,32 +49,30 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const UpskillUpdate = (props) => {
-  let { onHide, show } = props;
-
+  console.log(props, "props")
+  let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-
+  const [disablevalue, setdisablevalue] = useState(false);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
+      console.log("data",data);
       setAssigneeOptions(data);
     });
   }, []);
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
-      filterInstitution().then((data) => {
+      filterInstitution(props.institution.name).then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
-      filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
+      filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
     }
@@ -108,17 +106,25 @@ const UpskillUpdate = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+        let batchInformtion = props ? props.batch : null;
+        let batchFoundInList = false;
 
         let filterData = data.hits.map((batch) => {
+          if (props && batch.id === Number(batchInformtion?.id)) {
+            batchFoundInList = true;
+          }
           return {
             ...batch,
             label: batch.name,
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
+        if (props && batchInformtion !== null && !batchFoundInList) {
+          filterData.unshift({
+            label: batchInformtion.name,
+            value: Number(batchInformtion.id),
+          });
+        }
         return filterData;
       });
   };
@@ -154,7 +160,7 @@ const UpskillUpdate = (props) => {
       );
     });
   };
-
+  
   const onSubmit = async (values) => {
     console.log("values----------->", values);
     delete values['start_date']
@@ -163,25 +169,6 @@ const UpskillUpdate = (props) => {
     values['student_id']=57588
     values['assigned_to']=Number(values['assigned_to'])
     const value= await updateStudetnsUpskills(Number(props.id),values)
-    // delete values["institute_name"];
-    // const value = await updateOpsActivity(Number(props.id), {
-    //   activity_type: "Industry Talk/Expert Talk",
-    //   area: "Ambala",
-    //   assigned_to: 136,
-    //   batch: 151,
-    //   designation: "N/A",
-    //   donor: false,
-    //   end_date: "2020-08-04",
-    //   guest: "Nitin Shinde",
-    //   institution: 221,
-    //   organization: "JP Morgan",
-    //   start_date: "2020-08-04",
-    //   state: "Haryana",
-    //   students_attended: 15,
-    //   topic: "Confidence And Attitude Building",
-    //   Created_by: 2,
-    //   Updated_by: 2,
-    // });
     setDisableSaveButton(true);
     onHide(values);
     setDisableSaveButton(false);
@@ -242,10 +229,7 @@ const UpskillUpdate = (props) => {
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
-  // const optionsYesNo = [
-  //   { key:"1",value: "Yes", label: true },
-  //   { key:"2",value: "No", label: false }
-  // ];
+  
   const options = [
     { value: true, label: "Yes" },
     { value: false, label: 'No' }

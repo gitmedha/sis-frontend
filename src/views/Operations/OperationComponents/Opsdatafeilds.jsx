@@ -71,6 +71,7 @@ const Opsdatafeilds = (props) => {
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
       setShowModal(false);
+      onHide()
       return 0;
     }
      onHide()
