@@ -153,6 +153,7 @@ const StudentForm = (props) => {
       const cvUrlSplit = props.CV.url.split('/');
       fileName = cvUrlSplit[cvUrlSplit.length - 1];
     }
+    // console.log(props);
   }
 
   return (
@@ -200,7 +201,7 @@ const StudentForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -210,7 +211,7 @@ const StudentForm = (props) => {
                         name="assigned_to"
                         label="Assigned To"
                         required
-                        className="form-control"
+                        className="form-control capitalize"
                         placeholder="Assigned To"
                         filterData={filterAssignedTo}
                         defaultOptions={assigneeOptions}
@@ -226,7 +227,7 @@ const StudentForm = (props) => {
                       required
                       control="input"
                       placeholder="Parents Name"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">

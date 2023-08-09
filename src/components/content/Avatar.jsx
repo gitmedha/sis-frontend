@@ -99,7 +99,7 @@ export const TitleWithLogo = connect(
         </Tooltip>
       )}
 
-      <h1 className="bebas text--primary mr-3 align-self-center mt-2 capitalize">
+      <h1 className="bebas-thick text--primary mr-3 align-self-center mt-2 capitalize">
         {title?.toLowerCase() }
       </h1>
       <ChangeAvatarModal show={modalShow} onHide={modalCloseHandler} />

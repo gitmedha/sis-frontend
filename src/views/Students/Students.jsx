@@ -125,7 +125,6 @@ const Students = (props) => {
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
     };
-    console.log(variables);
     if (status !== "All") {
       variables.status = studentStatusOptions.find(
         (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
@@ -138,13 +137,18 @@ const Students = (props) => {
     } else if (selectedTab == "my_area") {
       Object.assign(variables, { area: area });
     }
-    // console.log("variables \n   ",variables)
     await api
       .post("/graphql", {
         query: GET_STUDENTS,
         variables,
       })
       .then((data) => {
+        let value = data?.data?.data?.studentsConnection.values.map((obj) => {
+          obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
+            return match.toUpperCase();
+          });
+        });
+
         setStudents(data?.data?.data?.studentsConnection.values);
         setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
       })
@@ -159,7 +163,6 @@ const Students = (props) => {
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      console.log("Pageindex", pageIndex);
       if (sortBy.length) {
         let sortByField = "full_name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -201,10 +204,11 @@ const Students = (props) => {
     [activeTab.key, activeStatus]
   );
 
-  // useEffect(() => {
-  //   getStudentsPickList().then((data) => setPickList(data));
-  //   fetchData(0, paginationPageSize, []);
-  // }, []);
+
+  useEffect(() => {
+    getStudentsPickList().then((data) => setPickList(data));
+    fetchData(0, paginationPageSize, []);
+  }, []);
 
   useEffect(() => {
     setPaginationPageIndex(0);
