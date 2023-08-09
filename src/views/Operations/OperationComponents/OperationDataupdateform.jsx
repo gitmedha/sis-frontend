@@ -49,11 +49,9 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const OperationDataupdateform = (props) => {
+  console.log(props, "props")
   let { onHide, show, closeopsedit } = props;
-
-  console.log("hehheheheh", onHide);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
@@ -68,14 +66,12 @@ const OperationDataupdateform = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
-      filterInstitution().then((data) => {
+      filterInstitution(props.institution.name).then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
-      filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
+      filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
     }
@@ -109,17 +105,25 @@ const OperationDataupdateform = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+        let batchInformtion = props ? props.batch : null;
+        let batchFoundInList = false;
 
         let filterData = data.hits.map((batch) => {
+          if (props && batch.id === Number(batchInformtion?.id)) {
+            batchFoundInList = true;
+          }
           return {
             ...batch,
             label: batch.name,
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
+        if (props && batchInformtion !== null && !batchFoundInList) {
+          filterData.unshift({
+            label: batchInformtion.name,
+            value: Number(batchInformtion.id),
+          });
+        }
         return filterData;
       });
   };
@@ -157,7 +161,6 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->", initialValues);
     delete values["institute_name"];
     values["assigned_to"] = Number(values["assigned_to"]);
     values["batch"] = Number(values["batch"]);
@@ -165,8 +168,6 @@ const OperationDataupdateform = (props) => {
     values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
     values["institution"] = Number(values["institution"]);
-    console.log(moment(values["start_date"]).format("YYYY-MM-DD"), "546");
-    console.log(values);
     let data = {
       activity_type: values["activity_type"],
       area: values["area"],
@@ -185,7 +186,7 @@ const OperationDataupdateform = (props) => {
       Created_by: values["Created_by"] ? Number(values["Created_by"]) : 2,
       Updated_by: Number(userId),
     };
-    // console.log("props.id",props.id);
+
     const value = await updateOpsActivity(Number(props.id), {
       activity_type: "Activity type",
 
@@ -226,7 +227,6 @@ const OperationDataupdateform = (props) => {
   };
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     topic: "",
     assigned_to: props.assigned_to.id.toString(),
@@ -242,6 +242,7 @@ const OperationDataupdateform = (props) => {
     updated_by: "",
     area: "",
     students_attended: "",
+    batch: "",
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -254,8 +255,8 @@ const OperationDataupdateform = (props) => {
   }
 
   if (props) {
-    console.log("new123", props);
     initialValues["batch"] = Number(props.batch.id);
+    initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
@@ -281,7 +282,7 @@ const OperationDataupdateform = (props) => {
     }
   }, []);
 
-  // console.log("props",initialValues.batch);
+
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -330,7 +331,7 @@ const OperationDataupdateform = (props) => {
                 {props.id ? props.full_name : "Add New Student"}
               </h1> */}
             </Modal.Title>
-            
+
           </Modal.Header>
           <Modal.Body className="bg-white">
             <Formik onSubmit={onSubmit} initialValues={initialValues}>
@@ -346,10 +347,11 @@ const OperationDataupdateform = (props) => {
                           label="Activity Type"
                           className="form-control"
                           placeholder="Activity Type"
-                          
+
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
+                      {assigneeOptions.length  && (
                         <Input
                           control="lookupAsync"
                           name="assigned_to"
@@ -360,9 +362,11 @@ const OperationDataupdateform = (props) => {
                           filterData={filterAssignedTo}
                           defaultOptions={assigneeOptions}
                         />
+                      )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
+                        {batchOptions.length &&(
                         <Input
                           control="lookupAsync"
                           name="batch"
@@ -373,7 +377,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control1"
                           placeholder="Batch"
                         />
-
+                        )}
                         {/* <Input
                       control="lookupAsync"
                       name="batch"
@@ -398,8 +402,10 @@ const OperationDataupdateform = (props) => {
                       )}
                     </Field> */}
                       </div>
+                      {/* {console.log(institutionOptions, "options...")} */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
+                        {institutionOptions.length && (
                         <Input
                           control="lookupAsync"
                           name="institution"
@@ -410,6 +416,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           isClearable
                         />
+                      )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
