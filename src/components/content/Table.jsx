@@ -101,7 +101,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
+  // console.log("state",nextPage)
   const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -115,6 +115,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
   }, [fetchData, pageIndex, pageSize, sortBy]);
 
   React.useEffect(() => {
+    // console.log("pageSize",pageSize);
     onPageSizeChange(pageSize);
   }, [pageSize]);
 
