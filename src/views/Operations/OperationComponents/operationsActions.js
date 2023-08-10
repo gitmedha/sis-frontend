@@ -337,9 +337,9 @@ export const bulkCreateAlumniQueries = async(data)=>{
 
 
 export const deactivate_user_ops = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    console.log(id,fieldToUpdate,newValue );
     try {
-        const response = await api.put(`/users-ops-activities/deactivate-ops/${id}`, {
+        const response = await api.post(`/users-ops-activities/deactivate-ops`, {
+            "id":id,
             "fieldToUpdate":fieldToUpdate,
             "newValue":newValue
         })

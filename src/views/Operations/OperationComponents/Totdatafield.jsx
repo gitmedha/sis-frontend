@@ -161,7 +161,7 @@ const Totdatafield = (props) => {
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="State" value={props.state} />
+                  <DetailField Bold={""} label="City" value={props.city} />
                 </div>
               </div>
 

@@ -23,6 +23,7 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateUserTot } from "./operationsActions";
+import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,12 +49,17 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
-const TotEdit = (props) => {
-  let { onHide, show,operationdata } = props;
-  const currentDate = new Date();
-  console.log("propstot",operationdata)
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
+ 
+const options = [
+  { value: true, label: "Yes" },
+  { value: false, label: 'No' }
+]
 
+const TotEdit = (props) => {
+  let { onHide, show } = props;
+  const currentDate = new Date();
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [genderOptions, setGenderOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
@@ -156,41 +162,39 @@ const TotEdit = (props) => {
     });
   };
 
+  useEffect(() => {
+    getStudentsPickList().then((data) => {
+      setGenderOptions(
+        data.gender.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+  }, [props]);
+
   const onSubmit = async (values) => {
     console.log("values----------->", values);
 
-    values.start_date = values?.start_date ? 
-      values.start_date.toISOString().split('T')[0] : 
-      currentDate.toDateString().split('T')[0];
+    values.start_date = values?.start_date
+      ? values.start_date.toISOString().split("T")[0]
+      : currentDate.toDateString().split("T")[0];
 
-    values.end_date = values?.end_date ? values.end_date.toISOString().split('T')[0] : "";
+    values.end_date = values?.end_date
+      ? values.end_date.toISOString().split("T")[0]
+      : "";
 
-    values.published_at = values?.published_at ? values.published_at.toISOString().split('T')[0] : "";
-    delete values['start_date']
-    delete values['end_date']
-    delete values['published_at']
-    delete values['trainer_1']
-    delete values['trainer_2']
-    const value =await updateUserTot(Number(props.id),values)
-    // delete values["institute_name"];
-    // const value = await updateOpsActivity(Number(props.id), {
-    //   activity_type: "Industry Talk/Expert Talk",
-    //   area: "Ambala",
-    //   assigned_to: 136,
-    //   batch: 151,
-    //   designation: "N/A",
-    //   donor: false,
-    //   end_date: "2020-08-04",
-    //   guest: "Nitin Shinde",
-    //   institution: 221,
-    //   organization: "JP Morgan",
-    //   start_date: "2020-08-04",
-    //   state: "Haryana",
-    //   students_attended: 15,
-    //   topic: "Confidence And Attitude Building",
-    //   Created_by: 2,
-    //   Updated_by: 2,
-    // });
+    values.published_at = values?.published_at
+      ? values.published_at.toISOString().split("T")[0]
+      : "";
+    delete values["start_date"];
+    delete values["end_date"];
+    delete values["published_at"];
+    delete values["trainer_1"];
+    delete values["trainer_2"];
+    const value = await updateUserTot(Number(props.id), values);
+
     setDisableSaveButton(true);
     onHide(values);
     setDisableSaveButton(false);
@@ -200,27 +204,24 @@ const TotEdit = (props) => {
 
   // console.log("userId", props.assigned_to.id);
   let initialValues = {
-    // trainer_1: '',
-    start_date: '',
-    end_date: '',
-    project_name: '',
-    certificate_given: '',
-    module_name: '',
-    project_type: '',
-    new_entry: '',
-    // trainer_2: '',
-    partner_dept: '',
-    college: '',
-    city: '',
-    state: '',
-    age: '',
-    gender: '',
-    contact: '',
-    designation: '',
-    published_at: '',
+    start_date: "",
+    end_date: "",
+    project_name: "",
+    certificate_given: "",
+    module_name: "",
+    project_type: "",
+    new_entry: "",
+    partner_dept: "",
+    college: "",
+    city: "",
+    state: "",
+    age: "",
+    gender: "",
+    contact: "",
+    designation: "",
+    published_at: "",
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
-
 
   if (props) {
     initialValues["module_name"] = props.module_name;
@@ -230,18 +231,14 @@ const TotEdit = (props) => {
     initialValues["partner_dept"] = props.partner_dept;
     initialValues["contact"] = props.contact;
     initialValues["designation"] = props.designation;
-    // console.log("new Date(props.end_date)",new Date(props.published_at))
     initialValues["start_date"] = new Date(props.start_date);
     initialValues["end_date"] = new Date(props.end_date);
     initialValues["project_name"] = props?.project_name;
     initialValues["age"] = props.age;
     initialValues["gender"] = props.gender;
-    // initialValues["designation"] = props.designation;
-    // initialValues["guest"] = props.guest;
-    // initialValues["state"] = props.state ? props.state : null;
-    // initialValues["institute_name"] = Number(props?.institution?.id);
-    // initialValues["donor"] = props.Donor ? props.Donor : "N/A";
     initialValues["published_at"] = new Date(props.published_at);
+    initialValues["state"] = props.state;
+    initialValues["city"] = props.city;
   }
 
   useEffect(() => {
@@ -335,19 +332,18 @@ const TotEdit = (props) => {
                           required
                           className="form-control"
                           placeholder="Module Name"
-                          // filterData={filterAssignedTo}
-                          // defaultOptions={assigneeOptions}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
+                      <Input
+                          icon="down"
+                          control="lookup"
                           name="new_entry"
                           label="New Entry"
                           required
+                          options={options}
                           className="form-control"
-                          placeholder="Module Name"
-                          
+                          placeholder="New Entry"
                         />
                       </div>
 
@@ -436,13 +432,14 @@ const TotEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"
-                          control="input"
+                          control="lookup"
                           name="gender"
                           label="Gender"
+                          required
+                          options={genderOptions}
                           className="form-control"
                           placeholder="Gender"
                         />
-                     
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -453,7 +450,6 @@ const TotEdit = (props) => {
                           className="form-control"
                           placeholder="Contact"
                         />
-                     
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -464,7 +460,6 @@ const TotEdit = (props) => {
                           className="form-control"
                           placeholder="Designation"
                         />
-                     
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -479,7 +474,44 @@ const TotEdit = (props) => {
                       </div>
                     </div>
                   </Section>
-                 
+                  <Section>
+                    <h3 className="section-header">Address</h3>
+                    <div className="row">
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        {stateOptions.length ? (
+                          <Input
+                            icon="down"
+                            name="state"
+                            label="State"
+                            control="lookup"
+                            options={stateOptions}
+                            onChange={onStateChange}
+                            placeholder="State"
+                            className="form-control"
+                          />
+                        ) : (
+                          <Skeleton count={1} height={45} />
+                        )}
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        {areaOptions.length ? (
+                          <Input
+                            icon="down"
+                            name="city"
+                            label="City"
+                            control="lookup"
+                            options={areaOptions}
+                            placeholder="City"
+                            className="form-control"
+                          />
+                        ) : (
+                          <>
+                            <Skeleton count={1} height={45} />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </Section>
 
                   <Section>
                     <h3 className="section-header">Other Information</h3>
@@ -550,4 +582,3 @@ const TotEdit = (props) => {
 };
 
 export default TotEdit;
-

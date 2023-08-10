@@ -204,7 +204,7 @@ const Opsdatafeilds = (props) => {
                   </div>
 
                   <div className="col-md-6 col-sm-12">
-                    <DetailField Bold={""} label="State" value={props.state} />
+                    <DetailField Bold={""} label="Area" value={props.area} />
                   </div>
                 </div>
                 <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />

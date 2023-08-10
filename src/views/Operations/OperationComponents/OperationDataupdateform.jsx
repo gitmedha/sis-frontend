@@ -49,7 +49,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const OperationDataupdateform = (props) => {
-  console.log(props, "props")
+  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -60,7 +60,7 @@ const OperationDataupdateform = (props) => {
   const [disablevalue, setdisablevalue] = useState(false);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data",data);
+      console.log("data", data);
       setAssigneeOptions(data);
     });
   }, []);
@@ -162,22 +162,21 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-   
     values["assigned_to"] = Number(values["assigned_to"]);
     values["batch"] = Number(values["batch"]);
     values["students_attended"] = Number(values["students_attended"]);
     values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
     values["institution"] = Number(values["institution"]);
-    values["donor"]=values["donor"] ? true : false    
-    values['Updated_by'] =Number(userId);
-    delete values['start_date']
-    delete values['updated_by']
-    delete values['updated_at']
-    delete values['created_at']
-    delete values['created_by']
+    values["donor"] = values["donor"]=="Yes" || 'yes' ? true : false;
+    values["Updated_by"] = Number(userId);
+    delete values["start_date"];
+    delete values["updated_by"];
+    delete values["updated_at"];
+    delete values["created_at"];
+    delete values["created_by"];
     delete values["institute_name"];
-    delete values['end_date']
+    delete values["end_date"];
     const value = await updateOpsActivity(Number(props.id), values);
     setDisableSaveButton(true);
     onHide(values);
@@ -229,7 +228,7 @@ const OperationDataupdateform = (props) => {
     initialValues["guest"] = props.guest;
     initialValues["state"] = props.state ? props.state : null;
     initialValues["institute_name"] = Number(props?.institution?.id);
-    initialValues["donor"] = props.Donor ? props.Donor : "N/A";
+    initialValues["donor"] = props.donor ? "Yes" : "No";
     initialValues["area"] = props.area ? props.area : null;
   }
 
@@ -240,8 +239,6 @@ const OperationDataupdateform = (props) => {
       });
     }
   }, []);
-
-
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -286,11 +283,7 @@ const OperationDataupdateform = (props) => {
                   <FaSchool size={25} />
                 </div>
               )}
-              {/* <h1 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Student"}
-              </h1> */}
             </Modal.Title>
-
           </Modal.Header>
           <Modal.Body className="bg-white">
             <Formik onSubmit={onSubmit} initialValues={initialValues}>
@@ -306,83 +299,56 @@ const OperationDataupdateform = (props) => {
                           label="Activity Type"
                           className="form-control"
                           placeholder="Activity Type"
-
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                      {assigneeOptions.length  && (
-                        <Input
-                          control="lookupAsync"
-                          name="assigned_to"
-                          label="Assigned To"
-                          required
-                          className="form-control"
-                          placeholder="Assigned To"
-                          filterData={filterAssignedTo}
-                          defaultOptions={assigneeOptions}
-                        />
-                      )}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {batchOptions.length &&(
-                        <Input
-                          control="lookupAsync"
-                          name="batch"
-                          label="Batch"
-                          required
-                          filterData={filterBatch}
-                          defaultOptions={batchOptions}
-                          className="form-control1"
-                          placeholder="Batch"
-                        />
+                        {assigneeOptions.length && (
+                          <Input
+                            control="lookupAsync"
+                            name="assigned_to"
+                            label="Assigned To"
+                            className="form-control"
+                            placeholder="Assigned To"
+                            filterData={filterAssignedTo}
+                            defaultOptions={assigneeOptions}
+                          />
                         )}
-                        {/* <Input
-                      control="lookupAsync"
-                      name="batch"
-                      label="Batch"
-                      required
-                      filterData={filterBatch}
-                      defaultOptions={props.id ? batchOptions : true}
-                      className="form-control"
-                      placeholder="Batch"
-                    /> */}
-                        {/* <Field name="batch">
-                      {({ field, form }) => (
-                        <AsyncSelect
-                          {...field}
-                          options={batchOptions}
-                          placeholder="Select an option"
-                          // isClearable
-                          value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
-                          onChange={filterBatch}
-                          onBlur={() => form.setFieldTouched(field.name, true)}
-                        />
-                      )}
-                    </Field> */}
                       </div>
-                      {/* {console.log(institutionOptions, "options...")} */}
+
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        {batchOptions.length && (
+                          <Input
+                            control="lookupAsync"
+                            name="batch"
+                            label="Batch"
+                            filterData={filterBatch}
+                            defaultOptions={batchOptions}
+                            className="form-control1"
+                            placeholder="Batch"
+                          />
+                        )}
+                      </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         {institutionOptions.length && (
-                        <Input
-                          control="lookupAsync"
-                          name="institution"
-                          label="Institution"
-                          filterData={filterInstitution}
-                          defaultOptions={institutionOptions}
-                          placeholder="Institution"
-                          className="form-control"
-                          isClearable
-                        />
-                      )}
+                          <Input
+                            control="lookupAsync"
+                            name="institution"
+                            label="Institution"
+                            filterData={filterInstitution}
+                            defaultOptions={institutionOptions}
+                            placeholder="Institution"
+                            className="form-control"
+                            isClearable
+                          />
+                        )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="start_date"
                           label="Start Date "
-                          // required
+                          //
                           placeholder="Date of Birth"
                           control="datepicker"
                           className="form-control"
@@ -393,7 +359,6 @@ const OperationDataupdateform = (props) => {
                         <Input
                           name="end_date"
                           label="End Date"
-                          // required
                           placeholder="Date of Birth"
                           control="datepicker"
                           className="form-control"
@@ -406,9 +371,8 @@ const OperationDataupdateform = (props) => {
                           control="input"
                           name="donor"
                           label="Donor"
-                          // required
                           className="form-control"
-                          placeholder="Donor"
+                          placeholder="Type Yes/No"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -416,7 +380,6 @@ const OperationDataupdateform = (props) => {
                           control="input"
                           name="topic"
                           label="Topic"
-                          // required
                           className="form-control"
                           placeholder="Topic"
                         />
@@ -427,36 +390,29 @@ const OperationDataupdateform = (props) => {
                           control="input"
                           name="guest"
                           label="Guest"
-                          // required
                           className="form-control"
                           placeholder="Guest"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
+                       
                         <Input
                           icon="down"
                           control="input"
                           name="designation"
                           label="Designation"
-                          // required
-                          // options={genderOptions}
                           className="form-control"
                           placeholder="Designation"
                         />
-                        {/* ) : ( */}
-                        {/* <Skeleton count={1} height={45} /> */}
-                        {/* )} */}
+                        
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* {genderOptions.length ? ( */}
+                        
                         <Input
                           icon="down"
                           control="input"
                           name="organization"
                           label="Organization"
-                          // required
-                          // options={genderOptions}
                           className="form-control"
                           placeholder="Organization"
                         />
@@ -465,7 +421,6 @@ const OperationDataupdateform = (props) => {
                         <Input
                           name="students_attended"
                           label="Student Attended"
-                          // required
                           placeholder="Student atended"
                           control="input"
                           className="form-control"
@@ -488,7 +443,6 @@ const OperationDataupdateform = (props) => {
                             onChange={onStateChange}
                             placeholder="State"
                             className="form-control"
-                            // required
                           />
                         ) : (
                           <Skeleton count={1} height={45} />
@@ -502,10 +456,8 @@ const OperationDataupdateform = (props) => {
                             label="Area"
                             control="lookup"
                             options={areaOptions}
-                            // onChange={onStateChange}
                             placeholder="Area"
                             className="form-control"
-                            // required
                           />
                         ) : (
                           <>

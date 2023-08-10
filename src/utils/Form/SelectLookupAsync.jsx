@@ -1,5 +1,5 @@
 import InputErr from "./InputErr";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
@@ -69,7 +69,7 @@ const SelectField = (props) => {
     isClearable,
   } = props;
   const [inputValue, setInputValue] = useState('');
-  const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
+  const [options, setOptions] = useState([]);
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
@@ -77,6 +77,14 @@ const SelectField = (props) => {
       callback(data);
     });
   };
+  useEffect(() => {
+    if(field.name ){
+      console.log("field.name-----",field.name,"array",Array.isArray(defaultOptions));
+    }
+    if (defaultOptions) {
+      setOptions(defaultOptions);
+    }
+  }, [defaultOptions]);
 
   const handleInputChange = (newValue) => {
     setInputValue(newValue);
@@ -99,7 +107,7 @@ const SelectField = (props) => {
           }
         }
         value={
-          options ? options.find((option) => option.value === field.value) || null : null
+          options ? options.find((option) => option.value === field.value) || field.value  : null
         }
         defaultOptions={defaultOptions}
         cacheOptions
@@ -111,7 +119,6 @@ const SelectField = (props) => {
 
 const SelectLookupAsync = (props) => {
   const { label, name, required, ...rest } = props;
-  // console.log("SelectLookupAsync------------>\n",props)
   return (
     <SelectLookupAsyncField>
       <div className="form-group">

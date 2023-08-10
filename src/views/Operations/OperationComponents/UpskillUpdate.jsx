@@ -60,7 +60,7 @@ const UpskillUpdate = (props) => {
   const [disablevalue, setdisablevalue] = useState(false);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data",data);
+      console.log("data123",data);
       setAssigneeOptions(data);
     });
   }, []);
@@ -108,7 +108,6 @@ const UpskillUpdate = (props) => {
       .then((data) => {
         let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
-
         let filterData = data.hits.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
@@ -160,9 +159,8 @@ const UpskillUpdate = (props) => {
       );
     });
   };
-  
+
   const onSubmit = async (values) => {
-    console.log("values----------->", values);
     delete values['start_date']
     delete values['end_date']
     delete values['published_at']
@@ -184,7 +182,6 @@ const UpskillUpdate = (props) => {
   }
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     assigned_to: "",
     student_id: "",
@@ -200,8 +197,6 @@ const UpskillUpdate = (props) => {
     published_at: "",
   };
   if (props) {
-    // initialValues = { ...props };
-    console.log(props);
     initialValues["category"] = props.category;
     initialValues["sub_category"] = props.sub_category
     initialValues["certificate_received"] = props.certificate_received
@@ -210,24 +205,23 @@ const UpskillUpdate = (props) => {
     initialValues["end_date"] = formatDateStringToIndianStandardTime(props.end_date);
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["assigned_to"] = Number(props?.assigned_to?.id);
-    console.log("initialValues",initialValues);
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
   }
   
 
 
-  useEffect(() => {
+ useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then((data) => {
+       
         setInstitutionOptions(data);
       });
     }
   }, []);
 
-  // console.log("props",initialValues.batch);
 
-  const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
+  // const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
   
   const options = [
@@ -235,9 +229,6 @@ const UpskillUpdate = (props) => {
     { value: false, label: 'No' }
   ]
 
-  const handleSelectChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-  };
 
   return (
     <>
