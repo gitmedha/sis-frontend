@@ -26,7 +26,7 @@ import {
 
 export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
     const authToken =localStorage.getItem('token')
-    console.log('authToken',authToken);
+    
     const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', };
     
     return await api.post('/graphql', {
@@ -206,7 +206,7 @@ export const createCollegePitch = async (data)=>{
 }
 
 export const updateOpsActivity = async(id,data)=>{
-    console.log("id",id);
+   
     return await api.post('/graphql', {
         query:UPDATE_OPERATION,
         variables: {
@@ -336,71 +336,111 @@ export const bulkCreateAlumniQueries = async(data)=>{
 }
 
 
-export const deactivate_user_ops = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    try {
-        const response = await api.post(`/users-ops-activities/deactivate-ops`, {
-            "id":id,
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_ops = async(id)=>{
+
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_OPERATION,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
+
+    // try {
+
+    //     // const response = await api.put(`/users-ops-activities/deactivate-ops/${id}`, {
+    //     //     "fieldToUpdate":fieldToUpdate,
+    //     //     "newValue":newValue
+    //     // })
+    //     // return response;
+    // } catch (error) {
+    //     return console.error(error)
+    // }
 }
-export const deactivate_user_tots = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    try {
-        const response = await api.put(`/users-tots/deactivate-tot/${id}`, {
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_tots = async(id)=>{
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_USER_TOT,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
 }
-export const deactivate_user_dte_samarth = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    try {
-        const response = await api.put(`/dte-samarth-sdits/deactivate-samarth/${id}`, {
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_dte_samarth = async(id)=>{
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_SAMARTH_SDIT,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
 }
-export const deactivate_user_students_upskills = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    console.log("id",id);
-    try {
-        const response = await api.put(`/students-upskillings/deactivate-students-upskills/${id}`, {
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_students_upskills = async(id)=>{
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_STUDENTS_UPSKILLING,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
 }
-export const deactivate_user_alumni_query = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    try {
-        const response = await api.put(`/alumni-queries/deactivate-alumni-query/${id}`, {
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_alumni_query = async(id)=>{
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_ALUMNI_QUERY,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
 }
-export const deactivate_user_college_pitch = async(id,fieldToUpdate="isActive",newValue = false)=>{
-    try {
-        const response = await api.put(`/college-pitches/deactivate-college-pitch/${id}`, {
-            "fieldToUpdate":fieldToUpdate,
-            "newValue":newValue
-        })
-        return response;
-    } catch (error) {
-        return console.error(error)
-    }
+export const deactivate_user_college_pitch = async(id)=>{
+    let data = {"isActive":false}
+
+    return await api.post('/graphql', {
+        query:UPDATE_COLLEGE_PITCH,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        console.log(error)
+        return Promise.reject(error);
+    })
 }
