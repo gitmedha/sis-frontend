@@ -51,8 +51,8 @@ const meilisearchClient = new MeiliSearch({
 
  
 const options = [
-  { value: true, label: "Yes" },
-  { value: false, label: 'No' }
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: 'No' }
 ]
 
 const TotEdit = (props) => {
