@@ -69,7 +69,7 @@ const SelectField = (props) => {
     isClearable,
   } = props;
   const [inputValue, setInputValue] = useState('');
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
@@ -78,10 +78,7 @@ const SelectField = (props) => {
     });
   };
   useEffect(() => {
-    if(field.name ){
-      console.log("field.name-----",field.name,"array",Array.isArray(defaultOptions));
-    }
-    if (defaultOptions) {
+    if (Array.isArray(defaultOptions)) {
       setOptions(defaultOptions);
     }
   }, [defaultOptions]);

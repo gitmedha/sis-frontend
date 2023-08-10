@@ -23,6 +23,7 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -56,7 +57,7 @@ const CollepitchesEdit = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-
+  const [course, setcourse] = useState([]);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -65,14 +66,12 @@ const CollepitchesEdit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -115,8 +114,6 @@ const CollepitchesEdit = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };
@@ -135,6 +132,11 @@ const CollepitchesEdit = (props) => {
       if (props.state) {
         onStateChange({ value: props.state });
       }
+    });
+    getProgramEnrollmentsPickList().then((data) => {
+      setcourse(
+        data?.course?.map((item) => ({ key: item, value: item, label: item }))
+      );
     });
   }, []);
 
@@ -163,7 +165,6 @@ const CollepitchesEdit = (props) => {
   };
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     pitch_date: "",
     student_name: "",
@@ -195,7 +196,6 @@ const CollepitchesEdit = (props) => {
     ];
 
     const date = new Date(dateString);
-    console.log("date____123", date);
     return date;
   }
   if (props) {
@@ -221,8 +221,6 @@ const CollepitchesEdit = (props) => {
       });
     }
   }, []);
-
-  // console.log("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -287,13 +285,14 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
+                      <Input
                           name="course_name"
-                          label=" Course Name"
-                          required
+                          control="lookup"
+                          icon="down"
+                          label="Course Name"
+                          options={course}
                           className="form-control"
-                          placeholder="Father Name"
+                          placeholder="Course Name"
                         />
                       </div>
 
