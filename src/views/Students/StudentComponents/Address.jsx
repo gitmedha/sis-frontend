@@ -5,7 +5,7 @@ const Address = ({ address, medha_area, pin_code, state, city, district }) => {
     <div className="container-fluid my-3">
       <div className="row">
         <div className="col-6 col-md-4">
-          <DetailField label="Address" value={address} />
+          <DetailField label="Address" className="capitalize" value={address} />
           <DetailField label="City"  className="capitalize" value={city} />
           <DetailField label="District" value={district} />
         </div>
