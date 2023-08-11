@@ -170,7 +170,7 @@ const OperationDataupdateform = (props) => {
     values["institution"] = Number(values["institution"]);
     values["donor"] = values["donor"]=="Yes" || 'yes' ? true : false;
     values["Updated_by"] = Number(userId);
-    // delete values["start_date"];
+    delete values["start_date"];
     delete values["updated_by"];
     delete values["updated_at"];
     delete values["created_at"];

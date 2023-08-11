@@ -4,11 +4,18 @@ import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { MeiliSearch } from "meilisearch";
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 const StudentupskilingBulk = (props) => {
   const [rows, setRows] = useState([
     {
@@ -32,6 +39,8 @@ const StudentupskilingBulk = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
+
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -64,6 +73,42 @@ const StudentupskilingBulk = (props) => {
     // props.handleInputChange()
     // setRows(updatedRows);
   };
+  useEffect(() => {
+    // if (props) {
+    //   filterStudent().then((data) => {
+
+    //     console.log("filterStudent",data);
+    //     // setStudentOptions(data);
+    //   });
+    // }
+    filterStudent().then((data) => {
+
+      console.log("filterStudent",data);
+      // setStudentOptions(data);
+    });
+  }, []);
+
+  const filterStudent = async () => {
+    console.log("filtervaluestudent", );
+    return await meilisearchClient
+      .index("students")
+      .search({
+        limit: 100,
+        attributesToRetrieve: ["id", "full_name", "student_id"],
+      })
+      .then((data) => {
+        // let filterData = data.hits.map((student) => {
+        //   return {
+        //     ...student,
+        //     label: `${student.full_name} (${student.student_id})`,
+        //     value: Number(student.id),
+        //   };
+        // });
+
+        console.log("filterData", data);
+        // return filterData;
+      });
+  };
 
   return (
     <>
@@ -84,6 +129,16 @@ const StudentupskilingBulk = (props) => {
             // value={row.name}
             onChange={(e) => updateRow(row.id, "student_id", e.target.value)}
           />
+
+          {/* <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution"
+            options={studentOptions}
+            onChange={(e) => props.handleChange(e, "student_id", row.id)}
+          /> */}
         </td>
         <td>
           <Select

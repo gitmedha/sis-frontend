@@ -155,6 +155,13 @@ const Opsdatafeilds = (props) => {
                     label="organization"
                     value={props.organization}
                   />
+                   <DetailField
+                      Bold={""}
+                      label="Other Link"
+                      value={
+                        props.other_links ? props.other_links : "not found"
+                      }
+                    />
                 </div>
 
                 <div className="col-md-6 col-sm-12">
@@ -221,13 +228,7 @@ const Opsdatafeilds = (props) => {
                       label="Created At"
                       value={props.Created_at ? props.Created_at : "not found"}
                     />
-                    <DetailField
-                      Bold={""}
-                      label="Other Link"
-                      value={
-                        props.other_links ? props.other_links : "not found"
-                      }
-                    />
+                   
                   </div>
 
                   <div className="col-md-6 col-sm-12">
@@ -263,7 +264,7 @@ const Opsdatafeilds = (props) => {
                     onClick={()=>closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
-                    Close
+                    DELETE
                   </button>
                 </div>
               </div>
