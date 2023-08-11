@@ -162,24 +162,28 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    values["assigned_to"] = Number(values["assigned_to"]);
-    values["batch"] = Number(values["batch"]);
-    values["students_attended"] = Number(values["students_attended"]);
-    values["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
-    values["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-    values["institution"] = Number(values["institution"]);
-    values["donor"] = values["donor"]=="Yes" || 'yes' ? true : false;
-    values["Updated_by"] = Number(userId);
-    delete values["start_date"];
-    delete values["updated_by"];
-    delete values["updated_at"];
-    delete values["created_at"];
-    delete values["created_by"];
-    delete values["institute_name"];
-    delete values["end_date"];
-    const value = await updateOpsActivity(Number(props.id), values);
+
+    const newValueObject = {...values};
+  
+    newValueObject["assigned_to"] = Number(values["assigned_to"]);
+    newValueObject["batch"] = Number(values["batch"]);
+    newValueObject["students_attended"] = Number(values["students_attended"]);
+    newValueObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
+    newValueObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
+    newValueObject["institution"] = Number(values["institution"]);
+    newValueObject["donor"] = values["donor"]==="Yes" || 'yes' ? true : false;
+    newValueObject["Updated_by"] = Number(userId);
+
+  
+    delete newValueObject["updated_by"];
+    delete newValueObject["updated_at"];
+    delete newValueObject["created_at"];
+    delete newValueObject["created_by"];
+    delete newValueObject["institute_name"];
+
+    const value = await updateOpsActivity(Number(props.id), newValueObject);
     setDisableSaveButton(true);
-    onHide(values);
+    onHide(value);
     closeopsedit();
     setDisableSaveButton(false);
   };
@@ -499,7 +503,7 @@ const OperationDataupdateform = (props) => {
                           }
                         />
                         <DetailField
-                          label="Created At "
+                          label="Created At"
                           value={moment(props.created_at).format(
                             "DD MMM YYYY, h:mm a"
                           )}
