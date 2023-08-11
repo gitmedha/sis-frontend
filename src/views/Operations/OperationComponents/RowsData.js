@@ -75,7 +75,7 @@ export const RowsData = (props) => {
         <>
 
             <tr key={row.id}>
-                <td>{row.id}</td>
+                {/* <td>{row.id}</td> */}
                 <td>
                     <input
                         className="table-input"

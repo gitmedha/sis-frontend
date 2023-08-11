@@ -23,6 +23,7 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -49,7 +50,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const UpskillUpdate = (props) => {
-  console.log(props, "props")
+  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -58,12 +59,52 @@ const UpskillUpdate = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
+  const [lookUpLoading, setLookUpLoading] = useState(false);
+  const [course, setcourse] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data123",data);
+      console.log("data123", data);
       setAssigneeOptions(data);
     });
   }, []);
+
+  useEffect(() => {
+    if (props.student) {
+      filterStudent(props.programEnrollment.student.full_name).then(data => {
+        setStudentOptions(data);
+      });
+    }
+  }, [props])
+
+  const filterStudent = async (filterValue) => {
+    console.log("filtervaluestudent",filterValue);
+    return await meilisearchClient.index('students').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'full_name', 'student_id']
+    }).then(data => {
+      // let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
+      // let studentFoundInList = false;
+      // let filterData = data.hits.map(student => {
+      //   if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
+      //     studentFoundInList = true;
+      //   }
+      //   return {
+      //     ...student,
+      //     label: `${student.full_name} (${student.student_id})`,
+      //     value: Number(student.id),
+      //   }
+      // });
+      // if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
+      //   filterData.unshift({
+      //     label: programEnrollmentStudent.full_name,
+      //     value: Number(programEnrollmentStudent.id),
+      //   });
+      // }
+      console.log("filterData",data);
+      // return filterData;
+    });
+  }
 
   useEffect(() => {
     if (props.institution) {
@@ -161,24 +202,35 @@ const UpskillUpdate = (props) => {
   };
 
   const onSubmit = async (values) => {
-    delete values['start_date']
-    delete values['end_date']
-    delete values['published_at']
-    values['student_id']=57588
-    values['assigned_to']=Number(values['assigned_to'])
-    const value= await updateStudetnsUpskills(Number(props.id),values)
+    delete values["start_date"];
+    delete values["end_date"];
+    delete values["published_at"];
+    values["student_id"] = 57588;
+    values["assigned_to"] = Number(values["assigned_to"]);
+    console.log("values..........", values);
+    const value = await updateStudetnsUpskills(Number(props.id), values);
     setDisableSaveButton(true);
     onHide(values);
     setDisableSaveButton(false);
   };
   function formatDateStringToIndianStandardTime(dateString) {
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-      "Aug", "Sep", "Oct", "Nov", "Dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
-  
+
     const date = new Date(dateString);
-    return date
+    return date;
   }
 
   const userId = localStorage.getItem("user_id");
@@ -198,37 +250,46 @@ const UpskillUpdate = (props) => {
   };
   if (props) {
     initialValues["category"] = props.category;
-    initialValues["sub_category"] = props.sub_category
-    initialValues["certificate_received"] = props.certificate_received
-    initialValues['issued_org']=props.issued_org
-    initialValues["start_date"] = formatDateStringToIndianStandardTime(props.start_date);
-    initialValues["end_date"] = formatDateStringToIndianStandardTime(props.end_date);
+    initialValues["sub_category"] = props.sub_category;
+    initialValues["certificate_received"] = props.certificate_received;
+    initialValues["issued_org"] = props.issued_org;
+    initialValues["course_name"] = props["course_name"];
+    console.log("props.student_id.id",props.student_id.id);
+    initialValues['student_id']=Number(props.student_id.id);
+    initialValues["start_date"] = formatDateStringToIndianStandardTime(
+      props.start_date
+    );
+    initialValues["end_date"] = formatDateStringToIndianStandardTime(
+      props.end_date
+    );
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["assigned_to"] = Number(props?.assigned_to?.id);
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
   }
-  
 
-
- useEffect(() => {
+  useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then((data) => {
-       
         setInstitutionOptions(data);
       });
     }
   }, []);
 
+  useEffect(() => {
+    getProgramEnrollmentsPickList().then((data) => {
+      setcourse(
+        data?.course?.map((item) => ({ key: item, value: item, label: item }))
+      );
+    });
+  }, []);
 
   // const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
-  
   const options = [
     { value: true, label: "Yes" },
-    { value: false, label: 'No' }
-  ]
-
+    { value: false, label: "No" },
+  ];
 
   return (
     <>
@@ -270,7 +331,23 @@ const UpskillUpdate = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
-                      
+                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                        {!lookUpLoading ? (
+                          <Input
+                            name="student"
+                            control="lookupAsync"
+                            label="Student"
+                            className="form-control"
+                            placeholder="Student"
+                            filterData={filterStudent}
+                            defaultOptions={ props.student_id.id ? studentOptions : true }
+                            required
+                          />
+                        ) : (
+                          <Skeleton count={1} height={60} />
+                        )}
+                      </div> */}
+
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="lookup"
@@ -280,7 +357,6 @@ const UpskillUpdate = (props) => {
                           className="form-control"
                           placeholder="Certificate Received"
                           options={options}
-                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -346,11 +422,13 @@ const UpskillUpdate = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
+                       
                         <Input
-                          control="input"
                           name="course_name"
+                          control="lookup"
+                          icon="down"
                           label="Course Name"
-                          // required
+                          options={course}
                           className="form-control"
                           placeholder="Course Name"
                         />

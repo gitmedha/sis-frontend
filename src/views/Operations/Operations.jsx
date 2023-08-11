@@ -39,10 +39,10 @@ import { deactivate_user_ops } from "./OperationComponents/operationsActions";
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
   { title: "Users Tot", key: "useTot" },
-  { title: "Upskilling", key: "upskilling" },
-  { title: "DTE-SAMARTHSDITS", key: "dtesamarth" },
-  { title: "AlumniQueries", key: "AlumniQueries" },
-  { title: "CollegePitches", key: "collegePitches" },
+  { title: "Student Upskilling", key: "upskilling" },
+  { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
+  { title: "Alumni Queries", key: "AlumniQueries" },
+  { title: "College Pitches", key: "collegePitches" },
 ];
 
 const Styled = styled.div`

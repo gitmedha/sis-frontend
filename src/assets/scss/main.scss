@@ -100,7 +100,7 @@ body {
   position: fixed;
   top: 20px;
   left: 20px;
-  right: 0;
+  right: 20px !important;
   bottom: 20px;
   overflow-y: auto;
   overflow-x: auto;
@@ -155,7 +155,7 @@ body {
   
   th,
   td {
-    border: 1px solid black;
+    border: 1px solid #6c757d;
     padding:0 8px ;
     text-align: left;
     // width: 45rem;
@@ -168,7 +168,7 @@ body {
   }
   
   .table-input {
-    border: none;
+    // border: 1px solid #bebfc0 !important;
     width: 15rem;
     padding: 0;
     margin: 0;

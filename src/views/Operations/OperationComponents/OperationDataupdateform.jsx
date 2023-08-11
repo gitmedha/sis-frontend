@@ -208,13 +208,7 @@ const OperationDataupdateform = (props) => {
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
-  function createdDateConvert(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
+
 
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
@@ -243,21 +237,6 @@ const OperationDataupdateform = (props) => {
       });
     }
   }, []);
-
-  const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
-
-  const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-  ];
-
-  const handleSelectChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-  };
-  const handleEdit = (key) => {
-    setdisablevalue(key);
-  };
 
   return (
     <>

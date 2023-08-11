@@ -23,6 +23,8 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -52,18 +54,25 @@ const Dtesamarthedit = (props) => {
   let { onHide, show } = props;
 
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-
+  const [genderOptions, setGenderOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [course, setcourse] = useState([]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+    getProgramEnrollmentsPickList().then((data) => {
+      setcourse(
+        data?.course?.map((item) => ({ key: item, value: item, label: item }))
+      );
+    });
   }, []);
+
 
   useEffect(() => {
     if (props.institution) {
@@ -78,6 +87,16 @@ const Dtesamarthedit = (props) => {
         setBatchOptions(data);
       });
     }
+
+    getStudentsPickList().then((data) => {
+      setGenderOptions(
+        data.gender.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
@@ -308,10 +327,13 @@ const Dtesamarthedit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
+                         <Input
                           name="course_name"
+                          control="lookup"
+                          icon="down"
                           label="Course Name"
+                          options={course}
+                          // onChange={(e)=>handlechange(e,"course1")}
                           className="form-control"
                           placeholder="Course Name"
                         />
@@ -365,10 +387,12 @@ const Dtesamarthedit = (props) => {
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
+                          icon="down"
+                          control="lookup"
                           name="gender"
                           label="Gender"
-                          // required
+                          required
+                          options={genderOptions}
                           className="form-control"
                           placeholder="Gender"
                         />
