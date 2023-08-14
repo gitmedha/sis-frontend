@@ -87,7 +87,7 @@ body {
   }
 }
 
-.fullscreen-modal .modal-dialog  {
+.fullscreen-modal .modal-dialog {
   position: absolute;
   top: 0;
   left: 0;
@@ -98,14 +98,16 @@ body {
 
 .fullscreen-modal .modal-content {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  right: 20px !important;
-  bottom: 20px;
+  top: 2%; // Adjust this value for top gap
+  left: 1%; // Adjust this value for left gap
+  right: 1%; // Adjust this value for right gap
+  bottom: 2%; // Adjust this value for bottom gap
   overflow-y: auto;
+  width: 98% !important;
   overflow-x: auto;
-  // background-color: rebeccapurple;
+  background-color: white; // Change the background color
 }
+
 
 
 
@@ -168,11 +170,23 @@ body {
   }
   
   .table-input {
-    // border: 1px solid #bebfc0 !important;
+    border: 1px solid #bebfc0 ;
     width: 15rem;
     padding: 0;
     margin: 0;
     background-color: transparent;
+  }
+  .basic-single{
+    border: none !important;
+  }
+  .date{
+    border: 1px solid #bebfc0 !important;;
+  }
+  .border-red1{
+    border: 2px solid #ff0000 !important;
+  }
+  .border-red2{
+    border: 2px solid #ff0000 !important;
   }
   
   

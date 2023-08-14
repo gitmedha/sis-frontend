@@ -73,8 +73,10 @@ const Opsdatafeilds = (props) => {
       setShowModal(false);
       onHide()
       return 0;
+    }else{
+      onHide()
     }
-     onHide()
+
   };
   useEffect(() => {
     console.log("props", props);

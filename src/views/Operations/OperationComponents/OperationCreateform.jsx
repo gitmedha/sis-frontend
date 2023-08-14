@@ -79,6 +79,16 @@ const Section = styled.div`
     justify-content: flex-end;
   }
 `;
+const modalStyle = {
+  position: 'fixed',
+  top: '20px',    // Gap from the top
+  right: '20px',  // Gap from the right
+  bottom: '20px', // Gap from the bottom
+  left: '20px',   // Gap from the left
+  width: 'calc(100% - 40px)',  // Adjust width to account for left and right gaps
+  height: 'calc(100% - 40px)', // Adjust height to account for top and bottom gaps
+  overflow: 'auto',
+};
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -89,6 +99,11 @@ const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
+  const [classValue,setclassValue]=useState({
+    state:false,
+    area:false,
+    topic:false
+  })
   const [data, setData] = useState([
     {
       id: 1,
@@ -105,6 +120,7 @@ const OperationCreateform = (props) => {
       designation: "",
       organization: "",
       assigned_to: "",
+      area:'',
     },
     // Add more initial rows as needed
   ]);
@@ -117,6 +133,7 @@ const OperationCreateform = (props) => {
       batch: "",
       activity_type: "",
       state: "",
+      area:'',
       start_date: "",
       end_date: "",
       topic: "",
@@ -141,9 +158,48 @@ const OperationCreateform = (props) => {
     designation: "",
     organization: "",
     assigned_to: "",
+    area:'',
   });
   const [showLimit, setshowLimit] = useState(false);
   const addRow = () => {
+    console.log(rows[rows.length-1],rows[rows.length-1].state =="");
+    if(rows[rows.length-1].state ==='' || rows[rows.length-1].state !=='' ){
+      console.log("state");
+      if(rows[rows.length-1].state == "" || rows[rows.length-1].state === null || rows[rows.length-1].state == undefined){
+        console.log("state2");
+        setclassValue({...classValue,['state']:true})
+        return ;
+      }
+      else{
+        setclassValue({...classValue,['state']:false})
+      }
+      
+     
+    }
+    console.log(rows[rows.length-1],"area",rows[rows.length-1].area);
+    if(rows[rows.length-1].area ==='' || rows[rows.length-1].area !=='' ){
+      console.log(rows[rows.length-1],"area",rows[rows.length-1].area);
+      if(rows[rows.length-1].area == "" || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined){
+        console.log("area2");
+        setclassValue({...classValue,['area']:true})
+        return 
+      }
+      else{
+        setclassValue({...classValue,['area']:false})
+      }
+      
+     
+    }
+    // if(rows[rows.length-1].area === " " || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined  ){
+    //   setclassValue({...classValue,['area']:true})
+    //   return ;
+    // }
+    
+    if(rows[rows.length-1].topic === " " || rows[rows.length-1].topic === null || rows[rows.length-1].topic == undefined  ){
+      setclassValue({...classValue,['topic']:true})
+      return ;
+    }
+    console.log("classValue",classValue);
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -388,27 +444,18 @@ const OperationCreateform = (props) => {
       id="custom-modal"
       dialogClassName="fullscreen-modal"
     >
+       
+
       <Modal.Header className="bg-white">
         <Modal.Title
           id="contained-modal-title-vcenter "
           className="d-flex align-items-center justify-content-between"
         >
           <div className="d-flex justify-content-between">
-            {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-              {/* {props.id && props.logo ? (""
-                // <img
-                //   src={urlPath(props.logo.url)}
-                //   className="avatar mr-2"
-                //   alt="Student Profile"
-                // />
-              ) : (
-                <div className="flex-row-centered avatar avatar-default mr-2">
-                  <FaSchool color={"#fff"} size={25} />
-                </div>
-              )} */}
+              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Data"}
+                {props.id ? props.full_name : "Add Bulk Operation Data"}
               </h2>
             </div>
           </div>
@@ -417,7 +464,7 @@ const OperationCreateform = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-            <button onClick={() => deleteRow(rows.length)}>
+            {rows.length > 1 ? <button onClick={() => deleteRow(rows.length)}>
               <FaMinusCircle
                 style={iconStyles}
                 width="15"
@@ -425,7 +472,7 @@ const OperationCreateform = (props) => {
                 color="#000"
                 className="ml-2 mr-3"
               />
-            </button>
+            </button>:""}
             {rows.length == 10 ? (
               ""
             ) : (
@@ -466,8 +513,9 @@ const OperationCreateform = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
+                {rows.map((row,id) => (
                   <RowsData
+                    key={id}
                     handleInputChange={handleInputChange}
                     handleChange={handleChange}
                     row={row}
@@ -479,6 +527,7 @@ const OperationCreateform = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

@@ -157,7 +157,7 @@ const CollepitchesEdit = (props) => {
 
   const onSubmit = async (values) => {
     // delete values["dob"];
-    delete values["pitch_date"];
+    // delete values["pitch_date"];
     const value = await updateCollegePitch(Number(props.id), values);
     setDisableSaveButton(true);
     onHide(values);

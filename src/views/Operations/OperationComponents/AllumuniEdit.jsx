@@ -157,8 +157,8 @@ const AllumuniEdit = (props) => {
 
   const onSubmit = async (values) => {
     console.log("values----------->", values);
-    delete values["query_start"];
-    delete values["query_end"];
+    // delete values["query_start"];
+    // delete values["query_end"];
     delete values['published_at'];
     const value = await updateAlumniQuery(Number(props.id), values);
     setDisableSaveButton(true);
@@ -203,8 +203,8 @@ const AllumuniEdit = (props) => {
     initialValues["query_desc"] = props.query_desc;
     initialValues['query_type']=props.query_type
     initialValues["student_name"] = props.student_name;
-    initialValues["query_start"] = props.query_start ? formatDateStringToIndianStandardTime(props.query_start) : "";
-    initialValues["query_end"] = props.query_end ? formatDateStringToIndianStandardTime(props.query_end) : "";
+    initialValues["query_start"] =  new Date(props.query_start) 
+    initialValues["query_end"] =   new Date(props.query_end)
     initialValues['conclusion']=props.conclusion
   }
 

@@ -52,8 +52,10 @@ const Upskillingdatafield = (props) => {
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
-      setshowedit(false);
-      return;
+      onHide()
+      return 0;
+    }else{
+      onHide()
     }
   };
   useEffect(() => {

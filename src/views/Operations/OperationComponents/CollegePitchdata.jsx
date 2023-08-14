@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
@@ -15,9 +15,9 @@ import {
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import AllumuniEdit from './AllumuniEdit';
-import CollepitchesEdit from './CollegepitchesEdit';
-import { deactivate_user_college_pitch } from './operationsActions';
+import AllumuniEdit from "./AllumuniEdit";
+import CollepitchesEdit from "./CollegepitchesEdit";
+import { deactivate_user_college_pitch } from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -47,156 +47,142 @@ const Styled = styled.div`
   }
 `;
 const CollegePitchdata = (props) => {
-    let { onHide } = props;
-    const [showModal, setShowModal] = useState(false);
-    const [operationdata, setoperationdata] = useState(props);
-    const hideShowModal1 = async (data) => {
-      if (!data || data.isTrusted) {
-        setShowModal(false);
-        
-        return;
-        
-      }
+  let { onHide } = props;
+  const [showModal, setShowModal] = useState(false);
+  const [operationdata, setoperationdata] = useState(props);
+  const hideShowModal1 = async (data) => {
+    if (!data || data.isTrusted) {
+      setShowModal(false);
       onHide();
-    };
-    useEffect(() => {
-      console.log("props", props);
-      // setoperationdata(props)
-    }, []);
-    const updatevalue = () => {
-      console.log("hello");
-      setShowModal(true);
-    };
-    const closeThepopup =async () =>{
-      deactivate_user_college_pitch(Number(props.id))
-      onHide()
+      return 0;
+    } else {
+      onHide();
     }
-  
-    return (
-      <>
-        <Modal
-          centered
-          size="lg"
-          show={true}
-          onHide={onHide}
-          animation={false}
-          aria-labelledby="contained-modal-title-vcenter"
-          className="form-modal"
-        >
-          <Modal.Header className="bg-white">
-            <Modal.Title
-              id="contained-modal-title-vcenter"
-              className="d-flex align-items-center"
-            >
-              <h1 className="text--primary bebas-thick mb-0">Allumuni Query Details</h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Styled>
-            <Modal.Body className="bg-white">
-              <h4 className="section-header ">Basic Info</h4>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Student Name"
-                    value={props.student_name ? props.student_name : ""}
-                  />
-                  <DetailField
-                    label="Phone"
-                    value={props.phone}
-                  />
-                  <DetailField label="College Name" value={props.college_name} />
-                  <DetailField label="Course Year" value={props.course_year} />
-  
-                  {/* <DetailField label="Batch" value={props.batch_name} /> */}
-                  
-                  <DetailField label="Pitch Date" value={props.pitch_date} />
-                </div>
-  
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="SRM Name"
-                    value={props.srm_name}
-                  />
-                  <DetailField
-                    label="Area"
-                    value={props.area ? props.area : ""}
-                  />
-  
-                  <DetailField label="Course Name" value={props.course_name} />
-                  <DetailField label="Email" value={props.email} />
-                  <DetailField
-                    label="Remark"
-                    value={props.remarks}
-                  />
-                  {/* <DetailField label="Acad Year" value={props.acad_year} />
-                  <DetailField label="Result" value={props.result} /> */}
-                </div>
-              </div>
-              
-              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
-              <h3 className="section-header ">Other Info</h3>
-             <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={moment(
-                      props.created_at
-                        ? props.created_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-  
-                <div className="col-md-6 col-sm-12">
-                 
-                  <DetailField
-                    Bold={""}
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-              </div> 
-            </Modal.Body>
-            {isAdmin() && (
-              <div className="row mt-4 mb-4">
-                <div className="col-md-12 d-flex justify-content-center">
-                  <button
-                    type="button"
-                    onClick={() => updatevalue()}
-                    className="btn btn-primary px-4 mx-4"
-                  >
-                    EDIT
-                  </button>
-                  <button
-                    type="button"
-                    onClick={()=>closeThepopup()}
-                    className="btn btn-danger px-4 mx-4"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )}
-          </Styled>
-        </Modal>
-  
-            {showModal ? (
-            <CollepitchesEdit
-                {...operationdata}
-                show={showModal}
-                onHide={hideShowModal1}
-            />
-            ) : (
-            ""
-            )}
-      </>
-    );
   };
-export default CollegePitchdata
+  useEffect(() => {
+    console.log("props", props);
+    // setoperationdata(props)
+  }, []);
+  const updatevalue = () => {
+    console.log("hello");
+    setShowModal(true);
+  };
+  const closeThepopup = async () => {
+    deactivate_user_college_pitch(Number(props.id));
+    onHide();
+  };
 
+  return (
+    <>
+      <Modal
+        centered
+        size="lg"
+        show={true}
+        onHide={onHide}
+        animation={false}
+        aria-labelledby="contained-modal-title-vcenter"
+        className="form-modal"
+      >
+        <Modal.Header className="bg-white">
+          <Modal.Title
+            id="contained-modal-title-vcenter"
+            className="d-flex align-items-center"
+          >
+            <h1 className="text--primary bebas-thick mb-0">
+              Allumuni Query Details
+            </h1>
+          </Modal.Title>
+        </Modal.Header>
+        <Styled>
+          <Modal.Body className="bg-white">
+            <h4 className="section-header ">Basic Info</h4>
+            <div className="row  ">
+              <div className="col-md-6 col-sm-12">
+                <DetailField
+                  label="Student Name"
+                  value={props.student_name ? props.student_name : ""}
+                />
+                <DetailField label="Phone" value={props.phone} />
+                <DetailField label="College Name" value={props.college_name} />
+                <DetailField label="Course Year" value={props.course_year} />
+
+                {/* <DetailField label="Batch" value={props.batch_name} /> */}
+
+                <DetailField label="Pitch Date" value={props.pitch_date} />
+              </div>
+
+              <div className="col-md-6 col-sm-12">
+                <DetailField label="SRM Name" value={props.srm_name} />
+                <DetailField
+                  label="Area"
+                  value={props.area ? props.area : ""}
+                />
+
+                <DetailField label="Course Name" value={props.course_name} />
+                <DetailField label="Email" value={props.email} />
+                <DetailField label="Remark" value={props.remarks} />
+                {/* <DetailField label="Acad Year" value={props.acad_year} />
+                  <DetailField label="Result" value={props.result} /> */}
+              </div>
+            </div>
+
+            <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
+            <h3 className="section-header ">Other Info</h3>
+            <div className="row  ">
+              <div className="col-md-6 col-sm-12">
+                <DetailField
+                  Bold={""}
+                  label="Created At"
+                  value={moment(
+                    props.created_at ? props.created_at : props.created_at
+                  ).format("DD MMM YYYY, h:mm a")}
+                />
+              </div>
+
+              <div className="col-md-6 col-sm-12">
+                <DetailField
+                  Bold={""}
+                  label="Updated At"
+                  value={moment(
+                    props.updated_at ? props.updated_at : props.created_at
+                  ).format("DD MMM YYYY, h:mm a")}
+                />
+              </div>
+            </div>
+          </Modal.Body>
+          {isAdmin() && (
+            <div className="row mt-4 mb-4">
+              <div className="col-md-12 d-flex justify-content-center">
+                <button
+                  type="button"
+                  onClick={() => updatevalue()}
+                  className="btn btn-primary px-4 mx-4"
+                >
+                  EDIT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => closeThepopup()}
+                  className="btn btn-danger px-4 mx-4"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </Styled>
+      </Modal>
+
+      {showModal ? (
+        <CollepitchesEdit
+          {...operationdata}
+          show={showModal}
+          onHide={hideShowModal1}
+        />
+      ) : (
+        ""
+      )}
+    </>
+  );
+};
+export default CollegePitchdata;

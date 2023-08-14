@@ -188,8 +188,8 @@ const TotEdit = (props) => {
     values.published_at = values?.published_at
       ? values.published_at.toISOString().split("T")[0]
       : "";
-    delete values["start_date"];
-    delete values["end_date"];
+    // delete values["start_date"];
+    // delete values["end_date"];
     delete values["published_at"];
     delete values["trainer_1"];
     delete values["trainer_2"];
@@ -197,6 +197,7 @@ const TotEdit = (props) => {
 
     setDisableSaveButton(true);
     onHide(values);
+    
     setDisableSaveButton(false);
   };
 

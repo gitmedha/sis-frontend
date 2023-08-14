@@ -52,7 +52,10 @@ const Alumuniqueriesdata = (props) => {
     const hideShowModal1 = async (data) => {
       if (!data || data.isTrusted) {
         setShowModal(false);
-        return;
+        onHide()
+        return 0;
+      }else{
+        onHide()
       }
     };
     useEffect(() => {
