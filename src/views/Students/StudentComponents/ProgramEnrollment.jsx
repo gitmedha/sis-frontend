@@ -157,7 +157,7 @@ const ProgramEnrollment = (props) => {
           <FileStyled>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-                <DetailField label="Name" value={student.full_name} />
+                <DetailField label="Name" className="capitalize"value={student.full_name} />
                 <DetailField label="Batch" value={(isSRM() || isAdmin()) ? <Anchor text={programEnrollment.batch?.name} href={`/batch/${programEnrollment.batch?.id}`} /> : programEnrollment.batch?.name} />
                 <DetailField label="Institution" value={(isSRM() || isAdmin()) ?<Anchor text={programEnrollment.institution?.name} href={`/institution/${programEnrollment.institution?.id}`} /> : programEnrollment.institution?.name} />
               </div>
@@ -212,6 +212,7 @@ const ProgramEnrollment = (props) => {
               <DetailField label="Year of Completion" value={<Badge value={programEnrollment.year_of_course_completion} pickList={pickList.year_of_completion} />} />
               <DetailField label="Program Enrollment ID" value={`To Be Decided`} />
               <DetailField label="Course Name" value={programEnrollment.course_name_in_current_sis} />
+              {programEnrollment.course_name_other && <DetailField label="Specify Course name" value={programEnrollment.course_name_other}/>}
             </div>
           </div>
           <hr className="mb-4 opacity-1" style={{color: '#C4C4C4'}} />

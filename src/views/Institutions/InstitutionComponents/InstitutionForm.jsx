@@ -17,6 +17,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
+import api from '../../../apis';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -38,7 +39,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show ,showExistModal} = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -123,6 +124,12 @@ const InstitutionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+
+    const isDuplicate =  await FindDuplicate(values.name)
+
+   if(isDuplicate){
+    showExistModal()
+   }
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -172,6 +179,24 @@ const InstitutionForm = (props) => {
   if (!props.mou) {
     // create an empty MoU if no MoUs are present
     initialValues["mou"] = [];
+  }
+
+  const FindDuplicate = async (name) =>{
+    try {
+      const {data} = await api.post('/institutions/findDuplicate', {
+        "name": name
+      })
+
+      if(data === 'Record Found'){
+        return true;
+      }
+      else if(data === 'Record Not Found') {
+        return false
+      }
+      
+    } catch (error) {
+      console.error("error", error)
+    }
   }
 
   return (
