@@ -18,9 +18,9 @@ const Detail = styled.div`
   }
 `;
 
-const DetailField = ({ label, value,className ,Bold}) => (
+const DetailField = ({ label, value,className }) => (
   <Detail className="row">
-    <div className={`mb-1 mb-md-0 col-md-6 detail-label ${Bold}`}>{label}</div>
+    <div className="mb-1 mb-md-0 col-md-6 detail-label">{label}</div>
     <div className={`col-md-6 detail-value ${className ?className:""}`}>{value} </div>
   </Detail>
 )

@@ -68,10 +68,6 @@ body {
     font-size: 16px;
   }
 }
-.between_class{
-  position: absolute;
-  right: 0;
-}
 
 .c-pointer {
   cursor: pointer;
@@ -80,6 +76,7 @@ body {
   text-transform: capitalize !important;
 }
 
+<<<<<<< HEAD
 #custom-modal{
   .custom-modal{
     width: 100vw !important;
@@ -111,6 +108,8 @@ body {
 
 
 
+=======
+>>>>>>> main
 .left-10 {
   left: 10px;
 }
@@ -137,6 +136,7 @@ body {
   filter: grayscale(100%);
 }
 
+<<<<<<< HEAD
 
 #CreateOptsData, #CreateOptsData1{
   // table {
@@ -314,4 +314,6 @@ color:black;
   font-weight: 700;
   color: #000 !important;
 }
+=======
+>>>>>>> main
 @import './media/md.scss';

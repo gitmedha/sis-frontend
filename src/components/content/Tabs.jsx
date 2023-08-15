@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useState } from "react";
 import styled from 'styled-components';
 
@@ -35,9 +34,6 @@ const Tabs = ({ options, onTabChange }) => {
     setActiveTab(index);
     onTabChange(options[index]);
   };
-
-
-  
 
   return (
     <Styled>
