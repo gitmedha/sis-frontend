@@ -1,5 +1,5 @@
 
-import api from "../../../../src/apis";
+import api from "../../../apis";
 
 import {
     GET_OPERATIONS,

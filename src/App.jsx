@@ -38,8 +38,8 @@ import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { isAdmin, isSRM } from "./common/commonFunctions";
-import operations from "./views/Operations/Operations";
-import Operation from "./views/Operations/Operation";
+import operations from "./views/OperationsModule/Operations";
+import Operation from "./views/OperationsModule/Operation";
 
 const RouteContainer = styled.div`
   flex: 1;
