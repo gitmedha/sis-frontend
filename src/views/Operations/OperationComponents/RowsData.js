@@ -36,6 +36,7 @@ export const RowsData = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [classvalue,setclassvalue]=useState(props.classValue)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -59,10 +60,11 @@ export const RowsData = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-    
+   
   }, []);
+
   useEffect(()=>{
-    console.log(props.classValue);
+    console.log("state",props.classValue[`class${row.id-1}`]?.state);
   },[props.classValue])
   const updateRow = (id, field, value) => {
     row[field] = value;
@@ -114,7 +116,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <Select
-            className={`basic-single table-input ${props.classValue.state ? `border-red${row.id}`:""}`}
+            className={`basic-single table-input ${props.classValue[`class${row.id-1}`]?.state ? `border-red`:""}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -126,7 +128,7 @@ export const RowsData = (props) => {
         <td>
           {areaOptions.length ? (
             <Select
-              className={`basic-single table-input ${props.classValue.area ? "border-red":""}`}
+              className={`basic-single table-input ${props.classValue[`class${row.id-1}`]?.area ? "border-red":""}`}
               classNamePrefix="select"
               isClearable={true}
               isSearchable={true}
@@ -167,7 +169,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.topic ? "border-red":""}`}
             type="text"
             value={row.age}
             onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}

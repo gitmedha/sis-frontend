@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { MeiliSearch } from "meilisearch";
+import { Input } from "../../../utils/Form";
 
 const options = [
   { value: true, label: "Yes" },
@@ -64,14 +65,12 @@ const StudentupskilingBulk = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+
     // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
-    // props.handleInputChange()
-    // setRows(updatedRows);
   };
   useEffect(() => {
     // if (props) {
@@ -82,34 +81,34 @@ const StudentupskilingBulk = (props) => {
     //   });
     // }
     filterStudent().then((data) => {
-
-      console.log("filterStudent",data);
-      // setStudentOptions(data);
+      setStudentOptions(data);
     });
-  }, []);
+  }, [props]);
 
-  const filterStudent = async () => {
-    console.log("filtervaluestudent", );
+  const filterStudent = async (filterValue) => {
     return await meilisearchClient
       .index("students")
       .search({
         limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
       })
       .then((data) => {
-        // let filterData = data.hits.map((student) => {
-        //   return {
-        //     ...student,
-        //     label: `${student.full_name} (${student.student_id})`,
-        //     value: Number(student.id),
-        //   };
-        // });
-
-        console.log("filterData", data);
-        // return filterData;
+        console.log("data----", data);
+        let filterData = data.hits.map((student) => {
+          return {
+            ...student,
+            label: `${student.full_name} (${student.student_id})`,
+            value: Number(student.id),
+          };
+        });
+        // if (props?.programEnrollment && !studentFoundInList) {
+        //   filterData.unshift({
+        //     label: programEnrollmentStudent.full_name,
+        //     value: Number(programEnrollmentStudent.id),
+        //   });
+        // }
+        return filterData;
       });
   };
-
   return (
     <>
       <tr key={row.id}>
@@ -123,22 +122,22 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          <input
+          {/* <input
             className="table-input"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "student_id", e.target.value)}
-          />
+          /> */}
 
-          {/* <Select
+          <Select
             className="basic-single table-input"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="institution"
+            filterData={filterStudent}
             options={studentOptions}
             onChange={(e) => props.handleChange(e, "student_id", row.id)}
-          /> */}
+          />
         </td>
         <td>
           <Select

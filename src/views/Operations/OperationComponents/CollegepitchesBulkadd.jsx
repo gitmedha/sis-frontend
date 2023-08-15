@@ -353,29 +353,28 @@ const CollegepitchesBulkadd = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
+          {rows.length > 1 ? <button className="unset" onClick={() => deleteRow(rows.length)}>
+              <FaMinusCircle
+                style={iconStyles}
+                width="15"
+                size={40}
+                color="#000"
+                className="ml-2 mr-3"
+              />
+            </button>:""}
             {rows.length == 10 ? (
               ""
             ) : (
-              <button onClick={addRow}>
+              <button className="unset" onClick={addRow}>
                 <FaPlusCircle
                   style={iconStyles}
                   width="15"
-                  size={30}
+                  size={40}
                   color="#000"
                   className="ml-2"
                 />
               </button>
             )}
-            {/* <button onClick={handleSubmit}>Submit</button> */}
-            <button onClick={() => deleteRow(rows.length)}>
-              <FaMinusCircle
-                style={iconStyles}
-                width="15"
-                size={30}
-                color="#000"
-                className="ml-2"
-              />
-            </button>
             {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
           </div>
           <div className="table-container">
@@ -427,9 +426,9 @@ const CollegepitchesBulkadd = (props) => {
             <button
               type="button"
               onClick={onHide}
-              className="btn btn-secondary btn-regular mr-2"
+              className="btn btn-danger btn-regular mr-2"
             >
-              CANCEL
+              CLOSE
             </button>
           </div>
         </div>

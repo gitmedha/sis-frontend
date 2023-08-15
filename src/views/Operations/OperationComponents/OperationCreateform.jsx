@@ -99,11 +99,23 @@ const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
-  const [classValue,setclassValue]=useState({
-    state:false,
-    area:false,
-    topic:false
-  })
+  const [classValue,setclassValue]=useState({})
+
+  const userId = localStorage.getItem("user_id");
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [show1, setShow1] = useState(false);
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showLimit, setshowLimit] = useState(false);
+  const handleClose = () => setShow1(false);
+  const handleShow = () => setShow1(true);
   const [data, setData] = useState([
     {
       id: 1,
@@ -160,46 +172,63 @@ const OperationCreateform = (props) => {
     assigned_to: "",
     area:'',
   });
-  const [showLimit, setshowLimit] = useState(false);
+
   const addRow = () => {
     console.log(rows[rows.length-1],rows[rows.length-1].state =="");
     if(rows[rows.length-1].state ==='' || rows[rows.length-1].state !=='' ){
       console.log("state");
       if(rows[rows.length-1].state == "" || rows[rows.length-1].state === null || rows[rows.length-1].state == undefined){
         console.log("state2");
-        setclassValue({...classValue,['state']:true})
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          state:true
+        }})
         return ;
       }
       else{
-        setclassValue({...classValue,['state']:false})
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          state:false
+        }})
       }
-      
+      console.log("classValue",classValue);
      
     }
-    console.log(rows[rows.length-1],"area",rows[rows.length-1].area);
+
     if(rows[rows.length-1].area ==='' || rows[rows.length-1].area !=='' ){
-      console.log(rows[rows.length-1],"area",rows[rows.length-1].area);
+      console.log("area");
       if(rows[rows.length-1].area == "" || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined){
         console.log("area2");
-        setclassValue({...classValue,['area']:true})
-        return 
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          area:true
+        }})
+        return ;
       }
       else{
-        setclassValue({...classValue,['area']:false})
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          area:false
+        }})
       }
-      
+      console.log("classValue",classValue);
      
     }
-    // if(rows[rows.length-1].area === " " || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined  ){
-    //   setclassValue({...classValue,['area']:true})
-    //   return ;
-    // }
-    
-    if(rows[rows.length-1].topic === " " || rows[rows.length-1].topic === null || rows[rows.length-1].topic == undefined  ){
-      setclassValue({...classValue,['topic']:true})
-      return ;
+
+    if(rows[rows.length-1].topic ==='' || rows[rows.length-1].topic !=='' ){
+      console.log("topic");
+      if(rows[rows.length-1].topic == "" || rows[rows.length-1].topic === null || rows[rows.length-1].topic == undefined){
+        console.log("topic");
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          topic:true
+        }})
+        return ;
+      }
+      else{
+        setclassValue({...classValue,[`class${rows.length-1}`]:{
+          topic:false
+        }})
+      }
+      console.log("classValue",classValue);
+     
     }
-    console.log("classValue",classValue);
+   
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -208,6 +237,7 @@ const OperationCreateform = (props) => {
       // setNewRow({ id: '', name: '', age: '' });
       console.log(rows);
     }
+    // setclassValue({state:false,area:false,topic:false})
   };
 
   const handleChange = (options, key, rowid) => {
@@ -248,21 +278,7 @@ const OperationCreateform = (props) => {
     setRows(updatedRows);
   };
 
-  const userId = localStorage.getItem("user_id");
-
-  const [stateOptions, setStateOptions] = useState([]);
-  const [districtOptions, setDistrictOptions] = useState([]);
-  const [areaOptions, setAreaOptions] = useState([]);
-  const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [show1, setShow1] = useState(false);
-  const [batchOptions, setBatchOptions] = useState([]);
-  const [institutionOptions, setInstitutionOptions] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
-  const handleClose = () => setShow1(false);
-  const handleShow = () => setShow1(true);
+  
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -464,7 +480,7 @@ const OperationCreateform = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-            {rows.length > 1 ? <button onClick={() => deleteRow(rows.length)}>
+            {rows.length > 1 ? <button className="unset" onClick={() => deleteRow(rows.length)}>
               <FaMinusCircle
                 style={iconStyles}
                 width="15"
@@ -476,7 +492,7 @@ const OperationCreateform = (props) => {
             {rows.length == 10 ? (
               ""
             ) : (
-              <button onClick={addRow}>
+              <button className="unset" onClick={addRow}>
                 <FaPlusCircle
                   style={iconStyles}
                   width="15"
