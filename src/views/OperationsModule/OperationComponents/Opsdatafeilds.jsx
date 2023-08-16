@@ -144,12 +144,12 @@ const Opsdatafeilds = (props) => {
 
                   <DetailField
                     Bold={""}
-                    label="Institute"
+                    label="Donor"
                     value={props.donor ? "Yes" : "No"}
                   />
                   <DetailField
                     Bold={""}
-                    label="Institute"
+                    label="Guest"
                     value={props.guest}
                   />
                   <DetailField
