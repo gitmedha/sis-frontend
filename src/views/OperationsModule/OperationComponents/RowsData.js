@@ -177,7 +177,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input donor"
             classNamePrefix="select"
             isSearchable={true}
             name="area"

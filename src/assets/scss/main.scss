@@ -157,22 +157,26 @@ body {
   }
   
   th {
+    font-size: 0.8rem !important;
     background-color: #257b69;
     color: #ccc;
   }
   
   .table-input {
     border: 1px solid #bebfc0 ;
-    width: 15rem;
+    width: 12rem;
     padding: 0;
     margin: 0;
     background-color: transparent;
   }
+ 
   .basic-single{
     border: none !important;
   }
-  .date{
-    border: 1px solid #bebfc0 !important;;
+  .date ,.donor{
+    border: 1px solid #bebfc0 !important;
+    width: 8rem;
+
   }
   .border-red{
     border: 2px solid #ff0000 !important;

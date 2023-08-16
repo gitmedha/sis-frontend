@@ -106,7 +106,7 @@ const CollegepitchesBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);

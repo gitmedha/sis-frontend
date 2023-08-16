@@ -175,7 +175,7 @@ const UserTotRowdata = (props) => {
                     /> */}
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -201,7 +201,7 @@ const UserTotRowdata = (props) => {
                     /> */}
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
@@ -220,14 +220,7 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          {/* <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isSearchable={true}
-            name="area"
-            options={options}
-            onChange={(e) => props.handleChange(e, "donor", row.id)}
-          /> */}
+          
           <input
             className="table-input"
             type="text"

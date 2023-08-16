@@ -334,19 +334,9 @@ const AllumuniBulkAdd = (props) => {
           <div className="d-flex justify-content-between">
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-              {props.id && props.logo ? (
-                <img
-                  src={urlPath(props.logo.url)}
-                  className="avatar mr-2"
-                  alt="Student Profile"
-                />
-              ) : (
-                <div className="flex-row-centered avatar avatar-default mr-2">
-                  <FaSchool color={"#fff"} size={25} />
-                </div>
-              )}
+              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Data"}
+                {props.id ? props.full_name : "Add Alumuni Bulk Data"}
               </h2>
             </div>
           </div>
@@ -383,7 +373,7 @@ const AllumuniBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th className="id">ID</th>
+                  {/* <th className="id">ID</th> */}
                   <th>Student Name</th>
                   <th>Father Name </th>
                   <th>Email</th>
@@ -416,7 +406,14 @@ const AllumuniBulkAdd = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-start between_class">
+          <div className="d-flex justify-content-end between_class">
+          <button
+              type="button"
+              onClick={onHide}
+              className="btn btn-danger btn-regular mr-2"
+            >
+              CLOSE
+            </button>
             <button
               className="btn btn-primary btn-regular mx-0"
               type="submit"
@@ -425,13 +422,7 @@ const AllumuniBulkAdd = (props) => {
             >
               SAVE
             </button>
-            <button
-              type="button"
-              onClick={onHide}
-              className="btn btn-danger btn-regular mr-2"
-            >
-              CLOSE
-            </button>
+            
           </div>
         </div>
       </Modal.Body>
