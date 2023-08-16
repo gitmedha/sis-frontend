@@ -341,10 +341,6 @@ const OperationCreateform = (props) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
-
-      console.log(row["start_date"]);
-      // console.log(row.start_date.split('/').reverse().join('-'))
-      // row.start_date =row.start_date.split('/'/
       row.created_by = Number(userId);
       row.updated_by = userId;
       row.batch = Number(row.batch);
@@ -352,6 +348,7 @@ const OperationCreateform = (props) => {
       row.institution = Number(row.institution);
       row.students_attended = Number(row.students_attended);
       row.donor = row.donor ? true : false;
+      row.isActive=true;
       return row;
     });
 

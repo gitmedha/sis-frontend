@@ -218,6 +218,7 @@ const StudentUpkillingBulkcreate = (props) => {
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
       row.student_id =Number(row.student_id)
+      row.isActive=true;
       return row;
     });
     console.log("data",data)
