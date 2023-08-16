@@ -338,7 +338,7 @@ export const bulkCreateAlumniQueries = async(data)=>{
 
 export const deactivate_user_ops = async(id)=>{
 
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_OPERATION,
@@ -365,7 +365,7 @@ export const deactivate_user_ops = async(id)=>{
     // }
 }
 export const deactivate_user_tots = async(id)=>{
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_USER_TOT,
@@ -381,7 +381,7 @@ export const deactivate_user_tots = async(id)=>{
     })
 }
 export const deactivate_user_dte_samarth = async(id)=>{
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_SAMARTH_SDIT,
@@ -397,7 +397,7 @@ export const deactivate_user_dte_samarth = async(id)=>{
     })
 }
 export const deactivate_user_students_upskills = async(id)=>{
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_STUDENTS_UPSKILLING,
@@ -413,7 +413,7 @@ export const deactivate_user_students_upskills = async(id)=>{
     })
 }
 export const deactivate_user_alumni_query = async(id)=>{
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_ALUMNI_QUERY,
@@ -429,7 +429,7 @@ export const deactivate_user_alumni_query = async(id)=>{
     })
 }
 export const deactivate_user_college_pitch = async(id)=>{
-    let data = {"isActive":false}
+    let data = {"isactive":false}
 
     return await api.post('/graphql', {
         query:UPDATE_COLLEGE_PITCH,

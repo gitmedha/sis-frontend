@@ -33,7 +33,7 @@ const operationFields = `
     username
     id
   }
-  isActive
+  isactive
 `
 
 
@@ -193,7 +193,7 @@ export const GET_OPERATIONS = `
             sort: $sort,
             start: $start,
             limit:$limit,
-            where:{isActive:true}
+            where:{isactive:true}
         ){
             values {
                 ${operationFields}
@@ -211,7 +211,7 @@ export const GET_USERSTOTS = `
             sort:$sort,
             start:$start,
             limit:$limit,
-            where:{isActive:true}
+            where:{isactive:true}
         ){
             values {
                 ${usersTotsFields}
@@ -229,7 +229,7 @@ export const GET_STUDENTS_UPSKILLINGS = `
             sort:$sort,
             start:$start,
             limit:$limit,
-            where:{isActive:true}
+            where:{isactive:true}
         ){
             values {
                 ${studentUpskillingFields}
@@ -247,7 +247,7 @@ export const GET_DTE_SAMARTH_SDITS = `
             sort:$sort,
             start:$start,
             limit:$limit,
-            where:{isActive:true}
+            where:{isactive:true}
         ){
             values {
                 ${dteSamarthSditFields}
@@ -266,7 +266,7 @@ export const GET_ALUMNI_QUERIES = `
             sort:$sort,
             start:$start,
             limit:$limit,
-            where:{isActive:true}
+            where:{isactive:true}
         ){
             values {
                 ${alumniQueriesFields}
@@ -284,7 +284,7 @@ export const GET_COLLEGE_PITCHES = `
         sort:$sort,
         start:$start,
         limit:$limit,
-        where:{isActive:true}
+        where:{isactive:true}
     ){
         values {
             ${collegePitchesFields}
