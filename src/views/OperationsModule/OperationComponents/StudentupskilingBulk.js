@@ -187,7 +187,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -213,7 +213,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
@@ -224,7 +224,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input date"
             classNamePrefix="select"
             isSearchable={true}
             name="area"

@@ -217,11 +217,11 @@ const StudentUpkillingBulkcreate = (props) => {
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
-      row.student_id =Number(row.student_id)
-      row.isActive=true;
+      row.student_id = Number(row.student_id);
+      row.isActive = true;
       return row;
     });
-    console.log("data",data)
+    console.log("data", data);
 
     try {
       const value = await bulkCreateStudentsUpskillings(data);
@@ -333,19 +333,8 @@ const StudentUpkillingBulkcreate = (props) => {
           <div className="d-flex justify-content-between">
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-              {props.id && props.logo ? (
-                <img
-                  src={urlPath(props.logo.url)}
-                  className="avatar mr-2"
-                  alt="Student Profile"
-                />
-              ) : (
-                <div className="flex-row-centered avatar avatar-default mr-2">
-                  <FaSchool color={"#fff"} size={25} />
-                </div>
-              )}
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Data"}
+                {props.id ? props.full_name : "Add Students Data"}
               </h2>
             </div>
           </div>
@@ -354,15 +343,19 @@ const StudentUpkillingBulkcreate = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-          {rows.length > 1 ? <button className="unset" onClick={() => deleteRow(rows.length)}>
-              <FaMinusCircle
-                style={iconStyles}
-                width="15"
-                size={40}
-                color="#000"
-                className="ml-2 mr-3"
-              />
-            </button>:""}
+            {rows.length > 1 ? (
+              <button className="unset" onClick={() => deleteRow(rows.length)}>
+                <FaMinusCircle
+                  style={iconStyles}
+                  width="15"
+                  size={40}
+                  color="#000"
+                  className="ml-2 mr-3"
+                />
+              </button>
+            ) : (
+              ""
+            )}
             {rows.length == 10 ? (
               ""
             ) : (
@@ -415,7 +408,14 @@ const StudentUpkillingBulkcreate = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-start between_class">
+          <div className="d-flex justify-content-end between_class">
+            <button
+              type="button b"
+              onClick={onHide}
+              className="btn-box btn btn-danger redbtn btn-regular mr-2"
+            >
+              CLOSE
+            </button>
             <button
               className="btn btn-primary btn-regular text-light mx-0"
               type="submit"
@@ -423,13 +423,6 @@ const StudentUpkillingBulkcreate = (props) => {
               disabled={disableSaveButton}
             >
               SAVE
-            </button>
-            <button
-              type="button b"
-              onClick={onHide}
-              className="btn-box btn btn-danger redbtn btn-regular mr-2"
-            >
-              CANCEL
             </button>
           </div>
         </div>

@@ -86,7 +86,7 @@ const DteUpskilingBulk = (props) => {
   return (
     <>
       <tr key={row.id}>
-        <td>{row.id}</td>
+        {/* <td>{row.id}</td> */}
         <td>
           <input
             className="table-input"
@@ -166,7 +166,7 @@ const DteUpskilingBulk = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -272,7 +272,7 @@ const DteUpskilingBulk = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);

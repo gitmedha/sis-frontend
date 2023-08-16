@@ -70,7 +70,7 @@ const AlumunniBulkrow = (props) => {
   return (
     <>
       <tr key={row.id}>
-        <td>{row.id}</td>
+        {/* <td>{row.id}</td> */}
         <td>
           <input
             className="table-input"
@@ -125,7 +125,7 @@ const AlumunniBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -138,7 +138,7 @@ const AlumunniBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -168,7 +168,7 @@ const AlumunniBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input"
+            className="table-input date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);

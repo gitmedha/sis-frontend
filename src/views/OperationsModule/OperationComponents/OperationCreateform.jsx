@@ -546,7 +546,14 @@ const OperationCreateform = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-start between_class">
+          <div className="d-flex justify-content-end between_class">
+          <button
+              type="button"
+              onClick={onHide}
+              className="btn btn-danger btn-regular mr-5"
+            >
+              CLOSE
+            </button>
             <button
               className="btn btn-primary btn-regular mx-0 text-light"
               type="submit"
@@ -555,13 +562,7 @@ const OperationCreateform = (props) => {
             >
               SAVE
             </button>
-            <button
-              type="button"
-              onClick={onHide}
-              className="btn btn-danger btn-regular mr-5"
-            >
-              CLOSE
-            </button>
+            
           </div>
         </div>
       </Modal.Body>
