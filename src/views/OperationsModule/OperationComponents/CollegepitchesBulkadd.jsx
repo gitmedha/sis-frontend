@@ -213,10 +213,9 @@ const CollegepitchesBulkadd = (props) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
-      // row.created_by = userId;
-      // row.state=Number(row.state)
-      // row.district=Number(row.district)
-      // row.updated_by = userId;
+      row.isActive=true;
+      row.created_by = Number(userId);
+      row.updated_by = Number(userId);
 
       return row;
     });

@@ -48,6 +48,11 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
+const options = [
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: 'No' }
+]
+
 const OperationDataupdateform = (props) => {
   console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
@@ -351,12 +356,16 @@ const OperationDataupdateform = (props) => {
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
+                          icon="down"
+                          control="lookup"
                           name="donor"
                           label="Donor"
+                          required
+                          options={options}
                           className="form-control"
-                          placeholder="Type Yes/No"
+                          placeholder="New Entry"
                         />
+
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input

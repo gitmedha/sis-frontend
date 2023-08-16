@@ -267,10 +267,11 @@ const UserTot = (props) => {
       console.log(row['start_date'])
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
-      row.created_by=Number(userId)
       row.updated_by =Number(userId)
       row.trainer_1=Number(row.trainer_1?24:24)
       row.trainer_2=Number(row.trainer_2?54:54)
+      row.isActive=true;
+      row.created_by = Number(userId);
       delete row.start_date;
       delete row.end_date
       return row
