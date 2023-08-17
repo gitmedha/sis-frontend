@@ -493,11 +493,3 @@ export const UPDATE_COLLEGE_PITCH = `
         }
     }
 `
-
-// export const DEACTIVE_USER_OPS = `
-//     mutation DEACTIVE_USER_OPS(
-
-//     )
-
-
-// `

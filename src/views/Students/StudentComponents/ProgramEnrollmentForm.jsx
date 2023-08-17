@@ -36,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student,programEnrollment } = props;
+  let { onHide, show, student,programEnrollment,allBatches } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -51,6 +51,7 @@ const ProgramEnrollmentForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
   const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -192,6 +193,49 @@ const ProgramEnrollmentForm = (props) => {
     setOthertargetValue({course1:false,course2:false})
   },[programEnrollment])
 
+
+  const handleBatchChange = async (e)=> {
+
+    if(props.programEnrollment){
+      let found = false;
+      allBatches.forEach(element => {
+        console.log(e.id,props.programEnrollment.batch.id, element.batch.id)
+        if(props.programEnrollment.batch.id == e.id){
+          found = false
+        }
+  
+        else if(e.id == element.batch.id){
+          found = true
+        }
+      });
+
+      if(found){
+        setShowDuplicateWarning(true)
+        setTimeout(() => {
+          setShowDuplicateWarning(false)
+        }, 4000);
+      }
+
+      
+    }
+    else if(props.allBatches) {
+      let found = false
+      allBatches.forEach(element => {
+  
+        if(e.id == element.batch.id){
+          found = true
+        }
+      });
+
+      if(found){
+        setShowDuplicateWarning(true)
+        setTimeout(() => {
+          setShowDuplicateWarning(false)
+        }, 4000);
+      }
+     
+    }
+  }
  
   return (
     <Modal
@@ -257,10 +301,13 @@ const ProgramEnrollmentForm = (props) => {
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
+                      onChange={(e)=>handleBatchChange(e)}
                     />
                     ) : (
                       <Skeleton count={1} height={60} />
                     )}
+
+                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>this batch has already assigned for this user, Please select again</div>}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
