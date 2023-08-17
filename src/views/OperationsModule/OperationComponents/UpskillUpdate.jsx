@@ -202,15 +202,18 @@ const UpskillUpdate = (props) => {
   };
 
   const onSubmit = async (values) => {
-    delete values["start_date"];
-    delete values["end_date"];
-    delete values["published_at"];
-    values["student_id"] = 57588;
-    values["assigned_to"] = Number(values["assigned_to"]);
-    console.log("values..........", values);
-    const value = await updateStudetnsUpskills(Number(props.id), values);
+
+    const newObject = {...values};
+   
+    newObject["student_id"] = 57588;
+    newObject["assigned_to"] = Number(values["assigned_to"]);
+
+    newObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
+    newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
+   
+    const value = await updateStudetnsUpskills(Number(props.id), newObject);
     setDisableSaveButton(true);
-    onHide(values);
+    onHide(value);
     setDisableSaveButton(false);
   };
   function formatDateStringToIndianStandardTime(dateString) {

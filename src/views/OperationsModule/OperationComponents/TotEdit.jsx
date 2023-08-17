@@ -175,35 +175,35 @@ const TotEdit = (props) => {
   }, [props]);
 
   const onSubmit = async (values) => {
-    console.log("values----------->", values);
+    
 
-    values.start_date = values?.start_date
+    const newObject = {...values};
+
+
+    newObject.start_date = values?.start_date
       ? values.start_date.toISOString().split("T")[0]
       : currentDate.toDateString().split("T")[0];
 
-    values.end_date = values?.end_date
+      newObject.end_date = values?.end_date
       ? values.end_date.toISOString().split("T")[0]
       : "";
 
-    values.published_at = values?.published_at
-      ? values.published_at.toISOString().split("T")[0]
+      newObject.published_at = values?.published_at
+      ? values.published_at
       : "";
     // delete values["start_date"];
     // delete values["end_date"];
     delete values["published_at"];
     delete values["trainer_1"];
     delete values["trainer_2"];
-    const value = await updateUserTot(Number(props.id), values);
+    const value = await updateUserTot(Number(props.id), newObject);
 
     setDisableSaveButton(true);
-    onHide(values);
+    onHide(value);
     
     setDisableSaveButton(false);
   };
 
-  const userId = localStorage.getItem("user_id");
-
-  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     start_date: "",
     end_date: "",
