@@ -156,13 +156,17 @@ const AllumuniEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->", values);
-    // delete values["query_start"];
-    // delete values["query_end"];
-    delete values['published_at'];
-    const value = await updateAlumniQuery(Number(props.id), values);
+    
+
+    const newObject  = {...values}
+
+    newObject["query_start"] = moment(values["query_start"]).format("YYYY-MM-DD");
+    newObject["query_end"] = moment(values["query_end"]).format("YYYY-MM-DD");
+
+    delete newObject['published_at'];
+    const value = await updateAlumniQuery(Number(props.id), newObject);
     setDisableSaveButton(true);
-    onHide(values);
+    onHide(value);
     setDisableSaveButton(false);
   };
 

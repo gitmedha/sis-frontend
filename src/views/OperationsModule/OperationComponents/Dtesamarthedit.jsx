@@ -175,12 +175,10 @@ const Dtesamarthedit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("values----------->", values);
-    // delete values['dob']
-    // delete values['doj']
+  
     const value =await updateSamarthSdit(Number(props.id),values)
     setDisableSaveButton(true);
-    onHide(values);
+    onHide(value);
     setDisableSaveButton(false);
   };
 
