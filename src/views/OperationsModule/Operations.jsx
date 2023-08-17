@@ -147,7 +147,7 @@ const Operations = (props) => {
       },
 
       {
-        Header: "Propject Name",
+        Header: "Project Name",
         accessor: "project_name",
       },
 
