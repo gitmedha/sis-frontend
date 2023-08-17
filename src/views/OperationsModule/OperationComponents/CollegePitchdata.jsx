@@ -59,12 +59,8 @@ const CollegePitchdata = (props) => {
       onHide();
     }
   };
-  useEffect(() => {
-    console.log("props", props);
-    // setoperationdata(props)
-  }, []);
+
   const updatevalue = () => {
-    console.log("hello");
     setShowModal(true);
   };
   const closeThepopup = async () => {

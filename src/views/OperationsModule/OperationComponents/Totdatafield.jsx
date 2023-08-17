@@ -61,11 +61,9 @@ const Totdatafield = (props) => {
     
   };
   useEffect(() => {
-    console.log("props", props);
     setoperationdata(props);
   }, [props]);
   const updatevalue = () => {
-    console.log("hello");
     setShowModal(true);
   };
   const closeThepopup =async () =>{

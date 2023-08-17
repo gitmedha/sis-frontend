@@ -1,8 +1,6 @@
 import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
-import { uploadFile } from "../../components/content/Utils";
-import moment from "moment";
 import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
@@ -15,14 +13,12 @@ import {
   GET_USERSTOTS,
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
-import Tabs from "../../components/content/Tabs";
 import Table from "../../components/content/Table";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
-import axios from "axios";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
@@ -34,7 +30,6 @@ import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
-import { deactivate_user_ops } from "./OperationComponents/operationsActions";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -157,7 +152,7 @@ const Operations = (props) => {
       },
 
       {
-        Header: "Batch",
+        Header: "Project Department",
         accessor: "partner_dept",
       },
       {
@@ -208,6 +203,7 @@ const Operations = (props) => {
         Header: "Student Name",
         accessor: "student_name",
       },
+     
 
       {
         Header: "Institute Name",
@@ -331,10 +327,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log(
-            "data",
-            data.data.data.usersOpsActivitiesConnection.values
-          );
           setOpts(data.data.data.usersOpsActivitiesConnection.values);
           setoptsAggregate(
             data.data.data.usersOpsActivitiesConnection.aggregate
@@ -355,7 +347,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.usersTotsConnection.values);
           setOpts(data.data.data.usersTotsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -375,10 +366,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log(
-            "data12",
-            data.data.data.studentsUpskillingsConnection.values
-          );
           setOpts(data.data.data.studentsUpskillingsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -397,10 +384,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log(
-            "data12",
-            data.data.data.dteSamarthSditsConnection.values
-          );
           setOpts(data.data.data.dteSamarthSditsConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -419,7 +402,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.alumniQueriesConnection);
           setOpts(data.data.data.alumniQueriesConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -438,7 +420,6 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
-          console.log("data12", data.data.data.collegePitchesConnection.values);
           setOpts(data.data.data.collegePitchesConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -450,61 +431,230 @@ const Operations = (props) => {
           nProgress.done();
         });
     }
-    // GET_COLLEGE_PITCHES
-    // dtesamarth
   };
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      if (sortBy.length) {
-        let sortByField = "full_name";
-        let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-        switch (sortBy[0].id) {
-          case "area":
-          case "assigned_to.username":
-          case "activity_type":
-          case "batch.name":
-            sortByField = sortBy[0].id;
-            break;
-
-          default:
-            sortByField = "full_name";
-            break;
+      if(activeTab.key =="my_data"){
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "area":
+            case "assigned_to.username":
+            case "activity_type":
+            case "batch.name":
+              sortByField = sortBy[0].id;
+              break;
+  
+            default:
+              sortByField = "assigned_to.username";
+              break;
+          }
+  
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
         }
-
-        getoperations(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex,
-          sortByField,
-          sortOrder
-        );
-      } else {
-        getoperations(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex
-        );
       }
+      if(activeTab.key == "useTot"){
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "user_name":
+            case "city":
+            case "project_name":
+            case "partner_dept":
+              sortByField = sortBy[0].id;
+              break;
+  
+            default:
+              sortByField ='user_name';
+              break;
+          }
+          
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if(activeTab.key == "upskilling"){
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "assigned_to.username":
+            case "student_id.full_name":
+            case "institution.name":
+            case "course_name":
+              sortByField = sortBy[0].id;
+              break;
+            
+  
+            default:
+              sortByField="course_name";
+              break;
+          }
+          
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if(activeTab.key == "dtesamarth"){
+
+        if (sortBy.length) {
+          let sortByField ;
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "student_name":
+            case "institution_name":
+            case "course_name":
+              sortByField = sortBy[0].id;
+              break;
+            
+  
+            default:
+              break;
+          }
+          
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if(activeTab.key == "AlumniQueries"){
+        if (sortBy.length) {
+          let sortByField ;
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "student_name":
+            case "father_name":
+            case "query_start":
+            case "query_end":
+              sortByField = sortBy[0].id;
+              break;
+            default:
+              break;
+          }
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } 
+      }
+      if(activeTab.key == "collegePitches"){
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "student_name":
+            case "area":
+            case "college_name":
+            case "course_name":
+              sortByField = sortBy[0].id;
+              break;
+            
+  
+            default:
+              sortByField = "student_name";
+              break;
+          }
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      
+      // else{
+      //   console.log("Ashjhdsj");
+      //   getoperations(
+      //     activeStatus,
+      //     activeTab.key,
+      //     pageSize,
+      //     pageSize * pageIndex
+      //   );
+      // }
+     
     },
     [activeTab.key, activeStatus]
   );
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
-  }, [activeTab]);
+  }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
   const hideShowModal = async (key, data) => {
-    console.log("Data",data);
     if (!data || data.isTrusted) {
-      
-      // deactivate_user_ops(id,fieldToUpdate="isActive",newValue = false)
       getoperations()
       setShowModal({ ...showModal, [key]: data });
       return;
@@ -523,9 +673,7 @@ const Operations = (props) => {
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
   };
-  useEffect(() => {
-    console.log(showModal);
-  }, [showModal]);
+
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -704,8 +852,6 @@ const Operations = (props) => {
               onHide={() => hideShowModal("collegePitches", false)}
             />
           )}
-          {/* CollegePitchdata */}
-          {/* collegePitches */}
         </div>
       </Styled>
     </Collapse>
