@@ -59,11 +59,9 @@ const Upskillingdatafield = (props) => {
     }
   };
   useEffect(() => {
-    console.log("props", props);
     setoperationdata(props);
   }, []);
   const updatevalue = () => {
-    console.log("hello");
     setshowedit(true);
   };
 

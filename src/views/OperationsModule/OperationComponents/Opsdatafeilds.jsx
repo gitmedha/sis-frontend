@@ -78,14 +78,8 @@ const Opsdatafeilds = (props) => {
     }
 
   };
-  useEffect(() => {
-    console.log("props", props);
-
-    // deactivate_user_ops(2223);
-    // setoperationdata(props)
-  }, []);
+ 
   const updatevalue = () => {
-    console.log("hello");
     setShowModal(true);
   };
 
@@ -278,7 +272,6 @@ const Opsdatafeilds = (props) => {
           {...operationdata}
           show={showModal}
           onHide={hideShowModal1}
-          closeopsedit={() => console.log("helllo")}
         />
       )}
 
