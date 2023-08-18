@@ -3,7 +3,10 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
-import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import {
+  getAllSrm,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
 
 const UserTotRowdata = (props) => {
   const [rows, setRows] = useState([
@@ -30,6 +33,7 @@ const UserTotRowdata = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [srmOption,setsrmOption]=useState([])
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -48,6 +52,11 @@ const UserTotRowdata = (props) => {
     });
     props.updateRow(rowid, field, value.value);
   };
+  useEffect(async () => {
+    let data = await getAllSrm(1);
+    setsrmOption(data)
+    // console.log("SRM ", data);
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -76,25 +85,21 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          {/* <Select
-                        className="basic-single table-input"
-                        classNamePrefix="select"
-                        // defaultValue={institutionOptions[0]}
-                        // isDisabled={isDisabled}
-                        // isLoading={true}
-                        isClearable={true}
-                        // isRtl={isRtl}
-                        isSearchable={true}
-                        name="institution"
-                        options={props.institutiondata}
-                        onChange={(e) => props.handleChange(e, "institution", row.id)}
-
-                    /> */}
-          <input
+         
+          {/* <input
             className="table-input"
             type="number"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "trainer_1", e.target.value)}
+          /> */}
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="tariner_1"
+            options={srmOption}
+            onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
           />
         </td>
         <td>
@@ -220,7 +225,6 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          
           <input
             className="table-input"
             type="text"
@@ -237,10 +241,19 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          <input
+          {/* <input
             className="table-input"
             type="number"
             onChange={(e) => updateRow(row.id, "trainer_2", e.target.value)}
+          /> */}
+           <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="trainer_2"
+            options={srmOption}
+            onChange={(e) => props.handleChange(e, "trainer_2", row.id)}
           />
         </td>
         <td>
