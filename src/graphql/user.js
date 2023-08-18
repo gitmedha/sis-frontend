@@ -23,3 +23,15 @@ query GET_ALL_USERS($name:String) {
   }
 }
 `;
+export const GET_USERS_BY_ROLE =`
+  query GET_ALL_USERS($roleid:Int){
+    users(
+      sort:"username:asc"
+      where:{role:$roleid }
+    ){
+      id,
+      username,
+      email,
+    }
+  }
+`

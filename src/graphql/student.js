@@ -486,3 +486,16 @@ export const DELETE_ALUMNI_SERVICE = `
     }
   }
 `;
+
+
+export const GET_ALL_STUDENT = `
+  query GET_STUDENT($id: ID!) {
+    student(
+      sort:"username:asc"
+    ) {
+      id,
+      username,
+      email,
+    }
+  }
+`;
