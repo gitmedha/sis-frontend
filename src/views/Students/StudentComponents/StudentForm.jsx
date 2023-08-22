@@ -404,7 +404,7 @@ const StudentForm = (props) => {
                       label="Address"
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -422,7 +422,7 @@ const StudentForm = (props) => {
                       control="input"
                       name="city"
                       label="City"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="City"
                       required
                     />

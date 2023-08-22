@@ -183,7 +183,7 @@ const EmployerForm = (props) => {
                       label="Name"
                       control="input"
                       placeholder="Name"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -265,7 +265,7 @@ const EmployerForm = (props) => {
                       label="Address"
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -284,7 +284,7 @@ const EmployerForm = (props) => {
                       control="input"
                       name="city"
                       label="City"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="City"
                       required
                     />
@@ -359,7 +359,7 @@ const EmployerForm = (props) => {
                               name={`contacts.${index}.full_name`}
                               label="Name"
                               placeholder="Name"
-                              className="form-control"
+                              className="form-control capitalize"
                               required
                               />
                           </div>
@@ -388,7 +388,7 @@ const EmployerForm = (props) => {
                               name={`contacts.${index}.designation`}
                               control="input"
                               label="Designation"
-                              className="form-control"
+                              className="form-control capitalize"
                               placeholder="Designation"
                               required
                             />

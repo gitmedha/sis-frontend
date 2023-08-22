@@ -223,7 +223,7 @@ const InstitutionForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -399,7 +399,7 @@ const InstitutionForm = (props) => {
                       required
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -474,7 +474,7 @@ const InstitutionForm = (props) => {
                       label="City"
                       required
                       placeholder="City"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -508,7 +508,7 @@ const InstitutionForm = (props) => {
                                 label="Name"
                                 required
                                 placeholder="Name"
-                                className="form-control"
+                                className="form-control capitalize"
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -518,7 +518,7 @@ const InstitutionForm = (props) => {
                                 required
                                 control="input"
                                 placeholder="Email"
-                                className="form-control"
+                                className="form-control "
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -537,7 +537,7 @@ const InstitutionForm = (props) => {
                                 control="input"
                                 label="Designation"
                                 required
-                                className="form-control"
+                                className="form-control capitalize"
                                 placeholder="Designation"
                               />
                             </div>
