@@ -20,10 +20,24 @@ import {
     GET_COLLEGE_PITCHES,
     CREATE_COLLEGE_PITCH,
     UPDATE_COLLEGE_PITCH
-    
 } from "../../../graphql/operations";
 
 
+
+export const getSearchOps = async(searchField,value)=>{
+    const authToken =localStorage.getItem('token')
+    
+    const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', }
+
+    return await api.post('/users-ops-activities/search', {
+        "searchField":searchField,
+        "searchValue":value
+    },{headers})
+    .then(data=>data)
+    .catch(error=>Promise.reject(error));
+
+
+}
 export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
     const authToken =localStorage.getItem('token')
     

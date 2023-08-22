@@ -1,0 +1,1 @@
+export const SEARCH_OPS = 'SEARCH_OPS'

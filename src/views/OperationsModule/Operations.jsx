@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback ,Fragment} from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -30,6 +30,7 @@ import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
+import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -693,6 +694,8 @@ const Operations = (props) => {
           </div>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
+              <Fragment>
+                <OpsSearchDropdown searchOptions={columns}/>
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
@@ -704,6 +707,8 @@ const Operations = (props) => {
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </Fragment>
+              
             ) : activeTab.key == "useTot" ? (
               <Table
                 onRowClick={(data) => showRowData("totdata", data)}
