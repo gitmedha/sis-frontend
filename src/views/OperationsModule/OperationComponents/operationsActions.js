@@ -38,6 +38,7 @@ export const getSearchOps = async(searchField,value)=>{
 
 
 }
+
 export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{
     const authToken =localStorage.getItem('token')
     

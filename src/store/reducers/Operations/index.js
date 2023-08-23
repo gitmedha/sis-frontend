@@ -5,10 +5,10 @@ const INIT_STATE = {
 }
 
 const Operations = (state = INIT_STATE, {type,payload}) =>{
-
+    
     switch(type){
         case SEARCH_OPS:
-            return [...state]
+            return [...payload.data]
         default:
             break;
     };

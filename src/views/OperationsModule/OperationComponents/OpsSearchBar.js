@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import { Input } from '../../../utils/Form';
 import { Formik, FieldArray, Form } from 'formik';
 import styled from "styled-components";
-import {getSearchOps} from './operationsActions';
 import {searchOperationTab} from '../../../store/reducers/Operations/actions';
 
 const Section = styled.div`
@@ -24,9 +23,9 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const OpsSearchDropdown = function OpsSearchBar({searchOptions}) {
+const OpsSearchDropdown = function OpsSearchBar({searchOptions,searchOperationTab}) {
 
-    const [options, setSearchOptions] = useState(
+    const [options] = useState(
         searchOptions.map(object => ({
           key: object.Header,
           value: object.Header,
@@ -43,8 +42,7 @@ const OpsSearchDropdown = function OpsSearchBar({searchOptions}) {
         console.log("values", values)
 
         // await getSearchOps("activity_type","Coding");
-
-        await searchOperationTab('activiy_type', 'Coding')
+        await searchOperationTab('activity_type', 'Coding')
     }
 
 
@@ -95,4 +93,4 @@ const OpsSearchDropdown = function OpsSearchBar({searchOptions}) {
 }
 
 
-export default OpsSearchDropdown;
+export default connect(null, {searchOperationTab})(OpsSearchDropdown);

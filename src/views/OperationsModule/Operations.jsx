@@ -694,8 +694,8 @@ const Operations = (props) => {
           </div>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
-              <Fragment>
-                <OpsSearchDropdown searchOptions={columns}/>
+              <>
+              <OpsSearchDropdown searchOptions={columns} />
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
@@ -707,7 +707,7 @@ const Operations = (props) => {
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
-              </Fragment>
+              </>
               
             ) : activeTab.key == "useTot" ? (
               <Table
