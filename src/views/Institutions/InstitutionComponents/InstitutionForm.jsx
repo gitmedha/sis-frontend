@@ -39,7 +39,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show ,showExistModal} = props;
+  let { onHide, show} = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -49,6 +49,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const [isDuplicate,setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
@@ -125,11 +126,6 @@ const InstitutionForm = (props) => {
 
   const onSubmit = async (values) => {
 
-    const isDuplicate =  await FindDuplicate(values.name)
-
-   if(isDuplicate){
-    showExistModal()
-   }
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -181,17 +177,19 @@ const InstitutionForm = (props) => {
     initialValues["mou"] = [];
   }
 
-  const FindDuplicate = async (name) =>{
+  const FindDuplicate = async (setValue,name) =>{
+    setValue('name',name)
+
     try {
       const {data} = await api.post('/institutions/findDuplicate', {
         "name": name
       })
 
       if(data === 'Record Found'){
-        return true;
+        return setDuplicate(true);
       }
       else if(data === 'Record Not Found') {
-        return false
+        return setDuplicate(false);
       }
       
     } catch (error) {
@@ -248,8 +246,10 @@ const InstitutionForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
+                      onChange={(e)=>FindDuplicate(setFieldValue,e.target.value)}
                       className="form-control capitalize"
                     />
+                     {(isDuplicate && !props.id) ? <p style={{color:'red'}}>this instituition is already exists, please try again different</p>: <p></p>}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (

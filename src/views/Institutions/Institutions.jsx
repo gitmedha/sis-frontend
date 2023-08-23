@@ -20,7 +20,6 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import NP from "nprogress";
 import Collapse from "../../components/content/CollapsiblePanels";
-import SweetAlert from "react-bootstrap-sweetalert";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -253,16 +252,6 @@ const Institutions = (props) => {
       });
   };
 
-  const showExistAlert = async()=>{
-    setModalShow(false);
-    setShowDeleteAlert(true)
-  }
-
-  const closeDuplicateAlertModal = ()=>{
-    setShowDeleteAlert(false);
-    setModalShow(true)
-  }
-
   return (
     <Collapse title="INSTITUTIONS" type="plain" opened={true}>
       <div className="row m-3">
@@ -289,31 +278,7 @@ const Institutions = (props) => {
           show={modalShow}
           onHide={hideCreateModal}
           errors={formErrors}
-          showExistModal={showExistAlert}
         />
-        <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          title={
-            <span className="text--primary latto-bold">Institution Already Exists</span>
-          }
-          customButtons={
-            <>
-              <button
-                onClick={closeDuplicateAlertModal}
-                className="btn btn-secondary mx-2 px-4"
-              >
-                Enter Again
-              </button>
-              <button onClick={() => setShowDeleteAlert(false)} className="btn btn-danger mx-2 px-4">
-                Cancel
-              </button>
-            </>
-          }
-        >
-        </SweetAlert>
       </div>
     </Collapse>
   );
