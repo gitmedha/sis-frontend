@@ -287,7 +287,7 @@ const OpportunityForm = (props) => {
                       label="Role/Designation"
                       control="input"
                       placeholder="Role/Designation"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -382,7 +382,7 @@ const OpportunityForm = (props) => {
                       control="input"
                       label="Skills Required"
                       placeholder="Skills Required"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -392,7 +392,7 @@ const OpportunityForm = (props) => {
                       control="textarea"
                       label="Description"
                       placeholder="Description"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -408,7 +408,7 @@ const OpportunityForm = (props) => {
                       label="Address"
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -468,7 +468,7 @@ const OpportunityForm = (props) => {
                       control="input"
                       name="city"
                       label="City"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="City"
                       required
                     />
