@@ -113,7 +113,7 @@ const AlumniServices = (props) => {
         accessor: 'end_date_formatted',
       },
       {
-        Header: 'Fee Submission Date',
+        Header: 'Contribution Submission Date',
         accessor: 'fee_submission_date_formatted',
       },
       {
