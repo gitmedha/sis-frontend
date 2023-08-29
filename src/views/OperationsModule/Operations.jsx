@@ -439,19 +439,13 @@ const Operations = ({opsData,setAlert,isLoading}) => {
 useEffect(()=>{
 
   if(!isLoading){
-    let mappedArray = [];
-    for(let element = 0; element<pageSize;element++){
-      mappedArray.push(opsData[element]);
-
-    }
-    setSearchedData(mappedArray);
+    fetchSearchedData(0,pageSize, [])
   }
 }, [isLoading])
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
       if(activeTab.key =="my_data"){
-        console.log("called",)
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -690,7 +684,7 @@ useEffect(()=>{
     setShowModal({ ...showModal, [key]: true });
   };
 
-  const fetchSearchedData = (pageIndex, pageSize, sortBy)=>{
+  const fetchSearchedData = useCallback((pageIndex, pageSize, sortBy)=>{
     let startFrom;
     let filteredArray = [];
     if(sortBy.length){
@@ -721,7 +715,7 @@ useEffect(()=>{
     }
 
     setSearchedData(filteredArray);
-  }
+  },[isLoading])
 
 
 
