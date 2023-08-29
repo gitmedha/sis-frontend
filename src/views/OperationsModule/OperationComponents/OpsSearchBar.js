@@ -39,10 +39,13 @@ const OpsSearchDropdown = function OpsSearchBar({searchOptions,searchOperationTa
     }
 
     const handleSubmit = async(values) =>{
-        console.log("values", values)
 
-        // await getSearchOps("activity_type","Coding");
-        await searchOperationTab('activity_type', 'Coding')
+      let searchField;
+      if(values.search_by_field === "Activity type"){
+        searchField = "activity_type";
+      }
+
+        await searchOperationTab(searchField,values.search_by_value)
     }
 
 

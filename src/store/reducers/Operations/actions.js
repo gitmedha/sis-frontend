@@ -6,8 +6,6 @@ export const searchOperationTab = (searchField,value) => async(dispatch)=>{
     const authToken =localStorage.getItem('token')
     
     const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', }
-
-    console.log("wor")
    
     try {
         const data = await api.post('/users-ops-activities/search', {

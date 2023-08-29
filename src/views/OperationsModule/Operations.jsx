@@ -57,7 +57,7 @@ const Styled = styled.div`
   }
 `;
 
-const Operations = (props) => {
+const Operations = ({opsData,setAlert,isLoading}) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
@@ -66,7 +66,6 @@ const Operations = (props) => {
     alumniQueriesdata: false,
     collegePitches: false,
   });
-  const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [opts, setOpts] = useState([]);
@@ -86,6 +85,7 @@ const Operations = (props) => {
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
+  const [searchedData,setSearchedData] = useState([]);
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
@@ -305,6 +305,7 @@ const Operations = (props) => {
     []
   );
 
+
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -434,9 +435,23 @@ const Operations = (props) => {
     }
   };
 
+
+useEffect(()=>{
+
+  if(!isLoading){
+    let mappedArray = [];
+    for(let element = 0; element<pageSize;element++){
+      mappedArray.push(opsData[element]);
+
+    }
+    setSearchedData(mappedArray);
+  }
+}, [isLoading])
+
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
       if(activeTab.key =="my_data"){
+        console.log("called",)
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -675,6 +690,40 @@ const Operations = (props) => {
     setShowModal({ ...showModal, [key]: true });
   };
 
+  const fetchSearchedData = (pageIndex, pageSize, sortBy)=>{
+    let startFrom;
+    let filteredArray = [];
+    if(sortBy.length){
+      const {id,desc} = sortBy[0];
+      let searchByField = 'area';
+
+      if(id === "assigned_to.username"){
+
+      }
+      const sortedData = [...searchedData];
+      sortedData.sort((a,b)=>{
+        const valueA = a[searchByField];
+        const valueB = b[searchByField];
+        
+  return valueA.localeCompare(valueB);
+
+      });
+
+    setSearchedData(sortedData)
+    
+    }
+
+    startFrom = ((pageIndex+1)*pageSize)-pageSize;
+
+    for(let element=0; element<pageSize; element++ ){
+      filteredArray.push(opsData[startFrom])
+      startFrom++
+    }
+
+    setSearchedData(filteredArray);
+  }
+
+
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -699,9 +748,9 @@ const Operations = (props) => {
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading ?opts: searchedData}
+                totalRecords={isLoading ?optsAggregate.count :opsData.length}
+                fetchData={isLoading?fetchData:fetchSearchedData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -863,7 +912,10 @@ const Operations = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  opsData:state.Operations.data,
+  isLoading:state.Operations.loading
+});
 
 const mapActionsToProps = {
   setAlert,
