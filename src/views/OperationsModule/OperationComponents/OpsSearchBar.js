@@ -57,8 +57,8 @@ const OpsSearchDropdown = function OpsSearchBar({searchOptions,searchOperationTa
             >
             <Form>
                 <Section>
-                    <div className="row">
-                        <div className='col-lg-2 col-md-6 col-sm-12 mb-2'>
+                    <div className="row align-items-center">
+                        <div className='col-lg-2 col-md-4 col-sm-12 mb-2'>
                             <Input
                                 icon="down"
                                 name="search_by_field"
@@ -68,24 +68,25 @@ const OpsSearchDropdown = function OpsSearchBar({searchOptions,searchOperationTa
                                 className="form-control"
                             />
                         </div>
-                        <div className='col-lg-3 col-md-6 col-sm-12 mb-2'>
+                        <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
                             className="form-control"
                             />
-                        </div>   
-                    </div>
-                </Section>
-                <div className="d-flex justify-content-start mb-2">
+                        </div>
+                        <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
+                        <button className="btn btn-primary btn-regular" type="submit">
+                        FIND
+                    </button>
                     <button  className="btn btn-secondary btn-regular mr-2" type='button'>
                         CLEAR
                     </button>
-                    <button className="btn btn-primary btn-regular" type="submit">
-                        FIND
-                    </button>
-                </div>
+                </div>   
+                    </div>
+                </Section>
+           
           
 
 
