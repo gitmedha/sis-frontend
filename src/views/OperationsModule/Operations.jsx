@@ -320,6 +320,7 @@ const Operations = (props) => {
       sort: `${sortBy}:${sortOrder}`,
       isActive:false
     };
+    console.log("activeTabkey",activeTab.key);
     if (activeTab.key == "my_data") {
       await api
         .post("/graphql", {
