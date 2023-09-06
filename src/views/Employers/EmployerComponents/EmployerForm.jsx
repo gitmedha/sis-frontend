@@ -104,6 +104,24 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    console.log(values);
+    values.contacts=values.contacts.map((value) =>{
+      value.full_name=values.full_name[0].toUpperCase() + values.full_name.slice(1);
+      value.designation=values.designation[0].toUpperCase() + values.designation.slice(1);
+      return value
+    })
+    values.name = values.name
+    .split(" ")
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    })
+    .join(" ");
+  values.city = values.city[0].toUpperCase() + values.city.slice(1);
+  values.address = values.address
+    .split(" ")
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ");
     setFormValues(values);
     if (logo) {
       values.logo = logo;
