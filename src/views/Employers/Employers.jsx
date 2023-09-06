@@ -41,6 +41,7 @@ const Employers = (props) => {
   const area = localStorage.getItem('user_area')
   const [formErrors, setFormErrors] = useState([]);
 
+
   useEffect(() => {
     getEmployers(activeTab.key);
   }, [activeTab]);
@@ -182,6 +183,7 @@ const Employers = (props) => {
       nProgress.done();
     });
   };
+
 
   return (
     <Collapse title="EMPLOYERS" type="plain" opened={true}>

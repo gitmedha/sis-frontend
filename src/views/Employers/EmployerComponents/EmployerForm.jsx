@@ -12,6 +12,8 @@ import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
 import { yesOrNoOptions } from '../../../common/commonConstants';
+import api from '../../../apis';
+
 
 const Section = styled.div`
   padding-top: 30px;
@@ -33,7 +35,7 @@ const Section = styled.div`
 `;
 
 const EmployerForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show} = props;
   const [industryOptions, setIndustryOptions] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
@@ -43,12 +45,15 @@ const EmployerForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const [isDuplicate,setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
+
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+    
   }, []);
 
   useEffect(() => {
@@ -68,6 +73,7 @@ const EmployerForm = (props) => {
           value: item.value,
         };
       }));
+      
     });
 
     getAddressOptions().then(data => {
@@ -122,6 +128,11 @@ const EmployerForm = (props) => {
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ");
+
+
+  //  const isDuplicate =  await FindDuplicate(values.name); 
+
+
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -157,6 +168,27 @@ const EmployerForm = (props) => {
     initialValues['contacts'] = [];
   }
 
+
+  const FindDuplicate = async (setValue,name) =>{
+    setValue('name',name)
+
+    try {
+      const {data} = await api.post('/employers/findDuplicate', {
+        "name": name
+      })
+
+      if(data === 'Record Found'){
+        return setDuplicate(true);
+      }
+      else if(data === 'Record Not Found') {
+        return setDuplicate(false);
+      }
+      
+    } catch (error) {
+      console.error("error", error)
+    }
+  }
+
   return (
     <Modal
       centered
@@ -190,7 +222,7 @@ const EmployerForm = (props) => {
          initialValues={initialValues}
          validationSchema={EmployerValidations}
         >
-          {({ values }) => (
+          {({ values,setFieldValue }) => (
             <Form>
               <Section>
                 <h3 className="section-header">Details</h3>
@@ -202,8 +234,11 @@ const EmployerForm = (props) => {
                       control="input"
                       placeholder="Name"
                       className="form-control capitalize"
+                      onChange={(e)=>FindDuplicate(setFieldValue,e.target.value)}
                       required
                     />
+
+                    {(isDuplicate && !props.id) ? <p style={{color:'red'}}>this employer is already exists, please try again different</p>: <p></p>}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
@@ -510,6 +545,7 @@ const EmployerForm = (props) => {
                 </div>
                 <div className="d-flex justify-content-start">
                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                {/* <button onClick={showExistModal}> open modal</button> */}
                   <button
                     type="button"
                     onClick={onHide}
@@ -522,6 +558,7 @@ const EmployerForm = (props) => {
               </Form>
               )}
         </Formik>
+      
       </Modal.Body>
     </Modal>
   );

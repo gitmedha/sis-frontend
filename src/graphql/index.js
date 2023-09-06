@@ -7,4 +7,5 @@ export * from "./employer";
 export * from "./opportunities";
 export * from "./programEnrollments";
 export * from "./dashboard";
+export * from "./operations";
 

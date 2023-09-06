@@ -44,6 +44,7 @@ const Institutions = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   useEffect(() => {
     getInstitutions(activeTab.key);

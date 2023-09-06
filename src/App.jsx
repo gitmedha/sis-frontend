@@ -37,6 +37,8 @@ import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import operations from "./views/OperationsModule/Operations";
+import Operation from "./views/OperationsModule/Operation";
 import { isAdmin, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
@@ -101,6 +103,8 @@ const App = (props) => {
         localStorage.setItem("user_name", res.data.username);
         localStorage.setItem("user_email", res.data.email);
         localStorage.setItem("user_role", res.data?.role.name);
+        localStorage.setItem("user_state", res.data.state);
+        localStorage.setItem("user_area", res.data.area);
       });
     }
   }
@@ -171,6 +175,7 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
+                    <PrivateRoute path="/operation" exact component={operations} />
                   </>
                   }
                   <Route path='/404-page' component={PageNotFound} />

@@ -55,6 +55,8 @@ const employerFields = `
   }
 `;
 
+
+
 export const GET_ALL_EMPLOYERS = `
   query GET_ALL_EMPLOYERS {
     employers {

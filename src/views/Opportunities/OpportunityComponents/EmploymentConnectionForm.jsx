@@ -9,6 +9,7 @@ import { OpportunityEmploymentConnectionValidations } from "../../../validations
 import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
+
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -35,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, opportunity } = props;
+  let { onHide, show, opportunity,employmentConnection } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -46,6 +47,8 @@ const EnrollmentConnectionForm = (props) => {
   const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
+  const [rejectionreason,setrejectionreason]=useState([])
+  const [otherrejection,setotherrejection]=useState(false)
 
   const userId = localStorage.getItem('user_id');
   let initialValues = {
@@ -101,6 +104,7 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
+      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
       setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     if (props.employmentConnection && props.employmentConnection.student) {
@@ -114,7 +118,11 @@ const EnrollmentConnectionForm = (props) => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+   
   }, []);
+  useEffect(()=>{
+    setotherrejection(false)
+  },[employmentConnection])
 
   useEffect(() => {
     setSelectedStatus(null);
@@ -153,6 +161,11 @@ const EnrollmentConnectionForm = (props) => {
       return filterData;
     });
   }
+  const handlechange = (e) => {
+    if(e.value == 'Others'){
+      setotherrejection(true)
+    }
+  };
 
   return (
     <Modal
@@ -294,14 +307,27 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                   {otherrejection ? 
+                   <Input
+                   control="input"
+                   name="reason_if_rejected"
+                   label="Reason if Rejected"
+                   required={selectedStatus === 'Offer Rejected by Student'}
+                   className="form-control"
+                  //  onChange={(e)=>handlechange(e)}
+                   placeholder="Reason if Rejected"
+                 />
+                   :<Input
+                      icon="down"
+                      control="lookup"
                       name="reason_if_rejected"
-                      control="input"
                       label="Reason if Rejected"
-                      className="form-control"
-                      placeholder="Reason if Rejected"
                       required={selectedStatus === 'Offer Rejected by Student'}
-                    />
+                      options={rejectionreason}
+                      className="form-control"
+                      onChange={(e)=>handlechange(e)}
+                      placeholder="Reason if Rejected"
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

@@ -137,7 +137,6 @@ const Students = (props) => {
     } else if (selectedTab == "my_area") {
       Object.assign(variables, { area: area });
     }
-
     await api
       .post("/graphql", {
         query: GET_STUDENTS,
@@ -149,7 +148,6 @@ const Students = (props) => {
             return match.toUpperCase();
           });
         });
-        console.log(value);
 
         setStudents(data?.data?.data?.studentsConnection.values);
         setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
@@ -206,6 +204,7 @@ const Students = (props) => {
     [activeTab.key, activeStatus]
   );
 
+
   useEffect(() => {
     getStudentsPickList().then((data) => setPickList(data));
     fetchData(0, paginationPageSize, []);
@@ -216,6 +215,7 @@ const Students = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
+    console.log("whwhwhhwh");
     if (students) {
       let data = students;
       data = data.map((student) => {
@@ -379,7 +379,7 @@ const Students = (props) => {
               data={studentsData}
               isSidebarOpen={isSidebarOpen}
               totalRecords={studentsAggregate.count}
-              fetchData={fetchData}
+              fetchData={() => {}}
               paginationPageSize={paginationPageSize}
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
