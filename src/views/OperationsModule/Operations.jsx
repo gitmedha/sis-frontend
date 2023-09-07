@@ -437,11 +437,13 @@ const Operations = ({opsData,setAlert,isLoading}) => {
 
 
 useEffect(()=>{
-
-  if(!isLoading){
+  if(isLoading){
     fetchSearchedData(0,pageSize, [])
   }
 }, [isLoading])
+
+
+console.log("searchedData2",searchedData);
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
@@ -694,28 +696,34 @@ useEffect(()=>{
       if(id === "assigned_to.username"){
 
       }
-      const sortedData = [...searchedData];
-      sortedData.sort((a,b)=>{
-        const valueA = a[searchByField];
-        const valueB = b[searchByField];
-        
-  return valueA.localeCompare(valueB);
+      const sortedData = [...opsData];
+        sortedData.sort((a,b)=>{
+          const valueA = a[searchByField];
+          const valueB = b[searchByField];
+          
+        return valueA.localeCompare(valueB);
+        });
 
-      });
+        console.log("sortedData",sortedData);
 
-    setSearchedData(sortedData)
-    
+      setSearchedData(sortedData)
+   
     }
 
     startFrom = ((pageIndex+1)*pageSize)-pageSize;
 
     for(let element=0; element<pageSize; element++ ){
+      if(element+1>opsData.length){
+        break
+      }
       filteredArray.push(opsData[startFrom])
       startFrom++
     }
 
+   
     setSearchedData(filteredArray);
-  },[isLoading])
+    
+  },[isLoading,opsData])
 
 
 
@@ -738,13 +746,13 @@ useEffect(()=>{
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <>
-              <OpsSearchDropdown searchOptions={columns} />
+              <OpsSearchDropdown searchOptions={columns} tab="opsTab"/>
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
-                data={isLoading ?opts: searchedData}
-                totalRecords={isLoading ?optsAggregate.count :opsData.length}
-                fetchData={isLoading?fetchData:fetchSearchedData}
+                data={isLoading ?searchedData:opts}
+                totalRecords={isLoading ?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -753,6 +761,8 @@ useEffect(()=>{
               </>
               
             ) : activeTab.key == "useTot" ? (
+              <>
+               <OpsSearchDropdown searchOptions={columns} tab="totTab"/>
               <Table
                 onRowClick={(data) => showRowData("totdata", data)}
                 columns={columnsUserTot}
@@ -764,7 +774,10 @@ useEffect(()=>{
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : activeTab.key == "upskilling" ? (
+              <>
+               <OpsSearchDropdown  tab="upSkillingTab"/>
               <Table
                 onRowClick={(data) => showRowData("upskilldata", data)}
                 columns={columnsUpskilling}
@@ -776,8 +789,12 @@ useEffect(()=>{
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
+              
             ) : activeTab.key == "dtesamarth" ? (
-              <Table
+              <>
+               <OpsSearchDropdown  tab="sditTab"/>
+               <Table
                 onRowClick={(data) => showRowData("sditdata", data)}
                 columns={columnsPlacement}
                 data={opts}
@@ -788,7 +805,11 @@ useEffect(()=>{
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
+             
             ) : activeTab.key == "AlumniQueries" ? (
+              <>
+              <OpsSearchDropdown tab="alumniTab"/>
               <Table
                 onRowClick={(data) => showRowData("alumniQueriesdata", data)}
                 columns={columnsAlumuniqueries}
@@ -800,7 +821,10 @@ useEffect(()=>{
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : activeTab.key == "collegePitches" ? (
+              <>
+              <OpsSearchDropdown tab="collegePitchTab"/>
               <Table
                 onRowClick={(data) => showRowData("collegePitches", data)}
                 columns={columnscollegepitches}
@@ -812,6 +836,7 @@ useEffect(()=>{
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : (
               ""
             )}

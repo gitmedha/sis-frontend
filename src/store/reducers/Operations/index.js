@@ -1,8 +1,8 @@
-import {SEARCH_OPS} from './types';
+import {SEARCH_OPS,RESET_SEARCH} from './types';
 
 const INIT_STATE = {
     data:[],
-    loading:true
+    loading:false
 }
 
 const Operations = (state = INIT_STATE, {type,payload}) =>{
@@ -11,9 +11,14 @@ const Operations = (state = INIT_STATE, {type,payload}) =>{
         case SEARCH_OPS:
             return {
                 ...state,
-                data: [...payload.data],
-                loading: false
+                data: [...payload],
+                loading: true
             };
+        case RESET_SEARCH:
+            return {
+                data: [],
+                loading:false
+            }
         default:
             break;
     };

@@ -1,4 +1,4 @@
-import {SEARCH_OPS} from './types';
+import {SEARCH_OPS,RESET_SEARCH} from './types';
 
 import api from "../../../apis";
 
@@ -8,17 +8,31 @@ export const searchOperationTab = (searchField,value) => async(dispatch)=>{
     const headers = { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json', }
    
     try {
-        const data = await api.post('/users-ops-activities/search', {
+        const {data} = await api.post('/users-ops-activities/search', {
             "searchField":searchField,
             "searchValue":value
         },{headers})
 
-        dispatch({
-            type:SEARCH_OPS,
-            payload:data
-        });
-        
+        if(data.length){
+            dispatch({
+                type:SEARCH_OPS,
+                payload:data
+            });
+
+        }
+
     } catch (error) {
         console.error("error",error);
+    }
+}
+
+export const resetSearch = ()=> async(dispatch)=>{
+    try {
+        dispatch({
+            type:RESET_SEARCH,
+        })
+        
+    } catch (error) {
+        console.error(error);
     }
 }
