@@ -125,6 +125,19 @@ const InstitutionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    values.name = values.name
+      .split(" ")
+      .map((word) => {
+        return word[0].toUpperCase() + word.substring(1);
+      })
+      .join(" ");
+    values.city = values.city[0].toUpperCase() + values.city.slice(1);
+    values.address = values.address
+      .split(" ")
+      .map((word) => {
+        return word[0].toUpperCase() + word.substring(1);
+      })
+      .join(" ");
 
     setFormValues(values);
     if (logo) {
@@ -159,7 +172,7 @@ const InstitutionForm = (props) => {
     initialValues["medha_area"] = props.medha_area ? props.medha_area : null;
 
     if (props.mou) {
-      initialValues['mou'] = props.mou.map(mou => ({
+      initialValues["mou"] = props.mou.map((mou) => ({
         ...mou,
         start_date: mou.start_date ? new Date(mou.start_date) : null,
         end_date: mou.end_date ? new Date(mou.end_date) : null,
@@ -366,8 +379,14 @@ const InstitutionForm = (props) => {
                             <div className="col-md-6 col-sm-12 mb-2">
                               {mou && mou.mou_file && mou.mou_file.url ? (
                                 <div>
-                                  <label className="text-label leading-24">MoU</label>
-                                  <div>{mou.mou_file.url.substring(mou.mou_file.url.lastIndexOf('/')+1)}</div>
+                                  <label className="text-label leading-24">
+                                    MoU
+                                  </label>
+                                  <div>
+                                    {mou.mou_file.url.substring(
+                                      mou.mou_file.url.lastIndexOf("/") + 1
+                                    )}
+                                  </div>
                                 </div>
                               ) : (
                                 <Input
