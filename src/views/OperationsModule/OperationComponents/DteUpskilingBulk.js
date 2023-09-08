@@ -4,11 +4,14 @@ import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 
 const options = [
-  { value: true, label: "Yes" },
-  { value: false, label: "No" },
+  { value: "DTE", label: "DTE " },
+  { value: "Samarath", label: "Samarath" },
+  { value: "SDIT", label: "SDIT " },
 ];
+
 
 const DteUpskilingBulk = (props) => {
   const [rows, setRows] = useState([
@@ -50,9 +53,8 @@ const DteUpskilingBulk = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const handleChange = (options, key) => {
-    console.log(options, key);
-  };
+  const [genderOptions, setGenderOptions] = useState([]);
+  
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -69,6 +71,14 @@ const DteUpskilingBulk = (props) => {
     props.updateRow(rowid, field, value.value);
   };
 
+  useEffect(() => {
+    getStudentsPickList().then(data => {
+      setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
+    });
+
+   
+
+  }, [props]);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -89,9 +99,12 @@ const DteUpskilingBulk = (props) => {
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className="table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.student_name
+                ? `border-red`
+                : "table-input"
+            }`}
             type="text"
-            // value={row.name}
             onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
           />
         </td>
@@ -99,7 +112,6 @@ const DteUpskilingBulk = (props) => {
           <input
             className="table-input"
             type="text"
-            // value={row.name}
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
           />
         </td>
@@ -177,18 +189,21 @@ const DteUpskilingBulk = (props) => {
           />
         </td>
         <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "gender", e.target.value)}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.gender ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isSearchable={true}
+            name="area"
+            options={genderOptions}
+            onChange={(e) => props.handleChange(e, "gender", row.id)}
           />
         </td>
         <td>
           <input
             className="table-input"
             type="text"
-            // value={row.name}
             onChange={(e) =>
               updateRow(row.id, "father_guardian", e.target.value)
             }
@@ -215,6 +230,85 @@ const DteUpskilingBulk = (props) => {
             className="table-input"
             type="text"
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "institute_admitted", e.target.value)
+            }
+          />
+        </td>
+        
+        <td>
+          <input
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.acad_year
+                ? `border-red`
+                : "table-input"
+            }`}
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "acad_year", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "placed", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "apprenticeship", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "company_placed", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "position", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            type="date"
+            className="table-input date"
+            defaultValue={startDate}
+            onChange={(e) => {
+              console.log(e.target.value);
+
+              setStartDate(e.target.value);
+              props.updateRow(row.id, "doj", e.target.value);
+            }}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "monthly_salary", e.target.value)
+            }
           />
         </td>
         <td>
@@ -253,71 +347,20 @@ const DteUpskilingBulk = (props) => {
             }
           />
         </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "placed", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "apprenticeship", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            type="date"
-            className="table-input date"
-            defaultValue={startDate}
-            onChange={(e) => {
-              console.log(e.target.value);
 
-              setStartDate(e.target.value);
-              props.updateRow(row.id, "doj", e.target.value);
-            }}
+         <td>
+          <Select
+            className={`table-input donor ${
+              props.classValue[`class${row.id - 1}`]?.gender ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isSearchable={true}
+            name="area"
+            options={options}
+            onChange={(e) => props.handleChange(e, "data_flag", row.id)}
           />
         </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "company_placed", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "monthly_salary", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "data_flag", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "position", e.target.value)
-            }
-          />
-        </td>
+       
         <td>
           <input
             className="table-input"
@@ -340,24 +383,6 @@ const DteUpskilingBulk = (props) => {
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "company_self", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "institute_admitted", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "acad_year", e.target.value)
             }
           />
         </td>

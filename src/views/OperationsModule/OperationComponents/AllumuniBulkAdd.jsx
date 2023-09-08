@@ -38,6 +38,7 @@ const AllumuniBulkAdd = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
+  const [classValue,setclassValue]=useState({})
   const [data, setData] = useState([
     {
       id: 1,
@@ -89,7 +90,54 @@ const AllumuniBulkAdd = (props) => {
     published_at: "",
   });
   const [showLimit, setshowLimit] = useState(false);
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+  
+    return result;
+  }
+  
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+  
+    if (typeof value === 'string' && value.trim() === '') {
+      return true;
+    }
+  
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+  
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return true;
+    }
+  
+    return false;
+  }
   const addRow = () => {
+    let value =checkEmptyValues(rows[rows.length-1])
+    
+    if(value.student_name || value.gender){
+      let obj={...classValue,[`class${[rows.length-1]}`]:value}
+     
+      // if(obj.class0 && rows.length !== 1){
+      //   delete obj['class0']
+      // }else if(rows.length > 1){
+      //   obj=delete obj[`class${[rows.length-2]}`]
+      // }
+      // console.log("obj",obj);
+      return setclassValue(obj)
+    }
+    
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -373,18 +421,17 @@ const AllumuniBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  {/* <th className="id">ID</th> */}
-                  <th>Student Name</th>
-                  <th>Father Name </th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  <th>Query Receiving Date</th>
+                  <th>Full Name</th>
+                  <th>Father's Name </th>
+                  <th>E-mail</th>
+                  <th>Phone Number</th>
                   <th>Location</th>
                   <th>Qyery Type</th>
-                  <th>Query Start</th>
-                  <th>Query End</th>
                   <th>Query Description</th>
                   <th>Conclusion</th>
-                  <th>Published At</th>
+                  <th>Status</th>
+                  <th>Query End Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -401,6 +448,7 @@ const AllumuniBulkAdd = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

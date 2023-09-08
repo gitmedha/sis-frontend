@@ -34,8 +34,7 @@ const operationFields = `
     id
   }
   isactive
-`
-
+`;
 
 const usersTotsFields = `
     id
@@ -71,7 +70,7 @@ const usersTotsFields = `
     contact
     designation
     published_at
-`
+`;
 const studentUpskillingFields = `
     id
     created_at
@@ -99,7 +98,7 @@ const studentUpskillingFields = `
     sub_category
     issued_org
     published_at
-`
+`;
 
 const dteSamarthSditFields = `
     id
@@ -135,7 +134,7 @@ const dteSamarthSditFields = `
     acad_year
     result
     published_at
-`
+`;
 const alumniQueriesFields = `
     id
     created_at
@@ -162,7 +161,7 @@ const alumniQueriesFields = `
     conclusion
     status
     query_end
-`
+`;
 const collegePitchesFields = `
     id
     created_at
@@ -185,7 +184,7 @@ const collegePitchesFields = `
     remarks
     srm_name
     area
-`
+`;
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -221,7 +220,7 @@ export const GET_USERSTOTS = `
             }
         }
     }
-`
+`;
 
 export const GET_STUDENTS_UPSKILLINGS = `
     query GET_STUDENTS_UPSKILLINGS($limit:Int, $start:Int,$sort: String){
@@ -239,7 +238,7 @@ export const GET_STUDENTS_UPSKILLINGS = `
             }
         }
     }
-`
+`;
 
 export const GET_DTE_SAMARTH_SDITS = `
     query GET_DTE_SAMARTH_SDITS($limit:Int,$start:Int,$sort:String) {
@@ -258,7 +257,7 @@ export const GET_DTE_SAMARTH_SDITS = `
         }
     }
 
-`
+`;
 
 export const GET_ALUMNI_QUERIES = `
     query GET_ALUMNI_QUERIES($limit:Int,$start:Int,$sort:String) {
@@ -276,7 +275,7 @@ export const GET_ALUMNI_QUERIES = `
             }
         }
     }
-`
+`;
 
 export const GET_COLLEGE_PITCHES = `
     query GET_COLLEGE_PITCHES($limit:Int,$start:Int,$sort:String) {
@@ -294,8 +293,7 @@ export const GET_COLLEGE_PITCHES = `
         }
     }
 }
-`
-
+`;
 
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
@@ -313,7 +311,7 @@ export const CREATE_OPERATION = `
     }
 
 
-`
+`;
 
 export const CREATE_USER_TOT = `
     mutation CREATE_USER_TOTS (
@@ -329,7 +327,7 @@ export const CREATE_USER_TOT = `
             }
         }
     }
-`
+`;
 
 export const CREATE_STUDENT_UPSKILL = `
     mutation CREATE_STUDENT_UPSKILL (
@@ -345,7 +343,7 @@ export const CREATE_STUDENT_UPSKILL = `
             }
         }
     }
-`
+`;
 
 export const CREATE_SAMARTH_SDIT = `
     mutation CREATE_SAMARTH_SDIT (
@@ -361,7 +359,7 @@ export const CREATE_SAMARTH_SDIT = `
             }
         }
     }
-`
+`;
 
 export const CREATE_ALUMNI_QUERY = `
     mutation CREATE_ALUMNI_QUERY (
@@ -377,7 +375,7 @@ export const CREATE_ALUMNI_QUERY = `
             }
         }
     }
-`
+`;
 
 export const CREATE_COLLEGE_PITCH = `
     mutation CREATE_COLLEGE_PITCH (
@@ -393,7 +391,7 @@ export const CREATE_COLLEGE_PITCH = `
             }
         }
     }
-`
+`;
 
 export const UPDATE_OPERATION = `
     mutation UPDATE_OPERATION (
@@ -412,7 +410,7 @@ export const UPDATE_OPERATION = `
         }
     }
 
-`
+`;
 
 export const UPDATE_USER_TOT = `
 mutation UPDATE_USER_TOT(
@@ -428,7 +426,7 @@ mutation UPDATE_USER_TOT(
       }
     }
   }
-`
+`;
 
 export const UPDATE_STUDENTS_UPSKILLING = `
   mutation UPDATE_STUDENTS_UPSKILLING(
@@ -444,7 +442,7 @@ export const UPDATE_STUDENTS_UPSKILLING = `
         }
     }
   }
-`
+`;
 
 export const UPDATE_SAMARTH_SDIT = `
   mutation UPDATE_SAMARTH_SDIT(
@@ -460,7 +458,7 @@ export const UPDATE_SAMARTH_SDIT = `
         }
     }
   }
-`
+`;
 
 export const UPDATE_ALUMNI_QUERY = `
     mutation UPDATE_ALUMNI_QUERY(
@@ -476,7 +474,7 @@ export const UPDATE_ALUMNI_QUERY = `
             }
         }
     }
-`
+`;
 
 export const UPDATE_COLLEGE_PITCH = `
     mutation UPDATE_COLLEGE_PITCH(
@@ -492,4 +490,19 @@ export const UPDATE_COLLEGE_PITCH = `
             }
         }
     }
-`
+`;
+
+export const GET_ALL_PROGRAMS = `
+query GET_ALL_PROGRAMS($limit:Int, $start:Int) {
+    programsConnection(
+        start:  $start,
+        limit:  $limit
+  ) {
+    values {
+        id
+        name
+        status
+    }
+  }
+}
+`;

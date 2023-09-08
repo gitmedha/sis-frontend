@@ -35,6 +35,7 @@ const meilisearchClient = new MeiliSearch({
 const Dtesamarth = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
+  const [classValue, setclassValue] = useState({});
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [data, setData] = useState([
     {
@@ -135,7 +136,50 @@ const Dtesamarth = (props) => {
     result: "",
   });
   const [showLimit, setshowLimit] = useState(false);
+
+  function checkEmptyValues(obj) {
+    const result = {};
+
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+
+    return result;
+  }
+
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+
+    if (typeof value === "string" && value.trim() === "") {
+      return true;
+    }
+
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+
+    if (typeof value === "object" && Object.keys(value).length === 0) {
+      return true;
+    }
+
+    return false;
+  }
   const addRow = () => {
+    let value = checkEmptyValues(rows[rows.length - 1]);
+
+    setclassValue({});
+    if (value.student_name || value.gender) {
+      let obj = { [`class${[rows.length - 1]}`]: value };
+      setclassValue(obj);
+      return;
+    }
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -445,22 +489,22 @@ const Dtesamarth = (props) => {
                   <th>Father/Guardian</th>
                   <th>Mobile</th>
                   <th>Email</th>
+                  <th>Institute Admitted</th>
+                  <th>Academic Year</th>
+                  <th>Placed</th>
+                  <th>Apprenticeship</th>
+                  <th>Company Placed</th>
+                  <th>Position</th>
+                  <th>DOJ</th>
+                  <th>Monthly Salary</th>
                   <th>Annual Income</th>
                   <th>Full Address</th>
                   <th>Self Employed</th>
                   <th>Higher Studies</th>
-                  <th>Placed</th>
-                  <th>Apprenticeship</th>
-                  <th>DOJ</th>
-                  <th>Company Placed</th>
-                  <th>Monthly Salary</th>
-                  <th>Data Flag</th>
-                  <th>Position</th>
+                  <th>Select college</th>
                   <th>Trade</th>
                   <th>Company Apprenticed</th>
                   <th>Company Self</th>
-                  <th>Institute Admitted</th>
-                  <th>Acad Year</th>
                   <th>Result</th>
                 </tr>
               </thead>
@@ -478,6 +522,7 @@ const Dtesamarth = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

@@ -172,61 +172,49 @@ const OperationCreateform = (props) => {
     assigned_to: "",
     area:'',
   });
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+  
+    return result;
+  }
+  
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+  
+    if (typeof value === 'string' && value.trim() === '') {
+      return true;
+    }
+  
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+  
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return true;
+    }
+  
+    return false;
+  }
 
   const addRow = () => {
-    console.log(rows[rows.length-1],rows[rows.length-1].state =="");
-    if(rows[rows.length-1].state ==='' || rows[rows.length-1].state !=='' ){
-      console.log("state");
-      if(rows[rows.length-1].state == "" || rows[rows.length-1].state === null || rows[rows.length-1].state == undefined){
-        console.log("state2");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          state:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          state:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
-    }
+    let value =checkEmptyValues(rows[rows.length-1])
+    setclassValue({})
+    if(value.state || value.area || value.topic || value.start_date || value.end_date || value.institution || value.batch || value.assigned_to || value.activity_type){
+      let obj={[`class${[rows.length-1]}`]:value}
+      console.log("obj",obj);
+      setclassValue(obj)
 
-    if(rows[rows.length-1].area ==='' || rows[rows.length-1].area !=='' ){
-      console.log("area");
-      if(rows[rows.length-1].area == "" || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined){
-        console.log("area2");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          area:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          area:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
-    }
-
-    if(rows[rows.length-1].topic ==='' || rows[rows.length-1].topic !=='' ){
-      console.log("topic");
-      if(rows[rows.length-1].topic == "" || rows[rows.length-1].topic === null || rows[rows.length-1].topic == undefined){
-        console.log("topic");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          topic:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          topic:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
+      return
     }
    
     if (rows.length >= 10) {
@@ -508,21 +496,23 @@ const OperationCreateform = (props) => {
               <thead>
                 <tr>
                   {/* <th className='id'>ID</th> */}
+                  <th>Assigned To</th>
                   <th>Activity Type</th>
-                  <th>Institution</th>
-
-                  <th>Batch</th>
-                  <th>Assigned to</th>
+                  
+                  {/* <th>programme Name</th> */}
+                  <th>Educational Institution</th>
                   <th>State</th>
-                  <th>Area</th>
+                  <th>Medha Area</th>
+                  <th>Batch Name</th>
+                  <th>No. Of Participants</th>
                   <th>Start Date</th>
                   <th>End Date</th>
-                  <th>Topic</th>
-                  <th>Donor</th>
-                  <th>Guest</th>
-                  <th>Designation</th>
+                  <th>Session Topic</th>
+                   <th>Project Founder</th>
+                   <th>Guest Name</th>
+                  <th>Guest Designation</th>
                   <th>Organization</th>
-                  <th>Student Attended</th>
+                  
                 </tr>
               </thead>
               <tbody>
