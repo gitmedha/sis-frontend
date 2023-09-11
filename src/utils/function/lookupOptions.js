@@ -9,6 +9,8 @@ import {
   GET_ALL_BATCHES,
   FILTER_USERS_BY_NAME,
   GET_ALL_USERS,
+  GET_USERS_BY_ROLE,
+  GET_ALL_STUDENT,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -118,6 +120,29 @@ export const filterAssignedTo = async (newValue) => {
   });
   return data.data.users.map(user => ({
     label: `${user.username} (${user.email})`,
+    value: user.id,
+  }));
+}
+
+export const getAllSrm =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE,
+    variables:{
+      role:1
+    },
+  });
+  return data.data.users.map(user => ({
+    label: `${user.username} (${user.email})`,
+    value: user.id,
+  }));
+}
+
+export const getAllStudents =async()=>{
+  let data=await queryBuilder({
+    query:GET_ALL_STUDENT,
+  })
+  return data.data.users.map(user => ({
+    label: `(${user.full_name})`,
     value: user.id,
   }));
 }
