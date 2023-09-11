@@ -36,7 +36,7 @@ const tabPickerOptions = [
   { title: "Users Tot", key: "useTot" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
-  { title: "Alumni Queries", key: "AlumniQueries" },
+  { title: "Alumni Queries", key: "alumniQueries" },
   { title: "College Pitches", key: "collegePitches" },
 ];
 
@@ -303,7 +303,7 @@ const Operations = (props) => {
     ],
     []
   );
-
+  console.log("checking",activeTab);
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -320,7 +320,7 @@ const Operations = (props) => {
       sort: `${sortBy}:${sortOrder}`,
       isActive:false
     };
-    console.log("activeTabkey",activeTab.key);
+    console.log("activeTabkey",activeTab);
     if (activeTab.key == "my_data") {
       await api
         .post("/graphql", {
@@ -349,7 +349,7 @@ const Operations = (props) => {
         })
         .then((data) => {
           setOpts(data.data.data.usersTotsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.usersTotsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -368,7 +368,7 @@ const Operations = (props) => {
         })
         .then((data) => {
           setOpts(data.data.data.studentsUpskillingsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.studentsUpskillingsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -386,7 +386,7 @@ const Operations = (props) => {
         })
         .then((data) => {
           setOpts(data.data.data.dteSamarthSditsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -396,15 +396,18 @@ const Operations = (props) => {
           nProgress.done();
         });
     }
-    if (activeTab.key == "AlumniQueries") {
+    console.log("activetab line 399",activeTab.key);
+    if (activeTab.key == "alumniQueries") {
+      console.log("activetab",activeTab);
       await api
         .post("/graphql", {
           query: GET_ALUMNI_QUERIES,
           variables,
         })
         .then((data) => {
+          console.log("data",data);
           setOpts(data.data.data.alumniQueriesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -421,8 +424,9 @@ const Operations = (props) => {
           variables,
         })
         .then((data) => {
+          console.log("datacollegpitches",data);
           setOpts(data.data.data.collegePitchesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -573,7 +577,8 @@ const Operations = (props) => {
           );
         }
       }
-      if(activeTab.key == "AlumniQueries"){
+      if(activeTab.key == "alumniQueries"){
+    
         if (sortBy.length) {
           let sortByField ;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -595,7 +600,14 @@ const Operations = (props) => {
             sortByField,
             sortOrder
           );
-        } 
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
       }
       if(activeTab.key == "collegePitches"){
         if (sortBy.length) {
@@ -631,20 +643,14 @@ const Operations = (props) => {
           );
         }
       }
-      
-      // else{
-      //   console.log("Ashjhdsj");
-      //   getoperations(
-      //     activeStatus,
-      //     activeTab.key,
-      //     pageSize,
-      //     pageSize * pageIndex
-      //   );
-      // }
      
     },
-    [activeTab.key, activeStatus]
+    [activeTab, activeStatus]
   );
+  useEffect(() => {
+   console.log("activeTab line642",activeTab);
+  }, [activeTab])
+  
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
@@ -741,7 +747,7 @@ const Operations = (props) => {
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
-            ) : activeTab.key == "AlumniQueries" ? (
+            ) : activeTab.key == "alumniQueries" ? (
               <Table
                 onRowClick={(data) => showRowData("alumniQueriesdata", data)}
                 columns={columnsAlumuniqueries}
@@ -796,7 +802,7 @@ const Operations = (props) => {
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : activeTab.key == "AlumniQueries" ? (
+          ) : activeTab.key == "alumniQueries" ? (
             <AllumuniBulkAdd
               show={modalShow}
               onHide={hideCreateModal}

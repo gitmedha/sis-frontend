@@ -15,6 +15,7 @@ import {
 } from "./operationsActions";
 import api from "../../../apis";
 import CollegepitchesBulkrow from "./collegepitchesBulkrow";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -87,6 +88,7 @@ const CollegepitchesBulkadd = (props) => {
   
     return result;
   }
+
   
   function isEmptyValue(value) {
     if (value === null || value === undefined) {
@@ -112,7 +114,7 @@ const CollegepitchesBulkadd = (props) => {
     console.log(rows);
     let value =checkEmptyValues(rows[rows.length-1])
     setclassValue({})
-    if(value.student_name || value.gender){
+    if(value.area || value.course_name || value.course_year || value.college_name || value.student_name || value.whatsapp  ){
       let obj={[`class${[rows.length-1]}`]:value}
       setclassValue(obj)
       return ;
@@ -240,20 +242,21 @@ const CollegepitchesBulkadd = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
       row.isActive=true;
       row.created_by = Number(userId);
       row.updated_by = Number(userId);
-
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      console.log("value",value);
+      return value;
     });
 
     try {
+
       const value = await bulkCreateCollegePitch(data);
-      console.log("vallue", value);
       props.ModalShow();
     } catch (error) {
       console.log("error", error);

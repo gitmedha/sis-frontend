@@ -99,7 +99,7 @@ const DteUpskilingBulk = (props) => {
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.student_name
                 ? `border-red`
                 : "table-input"
@@ -110,7 +110,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
           />
@@ -153,7 +153,7 @@ const DteUpskilingBulk = (props) => {
           />
         </td>
         <td>
-          {areaOptions.length ? (
+         
             <Select
               className="basic-single table-input"
               classNamePrefix="select"
@@ -167,18 +167,13 @@ const DteUpskilingBulk = (props) => {
               options={areaOptions}
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
-          ) : (
-            <>
-              {/* <label className="text-heading" style={{ color: '#787B96' }}>Please select State to view Medha Areas</label> */}
-              <Skeleton count={1} height={45} />
-            </>
-          )}
+          
         </td>
 
         <td>
           <input
             type="date"
-            className="table-input date"
+            className="table-input date h-2"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -202,7 +197,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               updateRow(row.id, "father_guardian", e.target.value)
@@ -211,7 +206,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "mobile", e.target.value)}
           />
@@ -227,14 +222,14 @@ const DteUpskilingBulk = (props) => {
                         onChange={(e) => props.handleChange(e, "donor", row.id)}
                     /> */}
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "institute_admitted", e.target.value)
@@ -244,7 +239,7 @@ const DteUpskilingBulk = (props) => {
         
         <td>
           <input
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.acad_year
                 ? `border-red`
                 : "table-input"
@@ -257,14 +252,14 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "placed", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "apprenticeship", e.target.value)
@@ -273,7 +268,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "company_placed", e.target.value)
@@ -282,7 +277,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "position", e.target.value)
@@ -292,7 +287,7 @@ const DteUpskilingBulk = (props) => {
         <td>
           <input
             type="date"
-            className="table-input date"
+            className="table-input date h-2"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -304,7 +299,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "monthly_salary", e.target.value)
@@ -312,8 +307,8 @@ const DteUpskilingBulk = (props) => {
           />
         </td>
         <td>
-          <input
-            className="table-input"
+          <input 
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "annual_income", e.target.value)
@@ -322,7 +317,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "full_address", e.target.value)
@@ -331,7 +326,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "self_employed", e.target.value)
@@ -340,7 +335,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "higher_studies", e.target.value)
@@ -363,14 +358,14 @@ const DteUpskilingBulk = (props) => {
        
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "trade", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "company_apprenticed", e.target.value)
@@ -379,7 +374,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "company_self", e.target.value)
@@ -388,7 +383,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "result", e.target.value)}
           />

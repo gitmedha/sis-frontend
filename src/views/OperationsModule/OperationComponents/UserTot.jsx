@@ -21,6 +21,7 @@ import { RowsData } from "./RowsData";
 import { bulkCreateUsersTots, createOperation } from "./operationsActions";
 import api from "../../../apis";
 import UserTotRowdata from "./UserTotRowdata";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -328,7 +329,7 @@ const UserTot = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
@@ -343,7 +344,8 @@ const UserTot = (props) => {
       row.created_by = Number(userId);
       delete row.start_date;
       delete row.end_date;
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      return value;
     });
 
     try {

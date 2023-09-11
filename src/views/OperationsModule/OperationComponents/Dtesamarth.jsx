@@ -26,6 +26,7 @@ import {
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
 import DteUpskilingBulk from "./DteUpskilingBulk";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -301,7 +302,7 @@ const Dtesamarth = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
@@ -310,7 +311,8 @@ const Dtesamarth = (props) => {
       // row.state=Number(row.state)
       // row.district=Number(row.district)
       row.updated_by = Number(userId);
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      return value;
     });
 
     try {

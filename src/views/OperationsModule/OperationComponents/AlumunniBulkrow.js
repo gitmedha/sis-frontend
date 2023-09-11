@@ -75,7 +75,7 @@ const AlumunniBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -87,7 +87,7 @@ const AlumunniBulkrow = (props) => {
         </td>
         <td>
           <input
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input"}`}
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
@@ -95,7 +95,7 @@ const AlumunniBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "father_name", e.target.value)}
@@ -103,7 +103,7 @@ const AlumunniBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "email", e.target.value)}
@@ -111,7 +111,7 @@ const AlumunniBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "phone", e.target.value)}
@@ -119,7 +119,7 @@ const AlumunniBulkrow = (props) => {
         </td>
        <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "location", e.target.value)}
@@ -127,7 +127,7 @@ const AlumunniBulkrow = (props) => {
         </td>
          <td>
           <input
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.query_type ? `border-red`:"table-input"}`}
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_type ? `border-red`:"table-input h-2"}`}
             type="text"
             // value={row.name}
             onChange={(e) =>
@@ -142,14 +142,14 @@ const AlumunniBulkrow = (props) => {
        
         <td>
           <input
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.query_desc ? `border-red`:"table-input"}`}
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_desc ? `border-red`:"table-input h-2"}`}
             type="text"
             onChange={(e) => props.updateRow(row.id, "query_desc", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "conclusion", e.target.value)}
           />
@@ -158,7 +158,7 @@ const AlumunniBulkrow = (props) => {
         
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "status", e.target.value)}
           />
@@ -166,7 +166,7 @@ const AlumunniBulkrow = (props) => {
         <td>
           <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);

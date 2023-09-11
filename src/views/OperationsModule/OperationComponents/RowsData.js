@@ -83,7 +83,7 @@ export const RowsData = (props) => {
 
   return (
     <>
-      <tr key={row.id}>
+    
         <td>
           <Select
             className={`table-input ${
@@ -101,7 +101,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.activity_type
                 ? `border-red`
                 : ""
@@ -154,7 +154,7 @@ export const RowsData = (props) => {
           />
         </td>
         <td>
-          {areaOptions.length ? (
+         
             <Select
               className={`basic-single table-input ${
                 props.classValue[`class${row.id - 1}`]?.area ? "border-red" : ""
@@ -166,11 +166,7 @@ export const RowsData = (props) => {
               options={areaOptions}
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
-          ) : (
-            <>
-              <Skeleton count={1} height={45} />
-            </>
-          )}
+          
         </td>
         <td>
           <Select
@@ -187,7 +183,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.students_attended
                 ? `border-red`
                 : ""
@@ -203,7 +199,7 @@ export const RowsData = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.start_date
                 ? `border-red`
                 : ""
@@ -220,7 +216,7 @@ export const RowsData = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.end_date
                 ? `border-red`
                 : ""
@@ -235,7 +231,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className={`table-input ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.topic ? "border-red" : ""
             }`}
             type="text"
@@ -255,7 +251,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) => props.updateRow(row.id, "guest", e.target.value)}
@@ -263,7 +259,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) =>
@@ -273,7 +269,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) =>
@@ -282,7 +278,7 @@ export const RowsData = (props) => {
           />
         </td>
         
-      </tr>
+      
     </>
   );
 };

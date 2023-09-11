@@ -16,7 +16,7 @@ export const getStateDistricts = async (value) => {
   return await api.post('/graphql', {
     query: GET_ALL_DISTRICTS,
     variables: {
-      state:value.value
+      state:value?.value
     },
   }).then(data => {
     return data;

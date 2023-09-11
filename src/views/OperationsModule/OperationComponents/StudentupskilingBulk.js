@@ -112,10 +112,10 @@ const StudentupskilingBulk = (props) => {
   return (
     <>
       <tr key={row.id}>
-        <td>{row.id}</td>
+        {/* <td>{row.id}</td> */}
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
@@ -123,14 +123,14 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           {/* <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => updateRow(row.id, "student_id", e.target.value)}
           /> */}
 
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input "
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -141,7 +141,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input "
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -152,7 +152,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input "
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -163,7 +163,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="basic-single table-input "
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -176,7 +176,7 @@ const StudentupskilingBulk = (props) => {
         <td>
           {/* <DatePicker
                     dateFormat="dd/MM/yyyy"
-                    className="table-input"
+                    className="table-input h-2"
                     selected={startDate}
                     onChange={(date) => {
                         const d = new Date(date).toLocaleDateString('fr-FR');
@@ -187,7 +187,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -213,7 +213,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
@@ -224,7 +224,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input date"
+            className="basic-single table-input  date"
             classNamePrefix="select"
             isSearchable={true}
             name="area"
@@ -236,7 +236,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "category", e.target.value)
@@ -245,7 +245,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           {/* <Select
-                        className="basic-single table-input"
+                        className="basic-single table-input h-2"
                         classNamePrefix="select"
                        
                         isSearchable={true}
@@ -254,14 +254,14 @@ const StudentupskilingBulk = (props) => {
                         onChange={(e) => props.handleChange(e, "donor", row.id)}
                     /> */}
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "sub_category", true)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "issued_org", e.target.value)
