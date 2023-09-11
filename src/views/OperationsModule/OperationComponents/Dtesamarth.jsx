@@ -473,26 +473,26 @@ const Dtesamarth = (props) => {
                 />
               </button>
             )}
-            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
+           
           </div>
           <div className="table-container">
             <table className="create_data_table">
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Student Name</th>
+                  <th>Student Name *</th>
                   <th>Course Name </th>
                   <th>Institution</th>
                   <th>Batch</th>
                   <th>State</th>
                   <th>District</th>
                   <th>DOB</th>
-                  <th>Gender</th>
+                  <th>Gender *</th>
                   <th>Father/Guardian</th>
                   <th>Mobile</th>
                   <th>Email</th>
                   <th>Institute Admitted</th>
-                  <th>Academic Year</th>
+                  <th>Academic Year *</th>
                   <th>Placed</th>
                   <th>Apprenticeship</th>
                   <th>Company Placed</th>
@@ -503,7 +503,7 @@ const Dtesamarth = (props) => {
                   <th>Full Address</th>
                   <th>Self Employed</th>
                   <th>Higher Studies</th>
-                  <th>Select college</th>
+                  <th>Select college *</th>
                   <th>Trade</th>
                   <th>Company Apprenticed</th>
                   <th>Company Self</th>

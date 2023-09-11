@@ -404,17 +404,17 @@ const CollegepitchesBulkadd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Date of Pitching </th>
-                  <th>Student Name</th>
+                  <th>Date of Pitching * </th>
+                  <th>Student Name *</th>
                   {/* <th>programme Name</th> */}
-                  <th>Course Name </th>
-                  <th>Course Year</th>
-                  <th>College Name</th>
-                  <th>Phone</th>
-                  <th>Whatsapp Number </th>
+                  <th>Course Name * </th>
+                  <th>Course Year *</th>
+                  <th>College Name *</th>
+                  <th>Phone *</th>
+                  <th>Whatsapp Number *</th>
                   <th>E-mail</th>
                   <th>Srm Name</th>
-                  <th>Area</th>
+                  <th>Area *</th>
                   <th>Remarks</th>
                 </tr>
               </thead>

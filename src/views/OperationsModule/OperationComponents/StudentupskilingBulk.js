@@ -244,15 +244,6 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          {/* <Select
-                        className="basic-single table-input h-2"
-                        classNamePrefix="select"
-                       
-                        isSearchable={true}
-                        name="area"
-                        options={options}
-                        onChange={(e) => props.handleChange(e, "donor", row.id)}
-                    /> */}
           <input
             className="table-input h-2"
             type="text"

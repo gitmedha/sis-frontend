@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback ,Fragment} from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -30,6 +30,8 @@ import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
+import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
+import {sortAscending,resetSearch} from "../../store/reducers/Operations/actions";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -56,7 +58,7 @@ const Styled = styled.div`
   }
 `;
 
-const Operations = (props) => {
+const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
@@ -65,7 +67,6 @@ const Operations = (props) => {
     alumniQueriesdata: false,
     collegePitches: false,
   });
-  const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [opts, setOpts] = useState([]);
@@ -85,6 +86,7 @@ const Operations = (props) => {
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
+  const [searchedData,setSearchedData] = useState([]);
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
@@ -303,7 +305,6 @@ const Operations = (props) => {
     ],
     []
   );
-  console.log("checking",activeTab);
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -322,6 +323,7 @@ const Operations = (props) => {
     };
     console.log("activeTabkey",activeTab);
     if (activeTab.key == "my_data") {
+      await resetSearch();
       await api
         .post("/graphql", {
           query: GET_OPERATIONS,
@@ -342,6 +344,7 @@ const Operations = (props) => {
         });
     }
     if (activeTab.key == "useTot") {
+      await resetSearch();
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
@@ -361,6 +364,8 @@ const Operations = (props) => {
     }
 
     if (activeTab.key == "upskilling") {
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_STUDENTS_UPSKILLINGS,
@@ -379,6 +384,8 @@ const Operations = (props) => {
         });
     }
     if (activeTab.key == "dtesamarth") {
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_DTE_SAMARTH_SDITS,
@@ -396,16 +403,16 @@ const Operations = (props) => {
           nProgress.done();
         });
     }
-    console.log("activetab line 399",activeTab.key);
     if (activeTab.key == "alumniQueries") {
-      console.log("activetab",activeTab);
+  
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_ALUMNI_QUERIES,
           variables,
         })
         .then((data) => {
-          console.log("data",data);
           setOpts(data.data.data.alumniQueriesConnection.values);
           setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate)
         })
@@ -418,6 +425,8 @@ const Operations = (props) => {
         });
     }
     if (activeTab.key == "collegePitches") {
+      await resetSearch();
+      
       await api
         .post("/graphql", {
           query: GET_COLLEGE_PITCHES,
@@ -437,6 +446,15 @@ const Operations = (props) => {
         });
     }
   };
+
+
+useEffect(()=>{
+
+  if(isLoading){
+    fetchSearchedData(0,pageSize, [])
+  }
+}, [isLoading])
+
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
@@ -681,6 +699,97 @@ const Operations = (props) => {
     setShowModal({ ...showModal, [key]: true });
   };
 
+  const arrangeRows = async(startFrom)=>{
+    let filteredArray = []
+    for(let element=0; element<pageSize; element++ ){
+      if(element+1>opsData.length){
+        break
+      }if(opsData[startFrom]){
+        filteredArray.push(opsData[startFrom])
+      }
+      startFrom++
+    }
+    setSearchedData(filteredArray);
+  }
+
+  const ascendingSort = async(sortByField,arrayOfResult)=>{
+    try {
+
+    const sortedData = [...arrayOfResult];
+    sortedData.sort((a,b)=>{
+      const valueA = getField(a,sortByField);
+      const valueB = getField(b,sortByField);
+
+      
+    return valueA.localeCompare(valueB);
+    });
+
+    await sortAscending(sortedData);
+      
+    } catch (error) {
+      console.error("error", error);
+    }
+
+  }
+
+  const descendingSort = async(sortByField,arrayOfResult)=>{
+    try{
+      const sortedData = [...arrayOfResult];
+      sortedData.sort((a,b)=>{
+        const valueA = getField(a,sortByField);
+        const valueB = getField(b,sortByField);
+        
+      return valueB.localeCompare(valueA);
+      });
+  
+      await sortAscending(sortedData);
+
+    }catch(err){
+      console.log("error",err);
+
+    }
+  }
+
+  const getField = (object, fieldPath) => {
+    const fieldParts = fieldPath.split(".");
+    let value = object;
+  
+    for (const part of fieldParts) {
+      value = value[part];
+    }
+  
+    return value;
+  };
+  
+
+  const fetchSearchedData = useCallback(async(pageIndex, pageSize, sortBy)=>{
+
+    let startFrom =  ((pageIndex+1)*pageSize)-pageSize;
+    let filteredArray = [];
+
+    if(sortBy.length){
+      const {id,desc} = sortBy[0];
+      desc?descendingSort(id,opsData):ascendingSort(id,opsData)
+        arrangeRows(startFrom)
+   
+    }
+    else {   
+    for(let element=0; element<pageSize; element++){
+    
+      if(element+1>opsData.length){
+        break
+      }if(opsData[startFrom]){
+        filteredArray.push(opsData[startFrom])
+      }
+      startFrom++
+    }
+
+    setSearchedData(filteredArray);
+
+    }
+  },[opsData])
+
+
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -700,77 +809,98 @@ const Operations = (props) => {
           </div>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
+              <>
+              <OpsSearchDropdown searchOptions={columns} tab="opsTab"/>
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading ?searchedData:opts}
+                totalRecords={isLoading ?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
+              
             ) : activeTab.key == "useTot" ? (
+              <>
+               <OpsSearchDropdown searchOptions={columns} tab="totTab"/>
               <Table
                 onRowClick={(data) => showRowData("totdata", data)}
                 columns={columnsUserTot}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : activeTab.key == "upskilling" ? (
+              <>
+               <OpsSearchDropdown  tab="upSkillingTab"/>
               <Table
                 onRowClick={(data) => showRowData("upskilldata", data)}
                 columns={columnsUpskilling}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
+              
             ) : activeTab.key == "dtesamarth" ? (
-              <Table
+              <>
+               <OpsSearchDropdown  tab="sditTab"/>
+               <Table
                 onRowClick={(data) => showRowData("sditdata", data)}
                 columns={columnsPlacement}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading? opsData.length:optsAggregate.count}
+                fetchData={isLoading? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
+             
             ) : activeTab.key == "alumniQueries" ? (
+              <>
+              <OpsSearchDropdown tab="alumniTab"/>
               <Table
                 onRowClick={(data) => showRowData("alumniQueriesdata", data)}
                 columns={columnsAlumuniqueries}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData :fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : activeTab.key == "collegePitches" ? (
+              <>
+              <OpsSearchDropdown tab="collegePitchTab"/>
               <Table
                 onRowClick={(data) => showRowData("collegePitches", data)}
                 columns={columnscollegepitches}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
                 onPageIndexChange={setPaginationPageIndex}
               />
+              </>
             ) : (
               ""
             )}
@@ -865,10 +995,15 @@ const Operations = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  opsData:state.Operations.data,
+  isLoading:state.Operations.loading
+});
 
 const mapActionsToProps = {
   setAlert,
+  sortAscending,
+  resetSearch
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

@@ -117,7 +117,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="table-input"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -128,7 +128,7 @@ const DteUpskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className="table-input"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}

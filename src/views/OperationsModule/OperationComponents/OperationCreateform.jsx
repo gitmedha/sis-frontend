@@ -527,16 +527,16 @@ const OperationCreateform = (props) => {
               <thead>
                 <tr>
                   {/* <th className='id'>ID</th> */}
-                  <th>Assigned To</th>
-                  <th>Activity Type</th>
-                  <th>Educational Institution</th>
-                  <th>State</th>
-                  <th>Medha Area</th>
-                  <th>Batch Name</th>
-                  <th>No. Of Participants</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Session Topic</th>
+                  <th>Assigned To *</th>
+                  <th>Activity Type *</th>
+                  <th>Educational Institution *</th>
+                  <th>State *</th>
+                  <th>Medha Area *</th>
+                  <th>Batch Name *</th>
+                  <th>No. Of Participants *</th>
+                  <th>Start Date *</th>
+                  <th>End Date *</th>
+                  <th>Session Topic *</th>
                   <th>Project Founder</th>
                   <th>Guest Name</th>
                   <th>Guest Designation</th>

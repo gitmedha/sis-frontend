@@ -39,7 +39,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show ,showExistModal} = props;
+  let { onHide, show} = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -49,6 +49,7 @@ const InstitutionForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
+  const [isDuplicate,setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
@@ -124,12 +125,20 @@ const InstitutionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    values.name = values.name
+      .split(" ")
+      .map((word) => {
+        return word[0].toUpperCase() + word.substring(1);
+      })
+      .join(" ");
+    values.city = values.city[0].toUpperCase() + values.city.slice(1);
+    values.address = values.address
+      .split(" ")
+      .map((word) => {
+        return word[0].toUpperCase() + word.substring(1);
+      })
+      .join(" ");
 
-    const isDuplicate =  await FindDuplicate(values.name)
-
-   if(isDuplicate){
-    showExistModal()
-   }
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -163,7 +172,7 @@ const InstitutionForm = (props) => {
     initialValues["medha_area"] = props.medha_area ? props.medha_area : null;
 
     if (props.mou) {
-      initialValues['mou'] = props.mou.map(mou => ({
+      initialValues["mou"] = props.mou.map((mou) => ({
         ...mou,
         start_date: mou.start_date ? new Date(mou.start_date) : null,
         end_date: mou.end_date ? new Date(mou.end_date) : null,
@@ -181,17 +190,19 @@ const InstitutionForm = (props) => {
     initialValues["mou"] = [];
   }
 
-  const FindDuplicate = async (name) =>{
+  const FindDuplicate = async (setValue,name) =>{
+    setValue('name',name)
+
     try {
       const {data} = await api.post('/institutions/findDuplicate', {
         "name": name
       })
 
       if(data === 'Record Found'){
-        return true;
+        return setDuplicate(true);
       }
       else if(data === 'Record Not Found') {
-        return false
+        return setDuplicate(false);
       }
       
     } catch (error) {
@@ -248,8 +259,10 @@ const InstitutionForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
-                      className="form-control"
+                      onChange={(e)=>FindDuplicate(setFieldValue,e.target.value)}
+                      className="form-control capitalize"
                     />
+                     {(isDuplicate && !props.id) ? <p style={{color:'red'}}>this instituition is already exists, please try again different</p>: <p></p>}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
@@ -366,8 +379,14 @@ const InstitutionForm = (props) => {
                             <div className="col-md-6 col-sm-12 mb-2">
                               {mou && mou.mou_file && mou.mou_file.url ? (
                                 <div>
-                                  <label className="text-label leading-24">MoU</label>
-                                  <div>{mou.mou_file.url.substring(mou.mou_file.url.lastIndexOf('/')+1)}</div>
+                                  <label className="text-label leading-24">
+                                    MoU
+                                  </label>
+                                  <div>
+                                    {mou.mou_file.url.substring(
+                                      mou.mou_file.url.lastIndexOf("/") + 1
+                                    )}
+                                  </div>
                                 </div>
                               ) : (
                                 <Input
@@ -424,7 +443,7 @@ const InstitutionForm = (props) => {
                       required
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -499,7 +518,7 @@ const InstitutionForm = (props) => {
                       label="City"
                       required
                       placeholder="City"
-                      className="form-control"
+                      className="form-control capitalize"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -533,7 +552,7 @@ const InstitutionForm = (props) => {
                                 label="Name"
                                 required
                                 placeholder="Name"
-                                className="form-control"
+                                className="form-control capitalize"
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -543,7 +562,7 @@ const InstitutionForm = (props) => {
                                 required
                                 control="input"
                                 placeholder="Email"
-                                className="form-control"
+                                className="form-control "
                               />
                             </div>
                             <div className="col-md-6 col-sm-12 mb-2">
@@ -562,7 +581,7 @@ const InstitutionForm = (props) => {
                                 control="input"
                                 label="Designation"
                                 required
-                                className="form-control"
+                                className="form-control capitalize"
                                 placeholder="Designation"
                               />
                             </div>
