@@ -31,6 +31,7 @@ import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
+import {sortAscending,resetSearch} from "../../store/reducers/Operations/actions";
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
@@ -57,7 +58,7 @@ const Styled = styled.div`
   }
 `;
 
-const Operations = ({opsData,setAlert,isLoading}) => {
+const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
@@ -323,6 +324,7 @@ const Operations = ({opsData,setAlert,isLoading}) => {
       isActive:false
     };
     if (activeTab.key == "my_data") {
+      await resetSearch();
       await api
         .post("/graphql", {
           query: GET_OPERATIONS,
@@ -343,6 +345,7 @@ const Operations = ({opsData,setAlert,isLoading}) => {
         });
     }
     if (activeTab.key == "useTot") {
+      await resetSearch();
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
@@ -362,6 +365,8 @@ const Operations = ({opsData,setAlert,isLoading}) => {
     }
 
     if (activeTab.key == "upskilling") {
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_STUDENTS_UPSKILLINGS,
@@ -380,6 +385,8 @@ const Operations = ({opsData,setAlert,isLoading}) => {
         });
     }
     if (activeTab.key == "dtesamarth") {
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_DTE_SAMARTH_SDITS,
@@ -398,12 +405,16 @@ const Operations = ({opsData,setAlert,isLoading}) => {
         });
     }
     if (activeTab.key == "AlumniQueries") {
+  
+      await resetSearch();
+
       await api
         .post("/graphql", {
           query: GET_ALUMNI_QUERIES,
           variables,
         })
         .then((data) => {
+
           setOpts(data.data.data.alumniQueriesConnection.values);
           // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
         })
@@ -416,6 +427,8 @@ const Operations = ({opsData,setAlert,isLoading}) => {
         });
     }
     if (activeTab.key == "collegePitches") {
+      await resetSearch();
+      
       await api
         .post("/graphql", {
           query: GET_COLLEGE_PITCHES,
@@ -437,13 +450,12 @@ const Operations = ({opsData,setAlert,isLoading}) => {
 
 
 useEffect(()=>{
+
   if(isLoading){
     fetchSearchedData(0,pageSize, [])
   }
 }, [isLoading])
 
-
-console.log("searchedData2",searchedData);
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
@@ -686,44 +698,95 @@ console.log("searchedData2",searchedData);
     setShowModal({ ...showModal, [key]: true });
   };
 
-  const fetchSearchedData = useCallback((pageIndex, pageSize, sortBy)=>{
-    let startFrom;
-    let filteredArray = [];
-    if(sortBy.length){
-      const {id,desc} = sortBy[0];
-      let searchByField = 'area';
-
-      if(id === "assigned_to.username"){
-
-      }
-      const sortedData = [...opsData];
-        sortedData.sort((a,b)=>{
-          const valueA = a[searchByField];
-          const valueB = b[searchByField];
-          
-        return valueA.localeCompare(valueB);
-        });
-
-        console.log("sortedData",sortedData);
-
-      setSearchedData(sortedData)
-   
-    }
-
-    startFrom = ((pageIndex+1)*pageSize)-pageSize;
-
+  const arrangeRows = async(startFrom)=>{
+    let filteredArray = []
     for(let element=0; element<pageSize; element++ ){
       if(element+1>opsData.length){
         break
+      }if(opsData[startFrom]){
+        filteredArray.push(opsData[startFrom])
       }
-      filteredArray.push(opsData[startFrom])
+      startFrom++
+    }
+    setSearchedData(filteredArray);
+  }
+
+  const ascendingSort = async(sortByField,arrayOfResult)=>{
+    try {
+
+    const sortedData = [...arrayOfResult];
+    sortedData.sort((a,b)=>{
+      const valueA = getField(a,sortByField);
+      const valueB = getField(b,sortByField);
+
+      
+    return valueA.localeCompare(valueB);
+    });
+
+    await sortAscending(sortedData);
+      
+    } catch (error) {
+      console.error("error", error);
+    }
+
+  }
+
+  const descendingSort = async(sortByField,arrayOfResult)=>{
+    try{
+      const sortedData = [...arrayOfResult];
+      sortedData.sort((a,b)=>{
+        const valueA = getField(a,sortByField);
+        const valueB = getField(b,sortByField);
+        
+      return valueB.localeCompare(valueA);
+      });
+  
+      await sortAscending(sortedData);
+
+    }catch(err){
+      console.log("error",err);
+
+    }
+  }
+
+  const getField = (object, fieldPath) => {
+    const fieldParts = fieldPath.split(".");
+    let value = object;
+  
+    for (const part of fieldParts) {
+      value = value[part];
+    }
+  
+    return value;
+  };
+  
+
+  const fetchSearchedData = useCallback(async(pageIndex, pageSize, sortBy)=>{
+
+    let startFrom =  ((pageIndex+1)*pageSize)-pageSize;
+    let filteredArray = [];
+
+    if(sortBy.length){
+      const {id,desc} = sortBy[0];
+      desc?descendingSort(id,opsData):ascendingSort(id,opsData)
+        arrangeRows(startFrom)
+   
+    }
+    else {   
+    for(let element=0; element<pageSize; element++){
+    
+      if(element+1>opsData.length){
+        break
+      }if(opsData[startFrom]){
+        filteredArray.push(opsData[startFrom])
+      }
       startFrom++
     }
 
-   
     setSearchedData(filteredArray);
-    
-  },[isLoading,opsData])
+
+    }
+  },[opsData])
 
 
 
@@ -766,9 +829,9 @@ console.log("searchedData2",searchedData);
               <Table
                 onRowClick={(data) => showRowData("totdata", data)}
                 columns={columnsUserTot}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -781,9 +844,9 @@ console.log("searchedData2",searchedData);
               <Table
                 onRowClick={(data) => showRowData("upskilldata", data)}
                 columns={columnsUpskilling}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -797,9 +860,9 @@ console.log("searchedData2",searchedData);
                <Table
                 onRowClick={(data) => showRowData("sditdata", data)}
                 columns={columnsPlacement}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading? opsData.length:optsAggregate.count}
+                fetchData={isLoading? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -813,9 +876,9 @@ console.log("searchedData2",searchedData);
               <Table
                 onRowClick={(data) => showRowData("alumniQueriesdata", data)}
                 columns={columnsAlumuniqueries}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData :fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -828,9 +891,9 @@ console.log("searchedData2",searchedData);
               <Table
                 onRowClick={(data) => showRowData("collegePitches", data)}
                 columns={columnscollegepitches}
-                data={opts}
-                totalRecords={optsAggregate.count}
-                fetchData={fetchData}
+                data={isLoading?searchedData:opts}
+                totalRecords={isLoading?opsData.length:optsAggregate.count}
+                fetchData={isLoading?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -938,6 +1001,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   setAlert,
+  sortAscending,
+  resetSearch
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

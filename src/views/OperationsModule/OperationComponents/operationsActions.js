@@ -36,7 +36,6 @@ export const getSearchOps = async(searchField,value)=>{
     .then(data=>data)
     .catch(error=>Promise.reject(error));
 
-
 }
 
 export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at", sortOrder = "desc")=>{

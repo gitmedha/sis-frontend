@@ -6,7 +6,6 @@ import styled from "styled-components";
 import {searchOperationTab,resetSearch} from '../../../store/reducers/Operations/actions';
 
 const Section = styled.div`
-  padding-top: 30px;
   padding-bottom: 30px;
 
   &:not(:first-child) {
@@ -32,15 +31,15 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,tab,resetSea
         return [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Area'}];
 
         case "totTab":
-          return [{key:0, value:'username',label:'User Name'}, {key:1, value:'city',label:'City'}, {key:2, value:'project_name',label:'Project Name'}, {key:3, value:'project_department',label:'Project Department'}];
+          return [{key:0, value:'user_name',label:'User Name'}, {key:1, value:'city',label:'City'}, {key:2, value:'project_name',label:'Project Name'}, {key:3, value:'partner_dept',label:'Project Department'}];
         case "upSkillingTab":
-          return [{key:0,value:'student_name',label:'Student Name'}, {key:1, value:'assigned_to', label:'Assigned to'}, {key:2, value:'institution', label:'Institute Name'}, {key:3, value:'course_name', label:'Course Name'}]
+          return [{key:0,value:'student_id.full_name',label:'Student Name'}, {key:1, value:'assigned_to.username', label:'Assigned to'}, {key:2, value:'institution.name', label:'Institute Name'}, {key:3, value:'course_name', label:'Course Name'}]
         case "sditTab":
-          return [{key:0, value:'student_name',label:'Student Name'}, {key:1, value:'institution', label:'Institute Name'}, {key:2, value:'course_name',label:'Course Name'}]
+          return [{key:0, value:'student_name',label:'Student Name'}, {key:1, value:'institution_name', label:'Institute Name'}, {key:2, value:'course_name',label:'Course Name'}]
         case "alumniTab":
-          return [{key:0, value:'student', label:'Student Name'}, {key:1, value:'mobile', label:'Mobile'}]
+          return [{key:0, value:'student_name', label:'Student Name'}, {key:1, value:'phone', label:'Mobile'}]
         case "collegePitchTab":
-          return [{key:0, value:'student', label:'Student Name'}, {key:1,value:'area', label:'Area'}, {key:2,value:'mobile',label:'Mobile'}, {key:3, value:'college', label:'College Name'}]
+          return [{key:0, value:'student_name', label:'Student Name'}, {key:1,value:'area', label:'Area'}, {key:2,value:'phone',label:'Mobile'}, {key:3, value:'college_name', label:'College Name'}]
         
        
         default:
@@ -55,7 +54,28 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,tab,resetSea
     }
 
     const handleSubmit = async(values) =>{
-        await searchOperationTab(values.search_by_field,values.search_by_value)
+      let baseUrl;
+
+      if(tab === "opsTab"){
+        baseUrl = 'users-ops-activities'
+      }
+      else if(tab === "totTab"){
+        baseUrl = 'users-tots'
+      }
+      else if(tab === "upSkillingTab"){
+        baseUrl = 'students-upskillings'
+      }
+      else if(tab === "sditTab"){
+        baseUrl = 'dte-samarth-sdits'
+      }
+      else if(tab === "alumniTab"){
+        baseUrl = 'alumni-queries'
+      }
+      else if(tab === "collegePitchTab"){
+        baseUrl = 'college-pitches'
+      }
+
+        await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
     }
 
     const options = initialOptions()
