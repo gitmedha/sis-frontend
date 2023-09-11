@@ -187,6 +187,8 @@ const collegePitchesFields = `
     area
 `
 
+
+
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
         usersOpsActivitiesConnection(
@@ -204,6 +206,7 @@ export const GET_OPERATIONS = `
         }
     } 
 `;
+
 
 export const GET_USERSTOTS = `
     query GET_USERSTOTS ($limit:Int,$start:Int, $sort:String){
