@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { getAllProgram } from "./operationsActions";
 
 const options = [
   { value: true, label: "Yes" },
@@ -27,7 +28,7 @@ export const RowsData = (props) => {
       organization: "",
       activity_type: "",
       assigned_to: "",
-      area:'',
+      area: "",
     },
     // Add more initial rows as needed
   ]);
@@ -36,10 +37,20 @@ export const RowsData = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [classvalue,setclassvalue]=useState(props.classValue)
-  const handleChange = (options, key) => {
-    console.log(options, key);
-  };
+  const [classvalue, setclassvalue] = useState(props.classValue);
+  const [programOptions,setProgramOption]=useState([])
+
+  useEffect(() => {
+    getAllProgram().then((data)=>{
+      console.log("data",data);
+      setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
+            key: value.id,
+            label: value.name,
+            value: value.name,
+      })))
+    });
+  }, [])
+  
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -60,12 +71,11 @@ export const RowsData = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-   
   }, []);
 
-  useEffect(()=>{
-    console.log("state",props.classValue[`class${row.id-1}`]?.state);
-  },[props.classValue])
+  useEffect(() => {
+    console.log("state", props.classValue[`class${row.id - 1}`]?.state);
+  }, [props.classValue]);
   const updateRow = (id, field, value) => {
     row[field] = value;
     console.log(id, field, value);
@@ -73,17 +83,55 @@ export const RowsData = (props) => {
 
   return (
     <>
-      <tr key={row.id}>
+    
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.assigned_to
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="assigned_to"
+            options={assigneeOptions}
+            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
+          />
+        </td>
         <td>
           <input
-            className="table-input"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.activity_type
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             onChange={(e) => updateRow(row.id, "activity_type", e.target.value)}
           />
         </td>
+        {/* <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.institution
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution"
+            options={programOptions}
+            onChange={(e) => props.handleChange(e, "institution", row.id)}
+          />
+        </td> */}
         <td>
           <Select
-            className="basic-single table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.institution
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -94,29 +142,9 @@ export const RowsData = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={props.batchbdata}
-            onChange={(e) => props.handleChange(e, "batch", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="assigned_to"
-            options={assigneeOptions}
-            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`basic-single table-input ${props.classValue[`class${row.id-1}`]?.state ? `border-red`:""}`}
+            className={`basic-single table-input ${
+              props.classValue[`class${row.id - 1}`]?.state ? `border-red` : ""
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -126,9 +154,11 @@ export const RowsData = (props) => {
           />
         </td>
         <td>
-          {areaOptions.length ? (
+         
             <Select
-              className={`basic-single table-input ${props.classValue[`class${row.id-1}`]?.area ? "border-red":""}`}
+              className={`basic-single table-input ${
+                props.classValue[`class${row.id - 1}`]?.area ? "border-red" : ""
+              }`}
               classNamePrefix="select"
               isClearable={true}
               isSearchable={true}
@@ -136,16 +166,44 @@ export const RowsData = (props) => {
               options={areaOptions}
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
-          ) : (
-            <>
-              <Skeleton count={1} height={45} />
-            </>
-          )}
+          
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => props.handleChange(e, "batch", row.id)}
+          />
         </td>
         <td>
           <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.students_attended
+                ? `border-red`
+                : ""
+            }`}
+            type="text"
+            value={row.age}
+            onChange={(e) =>
+              props.updateRow(row.id, "students_attended", e.target.value)
+            }
+          />
+        </td>
+       
+        <td>
+          <input
             type="date"
-            className="table-input date"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.start_date
+                ? `border-red`
+                : ""
+            }`}
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -158,7 +216,11 @@ export const RowsData = (props) => {
         <td>
           <input
             type="date"
-            className="table-input date"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.end_date
+                ? `border-red`
+                : ""
+            }`}
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
@@ -169,7 +231,9 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.topic ? "border-red":""}`}
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.topic ? "border-red" : ""
+            }`}
             type="text"
             value={row.age}
             onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}
@@ -187,7 +251,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) => props.updateRow(row.id, "guest", e.target.value)}
@@ -195,7 +259,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) =>
@@ -205,7 +269,7 @@ export const RowsData = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             value={row.age}
             onChange={(e) =>
@@ -213,17 +277,8 @@ export const RowsData = (props) => {
             }
           />
         </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            value={row.age}
-            onChange={(e) =>
-              props.updateRow(row.id, "students_attended", e.target.value)
-            }
-          />
-        </td>
-      </tr>
+        
+      
     </>
   );
 };

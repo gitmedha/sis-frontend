@@ -62,51 +62,20 @@ const CollegepitchesBulkrow = (props) => {
   const updateRow = (id, field, value) => {
     row[field] = value;
     console.log(id, field, value);
-    // props.handleInputChange()
-    // setRows(updatedRows);
   };
 
   return (
     <>
-      <tr key={row.id}>
-        <td>{row.id}</td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
-          />
-        </td>
-
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "course_year", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "college_name", e.target.value)}
-          />
-        </td>
+      <tr key={row.id} className="mt-4">
+        {/* <td>{row.id}</td> */}
         <td>
           <input
             type="date"
-            className="table-input date"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.pitch_date
+                ? `border-red`
+                : ""
+            }`}
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -118,47 +87,83 @@ const CollegepitchesBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.student_name
+                ? `border-red`
+                : ""
+            }`}
             type="text"
-            // value={row.name}
+            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
+          />
+        </td>
+
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.course_name
+                ? `border-red`
+                : ""
+            }`}
+            type="text"
+            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.course_year
+                ? `border-red`
+                : ""
+            }`}
+            type="text"
+            onChange={(e) => updateRow(row.id, "course_year", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.college_name
+                ? `border-red`
+                : ""
+            }`}
+            type="text"
+            onChange={(e) => updateRow(row.id, "college_name", e.target.value)}
+          />
+        </td>
+
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.phone
+                ? `border-red`
+                : ""
+            }`}
+            type="text"
             onChange={(e) => updateRow(row.id, "phone", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.whatsapp
+                ? `border-red`
+                : ""
+            }`}
             type="text"
-            // value={row.name}
             onChange={(e) => updateRow(row.id, "whatsapp", e.target.value)}
           />
         </td>
 
-        
-        
-
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "email", e.target.value)
-            }
+            onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "remarks", e.target.value)
-            }
-          />
-        </td>
-
-
-        <td>
-          <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "srm_name", e.target.value)
@@ -167,15 +172,20 @@ const CollegepitchesBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.area ? `border-red` : ""
+            }`}
             type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "area", e.target.value)
-            }
+            onChange={(e) => props.updateRow(row.id, "area", e.target.value)}
           />
         </td>
-
-        
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "remarks", e.target.value)}
+          />
+        </td>
       </tr>
     </>
   );

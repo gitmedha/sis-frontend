@@ -38,7 +38,7 @@ const tabPickerOptions = [
   { title: "Users Tot", key: "useTot" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
-  { title: "Alumni Queries", key: "AlumniQueries" },
+  { title: "Alumni Queries", key: "alumniQueries" },
   { title: "College Pitches", key: "collegePitches" },
 ];
 
@@ -305,8 +305,6 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
     ],
     []
   );
-
-
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -323,6 +321,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
       sort: `${sortBy}:${sortOrder}`,
       isActive:false
     };
+    console.log("activeTabkey",activeTab);
     if (activeTab.key == "my_data") {
       await resetSearch();
       await api
@@ -353,7 +352,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
         })
         .then((data) => {
           setOpts(data.data.data.usersTotsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.usersTotsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -374,7 +373,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
         })
         .then((data) => {
           setOpts(data.data.data.studentsUpskillingsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.studentsUpskillingsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -394,7 +393,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
         })
         .then((data) => {
           setOpts(data.data.data.dteSamarthSditsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -404,7 +403,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
           nProgress.done();
         });
     }
-    if (activeTab.key == "AlumniQueries") {
+    if (activeTab.key == "alumniQueries") {
   
       await resetSearch();
 
@@ -414,9 +413,8 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
           variables,
         })
         .then((data) => {
-
           setOpts(data.data.data.alumniQueriesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -435,8 +433,9 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
           variables,
         })
         .then((data) => {
+          console.log("datacollegpitches",data);
           setOpts(data.data.data.collegePitchesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -596,7 +595,8 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "AlumniQueries"){
+      if(activeTab.key == "alumniQueries"){
+    
         if (sortBy.length) {
           let sortByField ;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -618,7 +618,14 @@ useEffect(()=>{
             sortByField,
             sortOrder
           );
-        } 
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
       }
       if(activeTab.key == "collegePitches"){
         if (sortBy.length) {
@@ -654,20 +661,14 @@ useEffect(()=>{
           );
         }
       }
-      
-      // else{
-      //   console.log("Ashjhdsj");
-      //   getoperations(
-      //     activeStatus,
-      //     activeTab.key,
-      //     pageSize,
-      //     pageSize * pageIndex
-      //   );
-      // }
      
     },
-    [activeTab.key, activeStatus]
+    [activeTab, activeStatus]
   );
+  useEffect(() => {
+   console.log("activeTab line642",activeTab);
+  }, [activeTab])
+  
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
@@ -870,7 +871,7 @@ useEffect(()=>{
               />
               </>
              
-            ) : activeTab.key == "AlumniQueries" ? (
+            ) : activeTab.key == "alumniQueries" ? (
               <>
               <OpsSearchDropdown tab="alumniTab"/>
               <Table
@@ -931,7 +932,7 @@ useEffect(()=>{
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : activeTab.key == "AlumniQueries" ? (
+          ) : activeTab.key == "alumniQueries" ? (
             <AllumuniBulkAdd
               show={modalShow}
               onHide={hideCreateModal}

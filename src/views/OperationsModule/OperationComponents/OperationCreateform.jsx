@@ -2,7 +2,7 @@ import { Formik, Form } from "formik";
 import { Modal, Button } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { urlPath } from "../../../constants";
@@ -79,15 +79,18 @@ const Section = styled.div`
     justify-content: flex-end;
   }
 `;
+const marginTop = {
+  marginTop:'2rem',
+};
 const modalStyle = {
-  position: 'fixed',
-  top: '20px',    // Gap from the top
-  right: '20px',  // Gap from the right
-  bottom: '20px', // Gap from the bottom
-  left: '20px',   // Gap from the left
-  width: 'calc(100% - 40px)',  // Adjust width to account for left and right gaps
-  height: 'calc(100% - 40px)', // Adjust height to account for top and bottom gaps
-  overflow: 'auto',
+  position: "fixed",
+  top: "20px", // Gap from the top
+  right: "20px", // Gap from the right
+  bottom: "20px", // Gap from the bottom
+  left: "20px", // Gap from the left
+  width: "calc(100% - 40px)", // Adjust width to account for left and right gaps
+  height: "calc(100% - 40px)", // Adjust height to account for top and bottom gaps
+  overflow: "auto",
 };
 
 const meilisearchClient = new MeiliSearch({
@@ -99,7 +102,7 @@ const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
-  const [classValue,setclassValue]=useState({})
+  const [classValue, setclassValue] = useState({});
 
   const userId = localStorage.getItem("user_id");
 
@@ -132,7 +135,7 @@ const OperationCreateform = (props) => {
       designation: "",
       organization: "",
       assigned_to: "",
-      area:'',
+      area: "",
     },
     // Add more initial rows as needed
   ]);
@@ -145,7 +148,7 @@ const OperationCreateform = (props) => {
       batch: "",
       activity_type: "",
       state: "",
-      area:'',
+      area: "",
       start_date: "",
       end_date: "",
       topic: "",
@@ -170,65 +173,83 @@ const OperationCreateform = (props) => {
     designation: "",
     organization: "",
     assigned_to: "",
-    area:'',
+    area: "",
   });
 
+  function checkEmptyValuesandplaceNA(obj) {
+    const result = {};
+
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        if(isEmpty){
+          console.log("result[key]",result[key]);
+          result[key] = "N/A";
+        }
+        else{
+          result[key]=value
+        }
+      }
+    }
+
+    return result;
+  }
+
+  function checkEmptyValues(obj) {
+    const result = {};
+
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+
+    return result;
+  }
+
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+
+    if (typeof value === "string" && value.trim() === "") {
+      return true;
+    }
+
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+
+    if (typeof value === "object" && Object.keys(value).length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   const addRow = () => {
-    console.log(rows[rows.length-1],rows[rows.length-1].state =="");
-    if(rows[rows.length-1].state ==='' || rows[rows.length-1].state !=='' ){
-      console.log("state");
-      if(rows[rows.length-1].state == "" || rows[rows.length-1].state === null || rows[rows.length-1].state == undefined){
-        console.log("state2");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          state:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          state:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
+    let value = checkEmptyValues(rows[rows.length - 1]);
+    setclassValue({});
+    if (
+      value.state ||
+      value.area ||
+      value.topic ||
+      value.start_date ||
+      value.end_date ||
+      value.institution ||
+      value.batch ||
+      value.assigned_to
+    ) {
+      let obj = { [`class${[rows.length - 1]}`]: value };
+      console.log("obj", obj);
+      
+
+      return setclassValue(obj);
     }
 
-    if(rows[rows.length-1].area ==='' || rows[rows.length-1].area !=='' ){
-      console.log("area");
-      if(rows[rows.length-1].area == "" || rows[rows.length-1].area === null || rows[rows.length-1].area == undefined){
-        console.log("area2");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          area:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          area:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
-    }
-
-    if(rows[rows.length-1].topic ==='' || rows[rows.length-1].topic !=='' ){
-      console.log("topic");
-      if(rows[rows.length-1].topic == "" || rows[rows.length-1].topic === null || rows[rows.length-1].topic == undefined){
-        console.log("topic");
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          topic:true
-        }})
-        return ;
-      }
-      else{
-        setclassValue({...classValue,[`class${rows.length-1}`]:{
-          topic:false
-        }})
-      }
-      console.log("classValue",classValue);
-     
-    }
-   
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -277,8 +298,6 @@ const OperationCreateform = (props) => {
     const updatedRows = rows.filter((row) => row.id !== id);
     setRows(updatedRows);
   };
-
-  
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -337,8 +356,7 @@ const OperationCreateform = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
-      console.log(row);
+    let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
       row.created_by = Number(userId);
@@ -348,10 +366,10 @@ const OperationCreateform = (props) => {
       row.institution = Number(row.institution);
       row.students_attended = Number(row.students_attended);
       row.donor = row.donor ? true : false;
-      row.isActive=true;
-      return row;
+      row.isActive = true;
+      let value =checkEmptyValuesandplaceNA(row);
+      return value;
     });
-
     try {
       const value = await api.post(
         "/users-ops-activities/createBulkOperations",
@@ -457,8 +475,6 @@ const OperationCreateform = (props) => {
       id="custom-modal"
       dialogClassName="fullscreen-modal"
     >
-       
-
       <Modal.Header className="bg-white">
         <Modal.Title
           id="contained-modal-title-vcenter "
@@ -466,7 +482,6 @@ const OperationCreateform = (props) => {
         >
           <div className="d-flex justify-content-between">
             <div className="d-flex ">
-              
               <h2 className="text--primary bebas-thick mb-0">
                 {props.id ? props.full_name : "Add Bulk Operation Data"}
               </h2>
@@ -477,15 +492,19 @@ const OperationCreateform = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-            {rows.length > 1 ? <button className="unset" onClick={() => deleteRow(rows.length)}>
-              <FaMinusCircle
-                style={iconStyles}
-                width="15"
-                size={40}
-                color="#000"
-                className="ml-2 mr-3"
-              />
-            </button>:""}
+            {rows.length > 1 ? (
+              <button className="unset" onClick={() => deleteRow(rows.length)}>
+                <FaMinusCircle
+                  style={iconStyles}
+                  width="15"
+                  size={40}
+                  color="#000"
+                  className="ml-2 mr-3"
+                />
+              </button>
+            ) : (
+              ""
+            )}
             {rows.length == 10 ? (
               ""
             ) : (
@@ -508,46 +527,51 @@ const OperationCreateform = (props) => {
               <thead>
                 <tr>
                   {/* <th className='id'>ID</th> */}
-                  <th>Activity Type</th>
-                  <th>Institution</th>
-
-                  <th>Batch</th>
-                  <th>Assigned to</th>
-                  <th>State</th>
-                  <th>Area</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Topic</th>
-                  <th>Donor</th>
-                  <th>Guest</th>
-                  <th>Designation</th>
+                  <th>Assigned To *</th>
+                  <th>Activity Type *</th>
+                  <th>Educational Institution *</th>
+                  <th>State *</th>
+                  <th>Medha Area *</th>
+                  <th>Batch Name *</th>
+                  <th>No. Of Participants *</th>
+                  <th>Start Date *</th>
+                  <th>End Date *</th>
+                  <th>Session Topic *</th>
+                  <th>Project Founder</th>
+                  <th>Guest Name</th>
+                  <th>Guest Designation</th>
                   <th>Organization</th>
-                  <th>Student Attended</th>
                 </tr>
               </thead>
-              <tbody>
-                {rows.map((row,id) => (
-                  <RowsData
-                    key={id}
-                    handleInputChange={handleInputChange}
-                    handleChange={handleChange}
-                    row={row}
-                    endDate={endDate}
-                    startDate={startDate}
-                    setStartdate={setStartDate}
-                    institutiondata={institutionOptions}
-                    batchbdata={batchOptions}
-                    updateRow={updateRow}
-                    statedata={stateOptions}
-                    areaOptions={areaOptions}
-                    classValue={classValue}
-                  />
+              <tbody className="mb-4">
+
+                {rows.map((row, id) => (
+                  <tr key={id} className="mt-4">
+                     <RowsData
+                      key={id}
+                      handleInputChange={handleInputChange}
+                      handleChange={handleChange}
+                      row={row}
+                      endDate={endDate}
+                      startDate={startDate}
+                      setStartdate={setStartDate}
+                      institutiondata={institutionOptions}
+                      batchbdata={batchOptions}
+                      updateRow={updateRow}
+                      statedata={stateOptions}
+                      areaOptions={areaOptions}
+                      classValue={classValue}
+                      style={{marginTop:5}}
+                    />
+                  </tr>
+                   
+                  
                 ))}
               </tbody>
             </table>
           </div>
           <div className="d-flex justify-content-end between_class">
-          <button
+            <button
               type="button"
               onClick={onHide}
               className="btn btn-danger btn-regular mr-5"
@@ -562,7 +586,6 @@ const OperationCreateform = (props) => {
             >
               SAVE
             </button>
-            
           </div>
         </div>
       </Modal.Body>

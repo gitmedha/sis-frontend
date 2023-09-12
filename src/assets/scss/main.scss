@@ -149,9 +149,10 @@ body {
   
   th,
   td {
-    border: 1px solid #6c757d;
+    border: 1px solid #fff;
     padding:0 8px ;
     text-align: left;
+    height: 2rem !important;
     // width: 45rem;
     // border: #0b0b0b;
   }
@@ -159,7 +160,8 @@ body {
   th {
     font-size: 0.8rem !important;
     background-color: #257b69;
-    color: #ccc;
+    color: #fff;
+    height: 2.5rem !important;
   }
   
   .table-input {
@@ -168,15 +170,19 @@ body {
     padding: 0;
     margin: 0;
     background-color: transparent;
+    border-radius: 5px;
   }
  
   .basic-single{
     border: none !important;
   }
+  .date{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
   .date ,.donor{
     border: 1px solid #bebfc0 !important;
     width: 8rem;
-
+    border-radius: 5px;
   }
   .border-red{
     border: 2px solid #ff0000 !important;
@@ -304,7 +310,12 @@ background-color:white;
 color:black;
 }
 }
-
+.h-2{
+  height: 2.4rem;
+}
+.mt-4{
+  margin-top: 2rem !important;
+}
 
 .bold{
   font-weight: 700;

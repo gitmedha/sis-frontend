@@ -24,6 +24,7 @@ import {
 } from "./operationsActions";
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -204,7 +205,7 @@ const StudentUpkillingBulkcreate = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
@@ -219,7 +220,8 @@ const StudentUpkillingBulkcreate = (props) => {
       row.institution = Number(row.institution);
       row.student_id = Number(row.student_id);
       row.isActive = true;
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      return value;
     });
     console.log("data", data);
 
@@ -375,7 +377,7 @@ const StudentUpkillingBulkcreate = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th className="id">ID</th>
+                  {/* <th className="id">ID</th> */}
                   <th>Course Name</th>
                   <th>Student </th>
                   <th>Institution</th>

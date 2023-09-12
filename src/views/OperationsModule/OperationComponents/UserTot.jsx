@@ -21,6 +21,7 @@ import { RowsData } from "./RowsData";
 import { bulkCreateUsersTots, createOperation } from "./operationsActions";
 import api from "../../../apis";
 import UserTotRowdata from "./UserTotRowdata";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -90,6 +91,7 @@ const UserTot = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
+  const [classValue,setclassValue]=useState({})
   const [data, setData] = useState([
     {
       id: 1,
@@ -109,6 +111,8 @@ const UserTot = (props) => {
       gender: "",
       contact: "",
       designation: "",
+      start_date:"",
+      end_date:""
     },
     // Add more initial rows as needed
   ]);
@@ -131,6 +135,8 @@ const UserTot = (props) => {
       gender: "",
       contact: "",
       designation: "",
+      start_date:"",
+      end_date:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -151,9 +157,57 @@ const UserTot = (props) => {
     gender: "",
     contact: "",
     designation: "",
+    start_date:"",
+    end_date:""
   });
   const [showLimit, setshowLimit] = useState(false);
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+  
+    return result;
+  }
+  
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+  
+    if (typeof value === 'string' && value.trim() === '') {
+      return true;
+    }
+  
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+  
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return true;
+    }
+  
+    return false;
+  }
   const addRow = () => {
+    let value =checkEmptyValues(rows[rows.length-1])
+    
+    if(value.student_name || value.gender){
+      let obj={...classValue,[`class${[rows.length-1]}`]:value}
+     
+      // if(obj.class0 && rows.length !== 1){
+      //   delete obj['class0']
+      // }else if(rows.length > 1){
+      //   obj=delete obj[`class${[rows.length-2]}`]
+      // }
+      console.log("obj",obj);
+      return setclassValue(obj)
+    }
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -275,7 +329,7 @@ const UserTot = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
@@ -290,7 +344,8 @@ const UserTot = (props) => {
       row.created_by = Number(userId);
       delete row.start_date;
       delete row.end_date;
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      return value;
     });
 
     try {
@@ -447,26 +502,25 @@ const UserTot = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th className="id">ID</th>
+                  {/* <th className="id">ID</th> */}
                   <th>User Name</th>
-                  <th>Trainer 1</th>
-
-                  <th>Project Name</th>
-                  <th>Certificate Given</th>
-                  <th>State</th>
-                  <th>City</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Module Name</th>
-                  <th>Project Type</th>
-                  <th>New Entry</th>
-                  <th>Trainer 2</th>
-                  <th>Partner Department</th>
                   <th>College</th>
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Contact </th>
                   <th>Designation </th>
+                  <th>Trainer 1 *</th>
+                  <th>Trainer 2</th>
+                  <th>Project Type *</th>
+                  <th>Project Name</th>
+                  <th>Module Name</th>
+                  <th>Certificate Given *</th>
+                  <th>Start Date *</th>
+                  <th>End Date *</th>
+                  <th>State *</th>
+                  <th>City *</th>
+                  <th>Partner Department</th>
+                  {/* <th>New Entry</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -483,6 +537,7 @@ const UserTot = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

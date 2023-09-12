@@ -40,6 +40,7 @@ const AlumunniBulkrow = (props) => {
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
+
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
@@ -57,7 +58,6 @@ const AlumunniBulkrow = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
@@ -73,59 +73,8 @@ const AlumunniBulkrow = (props) => {
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "father_name", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "email", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "phone", e.target.value)}
-          />
-        </td>
-       <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "location", e.target.value)}
-          />
-        </td>
-         <td>
-          <input
-            className="table-input"
-            type="text"
-            // value={row.name}
-            onChange={(e) =>
-              updateRow(row.id, "query_type", e.target.value)
-            }
-          />
-        </td>
-
-        <td>
-          <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -137,44 +86,92 @@ const AlumunniBulkrow = (props) => {
         </td>
         <td>
           <input
-            type="date"
-            className="table-input date"
-            defaultValue={startDate}
-            onChange={(e) => {
-              console.log(e.target.value);
-
-              setStartDate(e.target.value);
-              props.updateRow(row.id, "query_end", e.target.value);
-            }}
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
+            type="text"
+            // value={row.name}
+            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
           />
         </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            // value={row.name}
+            onChange={(e) => updateRow(row.id, "father_name", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            // value={row.name}
+            onChange={(e) => updateRow(row.id, "email", e.target.value)}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            // value={row.name}
+            onChange={(e) => updateRow(row.id, "phone", e.target.value)}
+          />
+        </td>
+       <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            // value={row.name}
+            onChange={(e) => updateRow(row.id, "location", e.target.value)}
+          />
+        </td>
+         <td>
+          <input
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_type ? `border-red`:"table-input h-2"}`}
+            type="text"
+            // value={row.name}
+            onChange={(e) =>
+              updateRow(row.id, "query_type", e.target.value)
+            }
+          />
+        </td>
+
+       
+       
         
        
         <td>
           <input
-            className="table-input"
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_desc ? `border-red`:"table-input h-2"}`}
             type="text"
             onChange={(e) => props.updateRow(row.id, "query_desc", e.target.value)}
           />
         </td>
         <td>
           <input
-            className="table-input"
+            className="table-input h-2"
             type="text"
             onChange={(e) => props.updateRow(row.id, "conclusion", e.target.value)}
           />
         </td>
 
+        
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "status", e.target.value)}
+          />
+        </td>
         <td>
           <input
             type="date"
-            className="table-input date"
+            className="table-input h-2 date"
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
 
               setStartDate(e.target.value);
-              props.updateRow(row.id, "published_at", e.target.value);
+              props.updateRow(row.id, "query_end", e.target.value);
             }}
           />
         </td>
