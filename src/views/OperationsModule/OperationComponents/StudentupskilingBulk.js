@@ -187,7 +187,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input h-2 date"
+            className="table-input h-2 "
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -213,7 +213,7 @@ const StudentupskilingBulk = (props) => {
                 /> */}
           <input
             type="date"
-            className="table-input h-2 date"
+            className="table-input h-2 "
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
