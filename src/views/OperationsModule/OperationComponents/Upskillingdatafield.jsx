@@ -278,7 +278,7 @@ const Upskillingdatafield = (props) => {
                 />
               </div> */}
             </Modal.Body>
-            {isAdmin() && (
+            {(isSRM() || isAdmin()) && (
               <div className="row mt-4 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button

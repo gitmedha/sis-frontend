@@ -189,7 +189,6 @@ export const RowsData = (props) => {
                 : ""
             }`}
             type="text"
-            value={row.age}
             onChange={(e) =>
               props.updateRow(row.id, "students_attended", e.target.value)
             }

@@ -241,7 +241,7 @@ const OperationCreateform = (props) => {
       value.end_date ||
       value.institution ||
       value.batch ||
-      value.assigned_to
+      value.assigned_to || value.students_attended
     ) {
       let obj = { [`class${[rows.length - 1]}`]: value };
       console.log("obj", obj);
@@ -533,7 +533,7 @@ const OperationCreateform = (props) => {
                   <th>State *</th>
                   <th>Medha Area *</th>
                   <th>Batch Name *</th>
-                  <th>No. Of Participants *</th>
+                  <th>No. Of Participants </th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>
