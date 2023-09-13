@@ -203,7 +203,6 @@ const ProgramEnrollmentForm = (props) => {
       let found = false;
       allBatches.forEach(element => {
         if(props.programEnrollment.batch.id == e.id){
-          console.log("enterd");
           found = false
         }
   
@@ -217,7 +216,7 @@ const ProgramEnrollmentForm = (props) => {
         
       }
       else {
-        console.log("this");
+    
         setShowDuplicateWarning(false)
       }
 
