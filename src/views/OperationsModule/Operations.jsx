@@ -908,6 +908,7 @@ useEffect(()=>{
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
+              (isSRM() || isAdmin()) &&
             <OperationCreateform
               show={modalShow}
               onHide={hideCreateModal}
@@ -915,30 +916,35 @@ useEffect(()=>{
             />
           ) : // useTot  ---upskilling ---dtesamarth
           activeTab.key == "useTot" ? (
+            (isSRM() || isAdmin()) &&
             <UserTot
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "upskilling" ? (
+            (isSRM() || isAdmin()) &&
             <StudentUpkillingBulkcreate
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "dtesamarth" ? (
+            (isSRM() || isAdmin()) &&
             <Dtesamarth
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "alumniQueries" ? (
+            (isSRM() || isAdmin()) &&
             <AllumuniBulkAdd
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "collegePitches" ? (
+            (isSRM() || isAdmin()) &&
             <CollegepitchesBulkadd
               show={modalShow}
               onHide={hideCreateModal}
@@ -948,6 +954,7 @@ useEffect(()=>{
             ""
           )}
           {showModal.opsdata && (
+            (isSRM() || isAdmin()) &&
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
@@ -955,6 +962,7 @@ useEffect(()=>{
             />
           )}
           {showModal.totdata && (
+            (isSRM() || isAdmin()) &&
             <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
@@ -962,6 +970,7 @@ useEffect(()=>{
             />
           )}
           {showModal.upskilldata && (
+            (isSRM() || isAdmin()) &&
             <Upskillingdatafield
               {...optsdata.upskilldata}
               show={showModal.opsdata}
@@ -969,6 +978,7 @@ useEffect(()=>{
             />
           )}
           {showModal.sditdata && (
+            (isSRM() || isAdmin()) &&
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
@@ -976,6 +986,7 @@ useEffect(()=>{
             />
           )}
           {showModal.alumniQueriesdata && (
+            (isSRM() || isAdmin()) &&
             <Alumuniqueriesdata
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
@@ -983,6 +994,7 @@ useEffect(()=>{
             />
           )}
           {showModal.collegePitches && (
+            (isSRM() || isAdmin()) &&
             <CollegePitchdata
               {...optsdata.collegePitches}
               show={showModal.opsdata}

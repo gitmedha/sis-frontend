@@ -245,7 +245,7 @@ const Opsdatafeilds = (props) => {
                 {/* <DetailField label="Assigned to" value={props.institute.name} /> */}
               </div>
             </Modal.Body>
-            {isAdmin() && (
+            {(isSRM() || isAdmin()) && (
               <div className="row mt-2 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button
