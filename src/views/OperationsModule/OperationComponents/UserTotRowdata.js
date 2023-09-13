@@ -190,7 +190,7 @@ const UserTotRowdata = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input h-2 date ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2  ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -203,7 +203,7 @@ const UserTotRowdata = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input h-2 date ${props.classValue[`class${row.id-1}`]?.end_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.end_date ? `border-red`:"table-input h-2"}`}
             value={endDate}
             onChange={(event) => {
               const date = event.target.value;
