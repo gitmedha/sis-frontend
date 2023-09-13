@@ -219,7 +219,7 @@ const EmployerForm = (props) => {
                       required
                     />
 
-                    {(isDuplicate && !props.id) ? <p style={{color:'red'}}>this employer is already exists, please try again different</p>: <p></p>}
+                    {(isDuplicate && !props.id) ? <p style={{color:'red'}}>This employer already exist on the system</p>: <p></p>}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
