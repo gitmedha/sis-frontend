@@ -1,4 +1,4 @@
-import React,{useState, Fragment,useEffect} from 'react'
+import React,{Fragment} from 'react'
 import {connect} from 'react-redux';
 import { Input } from '../../../utils/Form';
 import { Formik, FieldArray, Form ,useFormik} from 'formik';
@@ -22,20 +22,19 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}) {
+const TotSearchBar =({searchOperationTab,resetSearch})=> {
 
+  let options = [{key:0, value:'user_name',label:'User Name'}, {key:1, value:'city',label:'City'}, {key:2, value:'project_name',label:'Project Name'}, {key:3, value:'partner_dept',label:'Project Department'}];
+        
     const initialValues = {
         search_by_field:'',
         search_by_value:''
     }
 
     const handleSubmit = async(values) =>{
-      let baseUrl = 'users-ops-activities'
-
+        let baseUrl = 'users-tots'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
     }
-
-    const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Area'}]
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
       onSubmit: handleSubmit,
@@ -91,4 +90,4 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
 }
 
 
-export default connect(null, {searchOperationTab,resetSearch})(OpsSearchDropdown);
+export default connect(null, {searchOperationTab,resetSearch})(TotSearchBar);

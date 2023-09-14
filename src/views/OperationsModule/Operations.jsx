@@ -31,6 +31,11 @@ import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
 import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
+import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
+import TotSearchBar from "./OperationComponents/TotSearchBar";
+import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
+import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
+import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {sortAscending,resetSearch} from "../../store/reducers/Operations/actions";
 
 const tabPickerOptions = [
@@ -58,7 +63,8 @@ const Styled = styled.div`
   }
 `;
 
-const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
+
+const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearching}) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
@@ -451,10 +457,10 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
 
 useEffect(()=>{
 
-  if(isLoading){
+  if(isSearching){
     fetchSearchedData(0,pageSize, [])
   }
-}, [isLoading])
+}, [isSearching])
 
 
   const fetchData = useCallback(
@@ -788,8 +794,6 @@ useEffect(()=>{
     }
   },[opsData])
 
-
-
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
@@ -809,13 +813,13 @@ useEffect(()=>{
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <>
-              <OpsSearchDropdown searchOptions={columns} tab="opsTab"/>
+              <OpsSearchDropdown/>
               <Table
                 onRowClick={(data) => showRowData("opsdata", data)}
                 columns={columns}
-                data={isLoading ?searchedData:opts}
-                totalRecords={isLoading ?opsData.length:optsAggregate.count}
-                fetchData={isLoading?fetchSearchedData:fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching ?opsData.length:optsAggregate.count}
+                fetchData={isSearching?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -825,13 +829,13 @@ useEffect(()=>{
               
             ) : activeTab.key == "useTot" ? (
               <>
-               <OpsSearchDropdown searchOptions={columns} tab="totTab"/>
+               <TotSearchBar/>
               <Table
                 onRowClick={(data) => showRowData("totdata", data)}
                 columns={columnsUserTot}
-                data={isLoading?searchedData:opts}
-                totalRecords={isLoading?opsData.length:optsAggregate.count}
-                fetchData={isLoading ? fetchSearchedData:fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching?opsData.length:optsAggregate.count}
+                fetchData={isSearching ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -840,13 +844,13 @@ useEffect(()=>{
               </>
             ) : activeTab.key == "upskilling" ? (
               <>
-               <OpsSearchDropdown  tab="upSkillingTab"/>
+               <UpskillSearchBar/>
               <Table
                 onRowClick={(data) => showRowData("upskilldata", data)}
                 columns={columnsUpskilling}
-                data={isLoading?searchedData:opts}
-                totalRecords={isLoading?opsData.length:optsAggregate.count}
-                fetchData={isLoading ? fetchSearchedData:fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching?opsData.length:optsAggregate.count}
+                fetchData={isSearching ? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -856,13 +860,13 @@ useEffect(()=>{
               
             ) : activeTab.key == "dtesamarth" ? (
               <>
-               <OpsSearchDropdown  tab="sditTab"/>
+               <SamarthSearchBar/>
                <Table
                 onRowClick={(data) => showRowData("sditdata", data)}
                 columns={columnsPlacement}
-                data={isLoading?searchedData:opts}
-                totalRecords={isLoading? opsData.length:optsAggregate.count}
-                fetchData={isLoading? fetchSearchedData:fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching? opsData.length:optsAggregate.count}
+                fetchData={isSearching? fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -872,13 +876,13 @@ useEffect(()=>{
              
             ) : activeTab.key == "AlumniQueries" ? (
               <>
-              <OpsSearchDropdown tab="alumniTab"/>
+              <AlumniSearchBar/>
               <Table
                 onRowClick={(data) => showRowData("alumniQueriesdata", data)}
                 columns={columnsAlumuniqueries}
-                data={isLoading?searchedData:opts}
-                totalRecords={isLoading?opsData.length:optsAggregate.count}
-                fetchData={isLoading?fetchSearchedData :fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching?opsData.length:optsAggregate.count}
+                fetchData={isSearching?fetchSearchedData :fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -887,13 +891,13 @@ useEffect(()=>{
               </>
             ) : activeTab.key == "collegePitches" ? (
               <>
-              <OpsSearchDropdown tab="collegePitchTab"/>
+              <CollegePitchSearch />
               <Table
                 onRowClick={(data) => showRowData("collegePitches", data)}
                 columns={columnscollegepitches}
-                data={isLoading?searchedData:opts}
-                totalRecords={isLoading?opsData.length:optsAggregate.count}
-                fetchData={isLoading?fetchSearchedData:fetchData}
+                data={isSearching ? isFound?searchedData:[]:opts}
+                totalRecords={isSearching?opsData.length:optsAggregate.count}
+                fetchData={isSearching?fetchSearchedData:fetchData}
                 paginationPageSize={paginationPageSize}
                 onPageSizeChange={setPaginationPageSize}
                 paginationPageIndex={paginationPageIndex}
@@ -996,7 +1000,8 @@ useEffect(()=>{
 
 const mapStateToProps = (state) => ({
   opsData:state.Operations.data,
-  isLoading:state.Operations.loading
+  isFound:state.Operations.isFound,
+  isSearching:state.Operations.isSearching,
 });
 
 const mapActionsToProps = {
