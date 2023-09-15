@@ -13,6 +13,7 @@ import {
 } from "../../Address/addressActions";
 import {
   filterAssignedTo,
+  getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import AsyncSelect from "react-select/async";
@@ -24,6 +25,13 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateUserTot } from "./operationsActions";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
+import * as Yup from "yup";
+import {
+  handleKeyPress,
+  handleKeyPresscharandspecialchar,
+  mobileNochecker,
+  numberChecker,
+} from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -49,11 +57,19 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
- 
 const options = [
   { value: "Yes", label: "Yes" },
-  { value: "No", label: 'No' }
-]
+  { value: "No", label: "No" },
+];
+
+const projecttypeoptions = [
+  { value: "External", label: "External" },
+  { value: "Internal", label: "Internal" },
+];
+const certificateoptions = [
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: "No" },
+];
 
 const TotEdit = (props) => {
   let { onHide, show } = props;
@@ -65,11 +81,16 @@ const TotEdit = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [srmOption, setsrmOption] = useState([]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+  }, []);
+  useEffect(async () => {
+    let data = await getAllSrm(1);
+    setsrmOption(data);
   }, []);
 
   useEffect(() => {
@@ -175,32 +196,23 @@ const TotEdit = (props) => {
   }, [props]);
 
   const onSubmit = async (values) => {
-    
+    const newObject = { ...values };
 
-    const newObject = {...values};
+    newObject.start_date = moment(values["start_date"]).format("YYYY-MM-DD");
 
+    newObject.end_date = moment(values["end_date"]).format("YYYY-MM-DD");
 
-    newObject.start_date = values?.start_date
-      ? values.start_date.toISOString().split("T")[0]
-      : currentDate.toDateString().split("T")[0];
-
-      newObject.end_date = values?.end_date
-      ? values.end_date.toISOString().split("T")[0]
-      : "";
-
-      newObject.published_at = values?.published_at
-      ? values.published_at
-      : "";
+    newObject.published_at = values?.published_at ? values.published_at : "";
     // delete values["start_date"];
     // delete values["end_date"];
     delete values["published_at"];
-    delete values["trainer_1"];
-    delete values["trainer_2"];
+    // delete values["trainer_1"];
+    // delete values["trainer_2"];
     const value = await updateUserTot(Number(props.id), newObject);
 
     setDisableSaveButton(true);
     onHide(value);
-    
+
     setDisableSaveButton(false);
   };
 
@@ -225,6 +237,7 @@ const TotEdit = (props) => {
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
   if (props) {
+    initialValues["user_name"] = props.user_name;
     initialValues["module_name"] = props.module_name;
     initialValues["project_type"] = props.project_type;
     initialValues["new_entry"] = props.new_entry;
@@ -240,6 +253,7 @@ const TotEdit = (props) => {
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
     initialValues["city"] = props.city;
+    initialValues["certificate_given"] = props.certificate_given;
   }
 
   useEffect(() => {
@@ -262,6 +276,24 @@ const TotEdit = (props) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+  const totvalidation = Yup.object().shape({
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .when("start_date", (start, schema) => {
+        return schema.min(
+          new Date(start),
+          "End date must be greater than or equal to start date"
+        );
+      }),
+    trainer_1: Yup.string().required("Trainer 1 is required"),
+    trainer_2: Yup.string()
+      .required("Trainer 2 is required")
+      .test("not-same", "Trainers must be different", function (trainer2) {
+        const trainer1 = this.resolve(Yup.ref("trainer_1"));
+        return trainer1 !== trainer2;
+      }),
+  });
 
   return (
     <>
@@ -298,7 +330,11 @@ const TotEdit = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validationSchema={totvalidation}
+            >
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
@@ -307,10 +343,46 @@ const TotEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
+                          name="user_name"
+                          label="Participant Name"
+                          className="form-control"
+                          placeholder="Participant Name"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
                           name="project_name"
                           label="Project Name"
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="Project Name"
+                        />
+                      </div>
+                     
+
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="trainer_1"
+                          label="Trainer 1"
+                          required
+                          options={srmOption}
+                          className="form-control"
+                          placeholder="Trainer 1"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="trainer_2"
+                          label="Trainer 2"
+                          required
+                          options={srmOption}
+                          className="form-control"
+                          placeholder="Trainer 2"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -321,22 +393,13 @@ const TotEdit = (props) => {
                           required
                           className="form-control"
                           placeholder="Module Name"
+                          onKeyPress={handleKeyPress}
                           // filterData={filterAssignedTo}
                           // defaultOptions={assigneeOptions}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
-                          name="project_type"
-                          label="Project Type"
-                          required
-                          className="form-control"
-                          placeholder="Module Name"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
                           icon="down"
                           control="lookup"
                           name="new_entry"
@@ -398,13 +461,37 @@ const TotEdit = (props) => {
                           autoComplete="off"
                         />
                       </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="project_type"
+                          label="Project Type"
+                          required
+                          options={projecttypeoptions}
+                          className="form-control"
+                          placeholder="Project Type"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="certificate_given"
+                          label="Certificate Given"
+                          required
+                          options={certificateoptions}
+                          className="form-control"
+                          placeholder="Certificate Given"
+                        />
+                      </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
                           name="partner_dept"
                           label="Partner Department"
-                          // required
+                          onKeyPress={handleKeyPresscharandspecialchar}
                           className="form-control"
                           placeholder="Partner Department"
                         />
@@ -414,7 +501,7 @@ const TotEdit = (props) => {
                           control="input"
                           name="college"
                           label="College"
-                          // required
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="College"
                         />
@@ -425,7 +512,7 @@ const TotEdit = (props) => {
                           control="input"
                           name="age"
                           label="Age"
-                          // required
+                          onKeyPress={numberChecker}
                           className="form-control"
                           placeholder="Guest"
                         />
@@ -450,6 +537,7 @@ const TotEdit = (props) => {
                           label="Contact"
                           className="form-control"
                           placeholder="Contact"
+                          onKeyPress={mobileNochecker}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -460,9 +548,10 @@ const TotEdit = (props) => {
                           label="Designation"
                           className="form-control"
                           placeholder="Designation"
+                          onKeyPress={handleKeyPress}
                         />
                       </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
+                      {/* <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="published_at"
                           label="Publish Date "
@@ -472,7 +561,7 @@ const TotEdit = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </Section>
                   <Section>

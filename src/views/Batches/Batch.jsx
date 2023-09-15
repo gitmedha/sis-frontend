@@ -60,6 +60,7 @@ const Batch = (props) => {
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
+      console.log("data.batch",data.batch);
       setBatch(data.batch);
     } catch (err) {
       console.log("ERR", err);

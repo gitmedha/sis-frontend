@@ -98,15 +98,15 @@ const Totdatafield = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
+                <DetailField
+                    label="Participant Name"
+                    value={props.user_name}
+                  />
                   <DetailField
                     label="Project Name"
                     value={props.project_name}
                   />
                   {/* */}
-                  <DetailField
-                    label="Project Type"
-                    value={props.project_type}
-                  />
                   <DetailField
                     Bold={""}
                     label="Start Date"
@@ -117,22 +117,31 @@ const Totdatafield = (props) => {
                     }
                   />
                   <DetailField
-                    label="Project Department"
-                    value={props.project_dept}
+                    label="Project Type"
+                    value={props.project_type}
+                  />
+                  
+                  <DetailField
+                    label="Partner Department"
+                    value={props.partner_dept}
                   />
                   <DetailField label="Age" value={props.age} />
                   <DetailField label="Contact" value={props.contact} />
-                  <DetailField
+                  {/* <DetailField
                     label="Published at"
                     value={
                       moment(props.published_at).format("DD MMM YYYY")
                         ? moment(props.published_at).format("DD MMM YYYY")
                         : ""
                     }
-                  />
+                  /> */}
                 </div>
 
                 <div className="col-md-6 col-sm-12">
+                {/* <DetailField
+                    label="Trainer Name"
+                    value={props.trainer_1.id}
+                  /> */}
                   <DetailField label="Module Name" value={props.module_name} />
                   <DetailField label="New ENtry" value={props.new_entry} />
                   <DetailField
@@ -148,7 +157,7 @@ const Totdatafield = (props) => {
                   <DetailField label="College" value={props.college} />
 
                   <DetailField
-                    label="Assigned to"
+                    label="Gender"
                     value={props.gender ? props.gender : ""}
                     Bold={""}
                   />
@@ -182,7 +191,9 @@ const Totdatafield = (props) => {
                   <DetailField
                     Bold={""}
                     label="Created At"
-                    value={props.Created_at ? props.Created_at : "not found"}
+                    value={props.created_at ? moment(props.created_at).format(
+                      "YYYY-MM-DD"
+      ) : "not found"}
                   />
                  
                 </div>

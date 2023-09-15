@@ -136,6 +136,7 @@ const OperationCreateform = (props) => {
       organization: "",
       assigned_to: "",
       area: "",
+      students_attended:"",
     },
     // Add more initial rows as needed
   ]);
@@ -156,6 +157,7 @@ const OperationCreateform = (props) => {
       guest: "",
       designation: "",
       organization: "",
+      students_attended:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -174,6 +176,7 @@ const OperationCreateform = (props) => {
     organization: "",
     assigned_to: "",
     area: "",
+    students_attended:""
   });
 
   function checkEmptyValuesandplaceNA(obj) {

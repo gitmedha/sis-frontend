@@ -7,7 +7,22 @@ import {
   getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
+import {
+  handleKeyPress,
+  handleKeyPresscharandspecialchar,
+  mobileNochecker,
+} from "../../../utils/function/OpsModulechecker";
+import { getStudentsPickList, getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 
+
+const projecttypeoptions = [
+  { value: 'External', label: "External" },
+  { value: 'Internal', label: "Internal" },
+];
+const certificateoptions = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+];
 const UserTotRowdata = (props) => {
   const [rows, setRows] = useState([
     {
@@ -28,17 +43,18 @@ const UserTotRowdata = (props) => {
       gender: "",
       contact: "",
       designation: "",
-      start_date:"",
-      end_date:""
+      start_date: "",
+      end_date: "",
     },
     // Add more initial rows as needed
   ]);
   const [row, setRowData] = useState(props.row);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [srmOption,setsrmOption]=useState([])
+  const [srmOption, setsrmOption] = useState([]);
+  const [genderOptions, setGenderOptions] = useState([]);
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -59,9 +75,26 @@ const UserTotRowdata = (props) => {
   };
   useEffect(async () => {
     let data = await getAllSrm(1);
-    setsrmOption(data)
-    // console.log("SRM ", data);
+    setsrmOption(data);
   }, []);
+  useEffect(() => {
+    getStudentsPickList().then((data) => {
+      setGenderOptions(
+        data.gender.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+    getUpskillingPicklist().then((data) => {
+      console.log("data",data.subCategory.map((item) => ({
+        key: item,
+        value: item,
+        label: item,
+      })));
+    });
+  }, [props]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -83,9 +116,13 @@ const UserTotRowdata = (props) => {
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className="table-input h-2"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.user_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             type="text"
-            // value={row.name}
+            onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) => updateRow(row.id, "user_name", e.target.value)}
           />
         </td>
@@ -93,27 +130,37 @@ const UserTotRowdata = (props) => {
           <input
             className="table-input h-2"
             type="text"
+            onKeyPress={handleKeyPress}
             onChange={(e) => props.updateRow(row.id, "college", e.target.value)}
           />
         </td>
         <td>
           <input
             className="table-input h-2"
-            type="text"
+            type="number"
             onChange={(e) => props.updateRow(row.id, "age", e.target.value)}
           />
         </td>
         <td>
-          <input
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.gender ? `border-red`:"table-input h-2"}`}
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "gender", e.target.value)}
+          <Select
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.gender
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="gender"
+            options={genderOptions}
+            onChange={(e) => props.handleChange(e, "gender", row.id)}
           />
         </td>
         <td>
           <input
             className="table-input h-2"
             type="text"
+            onKeyPress={mobileNochecker}
             onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
@@ -121,6 +168,7 @@ const UserTotRowdata = (props) => {
           <input
             className="table-input h-2"
             type="text"
+            onKeyPress={handleKeyPress}
             onChange={(e) =>
               props.updateRow(row.id, "designation", e.target.value)
             }
@@ -128,7 +176,11 @@ const UserTotRowdata = (props) => {
         </td>
         <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.trainer_1 ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.trainer_1
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -138,12 +190,7 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="number"
-            onChange={(e) => updateRow(row.id, "trainer_2", e.target.value)}
-          /> */}
-           <Select
+          <Select
             className="basic-single table-input "
             classNamePrefix="select"
             isClearable={true}
@@ -154,17 +201,34 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          <input
-            className={`table-input h-2 date ${props.classValue[`class${row.id-1}`]?.project_type ? `border-red`:"table-input h-2"}`}
+        <Select
+            className={`table-input h-2  ${
+              props.classValue[`class${row.id - 1}`]?.project_type
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="project_type"
+            options={projecttypeoptions}
+            onChange={(e) => props.handleChange(e, "project_type", row.id)}
+          />
+          {/* <input
+            className={`table-input h-2 date ${
+              props.classValue[`class${row.id - 1}`]?.project_type
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             type="text"
             onChange={(e) => props.updateRow(row.id, "project_type", true)}
-          />
+          /> */}
         </td>
         <td>
           <input
             className="table-input h-2"
             type="Text"
-            // value={row.name}
+            onKeyPress={handleKeyPress}
             onChange={(e) => updateRow(row.id, "project_name", e.target.value)}
           />
         </td>
@@ -178,19 +242,40 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          <input
-            className={`table-input h-2 date ${props.classValue[`class${row.id-1}`]?.certificate_given ? `border-red`:"table-input h-2"}`}
+          {/* <input
+            className={`table-input h-2 date ${
+              props.classValue[`class${row.id - 1}`]?.certificate_given
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             type="Text"
             // value={row.name}
             onChange={(e) =>
               updateRow(row.id, "certificate_given", e.target.value)
             }
+          /> */}
+          <Select
+            className={`table-input h-2  ${
+              props.classValue[`class${row.id - 1}`]?.certificate_given
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="certificate_given"
+            options={certificateoptions}
+            onChange={(e) => props.handleChange(e, "certificate_given", row.id)}
           />
         </td>
         <td>
           <input
             type="date"
-            className={`table-input h-2  ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2  ${
+              props.classValue[`class${row.id - 1}`]?.start_date
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -203,8 +288,14 @@ const UserTotRowdata = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.end_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.end_date
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            min={startDate}
             value={endDate}
+            disabled={!startDate ? true : false}
             onChange={(event) => {
               const date = event.target.value;
               setEndDate(date);
@@ -215,7 +306,11 @@ const UserTotRowdata = (props) => {
 
         <td>
           <Select
-            className={`table-input  ${props.classValue[`class${row.id-1}`]?.state ? `border-red`:"table-input h-2"}`}
+            className={`table-input  ${
+              props.classValue[`class${row.id - 1}`]?.state
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             // defaultValue={stateOptions[0]}
             // isDisabled={isDisabled}
@@ -229,27 +324,30 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-         
-            <Select
-              className={`table-input  ${props.classValue[`class${row.id-1}`]?.area ? `border-red`:"table-input h-2"}`}
-              classNamePrefix="select"
-              // defaultValue={batchOptions[0]}
-              // isDisabled={isDisabled}
-              // isLoading={true}
-              isClearable={true}
-              // isRtl={isRtl}
-              isSearchable={true}
-              name="area"
-              options={areaOptions}
-              onChange={(e) => props.handleChange(e, "area", row.id)}
-            />
-         
+          <Select
+            className={`table-input  ${
+              props.classValue[`class${row.id - 1}`]?.area
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            // defaultValue={batchOptions[0]}
+            // isDisabled={isDisabled}
+            // isLoading={true}
+            isClearable={true}
+            // isRtl={isRtl}
+            isSearchable={true}
+            name="area"
+            options={areaOptions}
+            onChange={(e) => props.handleChange(e, "area", row.id)}
+          />
         </td>
-        
+
         <td>
           <input
             className="table-input h-2"
             type="text"
+            onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) =>
               props.updateRow(row.id, "partner_dept", e.target.value)
             }
@@ -265,10 +363,6 @@ const UserTotRowdata = (props) => {
             }
           />
         </td> */}
-
-      
-       
-       
 
         {/* <td>
                 <button onClick={() => setRowid(row.id)}>Delete Row</button>

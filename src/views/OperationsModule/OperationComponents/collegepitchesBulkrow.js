@@ -3,7 +3,8 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
-import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 
 const options = [
   { value: true, label: "Yes" },
@@ -28,6 +29,7 @@ const CollegepitchesBulkrow = (props) => {
     },
     // Add more initial rows as needed
   ]);
+  const [srmOption, setsrmOption] = useState([]);
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -52,10 +54,20 @@ const CollegepitchesBulkrow = (props) => {
     props.updateRow(rowid, field, value.value);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+    let data = await getAllSrm(1);
+    setsrmOption(data);
+    let val=await getStateDistricts().then((data) => {
+      console.log("district data",data.data.data.geographiesConnection.groupBy.district);
+      setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
+        key: item.key,
+        value: item.key,
+        label: item.key,
+      })))
+     });
     // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
@@ -93,6 +105,7 @@ const CollegepitchesBulkrow = (props) => {
                 : ""
             }`}
             type="text"
+            onKeyPress={handleKeyPress}
             onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
           />
         </td>
@@ -104,6 +117,7 @@ const CollegepitchesBulkrow = (props) => {
                 ? `border-red`
                 : ""
             }`}
+            onKeyPress={handleKeyPress}
             type="text"
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
           />
@@ -115,7 +129,8 @@ const CollegepitchesBulkrow = (props) => {
                 ? `border-red`
                 : ""
             }`}
-            type="text"
+            type="number"
+            onKeyPress={numberChecker}
             onChange={(e) => updateRow(row.id, "course_year", e.target.value)}
           />
         </td>
@@ -127,6 +142,7 @@ const CollegepitchesBulkrow = (props) => {
                 : ""
             }`}
             type="text"
+            onKeyPress={handleKeyPress}
             onChange={(e) => updateRow(row.id, "college_name", e.target.value)}
           />
         </td>
@@ -139,6 +155,7 @@ const CollegepitchesBulkrow = (props) => {
                 : ""
             }`}
             type="text"
+            onKeyPress={mobileNochecker}
             onChange={(e) => updateRow(row.id, "phone", e.target.value)}
           />
         </td>
@@ -150,6 +167,7 @@ const CollegepitchesBulkrow = (props) => {
                 : ""
             }`}
             type="text"
+            onKeyPress={mobileNochecker}
             onChange={(e) => updateRow(row.id, "whatsapp", e.target.value)}
           />
         </td>
@@ -162,21 +180,47 @@ const CollegepitchesBulkrow = (props) => {
           />
         </td>
         <td>
-          <input
+          {/* <input
             className="table-input h-2"
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "srm_name", e.target.value)
             }
+          /> */}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.trainer_1
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="srm_name"
+            options={srmOption}
+            onChange={(e) => props.handleChange(e, "srm_name", row.id)}
           />
         </td>
         <td>
-          <input
+          {/* <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.area ? `border-red` : ""
             }`}
             type="text"
             onChange={(e) => props.updateRow(row.id, "area", e.target.value)}
+          /> */}
+        <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.area
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="srm_name"
+            options={areaOptions}
+            onChange={(e) => props.handleChange(e, "area", row.id)}
           />
         </td>
         <td>

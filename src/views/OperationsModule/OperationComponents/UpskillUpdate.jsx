@@ -62,6 +62,7 @@ const UpskillUpdate = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [course, setcourse] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
+  const [studentinput,setstudentinput]=useState("")
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       console.log("data123", data);
@@ -70,42 +71,46 @@ const UpskillUpdate = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.student) {
-      filterStudent(props.programEnrollment.student.full_name).then(data => {
+    if (props.student_id.id) {
+      filterStudent(props.student_id.full_name).then(data => {
+        console.log("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervaluestudent",filterValue);
+    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      // let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      // let studentFoundInList = false;
-      // let filterData = data.hits.map(student => {
-      //   if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
-      //     studentFoundInList = true;
-      //   }
-      //   return {
-      //     ...student,
-      //     label: `${student.full_name} (${student.student_id})`,
-      //     value: Number(student.id),
-      //   }
-      // });
-      // if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
+      let studentFoundInList = false;
+      let filterData = data.hits.map(student => {
+        if (student.id === Number(props?.id)) {
+          studentFoundInList = true;
+        }
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        }
+      });
+      // if (!studentFoundInList)  {
       //   filterData.unshift({
       //     label: programEnrollmentStudent.full_name,
       //     value: Number(programEnrollmentStudent.id),
       //   });
       // }
-      console.log("filterData",data);
-      // return filterData;
+      return filterData;
     });
   }
 
+  useEffect(() => {
+    filterStudent(studentinput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentinput]);
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then((data) => {
@@ -334,10 +339,10 @@ const UpskillUpdate = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
-                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                         {!lookUpLoading ? (
                           <Input
-                            name="student"
+                            name="student_id"
                             control="lookupAsync"
                             label="Student"
                             className="form-control"
@@ -349,7 +354,7 @@ const UpskillUpdate = (props) => {
                         ) : (
                           <Skeleton count={1} height={60} />
                         )}
-                      </div> */}
+                      </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -445,6 +450,15 @@ const UpskillUpdate = (props) => {
                           className="form-control"
                           placeholder="Category"
                         />
+                        <Input
+                          name="course_name"
+                          control="lookup"
+                          icon="down"
+                          label="Course Name"
+                          options={course}
+                          className="form-control"
+                          placeholder="Course Name"
+                        />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -462,12 +476,12 @@ const UpskillUpdate = (props) => {
                           icon="down"
                           control="input"
                           name="issued_org"
-                          label="Issued Organization"
+                          label="Certificate Issuing Organization"
                           className="form-control"
-                          placeholder="Issued Organization"
+                          placeholder="Certificate Issuing Organization"
                         />
                       </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
+                      {/* <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="published_at"
                           label="Publish Date "
@@ -477,7 +491,7 @@ const UpskillUpdate = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </Section>
 
@@ -504,7 +518,7 @@ const UpskillUpdate = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

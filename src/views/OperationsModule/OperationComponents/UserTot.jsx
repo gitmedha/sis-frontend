@@ -503,7 +503,7 @@ const UserTot = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>User Name</th>
+                  <th>Participant Name</th>
                   <th>College</th>
                   <th>Age </th>
                   <th>Gender </th>

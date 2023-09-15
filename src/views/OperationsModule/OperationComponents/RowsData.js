@@ -6,10 +6,19 @@ import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { getAllProgram } from "./operationsActions";
+import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
+];
+const Activityoptions = [
+  { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
+  { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
+  { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
+  { value: 'Alumni Engagement', label: 'Alumni Engagement' },
+  // Workshop/Training Session/Activity (In/Off campus)
+  // Alumni Engagement
 ];
 export const RowsData = (props) => {
   const [rows, setRows] = useState([
@@ -33,7 +42,7 @@ export const RowsData = (props) => {
     // Add more initial rows as needed
   ]);
   const [row, setRowData] = useState(props.row);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -64,7 +73,10 @@ export const RowsData = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    props.updateRow(rowid, field, value.value);
+    if(value){
+      props.updateRow(rowid, field, value.value);
+    }
+    
   };
 
   useEffect(() => {
@@ -72,6 +84,10 @@ export const RowsData = (props) => {
       setAssigneeOptions(data);
     });
   }, []);
+
+  useEffect(() => {
+    
+  }, [startDate]);
 
   useEffect(() => {
     console.log("state", props.classValue[`class${row.id - 1}`]?.state);
@@ -100,7 +116,7 @@ export const RowsData = (props) => {
           />
         </td>
         <td>
-          <input
+          {/* <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.activity_type
                 ? `border-red`
@@ -108,6 +124,14 @@ export const RowsData = (props) => {
             }`}
             type="text"
             onChange={(e) => updateRow(row.id, "activity_type", e.target.value)}
+          /> */}
+           <Select
+            className="basic-single table-input donor"
+            classNamePrefix="select"
+            isSearchable={true}
+            name="area"
+            options={Activityoptions}
+            onChange={(e) => props.handleChange(e, "activity_type", row.id)}
           />
         </td>
         {/* <td>
@@ -188,7 +212,7 @@ export const RowsData = (props) => {
                 ? `border-red`
                 : ""
             }`}
-            type="text"
+            type="number"
             onChange={(e) =>
               props.updateRow(row.id, "students_attended", e.target.value)
             }
@@ -206,7 +230,6 @@ export const RowsData = (props) => {
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
-
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
             }}
@@ -220,7 +243,9 @@ export const RowsData = (props) => {
                 ? `border-red`
                 : ""
             }`}
+            min={startDate}
             value={endDate}
+            disabled={!startDate ? true:false}
             onChange={(event) => {
               const date = event.target.value;
               setEndDate(date);
@@ -234,7 +259,7 @@ export const RowsData = (props) => {
               props.classValue[`class${row.id - 1}`]?.topic ? "border-red" : ""
             }`}
             type="text"
-            value={row.age}
+            
             onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}
           />
         </td>
@@ -252,7 +277,7 @@ export const RowsData = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            value={row.age}
+            onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) => props.updateRow(row.id, "guest", e.target.value)}
           />
         </td>
@@ -260,7 +285,7 @@ export const RowsData = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            value={row.age}
+            onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) =>
               props.updateRow(row.id, "designation", e.target.value)
             }
@@ -270,7 +295,6 @@ export const RowsData = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            value={row.age}
             onChange={(e) =>
               props.updateRow(row.id, "organization", e.target.value)
             }

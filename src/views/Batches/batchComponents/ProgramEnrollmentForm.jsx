@@ -168,6 +168,7 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const filterStudent = async (filterValue) => {
+    console.log("filter value",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -178,6 +179,9 @@ const ProgramEnrollmentForm = (props) => {
         if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
           studentFoundInList = true;
         }
+        console.log({...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),});
         return {
           ...student,
           label: `${student.full_name} (${student.student_id})`,

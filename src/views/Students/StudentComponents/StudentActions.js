@@ -348,3 +348,23 @@ export const deleteAlumniService = async (id) => {
     return Promise.reject(error);
   });
 }
+
+
+export const getUpskillingPicklist = async () => {
+  return await api.post("/graphql", {
+    query: GET_PICKLIST,
+    variables: {
+      table: 'Students_upskillings'
+    },
+  })
+  .then(data => {
+    let pickList = {};
+    data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+      pickList[item.field] = item.values;
+    });
+    return pickList;
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+};

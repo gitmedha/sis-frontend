@@ -23,6 +23,7 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateUserTot } from "./operationsActions";
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -156,14 +157,18 @@ const UserTotedit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    const newValueObject = {...values};
+    const newValueObject = { ...values };
 
     // delete newValueObject["institute_name"];
-    newValueObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
-    newValueObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-    delete  newValueObject["start_date"];
-    delete  newValueObject["end_date"];
-    delete newValueObject["published_at"]
+    newValueObject["start_date"] = moment(values["start_date"]).format(
+      "YYYY-MM-DD"
+    );
+    newValueObject["end_date"] = moment(values["end_date"]).format(
+      "YYYY-MM-DD"
+    );
+    // delete newValueObject["start_date"];
+    // delete newValueObject["end_date"];
+    delete newValueObject["published_at"];
     const value = await updateUserTot(Number(props.id), newValueObject);
     setDisableSaveButton(true);
     onHide(value);
@@ -220,15 +225,21 @@ const UserTotedit = (props) => {
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
-  const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-  ];
-
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+  const totvalidation = Yup.object().shape({
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .when("start_date", (start, schema) => {
+        console.log("working......");
+        return schema.min(
+          start,
+          "End date must be greter than or equal to start date"
+        );
+      }),
+  });
 
   return (
     <>
@@ -264,7 +275,11 @@ const UserTotedit = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validationSchema={totvalidation}
+            >
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
@@ -303,30 +318,6 @@ const UserTotedit = (props) => {
                           className="form-control1"
                           placeholder="Batch"
                         />
-
-                        {/* <Input
-                      control="lookupAsync"
-                      name="batch"
-                      label="Batch"
-                      required
-                      filterData={filterBatch}
-                      defaultOptions={props.id ? batchOptions : true}
-                      className="form-control"
-                      placeholder="Batch"
-                    /> */}
-                        {/* <Field name="batch">
-                      {({ field, form }) => (
-                        <AsyncSelect
-                          {...field}
-                          options={batchOptions}
-                          placeholder="Select an option"
-                          // isClearable
-                          value={batchOptions ? batchOptions.find((option) => option.value === props.batch.id) || null : null}
-                          onChange={filterBatch}
-                          onBlur={() => form.setFieldTouched(field.name, true)}
-                        />
-                      )}
-                    </Field> */}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -346,7 +337,7 @@ const UserTotedit = (props) => {
                         <Input
                           name="start_date"
                           label="Start Date "
-                          // required
+                          //
                           placeholder="Date of Birth"
                           control="datepicker"
                           className="form-control"
@@ -357,7 +348,6 @@ const UserTotedit = (props) => {
                         <Input
                           name="end_date"
                           label="End Date"
-                          // required
                           placeholder="Date of Birth"
                           control="datepicker"
                           className="form-control"
@@ -503,7 +493,7 @@ const UserTotedit = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

@@ -6,11 +6,18 @@ import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
+import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
+const categoryOptions = [
+  { value: 'Career', label: "Career" },
+  { value: 'Creative', label: "Creative" },
+];
+
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -36,12 +43,13 @@ const StudentupskilingBulk = (props) => {
     // Add more initial rows as needed
   ]);
   const [row, setRowData] = useState(props.row);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
-
+  const [subcategory,setSubcategory]=useState([])
+  const [studentinput,setstudentinput]=useState("")
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -61,11 +69,18 @@ const StudentupskilingBulk = (props) => {
     props.updateRow(rowid, field, value.value);
   };
 
-  useEffect(() => {
+  useEffect(async() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-
+    getUpskillingPicklist().then((data) => {
+      setSubcategory(data.subCategory.map((item) => ({
+        key: item,
+        value: item,
+        label: item,
+      })));
+    });
+    
     // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
@@ -73,45 +88,53 @@ const StudentupskilingBulk = (props) => {
     row[field] = value;
   };
   useEffect(() => {
-    // if (props) {
-    //   filterStudent().then((data) => {
-
-    //     console.log("filterStudent",data);
-    //     // setStudentOptions(data);
-    //   });
-    // }
-    filterStudent().then((data) => {
+    filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
-  }, [props]);
+  }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search({
-        limit: 100,
-      })
-      .then((data) => {
-        console.log("data----", data);
-        let filterData = data.hits.map((student) => {
-          return {
-            ...student,
-            label: `${student.full_name} (${student.student_id})`,
-            value: Number(student.id),
-          };
-        });
-        // if (props?.programEnrollment && !studentFoundInList) {
-        //   filterData.unshift({
-        //     label: programEnrollmentStudent.full_name,
-        //     value: Number(programEnrollmentStudent.id),
-        //   });
-        // }
-        return filterData;
+    console.log("filtervalue",filterValue);
+    return await meilisearchClient.index('students').search(filterValue, {
+      limit: 1000,
+      attributesToRetrieve: ['id', 'full_name', 'student_id']
+    }).then(data => {
+      let programEnrollmentStudent =  '112';
+      let studentFoundInList = false;
+      let filterData = data.hits.map(student => {
+        if (student.id === Number(props?.id)) {
+          studentFoundInList = true;
+        }
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        }
       });
-  };
+      // if (!studentFoundInList)  {
+      //   filterData.unshift({
+      //     label: programEnrollmentStudent.full_name,
+      //     value: Number(programEnrollmentStudent.id),
+      //   });
+      // }
+      return filterData;
+    });
+  }
   return (
     <>
       <tr key={row.id}>
+      <td>
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="assigned_to"
+            options={assigneeOptions}
+            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
+          />
+        </td>
+
         {/* <td>{row.id}</td> */}
         <td>
           <input
@@ -120,6 +143,42 @@ const StudentupskilingBulk = (props) => {
             // value={row.name}
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
           />
+        </td>
+        <td>
+          {/* <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) =>
+              props.updateRow(row.id, "category", e.target.value)
+            }
+          /> */}
+          <Select
+            className="basic-single table-input  "
+            classNamePrefix="select"
+            isSearchable={true}
+            name="category"
+            options={categoryOptions}
+            onChange={(e) =>
+              props.handleChange(e, "category", row.id)
+            }
+          />
+        </td>
+        <td>
+        <Select
+            className="basic-single table-input  "
+            classNamePrefix="select"
+            isSearchable={true}
+            name="sub_category"
+            options={subcategory}
+            onChange={(e) =>
+              props.handleChange(e, "sub_category", row.id)
+            }
+          />
+          {/* <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "sub_category", true)}
+          /> */}
         </td>
         <td>
           {/* <input
@@ -136,7 +195,10 @@ const StudentupskilingBulk = (props) => {
             isSearchable={true}
             filterData={filterStudent}
             options={studentOptions}
-            onChange={(e) => props.handleChange(e, "student_id", row.id)}
+            onInputChange={(e)=>setstudentinput(e)}
+            onChange={(e) => {
+              console.log("filter",row.id);
+              props.handleChange(e, "student_id", row.id)}}
           />
         </td>
         <td>
@@ -158,21 +220,12 @@ const StudentupskilingBulk = (props) => {
             isSearchable={true}
             name="batch"
             options={props.batchbdata}
-            onChange={(e) => props.handleChange(e, "batch", row.id)}
+            onChange={(e) => {
+              console.log(e);
+              props.handleChange(e, "batch", row.id)}}
           />
         </td>
-        <td>
-          <Select
-            className="basic-single table-input "
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="assigned_to"
-            options={assigneeOptions}
-            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
-          />
-        </td>
-
+       
         <td>
           {/* <DatePicker
                     dateFormat="dd/MM/yyyy"
@@ -214,7 +267,9 @@ const StudentupskilingBulk = (props) => {
           <input
             type="date"
             className="table-input h-2 "
+            min={startDate}
             value={endDate}
+            disabled={!startDate ? true:false}
             onChange={(event) => {
               const date = event.target.value;
               setEndDate(date);
@@ -234,22 +289,7 @@ const StudentupskilingBulk = (props) => {
             }
           />
         </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "category", e.target.value)
-            }
-          />
-        </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "sub_category", true)}
-          />
-        </td>
+        
         <td>
           <input
             className="table-input h-2"
