@@ -22,7 +22,12 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}) {
+const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}) {
+
+
+
+  let options = [{key:0,value:'student_id.full_name',label:'Student Name'}, {key:1, value:'assigned_to.username', label:'Assigned to'}, {key:2, value:'institution.name', label:'Institute Name'}, {key:3, value:'course_name', label:'Course Name'}]
+        
 
     const initialValues = {
         search_by_field:'',
@@ -30,12 +35,11 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
     }
 
     const handleSubmit = async(values) =>{
-      let baseUrl = 'users-ops-activities'
+      let baseUrl = "students-upskillings";
 
-        await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+       let data =  await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+       console.log("data",data);
     }
-
-    const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Area'}]
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
       onSubmit: handleSubmit,
@@ -91,4 +95,4 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
 }
 
 
-export default connect(null, {searchOperationTab,resetSearch})(OpsSearchDropdown);
+export default connect(null, {searchOperationTab,resetSearch})(UpSkillSearchBar);

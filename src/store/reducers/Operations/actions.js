@@ -1,4 +1,4 @@
-import {SEARCH_OPS,RESET_SEARCH,SORT_DATA} from './types';
+import {SEARCH_OPS,RESET_SEARCH,SORT_DATA,NO_RESULT_FOUND} from './types';
 
 import api from "../../../apis";
 
@@ -18,6 +18,12 @@ export const searchOperationTab = (baseUrl,searchField,value) => async(dispatch)
                 payload:data
             });
 
+        }
+        else {
+            dispatch({
+                type:NO_RESULT_FOUND,
+                payload: data
+            })
         }
 
     } catch (error) {
