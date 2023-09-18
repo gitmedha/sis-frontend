@@ -35,6 +35,7 @@ const meilisearchClient = new MeiliSearch({
 
 
 const EnrollmentConnectionForm = (props) => {
+  console.log("props",props);
   let { onHide, show, opportunity } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
@@ -61,13 +62,14 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   if (props.employmentConnection) {
+    
     initialValues = {...initialValues, ...props.employmentConnection};
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
-    initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
-    initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
+    initialValues['start_date'] = props.employmentConnection?.start_date !='Invalid date' ? new Date(props.employmentConnection?.start_date) : null;
+    initialValues['end_date'] = props.employmentConnection?.end_date !='Invalid date' ? new Date(props.employmentConnection?.end_date) : null;
   }
 
   useEffect(() => {
@@ -84,6 +86,7 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
+    console.log("props",props);
     getEmploymentConnectionsPickList().then(data => {
       setWorkEngagementOptions(
         data.work_engagement.map((item) => ({
