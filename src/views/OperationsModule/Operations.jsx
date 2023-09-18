@@ -163,7 +163,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
       },
       {
         Header: "End Date",
-        accessor: "module_name",
+        accessor: "end_date",
       },
     ],
     []
