@@ -1,9 +1,10 @@
-import {SEARCH_OPS,RESET_SEARCH,SORT_DATA} from './types';
+import {SEARCH_OPS,RESET_SEARCH,SORT_DATA,NO_RESULT_FOUND} from './types';
 
 const INIT_STATE = {
     data:[],
-    loading:false,
     isSorting:false,
+    isFound:false,
+    isSearching:false,
 }
 
 const Operations = (state = INIT_STATE, {type,payload}) =>{
@@ -13,18 +14,26 @@ const Operations = (state = INIT_STATE, {type,payload}) =>{
             return {
                 ...state,
                 data: [...payload],
-                loading: true
+                isFound: true,
+                isSearching:true,
+                
             };
         case RESET_SEARCH:
             return {
                 data: [],
-                loading:false
+                isSearching:false
             }
         case SORT_DATA:
             return {
                 ...state,
                 data:[...payload],
                 isSorting:true
+            }
+        case NO_RESULT_FOUND:
+            return  {
+                data: [...payload],
+                isFound:false,
+                isSearching:true
             }
         default:
             break;

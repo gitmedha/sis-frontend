@@ -22,7 +22,12 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}) {
+const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
+
+
+
+  let options = [{key:0, value:'student_name', label:'Student Name'}, {key:1,value:'area', label:'Area'}, {key:2,value:'phone',label:'Mobile'}, {key:3, value:'college_name', label:'College Name'}]
+        
 
     const initialValues = {
         search_by_field:'',
@@ -30,13 +35,11 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
     }
 
     const handleSubmit = async(values) =>{
-      let baseUrl = 'users-ops-activities'
-
+        
+      let baseUrl = "college-pitches";
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
     }
-
-    const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Area'}]
-    const formik = useFormik({ // Create a Formik reference using useFormik
+    const formik = useFormik({
       initialValues,
       onSubmit: handleSubmit,
   });
@@ -91,4 +94,4 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
 }
 
 
-export default connect(null, {searchOperationTab,resetSearch})(OpsSearchDropdown);
+export default connect(null, {searchOperationTab,resetSearch})(CollegePitchSearch);

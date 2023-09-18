@@ -262,7 +262,7 @@ const InstitutionForm = (props) => {
                       onChange={(e)=>FindDuplicate(setFieldValue,e.target.value)}
                       className="form-control capitalize"
                     />
-                     {(isDuplicate && !props.id) ? <p style={{color:'red'}}>this instituition is already exists, please try again different</p>: <p></p>}
+                     {(isDuplicate && !props.id) ? <p style={{color:'red'}}>This instituition already exist on the system</p>: <p></p>}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (

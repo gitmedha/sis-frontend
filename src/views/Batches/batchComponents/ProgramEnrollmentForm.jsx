@@ -36,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, batch,programEnrollment } = props;
+  let { onHide, show, batch,programEnrollment,allStudents } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -51,6 +51,7 @@ const ProgramEnrollmentForm = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
   const [course,setcourse]=useState([])
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
 
   const prepareLookUpFields = async () => {
@@ -117,7 +118,9 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    onHide(values);
+    if(!showDuplicateWarning){
+      onHide(values);
+    }
   };
 
   useEffect(() => {
@@ -207,6 +210,49 @@ const ProgramEnrollmentForm = (props) => {
     setOthertargetValue({course1:false,course2:false})
   },[programEnrollment])
 
+  
+  const handleBatchChange = async (e)=> {
+
+    if(props.programEnrollment){
+      let found = false;
+      allStudents.forEach(student => {
+        if(props.programEnrollment.student.id == e.id){
+          found = false
+        }
+  
+        else if(e.id == student.student.id){
+          found = true
+        }
+      });
+
+      if(found){
+        setShowDuplicateWarning(true)
+        
+      }
+      else {
+    
+        setShowDuplicateWarning(false)
+      }
+
+      
+    }
+    else if(props.allStudents) {
+      let found = false
+      allStudents.forEach(student => {
+        if(e.id == student.student.id){
+          found = true
+        }
+      });
+      if(found){
+        setShowDuplicateWarning(true)
+      }
+      else {
+        setShowDuplicateWarning(false)
+      }
+     
+    }
+  }
+
   return (
     <Modal
       centered
@@ -248,11 +294,13 @@ const ProgramEnrollmentForm = (props) => {
                       placeholder="Student"
                       filterData={filterStudent}
                       defaultOptions={props.id ? studentOptions : true}
+                      onChange={(e)=>handleBatchChange(e)}
                       required
                     />
                      ) : (
                       <Skeleton count={1} height={60} />
                     )}
+                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>This student is already assigned to the existing batch. Select a new student.</div>}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

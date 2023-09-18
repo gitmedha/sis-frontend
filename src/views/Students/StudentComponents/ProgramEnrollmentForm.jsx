@@ -114,7 +114,10 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    onHide(values);
+    if(!showDuplicateWarning){
+      onHide(values);
+    }
+    
   };
 
   useEffect(() => {
@@ -199,7 +202,6 @@ const ProgramEnrollmentForm = (props) => {
     if(props.programEnrollment){
       let found = false;
       allBatches.forEach(element => {
-        console.log(e.id,props.programEnrollment.batch.id, element.batch.id)
         if(props.programEnrollment.batch.id == e.id){
           found = false
         }
@@ -211,9 +213,11 @@ const ProgramEnrollmentForm = (props) => {
 
       if(found){
         setShowDuplicateWarning(true)
-        setTimeout(() => {
-          setShowDuplicateWarning(false)
-        }, 4000);
+        
+      }
+      else {
+    
+        setShowDuplicateWarning(false)
       }
 
       
@@ -229,9 +233,9 @@ const ProgramEnrollmentForm = (props) => {
 
       if(found){
         setShowDuplicateWarning(true)
-        setTimeout(() => {
-          setShowDuplicateWarning(false)
-        }, 4000);
+      }
+      else {
+        setShowDuplicateWarning(false)
       }
      
     }
@@ -307,7 +311,7 @@ const ProgramEnrollmentForm = (props) => {
                       <Skeleton count={1} height={60} />
                     )}
 
-                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>this batch has already assigned for this user, Please select again</div>}
+                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>This batch is already assigned to the existing student. Select a new batch.</div>}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
