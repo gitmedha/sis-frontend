@@ -126,15 +126,7 @@ const UserTotRowdata = (props) => {
             onChange={(e) => updateRow(row.id, "user_name", e.target.value)}
           />
         </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            onChange={(e) => props.updateRow(row.id, "college", e.target.value)}
-          />
-        </td>
-        <td>
+         <td>
           <input
             className="table-input h-2"
             type="number"
@@ -143,7 +135,7 @@ const UserTotRowdata = (props) => {
         </td>
         <td>
           <Select
-            className={`table-input h-2 ${
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.gender
                 ? `border-red`
                 : "table-input h-2"
@@ -165,6 +157,36 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
+          <Select
+            className={`table-input  ${
+              props.classValue[`class${row.id - 1}`]?.area
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="area"
+            options={areaOptions}
+            onChange={(e) => props.handleChange(e, "city", row.id)}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input  ${
+              props.classValue[`class${row.id - 1}`]?.state
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="state"
+            options={props.statedata}
+            onChange={(e) => onStateChange(e, row.id, "state")}
+          />
+        </td>
+         <td>
           <input
             className="table-input h-2"
             type="text"
@@ -175,61 +197,31 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.trainer_1
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="tariner_1"
-            options={srmOption}
-            onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className="basic-single table-input "
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="trainer_2"
-            options={srmOption}
-            onChange={(e) => props.handleChange(e, "trainer_2", row.id)}
-          />
-        </td>
-        <td>
-        <Select
-            className={`table-input h-2  ${
-              props.classValue[`class${row.id - 1}`]?.project_type
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="project_type"
-            options={projecttypeoptions}
-            onChange={(e) => props.handleChange(e, "project_type", row.id)}
-          />
-          {/* <input
-            className={`table-input h-2 date ${
-              props.classValue[`class${row.id - 1}`]?.project_type
-                ? `border-red`
-                : "table-input h-2"
-            }`}
+          <input
+            className="table-input h-2"
             type="text"
-            onChange={(e) => props.updateRow(row.id, "project_type", true)}
-          /> */}
+            onKeyPress={handleKeyPress}
+            onChange={(e) => props.updateRow(row.id, "college", e.target.value)}
+          />
         </td>
         <td>
           <input
             className="table-input h-2"
             type="Text"
             onKeyPress={handleKeyPress}
-            onChange={(e) => updateRow(row.id, "project_name", e.target.value)}
+            onChange={(e) => {
+              console.log("e",e.target.value)
+              updateRow(row.id, "project_name", e.target.value)}}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            onKeyPress={handleKeyPresscharandspecialchar}
+            onChange={(e) =>
+              props.updateRow(row.id, "partner_dept", e.target.value)
+            }
           />
         </td>
         <td>
@@ -239,33 +231,6 @@ const UserTotRowdata = (props) => {
             onChange={(e) =>
               props.updateRow(row.id, "module_name", e.target.value)
             }
-          />
-        </td>
-        <td>
-          {/* <input
-            className={`table-input h-2 date ${
-              props.classValue[`class${row.id - 1}`]?.certificate_given
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            type="Text"
-            // value={row.name}
-            onChange={(e) =>
-              updateRow(row.id, "certificate_given", e.target.value)
-            }
-          /> */}
-          <Select
-            className={`table-input h-2  ${
-              props.classValue[`class${row.id - 1}`]?.certificate_given
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="certificate_given"
-            options={certificateoptions}
-            onChange={(e) => props.handleChange(e, "certificate_given", row.id)}
           />
         </td>
         <td>
@@ -303,57 +268,63 @@ const UserTotRowdata = (props) => {
             }}
           />
         </td>
-
         <td>
           <Select
-            className={`table-input  ${
-              props.classValue[`class${row.id - 1}`]?.state
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.trainer_1
                 ? `border-red`
                 : "table-input h-2"
             }`}
             classNamePrefix="select"
-            // defaultValue={stateOptions[0]}
-            // isDisabled={isDisabled}
-            // isLoading={true}
             isClearable={true}
-            // isRtl={isRtl}
             isSearchable={true}
-            name="state"
-            options={props.statedata}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            name="tariner_1"
+            options={srmOption}
+            onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
           />
         </td>
         <td>
           <Select
-            className={`table-input  ${
-              props.classValue[`class${row.id - 1}`]?.area
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="trainer_2"
+            options={srmOption}
+            onChange={(e) => props.handleChange(e, "trainer_2", row.id)}
+          />
+        </td>
+        <td>
+            <Select
+            className={`table-input   ${
+              props.classValue[`class${row.id - 1}`]?.certificate_given
                 ? `border-red`
                 : "table-input h-2"
             }`}
             classNamePrefix="select"
-            // defaultValue={batchOptions[0]}
-            // isDisabled={isDisabled}
-            // isLoading={true}
             isClearable={true}
-            // isRtl={isRtl}
             isSearchable={true}
-            name="area"
-            options={areaOptions}
-            onChange={(e) => props.handleChange(e, "area", row.id)}
+            name="certificate_given"
+            options={certificateoptions}
+            onChange={(e) => props.handleChange(e, "certificate_given", row.id)}
           />
         </td>
-
         <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "partner_dept", e.target.value)
-            }
+        <Select
+            className={`table-input   ${
+              props.classValue[`class${row.id - 1}`]?.project_type
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="project_type"
+            options={projecttypeoptions}
+            onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
+          
         </td>
-
         {/* <td>
           <input
             className="table-input h-2"
@@ -364,9 +335,7 @@ const UserTotRowdata = (props) => {
           />
         </td> */}
 
-        {/* <td>
-                <button onClick={() => setRowid(row.id)}>Delete Row</button>
-              </td> */}
+        
       </tr>
     </>
   );

@@ -35,7 +35,7 @@ import {sortAscending,resetSearch} from "../../store/reducers/Operations/actions
 
 const tabPickerOptions = [
   { title: "User Ops Activities", key: "my_data" },
-  { title: "Users Tot", key: "useTot" },
+  { title: "TOT", key: "useTot" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Alumni Queries", key: "alumniQueries" },
@@ -124,15 +124,15 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
         accessor: "topic",
       },
 
-      {
-        Header: "Guest",
-        accessor: "guest",
-      },
+      // {
+      //   Header: "Guest",
+      //   accessor: "guest",
+      // },
 
-      {
-        Header: "Organization",
-        accessor: "organization",
-      },
+      // {
+      //   Header: "Organization",
+      //   accessor: "organization",
+      // },
     ],
     []
   );
@@ -140,7 +140,7 @@ const Operations = ({opsData,setAlert,isLoading,sortAscending,resetSearch}) => {
   const columnsUserTot = useMemo(
     () => [
       {
-        Header: "User Name",
+        Header: "Participant Name",
         accessor: "user_name",
       },
       {

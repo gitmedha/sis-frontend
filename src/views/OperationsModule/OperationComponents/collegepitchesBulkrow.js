@@ -180,6 +180,13 @@ const CollegepitchesBulkrow = (props) => {
           />
         </td>
         <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "remarks", e.target.value)}
+          />
+        </td>
+        <td>
           {/* <input
             className="table-input h-2"
             type="text"
@@ -223,13 +230,7 @@ const CollegepitchesBulkrow = (props) => {
             onChange={(e) => props.handleChange(e, "area", row.id)}
           />
         </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "remarks", e.target.value)}
-          />
-        </td>
+        
       </tr>
     </>
   );

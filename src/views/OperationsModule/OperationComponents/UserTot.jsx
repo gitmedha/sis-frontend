@@ -219,7 +219,7 @@ const UserTot = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    console.log(options?.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
         console.log("data", data);
@@ -236,7 +236,7 @@ const UserTot = (props) => {
       });
       console.log(areaOptions);
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -504,22 +504,22 @@ const UserTot = (props) => {
                 <tr>
                   {/* <th className="id">ID</th> */}
                   <th>Participant Name</th>
-                  <th>College</th>
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Contact </th>
+                  <th>City *</th>
+                  <th>State *</th>
                   <th>Designation </th>
-                  <th>Trainer 1 *</th>
-                  <th>Trainer 2</th>
-                  <th>Project Type *</th>
+                  <th>College</th>
                   <th>Project Name</th>
+                  <th>Partner Department</th>
                   <th>Module Name</th>
-                  <th>Certificate Given *</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
-                  <th>State *</th>
-                  <th>City *</th>
-                  <th>Partner Department</th>
+                  <th>Trainer 1 *</th>
+                  <th>Trainer 2</th>
+                  <th>Certificate Given *</th>
+                  <th>Project Type *</th>
                   {/* <th>New Entry</th> */}
                 </tr>
               </thead>

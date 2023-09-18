@@ -266,7 +266,7 @@ const OperationDataupdateform = (props) => {
       .when("start_date", (start, schema) => {
         return schema.min(
           start,
-          "End date must be greter than or equal to start date"
+          "End date must be greater than or equal to start date"
         );
       }),
   });
@@ -479,7 +479,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             icon="down"
                             name="area"
-                            label="Area"
+                            label="Medha Area"
                             control="lookup"
                             options={areaOptions}
                             placeholder="Area"

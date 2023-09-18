@@ -134,6 +134,48 @@ const StudentupskilingBulk = (props) => {
             onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
           />
         </td>
+        <td>
+          
+
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            filterData={filterStudent}
+            options={studentOptions}
+            onInputChange={(e)=>{
+              console.log("e",e)
+              setstudentinput(e)}}
+            onChange={(e) => {
+              console.log("filter",row.id);
+              props.handleChange(e, "student_id", row.id)}}
+          />
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution"
+            options={props.institutiondata}
+            onChange={(e) => props.handleChange(e, "institution", row.id)}
+          />
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => {
+              console.log(e);
+              props.handleChange(e, "batch", row.id)}}
+          />
+        </td>
 
         {/* <td>{row.id}</td> */}
         <td>
@@ -180,64 +222,11 @@ const StudentupskilingBulk = (props) => {
             onChange={(e) => props.updateRow(row.id, "sub_category", true)}
           /> */}
         </td>
-        <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "student_id", e.target.value)}
-          /> */}
-
-          <Select
-            className="basic-single table-input "
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            filterData={filterStudent}
-            options={studentOptions}
-            onInputChange={(e)=>setstudentinput(e)}
-            onChange={(e) => {
-              console.log("filter",row.id);
-              props.handleChange(e, "student_id", row.id)}}
-          />
-        </td>
-        <td>
-          <Select
-            className="basic-single table-input "
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="institution"
-            options={props.institutiondata}
-            onChange={(e) => props.handleChange(e, "institution", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className="basic-single table-input "
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={props.batchbdata}
-            onChange={(e) => {
-              console.log(e);
-              props.handleChange(e, "batch", row.id)}}
-          />
-        </td>
+        
+        
        
         <td>
-          {/* <DatePicker
-                    dateFormat="dd/MM/yyyy"
-                    className="table-input h-2"
-                    selected={startDate}
-                    onChange={(date) => {
-                        const d = new Date(date).toLocaleDateString('fr-FR');
-                        setStartDate(date)
-
-                        props.updateRow(row.id, 'start_date', d)
-                    }}
-                /> */}
+  
           <input
             type="date"
             className="table-input h-2 "
@@ -251,19 +240,7 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          {/* <DatePicker
-                    // dateFormat="dd/MM/yyyy"
-                    // className="table-" 
-                    selected={endDate}
-                    showYearPicker
-                    showMonthYearPicker
-                    onChange={(date) => {
-                        const d = new Date(date).toLocaleDateString('fr-FR');
-                        setEndDate(date)
-                        props.updateRow(row.id, 'end_date', d)}} 
-
-                  
-                /> */}
+          
           <input
             type="date"
             className="table-input h-2 "

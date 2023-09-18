@@ -24,6 +24,7 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,6 +49,10 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
+const categoryOptions = [
+  { value: 'Career', label: "Career" },
+  { value: 'Creative', label: "Creative" },
+];
 
 const UpskillUpdate = (props) => {
   console.log(props, "props");
@@ -63,10 +68,18 @@ const UpskillUpdate = (props) => {
   const [course, setcourse] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [studentinput,setstudentinput]=useState("")
+  const [subcategory,setSubcategory]=useState([])
+
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data123", data);
       setAssigneeOptions(data);
+    });
+    getUpskillingPicklist().then((data) => {
+      setSubcategory(data.subCategory.map((item) => ({
+        key: item,
+        value: item,
+        label: item,
+      })));
     });
   }, []);
 
@@ -442,26 +455,28 @@ const UpskillUpdate = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="category"
                           label="Category"
                           // required
                           className="form-control"
                           placeholder="Category"
-                        />
+                        /> */}
                         <Input
-                          name="course_name"
+                          name="category"
                           control="lookup"
                           icon="down"
-                          label="Course Name"
-                          options={course}
+                          label="Category"
+                          // required
                           className="form-control"
-                          placeholder="Course Name"
+                          placeholder="Category"
+                          options={categoryOptions}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
+                        subcategory
                           icon="down"
                           control="input"
                           name="sub_category"
@@ -469,6 +484,16 @@ const UpskillUpdate = (props) => {
                           // required
                           className="form-control"
                           placeholder="Sub Category"
+                        /> */}
+                         <Input
+                          name="sub_category"
+                          label="Sub Category"
+                          control="lookup"
+                          icon="down"
+                          // required
+                          className="form-control"
+                          placeholder="Category"
+                          options={subcategory}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">

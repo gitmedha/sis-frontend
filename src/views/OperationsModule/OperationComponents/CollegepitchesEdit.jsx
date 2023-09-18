@@ -24,6 +24,7 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { handleKeyPress, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -281,6 +282,7 @@ const CollepitchesEdit = (props) => {
                           name="student_name"
                           label="Student Name"
                           required
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="Student Name"
                         />
@@ -292,6 +294,7 @@ const CollepitchesEdit = (props) => {
                           icon="down"
                           label="Course Name"
                           options={course}
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="Course Name"
                         />
@@ -305,6 +308,7 @@ const CollepitchesEdit = (props) => {
                           label="Course Year"
                           // required
                           placeholder="Course Year"
+                          onKeyPress={numberChecker}
                           control="input"
                           className="form-control"
                           autoComplete="off"
@@ -317,6 +321,7 @@ const CollepitchesEdit = (props) => {
                           name="college_name"
                           label="College Name"
                           // required
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="Phone"
                         />
@@ -327,6 +332,7 @@ const CollepitchesEdit = (props) => {
                           control="input"
                           name="phone"
                           label="Phone"
+                          onKeyPress={mobileNochecker}
                           className="form-control"
                           placeholder="Phone"
                         />
@@ -337,6 +343,7 @@ const CollepitchesEdit = (props) => {
                           name="whatsapp"
                           label="Whatsapp"
                           // required
+                          onKeyPress={mobileNochecker}
                           className="form-control"
                           placeholder="Whatsapp"
                         />
@@ -349,7 +356,7 @@ const CollepitchesEdit = (props) => {
                           label="Email"
                           // required
                           className="form-control"
-                          placeholder="Query Type"
+                          placeholder="Email"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -359,7 +366,7 @@ const CollepitchesEdit = (props) => {
                           name="remarks"
                           label="Remarks"
                           className="form-control"
-                          placeholder="Query Description"
+                          placeholder="Remarks"
                         />
                       </div>
                       {/* query_start */}
@@ -388,7 +395,7 @@ const CollepitchesEdit = (props) => {
 
                       {/* status */}
 
-                      <div className="col-md-6 col-sm-12 mb-2">
+                      {/* <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="pitch_date"
                           label="Pitch Date"
@@ -398,7 +405,7 @@ const CollepitchesEdit = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </Section>
 
@@ -425,7 +432,7 @@ const CollepitchesEdit = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

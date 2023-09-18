@@ -205,19 +205,7 @@ export const RowsData = (props) => {
             onChange={(e) => props.handleChange(e, "batch", row.id)}
           />
         </td>
-        <td>
-          <input
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.students_attended
-                ? `border-red`
-                : ""
-            }`}
-            type="number"
-            onChange={(e) =>
-              props.updateRow(row.id, "students_attended", e.target.value)
-            }
-          />
-        </td>
+        
        
         <td>
           <input
@@ -297,6 +285,19 @@ export const RowsData = (props) => {
             type="text"
             onChange={(e) =>
               props.updateRow(row.id, "organization", e.target.value)
+            }
+          />
+        </td>
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.students_attended
+                ? `border-red`
+                : ""
+            }`}
+            type="number"
+            onChange={(e) =>
+              props.updateRow(row.id, "students_attended", e.target.value)
             }
           />
         </td>

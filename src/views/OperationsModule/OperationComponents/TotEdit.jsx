@@ -32,6 +32,9 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
+import { GET_STUDENT, GET_STUDENTS } from "../../../graphql";
+import api from "../../../apis";
+import NP from "nprogress";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -127,6 +130,69 @@ const TotEdit = (props) => {
         return filterData;
       });
   };
+
+  const filterstate = async (filterValue,key) => {
+    if(key="state"){
+      return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["state"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((val) => {
+        //   return {
+        //     ...institution,
+        //     label: institution.name,
+        //     value: Number(institution.id),
+        //   };
+        // return val;
+        console.log('val',val);
+        });
+
+        // return filterData;
+        // const uniqueItems = new Map();
+        // const deduplicatedResults = filterData.filter((result) => {
+        //   console.log(result);
+        //   if (!uniqueItems.has(result)) {
+        //     uniqueItems.set(result, true);
+        //     return true;
+        //   }
+        //   return false;
+        // });
+      
+      //   console.log('Deduplicated Results:', deduplicatedResults);
+      });
+      
+    
+    }else{
+      return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["city"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((data) => {
+          return {
+            ...data,
+            key: data.state,
+            label: data.state,
+            value: data.state,
+          };
+        
+        });
+        console.log("fikterdata",filterData);
+        return filterData;
+      });
+    }
+    
+  };
+
+ useEffect(() => {
+    filterstate("va",'state')
+ }, [])
+ 
 
   const filterBatch = async (filterValue) => {
     return await meilisearchClient
@@ -252,6 +318,8 @@ const TotEdit = (props) => {
     initialValues["gender"] = props.gender;
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
+    initialValues["trainer_1"] = props.trainer_1.id;
+    initialValues["trainer_2"] = props.trainer_2.id;
     initialValues["city"] = props.city;
     initialValues["certificate_given"] = props.certificate_given;
   }
@@ -572,10 +640,13 @@ const TotEdit = (props) => {
                           <Input
                             icon="down"
                             name="state"
-                            label="State"
+                            label="State "
                             control="lookup"
                             options={stateOptions}
                             onChange={onStateChange}
+                            onInputChange={(e)=>{
+                              console.log("E",e)
+                            }}
                             placeholder="State"
                             className="form-control"
                           />
@@ -626,7 +697,7 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

@@ -50,6 +50,7 @@ const usersTotsFields = `
     }
     trainer_1 {
         id
+        username
     }
     start_date
     end_date
@@ -60,6 +61,7 @@ const usersTotsFields = `
     new_entry
     trainer_2 {
         id
+        username
     }
     partner_dept
     college

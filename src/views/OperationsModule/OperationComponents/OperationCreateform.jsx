@@ -536,7 +536,7 @@ const OperationCreateform = (props) => {
                   <th>State *</th>
                   <th>Medha Area *</th>
                   <th>Batch Name *</th>
-                  <th>No. Of Participants </th>
+                  
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>
@@ -544,6 +544,7 @@ const OperationCreateform = (props) => {
                   <th>Guest Name</th>
                   <th>Guest Designation</th>
                   <th>Organization</th>
+                  <th>No. Of Participants </th>
                 </tr>
               </thead>
               <tbody className="mb-4">
