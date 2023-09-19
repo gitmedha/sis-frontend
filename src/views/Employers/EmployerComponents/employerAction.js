@@ -5,8 +5,9 @@ import {
   UPDATE_EMPLOYER,
   DELETE_EMPLOYER,
   CREATE_EMPLOYER,
-  GET_EMPLOYER_EMPLOYMENT_CONNECTIONS
+  GET_EMPLOYER_EMPLOYMENT_CONNECTIONS,
 } from "../../../graphql";
+
 
 export const getEmployersPickList = async () => {
   return await api

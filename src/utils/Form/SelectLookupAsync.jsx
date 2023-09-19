@@ -1,5 +1,5 @@
 import InputErr from "./InputErr";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
@@ -77,6 +77,11 @@ const SelectField = (props) => {
       callback(data);
     });
   };
+  useEffect(() => {
+    if (Array.isArray(defaultOptions)) {
+      setOptions(defaultOptions);
+    }
+  }, [defaultOptions]);
 
   const handleInputChange = (newValue) => {
     setInputValue(newValue);
@@ -99,7 +104,7 @@ const SelectField = (props) => {
           }
         }
         value={
-          options ? options.find((option) => option.value === field.value) || null : null
+          options ? options.find((option) => option.value === field.value) || field.value  : null
         }
         defaultOptions={defaultOptions}
         cacheOptions

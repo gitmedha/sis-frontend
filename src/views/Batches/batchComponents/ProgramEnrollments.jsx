@@ -331,12 +331,15 @@ const ProgramEnrollments = (props) => {
         show={createModalShow}
         onHide={hideCreateModal}
         batch={batch}
+        allStudents ={programEnrollmentTableData}
       />
       <UpdateProgramEnrollmentForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         batch={batch}
         programEnrollment={selectedProgramEnrollment}
+        allStudents={programEnrollmentTableData}
+        
       />
       <SweetAlert
           danger

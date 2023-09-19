@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -57,6 +57,13 @@ const routes = [
     aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />,
     show: isSRM() || isPartnership() || isAdmin(),
+  },
+  {
+    to: "/operation",
+    title: "Operations",
+    aliases: ['operations'],
+    icon: <FaUsersCog {...iconProps} />,
+    show: isSRM() || isAdmin(),
   },
   {
     to: "https://data.medha.org.in/",

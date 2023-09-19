@@ -36,7 +36,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student } = props;
+  let { onHide, show, student,programEnrollment,allBatches } = props;
   const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -46,10 +46,12 @@ const ProgramEnrollmentForm = (props) => {
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [courseLevelOptions, setCourseLevelOptions] = useState([]);
   const [courseTypeOptions, setCourseTypeOptions] = useState([]);
+  const [course,setcourse]=useState([])
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
-
+  const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -90,6 +92,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: '',
     fee_refund_date: '',
     course_name_in_current_sis: '',
+    course_name_other:'',
     fee_transaction_id: '',
     course_type:'',
     course_level:'',
@@ -111,11 +114,15 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    onHide(values);
+    if(!showDuplicateWarning){
+      onHide(values);
+    }
+    
   };
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -178,7 +185,62 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
     });
   }
+  const handlechange = (e,target) => {
+    if(e.value == 'Other'){
 
+      setOthertargetValue({ ...OthertargetValue,[target]:true})
+    }
+    
+  };
+  useEffect(()=>{
+    setOthertargetValue({course1:false,course2:false})
+  },[programEnrollment])
+
+
+  const handleBatchChange = async (e)=> {
+
+    if(props.programEnrollment){
+      let found = false;
+      allBatches.forEach(element => {
+        if(props.programEnrollment.batch.id == e.id){
+          found = false
+        }
+  
+        else if(e.id == element.batch.id){
+          found = true
+        }
+      });
+
+      if(found){
+        setShowDuplicateWarning(true)
+        
+      }
+      else {
+    
+        setShowDuplicateWarning(false)
+      }
+
+      
+    }
+    else if(props.allBatches) {
+      let found = false
+      allBatches.forEach(element => {
+  
+        if(e.id == element.batch.id){
+          found = true
+        }
+      });
+
+      if(found){
+        setShowDuplicateWarning(true)
+      }
+      else {
+        setShowDuplicateWarning(false)
+      }
+     
+    }
+  }
+ 
   return (
     <Modal
       centered
@@ -243,10 +305,13 @@ const ProgramEnrollmentForm = (props) => {
                       defaultOptions={props.id ? batchOptions : true}
                       className="form-control"
                       placeholder="Batch"
+                      onChange={(e)=>handleBatchChange(e)}
                     />
                     ) : (
                       <Skeleton count={1} height={60} />
                     )}
+
+                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>This batch is already assigned to the existing student. Select a new batch.</div>}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -349,14 +414,42 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
+                  {OthertargetValue.course1 ?
+                  <Input
                       name="course_name_in_current_sis"
                       control="input"
                       label="Course Name"
-                      required
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
                     />
+                     :
+                    <Input
+                      name="course_name_in_current_sis"
+                      control="lookup"
+                      icon="down"
+                      label="Course Name"
+                      options={course}
+                      onChange={(e)=>handlechange(e,"course1")}
+                      className="form-control"
+                      placeholder="Course Name"
+                    />
+                    }
+                  </div>
+
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {
+                  ( OthertargetValue.course1 || initialValues.course_name_other.length)?
+                   <Input
+                      name="course_name_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    /> :<div></div>
+                    
+                  }
                   </div>
                 </div>
               </Section>
@@ -364,13 +457,27 @@ const ProgramEnrollmentForm = (props) => {
                 <h3 className="section-header">Higher Education</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
+                    {OthertargetValue.course2 ? 
                     <Input
+                    name="higher_education_course_name"
+                    control="input"
+                    label="Course Name"
+                    options={course}
+                    className="form-control"
+                    placeholder="Course Name"
+                  />
+                    
+                    :<Input
+                      icon="down"
                       name="higher_education_course_name"
-                      control="input"
+                      control="lookup"
                       label="Course Name"
+                      onChange={(e)=>handlechange(e,"course2")}
+                      options={course}
                       className="form-control"
                       placeholder="Course Name"
-                    />
+                      
+                    />}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

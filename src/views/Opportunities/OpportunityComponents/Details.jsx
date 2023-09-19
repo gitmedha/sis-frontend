@@ -86,13 +86,13 @@ const Details = (props) => {
       <div className="container-fluid my-3">
         <div className="row latto-regular">
           <div className="col-6 col-md-4">
-            <DetailField label="Role/Designation" value={role_or_designation} />
+            <DetailField label="Role/Designation" className="capitalize" value={role_or_designation} />
             <DetailField label="Employer" value={<Anchor text={employer ? employer.name : ''} href={`/employer/${employer?.id}`}  />} />
             {/* <DetailField label="Location" value={employer ? employer.address : ''} /> */}
             <DetailField label="No. of openings" value={number_of_opportunities} />
             <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == 'Yes' ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Monthly Salary" value={salary} />
-            <DetailField label="Role Description" value={role_description} />
+            <DetailField label="Role Description" className="capitalize" value={role_description} />
             &nbsp;
             <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
@@ -102,10 +102,10 @@ const Details = (props) => {
             <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ''} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
-            <DetailField label="Skills Required" value={skills_required} />
+            <DetailField label="Skills Required" className="capitalize" value={skills_required} />
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
-            <DetailField label="Job Description File Upload" value=
+            <DetailField label="Job Description File Upload"  value=
                 {job_description_file &&
                   <div>
                     <p className="mb-0">(updated on: {moment(job_description_file.updated_at).format("DD MMM YYYY, h:mm a")})</p>

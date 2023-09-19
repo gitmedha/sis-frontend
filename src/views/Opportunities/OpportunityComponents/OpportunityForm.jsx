@@ -195,6 +195,25 @@ const OpportunityForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+ 
+  values.city = values.city[0].toUpperCase() + values.city.slice(1);
+  values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
+  values.skills_required = values.skills_required
+    .split(",")
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ")
+    values.role_description = values.role_description
+    .split(",")
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ")
+    values.address = values.address
+    .split(" ")
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ")
+  console.log(values);
     onHide(values);
   };
 
@@ -287,7 +306,7 @@ const OpportunityForm = (props) => {
                       label="Role/Designation"
                       control="input"
                       placeholder="Role/Designation"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -382,7 +401,7 @@ const OpportunityForm = (props) => {
                       control="input"
                       label="Skills Required"
                       placeholder="Skills Required"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -392,7 +411,7 @@ const OpportunityForm = (props) => {
                       control="textarea"
                       label="Description"
                       placeholder="Description"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -408,7 +427,7 @@ const OpportunityForm = (props) => {
                       label="Address"
                       name="address"
                       placeholder="Address"
-                      className="form-control"
+                      className="form-control capitalize"
                       required
                     />
                   </div>
@@ -468,7 +487,7 @@ const OpportunityForm = (props) => {
                       control="input"
                       name="city"
                       label="City"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="City"
                       required
                     />
