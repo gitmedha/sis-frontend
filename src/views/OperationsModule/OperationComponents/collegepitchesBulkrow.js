@@ -80,6 +80,7 @@ const CollegepitchesBulkrow = (props) => {
     <>
       <tr key={row.id} className="mt-4">
         {/* <td>{row.id}</td> */}
+        
         <td>
           <input
             type="date"

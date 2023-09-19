@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
-import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { getAllProgram } from "./operationsActions";
 import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
 
@@ -79,23 +79,21 @@ export const RowsData = (props) => {
     
   };
 
-  useEffect(() => {
+  useEffect(async() => {
+    
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+    
   }, []);
 
-  useEffect(() => {
-    
-  }, [startDate]);
 
-  useEffect(() => {
-    console.log("state", props.classValue[`class${row.id - 1}`]?.state);
-  }, [props.classValue]);
+
   const updateRow = (id, field, value) => {
     row[field] = value;
     console.log(id, field, value);
   };
+  
 
   return (
     <>
@@ -112,6 +110,7 @@ export const RowsData = (props) => {
             isSearchable={true}
             name="assigned_to"
             options={assigneeOptions}
+            defaultValue={()=>setAssigneeOptions(filterAssignedTo('rohit sharma'))}
             onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
           />
         </td>

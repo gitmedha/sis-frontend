@@ -15,7 +15,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
-import { deactivate_user_tots } from "./operationsActions";
+import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -71,6 +71,9 @@ const Totdatafield = (props) => {
     onHide()
   }
 
+  useEffect(()=>{
+    fetchAllStudents()
+  },[])
   return (
     <>
       {!showModal ? (

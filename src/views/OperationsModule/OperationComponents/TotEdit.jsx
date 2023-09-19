@@ -131,66 +131,19 @@ const TotEdit = (props) => {
       });
   };
 
-  const filterstate = async (filterValue,key) => {
-    if(key="state"){
-      return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["state"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((val) => {
-        //   return {
-        //     ...institution,
-        //     label: institution.name,
-        //     value: Number(institution.id),
-        //   };
-        // return val;
-        console.log('val',val);
-        });
 
-        // return filterData;
-        // const uniqueItems = new Map();
-        // const deduplicatedResults = filterData.filter((result) => {
-        //   console.log(result);
-        //   if (!uniqueItems.has(result)) {
-        //     uniqueItems.set(result, true);
-        //     return true;
-        //   }
-        //   return false;
-        // });
-      
-      //   console.log('Deduplicated Results:', deduplicatedResults);
-      });
-      
-    
-    }else{
-      return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["city"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((data) => {
-          return {
-            ...data,
-            key: data.state,
-            label: data.state,
-            value: data.state,
-          };
-        
-        });
-        console.log("fikterdata",filterData);
-        return filterData;
-      });
-    }
-    
-  };
 
- useEffect(() => {
-    filterstate("va",'state')
+ useEffect(async() => {
+    // filterstate("new delhi",'city')
+    let val=await getStateDistricts().then((data) => {
+      console.log("district data",data.data.data.geographiesConnection.groupBy);
+      setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
+        key: item.key,
+        value: item.key,
+        label: item.key,
+      })))
+     });
+     
  }, [])
  
 
@@ -235,18 +188,18 @@ const TotEdit = (props) => {
   }, []);
 
   const onStateChange = async (value) => {
-    await getStateDistricts(value).then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.area
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
+    // await getStateDistricts(value).then((data) => {
+    //   setAreaOptions([]);
+    //   setAreaOptions(
+    //     data?.data?.data?.geographiesConnection?.groupBy?.area
+    //       .map((area) => ({
+    //         key: area.id,
+    //         label: area.key,
+    //         value: area.key,
+    //       }))
+    //       .sort((a, b) => a.label.localeCompare(b.label))
+    //   );
+    // });
   };
 
   useEffect(() => {

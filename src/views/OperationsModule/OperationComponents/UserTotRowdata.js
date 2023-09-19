@@ -59,10 +59,27 @@ const UserTotRowdata = (props) => {
     console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
-    getStateDistricts(value).then((data) => {
+    // getStateDistricts(value).then((data) => {
+    //   setAreaOptions([]);
+    //   setAreaOptions(
+    //     data?.data?.data?.geographiesConnection.groupBy.area
+    //       .map((area) => ({
+    //         key: area.id,
+    //         label: area.key,
+    //         value: area.key,
+    //       }))
+    //       .sort((a, b) => a.label.localeCompare(b.label))
+    //   );
+    // });
+    props.updateRow(rowid, field, value?.value);
+  };
+  useEffect(async () => {
+    let data = await getAllSrm(1);
+    setsrmOption(data);
+    getStateDistricts().then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
+        data?.data?.data?.geographiesConnection.groupBy.district
           .map((area) => ({
             key: area.id,
             label: area.key,
@@ -71,11 +88,6 @@ const UserTotRowdata = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    props.updateRow(rowid, field, value.value);
-  };
-  useEffect(async () => {
-    let data = await getAllSrm(1);
-    setsrmOption(data);
   }, []);
   useEffect(() => {
     getStudentsPickList().then((data) => {

@@ -511,3 +511,19 @@ query GET_ALL_PROGRAMS($limit:Int, $start:Int) {
   }
 }
 `;
+
+
+export const GET_ALL_STUDENTS = `
+    query GET_ALL_STUDENTS ($limit:Int, $start: Int){
+        studentsConnection(
+            start:$start,
+            limit:$limit
+        ){
+            values {
+                city
+                state
+            }
+        }
+    }
+
+`

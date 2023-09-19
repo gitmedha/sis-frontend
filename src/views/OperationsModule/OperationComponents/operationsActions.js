@@ -20,7 +20,8 @@ import {
     GET_COLLEGE_PITCHES,
     CREATE_COLLEGE_PITCH,
     UPDATE_COLLEGE_PITCH,
-    GET_ALL_PROGRAMS
+    GET_ALL_PROGRAMS,
+    GET_ALL_STUDENTS
     
 } from "../../../graphql/operations";
 
@@ -35,7 +36,20 @@ export const getAllProgram=async()=>{
 }
 
 
-
+export const fetchAllStudents = async()=>{
+    try {
+        await api.post('/graphql', {
+            query:GET_ALL_STUDENTS,
+            variables: {
+                limit:100000,
+                start:0
+            }
+        })
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
 export const getSearchOps = async(searchField,value)=>{
     const authToken =localStorage.getItem('token')
     

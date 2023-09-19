@@ -63,6 +63,7 @@ const AllumuniBulkAdd = (props) => {
       id: 1,
       query_start: "",
       student_name: "",
+      student_id:"",
       father_name: "",
       email: "",
       phone: "",
@@ -79,6 +80,7 @@ const AllumuniBulkAdd = (props) => {
     id: 1,
     query_start: "",
     student_name: "",
+    student_id:"",
     father_name: "",
     email: "",
     phone: "",
@@ -423,6 +425,7 @@ const AllumuniBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
+                  <th>Student id</th>
                   <th>Query Receiving Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
@@ -444,7 +447,6 @@ const AllumuniBulkAdd = (props) => {
                     row={row}
                     endDate={endDate}
                     startDate={startDate}
-                    setStartdate={setStartDate}
                     institutiondata={institutionOptions}
                     batchbdata={batchOptions}
                     updateRow={updateRow}
