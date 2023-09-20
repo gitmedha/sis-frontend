@@ -30,7 +30,9 @@ const AlumniSearchBar =({searchOperationTab,resetSearch})=> {
     {key:1, value:'phone', label:'Mobile'}, 
     {key:2, value:'student_id.student_id', label:'Student ID'},
     {key:3,value:'email', label:'Email'},
-    {key:4, value:'status', label:'Status'}
+    {key:4, value:'status', label:'Status'},
+    {key:5,value:'query_start',label:'Query start date'},
+    {key:6, value:'query_end', label:'Query end date'}
   ]
 
   const [studentNameOptions,setStudentNameOptions] = useState([]);
@@ -94,8 +96,27 @@ const setDropdownValues = async (fieldName)=>{
 
 
     const handleSubmit = async(values) =>{
+      if(values.search_by_field === "query_start" || values.search_by_field === "query_end"){
+        const date = new Date(values.search_by_value);
+
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
+        const dd = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+        let baseUrl = 'alumni-queries'
+        await searchOperationTab(baseUrl,values.search_by_field,formattedDate)
+
+
+
+      }
+      else {
         let baseUrl = 'alumni-queries'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+      }
+      
     }
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
@@ -191,6 +212,30 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={statusOptions}
                                 className="form-control"
+                            />
+                          }
+
+                          { selectedSearchField === "query_start" && 
+                            <Input
+                              name="search_by_value"
+                              label="Search Value"
+                              placeholder="Query start date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                            
+                            />
+                          }
+
+                          { selectedSearchField === "query_end" && 
+                            <Input
+                              name="search_by_value"
+                              label="Search Value"
+                              placeholder="Query start date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                            
                             />
                           }
                         </div>
