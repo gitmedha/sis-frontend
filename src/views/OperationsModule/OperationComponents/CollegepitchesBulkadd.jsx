@@ -1,13 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
-import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
@@ -16,19 +10,12 @@ import {
 import { connect } from "react-redux";
 
 import { MeiliSearch } from "meilisearch";
-
-import { RowsData } from "./RowsData";
 import {
   bulkCreateCollegePitch,
-  bulkCreateSamarth,
-  createOperation,
-  createSamarthSdit,
 } from "./operationsActions";
 import api from "../../../apis";
-import StudentupskilingBulk from "./StudentupskilingBulk";
-import DteUpskilingBulk from "./DteUpskilingBulk";
-import AlumunniBulkrow from "./AlumunniBulkrow";
 import CollegepitchesBulkrow from "./collegepitchesBulkrow";
+import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -38,6 +25,7 @@ const meilisearchClient = new MeiliSearch({
 const CollegepitchesBulkadd = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
+  const [classValue,setclassValue]=useState({})
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [data, setData] = useState([
     {
@@ -87,7 +75,52 @@ const CollegepitchesBulkadd = (props) => {
     area: "",
   });
   const [showLimit, setshowLimit] = useState(false);
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+  
+    return result;
+  }
+
+  
+  function isEmptyValue(value) {
+    if (value === null || value === undefined) {
+      return true;
+    }
+  
+    if (typeof value === 'string' && value.trim() === '') {
+      return true;
+    }
+  
+    if (Array.isArray(value) && value.length === 0) {
+      return true;
+    }
+  
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return true;
+    }
+  
+    return false;
+  }
+
   const addRow = () => {
+    console.log(rows);
+    let value =checkEmptyValues(rows[rows.length-1])
+    setclassValue({})
+    if(value.area || value.course_name || value.course_year || value.college_name || value.student_name || value.whatsapp  ){
+      let obj={[`class${[rows.length-1]}`]:value}
+      setclassValue(obj)
+      return ;
+    }
+    
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -209,20 +242,21 @@ const CollegepitchesBulkadd = (props) => {
   };
 
   const onSubmit = async () => {
-    let data = rows.filter((row) => {
+    let data = rows.map((row) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
       row.isActive=true;
       row.created_by = Number(userId);
       row.updated_by = Number(userId);
-
-      return row;
+      let value = checkEmptyValuesandplaceNA(row)
+      console.log("value",value);
+      return value;
     });
 
     try {
+
       const value = await bulkCreateCollegePitch(data);
-      console.log("vallue", value);
       props.ModalShow();
     } catch (error) {
       console.log("error", error);
@@ -370,18 +404,18 @@ const CollegepitchesBulkadd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th className="id">ID</th>
-                  <th>Student Name</th>
-                  <th>Course Name </th>
-                  <th>Course Year</th>
-                  <th>College Name</th>
-                  <th>Pitch Date</th>
-                  <th>Phone</th>
-                  <th>Whatsapp </th>
-                  <th>Email</th>
-                  <th>Remarks</th>
+                  <th>Date of Pitching * </th>
+                  <th>Student Name *</th>
+                  {/* <th>programme Name</th> */}
+                  <th>Course Name * </th>
+                  <th>Course Year *</th>
+                  <th>College Name *</th>
+                  <th>Phone *</th>
+                  <th>Whatsapp Number *</th>
+                  <th>E-mail</th>
                   <th>Srm Name</th>
-                  <th>Area</th>
+                  <th>Area *</th>
+                  <th>Remarks</th>
                 </tr>
               </thead>
               <tbody>
@@ -398,6 +432,7 @@ const CollegepitchesBulkadd = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

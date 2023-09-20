@@ -19,8 +19,20 @@ import {
     UPDATE_ALUMNI_QUERY,
     GET_COLLEGE_PITCHES,
     CREATE_COLLEGE_PITCH,
-    UPDATE_COLLEGE_PITCH
+    UPDATE_COLLEGE_PITCH,
+    GET_ALL_PROGRAMS
+    
 } from "../../../graphql/operations";
+
+export const getAllProgram=async()=>{
+    return await api.post('/graphql',{
+        query:GET_ALL_PROGRAMS,
+        variables:{
+            limit:1000,
+            start:0
+        }
+    })
+}
 
 
 

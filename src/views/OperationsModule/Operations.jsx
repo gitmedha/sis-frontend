@@ -43,7 +43,7 @@ const tabPickerOptions = [
   { title: "Users Tot", key: "useTot" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
-  { title: "Alumni Queries", key: "AlumniQueries" },
+  { title: "Alumni Queries", key: "alumniQueries" },
   { title: "College Pitches", key: "collegePitches" },
 ];
 
@@ -311,8 +311,6 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
     ],
     []
   );
-
-
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -329,6 +327,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
       sort: `${sortBy}:${sortOrder}`,
       isActive:false
     };
+    console.log("activeTabkey",activeTab);
     if (activeTab.key == "my_data") {
       await resetSearch();
       await api
@@ -359,7 +358,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.usersTotsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.usersTotsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -380,7 +379,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.studentsUpskillingsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.studentsUpskillingsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -400,7 +399,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.dteSamarthSditsConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -410,7 +409,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
           nProgress.done();
         });
     }
-    if (activeTab.key == "AlumniQueries") {
+    if (activeTab.key == "alumniQueries") {
   
       await resetSearch();
 
@@ -420,9 +419,8 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
           variables,
         })
         .then((data) => {
-
           setOpts(data.data.data.alumniQueriesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -441,8 +439,9 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
           variables,
         })
         .then((data) => {
+          console.log("datacollegpitches",data);
           setOpts(data.data.data.collegePitchesConnection.values);
-          // setoptsAggregate(data.data.data.usersOpsActivitiesConnection.aggregate)
+          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate)
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -602,7 +601,8 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "AlumniQueries"){
+      if(activeTab.key == "alumniQueries"){
+    
         if (sortBy.length) {
           let sortByField ;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -624,8 +624,7 @@ useEffect(()=>{
             sortByField,
             sortOrder
           );
-        } 
-        else {
+        } else {
           getoperations(
             activeStatus,
             activeTab.key,
@@ -668,20 +667,14 @@ useEffect(()=>{
           );
         }
       }
-      
-      // else{
-      //   console.log("Ashjhdsj");
-      //   getoperations(
-      //     activeStatus,
-      //     activeTab.key,
-      //     pageSize,
-      //     pageSize * pageIndex
-      //   );
-      // }
      
     },
-    [activeTab.key, activeStatus]
+    [activeTab, activeStatus]
   );
+  useEffect(() => {
+   console.log("activeTab line642",activeTab);
+  }, [activeTab])
+  
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
@@ -882,7 +875,7 @@ useEffect(()=>{
               />
               </>
              
-            ) : activeTab.key == "AlumniQueries" ? (
+            ) : activeTab.key == "alumniQueries" ? (
               <>
               <AlumniSearchBar/>
               <Table
@@ -919,6 +912,7 @@ useEffect(()=>{
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
+              (isSRM() || isAdmin()) &&
             <OperationCreateform
               show={modalShow}
               onHide={hideCreateModal}
@@ -926,30 +920,35 @@ useEffect(()=>{
             />
           ) : // useTot  ---upskilling ---dtesamarth
           activeTab.key == "useTot" ? (
+            (isSRM() || isAdmin()) &&
             <UserTot
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "upskilling" ? (
+            (isSRM() || isAdmin()) &&
             <StudentUpkillingBulkcreate
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "dtesamarth" ? (
+            (isSRM() || isAdmin()) &&
             <Dtesamarth
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : activeTab.key == "AlumniQueries" ? (
+          ) : activeTab.key == "alumniQueries" ? (
+            (isSRM() || isAdmin()) &&
             <AllumuniBulkAdd
               show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key == "collegePitches" ? (
+            (isSRM() || isAdmin()) &&
             <CollegepitchesBulkadd
               show={modalShow}
               onHide={hideCreateModal}
@@ -959,6 +958,7 @@ useEffect(()=>{
             ""
           )}
           {showModal.opsdata && (
+            (isSRM() || isAdmin()) &&
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
@@ -966,6 +966,7 @@ useEffect(()=>{
             />
           )}
           {showModal.totdata && (
+            (isSRM() || isAdmin()) &&
             <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
@@ -973,6 +974,7 @@ useEffect(()=>{
             />
           )}
           {showModal.upskilldata && (
+            (isSRM() || isAdmin()) &&
             <Upskillingdatafield
               {...optsdata.upskilldata}
               show={showModal.opsdata}
@@ -980,6 +982,7 @@ useEffect(()=>{
             />
           )}
           {showModal.sditdata && (
+            (isSRM() || isAdmin()) &&
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
@@ -987,6 +990,7 @@ useEffect(()=>{
             />
           )}
           {showModal.alumniQueriesdata && (
+            (isSRM() || isAdmin()) &&
             <Alumuniqueriesdata
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
@@ -994,6 +998,7 @@ useEffect(()=>{
             />
           )}
           {showModal.collegePitches && (
+            (isSRM() || isAdmin()) &&
             <CollegePitchdata
               {...optsdata.collegePitches}
               show={showModal.opsdata}
