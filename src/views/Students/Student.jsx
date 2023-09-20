@@ -15,7 +15,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
-import {getAllOperations} from "../Operations/operationsActions";
+// import {getAllOperations} from "../Operations/operationsActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
@@ -121,17 +121,8 @@ const Student = (props) => {
       history.push("/student/".id);
       getStudent()
     });
-  };
-
-  const testOperationsActions = async () =>{
-    try {
-      await getAllOperations();
-    
-  } catch (error) {
-    console.log("thee", error)
   }
 
-  }
   const getStudent = async () => {
     setLoading(true);
     NP.start();
@@ -140,7 +131,11 @@ const Student = (props) => {
         query: GET_STUDENT,
         variables: { id: studentId },
       });
-      setStudent(data.data.student);
+      let values=data.data.student;
+      
+      values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()
+      values.full_name=values.full_name.toLowerCase()
+      setStudent(values);
     } catch (err) {
       console.log("ERR", err);
     } finally {

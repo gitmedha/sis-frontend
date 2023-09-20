@@ -246,7 +246,7 @@ const ProgramEnrollments = (props) => {
   };
 
   const handleDelete = async () => {
-     NP.start();
+    NP.start();
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
@@ -306,12 +306,14 @@ const ProgramEnrollments = (props) => {
         show={createModalShow}
         onHide={hideCreateModal}
         student={student}
+        allBatches={programEnrollmentTableData}
       />
       <UpdateProgramEnrollmentForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         student={student}
         programEnrollment={selectedProgramEnrollment}
+        allBatches={programEnrollmentTableData}
       />
       <SweetAlert
           danger

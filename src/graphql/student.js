@@ -77,6 +77,7 @@ const programEnrollmentFields = `
   fee_refund_status
   fee_refund_date
   course_name_in_current_sis
+  course_name_other
   created_at
   updated_at
   program_selected_by_student
@@ -141,6 +142,7 @@ const employmentConnectionFields = `
   updated_at
   source
   reason_if_rejected
+  reason_if_rejected_other
   work_engagement
   number_of_internship_hours
   salary_offered
@@ -182,7 +184,7 @@ export const GET_STUDENTS = `
       limit: $limit,
       where: {
         assigned_to: {
-          id: $id,
+          id: $id
         },
         medha_area: $area
         state:$state,
@@ -481,6 +483,19 @@ export const DELETE_ALUMNI_SERVICE = `
       alumniService {
         id
       }
+    }
+  }
+`;
+
+
+export const GET_ALL_STUDENT = `
+  query GET_STUDENT($id: ID!) {
+    student(
+      sort:"username:asc"
+    ) {
+      id,
+      username,
+      email,
     }
   }
 `;

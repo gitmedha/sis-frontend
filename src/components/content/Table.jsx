@@ -74,7 +74,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -101,7 +101,7 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
+  // console.log("state",nextPage)
   const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -111,10 +111,17 @@ const Table = ({ columns, data, fetchData, totalRecords, loading, showPagination
   }
 
   React.useEffect(() => {
-    fetchData(pageIndex, pageSize, sortBy);
-  }, [fetchData, pageIndex, pageSize, sortBy]);
+    if(fetchSearchedData){
+      fetchSearchedData(pageIndex, pageSize, sortBy)
+    }
+    else {
+      fetchData(pageIndex, pageSize, sortBy);
+    }
+    
+  }, [fetchData, pageIndex, pageSize, sortBy,fetchSearchedData]);
 
   React.useEffect(() => {
+    // console.log("pageSize",pageSize);
     onPageSizeChange(pageSize);
   }, [pageSize]);
 

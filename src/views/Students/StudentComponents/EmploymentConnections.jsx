@@ -92,6 +92,7 @@ const EmploymentConnections = (props) => {
         ),
       };
     });
+    console.log("EmploymentConnectionsTableData",data);
     setEmploymentConnectionsTableData(data);
   }, [employmentConnections, pickList, opportunitiesPickList]);
 

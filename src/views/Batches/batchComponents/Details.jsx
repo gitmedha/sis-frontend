@@ -55,7 +55,7 @@ const Details = ({ batch, sessions=[] }) => {
     <div className="container-fluid my-3">
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
-          <DetailField label="Name" value={batch.name} />
+          <DetailField label="Name"  value={batch.name} />
           <DetailField label="Program Name" value={batch?.program?.name} />
           <DetailField label="Institution" value={<Anchor text={batch?.institution?.name} href={`/institution/${batch?.institution?.id}`} />} />
           <DetailField label="Start Date" value={<Moment date={batch.start_date} format={"DD MMM YYYY"} />} />
