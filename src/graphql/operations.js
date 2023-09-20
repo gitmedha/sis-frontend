@@ -150,6 +150,7 @@ const alumniQueriesFields = `
     student_id{
         id
         full_name
+        student_id
     }
     query_start
     student_name
@@ -206,6 +207,10 @@ export const GET_OPERATIONS = `
         }
     } 
 `;
+
+
+
+
 
 
 export const GET_USERSTOTS = `

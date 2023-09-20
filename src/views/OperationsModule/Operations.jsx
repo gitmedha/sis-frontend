@@ -625,6 +625,14 @@ useEffect(()=>{
             sortOrder
           );
         } 
+        else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
       }
       if(activeTab.key == "collegePitches"){
         if (sortBy.length) {

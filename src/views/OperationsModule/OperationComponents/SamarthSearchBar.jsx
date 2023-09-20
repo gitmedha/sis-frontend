@@ -1,10 +1,10 @@
-import React,{Fragment} from 'react'
+import React,{Fragment,useState} from 'react'
 import {connect} from 'react-redux';
 import { Input } from '../../../utils/Form';
 import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import {searchOperationTab,resetSearch} from '../../../store/reducers/Operations/actions';
-
+import {getFieldValues} from './operationsActions';
 const Section = styled.div`
   padding-bottom: 30px;
 
@@ -31,6 +31,13 @@ const SamarthSearchBar =({searchOperationTab,resetSearch})=> {
         search_by_value:''
     }
 
+
+    const [studentNameOptions,setStudentNameOptions] = useState([]);
+    const [instituteOptions,setInstituteOptions] = useState([]);
+    const [courseNameOptions,setCourseNameOptions] = useState([]);
+    const [selectedSearchField, setSelectedSearchField] = useState('');
+
+
     const handleSubmit = async(values) =>{
         let baseUrl = 'dte-samarth-sdits'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
@@ -39,12 +46,51 @@ const SamarthSearchBar =({searchOperationTab,resetSearch})=> {
       initialValues,
       onSubmit: handleSubmit,
   });
+  const setSearchItem = (value)=>{
 
+    setSelectedSearchField(value)
+ 
+    if(value === 'student_name'){
+      setDropdownValues(value)
+    }
+
+    else if(value === 'institution_name'){
+      setDropdownValues(value)
+    }
+    else if (value === "course_name"){
+      setDropdownValues(value)
+    }
+
+
+  }
+
+
+  const setDropdownValues = async (fieldName)=>{
+    try {
+     const {data} =  await getFieldValues(fieldName,'dte-samarth-sdits')
+  
+     if(fieldName === 'student_name'){
+      setStudentNameOptions(data)
+    }
+
+    else if(fieldName === 'institution_name'){
+      setInstituteOptions(data)
+    }
+    else if (fieldName === "course_name"){
+      setCourseNameOptions(data)
+    }
+    
+    } catch (error) {
+      console.error("error", error);
+    }
+  }
 
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
     }
+
+    
 
   return (
     <Fragment>
@@ -63,15 +109,57 @@ const SamarthSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={options}
                                 className="form-control"
+                                onChange = {(e)=>setSearchItem(e.value)}
                             />
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
-                        <Input
+                        {
+                        selectedSearchField === "" && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
                             className="form-control"
+                            disabled={true}
+                            
                             />
+                            }
+
+                      {
+                          selectedSearchField === "student_name" &&
+                            <Input 
+                                icon="down"
+                                name="search_by_value"
+                                label="Search Value"
+                                control="lookup"
+                                options={studentNameOptions}
+                                className="form-control"
+                            />
+                          }
+
+{
+                          selectedSearchField === "institution_name" &&
+                            <Input 
+                                icon="down"
+                                name="search_by_value"
+                                label="Search Value"
+                                control="lookup"
+                                options={instituteOptions}
+                                className="form-control"
+                            />
+                          }
+
+{
+                          selectedSearchField === "course_name" &&
+                            <Input 
+                                icon="down"
+                                name="search_by_value"
+                                label="Search Value"
+                                control="lookup"
+                                options={courseNameOptions}
+                                className="form-control"
+                            />
+                          }
+
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
                         <button className="btn btn-primary btn-regular" type="submit">
