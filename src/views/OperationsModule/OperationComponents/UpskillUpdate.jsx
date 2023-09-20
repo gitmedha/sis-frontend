@@ -311,6 +311,17 @@ const UpskillUpdate = (props) => {
     { value: true, label: "Yes" },
     { value: false, label: "No" },
   ];
+  const operationvalidation = Yup.object().shape({
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .when("start_date", (start, schema) => {
+        return schema.min(
+          start,
+          "End date must be greater than or equal to start date"
+        );
+      }),
+  });
 
   return (
     <>
