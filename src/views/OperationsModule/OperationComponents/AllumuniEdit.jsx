@@ -394,7 +394,7 @@ const AllumuniEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="query_start"
-                          label="Query Start"
+                          label="Query Start Date"
                           placeholder="Query Start"
                           control="datepicker"
                           className="form-control"
@@ -406,7 +406,7 @@ const AllumuniEdit = (props) => {
                           name="query_end"
                           label="Query End"
                           // required
-                          placeholder="Query End"
+                          placeholder="Query End Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"

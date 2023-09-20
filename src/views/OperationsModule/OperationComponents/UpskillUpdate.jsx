@@ -25,6 +25,7 @@ import moment from "moment";
 import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-top: 30px;

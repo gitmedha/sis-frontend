@@ -426,7 +426,7 @@ const AllumuniBulkAdd = (props) => {
               <thead>
                 <tr>
                   <th>Student id</th>
-                  <th>Query Receiving Date *</th>
+                  <th>Query Start Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
                   <th>E-mail</th>
