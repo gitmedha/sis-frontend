@@ -54,7 +54,7 @@ const AllumuniBulkAdd = (props) => {
       conclusion: "",
       status: "",
       query_end: "",
-      published_at: "",
+      // published_at: "",
     },
     // Add more initial rows as needed
   ]);
@@ -73,7 +73,7 @@ const AllumuniBulkAdd = (props) => {
       conclusion: "",
       status: "",
       query_end: "",
-      published_at: "",
+      // published_at: "",
     },
   ]);
   const [newRow, setNewRow] = useState({

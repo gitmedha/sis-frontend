@@ -24,6 +24,7 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
+import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -451,6 +452,7 @@ const OperationDataupdateform = (props) => {
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                          onKeyPress={numberChecker}
                         />
                       </div>
                     </div>

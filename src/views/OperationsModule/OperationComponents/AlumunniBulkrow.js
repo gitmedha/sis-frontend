@@ -39,7 +39,7 @@ const AlumunniBulkrow = (props) => {
       conclusion: "",
       status: "",
       query_end: "",
-      published_at: "",
+      // published_at: "",
     },
     // Add more initial rows as needed
   ]);
