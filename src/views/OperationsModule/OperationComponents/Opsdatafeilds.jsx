@@ -148,7 +148,7 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="organization"
+                    label="Organization"
                     value={props.organization}
                   />
                    <DetailField
@@ -172,7 +172,7 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Institute"
+                    label="Institution"
                     value={props.institution?.name}
                   />
                   <DetailField
@@ -187,7 +187,7 @@ const Opsdatafeilds = (props) => {
                   <DetailField Bold={""} label="Topic" value={props.topic} />
                   <DetailField
                     Bold={""}
-                    label="designation"
+                    label="Designation"
                     value={props.designation ? props.designation : "Not found"}
                   />
                   <DetailField

@@ -97,6 +97,11 @@ const Upskillingdatafield = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
+                <DetailField
+                    
+                    label="Student Name"
+                    value={props.student_id.full_name}
+                  />
                   <DetailField
                     
                     label="Certificate received"
