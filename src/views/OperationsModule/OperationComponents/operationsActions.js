@@ -378,17 +378,6 @@ export const deactivate_user_ops = async(id)=>{
         console.log(error)
         return Promise.reject(error);
     })
-
-    // try {
-
-    //     // const response = await api.put(`/users-ops-activities/deactivate-ops/${id}`, {
-    //     //     "fieldToUpdate":fieldToUpdate,
-    //     //     "newValue":newValue
-    //     // })
-    //     // return response;
-    // } catch (error) {
-    //     return console.error(error)
-    // }
 }
 export const deactivate_user_tots = async(id)=>{
     let data = {"isactive":false}
@@ -469,4 +458,17 @@ export const deactivate_user_college_pitch = async(id)=>{
         console.log(error)
         return Promise.reject(error);
     })
+}
+
+
+export const getFieldValues = async (searchField,baseURL)=>{
+    try{
+        const data = await api.get(`/${baseURL}/distinct/${searchField}`)
+
+        return data;
+    }
+    catch(error){
+        return console.error("error", error);
+    }
+
 }
