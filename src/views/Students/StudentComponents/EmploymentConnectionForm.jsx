@@ -72,23 +72,25 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   if (props.employmentConnection) {
+    // console.log("initialValues?.reason_if_rejected_other.length",initialValues.reason_if_rejected_other.length)
     initialValues = { ...initialValues, ...props.employmentConnection };
     initialValues["employer_id"] = props.employmentConnection
       ? Number(props.employmentConnection.opportunity?.employer?.id)
       : null;
     let dataval=rejectionreason.find(obj=>obj.value === employmentConnection.reason_if_rejected);
-    console.log(initialValues.reason_if_rejected);
     if(dataval){
+      // console.log(employmentConnection.reason_if_rejected);
       if(dataval.value == employmentConnection.reason_if_rejected){
         initialValues['reason_if_rejected']=employmentConnection.reason_if_rejected
       }
+      initialValues['reason_if_rejected']=props.employmentConnection.reason_if_rejected
     }
     
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
       : null;
-    initialValues["start_date"] = props.employmentConnection.start_date
+    initialValues["start_date"] = props.employmentConnection.start_date != 'Invalid date' || ''
       ? new Date(props.employmentConnection.start_date)
       : null;
     initialValues["end_date"] = props.employmentConnection.end_date
@@ -104,6 +106,9 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    if(values.reason_if_rejected.toLowerCase() =='others' && values.reason_if_rejected_other  == null){
+      values.reason_if_rejected_other =values.reason_if_rejected
+    }
     onHide(values);
   };
 
@@ -239,6 +244,7 @@ const EnrollmentConnectionForm = (props) => {
 
   
   useEffect(() => {
+    // console.log("initialValues.reason_if_rejected ",initialValues );
     if(initialValues.reason_if_rejected in rejectionreason){
       setShowother(true)
     }
@@ -443,7 +449,7 @@ const EnrollmentConnectionForm = (props) => {
                       className="form-control"
                       onChange={(e)=>{
                         setFieldValue("reason_if_rejected",e.value)
-                        if(e.value === "Others"){
+                        if(e.value === "others"){
                           setIfSelectedOthers(true)
                         }
                         else {
@@ -454,6 +460,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>:<div></div>}
                   {
+                    
                    (ifSelectedOthers || initialValues.reason_if_rejected_other.length) ?<div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="reason_if_rejected_other"
