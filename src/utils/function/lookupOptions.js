@@ -87,20 +87,25 @@ export const batchLookUpOptions = async () => {
 
 export const getDefaultAssigneeOptions = async () => {
   let userId = localStorage.getItem("user_id");
+  console.log("userID",userId);
   let data = await queryBuilder({
     query: GET_ALL_USERS
   });
   let userIdFound = false;
   let filteredData = data.data.users.map(user => {
+    // console.log(userId ,"===" ,user.id);
     if (userId === user.id) {
+      console.log(userId ,"===" ,user.id);
       userIdFound = true;
     }
+
     return {
       label: `${user.username} (${user.email})`,
       value: user.id,
     }
   });
   if (!userIdFound) {
+    console.log("not found");
     let userName = localStorage.getItem("user_name");
     let userEmail = localStorage.getItem("user_email");
     filteredData.unshift({
@@ -108,6 +113,7 @@ export const getDefaultAssigneeOptions = async () => {
       value: userId,
     });
   }
+  console.log(filteredData);
   return filteredData;
 }
 

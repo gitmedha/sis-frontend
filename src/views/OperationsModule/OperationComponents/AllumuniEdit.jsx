@@ -23,6 +23,8 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateAlumniQuery, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker } from "../../../utils/function/OpsModulechecker";
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -47,6 +49,11 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
+const Statusoptions = [
+  { value: 'Open', label: "Open" },
+  { value: 'Resolved', label: "Resolved" },
+  { value: 'Closed', label: "Closed" }
+];
 
 const AllumuniEdit = (props) => {
   let { onHide, show } = props;
@@ -235,6 +242,17 @@ const AllumuniEdit = (props) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+    const alumvalidation = Yup.object().shape({
+    query_start: Yup.date().required("Query Start date is required"),
+    query_end: Yup.date()
+      .required("Query End date is required")
+      .when("query_start", (start, schema) => {
+        return schema.min(
+          start,
+          "Query End date must be greater than or equal to Query start date"
+        );
+      }),
+  });
 
   return (
     <>
@@ -270,7 +288,9 @@ const AllumuniEdit = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik onSubmit={onSubmit} initialValues={initialValues}
+            validationSchema={alumvalidation}
+            >
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
@@ -284,7 +304,7 @@ const AllumuniEdit = (props) => {
                           required
                           className="form-control"
                           placeholder="Student Name"
-                          
+                          onKeyPress={handleKeyPresscharandspecialchar}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -295,7 +315,7 @@ const AllumuniEdit = (props) => {
                           required
                           className="form-control"
                           placeholder="Father Name"
-                          
+                          onKeyPress={handleKeyPress}
                         />
                         
                       </div>
@@ -320,20 +340,24 @@ const AllumuniEdit = (props) => {
                           control="input"
                           name="phone"
                           label="Phone"
-                          // required
+                          onKeyPress={mobileNochecker}
                           className="form-control"
                           placeholder="Phone"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
+                        
                         <Input
-                          icon="down"
-                          control="input"
-                          name="status"
-                          label="Status"
-                          className="form-control"
-                          placeholder="Status"
-                        />
+                            icon="down"
+                            name="status"
+                            label="Status"
+                            control="lookup"
+                            options={Statusoptions}
+                            // onChange={onStateChange}
+                            placeholder="Status"
+                            className="form-control"
+                            // required
+                          />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -351,7 +375,7 @@ const AllumuniEdit = (props) => {
                           control="input"
                           name="query_type"
                           label="Query Type"
-                          // required
+                           onKeyPress={handleKeyPresscharandspecialchar}
                           className="form-control"
                           placeholder="Query Type"
                         />
@@ -370,8 +394,7 @@ const AllumuniEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="query_start"
-                          label="Query Start"
-                          // required
+                          label="Query Start Date"
                           placeholder="Query Start"
                           control="datepicker"
                           className="form-control"
@@ -383,7 +406,7 @@ const AllumuniEdit = (props) => {
                           name="query_end"
                           label="Query End"
                           // required
-                          placeholder="Query End"
+                          placeholder="Query End Date"
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -429,7 +452,7 @@ const AllumuniEdit = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

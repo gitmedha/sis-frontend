@@ -24,6 +24,8 @@ import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,6 +50,10 @@ const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
+const categoryOptions = [
+  { value: 'Career', label: "Career" },
+  { value: 'Creative', label: "Creative" },
+];
 
 const UpskillUpdate = (props) => {
   console.log(props, "props");
@@ -62,50 +68,63 @@ const UpskillUpdate = (props) => {
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [course, setcourse] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
+  const [studentinput,setstudentinput]=useState("")
+  const [subcategory,setSubcategory]=useState([])
+
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data123", data);
       setAssigneeOptions(data);
+    });
+    getUpskillingPicklist().then((data) => {
+      setSubcategory(data.subCategory.map((item) => ({
+        key: item,
+        value: item,
+        label: item,
+      })));
     });
   }, []);
 
   useEffect(() => {
-    if (props.student) {
-      filterStudent(props.programEnrollment.student.full_name).then(data => {
+    if (props.student_id.id) {
+      filterStudent(props.student_id.full_name).then(data => {
+        console.log("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervaluestudent",filterValue);
+    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
     }).then(data => {
-      // let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
-      // let studentFoundInList = false;
-      // let filterData = data.hits.map(student => {
-      //   if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
-      //     studentFoundInList = true;
-      //   }
-      //   return {
-      //     ...student,
-      //     label: `${student.full_name} (${student.student_id})`,
-      //     value: Number(student.id),
-      //   }
-      // });
-      // if (props.programEnrollment && programEnrollmentStudent !== null && !studentFoundInList)  {
+      let studentFoundInList = false;
+      let filterData = data.hits.map(student => {
+        if (student.id === Number(props?.id)) {
+          studentFoundInList = true;
+        }
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        }
+      });
+      // if (!studentFoundInList)  {
       //   filterData.unshift({
       //     label: programEnrollmentStudent.full_name,
       //     value: Number(programEnrollmentStudent.id),
       //   });
       // }
-      console.log("filterData",data);
-      // return filterData;
+      return filterData;
     });
   }
 
+  useEffect(() => {
+    filterStudent(studentinput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentinput]);
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then((data) => {
@@ -293,6 +312,17 @@ const UpskillUpdate = (props) => {
     { value: true, label: "Yes" },
     { value: false, label: "No" },
   ];
+  const operationvalidation = Yup.object().shape({
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .when("start_date", (start, schema) => {
+        return schema.min(
+          start,
+          "End date must be greater than or equal to start date"
+        );
+      }),
+  });
 
   return (
     <>
@@ -334,10 +364,10 @@ const UpskillUpdate = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
-                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                         {!lookUpLoading ? (
                           <Input
-                            name="student"
+                            name="student_id"
                             control="lookupAsync"
                             label="Student"
                             className="form-control"
@@ -349,7 +379,7 @@ const UpskillUpdate = (props) => {
                         ) : (
                           <Skeleton count={1} height={60} />
                         )}
-                      </div> */}
+                      </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -437,17 +467,28 @@ const UpskillUpdate = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="category"
                           label="Category"
                           // required
                           className="form-control"
                           placeholder="Category"
+                        /> */}
+                        <Input
+                          name="category"
+                          control="lookup"
+                          icon="down"
+                          label="Category"
+                          // required
+                          className="form-control"
+                          placeholder="Category"
+                          options={categoryOptions}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
+                        subcategory
                           icon="down"
                           control="input"
                           name="sub_category"
@@ -455,6 +496,16 @@ const UpskillUpdate = (props) => {
                           // required
                           className="form-control"
                           placeholder="Sub Category"
+                        /> */}
+                         <Input
+                          name="sub_category"
+                          label="Sub Category"
+                          control="lookup"
+                          icon="down"
+                          // required
+                          className="form-control"
+                          placeholder="Category"
+                          options={subcategory}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -462,12 +513,12 @@ const UpskillUpdate = (props) => {
                           icon="down"
                           control="input"
                           name="issued_org"
-                          label="Issued Organization"
+                          label="Certificate Issuing Organization"
                           className="form-control"
-                          placeholder="Issued Organization"
+                          placeholder="Certificate Issuing Organization"
                         />
                       </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
+                      {/* <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="published_at"
                           label="Publish Date "
@@ -477,7 +528,7 @@ const UpskillUpdate = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </Section>
 
@@ -504,7 +555,7 @@ const UpskillUpdate = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

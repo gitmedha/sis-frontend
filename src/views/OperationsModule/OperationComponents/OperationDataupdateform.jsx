@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -23,6 +23,8 @@ import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { updateOpsActivity } from "./operationsActions";
+import * as Yup from "yup";
+import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -50,8 +52,8 @@ const meilisearchClient = new MeiliSearch({
 
 const options = [
   { value: "Yes", label: "Yes" },
-  { value: "No", label: 'No' }
-]
+  { value: "No", label: "No" },
+];
 
 const OperationDataupdateform = (props) => {
   console.log(props, "props");
@@ -63,6 +65,8 @@ const OperationDataupdateform = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       console.log("data", data);
@@ -167,24 +171,39 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
+    const newValueObject = { ...values };
 
-    const newValueObject = {...values};
-  
     newValueObject["assigned_to"] = Number(values["assigned_to"]);
     newValueObject["batch"] = Number(values["batch"]);
     newValueObject["students_attended"] = Number(values["students_attended"]);
-    newValueObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
-    newValueObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
+    newValueObject["start_date"] = moment(values["start_date"]).format(
+      "YYYY-MM-DD"
+    );
+    newValueObject["end_date"] = moment(values["end_date"]).format(
+      "YYYY-MM-DD"
+    );
     newValueObject["institution"] = Number(values["institution"]);
-    newValueObject["donor"] = values["donor"]==="Yes" || 'yes' ? true : false;
+    newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
     newValueObject["Updated_by"] = Number(userId);
 
-  
     delete newValueObject["updated_by"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
     delete newValueObject["created_by"];
     delete newValueObject["institute_name"];
+
+    // const errors = {};
+    // const { start_date, end_date } = newValueObject;
+
+    // if (!start_date || !end_date) {
+    //   errors.start_date = "Start date is required";
+    //   errors.end_date = " End date is required";
+    //   return;
+    // } else if (start_date >= end_date) {
+    //   errors.start_date = "Start date must be earlier than end date";
+    //   errors.end_date = "End date must be later than start date";
+    //   return;
+    // }
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     setDisableSaveButton(true);
@@ -213,8 +232,6 @@ const OperationDataupdateform = (props) => {
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
-
-
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
     initialValues["institution"] = Number(props.institution.id);
@@ -242,6 +259,18 @@ const OperationDataupdateform = (props) => {
       });
     }
   }, []);
+
+  const operationvalidation = Yup.object().shape({
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .when("start_date", (start, schema) => {
+        return schema.min(
+          start,
+          "End date must be greater than or equal to start date"
+        );
+      }),
+  });
 
   return (
     <>
@@ -274,7 +303,11 @@ const OperationDataupdateform = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validationSchema={operationvalidation}
+            >
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
@@ -342,6 +375,11 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
+                        {/* {validationErrors.start_date && (
+                          <div className="error">
+                            {validationErrors.start_date}
+                          </div>
+                        )} */}
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -352,6 +390,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
+                       
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -365,7 +404,6 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           placeholder="New Entry"
                         />
-
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -387,7 +425,6 @@ const OperationDataupdateform = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                       
                         <Input
                           icon="down"
                           control="input"
@@ -396,10 +433,8 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           placeholder="Designation"
                         />
-                        
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        
                         <Input
                           icon="down"
                           control="input"
@@ -417,6 +452,7 @@ const OperationDataupdateform = (props) => {
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                          onKeyPress={numberChecker}
                         />
                       </div>
                     </div>
@@ -445,7 +481,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             icon="down"
                             name="area"
-                            label="Area"
+                            label="Medha Area"
                             control="lookup"
                             options={areaOptions}
                             placeholder="Area"
@@ -483,7 +519,7 @@ const OperationDataupdateform = (props) => {
                       </div>
                       <div className="col-md-6">
                         <DetailField
-                          label="Creted By"
+                          label="Created By"
                           value={
                             props.Created_by?.username
                               ? props.Created_by?.username

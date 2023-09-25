@@ -50,6 +50,7 @@ const usersTotsFields = `
     }
     trainer_1 {
         id
+        username
     }
     start_date
     end_date
@@ -60,6 +61,7 @@ const usersTotsFields = `
     new_entry
     trainer_2 {
         id
+        username
     }
     partner_dept
     college
@@ -514,3 +516,19 @@ query GET_ALL_PROGRAMS($limit:Int, $start:Int) {
   }
 }
 `;
+
+
+export const GET_ALL_STUDENTS = `
+    query GET_ALL_STUDENTS ($limit:Int, $start: Int){
+        studentsConnection(
+            start:$start,
+            limit:$limit
+        ){
+            values {
+                city
+                state
+            }
+        }
+    }
+
+`

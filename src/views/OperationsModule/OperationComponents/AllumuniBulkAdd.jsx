@@ -54,7 +54,7 @@ const AllumuniBulkAdd = (props) => {
       conclusion: "",
       status: "",
       query_end: "",
-      published_at: "",
+      // published_at: "",
     },
     // Add more initial rows as needed
   ]);
@@ -63,6 +63,7 @@ const AllumuniBulkAdd = (props) => {
       id: 1,
       query_start: "",
       student_name: "",
+      student_id:"",
       father_name: "",
       email: "",
       phone: "",
@@ -72,13 +73,14 @@ const AllumuniBulkAdd = (props) => {
       conclusion: "",
       status: "",
       query_end: "",
-      published_at: "",
+      // published_at: "",
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
     query_start: "",
     student_name: "",
+    student_id:"",
     father_name: "",
     email: "",
     phone: "",
@@ -423,7 +425,8 @@ const AllumuniBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Query Receiving Date *</th>
+                  <th>Student id</th>
+                  <th>Query Start Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
                   <th>E-mail</th>
@@ -444,7 +447,6 @@ const AllumuniBulkAdd = (props) => {
                     row={row}
                     endDate={endDate}
                     startDate={startDate}
-                    setStartdate={setStartDate}
                     institutiondata={institutionOptions}
                     batchbdata={batchOptions}
                     updateRow={updateRow}

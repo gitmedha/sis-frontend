@@ -378,17 +378,17 @@ const StudentUpkillingBulkcreate = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Course Name</th>
+                  <th>Assigned to</th>
                   <th>Student </th>
                   <th>Institution</th>
                   <th>Batch</th>
-                  <th>Assigned to</th>
+                  <th>Certificate Course Name</th>
+                  <th>Category</th>
+                  <th>Sub Category</th>
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Certificate Received</th>
-                  <th>Category</th>
-                  <th>Sub Category</th>
-                  <th>Issued Org</th>
+                  <th>Issuing Organization</th>
                 </tr>
               </thead>
               <tbody>

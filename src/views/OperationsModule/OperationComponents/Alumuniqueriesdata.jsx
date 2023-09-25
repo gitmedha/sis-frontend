@@ -87,7 +87,7 @@ const Alumuniqueriesdata = (props) => {
               id="contained-modal-title-vcenter"
               className="d-flex align-items-center"
             >
-              <h1 className="text--primary bebas-thick mb-0">Allumuni Query Details</h1>
+              <h1 className="text--primary bebas-thick mb-0">Alumni Query Details</h1>
             </Modal.Title>
           </Modal.Header>
           <Styled>
@@ -99,7 +99,7 @@ const Alumuniqueriesdata = (props) => {
                     label="Student Name"
                     value={props.student_name ? props.student_name : ""}
                   />
-                  <DetailField label="DOB" value={props.query_desc} />
+                  <DetailField label="Query Description" value={props.query_desc} />
                   <DetailField label="Query Start" value={props.query_start} />
   
                   {/* <DetailField label="Batch" value={props.batch_name} /> */}
@@ -123,7 +123,7 @@ const Alumuniqueriesdata = (props) => {
                   <DetailField label="Query end" value={props.query_end} />
                   <DetailField label="Email" value={props.email} />
                   <DetailField
-                    label="Self Employed"
+                    label="Conclusion"
                     value={props.conclusion}
                   />
                   {/* <DetailField label="Acad Year" value={props.acad_year} />
