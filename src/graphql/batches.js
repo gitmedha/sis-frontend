@@ -517,6 +517,7 @@ const programEnrollmentFields = `
   medha_program_certificate_status
   higher_education_course_name
   higher_education_year_of_course_completion
+  course_name_other
   higher_education_proof_of_enrollment {
     id
     url

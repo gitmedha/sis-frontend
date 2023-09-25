@@ -55,6 +55,7 @@ const employmentConnectionFields = `
   end_date
   source
   reason_if_rejected
+  reason_if_rejected_other
   work_engagement
   number_of_internship_hours
   salary_offered
