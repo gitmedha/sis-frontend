@@ -195,20 +195,21 @@ const OpportunityForm = (props) => {
   }
 
   const onSubmit = async (values) => {
- 
+    console.log(values);
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
   values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
+ delete values.updated_at
   values.skills_required = values.skills_required
     .split(",")
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
-    values.role_description = values.role_description
+  values.role_description = values.role_description
     .split(",")
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
-    values.address = values.address
+  values.address = values.address
     .split(" ")
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
