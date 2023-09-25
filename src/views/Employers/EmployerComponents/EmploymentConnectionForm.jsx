@@ -52,6 +52,9 @@ const EnrollmentConnectionForm = (props) => {
   const [rejectionreason,setrejectionreason]=useState([])
   const userId = localStorage.getItem('user_id');
   const [otherrejection,setotherrejection]=useState(rejectionfeild)
+  const [isRejected,setRejected] = useState(false);
+  const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
+
   let initialValues = {
     student_id: '',
     employer_id: '',
@@ -61,11 +64,13 @@ const EnrollmentConnectionForm = (props) => {
     start_date: '',
     end_date: '',
     source: '',
-    reason_if_rejected: '',
+    reason_if_rejected_other:"",
+    reason_if_rejected: "",
     assigned_to: userId,
   };
 
   if (props.employmentConnection) {
+
     initialValues = { ...initialValues, ...props.employmentConnection };
     initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
     initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
@@ -74,6 +79,7 @@ const EnrollmentConnectionForm = (props) => {
     initialValues['employer'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
     initialValues['start_date'] = props.employmentConnection.start_date ? new Date(props.employmentConnection.start_date) : null;
     initialValues['end_date'] = props.employmentConnection.end_date ? new Date(props.employmentConnection.end_date) : null;
+
   }
 
 
@@ -249,11 +255,27 @@ const EnrollmentConnectionForm = (props) => {
       })));
     });
   }
-  const handlechange = (e) => {
-    if(e.value == 'Others'){
-      setotherrejection(true)
+ 
+
+
+  const handleStatusChange = async(value)=>{
+  
+    setSelectedStatus(value);
+
+    if(value === "Rejected by Employer"){
+      setRejected(true)
     }
-  };
+    else if (value === "Student Dropped Out"){
+      setRejected(true)
+    }
+    else if (value === "Offer Rejected by Student"){
+      setRejected(true)
+    }
+    else {
+      setRejected(false)
+    }
+
+  }
 
   return (
     <Modal
@@ -281,7 +303,7 @@ const EnrollmentConnectionForm = (props) => {
           initialValues={initialValues}
           validationSchema={EmploymentConnectionValidations}
         >
-          {({ setFieldValue }) => (
+          {({values,setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">
@@ -363,7 +385,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange={(e) => setSelectedStatus(e.value)}
+                      onChange={(e) =>handleStatusChange(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -415,18 +437,8 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Source"
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                   {otherrejection ? 
-                   <Input
-                   control="input"
-                   name="reason_if_rejected"
-                   label="Reason if Rejected"
-                   required={selectedStatus === 'Offer Rejected by Student'}
-                   className="form-control"
-                  //  onChange={(e)=>handlechange(e)}
-                   placeholder="Reason if Rejected"
-                 />
-                   :<Input
+                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       icon="down"
                       control="lookup"
                       name="reason_if_rejected"
@@ -434,10 +446,30 @@ const EnrollmentConnectionForm = (props) => {
                       required={selectedStatus === 'Offer Rejected by Student'}
                       options={rejectionreason}
                       className="form-control"
-                      onChange={(e)=>handlechange(e)}
+                      onChange={(e)=>{
+                        setFieldValue("reason_if_rejected",e.value)
+                        if(e.value === "Others"){
+                          setIfSelectedOthers(true)
+                        }
+                        else {
+                          setIfSelectedOthers(false)
+                        }
+                      }}
                       placeholder="Reason if Rejected"
-                    />}
-                  </div>
+                    />
+                  </div>:<div></div>}
+                  {
+                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="reason_if_rejected_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    />
+                  </div>: <div></div>
+                  }
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
@@ -468,7 +500,7 @@ const EnrollmentConnectionForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                  <button className="btn btn-primary btn-regular mx-0" type="submit">
+                  <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={()=>onSubmit(values)}>
                     SAVE
                   </button>
                   <button

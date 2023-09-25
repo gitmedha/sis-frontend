@@ -99,6 +99,7 @@ const ProgramEnrollmentForm = (props) => {
     course_year:'',
     year_of_course_completion:'',
     fee_status:'',
+    course_name_other:'',
     certification_date: null,
     fee_payment_date: null,
     fee_refund_date: null,
@@ -121,7 +122,7 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
-      setcourse(data.course.map(item=>({ key: item, value: item, label: item })))
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -386,6 +387,20 @@ const ProgramEnrollmentForm = (props) => {
                       placeholder="Course Name"
                     />
                     }
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {
+                  ( OthertargetValue.course1 || (initialValues.course_name_other && initialValues.course_name_other.length))?
+                   <Input
+                      name="course_name_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    /> :<div></div>
+                    
+                  }
                   </div>
                 </div>
               </Section>
