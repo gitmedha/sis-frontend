@@ -295,7 +295,7 @@ const getModeOfPayment = (event) =>{
                       required
                       control="input"
                       placeholder="Name"
-                      className="form-control capitalize"
+                      className="form-control"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

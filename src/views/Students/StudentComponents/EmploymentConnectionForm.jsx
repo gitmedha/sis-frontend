@@ -76,8 +76,8 @@ const EnrollmentConnectionForm = (props) => {
     initialValues["employer_id"] = props.employmentConnection
       ? Number(props.employmentConnection.opportunity?.employer?.id)
       : null;
-    let dataval=rejectionreason.find(obj=>obj.value === employmentConnection.reason_if_rejected);
-    console.log(initialValues.reason_if_rejected);
+    
+    let dataval=rejectionreason?.find(obj=>obj.value === employmentConnection.reason_if_rejected);
     if(dataval){
       if(dataval.value == employmentConnection.reason_if_rejected){
         initialValues['reason_if_rejected']=employmentConnection.reason_if_rejected
@@ -125,7 +125,7 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
-      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
+      setrejectionreason(data.reason_if_rejected?.map(item=>({ key: item.value, value: item.value, label: item.value })))
       setWorkEngagementOptions(
         data.work_engagement.map((item) => ({
           ...item,
@@ -262,7 +262,6 @@ const EnrollmentConnectionForm = (props) => {
     }
 
   }
-
 
   useEffect(()=>{
     setotherrejection(false)
@@ -432,7 +431,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>
                
-                  {(isRejected || initialValues.reason_if_rejected.length) ? <div className="col-md-6 col-sm-12 mt-2">
+                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
                       control="lookup"
@@ -454,7 +453,7 @@ const EnrollmentConnectionForm = (props) => {
                     />
                   </div>:<div></div>}
                   {
-                   (ifSelectedOthers || initialValues.reason_if_rejected_other.length) ?<div className="col-md-6 col-sm-12 mt-2">
+                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="reason_if_rejected_other"
                       control="input"
