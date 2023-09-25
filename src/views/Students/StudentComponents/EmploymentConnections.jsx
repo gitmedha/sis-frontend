@@ -42,6 +42,7 @@ const EmploymentConnections = (props) => {
     useState(employmentConnections);
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] =
     useState({});
+  
   const userId = localStorage.getItem("user_id") || 2;
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
@@ -78,9 +79,9 @@ const EmploymentConnections = (props) => {
         registration_date_formatted: moment(
           employmentConnection.registration_date
         ).format("DD MMM YYYY"),
-        start_date: moment(employmentConnection.start_date).format(
+        start_date: employmentConnection.start_date ? moment(employmentConnection.start_date).format(
           "DD MMM YYYY"
-        ),
+        ):null,
         opportunity_type: (
           <Badge
             value={employmentConnection.opportunity?.type}
@@ -92,7 +93,7 @@ const EmploymentConnections = (props) => {
         ),
       };
     });
-    console.log("EmploymentConnectionsTableData",data);
+   
     setEmploymentConnectionsTableData(data);
   }, [employmentConnections, pickList, opportunitiesPickList]);
 
