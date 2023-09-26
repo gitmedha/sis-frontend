@@ -303,7 +303,6 @@ const Batch = (props) => {
               </button>
               {isAdmin() &&
                 <Dropdown className="d-inline">
-                {console.log(batch?.status, "status......")}
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
