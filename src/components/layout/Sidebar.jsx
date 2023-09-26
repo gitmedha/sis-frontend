@@ -58,13 +58,13 @@ const routes = [
     icon: <FaBriefcase {...iconProps} />,
     show: isSRM() || isPartnership() || isAdmin(),
   },
-  // {
-  //   to: "/operation",
-  //   title: "Operations",
-  //   aliases: ['operations'],
-  //   icon: <FaUsersCog {...iconProps} />,
-  //   show: isSRM() || isAdmin(),
-  // },
+  {
+    to: "/operation",
+    title: "Operations",
+    aliases: ['operations'],
+    icon: <FaUsersCog {...iconProps} />,
+    show: isSRM() || isAdmin(),
+  },
   {
     to: "https://data.medha.org.in/",
     title: "Metabase",
