@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -182,6 +182,20 @@ const Batch = (props) => {
     });
   }
 
+  const sendLinks = async () => {
+    NP.start();
+    batchSendLinks(batch.id, {
+      status: 'Complete'
+    }).then(data => {
+      setAlert("Emails sent successfully.", "success");
+    }).catch(err => {
+      console.log("UPDATE_DETAILS_ERR", err);
+      setAlert("Unable to update batch.", "error");
+    }).finally(async () => {
+      NP.done();
+    });
+  }
+
   const done = () => getThisBatch();
 
   const hideUpdateModal = async (data) => {
@@ -194,7 +208,7 @@ const Batch = (props) => {
 
     if(data.institution === null){
       dataToSave['institution'] = null
-    } 
+    }
     else if (typeof data.institution === 'object') {
       dataToSave['institution'] = Number(data.institution?.id);
     }
@@ -289,6 +303,7 @@ const Batch = (props) => {
               </button>
               {isAdmin() &&
                 <Dropdown className="d-inline">
+                {console.log(batch?.status, "status......")}
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
@@ -298,6 +313,15 @@ const Batch = (props) => {
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                    {batch?.status === "Complete" &&
+                    <Dropdown.Item
+                      onClick={() => sendLinks()}
+                      className="d-flex align-items-center"
+                    >
+                      <FaCheckCircle size="20" color={batch?.status === 'Complete' ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Send a link</span>
+                    </Dropdown.Item>
+                    }
                     <Dropdown.Item
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"
