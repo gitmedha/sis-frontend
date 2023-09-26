@@ -341,11 +341,11 @@ const CollepitchesEdit = (props) => {
                         <Input
                           control="input"
                           name="whatsapp"
-                          label="Whatsapp"
+                          label="Whatsapp Number"
                           // required
                           onKeyPress={mobileNochecker}
                           className="form-control"
-                          placeholder="Whatsapp"
+                          placeholder="Whatsapp Number"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -384,7 +384,7 @@ const CollepitchesEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="area"
-                          label="Area"
+                          label="Medha Area"
                           // required
                           placeholder="Area"
                           control="input"
