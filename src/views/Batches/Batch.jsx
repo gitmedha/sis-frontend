@@ -189,8 +189,7 @@ const Batch = (props) => {
     }).then(data => {
       setAlert("Emails sent successfully.", "success");
     }).catch(err => {
-      console.log("UPDATE_DETAILS_ERR", err);
-      setAlert("Unable to update batch.", "error");
+      setAlert("Unable to sent mail.", "error");
     }).finally(async () => {
       NP.done();
     });
@@ -317,7 +316,7 @@ const Batch = (props) => {
                       onClick={() => sendLinks()}
                       className="d-flex align-items-center"
                     >
-                      <FaCheckCircle size="20" color={batch?.status === 'Complete' ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <FaCheckCircle size="20" color='#207B69' className="mr-2" />
                       <span>&nbsp;&nbsp;Send a link</span>
                     </Dropdown.Item>
                     }
