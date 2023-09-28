@@ -415,7 +415,7 @@ const CollegepitchesBulkadd = (props) => {
                   <th>E-mail</th>
                   <th>Remarks</th>
                   <th>Srm Name</th>
-                  <th>Area *</th>
+                  <th>Medha Area *</th>
                  
                 </tr>
               </thead>

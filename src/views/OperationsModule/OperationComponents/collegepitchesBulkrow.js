@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
+import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
 const options = [
   { value: true, label: "Yes" },
@@ -35,9 +36,9 @@ const CollegepitchesBulkrow = (props) => {
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const handleChange = (options, key) => {
-    console.log(options, key);
-  };
+  const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
+
+
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -61,13 +62,24 @@ const CollegepitchesBulkrow = (props) => {
     let data = await getAllSrm(1);
     setsrmOption(data);
     let val=await getStateDistricts().then((data) => {
-      console.log("district data",data.data.data.geographiesConnection.groupBy.district);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
         key: item.key,
         value: item.key,
         label: item.key,
       })))
-     });
+     }); 
+     getProgramEnrollmentsPickList().then(data => {
+      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
+      // setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      console.log("data.current_course_year",data.current_course_year);
+      setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+    });
+
+
     // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
@@ -124,7 +136,7 @@ const CollegepitchesBulkrow = (props) => {
           />
         </td>
         <td>
-          <input
+          {/* <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.course_year
                 ? `border-red`
@@ -133,10 +145,22 @@ const CollegepitchesBulkrow = (props) => {
             type="number"
             onKeyPress={numberChecker}
             onChange={(e) => updateRow(row.id, "course_year", e.target.value)}
+          /> */}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.course_year
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            options={currentCourseYearOptions}
+            onChange={(e) => props.handleChange(e, "course_year", row.id)}
           />
         </td>
         <td>
-          <input
+          {/* <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.college_name
                 ? `border-red`
@@ -145,6 +169,18 @@ const CollegepitchesBulkrow = (props) => {
             type="text"
             onKeyPress={handleKeyPress}
             onChange={(e) => updateRow(row.id, "college_name", e.target.value)}
+          /> */}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.college_name
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            options={props.institutiondata}
+            onChange={(e) => props.handleChange(e, "college_name", row.id)}
           />
         </td>
 

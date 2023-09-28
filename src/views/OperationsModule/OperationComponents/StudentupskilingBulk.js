@@ -120,6 +120,27 @@ const StudentupskilingBulk = (props) => {
       return filterData;
     });
   }
+    const handleInputChange = (id,data,value) => {
+    const input = value.current;
+    if (input) {
+      input.value = capitalizeFirstLetter(input.value);;
+      props.updateRow(id,data,input.value)
+    }
+   
+  };
+
+  const capitalizeFirstLetter = (text) => {
+    return text
+      .split(' ')
+      .map((word) => {
+        if (word.length > 0) {
+          return word[0].toUpperCase() + word.slice(1);
+        } else {
+          return word;
+        }
+      })
+      .join(' ');
+  };
   return (
     <>
       <tr key={row.id}>

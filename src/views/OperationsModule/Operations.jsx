@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback ,Fragment} from "react";
+import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -36,16 +36,29 @@ import TotSearchBar from "./OperationComponents/TotSearchBar";
 import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
-import {sortAscending,resetSearch} from "../../store/reducers/Operations/actions";
+import {
+  sortAscending,
+  resetSearch,
+} from "../../store/reducers/Operations/actions";
 
-const tabPickerOptions = [
+const tabPickerOptionsMain = [
+  { title: "Core Programme", key: "coreProgramme" },
+  { title: "Alumni", key: "alum" },
+  { title: "System Adoption", key: "systemAdoption" },
+];
+
+const tabPickerOptions1 = [
   { title: "User Ops Activities", key: "my_data" },
-  { title: "TOT", key: "useTot" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
-  { title: "Alumni Queries", key: "alumniQueries" },
-  { title: "College Pitches", key: "collegePitches" },
+  { title: "Pitching", key: "collegePitches" },
 ];
+const tabPickerOptions2=[
+  { title: "Alumni Queries", key: "alumniQueries" },
+]
+const tabPickerOptions3 =[
+  { title: "TOT", key: "useTot" },
+]
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -63,8 +76,14 @@ const Styled = styled.div`
   }
 `;
 
-
-const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearching}) => {
+const Operations = ({
+  opsData,
+  setAlert,
+  sortAscending,
+  resetSearch,
+  isFound,
+  isSearching,
+}) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
@@ -87,12 +106,17 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const [activeTabMain, setActiveTabMain] = useState(tabPickerOptionsMain[0]);
+  const [activeTab, setActiveTab] = useState(tabPickerOptions1[0]);
+  const [tabpickestatus,settabpickerstatus]=useState({
+    tab1:true,
+    
+  })
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const [searchedData,setSearchedData] = useState([]);
+  const [searchedData, setSearchedData] = useState([]);
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
@@ -211,7 +235,6 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         Header: "Student Name",
         accessor: "student_name",
       },
-     
 
       {
         Header: "Institute Name",
@@ -284,7 +307,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         accessor: "student_name",
       },
       {
-        Header: "Area",
+        Header: "Medha Area",
         accessor: "area",
       },
       {
@@ -325,9 +348,9 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
       limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
-      isActive:false
+      isActive: false,
     };
-    console.log("activeTabkey",activeTab);
+    console.log(activeTab, "grhg");
     if (activeTab.key == "my_data") {
       await resetSearch();
       await api
@@ -358,7 +381,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.usersTotsConnection.values);
-          setoptsAggregate(data.data.data.usersTotsConnection.aggregate)
+          setoptsAggregate(data.data.data.usersTotsConnection.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -379,7 +402,9 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.studentsUpskillingsConnection.values);
-          setoptsAggregate(data.data.data.studentsUpskillingsConnection.aggregate)
+          setoptsAggregate(
+            data.data.data.studentsUpskillingsConnection.aggregate
+          );
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -399,7 +424,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.dteSamarthSditsConnection.values);
-          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate)
+          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -410,7 +435,6 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         });
     }
     if (activeTab.key == "alumniQueries") {
-  
       await resetSearch();
 
       await api
@@ -420,7 +444,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
         })
         .then((data) => {
           setOpts(data.data.data.alumniQueriesConnection.values);
-          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate)
+          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -432,16 +456,15 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
     }
     if (activeTab.key == "collegePitches") {
       await resetSearch();
-      
+
       await api
         .post("/graphql", {
           query: GET_COLLEGE_PITCHES,
           variables,
         })
         .then((data) => {
-          console.log("datacollegpitches",data);
           setOpts(data.data.data.collegePitchesConnection.values);
-          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate)
+          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -453,18 +476,15 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
     }
   };
 
-
-useEffect(()=>{
-
-  if(isSearching){
-    fetchSearchedData(0,pageSize, [])
-  }
-}, [isSearching])
-
+  useEffect(() => {
+    if (isSearching) {
+      fetchSearchedData(0, pageSize, []);
+    }
+  }, [isSearching]);
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      if(activeTab.key =="my_data"){
+      if (activeTab.key == "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -475,12 +495,12 @@ useEffect(()=>{
             case "batch.name":
               sortByField = sortBy[0].id;
               break;
-  
+
             default:
               sortByField = "assigned_to.username";
               break;
           }
-  
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -498,7 +518,7 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "useTot"){
+      if (activeTab.key == "useTot") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -509,12 +529,12 @@ useEffect(()=>{
             case "partner_dept":
               sortByField = sortBy[0].id;
               break;
-  
+
             default:
-              sortByField ='user_name';
+              sortByField = "user_name";
               break;
           }
-          
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -532,7 +552,7 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "upskilling"){
+      if (activeTab.key == "upskilling") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -543,13 +563,12 @@ useEffect(()=>{
             case "course_name":
               sortByField = sortBy[0].id;
               break;
-            
-  
+
             default:
-              sortByField="course_name";
+              sortByField = "course_name";
               break;
           }
-          
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -567,10 +586,9 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "dtesamarth"){
-
+      if (activeTab.key == "dtesamarth") {
         if (sortBy.length) {
-          let sortByField ;
+          let sortByField;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
           switch (sortBy[0].id) {
             case "student_name":
@@ -578,12 +596,11 @@ useEffect(()=>{
             case "course_name":
               sortByField = sortBy[0].id;
               break;
-            
-  
+
             default:
               break;
           }
-          
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -601,10 +618,9 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "alumniQueries"){
-    
+      if (activeTab.key == "alumniQueries") {
         if (sortBy.length) {
-          let sortByField ;
+          let sortByField;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
           switch (sortBy[0].id) {
             case "student_name":
@@ -633,7 +649,7 @@ useEffect(()=>{
           );
         }
       }
-      if(activeTab.key == "collegePitches"){
+      if (activeTab.key == "collegePitches") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -644,8 +660,7 @@ useEffect(()=>{
             case "course_name":
               sortByField = sortBy[0].id;
               break;
-            
-  
+
             default:
               sortByField = "student_name";
               break;
@@ -667,14 +682,10 @@ useEffect(()=>{
           );
         }
       }
-     
     },
     [activeTab, activeStatus]
   );
-  useEffect(() => {
-   console.log("activeTab line642",activeTab);
-  }, [activeTab])
-  
+
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
@@ -686,12 +697,10 @@ useEffect(()=>{
 
   const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
-      getoperations()
+      getoperations();
       setShowModal({ ...showModal, [key]: data });
       return;
     }
-    
-    
   };
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -705,102 +714,124 @@ useEffect(()=>{
     setShowModal({ ...showModal, [key]: true });
   };
 
-  const arrangeRows = async(startFrom)=>{
-    let filteredArray = []
-    for(let element=0; element<pageSize; element++ ){
-      if(element+1>opsData.length){
-        break
-      }if(opsData[startFrom]){
-        filteredArray.push(opsData[startFrom])
+  const arrangeRows = async (startFrom) => {
+    let filteredArray = [];
+    for (let element = 0; element < pageSize; element++) {
+      if (element + 1 > opsData.length) {
+        break;
       }
-      startFrom++
+      if (opsData[startFrom]) {
+        filteredArray.push(opsData[startFrom]);
+      }
+      startFrom++;
     }
     setSearchedData(filteredArray);
-  }
+  };
 
-  const ascendingSort = async(sortByField,arrayOfResult)=>{
+  const ascendingSort = async (sortByField, arrayOfResult) => {
     try {
+      const sortedData = [...arrayOfResult];
+      sortedData.sort((a, b) => {
+        const valueA = getField(a, sortByField);
+        const valueB = getField(b, sortByField);
 
-    const sortedData = [...arrayOfResult];
-    sortedData.sort((a,b)=>{
-      const valueA = getField(a,sortByField);
-      const valueB = getField(b,sortByField);
+        return valueA.localeCompare(valueB);
+      });
 
-      
-    return valueA.localeCompare(valueB);
-    });
-
-    await sortAscending(sortedData);
-      
+      await sortAscending(sortedData);
     } catch (error) {
       console.error("error", error);
     }
+  };
 
-  }
-
-  const descendingSort = async(sortByField,arrayOfResult)=>{
-    try{
+  const descendingSort = async (sortByField, arrayOfResult) => {
+    try {
       const sortedData = [...arrayOfResult];
-      sortedData.sort((a,b)=>{
-        const valueA = getField(a,sortByField);
-        const valueB = getField(b,sortByField);
-        
-      return valueB.localeCompare(valueA);
+      sortedData.sort((a, b) => {
+        const valueA = getField(a, sortByField);
+        const valueB = getField(b, sortByField);
+
+        return valueB.localeCompare(valueA);
       });
-  
+
       await sortAscending(sortedData);
-
-    }catch(err){
-      console.log("error",err);
-
+    } catch (err) {
+      console.log("error", err);
     }
-  }
+  };
 
   const getField = (object, fieldPath) => {
     const fieldParts = fieldPath.split(".");
     let value = object;
-  
+
     for (const part of fieldParts) {
       value = value[part];
     }
-  
+
     return value;
   };
-  
 
-  const fetchSearchedData = useCallback(async(pageIndex, pageSize, sortBy)=>{
+  const fetchSearchedData = useCallback(
+    async (pageIndex, pageSize, sortBy) => {
+      let startFrom = (pageIndex + 1) * pageSize - pageSize;
+      let filteredArray = [];
 
-    let startFrom =  ((pageIndex+1)*pageSize)-pageSize;
-    let filteredArray = [];
+      if (sortBy.length) {
+        const { id, desc } = sortBy[0];
+        desc ? descendingSort(id, opsData) : ascendingSort(id, opsData);
+        arrangeRows(startFrom);
+      } else {
+        for (let element = 0; element < pageSize; element++) {
+          if (element + 1 > opsData.length) {
+            break;
+          }
+          if (opsData[startFrom]) {
+            filteredArray.push(opsData[startFrom]);
+          }
+          startFrom++;
+        }
 
-    if(sortBy.length){
-      const {id,desc} = sortBy[0];
-      desc?descendingSort(id,opsData):ascendingSort(id,opsData)
-        arrangeRows(startFrom)
-   
-    }
-    else {   
-    for(let element=0; element<pageSize; element++){
-    
-      if(element+1>opsData.length){
-        break
-      }if(opsData[startFrom]){
-        filteredArray.push(opsData[startFrom])
+        setSearchedData(filteredArray);
       }
-      startFrom++
-    }
+    },
+    [opsData]
+  );
+  useEffect(()=>{
+    console.log("activeTabMain",activeTabMain)
+      {/* // { title: "Core Programme", key: "coreProgramme" },
+// { title: "Alumni", key: "alum" },
+// { title: "System Adoption", key: "systemAdoption" },tabPickerOptions1 */}
 
-    setSearchedData(filteredArray);
+if(activeTabMain.key == 'alum' ){
+  setActiveTab(tabPickerOptions2[0])
+}
+if(activeTabMain.key == 'systemAdoption' ){
+  setActiveTab(tabPickerOptions3[0])
+}
+if(activeTabMain.key == 'coreProgramme' ){
+  setActiveTab(tabPickerOptions1[0])
+}
+console.log("activeTab",activeTab);
 
-    }
-  },[opsData])
+  },[activeTabMain.key])
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+            <TabPicker
+              options={tabPickerOptionsMain}
+              setActiveTab={setActiveTabMain}
+            />
+          </div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+        
+            {
+              activeTabMain.key =='coreProgramme'? <TabPicker options={tabPickerOptions1} setActiveTab={setActiveTab} /> : activeTabMain.key =='alum'? <TabPicker options={tabPickerOptions2} setActiveTab={setActiveTab} />:activeTabMain.key =='systemAdoption' ? <TabPicker options={tabPickerOptions3} setActiveTab={setActiveTab} /> :''
+            }
+            {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
+
             {(isSRM() || isAdmin()) && (
               <button
                 className="btn btn-primary"
@@ -814,96 +845,105 @@ useEffect(()=>{
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <>
-              <OpsSearchDropdown/>
-              <Table
-                onRowClick={(data) => showRowData("opsdata", data)}
-                columns={columns}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching ?opsData.length:optsAggregate.count}
-                fetchData={isSearching?fetchSearchedData:fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <OpsSearchDropdown />
+                <Table
+                  onRowClick={(data) => showRowData("opsdata", data)}
+                  columns={columns}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
-              
             ) : activeTab.key == "useTot" ? (
               <>
-               <TotSearchBar/>
-              <Table
-                onRowClick={(data) => showRowData("totdata", data)}
-                columns={columnsUserTot}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching?opsData.length:optsAggregate.count}
-                fetchData={isSearching ? fetchSearchedData:fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <TotSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("totdata", data)}
+                  columns={columnsUserTot}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
             ) : activeTab.key == "upskilling" ? (
               <>
-               <UpskillSearchBar/>
-              <Table
-                onRowClick={(data) => showRowData("upskilldata", data)}
-                columns={columnsUpskilling}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching?opsData.length:optsAggregate.count}
-                fetchData={isSearching ? fetchSearchedData:fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <UpskillSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("upskilldata", data)}
+                  columns={columnsUpskilling}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
-              
             ) : activeTab.key == "dtesamarth" ? (
               <>
-               <SamarthSearchBar/>
-               <Table
-                onRowClick={(data) => showRowData("sditdata", data)}
-                columns={columnsPlacement}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching? opsData.length:optsAggregate.count}
-                fetchData={isSearching? fetchSearchedData:fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <SamarthSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("sditdata", data)}
+                  columns={columnsPlacement}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
-             
             ) : activeTab.key == "alumniQueries" ? (
               <>
-              <AlumniSearchBar/>
-              <Table
-                onRowClick={(data) => showRowData("alumniQueriesdata", data)}
-                columns={columnsAlumuniqueries}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching?opsData.length:optsAggregate.count}
-                fetchData={isSearching?fetchSearchedData :fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <AlumniSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("alumniQueriesdata", data)}
+                  columns={columnsAlumuniqueries}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
             ) : activeTab.key == "collegePitches" ? (
               <>
-              <CollegePitchSearch />
-              <Table
-                onRowClick={(data) => showRowData("collegePitches", data)}
-                columns={columnscollegepitches}
-                data={isSearching ? isFound?searchedData:[]:opts}
-                totalRecords={isSearching?opsData.length:optsAggregate.count}
-                fetchData={isSearching?fetchSearchedData:fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
+                <CollegePitchSearch />
+                <Table
+                  onRowClick={(data) => showRowData("collegePitches", data)}
+                  columns={columnscollegepitches}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               </>
             ) : (
               ""
@@ -911,94 +951,92 @@ useEffect(()=>{
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          {activeTab.key == "my_data" ? (
-              (isSRM() || isAdmin()) &&
-            <OperationCreateform
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : // useTot  ---upskilling ---dtesamarth
-          activeTab.key == "useTot" ? (
-            (isSRM() || isAdmin()) &&
-            <UserTot
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : activeTab.key == "upskilling" ? (
-            (isSRM() || isAdmin()) &&
-            <StudentUpkillingBulkcreate
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : activeTab.key == "dtesamarth" ? (
-            (isSRM() || isAdmin()) &&
-            <Dtesamarth
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : activeTab.key == "alumniQueries" ? (
-            (isSRM() || isAdmin()) &&
-            <AllumuniBulkAdd
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : activeTab.key == "collegePitches" ? (
-            (isSRM() || isAdmin()) &&
-            <CollegepitchesBulkadd
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-            />
-          ) : (
-            ""
-          )}
-          {showModal.opsdata && (
-            (isSRM() || isAdmin()) &&
+          {activeTab.key == "my_data"
+            ? (isSRM() || isAdmin()) && (
+                <OperationCreateform
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : // useTot  ---upskilling ---dtesamarth
+            activeTab.key == "useTot"
+            ? (isSRM() || isAdmin()) && (
+                <UserTot
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : activeTab.key == "upskilling"
+            ? (isSRM() || isAdmin()) && (
+                <StudentUpkillingBulkcreate
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : activeTab.key == "dtesamarth"
+            ? (isSRM() || isAdmin()) && (
+                <Dtesamarth
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : activeTab.key == "alumniQueries"
+            ? (isSRM() || isAdmin()) && (
+                <AllumuniBulkAdd
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : activeTab.key == "collegePitches"
+            ? (isSRM() || isAdmin()) && (
+                <CollegepitchesBulkadd
+                  show={modalShow}
+                  onHide={hideCreateModal}
+                  ModalShow={() => setModalShow(false)}
+                />
+              )
+            : ""}
+          {showModal.opsdata && (isSRM() || isAdmin()) && (
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("opsdata", false)}
             />
           )}
-          {showModal.totdata && (
-            (isSRM() || isAdmin()) &&
+          {showModal.totdata && (isSRM() || isAdmin()) && (
             <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("totdata", false)}
             />
           )}
-          {showModal.upskilldata && (
-            (isSRM() || isAdmin()) &&
+          {showModal.upskilldata && (isSRM() || isAdmin()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("upskilldata", false)}
             />
           )}
-          {showModal.sditdata && (
-            (isSRM() || isAdmin()) &&
+          {showModal.sditdata && (isSRM() || isAdmin()) && (
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("sditdata", false)}
             />
           )}
-          {showModal.alumniQueriesdata && (
-            (isSRM() || isAdmin()) &&
+          {showModal.alumniQueriesdata && (isSRM() || isAdmin()) && (
             <Alumuniqueriesdata
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("alumniQueriesdata", false)}
             />
           )}
-          {showModal.collegePitches && (
-            (isSRM() || isAdmin()) &&
+          {showModal.collegePitches && (isSRM() || isAdmin()) && (
             <CollegePitchdata
               {...optsdata.collegePitches}
               show={showModal.opsdata}
@@ -1012,15 +1050,15 @@ useEffect(()=>{
 };
 
 const mapStateToProps = (state) => ({
-  opsData:state.Operations.data,
-  isFound:state.Operations.isFound,
-  isSearching:state.Operations.isSearching,
+  opsData: state.Operations.data,
+  isFound: state.Operations.isFound,
+  isSearching: state.Operations.isSearching,
 });
 
 const mapActionsToProps = {
   setAlert,
   sortAscending,
-  resetSearch
+  resetSearch,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

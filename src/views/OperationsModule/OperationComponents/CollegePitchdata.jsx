@@ -67,6 +67,7 @@ const CollegePitchdata = (props) => {
     deactivate_user_college_pitch(Number(props.id));
     onHide();
   };
+  console.log(props);
 
   return (
     <>
@@ -85,7 +86,7 @@ const CollegePitchdata = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              Allumuni Query Details
+            Pitching
             </h1>
           </Modal.Title>
         </Modal.Header>
@@ -99,10 +100,11 @@ const CollegePitchdata = (props) => {
                   value={props.student_name ? props.student_name : ""}
                 />
                 <DetailField label="Phone" value={props.phone} />
+                <DetailField label="Whatsapp Number" value={props.whatsapp} />
                 <DetailField label="College Name" value={props.college_name} />
                 <DetailField label="Course Year" value={props.course_year} />
 
-                {/* <DetailField label="Batch" value={props.batch_name} /> */}
+                
 
                 <DetailField label="Pitch Date" value={props.pitch_date} />
               </div>
@@ -110,7 +112,7 @@ const CollegePitchdata = (props) => {
               <div className="col-md-6 col-sm-12">
                 <DetailField label="SRM Name" value={props.srm_name} />
                 <DetailField
-                  label="Area"
+                  label="Medha  Area"
                   value={props.area ? props.area : ""}
                 />
 
