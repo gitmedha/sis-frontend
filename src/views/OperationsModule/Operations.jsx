@@ -107,7 +107,11 @@ const Operations = ({
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTabMain, setActiveTabMain] = useState(tabPickerOptionsMain[0]);
-  const [activeTab, setActiveTab] = useState({ title: "User Ops Activities", key: "my_data" });
+  const [activeTab, setActiveTab] = useState(tabPickerOptions1[0]);
+  const [tabpickestatus,settabpickerstatus]=useState({
+    tab1:true,
+    
+  })
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);

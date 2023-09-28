@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
@@ -55,6 +55,8 @@ const UserTotRowdata = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
+  const userName=useRef(null)
+  const college =useRef(null)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -121,6 +123,27 @@ const UserTotRowdata = (props) => {
     // props.handleInputChange()
     // setRows(updatedRows);
   };
+  const handleInputChange = (id,data,value) => {
+    const input = value.current;
+    if (input) {
+      input.value = capitalizeFirstLetter(input.value);;
+      props.updateRow(id,data,input.value)
+    }
+   
+  };
+
+  const capitalizeFirstLetter = (text) => {
+    return text
+      .split(' ')
+      .map((word) => {
+        if (word.length > 0) {
+          return word[0].toUpperCase() + word.slice(1);
+        } else {
+          return word;
+        }
+      })
+      .join(' ');
+  };
 
   return (
     <>
@@ -135,7 +158,8 @@ const UserTotRowdata = (props) => {
             }`}
             type="text"
             onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) => updateRow(row.id, "user_name", e.target.value)}
+            ref={userName}
+            onChange={(e) => handleInputChange(row.id, "user_name",userName)}
           />
         </td>
          <td>
@@ -213,7 +237,8 @@ const UserTotRowdata = (props) => {
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
-            onChange={(e) => props.updateRow(row.id, "college", e.target.value)}
+            ref={college}
+            onChange={(e) => handleInputChange(row.id, "college",college)}
           />
         </td>
         <td>
