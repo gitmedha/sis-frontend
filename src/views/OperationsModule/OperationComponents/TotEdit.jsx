@@ -105,7 +105,6 @@ const TotEdit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -136,7 +135,6 @@ const TotEdit = (props) => {
  useEffect(async() => {
     // filterstate("new delhi",'city')
     let val=await getStateDistricts().then((data) => {
-      console.log("district data",data.data.data.geographiesConnection.groupBy);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
         key: item.key,
         value: item.key,
@@ -165,7 +163,7 @@ const TotEdit = (props) => {
           };
         });
 
-        console.log(filterData);
+
         return filterData;
       });
   };
@@ -345,7 +343,7 @@ const TotEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {console.log(props)}
+                
                 {props.user_name ? props.user_name : `Edit tot Detail`}
               </h1>
             </Modal.Title>
@@ -598,7 +596,7 @@ const TotEdit = (props) => {
                             options={stateOptions}
                             onChange={onStateChange}
                             onInputChange={(e)=>{
-                              console.log("E",e)
+                              // console.log("E",e)
                             }}
                             placeholder="State"
                             className="form-control"

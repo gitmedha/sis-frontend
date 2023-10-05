@@ -51,7 +51,7 @@ export const RowsData = (props) => {
 
   useEffect(() => {
     getAllProgram().then((data)=>{
-      console.log("data",data);
+      // console.log("data",data);
       setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
             key: value.id,
             label: value.name,
@@ -91,7 +91,7 @@ export const RowsData = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+    // console.log(id, field, value);
   };
   
 
@@ -216,7 +216,7 @@ export const RowsData = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
+              // console.log(e.target.value);
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
             }}

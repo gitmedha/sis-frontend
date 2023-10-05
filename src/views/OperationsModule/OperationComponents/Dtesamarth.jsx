@@ -187,15 +187,15 @@ const Dtesamarth = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // console.log(rows);
     }
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    // console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
+        // console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -207,7 +207,7 @@ const Dtesamarth = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
+      // console.log(areaOptions);
     }
     updateRow(rowid, key, options.value);
   };
@@ -247,10 +247,10 @@ const Dtesamarth = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
+      // console.log(
+      //   "data--------------->",
+      //   data?.data?.data?.geographiesConnection
+      // );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -290,7 +290,7 @@ const Dtesamarth = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
+    // console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -303,7 +303,7 @@ const Dtesamarth = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
+      // console.log(row);
       delete row["id"];
       delete row["name"];
       row.isActive = true;
@@ -317,10 +317,10 @@ const Dtesamarth = (props) => {
 
     try {
       const value = await bulkCreateSamarth(data);
-      console.log("vallue", value);
+      // console.log("vallue", value);
       props.ModalShow();
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
     }
   };
 
@@ -340,17 +340,17 @@ const Dtesamarth = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
+    // console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
+      // console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
+      // console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -393,7 +393,7 @@ const Dtesamarth = (props) => {
           };
         });
 
-        console.log(filterData);
+        // console.log(filterData);
         return filterData;
       });
   };

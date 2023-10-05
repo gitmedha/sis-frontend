@@ -36,7 +36,7 @@ const CollegepitchesBulkrow = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const handleChange = (options, key) => {
-    console.log(options, key);
+    // console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -61,19 +61,19 @@ const CollegepitchesBulkrow = (props) => {
     let data = await getAllSrm(1);
     setsrmOption(data);
     let val=await getStateDistricts().then((data) => {
-      console.log("district data",data.data.data.geographiesConnection.groupBy.district);
+      // console.log("district data",data.data.data.geographiesConnection.groupBy.district);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
         key: item.key,
         value: item.key,
         label: item.key,
       })))
      });
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
+    // // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+    // console.log(id, field, value);
   };
 
   return (
@@ -91,7 +91,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
+              // console.log(e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "pitch_date", e.target.value);

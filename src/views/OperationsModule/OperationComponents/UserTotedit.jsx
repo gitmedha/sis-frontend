@@ -75,7 +75,7 @@ const UserTotedit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
+        // console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -119,7 +119,7 @@ const UserTotedit = (props) => {
           };
         });
 
-        console.log(filterData);
+        // console.log(filterData);
         return filterData;
       });
   };
@@ -233,7 +233,7 @@ const UserTotedit = (props) => {
     end_date: Yup.date()
       .required("End date is required")
       .when("start_date", (start, schema) => {
-        console.log("working......");
+        // console.log("working......");
         return schema.min(
           start,
           "End date must be greter than or equal to start date"

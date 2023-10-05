@@ -132,7 +132,6 @@ const Opportunity = (props) => {
         query: GET_OPPORTUNITY,
         variables: { id: opportunityId },
       });
-      console.log("data.data.opportunity", data.data.opportunity);
       setOpportunityData(data.data.opportunity);
     } catch (err) {
       console.log("ERR", err);

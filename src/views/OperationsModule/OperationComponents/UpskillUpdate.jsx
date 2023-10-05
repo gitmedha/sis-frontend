@@ -56,7 +56,6 @@ const categoryOptions = [
 ];
 
 const UpskillUpdate = (props) => {
-  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -87,14 +86,12 @@ const UpskillUpdate = (props) => {
   useEffect(() => {
     if (props.student_id.id) {
       filterStudent(props.student_id.full_name).then(data => {
-        console.log("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -276,7 +273,6 @@ const UpskillUpdate = (props) => {
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
     initialValues["course_name"] = props["course_name"];
-    console.log("props.student_id.id",props.student_id.id);
     initialValues['student_id']=Number(props.student_id.id);
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date

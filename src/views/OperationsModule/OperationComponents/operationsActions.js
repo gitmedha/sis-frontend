@@ -191,7 +191,7 @@ export const createOpsActivity = async (data)=>{
         query:CREATE_OPERATION,
         variables: {data},
     }).then(data=>{
-        console.log(data)
+        // console.log(data)
         return data;
     }).catch(error=>{
         console.log(error)

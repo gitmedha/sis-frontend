@@ -81,7 +81,7 @@ const AllumuniEdit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
+        // console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -124,8 +124,6 @@ const AllumuniEdit = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };
@@ -201,7 +199,6 @@ const AllumuniEdit = (props) => {
     ];
   
     const date = new Date(dateString);
-    console.log("date____123",date);
     return date
   }
   if (props) {

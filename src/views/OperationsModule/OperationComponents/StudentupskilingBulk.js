@@ -51,7 +51,7 @@ const StudentupskilingBulk = (props) => {
   const [subcategory,setSubcategory]=useState([])
   const [studentinput,setstudentinput]=useState("")
   const handleChange = (options, key) => {
-    console.log(options, key);
+    // console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -94,7 +94,6 @@ const StudentupskilingBulk = (props) => {
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 1000,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -145,10 +144,8 @@ const StudentupskilingBulk = (props) => {
             filterData={filterStudent}
             options={studentOptions}
             onInputChange={(e)=>{
-              console.log("e",e)
               setstudentinput(e)}}
             onChange={(e) => {
-              console.log("filter",row.id);
               props.handleChange(e, "student_id", row.id)}}
           />
         </td>
@@ -172,7 +169,6 @@ const StudentupskilingBulk = (props) => {
             name="batch"
             options={props.batchbdata}
             onChange={(e) => {
-              console.log(e);
               props.handleChange(e, "batch", row.id)}}
           />
         </td>
@@ -232,7 +228,6 @@ const StudentupskilingBulk = (props) => {
             className="table-input h-2 "
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);

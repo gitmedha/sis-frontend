@@ -327,7 +327,7 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
       sort: `${sortBy}:${sortOrder}`,
       isActive:false
     };
-    console.log("activeTabkey",activeTab);
+  
     if (activeTab.key == "my_data") {
       await resetSearch();
       await api
@@ -439,7 +439,6 @@ const Operations = ({opsData,setAlert,sortAscending,resetSearch,isFound,isSearch
           variables,
         })
         .then((data) => {
-          console.log("datacollegpitches",data);
           setOpts(data.data.data.collegePitchesConnection.values);
           setoptsAggregate(data.data.data.collegePitchesConnection.aggregate)
         })
@@ -671,9 +670,7 @@ useEffect(()=>{
     },
     [activeTab, activeStatus]
   );
-  useEffect(() => {
-   console.log("activeTab line642",activeTab);
-  }, [activeTab])
+
   
 
   useEffect(() => {

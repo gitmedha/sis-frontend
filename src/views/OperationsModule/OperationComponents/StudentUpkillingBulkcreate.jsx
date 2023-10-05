@@ -90,15 +90,15 @@ const StudentUpkillingBulkcreate = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // // console.log(rows);
     }
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    // // console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
+        // console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -110,7 +110,7 @@ const StudentUpkillingBulkcreate = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
+      // console.log(areaOptions);
     }
     updateRow(rowid, key, options.value);
   };
@@ -150,10 +150,10 @@ const StudentUpkillingBulkcreate = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
+      // console.log(
+      //   "data--------------->",
+      //   data?.data?.data?.geographiesConnection
+      // );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -193,7 +193,7 @@ const StudentUpkillingBulkcreate = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
+    // console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -206,12 +206,12 @@ const StudentUpkillingBulkcreate = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
+      // console.log(row);
       delete row["id"];
       delete row["name"];
 
-      console.log(row["start_date"]);
-      // console.log(row.start_date.split('/').reverse().join('-'))
+      // console.log(row["start_date"]);
+      // // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
       row.created_by = Number(userId);
       row.updated_by = userId;
@@ -223,13 +223,13 @@ const StudentUpkillingBulkcreate = (props) => {
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
-    console.log("data", data);
+    // console.log("data", data);
 
     try {
       const value = await bulkCreateStudentsUpskillings(data);
       props.ModalShow();
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
     }
   };
 
@@ -249,17 +249,17 @@ const StudentUpkillingBulkcreate = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
+    // console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
+      // console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
+      // console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -302,7 +302,7 @@ const StudentUpkillingBulkcreate = (props) => {
           };
         });
 
-        console.log(filterData);
+        // console.log(filterData);
         return filterData;
       });
   };

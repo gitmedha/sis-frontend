@@ -52,10 +52,10 @@ const AlumunniBulkrow = (props) => {
   const [studentinput,setstudentinput]=useState("")
   
   const handleChange = (options, key) => {
-    console.log(options, key);
+    // console.log(options, key);
   };
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
+
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 1000,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -80,7 +80,7 @@ const AlumunniBulkrow = (props) => {
     filterStudent(studentinput).then((data) => {
      
       setStudentOptions(data);
-      console.log("filterStudent",data);
+     
     });
   }, [studentinput]);
   const onStateChange = (value, rowid, field) => {
@@ -108,7 +108,7 @@ const AlumunniBulkrow = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -131,7 +131,6 @@ const AlumunniBulkrow = (props) => {
              
               setstudentinput(e)}}
             onChange={(e) => {
-              console.log("filter",e);
               setName(e.full_name)
               updateRow(row.id, "student_name",e.full_name)
               props.handleChange(e, "student_id", row.id)}}
@@ -243,7 +242,6 @@ const AlumunniBulkrow = (props) => {
             value={endDate}
             disabled={!startDate ? true:false}
             onChange={(e) => {
-              console.log(e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "query_end", e.target.value);

@@ -205,7 +205,6 @@ const UserTot = (props) => {
       // }else if(rows.length > 1){
       //   obj=delete obj[`class${[rows.length-2]}`]
       // }
-      console.log("obj",obj);
       return setclassValue(obj)
     }
     if (rows.length >= 10) {
@@ -214,15 +213,14 @@ const UserTot = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+
     }
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options?.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
+
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -234,7 +232,7 @@ const UserTot = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
+
     }
     updateRow(rowid, key, options?.value);
   };
@@ -274,10 +272,7 @@ const UserTot = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
+      
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -317,7 +312,6 @@ const UserTot = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -330,11 +324,9 @@ const UserTot = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
       delete row["id"];
       delete row["name"];
 
-      console.log(row["start_date"]);
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
       row.updated_by = Number(userId);
@@ -373,17 +365,17 @@ const UserTot = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
+    // console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
+     
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
+
       setBatchOptions(data);
     });
   }, []);
@@ -425,8 +417,6 @@ const UserTot = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };

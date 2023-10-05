@@ -56,7 +56,7 @@ const UserTotRowdata = (props) => {
   const [srmOption, setsrmOption] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
   const handleChange = (options, key) => {
-    console.log(options, key);
+    // console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
     // getStateDistricts(value).then((data) => {
@@ -117,7 +117,7 @@ const UserTotRowdata = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+  
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -222,7 +222,6 @@ const UserTotRowdata = (props) => {
             type="Text"
             onKeyPress={handleKeyPress}
             onChange={(e) => {
-              console.log("e",e.target.value)
               updateRow(row.id, "project_name", e.target.value)}}
           />
         </td>
@@ -255,7 +254,7 @@ const UserTotRowdata = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
+        
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
