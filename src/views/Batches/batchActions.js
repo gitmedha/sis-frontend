@@ -236,3 +236,12 @@ export const batchEmailCertificates = async (batchId) => {
     return Promise.reject(error);
   });
 };
+
+export const batchSendLinks = async (batchId) => {
+  let url = `${process.env.REACT_APP_STRAPI_API_BASEURL}/batch/${batchId}/send-link`;
+  return await api.post(url).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+};
