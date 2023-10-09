@@ -110,7 +110,7 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    values.contacts=values.contacts.map((value,i) =>{
+    values.contacts=values.contacts.map((value) =>{
       value.full_name=value.full_name[0].toUpperCase() + value.full_name.slice(1);
       value.designation=value.designation[0].toUpperCase() + value.designation.slice(1);
       return value
