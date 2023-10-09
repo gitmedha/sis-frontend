@@ -65,6 +65,7 @@ const AllumuniEdit = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -213,7 +214,7 @@ const AllumuniEdit = (props) => {
     initialValues["status"] = props.status;
     initialValues["query_desc"] = props.query_desc;
     initialValues['query_type']=props.query_type
-    initialValues["student_name"] = props.student_name;
+    initialValues["student_id"] = props.student_id.student_id;
     initialValues["query_start"] =  new Date(props.query_start) 
     initialValues["query_end"] =   new Date(props.query_end)
     initialValues['conclusion']=props.conclusion
@@ -253,6 +254,66 @@ const AllumuniEdit = (props) => {
         );
       }),
   });
+  // const filterStudent = async (filterValue) => {
+  //   console.log("filtervalue",filterValue);
+  //   return await meilisearchClient.index('students').search(filterValue, {
+  //     limit: 1000,
+  //     attributesToRetrieve: ['id', 'full_name', 'student_id']
+  //   }).then(data => {
+  //     let studentFoundInList = false;
+  //     let filterData = data.hits.map(student => {
+  //       console.log("line 265",student ,"Number(props?.student_id.student_id)",(props?.student_id.student_id));
+  //       if (student.id == props?.student_id.id) {
+  //         studentFoundInList = true;
+  //       }
+  //       return {
+  //         ...student,
+  //         label: `${student.full_name} (${student.student_id})`,
+  //         value: Number(student.id),
+  //       }
+  //     });
+
+  //     return filterData;
+  //   });
+  // }
+
+
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "full_name", "student_id"],
+      })
+      .then((data) => {
+        // let employmentConnectionStudent = props.employmentConnection
+        //   ? props.employmentConnection.student
+        //   : null;
+        let studentFoundInList = false;
+        let filterData = data.hits.map((student) => {
+          if (
+            
+            student.id === Number(props?.student_id.id)
+          ) {
+            studentFoundInList = true;
+          }
+          return {
+            ...student,
+            label: `${student.full_name} (${student.student_id})`,
+            value: Number(student.id),
+          };
+        });
+        if (
+          !studentFoundInList
+        ) {
+          filterData.unshift({
+            label: props.student_id.full_name,
+            value: Number(props.student_id.id),
+          });
+        }
+        return filterData;
+      });
+  };
 
   return (
     <>
@@ -296,16 +357,18 @@ const AllumuniEdit = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="student_name"
-                          label="Student Name"
-                          required
-                          className="form-control"
-                          placeholder="Student Name"
-                          onKeyPress={handleKeyPresscharandspecialchar}
-                        />
+                    <div className="col-md-6 col-sm-12 mb-2">
+                        
+                    <Input
+                      name="student_id"
+                      control="lookupAsync"
+                      label="Student"
+                      className="form-control"
+                      placeholder="Student"
+                      filterData={filterStudent}
+                      defaultOptions={studentOptions}
+                      required={true}
+                    />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                       <Input

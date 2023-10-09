@@ -71,6 +71,7 @@ const Alumuniqueriesdata = (props) => {
       onHide()
     }
   
+    console.log(" props.student_id.full_name", props.student_id.full_name);
     return (
       <>
         <Modal
@@ -97,7 +98,7 @@ const Alumuniqueriesdata = (props) => {
                 <div className="col-md-6 col-sm-12">
                   <DetailField
                     label="Student Name"
-                    value={props.student_name ? props.student_name : ""}
+                    value={props.student_id.full_name ? props.student_id.full_name : ""}
                   />
                   <DetailField label="Query Description" value={props.query_desc} />
                   <DetailField label="Query Start" value={props.query_start} />

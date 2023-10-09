@@ -269,7 +269,7 @@ const Operations = ({
     () => [
       {
         Header: "Student Name",
-        accessor: "student_name",
+        accessor: "student_id.full_name",
       },
       {
         Header: "Father Name",

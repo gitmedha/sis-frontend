@@ -388,7 +388,7 @@ const AllumuniBulkAdd = (props) => {
             <div className="d-flex ">
               
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Alumuni Bulk Data"}
+                {props.id ? props.full_name : "Add Alumni Bulk Data"}
               </h2>
             </div>
           </div>
