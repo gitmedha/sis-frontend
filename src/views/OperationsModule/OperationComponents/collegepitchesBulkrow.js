@@ -37,7 +37,7 @@ const CollegepitchesBulkrow = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
-
+  const [course, setcourse] = useState([]);
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -69,11 +69,10 @@ const CollegepitchesBulkrow = (props) => {
       })))
      }); 
      getProgramEnrollmentsPickList().then(data => {
-      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
       // setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       // setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       // setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      console.log("data.current_course_year",data.current_course_year);
       setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
       // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
       // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -119,12 +118,13 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={handleKeyPress}
-            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />
+          
         </td>
 
         <td>
-          <input
+          {/* <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.course_name
                 ? `border-red`
@@ -132,7 +132,20 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             onKeyPress={handleKeyPress}
             type="text"
-            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "course_name", e.target.value)}
+          /> */}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.course_year
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            onKeyPress={handleKeyPress}
+            isClearable={true}
+            isSearchable={true}
+            options={course}
+            onChange={(e) => props.handleChange(e, "course_year", row.id)}
           />
         </td>
         <td>
@@ -193,7 +206,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={mobileNochecker}
-            onChange={(e) => updateRow(row.id, "phone", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "phone", e.target.value)}
           />
         </td>
         <td>
@@ -203,9 +216,9 @@ const CollegepitchesBulkrow = (props) => {
                 ? `border-red`
                 : ""
             }`}
-            type="text"
+            type="Number"
             onKeyPress={mobileNochecker}
-            onChange={(e) => updateRow(row.id, "whatsapp", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "whatsapp", e.target.value)}
           />
         </td>
 
@@ -262,7 +275,7 @@ const CollegepitchesBulkrow = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="srm_name"
+            name="area"
             options={areaOptions}
             onChange={(e) => props.handleChange(e, "area", row.id)}
           />

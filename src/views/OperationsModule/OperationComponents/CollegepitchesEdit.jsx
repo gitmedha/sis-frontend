@@ -22,9 +22,17 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import {
+  updateCollegePitch,
+  updateOpsActivity,
+  updateSamarthSdit,
+} from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { handleKeyPress, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
+import {
+  handleKeyPress,
+  mobileNochecker,
+  numberChecker,
+} from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -59,6 +67,8 @@ const CollepitchesEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [course, setcourse] = useState([]);
+  const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -79,6 +89,7 @@ const CollepitchesEdit = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
+    console.log(filterValue);
     return await meilisearchClient
       .index("institutions")
       .search(filterValue, {
@@ -138,6 +149,13 @@ const CollepitchesEdit = (props) => {
       setcourse(
         data?.course?.map((item) => ({ key: item, value: item, label: item }))
       );
+      setCurrentCourseYearOptions(
+        data.current_course_year.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
@@ -157,9 +175,13 @@ const CollepitchesEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-  
-    const newObj = {...values};
-    values.pitch_date ? newObj["pitch_date"] = moment(values["pitch_date"]).format("YYYY-MM-DD"): delete newObj['pitch_date'];
+    console.log(values);
+    const newObj = { ...values };
+    values.pitch_date
+      ? (newObj["pitch_date"] = moment(values["pitch_date"]).format(
+          "YYYY-MM-DD"
+        ))
+      : delete newObj["pitch_date"];
     const value = await updateCollegePitch(Number(props.id), newObj);
     setDisableSaveButton(true);
     onHide(value);
@@ -213,16 +235,16 @@ const CollepitchesEdit = (props) => {
       ? formatDateStringToIndianStandardTime(props.pitch_date)
       : "";
     initialValues["remarks"] = props.remarks;
-    initialValues['area']=props.area;
+    initialValues["area"] = props.area;
   }
 
   useEffect(() => {
     if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
+      filterInstitution(props.college_name).then((data) => {
         setInstitutionOptions(data);
       });
     }
-  }, []);
+  }, [props]);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -235,6 +257,46 @@ const CollepitchesEdit = (props) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+  const filterStudent = async (filterValue) => {
+    console.log("filtervalue", filterValue);
+    return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 1000,
+        attributesToRetrieve: ["id", "full_name", "student_id"],
+      })
+      .then((data) => {
+        let programEnrollmentStudent = "112";
+        let studentFoundInList = false;
+        let filterData = data.hits.map((student) => {
+          if (student.id === Number(props?.id)) {
+            studentFoundInList = true;
+          }
+          return {
+            ...student,
+            label: `${student.full_name} (${student.student_id})`,
+            value: Number(student.id),
+          };
+        });
+
+        return filterData;
+      });
+  };
+  useEffect(async () => {
+    // getDefaultAssigneeOptions().then((data) => {
+    //   setAssigneeOptions(data);
+    // });
+    // let data = await getAllSrm(1);
+    // setsrmOption(data);
+    await getStateDistricts().then((data) => {
+      setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
+        key: item.key,
+        value: item.key,
+        label: item.key,
+      })))
+     }); 
+    
+  }, []);
 
   return (
     <>
@@ -278,9 +340,9 @@ const CollepitchesEdit = (props) => {
                     <div className="row">
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
                           name="student_name"
                           label="Student Name"
+                          control="input"
                           required
                           onKeyPress={handleKeyPress}
                           className="form-control"
@@ -288,7 +350,7 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
+                        <Input
                           name="course_name"
                           control="lookup"
                           icon="down"
@@ -303,15 +365,24 @@ const CollepitchesEdit = (props) => {
                       {/*  */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           name="course_year"
                           label="Course Year"
-                          // required
                           placeholder="Course Year"
                           onKeyPress={numberChecker}
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                        /> */}
+                        <Input
+                          name="course_year"
+                          label="Course Year"
+                          control="lookup"
+                          icon="down"
+                          options={currentCourseYearOptions}
+                          onKeyPress={handleKeyPress}
+                          className="form-control"
+                          placeholder="Course year"
                         />
                       </div>
 
@@ -320,11 +391,22 @@ const CollepitchesEdit = (props) => {
                           control="input"
                           name="college_name"
                           label="College Name"
-                          // required
                           onKeyPress={handleKeyPress}
                           className="form-control"
                           placeholder="Phone"
                         />
+                        {/* {(
+                          <Input
+                            control="lookupAsync"
+                            name="college_name"
+                            label="College Name"
+                            filterData={filterInstitution}
+                            defaultOptions={institutionOptions}
+                            placeholder="College Name"
+                            className="form-control"
+                            isClearable
+                          />
+                        )} */}
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -342,7 +424,6 @@ const CollepitchesEdit = (props) => {
                           control="input"
                           name="whatsapp"
                           label="Whatsapp Number"
-                          // required
                           onKeyPress={mobileNochecker}
                           className="form-control"
                           placeholder="Whatsapp Number"
@@ -354,7 +435,6 @@ const CollepitchesEdit = (props) => {
                           control="input"
                           name="email"
                           label="Email"
-                          // required
                           className="form-control"
                           placeholder="Email"
                         />
@@ -374,7 +454,6 @@ const CollepitchesEdit = (props) => {
                         <Input
                           name="srm_name"
                           label="SRM Name"
-                          // required
                           placeholder="SRM Name"
                           control="input"
                           className="form-control"
@@ -382,14 +461,22 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           name="area"
                           label="Medha Area"
-                          // required
                           placeholder="Area"
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                        /> */}
+                        <Input
+                          icon="down"
+                          name="area"
+                          label="Medha Area"
+                          control="lookup"
+                          options={areaOptions}
+                          placeholder="Area"
+                          className="form-control"
                         />
                       </div>
 
@@ -399,7 +486,7 @@ const CollepitchesEdit = (props) => {
                         <Input
                           name="pitch_date"
                           label="Pitch Date"
-                          // required
+
                           placeholder="Pitch date"
                           control="datepicker"
                           className="form-control"
