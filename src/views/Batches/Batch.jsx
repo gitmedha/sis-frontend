@@ -343,7 +343,6 @@ const Batch = (props) => {
                       />
                       <span>&nbsp;&nbsp;Generate Certificates</span>
                     </Dropdown.Item>
-                    {console.log(batch, "certifictes......")}
                     <Dropdown.Item
                       onClick={() => emailCertificates()}
                       disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
