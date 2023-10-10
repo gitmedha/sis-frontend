@@ -327,7 +327,6 @@ const Batch = (props) => {
                     <Dropdown.Item
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"
-                      disabled={batch?.status === 'Complete' && !clickedSendLink}
                     >
                       <FaCheckCircle size="20" color={batch?.status === 'Certified' ? '#207B69' : '#E0E0E8'} className="mr-2" />
                       <span>&nbsp;&nbsp;Mark as Certified</span>
