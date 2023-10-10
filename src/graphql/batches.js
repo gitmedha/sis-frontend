@@ -52,6 +52,7 @@ const batchesFields = `
   logo {
     url
   }
+  link_sent_at
   number_of_sessions_planned
   program {
     name
