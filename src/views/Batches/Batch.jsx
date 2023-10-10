@@ -51,6 +51,7 @@ const Batch = (props) => {
   const {setAlert} = props;
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
+  const [clickedSendLink, setClickedSendLink ] =useState(false);
   const userId = localStorage.getItem("user_id");
 
   const getThisBatch = async () => {
@@ -313,16 +314,20 @@ const Batch = (props) => {
                   <Dropdown.Menu>
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
-                      onClick={() => sendLinks()}
-                      className="d-flex align-items-center"
-                    >
-                      <FaCheckCircle size="20" color='#207B69' className="mr-2" />
+                    onClick={() => {
+                      sendLinks();
+                      setClickedSendLink(true);
+                    }}
+                    className="d-flex align-items-center"
+                  >
+                      <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
                       <span>&nbsp;&nbsp;Send a link</span>
                     </Dropdown.Item>
                     }
                     <Dropdown.Item
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"
+                      disabled={batch?.status === 'Complete' && !clickedSendLink}
                     >
                       <FaCheckCircle size="20" color={batch?.status === 'Certified' ? '#207B69' : '#E0E0E8'} className="mr-2" />
                       <span>&nbsp;&nbsp;Mark as Certified</span>
