@@ -345,8 +345,8 @@ const TotEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {console.log(props)}
-                {props.user_name ? props.user_name : `Edit tot Detail`}
+                
+                {props.user_name ? props.user_name  : `Edit tot Detail ----`}
               </h1>
             </Modal.Title>
           </Modal.Header>
