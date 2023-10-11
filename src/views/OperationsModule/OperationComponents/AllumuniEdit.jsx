@@ -404,7 +404,7 @@ const AllumuniEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="query_end"
-                          label="Query End"
+                          label="Query End Date"
                           // required
                           placeholder="Query End Date"
                           control="datepicker"

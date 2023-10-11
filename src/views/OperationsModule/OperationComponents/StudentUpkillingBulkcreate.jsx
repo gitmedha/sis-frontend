@@ -83,7 +83,33 @@ const StudentUpkillingBulkcreate = (props) => {
     issued_org: "",
   });
   const [showLimit, setshowLimit] = useState(false);
+  const [classValue, setclassValue] = useState({});
+
   const addRow = () => {
+    let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
+
+    if (value.student_name || value.gender) {
+      let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
+
+      setclassValue({});
+      if (
+        value.student_id
+      ) {
+        let obj = { [`class${[rows.length - 1]}`]: value };
+        setclassValue(obj);
+        return;
+      }
+
+      if (rows.length >= 10) {
+        setAlert("You can't Add more than 10 items.", "error");
+      } else {
+        const newRowWithId = { ...newRow, id: rows.length + 1 };
+        setRows([...rows, newRowWithId]);
+        console.log(rows);
+      }
+      return setclassValue(obj);
+    }
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -220,7 +246,7 @@ const StudentUpkillingBulkcreate = (props) => {
       row.institution = Number(row.institution);
       row.student_id = Number(row.student_id);
       row.isActive = true;
-      let value = checkEmptyValuesandplaceNA(row)
+      let value = checkEmptyValuesandplaceNA(row);
       return value;
     });
     console.log("data", data);
@@ -378,7 +404,7 @@ const StudentUpkillingBulkcreate = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Assigned to</th>
+                  <th>Assigned To</th>
                   <th>Student </th>
                   <th>Institution</th>
                   <th>Batch</th>
@@ -405,6 +431,7 @@ const StudentUpkillingBulkcreate = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

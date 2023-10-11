@@ -146,7 +146,7 @@ const StudentupskilingBulk = (props) => {
       <tr key={row.id}>
       <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.assigned_to ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -159,7 +159,7 @@ const StudentupskilingBulk = (props) => {
           
 
           <Select
-            className="basic-single table-input "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_id ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -175,7 +175,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.institution ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -203,7 +203,6 @@ const StudentupskilingBulk = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            // value={row.name}
             onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
           />
         </td>
