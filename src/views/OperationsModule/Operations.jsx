@@ -42,7 +42,7 @@ import {
 } from "../../store/reducers/Operations/actions";
 
 const tabPickerOptionsMain = [
-  { title: "Core Programme", key: "coreProgramme" },
+  { title: "Core Programs", key: "coreProgramme" },
   { title: "Alumni", key: "alum" },
   { title: "System Adoption", key: "systemAdoption" },
 ];
