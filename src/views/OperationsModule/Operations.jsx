@@ -133,7 +133,7 @@ const Operations = ({
       },
 
       {
-        Header: "Area",
+        Header: "Medha Area",
         accessor: "area",
       },
 
@@ -237,7 +237,7 @@ const Operations = ({
       },
 
       {
-        Header: "Institute Name",
+        Header: "Institution Name",
         accessor: "institution_name",
       },
       {
@@ -284,12 +284,12 @@ const Operations = ({
         accessor: "query_desc",
       },
       {
-        Header: "Query End",
+        Header: "Query End Date",
         accessor: "query_end",
       },
 
       {
-        Header: "Query Start",
+        Header: "Query Start Date",
         accessor: "query_start",
       },
       {
@@ -311,7 +311,7 @@ const Operations = ({
         accessor: "area",
       },
       {
-        Header: "Mobile",
+        Header: "Mobile No.",
         accessor: "phone",
       },
       {

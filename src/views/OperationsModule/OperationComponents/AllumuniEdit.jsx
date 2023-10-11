@@ -356,15 +356,13 @@ const AllumuniEdit = (props) => {
                             // onChange={onStateChange}
                             placeholder="Status"
                             className="form-control"
-                            // required
                           />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
                           name="location"
-                          label="Location"
-                          // required
+                          label="Medha Area"
                           className="form-control"
                           placeholder="Location"
                         />

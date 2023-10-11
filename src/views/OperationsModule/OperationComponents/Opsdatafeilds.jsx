@@ -172,7 +172,7 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Institution"
+                    label="Educational Institution"
                     value={props.institution?.name}
                   />
                   <DetailField

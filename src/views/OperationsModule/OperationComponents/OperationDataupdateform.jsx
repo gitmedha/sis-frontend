@@ -172,7 +172,6 @@ const OperationDataupdateform = (props) => {
 
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
-
     newValueObject["assigned_to"] = Number(values["assigned_to"]);
     newValueObject["batch"] = Number(values["batch"]);
     newValueObject["students_attended"] = Number(values["students_attended"]);
@@ -355,7 +354,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             control="lookupAsync"
                             name="institution"
-                            label="Institution"
+                            label="Educational Institution"
                             filterData={filterInstitution}
                             defaultOptions={institutionOptions}
                             placeholder="Institution"
