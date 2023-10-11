@@ -436,13 +436,13 @@ const AllumuniBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Student Id</th>
+                  <th>Student ID</th>
                   <th>Query Start Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
                   <th>E-mail</th>
                   <th>Phone Number</th>
-                  <th>Location</th>
+                  <th>Medha Area</th>
                   <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>
