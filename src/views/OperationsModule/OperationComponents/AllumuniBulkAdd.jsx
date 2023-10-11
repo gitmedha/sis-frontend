@@ -132,12 +132,21 @@ const AllumuniBulkAdd = (props) => {
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
-      // if(obj.class0 && rows.length !== 1){
-      //   delete obj['class0']
-      // }else if(rows.length > 1){
-      //   obj=delete obj[`class${[rows.length-2]}`]
-      // }
-      // console.log("obj",obj);
+      setclassValue({})
+      if(value.query_start || value.student_name || value.query_desc || value.query_type ){
+        let obj={[`class${[rows.length-1]}`]:value}
+        setclassValue(obj)
+        return ;
+      }
+      
+  
+      if (rows.length >= 10) {
+        setAlert("You can't Add more than 10 items.", "error");
+      } else {
+        const newRowWithId = { ...newRow, id: rows.length + 1 };
+        setRows([...rows, newRowWithId]);
+        console.log(rows);
+      }
       return setclassValue(obj)
     }
     
@@ -271,9 +280,11 @@ const AllumuniBulkAdd = (props) => {
       // row.district=Number(row.district)
       row.updated_by = Number(userId);
       row.isActive=true;
+
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
+    console.log("data",data);
 
     try {
       const value = await bulkCreateAlumniQueries(data);
@@ -388,7 +399,7 @@ const AllumuniBulkAdd = (props) => {
             <div className="d-flex ">
               
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Alumuni Bulk Data"}
+                {props.id ? props.full_name : "Add Alumni Bulk Data"}
               </h2>
             </div>
           </div>
@@ -432,7 +443,7 @@ const AllumuniBulkAdd = (props) => {
                   <th>E-mail</th>
                   <th>Phone Number</th>
                   <th>Location</th>
-                  <th>Qyery Type *</th>
+                  <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>
                   <th>Status</th>

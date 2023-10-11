@@ -283,7 +283,7 @@ const AllumuniEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Student"}
+                {props.student_name ? props.student_name : "Add New Student"}
               </h1>
             </Modal.Title>
           </Modal.Header>

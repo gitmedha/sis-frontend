@@ -50,7 +50,7 @@ const tabPickerOptionsMain = [
 const tabPickerOptions1 = [
   { title: "User Ops Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
-  { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
+  // { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Pitching", key: "collegePitches" },
 ];
 const tabPickerOptions2=[
@@ -819,29 +819,31 @@ console.log("activeTab",activeTab);
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2">
             <TabPicker
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-          </div>
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-        
-            {
+             {
               activeTabMain.key =='coreProgramme'? <TabPicker options={tabPickerOptions1} setActiveTab={setActiveTab} /> : activeTabMain.key =='alum'? <TabPicker options={tabPickerOptions2} setActiveTab={setActiveTab} />:activeTabMain.key =='systemAdoption' ? <TabPicker options={tabPickerOptions3} setActiveTab={setActiveTab} /> :''
             }
-            {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+        
+           
+        {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
 
-            {(isSRM() || isAdmin()) && (
-              <button
-                className="btn btn-primary"
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "15px" }}
-              >
-                Add New Data
-              </button>
-            )}
+        {(isSRM() || isAdmin()) && (
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalShow(true)}
+            style={{ marginLeft: "15px" }}
+          >
+            Add New Data
+          </button>
+        )}
+      </div>
           </div>
+          
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <>
@@ -896,7 +898,7 @@ console.log("activeTab",activeTab);
               </>
             ) : activeTab.key == "dtesamarth" ? (
               <>
-                <SamarthSearchBar />
+                {/* <SamarthSearchBar />
                 <Table
                   onRowClick={(data) => showRowData("sditdata", data)}
                   columns={columnsPlacement}
@@ -909,7 +911,7 @@ console.log("activeTab",activeTab);
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
-                />
+                /> */}
               </>
             ) : activeTab.key == "alumniQueries" ? (
               <>

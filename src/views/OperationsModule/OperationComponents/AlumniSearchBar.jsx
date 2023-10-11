@@ -216,27 +216,63 @@ const setDropdownValues = async (fieldName)=>{
                           }
 
                           { selectedSearchField === "query_start" && 
-                            <Input
+                          <div className='d-flex justify-content-between align-items-center'>
+                          <div className='mr-3'>
+                          <Input
                               name="search_by_value"
-                              label="Search Value"
+                              label="From"
+                              placeholder="Query start date"
+                              control="datepicker"
+                              className="form-control "
+                              autoComplete="off"
+
+                            />
+                          </div>
+                          <div className='ml-2'>
+                          <Input
+                              name="search_by_value"
+                              label="To"
                               placeholder="Query start date"
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
                             
                             />
+                          </div>
+                           
+                            
+                          </div>
+                            
+                            
                           }
 
                           { selectedSearchField === "query_end" && 
+                            <div className='d-flex justify-content-between align-items-center'>
+                            <div className='mr-3'>
                             <Input
-                              name="search_by_value"
-                              label="Search Value"
-                              placeholder="Query start date"
-                              control="datepicker"
-                              className="form-control"
-                              autoComplete="off"
-                            
-                            />
+                                name="search_by_value_date_from"
+                                label="From"
+                                placeholder="Query start date"
+                                control="datepicker"
+                                className="form-control "
+                                autoComplete="off"
+  
+                              />
+                            </div>
+                            <div className='ml-2'>
+                            <Input
+                                name="search_by_value_date_to"
+                                label="To"
+                                placeholder="Query start date"
+                                control="datepicker"
+                                className="form-control"
+                                autoComplete="off"
+                              
+                              />
+                            </div>
+                             
+                              
+                            </div>
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">

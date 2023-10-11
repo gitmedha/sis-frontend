@@ -107,8 +107,8 @@ const AlumunniBulkrow = (props) => {
   }, []);
 
   const updateRow = (id, field, value) => {
-    row[field] = value;
-    console.log(id, field, value);
+    // row[field] = value;
+    props.updateRow(id, field, value);
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -134,13 +134,14 @@ const AlumunniBulkrow = (props) => {
               console.log("filter",e);
               setName(e.full_name)
               updateRow(row.id, "student_name",e.full_name)
-              props.handleChange(e, "student_id", row.id)}}
+              // props.handleChange(e, "student_id", row.id)
+            }}
           />
         </td>
         <td>
           <input
             type="date"
-            className="table-input h-2 "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_start ? `border-red`:"table-input h-2"}`}
             defaultValue={startDate}
             onChange={(e) => {
 
@@ -243,9 +244,8 @@ const AlumunniBulkrow = (props) => {
             value={endDate}
             disabled={!startDate ? true:false}
             onChange={(e) => {
-              console.log(e.target.value);
 
-              setStartDate(e.target.value);
+              setEndDate(e.target.value);
               props.updateRow(row.id, "query_end", e.target.value);
             }}
           />
