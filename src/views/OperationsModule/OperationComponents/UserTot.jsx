@@ -506,11 +506,11 @@ const UserTot = (props) => {
                   <th>Participant Name</th>
                   <th>Age </th>
                   <th>Gender </th>
-                  <th>Contact </th>
+                  <th>Mobile no.  </th>
                   <th>City *</th>
                   <th>State *</th>
                   <th>Designation </th>
-                  <th>College</th>
+                  <th>College Name</th>
                   <th>Project Name</th>
                   <th>Partner Department</th>
                   <th>Module Name</th>
