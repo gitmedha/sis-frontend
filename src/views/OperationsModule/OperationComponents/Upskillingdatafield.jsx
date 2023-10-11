@@ -102,11 +102,7 @@ const Upskillingdatafield = (props) => {
                     label="Student Name"
                     value={props.student_id.full_name}
                   />
-                  <DetailField
-                    
-                    label="Certificate received"
-                    value={props.certificate_received ? "Yes" : "No"}
-                  />
+                  
                   <DetailField
                     
                     label="Batch"
@@ -121,16 +117,13 @@ const Upskillingdatafield = (props) => {
                         : ""
                     }
                   />
-
                   <DetailField
                     
-                    label="End Date"
-                    value={
-                      moment(props.end_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
-                        : ""
-                    }
+                    label="Certificate Received"
+                    value={props.certificate_received ? "Yes" : "No"}
                   />
+
+                  
                   <DetailField
                     
                     label="Course Name"
@@ -174,7 +167,7 @@ const Upskillingdatafield = (props) => {
                     }
                   />
                 <DetailField
-                    label="Published at"
+                    label="Published At"
                     value={
                       moment(props.published_at).format("DD MMM YYYY")
                         ? moment(props.published_at).format("DD MMM YYYY")

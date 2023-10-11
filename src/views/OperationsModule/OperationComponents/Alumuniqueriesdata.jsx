@@ -100,7 +100,7 @@ const Alumuniqueriesdata = (props) => {
                     value={props.student_name ? props.student_name : ""}
                   />
                   <DetailField label="Query Description" value={props.query_desc} />
-                  <DetailField label="Query Start" value={props.query_start} />
+                  <DetailField label="Query Start Date" value={props.query_start} />
   
                   {/* <DetailField label="Batch" value={props.batch_name} /> */}
                   <DetailField
@@ -120,7 +120,7 @@ const Alumuniqueriesdata = (props) => {
                     value={props.query_type ? props.query_type : ""}
                   />
   
-                  <DetailField label="Query end" value={props.query_end} />
+                  <DetailField label="Query End Date" value={props.query_end} />
                   <DetailField label="Email" value={props.email} />
                   <DetailField
                     label="Conclusion"
