@@ -119,7 +119,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={handleKeyPress}
-            onChange={(e) => updateRow(row.id, "student_name", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />
         </td>
 
@@ -132,7 +132,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             onKeyPress={handleKeyPress}
             type="text"
-            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "course_name", e.target.value)}
           />
         </td>
         <td>
@@ -193,7 +193,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={mobileNochecker}
-            onChange={(e) => updateRow(row.id, "phone", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "phone", e.target.value)}
           />
         </td>
         <td>
@@ -205,7 +205,7 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={mobileNochecker}
-            onChange={(e) => updateRow(row.id, "whatsapp", e.target.value)}
+            onChange={(e) => props.updateRow(row.id, "whatsapp", e.target.value)}
           />
         </td>
 
