@@ -23,7 +23,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity, updateUserTot } from "./operationsActions";
+import { getTotPickList, updateOpsActivity, updateUserTot } from "./operationsActions";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
 import {
@@ -85,6 +85,9 @@ const TotEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
+  const [moduleName,setModuleName]=useState([])
+  const [partnerDept,setPartnerDept]=useState([])
+  const [projectName,setProjectName]=useState([])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -283,6 +286,33 @@ const TotEdit = (props) => {
         setInstitutionOptions(data);
       });
     }
+    getTotPickList().then(data=>{
+      console.log("module_name",data.module_name);
+      // setModuleName(data.module_name.map(item))
+      setModuleName(
+        data.module_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setPartnerDept(
+        data.partner_dept.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setProjectName(
+        data.project_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      console.log("partner_dept",data.partner_dept);
+      console.log("project_name",data.project_name);
+    })
   }, []);
 
   // console.log("props",initialValues.batch);
@@ -371,11 +401,21 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="project_name"
                           label="Project Name"
                           onKeyPress={handleKeyPress}
+                          className="form-control"
+                          placeholder="Project Name"
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="project_name"
+                          label="Project Name"
+                          required
+                          options={projectName}
                           className="form-control"
                           placeholder="Project Name"
                         />
@@ -407,7 +447,7 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="module_name"
                           label="Module Name"
@@ -417,6 +457,16 @@ const TotEdit = (props) => {
                           onKeyPress={handleKeyPress}
                           // filterData={filterAssignedTo}
                           // defaultOptions={assigneeOptions}
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="module_name"
+                          label="Module Name"
+                          required
+                          options={moduleName}
+                          className="form-control"
+                          placeholder="Module Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -508,11 +558,21 @@ const TotEdit = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="partner_dept"
                           label="Partner Department"
                           onKeyPress={handleKeyPresscharandspecialchar}
+                          className="form-control"
+                          placeholder="Partner Department"
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="partner_dept"
+                          label="Partner Department"
+                          required
+                          options={partnerDept}
                           className="form-control"
                           placeholder="Partner Department"
                         />

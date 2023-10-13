@@ -152,6 +152,9 @@ const alumniQueriesFields = `
         id
         full_name
         student_id
+        name_of_parent_or_guardian
+        email
+        phone
     }
     query_start
     student_name

@@ -5,6 +5,7 @@ import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import {searchOperationTab,resetSearch} from '../../../store/reducers/Operations/actions';
 import {getFieldValues} from './operationsActions';
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -87,26 +88,81 @@ const setDropdownValues = async (fieldName)=>{
   }
 }
         
-
+let today = new Date();
     const initialValues = {
         search_by_field:'',
-        search_by_value:''
+        search_by_value:'',
+        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() + 1)),
+        search_by_value_date:new Date(new Date(today).setDate(today.getDate() + 1)),
+        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() + 1)),
+        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() + 1)),
+    }
+    const validate = Yup.object().shape({
+      search_by_value_date: Yup.date().required("Start date is required"),
+      search_by_value_date_to: Yup.date()
+        .required("End date is required")
+        .when("search_by_value_date", (start, schema) => {
+          return schema.min(
+            start,
+            "End date must be greater than or equal to start date"
+          );
+        }),
+        search_by_value_date_end_from :Yup.date().required("Start date is required"),
+        search_by_value_date_end_to: Yup.date()
+        .required("End date is required")
+        .when("search_by_value_date_end_from", (start, schema) => {
+          return schema.min(
+            start,
+            "End date must be greater than or equal to start date"
+          );
+        }),
+        
+    });
+    const formatdate =(dateval)=>{
+      const date = new Date(dateval);
+
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
+      const dd = String(date.getDate()).padStart(2, "0");
+
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      return formattedDate;
+
     }
 
 
 
     const handleSubmit = async(values) =>{
       if(values.search_by_field === "query_start" || values.search_by_field === "query_end"){
-        const date = new Date(values.search_by_value);
-
-        const yyyy = date.getFullYear();
-        const mm = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
-        const dd = String(date.getDate()).padStart(2, '0');
-
-        const formattedDate = `${yyyy}-${mm}-${dd}`;
-
         let baseUrl = 'alumni-queries'
-        await searchOperationTab(baseUrl,values.search_by_field,formattedDate)
+        if(values.search_by_field == "query_start"){
+          const date1 = formatdate(values.search_by_value_date);
+          const date2 = formatdate(values.search_by_value_date_to);
+          let val ={
+            query_start:date1,
+            query_end:date2
+          }
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+        }
+        if(values.search_by_field == "query_end"){
+          const date1 = formatdate(values.search_by_value_date_end_from);
+          const date2 = formatdate(values.search_by_value_date_end_to);
+          let val ={
+            query_start:date1,
+            query_end:date2
+          }
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+        }
+        // const date = new Date(values.search_by_value);
+
+        // const yyyy = date.getFullYear();
+        // const mm = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
+        // const dd = String(date.getDate()).padStart(2, '0');
+
+        // const formattedDate = `${yyyy}-${mm}-${dd}`;
+        // // let baseUrl = 'alumni-queries'
+        // console.log("values",values);
+        // // await searchOperationTab(baseUrl,values.search_by_field,formattedDate)
 
 
 
@@ -134,6 +190,7 @@ const setDropdownValues = async (fieldName)=>{
         <Formik 
             initialValues={initialValues}
             onSubmit={handleSubmit}
+            validationSchema={validate}
             >
           {formik=>(<Form>
                 <Section>
@@ -219,7 +276,7 @@ const setDropdownValues = async (fieldName)=>{
                           <div className='d-flex justify-content-between align-items-center'>
                           <div className='mr-3'>
                           <Input
-                              name="search_by_value"
+                              name="search_by_value_date"
                               label="From"
                               placeholder="Query start date"
                               control="datepicker"
@@ -230,7 +287,7 @@ const setDropdownValues = async (fieldName)=>{
                           </div>
                           <div className='ml-2'>
                           <Input
-                              name="search_by_value"
+                              name="search_by_value_date_to"
                               label="To"
                               placeholder="Query start date"
                               control="datepicker"
@@ -250,7 +307,7 @@ const setDropdownValues = async (fieldName)=>{
                             <div className='d-flex justify-content-between align-items-center'>
                             <div className='mr-3'>
                             <Input
-                                name="search_by_value_date_from"
+                                name="search_by_value_date_end_from"
                                 label="From"
                                 placeholder="Query start date"
                                 control="datepicker"
@@ -261,7 +318,7 @@ const setDropdownValues = async (fieldName)=>{
                             </div>
                             <div className='ml-2'>
                             <Input
-                                name="search_by_value_date_to"
+                                name="search_by_value_date_end_to"
                                 label="To"
                                 placeholder="Query start date"
                                 control="datepicker"

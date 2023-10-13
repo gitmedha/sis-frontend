@@ -236,11 +236,7 @@ const StudentupskilingBulk = (props) => {
               props.handleChange(e, "sub_category", row.id)
             }
           />
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "sub_category", true)}
-          /> */}
+         
         </td>
         
         
@@ -276,8 +272,8 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input  date"
-            classNamePrefix="select"
+            className="table-input basic-single"
+            // classNamePrefix="select"
             isSearchable={true}
             name="area"
             options={options}

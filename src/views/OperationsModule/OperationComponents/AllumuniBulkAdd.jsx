@@ -128,7 +128,7 @@ const AllumuniBulkAdd = (props) => {
   }
   const addRow = () => {
     let value =checkEmptyValues(rows[rows.length-1])
-    
+    console.log(rows);
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
@@ -440,8 +440,8 @@ const AllumuniBulkAdd = (props) => {
                   <th>Query Start Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
-                  <th>E-mail Id</th>
-                  <th>Phone Number</th>
+                  <th>Email ID</th>
+                  <th>Mobile No.</th>
                   <th>Medha Area</th>
                   <th>Query Type *</th>
                   <th>Query Description *</th>

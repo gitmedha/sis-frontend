@@ -5,7 +5,9 @@ import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { MeiliSearch } from "meilisearch";
-import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker } from "../../../utils/function/OpsModulechecker";
+import { handleKeyPress, handleKeyPresscharandspecialchar, isEmptyValue, mobileNochecker } from "../../../utils/function/OpsModulechecker";
+import { getAlumniPickList,getStudent } from "./operationsActions";
+
 
 const options = [
   { value: 'Open', label: "Open" },
@@ -50,7 +52,10 @@ const AlumunniBulkrow = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [studentinput,setstudentinput]=useState("")
-  
+  const [queryTypes,setQueryType]=useState([])
+  const [Father,setFatherName]=useState("")
+  const [email,setEmail]=useState("")
+  const [phone,setPhone]=useState('')
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -83,6 +88,21 @@ const AlumunniBulkrow = (props) => {
       console.log("filterStudent",data);
     });
   }, [studentinput]);
+
+  useEffect(() => {
+    getStudent(name.id).then(data=>{
+      if(!isEmptyValue(data?.name_of_parent_or_guardian)){
+        setFatherName(data?.name_of_parent_or_guardian)
+      }
+      if(!isEmptyValue(data?.email)){
+        setEmail(data?.email)
+      }
+      if( !isEmptyValue(data?.phone)){
+        setPhone(data?.phone)
+      }
+    })
+  }, [name])
+  
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -103,6 +123,22 @@ const AlumunniBulkrow = (props) => {
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
+    });
+    getAlumniPickList().then((data) => {
+      setAreaOptions(
+        data.medha_area.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setQueryType(
+        data.query_type.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
     });
   }, []);
 
@@ -130,11 +166,12 @@ const AlumunniBulkrow = (props) => {
             onInputChange={(e)=>{
              
               setstudentinput(e)}}
-            onChange={(e) => {
+            onChange={async(e) => {
               console.log("filter",e);
-              setName(e.full_name)
-              updateRow(row.id, "student_name",e.full_name)
-              // props.handleChange(e, "student_id", row.id)
+              // setstudentinput(e)
+              setName(e)
+              // await props.updateRow(row.id, "student_name",e.full_name)
+              await props.handleChange(e, "student_id", row.id)
             }}
           />
         </td>
@@ -154,7 +191,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
-            defaultValue={name}
+            defaultValue={name.full_name}
             onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />
@@ -163,7 +200,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            // value={row.name}
+            defaultValue={Father}
             onKeyPress={handleKeyPress}
             onChange={(e) => props.updateRow(row.id, "father_name", e.target.value)}
           />
@@ -173,6 +210,7 @@ const AlumunniBulkrow = (props) => {
             className="table-input h-2"
             type="text"
             // value={row.name}
+            defaultValue={email}
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
         </td>
@@ -180,27 +218,35 @@ const AlumunniBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
+            defaultValue={phone}
             // value={row.name}
             onKeyPress={mobileNochecker}
             onChange={(e) => props.updateRow(row.id, "phone", e.target.value)}
           />
         </td>
        <td>
-          <input
+          {/* <input
             className="table-input h-2"
             type="text"
             // value={row.name}
             onChange={(e) => props.updateRow(row.id, "location", e.target.value)}
+          /> */}
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isSearchable={true}
+            options={areaOptions}
+            onChange={(e) => props.handleChange(e, "location", row.id)}
           />
         </td>
          <td>
-          <input
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.query_type ? `border-red`:"table-input h-2"}`}
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "query_type", e.target.value)
-            }
+          
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isSearchable={true}
+            options={queryTypes}
+            onChange={(e) => props.handleChange(e, "query_type", row.id)}
           />
         </td>
 
@@ -230,7 +276,6 @@ const AlumunniBulkrow = (props) => {
             className="basic-single table-input "
             classNamePrefix="select"
             isSearchable={true}
-            name="area"
             options={options}
             onChange={(e) => props.handleChange(e, "status", row.id)}
           />
