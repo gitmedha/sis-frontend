@@ -56,7 +56,6 @@ const categoryOptions = [
 ];
 
 const UpskillUpdate = (props) => {
-  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);

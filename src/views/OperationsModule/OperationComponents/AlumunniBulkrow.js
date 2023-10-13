@@ -85,7 +85,7 @@ const AlumunniBulkrow = (props) => {
     filterStudent(studentinput).then((data) => {
      
       setStudentOptions(data);
-      console.log("filterStudent",data);
+      // console.log("filterStudent",data);
     });
   }, [studentinput]);
 
@@ -167,7 +167,7 @@ const AlumunniBulkrow = (props) => {
              
               setstudentinput(e)}}
             onChange={async(e) => {
-              console.log("filter",e);
+              
               // setstudentinput(e)
               setName(e)
               // await props.updateRow(row.id, "student_name",e.full_name)

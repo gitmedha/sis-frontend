@@ -58,7 +58,6 @@ const Activityoptions = [
 ];
 
 const OperationDataupdateform = (props) => {
-  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);

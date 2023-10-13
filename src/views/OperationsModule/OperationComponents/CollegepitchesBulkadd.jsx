@@ -111,7 +111,7 @@ const CollegepitchesBulkadd = (props) => {
   }
 
   const addRow = () => {
-    console.log(rows);
+    
     let value =checkEmptyValues(rows[rows.length-1])
     setclassValue({})
     if(value.area || value.course_name || value.course_year || value.college_name || value.student_name || value.whatsapp  ){
@@ -127,7 +127,7 @@ const CollegepitchesBulkadd = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
   };
 

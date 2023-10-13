@@ -119,7 +119,6 @@ const UserTotRowdata = (props) => {
       setAssigneeOptions(data);
     });
     getTotPickList().then(data=>{
-      console.log("module_name",data.module_name);
       // setModuleName(data.module_name.map(item))
       setModuleName(
         data.module_name.map((item) => ({
@@ -142,8 +141,6 @@ const UserTotRowdata = (props) => {
           label: item,
         }))
       );
-      console.log("partner_dept",data.partner_dept);
-      console.log("project_name",data.project_name);
     })
     // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);

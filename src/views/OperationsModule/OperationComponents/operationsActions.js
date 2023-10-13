@@ -480,7 +480,7 @@ export const deactivate_user_college_pitch = async(id)=>{
 export const getFieldValues = async (searchField,baseURL)=>{
     try{
         const data = await api.get(`/${baseURL}/distinct/${searchField}`)
-        console.log("data",data);
+        
         return data;
     }
     catch(error){
@@ -496,7 +496,7 @@ export const getStudent = async (id) => {
         query: GET_STUDENT,
         variables: { id:id },
       });
-      console.log("daatttttt",data);
+    
       let values=data.data.student;
       
     //   values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()

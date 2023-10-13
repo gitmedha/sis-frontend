@@ -196,7 +196,6 @@ const UserTot = (props) => {
   }
   const addRow = () => {
     let value =checkEmptyValues(rows[rows.length-1])
-    console.log(rows);
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
@@ -204,8 +203,7 @@ const UserTot = (props) => {
       //   delete obj['class0']
       // }else if(rows.length > 1){
       //   obj=delete obj[`class${[rows.length-2]}`]
-      // }
-      console.log("obj",obj);
+      // }   
       return setclassValue(obj)
     }
    
@@ -214,8 +212,7 @@ const UserTot = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // setNewRow({ id: '', name: '', age: '' });    
     }
   };
 
