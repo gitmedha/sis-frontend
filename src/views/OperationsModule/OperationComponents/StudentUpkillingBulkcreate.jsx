@@ -104,8 +104,7 @@ const StudentUpkillingBulkcreate = (props) => {
         setAlert("You can't Add more than 10 items.", "error");
       } else {
         const newRowWithId = { ...newRow, id: rows.length + 1 };
-        setRows([...rows, newRowWithId]);
-        console.log(rows);
+        setRows([...rows, newRowWithId]);     
       }
       return setclassValue(obj);
     }
@@ -115,8 +114,7 @@ const StudentUpkillingBulkcreate = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // setNewRow({ id: '', name: '', age: '' });   
     }
   };
 

@@ -128,7 +128,6 @@ const AllumuniBulkAdd = (props) => {
   }
   const addRow = () => {
     let value =checkEmptyValues(rows[rows.length-1])
-    
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
@@ -145,7 +144,6 @@ const AllumuniBulkAdd = (props) => {
       } else {
         const newRowWithId = { ...newRow, id: rows.length + 1 };
         setRows([...rows, newRowWithId]);
-        console.log(rows);
       }
       return setclassValue(obj)
     }
@@ -156,7 +154,7 @@ const AllumuniBulkAdd = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
   };
 
@@ -284,7 +282,7 @@ const AllumuniBulkAdd = (props) => {
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
-    console.log("data",data);
+    
 
     try {
       const value = await bulkCreateAlumniQueries(data);
@@ -440,8 +438,8 @@ const AllumuniBulkAdd = (props) => {
                   <th>Query Start Date *</th>
                   <th>Full Name *</th>
                   <th>Father's Name </th>
-                  <th>E-mail Id</th>
-                  <th>Phone Number</th>
+                  <th>Email ID</th>
+                  <th>Mobile No.</th>
                   <th>Medha Area</th>
                   <th>Query Type *</th>
                   <th>Query Description *</th>

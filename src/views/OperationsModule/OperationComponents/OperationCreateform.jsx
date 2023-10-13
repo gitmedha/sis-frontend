@@ -259,7 +259,7 @@ const OperationCreateform = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
     // setclassValue({state:false,area:false,topic:false})
   };

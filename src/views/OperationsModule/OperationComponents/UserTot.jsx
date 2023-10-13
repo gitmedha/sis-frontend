@@ -196,7 +196,6 @@ const UserTot = (props) => {
   }
   const addRow = () => {
     let value =checkEmptyValues(rows[rows.length-1])
-    
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
@@ -204,17 +203,16 @@ const UserTot = (props) => {
       //   delete obj['class0']
       // }else if(rows.length > 1){
       //   obj=delete obj[`class${[rows.length-2]}`]
-      // }
-      console.log("obj",obj);
+      // }   
       return setclassValue(obj)
     }
+   
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // setNewRow({ id: '', name: '', age: '' });    
     }
   };
 
@@ -503,7 +501,7 @@ const UserTot = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Participant Name</th>
+                  <th>Participant Name </th>
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Mobile no.  </th>

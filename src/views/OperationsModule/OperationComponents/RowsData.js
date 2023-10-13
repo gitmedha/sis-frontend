@@ -54,7 +54,7 @@ export const RowsData = (props) => {
 
   useEffect(() => {
     getAllProgram().then((data)=>{
-      console.log("data",data);
+      
       setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
             key: value.id,
             label: value.name,

@@ -6,6 +6,7 @@ import { getStateDistricts } from "../../Address/addressActions";
 import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
+import { getPitchingPickList } from "./operationsActions";
 
 const options = [
   { value: true, label: "Yes" },
@@ -37,7 +38,7 @@ const CollegepitchesBulkrow = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
-
+  const [colleges,setCollege]=useState([])
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -61,26 +62,31 @@ const CollegepitchesBulkrow = (props) => {
     });
     let data = await getAllSrm(1);
     setsrmOption(data);
-    let val=await getStateDistricts().then((data) => {
-      setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
-        key: item.key,
-        value: item.key,
-        label: item.key,
-      })))
-     }); 
-     getProgramEnrollmentsPickList().then(data => {
-      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
-      // setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      console.log("data.current_course_year",data.current_course_year);
-      setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+    getProgramEnrollmentsPickList().then((data) => {
+      setCurrentCourseYearOptions(
+        data.current_course_year.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
-
-
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
+    getPitchingPickList().then((data) => {
+      setCollege(
+        data.college_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setAreaOptions(
+        data.medha_area.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+    });
   }, []);
 
   const updateRow = (id, field, value) => {
@@ -179,7 +185,7 @@ const CollegepitchesBulkrow = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            options={props.institutiondata}
+            options={colleges}
             onChange={(e) => props.handleChange(e, "college_name", row.id)}
           />
         </td>

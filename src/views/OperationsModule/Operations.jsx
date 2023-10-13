@@ -276,7 +276,7 @@ const Operations = ({
         accessor: "father_name",
       },
       {
-        Header: "Mobile",
+        Header: "Mobile No.",
         accessor: "phone",
       },
       {

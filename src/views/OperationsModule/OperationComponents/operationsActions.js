@@ -1,6 +1,7 @@
 
 import api from "../../../apis";
-
+import { GET_PICKLIST, GET_STUDENT } from "../../../graphql";
+import NP from "nprogress";
 import {
     GET_OPERATIONS,
     CREATE_OPERATION,
@@ -479,7 +480,7 @@ export const deactivate_user_college_pitch = async(id)=>{
 export const getFieldValues = async (searchField,baseURL)=>{
     try{
         const data = await api.get(`/${baseURL}/distinct/${searchField}`)
-
+        
         return data;
     }
     catch(error){
@@ -487,3 +488,81 @@ export const getFieldValues = async (searchField,baseURL)=>{
     }
 
 }
+export const getStudent = async (id) => {
+
+    NP.start();
+    try {
+      let { data } = await api.post("/graphql", {
+        query: GET_STUDENT,
+        variables: { id:id },
+      });
+    
+      let values=data.data.student;
+      
+    //   values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()
+    //   values.full_name=values.full_name.toLowerCase()
+    //   setStudent(values);
+    return values
+    } catch (err) {
+      console.log("ERR", err);
+    } finally {
+      NP.done();
+    }
+  };
+
+export const getPitchingPickList = async () => {
+    return await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'Pitching'
+      },
+    })
+      .then(data => {
+        let pickList = {};
+        data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+          pickList[item.field] = item.values;
+        });
+        return pickList;
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  export const getAlumniPickList = async () => {
+    return await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'alum_queries'
+      },
+    })
+      .then(data => {
+        let pickList = {};
+        data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+          pickList[item.field] = item.values;
+        });
+        return pickList;
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  export const getTotPickList = async () => {
+    return await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'tot'
+      },
+    })
+      .then(data => {
+        let pickList = {};
+        data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+          pickList[item.field] = item.values;
+        });
+        return pickList;
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }

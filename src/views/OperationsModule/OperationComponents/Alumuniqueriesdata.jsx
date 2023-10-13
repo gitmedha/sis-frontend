@@ -104,7 +104,7 @@ const Alumuniqueriesdata = (props) => {
   
                   {/* <DetailField label="Batch" value={props.batch_name} /> */}
                   <DetailField
-                    label="Phone"
+                    label="Mobile No."
                     value={props.phone}
                   />
                   <DetailField label="Father Name" value={props.father_name} />
@@ -121,7 +121,7 @@ const Alumuniqueriesdata = (props) => {
                   />
   
                   <DetailField label="Query End Date" value={props.query_end} />
-                  <DetailField label="Email" value={props.email} />
+                  <DetailField label="Email ID" value={props.email} />
                   <DetailField
                     label="Conclusion"
                     value={props.conclusion}
