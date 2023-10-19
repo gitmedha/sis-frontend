@@ -117,7 +117,7 @@ const CollegePitchdata = (props) => {
                 />
 
                 <DetailField label="Course Name" value={props.course_name} />
-                <DetailField label="Email" value={props.email} />
+                <DetailField label="Email ID" value={props.email} />
                 <DetailField label="Remark" value={props.remarks} />
                 {/* <DetailField label="Acad Year" value={props.acad_year} />
                   <DetailField label="Result" value={props.result} /> */}

@@ -99,10 +99,14 @@ const Alumuniqueriesdata = (props) => {
                     label="Student Name"
                     value={props.student_name ? props.student_name : ""}
                   />
+                  <DetailField
+                    label="Student Name"
+                    value={props.student_name ? props.student_id.student_id : ""}
+                  />
                   <DetailField label="Query Description" value={props.query_desc} />
                   <DetailField label="Query Start Date" value={props.query_start} />
   
-                  {/* <DetailField label="Batch" value={props.batch_name} /> */}
+                  <DetailField label="Medha Area" value={props.location} />
                   <DetailField
                     label="Mobile No."
                     value={props.phone}
