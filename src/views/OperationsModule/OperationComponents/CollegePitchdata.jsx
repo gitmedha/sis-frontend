@@ -18,6 +18,8 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from "./AllumuniEdit";
 import CollepitchesEdit from "./CollegepitchesEdit";
 import { deactivate_user_college_pitch } from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -48,7 +50,12 @@ const Styled = styled.div`
 `;
 const CollegePitchdata = (props) => {
   let { onHide } = props;
-  const [showModal, setShowModal] = useState(false);
+
+  const [showModal, setShowModal] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
+
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -61,17 +68,41 @@ const CollegePitchdata = (props) => {
   };
 
   const updatevalue = () => {
-    setShowModal(true);
+    setShowModal({
+      ...showModal,
+      dataAndEdit:true
+    });
   };
   const closeThepopup = async () => {
-    deactivate_user_college_pitch(Number(props.id));
-    onHide();
+    setShowModal({
+      ...showModal,
+      delete:true,
+      dataAndEdit:false 
+    });
   };
-  console.log(props);
+
+  const closepop =()=>{
+   
+    setShowModal({
+      ...showModal,
+      delete:false,
+    });
+  }
+
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_college_pitch(Number(props.id))
+    if(data.status===200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+   }
 
   return (
     <>
-      <Modal
+     {!showModal.dataAndEdit && ( <Modal
         centered
         size="lg"
         show={true}
@@ -169,17 +200,21 @@ const CollegePitchdata = (props) => {
             </div>
           )}
         </Styled>
-      </Modal>
+      </Modal>)}
 
-      {showModal ? (
+      {showModal.dataAndEdit &&(
         <CollepitchesEdit
           {...operationdata}
           show={showModal}
           onHide={hideShowModal1}
         />
-      ) : (
-        ""
       )}
+
+      {
+        showModal.delete && (
+          <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+        )
+      }
     </>
   );
 };

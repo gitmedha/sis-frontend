@@ -2,15 +2,8 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
-import {
-  getEmploymentConnectionsPickList,
-  getOpportunitiesPickList,
-} from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import OperationDataupdateform from "./OperationDataupdateform";
@@ -45,25 +38,6 @@ const Styled = styled.div`
   }
 `;
 
-const FileStyled = styled.div`
-  .icon-box {
-    display: flex;
-    padding: 5px;
-    justify-content: center;
-  }
-  .cv-icon {
-    margin-right: 20px;
-    padding: 8px;
-    border: 1px solid transparent;
-    border-radius: 50%;
-
-    &:hover {
-      background-color: #eee;
-      box-shadow: 0 0 0 1px #c4c4c4;
-    }
-  }
-`;
-
 const Opsdatafeilds = (props) => {
   let { onHide } = props;
   const { setAlert } = props;
@@ -90,7 +64,7 @@ const Opsdatafeilds = (props) => {
     });
   };
   const closepop =()=>{
-    console.log("hello");
+   
     setShowModal({
       ...showModal,
       delete:false,
@@ -119,10 +93,6 @@ const Opsdatafeilds = (props) => {
       dataAndEdit:false 
     });
   }
-
-  useEffect(() => {
-    console.log("ghjk",showModal);
-  }, [showModal])
   
 
   return (

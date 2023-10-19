@@ -16,6 +16,8 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -47,7 +49,10 @@ const Styled = styled.div`
 
 const Totdatafield = (props) => {
   let { onHide } = props;
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -63,20 +68,47 @@ const Totdatafield = (props) => {
   useEffect(() => {
     setoperationdata(props);
   }, [props]);
-  const updatevalue = () => {
-    setShowModal(true);
-  };
+  
   const closeThepopup =async () =>{
-    deactivate_user_tots(Number(props.id))
-    onHide()
+    setShowModal({
+      ...showModal,
+      delete:true,
+      dataAndEdit:false 
+    });
   }
 
+  const updatevalue = () => {
+    setShowModal({
+      ...showModal,
+      dataAndEdit:true
+    });
+  };
+  const closepop =()=>{
+   
+    setShowModal({
+      ...showModal,
+      delete:false,
+    });
+  }
+
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_tots(Number(props.id))
+    if(data.status==200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+    
+    
+   }
   useEffect(()=>{
     fetchAllStudents()
   },[])
   return (
     <>
-      {!showModal ? (
+      {!showModal.dataAndEdit &&(
         <Modal
           centered
           size="lg"
@@ -247,9 +279,19 @@ const Totdatafield = (props) => {
             )}
           </Styled>
         </Modal>
-      ) : (
-        <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} />
       )}
+      {
+        showModal.dataAndEdit && 
+        (
+          <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} />
+        )
+      }
+      {
+
+showModal.delete && (
+  <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+)
+      }
     </>
   );
 };

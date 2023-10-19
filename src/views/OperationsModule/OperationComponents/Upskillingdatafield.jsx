@@ -17,6 +17,8 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import Opsdatafeilds from "./Opsdatafeilds";
 import UpskillUpdate from "./UpskillUpdate";
 import { deactivate_user_students_upskills } from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -48,7 +50,11 @@ const Styled = styled.div`
 
 const Upskillingdatafield = (props) => {
   let { onHide } = props;
-  const [showedit, setshowedit] = useState(false);
+  const [showedit, setshowedit] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
+  
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -62,17 +68,43 @@ const Upskillingdatafield = (props) => {
     setoperationdata(props);
   }, []);
   const updatevalue = () => {
-    setshowedit(true);
+    setshowedit({
+      ...showedit,
+      dataAndEdit:true
+    });
   };
 
   const closeThepopup =async () =>{
-    deactivate_user_students_upskills(Number(props.id))
-    onHide()
+    setshowedit({
+      ...showedit,
+      dataAndEdit:false,
+      delete:true
+    });
   }
 
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_students_upskills(Number(props.id))
+    if(data.status==200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+    
+    
+   }
+
+   const closepop =()=>{
+   
+    setshowedit({
+      ...showedit,
+      delete:false,
+    });
+  }
   return (
     <>
-      {!showedit ? (
+      {!showedit.dataAndEdit && (
         <Modal
           centered
           size="lg"
@@ -301,13 +333,23 @@ const Upskillingdatafield = (props) => {
           
         } */}
         </Modal>
-      ) : (
-        <UpskillUpdate
-          {...operationdata}
-          show={showedit}
-          onHide={hideShowModal1}
-        />
       )}
+
+      { showedit.dataAndEdit &&
+        (
+          <UpskillUpdate
+            {...operationdata}
+            show={showedit}
+            onHide={hideShowModal1}
+          />
+        )
+      }
+
+      {
+       showedit.delete && (
+        <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+      ) 
+      }
     </>
   );
 };
