@@ -18,7 +18,7 @@ import {
 import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity } from "./operationsActions";
+import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -257,6 +257,13 @@ const OperationDataupdateform = (props) => {
         );
       }),
   });
+  useEffect(async() => {
+   let data= await getOpsPickList().then(data=>{
+      return data
+    })
+    console.log(data);
+  }, [])
+  
 
   return (
     <>
@@ -330,7 +337,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             control="lookupAsync"
                             name="batch"
-                            label="Batch"
+                            label="Batch Name"
                             filterData={filterBatch}
                             defaultOptions={batchOptions}
                             className="form-control1"

@@ -375,9 +375,9 @@ const CollepitchesEdit = (props) => {
                           icon="down"
                           control="input"
                           name="email"
-                          label="Email"
+                          label="Email ID"
                           className="form-control"
-                          placeholder="Email"
+                          placeholder="Email ID"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">

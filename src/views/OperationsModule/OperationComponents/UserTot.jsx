@@ -340,8 +340,8 @@ const UserTot = (props) => {
       row.trainer_2 = Number(row.trainer_2 ? 54 : 54);
       row.isActive = true;
       row.created_by = Number(userId);
-      delete row.start_date;
-      delete row.end_date;
+      // delete row.start_date;
+      // delete row.end_date;
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
@@ -350,6 +350,7 @@ const UserTot = (props) => {
       const value = await bulkCreateUsersTots(data);
 
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
     } catch (error) {
       console.log("error", error);
     }

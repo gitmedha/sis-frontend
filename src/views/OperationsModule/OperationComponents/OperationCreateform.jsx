@@ -378,7 +378,10 @@ const OperationCreateform = (props) => {
         "/users-ops-activities/createBulkOperations",
         data
       );
+
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
+      
     } catch (error) {
       console.log("error", error);
     }

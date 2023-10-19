@@ -93,12 +93,15 @@ const AlumunniBulkrow = (props) => {
     getStudent(name.id).then(data=>{
       if(!isEmptyValue(data?.name_of_parent_or_guardian)){
         setFatherName(data?.name_of_parent_or_guardian)
+        
       }
       if(!isEmptyValue(data?.email)){
         setEmail(data?.email)
+        // 
       }
       if( !isEmptyValue(data?.phone)){
         setPhone(data?.phone)
+        // 
       }
     })
   }, [name])
@@ -148,6 +151,17 @@ const AlumunniBulkrow = (props) => {
     // props.handleInputChange()
     // setRows(updatedRows);
   };
+  useEffect(() => {
+    console.log("Father",Father);
+    props.updateRow(row.id, 'father_name', Father);
+  props.updateRow(row.id, 'email', email);
+  props.updateRow(row.id, 'phone', phone);
+
+  }, [Father,email,phone])
+  
+//  const updateOther =()=>{
+//   
+//  }
 
   return (
     <>
@@ -168,10 +182,11 @@ const AlumunniBulkrow = (props) => {
               setstudentinput(e)}}
             onChange={async(e) => {
               
-              // setstudentinput(e)
+              
               setName(e)
               // await props.updateRow(row.id, "student_name",e.full_name)
               await props.handleChange(e, "student_id", row.id)
+              // await updateOther()
             }}
           />
         </td>
@@ -209,7 +224,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            // value={row.name}
+
             defaultValue={email}
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
@@ -219,7 +234,7 @@ const AlumunniBulkrow = (props) => {
             className="table-input h-2"
             type="text"
             defaultValue={phone}
-            // value={row.name}
+
             onKeyPress={mobileNochecker}
             onChange={(e) => props.updateRow(row.id, "phone", e.target.value)}
           />
@@ -228,7 +243,7 @@ const AlumunniBulkrow = (props) => {
           {/* <input
             className="table-input h-2"
             type="text"
-            // value={row.name}
+
             onChange={(e) => props.updateRow(row.id, "location", e.target.value)}
           /> */}
           <Select

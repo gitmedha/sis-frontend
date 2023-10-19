@@ -408,7 +408,7 @@ const UpskillUpdate = (props) => {
                         <Input
                           control="lookupAsync"
                           name="batch"
-                          label="Batch"
+                          label="Batch Name"
                           required
                           filterData={filterBatch}
                           defaultOptions={batchOptions}

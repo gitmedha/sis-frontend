@@ -105,7 +105,7 @@ const Upskillingdatafield = (props) => {
                   
                   <DetailField
                     
-                    label="Batch"
+                    label="Batch Name"
                     value={props.batch?.name}
                   />
                   <DetailField

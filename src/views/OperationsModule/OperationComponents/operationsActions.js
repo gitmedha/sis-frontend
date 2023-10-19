@@ -566,3 +566,23 @@ export const getPitchingPickList = async () => {
         return Promise.reject(error);
       });
   }
+
+
+  export const getOpsPickList = async () => {
+    return await api.post("/graphql", {
+      query: GET_PICKLIST,
+      variables: {
+        table: 'user_ops'
+      },
+    })
+      .then(data => {
+        let pickList = {};
+        data?.data?.data?.picklistFieldConfigs.forEach((item) => {
+          pickList[item.field] = item.values;
+        });
+        return pickList;
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
