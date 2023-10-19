@@ -69,6 +69,7 @@ const Upskillingdatafield = (props) => {
     deactivate_user_students_upskills(Number(props.id))
     onHide()
   }
+  console.log(props);
 
   return (
     <>
