@@ -257,6 +257,7 @@ const CollegepitchesBulkadd = (props) => {
     try {
 
       const value = await bulkCreateCollegePitch(data);
+      props.ModalShow();
       setAlert("Data created successfully.", "success");
     } catch (error) {
       setAlert("Data is not created yet", "danger");

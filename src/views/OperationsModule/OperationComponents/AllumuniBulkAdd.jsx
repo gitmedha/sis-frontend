@@ -286,6 +286,7 @@ const AllumuniBulkAdd = (props) => {
 
     try {
       const value = await bulkCreateAlumniQueries(data);
+      props.ModalShow();
       setAlert("Data created successfully.", "success");
     } catch (error) {
       setAlert("Data is not created yet", "danger");
