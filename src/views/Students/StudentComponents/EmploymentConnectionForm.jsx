@@ -170,9 +170,10 @@ const EnrollmentConnectionForm = (props) => {
   }, [props]);
 
   useEffect(() => {
+
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship') {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === selectedOpportunityType || item['applicable-to'] === 'Both');
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship') {
+      filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Both');
     } else {
       filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
     }
