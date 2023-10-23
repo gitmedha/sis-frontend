@@ -11,7 +11,7 @@ const Deletepopup = (props) => {
     <>
       <Modal show={true} >
         <Modal.Header >
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Are you sure</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are you sure, You want to delete this</Modal.Body>
         <Modal.Footer>
