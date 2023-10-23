@@ -22,7 +22,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
+import { getOpsPickList, updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
@@ -69,6 +69,7 @@ const UpskillUpdate = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [studentinput,setstudentinput]=useState("")
   const [subcategory,setSubcategory]=useState([])
+  const [programeName,setProgramName]=useState([])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -271,6 +272,7 @@ const UpskillUpdate = (props) => {
   };
   if (props) {
     initialValues["category"] = props.category;
+     initialValues['program_name']=props.program_name
     initialValues["sub_category"] = props.sub_category;
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
@@ -297,12 +299,21 @@ const UpskillUpdate = (props) => {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(async() => {
     getProgramEnrollmentsPickList().then((data) => {
       setcourse(
         data?.course?.map((item) => ({ key: item, value: item, label: item }))
       );
     });
+    let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
   }, []);
 
   // const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
@@ -416,6 +427,18 @@ const UpskillUpdate = (props) => {
                           placeholder="Batch"
                         />
                       </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                       
+                       <Input
+                         name="program_name"
+                         control="lookup"
+                         icon="down"
+                         label="Program Name"
+                         options={programeName}
+                         className="form-control"
+                         placeholder="Program Name"
+                       />
+                     </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input

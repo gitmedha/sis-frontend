@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
 import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { getAllProgram } from "./operationsActions";
+import { getAllProgram, getOpsPickList } from "./operationsActions";
 import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
 
 const options = [
@@ -43,6 +43,7 @@ export const RowsData = (props) => {
   ]);
   const guestname = useRef(null);
   const guestDesignation = useRef(null);
+  const [programeName,setProgramName]=useState([])
   const org = useRef(null);
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState("");
@@ -109,6 +110,15 @@ export const RowsData = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+    let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
     
   }, []);
 
@@ -215,6 +225,17 @@ export const RowsData = (props) => {
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
           
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programeName}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
+          />
         </td>
         <td>
           <Select

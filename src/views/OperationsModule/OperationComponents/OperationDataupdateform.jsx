@@ -65,6 +65,7 @@ const OperationDataupdateform = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [programeName,setProgramName]=useState([])
   const [disablevalue, setdisablevalue] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -224,7 +225,7 @@ const OperationDataupdateform = (props) => {
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
-
+    initialValues['program_name']=props.program_name
     initialValues["start_date"] = new Date(props.start_date);
     initialValues["end_date"] = new Date(props.end_date);
     initialValues["students_attended"] = props?.students_attended;
@@ -258,11 +259,17 @@ const OperationDataupdateform = (props) => {
       }),
   });
   useEffect(async() => {
-   let data= await getOpsPickList().then(data=>{
-      return data
-    })
-    console.log(data);
+  let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
   }, [])
+  console.log(props);
   
 
   return (
@@ -318,6 +325,7 @@ const OperationDataupdateform = (props) => {
                           placeholder="Activity Type"
                         />
                       </div>
+                      
                       <div className="col-md-6 col-sm-12 mb-2">
                         {assigneeOptions.length && (
                           <Input
@@ -330,6 +338,18 @@ const OperationDataupdateform = (props) => {
                             defaultOptions={assigneeOptions}
                           />
                         )}
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="program_name"
+                          label="Program Name"
+                          required
+                          options={programeName}
+                          className="form-control"
+                          placeholder="Program Name"
+                        />
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">

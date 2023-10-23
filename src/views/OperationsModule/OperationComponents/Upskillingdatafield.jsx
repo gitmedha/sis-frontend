@@ -81,6 +81,7 @@ const Upskillingdatafield = (props) => {
       delete:true
     });
   }
+  console.log(props);
 
   const deleteEntry=async()=>{
     const data=await deactivate_user_students_upskills(Number(props.id))

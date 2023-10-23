@@ -7,6 +7,7 @@ import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions
 import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import { getOpsPickList } from "./operationsActions";
 
 const options = [
   { value: true, label: "Yes" },
@@ -50,6 +51,7 @@ const StudentupskilingBulk = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [subcategory,setSubcategory]=useState([])
   const [studentinput,setstudentinput]=useState("")
+  const [programeName,setProgramName]=useState([])
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -87,10 +89,19 @@ const StudentupskilingBulk = (props) => {
   const updateRow = (id, field, value) => {
     row[field] = value;
   };
-  useEffect(() => {
+  useEffect(async() => {
     filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
+    let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
@@ -193,8 +204,19 @@ const StudentupskilingBulk = (props) => {
             name="batch"
             options={props.batchbdata}
             onChange={(e) => {
-              console.log(e);
               props.handleChange(e, "batch", row.id)}}
+          />
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input "
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programeName}
+            onChange={(e) => {
+              props.handleChange(e, "program_name", row.id)}}
           />
         </td>
 
@@ -207,13 +229,6 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "category", e.target.value)
-            }
-          /> */}
           <Select
             className="basic-single table-input  "
             classNamePrefix="select"
