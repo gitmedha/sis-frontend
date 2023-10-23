@@ -383,6 +383,7 @@ const OperationCreateform = (props) => {
       setAlert("Data created successfully.", "success");
       
     } catch (error) {
+      setAlert("Data is not created yet", "danger");
       console.log("error", error);
     }
   };
