@@ -128,7 +128,7 @@ const Alumuniqueriesdata = (props) => {
                     value={props.student_name ? props.student_name : ""}
                   />
                   <DetailField
-                    label="Student Name"
+                    label="Student Id"
                     value={props.student_name ? props.student_id.student_id : ""}
                   />
                   <DetailField label="Query Description" value={props.query_desc} />
