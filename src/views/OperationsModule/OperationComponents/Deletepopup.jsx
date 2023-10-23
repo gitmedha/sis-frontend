@@ -9,11 +9,10 @@ const Deletepopup = (props) => {
 
   return (
     <>
-      <Modal show={true} >
+      <Modal show={true} className='' >
         <Modal.Header >
-          <Modal.Title>Are you sure</Modal.Title>
+          <Modal.Title className=' text-heading text--xl'>Are you sure, You want to delete this</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure, You want to delete this</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
