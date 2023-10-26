@@ -181,46 +181,42 @@ const Upskillingdatafield = (props) => {
 
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
-                    label="Created By"
-                    value={
-                      props.Created_by ? props.Created_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={moment(
-                      props.updated_at
-                        ? props.created_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                 
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
-                    label="Updated By"
-                    value={
-                      props.Updated_by ? props.Updated_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-              </div>
+              <div className="row">
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Updated By"
+                          value={
+                            props.updatedBy?.userName
+                              ? props.updatedBy?.userName
+                              : props.createdBy?.username
+                          }
+                        />
+                        <DetailField
+                          label="Updated At"
+                          value={moment(
+                            props.updated_at
+                              ? props.updated_at
+                              : props.created_at
+                          ).format("DD MMM YYYY, h:mm a")}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Created By"
+                          value={
+                            props.createdBy?.username
+                              ? props.createdBy?.username
+                              : ""
+                          }
+                        />
+                        <DetailField
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
+                    </div>
               {/* <div className="col-md-6 col-sm-12">
                 <DetailField Bold={'bold'}
                   label="Student Name "

@@ -26,11 +26,11 @@ const operationFields = `
     username
     id
   }
-  Created_by {
+  createdBy {
     username
     id
   }
-  Updated_by {
+  updatedBy {
     username
     id
   }
@@ -41,11 +41,11 @@ const usersTotsFields = `
     id
     created_at
     user_name
-    Created_by {
+    createdBy {
         id
         username
     }
-    Updated_by {
+    updatedBy {
         id
         username
     }
@@ -142,11 +142,11 @@ const dteSamarthSditFields = `
 const alumniQueriesFields = `
     id
     created_at
-    Created_by {
+    createdBy {
         id
         username
     }
-    Updated_by {
+    updatedBy {
         id
         username
     }
@@ -173,11 +173,11 @@ const alumniQueriesFields = `
 const collegePitchesFields = `
     id
     created_at
-    Created_by {
+    createdBy {
         id
         username
     }
-    Updated_by {
+    updatedBy {
         id
         username
     }

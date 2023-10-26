@@ -101,7 +101,7 @@ const Totdatafield = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
-                <DetailField
+                  <DetailField
                     label="Participant Name"
                     value={props.user_name}
                   />
@@ -127,7 +127,7 @@ const Totdatafield = (props) => {
                     label="Project Type"
                     value={props.project_type}
                   />
-                  
+
                   <DetailField
                     label="Partner Department"
                     value={props.partner_dept}
@@ -145,7 +145,7 @@ const Totdatafield = (props) => {
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                {/* <DetailField
+                  {/* <DetailField
                     label="Trainer Name"
                     value={props.trainer_1.id}
                   /> */}
@@ -190,37 +190,35 @@ const Totdatafield = (props) => {
 
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
+              <div className="row">
+                <div className="col-md-6">
                   <DetailField
-                    Bold={""}
-                    label="Created By"
-                    value={
-                      props.Created_by ? props.Created_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={props.created_at ? moment(props.created_at).format(
-                      "YYYY-MM-DD"
-      ) : "not found"}
-                  />
-                 
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
                     label="Updated By"
                     value={
-                      props.Updated_by ? props.Updated_by.username : "not found"
+                      props.updatedBy?.userName
+                        ? props.updatedBy?.userName
+                        : props.createdBy?.username
                     }
                   />
                   <DetailField
-                    Bold={""}
                     label="Updated At"
-                    value={props.Updated_at ? props.Updated_at : "not found"}
+                    value={moment(
+                      props.updated_at ? props.updated_at : props.created_at
+                    ).format("DD MMM YYYY, h:mm a")}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <DetailField
+                    label="Created By"
+                    value={
+                      props.createdBy?.username ? props.createdBy?.username : ""
+                    }
+                  />
+                  <DetailField
+                    label="Created At"
+                    value={moment(props.created_at).format(
+                      "DD MMM YYYY, h:mm a"
+                    )}
                   />
                 </div>
               </div>
@@ -237,7 +235,7 @@ const Totdatafield = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={()=>closeThepopup()}
+                    onClick={() => closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
                     Delete
