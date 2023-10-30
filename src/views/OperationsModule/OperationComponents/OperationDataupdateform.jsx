@@ -185,12 +185,12 @@ const OperationDataupdateform = (props) => {
     );
     newValueObject["institution"] = Number(values["institution"]);
     newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
-    newValueObject["updatedBy"] = Number(userId);
+    newValueObject["updatedby"] = Number(userId);
 
-    delete newValueObject["updatedBy"];
+    delete newValueObject["updatedby"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
-    delete newValueObject["createdBy"];
+    delete newValueObject["createdby"];
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
@@ -213,7 +213,7 @@ const OperationDataupdateform = (props) => {
     start_date: "",
     end_date: "",
     designation: "",
-    updatedBy: "",
+    updatedby: "",
     area: "",
     students_attended: "",
     batch: "",
@@ -515,9 +515,9 @@ const OperationDataupdateform = (props) => {
                         <DetailField
                           label="Updated By"
                           value={
-                            props.updatedBy?.userName
-                              ? props.updatedBy?.userName
-                              : props.createdBy?.username
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
                           }
                         />
                         <DetailField
@@ -533,8 +533,8 @@ const OperationDataupdateform = (props) => {
                         <DetailField
                           label="Created By"
                           value={
-                            props.createdBy?.username
-                              ? props.createdBy?.username
+                            props.createdby?.username
+                              ? props.createdby?.username
                               : ""
                           }
                         />

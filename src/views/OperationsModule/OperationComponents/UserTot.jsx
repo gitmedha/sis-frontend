@@ -334,8 +334,8 @@ const UserTot = (props) => {
       row.trainer_1 = Number(row.trainer_1 ? 24 : 24);
       row.trainer_2 = Number(row.trainer_2 ? 54 : 54);
       row.isActive = true;
-      row.createdBy = Number(userId);
-      row.updatedBy = Number(userId);
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });

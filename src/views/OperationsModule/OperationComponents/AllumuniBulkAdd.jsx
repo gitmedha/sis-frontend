@@ -273,8 +273,8 @@ const AllumuniBulkAdd = (props) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
-      row.createdBy = Number(userId);
-      row.updatedBy = Number(userId);
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       row.isActive=true;
 
       let value = checkEmptyValuesandplaceNA(row)

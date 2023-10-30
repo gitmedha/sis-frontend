@@ -358,8 +358,8 @@ const OperationCreateform = (props) => {
     let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
-      row.createdBy = Number(userId);
-      row.updatedBy = Number(userId);
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);

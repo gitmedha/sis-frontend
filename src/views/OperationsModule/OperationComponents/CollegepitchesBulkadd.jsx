@@ -246,8 +246,8 @@ const CollegepitchesBulkadd = (props) => {
       delete row["id"];
       delete row["name"];
       row.isActive=true;
-      row.createdBy = Number(userId);
-      row.updatedBy = Number(userId);
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
