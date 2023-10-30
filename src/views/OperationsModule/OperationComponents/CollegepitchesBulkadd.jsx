@@ -243,14 +243,12 @@ const CollegepitchesBulkadd = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
       delete row["id"];
       delete row["name"];
       row.isActive=true;
-      row.created_by = Number(userId);
-      row.updated_by = Number(userId);
+      row.createdBy = Number(userId);
+      row.updatedBy = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
-      console.log("value",value);
       return value;
     });
 

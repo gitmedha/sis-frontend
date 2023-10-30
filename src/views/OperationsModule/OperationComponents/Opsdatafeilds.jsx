@@ -222,8 +222,8 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Created By"
                       value={
-                        props.Created_by
-                          ? props.Created_by.username
+                        props.createdBy
+                          ? props.createdBy.username
                           : "not found"
                       }
                     />
@@ -239,8 +239,8 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Updated By"
                       value={
-                        props.Updated_by
-                          ? props.Updated_by.username
+                        props.updatedBy
+                          ? props.updatedBy.username
                           : "not found"
                       }
                     />

@@ -165,33 +165,42 @@ const Alumuniqueriesdata = (props) => {
               
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={moment(
-                      props.created_at
-                        ? props.created_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-  
-                <div className="col-md-6 col-sm-12">
-                 
-                  <DetailField
-                    Bold={""}
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-              </div>
+              <div className="row">
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Updated By"
+                          value={
+                            props.updatedBy?.userName
+                              ? props.updatedBy?.userName
+                              : props.createdBy?.username
+                          }
+                        />
+                        <DetailField
+                          label="Updated At"
+                          value={moment(
+                            props.updated_at
+                              ? props.updated_at
+                              : props.created_at
+                          ).format("DD MMM YYYY, h:mm a")}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Created By"
+                          value={
+                            props.createdBy?.username
+                              ? props.createdBy?.username
+                              : ""
+                          }
+                        />
+                        <DetailField
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
+                    </div>
             </Modal.Body>
             {(isSRM() || isAdmin()) && (
               <div className="row mt-4 mb-4">

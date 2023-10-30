@@ -237,8 +237,8 @@ const StudentUpkillingBulkcreate = (props) => {
       console.log(row["start_date"]);
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
-      row.created_by = Number(userId);
-      row.updated_by = userId;
+      row.createdBy = Number(userId);
+      row.updatedBy = Number(userId);
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);

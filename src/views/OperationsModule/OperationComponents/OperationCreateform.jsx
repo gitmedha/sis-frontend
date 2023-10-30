@@ -304,10 +304,6 @@ const OperationCreateform = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -362,8 +358,8 @@ const OperationCreateform = (props) => {
     let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
-      row.created_by = Number(userId);
-      row.updated_by = userId;
+      row.createdBy = Number(userId);
+      row.updatedBy = Number(userId);
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
