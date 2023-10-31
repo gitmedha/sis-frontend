@@ -2,6 +2,7 @@ const operationFields = `
     id
     activity_type
     created_at
+
     program_name
     institution {
         name
@@ -78,6 +79,14 @@ const studentUpskillingFields = `
     id
     created_at
     program_name
+    createdby {
+        id
+        username
+    }
+    updatedby {
+        id
+        username
+    }
     assigned_to {
         id
         username

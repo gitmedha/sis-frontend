@@ -92,10 +92,10 @@ let today = new Date();
     const initialValues = {
         search_by_field:'',
         search_by_value:'',
-        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() + 1)),
-        search_by_value_date:new Date(new Date(today).setDate(today.getDate() + 1)),
-        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() + 1)),
-        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() + 1)),
+        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() )),
     }
     const validate = Yup.object().shape({
       search_by_value_date: Yup.date().required("Start date is required"),

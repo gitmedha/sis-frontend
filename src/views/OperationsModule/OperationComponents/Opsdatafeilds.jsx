@@ -222,15 +222,17 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Created By"
                       value={
-                        props.createdby
-                          ? props.createdby.username
+                        props.created_by
+                          ? props.created_by.username
                           : "not found"
                       }
                     />
                     <DetailField
                       Bold={""}
                       label="Created At"
-                      value={props.Created_at ? props.Created_at : "not found"}
+                      value={moment(props.created_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      )}
                     />
                   </div>
 
@@ -239,8 +241,8 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Updated By"
                       value={
-                        props.updatedby
-                          ? props.updatedby.username
+                        props.updated_by
+                          ? props.updated_by.username
                           : "not found"
                       }
                     />

@@ -229,7 +229,7 @@ const Totdatafield = (props) => {
                     value={
                       props.updatedby?.userName
                         ? props.updatedby?.userName
-                        : props.createdby?.username
+                        : ""
                     }
                   />
                   <DetailField

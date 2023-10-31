@@ -277,7 +277,6 @@ const UpskillUpdate = (props) => {
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
     initialValues["course_name"] = props["course_name"];
-    console.log("props.student_id.id",props.student_id.id);
     initialValues['student_id']=Number(props.student_id.id);
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date

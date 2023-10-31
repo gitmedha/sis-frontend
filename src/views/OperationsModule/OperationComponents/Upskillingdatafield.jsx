@@ -228,7 +228,7 @@ const Upskillingdatafield = (props) => {
                           value={moment(
                             props.updated_at
                               ? props.updated_at
-                              : props.created_at
+                              : ""
                           ).format("DD MMM YYYY, h:mm a")}
                         />
                       </div>

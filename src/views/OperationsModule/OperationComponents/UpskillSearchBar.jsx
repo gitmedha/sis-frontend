@@ -5,6 +5,7 @@ import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import {searchOperationTab,resetSearch} from '../../../store/reducers/Operations/actions';
 import {getFieldValues} from './operationsActions';
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -31,6 +32,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
     {key:2, value:'institution.name', label:'Institute Name'}, 
     {key:3, value:'course_name', label:'Course Name'},
     {key:4, value:'program_name', label:'Program Name'},
+    {key:5, value:'start_date', label:'Start Date'},
+    {key:6, value:'end_date', label:'End Date'},
 
   ]
 
@@ -61,10 +64,46 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
 
    const [selectedSearchField, setSelectedSearchField] = useState('');
         
-
+   let today = new Date();
     const initialValues = {
         search_by_field:'',
-        search_by_value:''
+        search_by_value:'',      
+        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() )),
+    }
+    const validate = Yup.object().shape({
+      search_by_value_date: Yup.date().required("Start date is required"),
+      search_by_value_date_to: Yup.date()
+        .required("End date is required")
+        .when("search_by_value_date", (start, schema) => {
+          return schema.min(
+            start,
+            "End date must be greater than or equal to start date"
+          );
+        }),
+        search_by_value_date_end_from :Yup.date().required("Start date is required"),
+        search_by_value_date_end_to: Yup.date()
+        .required("End date is required")
+        .when("search_by_value_date_end_from", (start, schema) => {
+          return schema.min(
+            start,
+            "End date must be greater than or equal to start date"
+          );
+        }),
+        
+    });
+    const formatdate =(dateval)=>{
+      const date = new Date(dateval);
+
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
+      const dd = String(date.getDate()).padStart(2, "0");
+
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      return formattedDate;
+
     }
 
     const handleSubmit = async(values) =>{
@@ -157,6 +196,66 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                             disabled={true}
                             />
                             }
+
+{ selectedSearchField === "start_date" && 
+                          <div className='d-flex justify-content-between align-items-center'>
+                          <div className='mr-3'>
+                          <Input
+                              name="search_by_value_date"
+                              label="From"
+                              placeholder="Query start date"
+                              control="datepicker"
+                              className="form-control "
+                              autoComplete="off"
+
+                            />
+                          </div>
+                          <div className='ml-2'>
+                          <Input
+                              name="search_by_value_date_to"
+                              label="To"
+                              placeholder="Query start date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                            
+                            />
+                          </div>
+                           
+                            
+                          </div>
+                            
+                            
+                          }
+
+                          { selectedSearchField === "end_date" && 
+                            <div className='d-flex justify-content-between align-items-center'>
+                            <div className='mr-3'>
+                            <Input
+                                name="search_by_value_date_end_from"
+                                label="From"
+                                placeholder="Query start date"
+                                control="datepicker"
+                                className="form-control "
+                                autoComplete="off"
+  
+                              />
+                            </div>
+                            <div className='ml-2'>
+                            <Input
+                                name="search_by_value_date_end_to"
+                                label="To"
+                                placeholder="Query start date"
+                                control="datepicker"
+                                className="form-control"
+                                autoComplete="off"
+                              
+                              />
+                            </div>
+                             
+                              
+                            </div>
+                          }
 
                         {
                           selectedSearchField === "student_id.full_name" &&
