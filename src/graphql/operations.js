@@ -2,7 +2,7 @@ const operationFields = `
     id
     activity_type
     created_at
-
+    updated_at 
     program_name
     institution {
         name

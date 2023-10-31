@@ -108,9 +108,34 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
 
     const handleSubmit = async(values) =>{
       let baseUrl = "students-upskillings";
+      //  await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+      if(values.search_by_field === "start_date" || values.search_by_field === "end_date"){
+        // let baseUrl = 'alumni-queries'
+        if(values.search_by_field == "start_date"){
+          const date1 = formatdate(values.search_by_value_date);
+          const date2 = formatdate(values.search_by_value_date_to);
+          let val ={
+            start_date:date1,
+            end_date:date2
+          }
+          console.log(val);
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+        }
+        if(values.search_by_field == "end_date"){
+          const date1 = formatdate(values.search_by_value_date_end_from);
+          const date2 = formatdate(values.search_by_value_date_end_to);
+          let val ={
+            start_date:date1,
+            end_date:date2
+          }
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+        }
+      }
+      else {
+        // let baseUrl = 'alumni-queries'
+        await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
 
-       await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
-      
+      }
     }
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
