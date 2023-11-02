@@ -98,7 +98,6 @@ const Alumuniqueriesdata = (props) => {
         delete:false,
       });
     }
-    console.log(props);
   
     return (
       <>
