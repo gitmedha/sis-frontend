@@ -455,7 +455,7 @@ const UserTot = (props) => {
             <div className="d-flex ">
              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New UserTot Data"}
+                {props.id ? props.full_name : "Add New TOT Data"}
               </h2>
             </div>
           </div>

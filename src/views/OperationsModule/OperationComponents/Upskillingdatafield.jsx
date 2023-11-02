@@ -2,16 +2,12 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { Anchor, Badge } from "../../../components/content/Utils";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
+import { Anchor, } from "../../../components/content/Utils";
 import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
 import {
   getEmploymentConnectionsPickList,
   getOpportunitiesPickList,
 } from "./StudentActions";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import Opsdatafeilds from "./Opsdatafeilds";
@@ -133,13 +129,13 @@ const Upskillingdatafield = (props) => {
                 <DetailField
                     
                     label="Student Name"
-                    value={props.student_id.full_name}
+                    value={<Anchor text={props.student_id.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
                   
                   <DetailField
-                    
-                    label="Batch Name"
-                    value={props.batch?.name}
+                    Bold={""}
+                    label="Batch"
+                    value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />}
                   />
                   <DetailField
                     
@@ -185,10 +181,10 @@ const Upskillingdatafield = (props) => {
                         : ""
                     }
                   />
-                  <DetailField
-                    
+                 <DetailField
+                    Bold={""}
                     label="Institute"
-                    value={props.institution.name}
+                    value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField
                     
