@@ -127,9 +127,14 @@ const Alumuniqueriesdata = (props) => {
                     label="Student Name"
                     value={props.student_name ? props.student_name : ""}
                   />
-                  <DetailField
+                  {/* <DetailField
                     label="Student Id"
                     value={props.student_name ? props.student_id.student_id : ""}
+                  /> */}
+                    <DetailField
+                    
+                    label="Student Name"
+                    value={<Anchor text={props.student_name ? props.student_id.student_id : ""} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
                   <DetailField label="Query Description" value={props.query_desc} />
                   <DetailField label="Query Start Date" value={props.query_start} />

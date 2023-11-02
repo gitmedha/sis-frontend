@@ -9,6 +9,8 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import OperationDataupdateform from "./OperationDataupdateform";
 import {deactivate_user_ops} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
+import { Link } from "react-router-dom";
+import { Anchor } from "../../../components/content/Utils";
 
 const Styled = styled.div`
   .icon-box {
@@ -130,7 +132,7 @@ const Opsdatafeilds = (props) => {
                   <DetailField
                     Bold={""}
                     label="Batch"
-                    value={props.batch?.name}
+                    value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />}
                   />
                   <DetailField
                     Bold={""}
@@ -172,8 +174,8 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Educational Institution"
-                    value={props.institution?.name}
+                    label="Batch"
+                    value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField
                     Bold={""}
@@ -222,8 +224,8 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Created By"
                       value={
-                        props.created_by
-                          ? props.created_by.username
+                        props.createdby
+                          ? props.createdby.username
                           : "not found"
                       }
                     />
@@ -241,15 +243,17 @@ const Opsdatafeilds = (props) => {
                       Bold={""}
                       label="Updated By"
                       value={
-                        props.updated_by
-                          ? props.updated_by.username
+                        props.updatedby
+                          ? props.updatedby.username
                           : "not found"
                       }
                     />
                     <DetailField
                       Bold={""}
                       label="Updated At"
-                      value={props.Updated_at ? props.Updated_at : "not found"}
+                      value={props.updated_at ? moment(props.updated_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      ): "not found"}
                     />
                   </div>
                 </div>
