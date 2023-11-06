@@ -108,10 +108,10 @@ const Operations = ({
   const [layout, setLayout] = useState("list");
   const [activeTabMain, setActiveTabMain] = useState(tabPickerOptionsMain[0]);
   const [activeTab, setActiveTab] = useState(tabPickerOptions1[0]);
-  const [tabpickestatus,settabpickerstatus]=useState({
-    tab1:true,
+  // const [tabpickestatus,settabpickerstatus]=useState({
+  //   tab1:true,
     
-  })
+  // })
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
@@ -797,19 +797,36 @@ const Operations = ({
     [opsData]
   );
   useEffect(()=>{
-    console.log("activeTabMain",activeTabMain)
+    // console.log("activeTabMain",activeTabMain)
       {/* // { title: "Core Programme", key: "coreProgramme" },
 // { title: "Alumni", key: "alum" },
 // { title: "System Adoption", key: "systemAdoption" },tabPickerOptions1 */}
 
 if(activeTabMain.key == 'alum' ){
   setActiveTab(tabPickerOptions2[0])
+  
 }
+// if((activeTab.key != 'my_data'  && activeTab.key == 'useTot') && activeTabMain.key =='alum'  ){
+//   console.log("hello");
+//   setActiveTab(tabPickerOptions1[0])
+//   console.log("active tab",activeTab);
+// }
+
+// const tabPickerOptions2=[
+//   { title: "Alumni Queries", key: "alumniQueries" },
+// ]
+// const tabPickerOptions3 =[
+//   { title: "TOT", key: "useTot" },
+// ]
+
 if(activeTabMain.key == 'systemAdoption' ){
   setActiveTab(tabPickerOptions3[0])
 }
 if(activeTabMain.key == 'coreProgramme' ){
   setActiveTab(tabPickerOptions1[0])
+}
+if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && activeTab.key != 'my_data'  ){
+  window.location.reload();
 }
 console.log("activeTab",activeTab);
 
