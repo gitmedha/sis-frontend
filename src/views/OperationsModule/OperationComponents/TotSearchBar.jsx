@@ -29,10 +29,10 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     {key:0, value:'city',label:'City'}, 
     {key:1, value:'project_name',label:'Project Name'}, 
     {key:2, value:'partner_dept',label:'Project Department'}, 
+    {key:6, value:'state',label:'State'},
     {key:3, value:'project_type',label:'Project Type'},
     {key:4, value:'trainer_1',label:'Trainer 1'},
-    {key:5, value:'trainer_2',label:'Trainer 2'},
-    {key:6, value:'state',label:'State'},
+    {key:5, value:'trainer_2',label:'Trainer 2'},  
   ];
 
   const [cityOptions,setCityOptions] = useState([]);

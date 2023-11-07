@@ -27,13 +27,13 @@ const Section = styled.div`
 const AlumniSearchBar =({searchOperationTab,resetSearch})=> {
 
   let options = [
-    {key:0, value:'student_name', label:'Student Name'}, 
-    {key:1, value:'phone', label:'Mobile'}, 
-    {key:2, value:'student_id.student_id', label:'Student ID'},
     {key:3,value:'email', label:'Email'},
-    {key:4, value:'status', label:'Status'},
+    {key:1, value:'phone', label:'Mobile'}, 
     {key:5,value:'query_start',label:'Query start date'},
-    {key:6, value:'query_end', label:'Query end date'}
+    {key:6, value:'query_end', label:'Query end date'},
+    {key:2, value:'student_id.student_id', label:'Student ID'},
+    {key:0, value:'student_name', label:'Student Name'}, 
+    {key:4, value:'status', label:'Status'},
   ]
 
   const [studentNameOptions,setStudentNameOptions] = useState([]);

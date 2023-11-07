@@ -27,14 +27,13 @@ const Section = styled.div`
 const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}) {
 
   let options = [
-    {key:0,value:'student_id.full_name',label:'Student Name'}, 
     {key:1, value:'assigned_to.username', label:'Assigned to'}, 
-    {key:2, value:'institution.name', label:'Institute Name'}, 
     {key:3, value:'course_name', label:'Course Name'},
-    {key:4, value:'program_name', label:'Program Name'},
-    {key:5, value:'start_date', label:'Start Date'},
     {key:6, value:'end_date', label:'End Date'},
-
+    {key:2, value:'institution.name', label:'Institute Name'}, 
+    {key:5, value:'start_date', label:'Start Date'},
+    {key:0,value:'student_id.full_name',label:'Student Name'}, 
+    {key:4, value:'program_name', label:'Program Name'},
   ]
 
   const [studentNameOptions, setStudentNameOptions] = useState([]);
