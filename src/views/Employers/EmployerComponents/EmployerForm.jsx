@@ -13,6 +13,7 @@ import { getAddressOptions , getStateDistricts }  from "../../Address/addressAct
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'
 import { yesOrNoOptions } from '../../../common/commonConstants';
 import api from '../../../apis';
+import { isEmptyValue } from '../../../utils/function/OpsModulechecker';
 
 
 const Section = styled.div`
@@ -110,7 +111,6 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
     values.contacts=values.contacts.map((value) =>{
       value.full_name=value.full_name[0].toUpperCase() + value.full_name.slice(1);
       value.designation=value.designation[0].toUpperCase() + value.designation.slice(1);
@@ -119,7 +119,10 @@ const EmployerForm = (props) => {
     values.name = values.name
     .split(" ")
     .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
+      if(!isEmptyValue(word) ){
+        return word[0].toUpperCase() + word.substring(1);
+      }
+     
     })
     .join(" ");
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
