@@ -1,4 +1,4 @@
-function isEmptyValue(value) {
+export function isEmptyValue(value) {
   if (value === null || value === undefined) {
     return true;
   }
