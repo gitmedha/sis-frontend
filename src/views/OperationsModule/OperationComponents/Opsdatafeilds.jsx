@@ -115,7 +115,7 @@ const Opsdatafeilds = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                User Opts Details
+                Field Details
               </h1>
             </Modal.Title>
           </Modal.Header>
