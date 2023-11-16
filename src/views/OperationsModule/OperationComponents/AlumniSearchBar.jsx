@@ -42,9 +42,9 @@ const AlumniSearchBar =({searchOperationTab,resetSearch})=> {
   const [emailOptions,setEmailOptions] = useState([]);
   const [selectedSearchField, setSelectedSearchField] = useState('');
   const [statusOptions] = useState([
-    {key:0, value:'Resolved', label:'Resolved'},
+    {key:2, value:'Closed', label:'Closed'},
     {key:1, value:'Open', label:'Open'},
-    {key:2, value:'Closed', label:'Closed'}
+    {key:0, value:'Resolved', label:'Resolved'},
 ]);
 
 
