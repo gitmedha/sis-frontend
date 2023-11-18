@@ -159,10 +159,8 @@ const AllumuniBulkAdd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -174,9 +172,8 @@ const AllumuniBulkAdd = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -214,10 +211,6 @@ const AllumuniBulkAdd = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -257,7 +250,7 @@ const AllumuniBulkAdd = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
+
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -270,7 +263,7 @@ const AllumuniBulkAdd = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
+
       delete row["id"];
       delete row["name"];
       row.createdby = Number(userId);
@@ -308,17 +301,15 @@ const AllumuniBulkAdd = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
+    // console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -360,8 +351,6 @@ const AllumuniBulkAdd = (props) => {
             value: batch.name,
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };

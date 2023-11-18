@@ -56,11 +56,8 @@ const AlumunniBulkrow = (props) => {
   const [Father,setFatherName]=useState("")
   const [email,setEmail]=useState("")
   const [phone,setPhone]=useState('')
-  const handleChange = (options, key) => {
-    console.log(options, key);
-  };
+ 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 1000,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -90,16 +87,15 @@ const AlumunniBulkrow = (props) => {
   }, [studentinput]);
 
   useEffect(() => {
-    getStudent(name.id).then(data=>{
+    getStudent(name?.id).then(data=>{
       if(!isEmptyValue(data?.name_of_parent_or_guardian)){
         setFatherName(data?.name_of_parent_or_guardian)
-        
       }
-      if(!isEmptyValue(data?.email)){
+       if(!isEmptyValue(data?.email)){
         setEmail(data?.email)
         // 
       }
-      if( !isEmptyValue(data?.phone)){
+       if( !isEmptyValue(data?.phone)){
         setPhone(data?.phone)
         // 
       }
@@ -145,23 +141,19 @@ const AlumunniBulkrow = (props) => {
     });
   }, []);
 
-  const updateRow = (id, field, value) => {
-    // row[field] = value;
-    props.updateRow(id, field, value);
-    // props.handleInputChange()
-    // setRows(updatedRows);
-  };
-  useEffect(() => {
-    console.log("Father",Father);
-    props.updateRow(row.id, 'father_name', Father);
-  props.updateRow(row.id, 'email', email);
-  props.updateRow(row.id, 'phone', phone);
 
-  }, [Father,email,phone])
+  // useEffect(() => {
+  //   console.log("Father",Father);
+  //   props.updateRow(row.id, 'father_name', Father);
+  // props.updateRow(row.id, 'email', email);
+  // props.updateRow(row.id, 'phone', phone);
+
+  // }, [Father,email,phone])
   
-//  const updateOther =()=>{
-//   
-//  }
+  const changeInput =(event,field,id)=>{
+    props.handleChange(event, field, id)
+    props.updateRow(id, "student_name",event.full_name)
+  }
 
   return (
     <>
@@ -179,13 +171,15 @@ const AlumunniBulkrow = (props) => {
             options={studentOptions}
             onInputChange={(e)=>{
              
-              setstudentinput(e)}}
+              setstudentinput(e)
+            
+            }}
             onChange={async(e) => {
               
               
               setName(e)
               // await props.updateRow(row.id, "student_name",e.full_name)
-              await props.handleChange(e, "student_id", row.id)
+              changeInput(e, "student_id", row.id)
               // await updateOther()
             }}
           />
@@ -206,7 +200,8 @@ const AlumunniBulkrow = (props) => {
           <input
             className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
-            defaultValue={name.full_name}
+            defaultValue={name?.full_name}
+            disabled={name?.full_name ? true :false}
             onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />
@@ -215,6 +210,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
+            disabled={Father ? true :false}
             defaultValue={Father}
             onKeyPress={handleKeyPress}
             onChange={(e) => props.updateRow(row.id, "father_name", e.target.value)}
@@ -224,7 +220,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
-
+            disabled={email ? true :false}
             defaultValue={email}
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
@@ -234,7 +230,7 @@ const AlumunniBulkrow = (props) => {
             className="table-input h-2"
             type="text"
             defaultValue={phone}
-
+            disabled={phone ? true :false}
             onKeyPress={mobileNochecker}
             onChange={(e) => props.updateRow(row.id, "phone", e.target.value)}
           />
