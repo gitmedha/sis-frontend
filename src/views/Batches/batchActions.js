@@ -245,3 +245,4 @@ export const batchSendLinks = async (batchId) => {
     return Promise.reject(error);
   });
 
+}
