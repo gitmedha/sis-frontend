@@ -277,7 +277,7 @@ const ProgramEnrollmentForm = (props) => {
                       name="program_enrollment_student"
                       control="input"
                       label="Student"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="Student"
                       disabled={true}
                     />
