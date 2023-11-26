@@ -159,7 +159,7 @@ const AllumuniBulkAdd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    // console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
         console.log("data", data);
@@ -176,7 +176,7 @@ const AllumuniBulkAdd = (props) => {
       });
       console.log(areaOptions);
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -396,7 +396,7 @@ const AllumuniBulkAdd = (props) => {
             <div className="d-flex ">
               
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Alumni Bulk Data"}
+                {props.id ? props.full_name : "Add New Alumni Query"}
               </h2>
             </div>
           </div>

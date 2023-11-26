@@ -90,7 +90,7 @@ const AlumunniBulkrow = (props) => {
   }, [studentinput]);
 
   useEffect(() => {
-    getStudent(name.id).then(data=>{
+    getStudent(name?.id).then(data=>{
       if(!isEmptyValue(data?.name_of_parent_or_guardian)){
         setFatherName(data?.name_of_parent_or_guardian)
         
@@ -206,7 +206,7 @@ const AlumunniBulkrow = (props) => {
           <input
             className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
-            defaultValue={name.full_name}
+            defaultValue={name?.full_name}
             onKeyPress={handleKeyPresscharandspecialchar}
             onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />

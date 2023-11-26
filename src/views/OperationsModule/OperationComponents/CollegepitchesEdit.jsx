@@ -13,6 +13,7 @@ import {
 } from "../../Address/addressActions";
 import {
   filterAssignedTo,
+  getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import AsyncSelect from "react-select/async";
@@ -52,6 +53,7 @@ const meilisearchClient = new MeiliSearch({
 
 const CollepitchesEdit = (props) => {
   let { onHide, show } = props;
+  const [srmOption, setsrmOption] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -122,7 +124,7 @@ const CollepitchesEdit = (props) => {
       });
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     getAddressOptions().then((data) => {
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
@@ -133,10 +135,13 @@ const CollepitchesEdit = (props) => {
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
+
       // if (props.state) {
       //   onStateChange({ value: props.state });
       // }
     });
+    let data = await getAllSrm(1);
+    setsrmOption(data);
     getProgramEnrollmentsPickList().then((data) => {
       setcourse(
         data?.course?.map((item) => ({ key: item, value: item, label: item }))
@@ -213,6 +218,7 @@ const CollepitchesEdit = (props) => {
     const date = new Date(dateString);
     return date;
   }
+  console.log(props.srm_name);
   if (props) {
     // initialValues ={...props.dtedata}
     initialValues["email"] = props.email;
@@ -220,7 +226,7 @@ const CollepitchesEdit = (props) => {
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name;
+    initialValues["srm_name"] = props.srm_name.id.toString();
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
@@ -391,13 +397,23 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           name="srm_name"
                           label="SRM Name"
                           placeholder="SRM Name"
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                        /> */}
+                        <Input
+                          name="srm_name"
+                          label="SRM Name"
+                          placeholder="SRM Name"
+                          control="lookup"
+                          icon="down"
+                          options={srmOption}
+                          onKeyPress={handleKeyPress}
+                          className="form-control"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">

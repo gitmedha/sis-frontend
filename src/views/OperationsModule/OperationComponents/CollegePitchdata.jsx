@@ -99,7 +99,7 @@ const CollegePitchdata = (props) => {
      onHide()
     }
    }
-
+   console.log(props);
   return (
     <>
      {!showModal.dataAndEdit && ( <Modal
@@ -141,7 +141,7 @@ const CollegePitchdata = (props) => {
               </div>
 
               <div className="col-md-6 col-sm-12">
-                <DetailField label="SRM Name" value={props.srm_name} />
+                <DetailField label="SRM Name" value={props.srm_name.username} />
                 <DetailField
                   label="Medha  Area"
                   value={props.area ? props.area : ""}

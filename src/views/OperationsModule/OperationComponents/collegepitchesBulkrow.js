@@ -93,6 +93,7 @@ const CollegepitchesBulkrow = (props) => {
     row[field] = value;
     console.log(id, field, value);
   };
+  console.log(srmOption)
 
   return (
     <>
@@ -248,7 +249,7 @@ const CollegepitchesBulkrow = (props) => {
             isSearchable={true}
             name="srm_name"
             options={srmOption}
-            onChange={(e) => props.handleChange(e, "srm_name", row.id)}
+            onChange={(e) =>  props.handleChange(e, "srm_name", row.id) }
           />
         </td>
         <td>
