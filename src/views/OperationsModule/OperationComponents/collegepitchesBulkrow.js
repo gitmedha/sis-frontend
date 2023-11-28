@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
+import { capitalizeFirstLetter, handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getPitchingPickList } from "./operationsActions";
 
@@ -39,6 +39,9 @@ const CollegepitchesBulkrow = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [colleges,setCollege]=useState([])
+  const [courseName,setCourseName]=useState([])
+  const studentName=useRef(null)
+  const remark=useRef(null)
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -54,6 +57,15 @@ const CollegepitchesBulkrow = (props) => {
       );
     });
     props.updateRow(rowid, field, value.value);
+  };
+
+  const handleInputChange = (id,data,value) => {
+    const input = value.current;
+    if (input) {
+      input.value = capitalizeFirstLetter(input.value);;
+      props.updateRow(id,data,input.value)
+    }
+   
   };
 
   useEffect(async () => {
@@ -79,6 +91,11 @@ const CollegepitchesBulkrow = (props) => {
           label: item,
         }))
       );
+      setCourseName(data.course_name.map((item) => ({
+        key: item,
+        value: item,
+        label: item,
+      })))
       setAreaOptions(
         data.medha_area.map((item) => ({
           key: item,
@@ -126,33 +143,27 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             type="text"
             onKeyPress={handleKeyPress}
-            onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
+            ref={studentName}
+            onChange={(e) => handleInputChange(row.id, "student_name",studentName)}
+            // onChange={(e) => props.updateRow(row.id, "student_name", e.target.value)}
           />
         </td>
 
         <td>
-          <input
-            className={`table-input h-2 ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.course_name
                 ? `border-red`
                 : ""
             }`}
-            onKeyPress={handleKeyPress}
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "course_name", e.target.value)}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            options={courseName}
+            onChange={(e) => props.handleChange(e, "course_name", row.id)}
           />
         </td>
         <td>
-          {/* <input
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.course_year
-                ? `border-red`
-                : ""
-            }`}
-            type="number"
-            onKeyPress={numberChecker}
-            onChange={(e) => updateRow(row.id, "course_year", e.target.value)}
-          /> */}
           <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.course_year
@@ -167,16 +178,6 @@ const CollegepitchesBulkrow = (props) => {
           />
         </td>
         <td>
-          {/* <input
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.college_name
-                ? `border-red`
-                : ""
-            }`}
-            type="text"
-            onKeyPress={handleKeyPress}
-            onChange={(e) => updateRow(row.id, "college_name", e.target.value)}
-          /> */}
           <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.college_name
@@ -227,17 +228,12 @@ const CollegepitchesBulkrow = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            onChange={(e) => props.updateRow(row.id, "remarks", e.target.value)}
+            ref={remark}
+            onChange={(e) => handleInputChange(row.id, "remarks",remark)}
+            // onChange={(e) => props.updateRow(row.id, "remarks", e.target.value)}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "srm_name", e.target.value)
-            }
-          /> */}
           <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.trainer_1
@@ -253,13 +249,6 @@ const CollegepitchesBulkrow = (props) => {
           />
         </td>
         <td>
-          {/* <input
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.area ? `border-red` : ""
-            }`}
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "area", e.target.value)}
-          /> */}
         <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.area

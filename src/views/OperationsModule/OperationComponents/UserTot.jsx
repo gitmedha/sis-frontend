@@ -501,8 +501,8 @@ const UserTot = (props) => {
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Mobile no.  </th>
-                  <th>City *</th>
                   <th>State *</th>
+                  <th>City *</th>
                   <th>Designation </th>
                   <th>College Name</th>
                   <th>Project Name</th>

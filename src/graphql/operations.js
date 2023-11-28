@@ -41,6 +41,7 @@ const operationFields = `
 const usersTotsFields = `
     id
     created_at
+    updated_at
     user_name
     createdby {
         id
@@ -79,6 +80,7 @@ const studentUpskillingFields = `
     id
     created_at
     program_name
+    updated_at
     createdby {
         id
         username

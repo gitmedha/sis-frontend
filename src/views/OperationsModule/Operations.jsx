@@ -48,7 +48,7 @@ const tabPickerOptionsMain = [
 ];
 
 const tabPickerOptions1 = [
-  { title: "User Ops Activities", key: "my_data" },
+  { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   // { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Pitching", key: "collegePitches" },

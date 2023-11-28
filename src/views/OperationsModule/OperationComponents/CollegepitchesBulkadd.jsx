@@ -370,7 +370,7 @@ const CollegepitchesBulkadd = (props) => {
             <div className="d-flex ">
              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add College Pitch Data"}
+                {props.id ? props.full_name : "Add Pitching Data"}
               </h2>
             </div>
           </div>

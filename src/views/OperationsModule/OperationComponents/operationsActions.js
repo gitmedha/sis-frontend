@@ -368,6 +368,7 @@ export const bulkCreateCollegePitch = async(data)=>{
 }
 
 export const bulkCreateAlumniQueries = async(data)=>{
+    console.log("data",data);
     try {
         const response = await api.post('/alumni-queries/create-bulk-alumni-queries', data);
         return response;
