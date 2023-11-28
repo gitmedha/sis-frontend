@@ -17,6 +17,18 @@ export function isEmptyValue(value) {
 
   return false;
 }
+export const  capitalizeFirstLetter = (text) => {
+  return text
+    .split(' ')
+    .map((word) => {
+      if (word.length > 0) {
+        return word[0].toUpperCase() + word.slice(1);
+      } else {
+        return word;
+      }
+    })
+    .join(' ');
+};
 
 export const checkEmptyValuesandplaceNA = (obj) => {
   const result = {};

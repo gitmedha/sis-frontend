@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
@@ -8,6 +8,7 @@ import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 import { getOpsPickList } from "./operationsActions";
+import { capitalizeFirstLetter } from "../../../utils/function/OpsModulechecker";
 
 const options = [
   { value: true, label: "Yes" },
@@ -52,6 +53,8 @@ const StudentupskilingBulk = (props) => {
   const [subcategory,setSubcategory]=useState([])
   const [studentinput,setstudentinput]=useState("")
   const [programeName,setProgramName]=useState([])
+  const coursename=useRef(null)
+  const issuingorg=useRef(null)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -140,18 +143,6 @@ const StudentupskilingBulk = (props) => {
    
   };
 
-  const capitalizeFirstLetter = (text) => {
-    return text
-      .split(' ')
-      .map((word) => {
-        if (word.length > 0) {
-          return word[0].toUpperCase() + word.slice(1);
-        } else {
-          return word;
-        }
-      })
-      .join(' ');
-  };
   return (
     <>
       <tr key={row.id}>
@@ -225,7 +216,8 @@ const StudentupskilingBulk = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
+            ref={coursename}
+            onChange={(e) => handleInputChange(row.id, "course_name",coursename)}
           />
         </td>
         <td>
@@ -302,9 +294,8 @@ const StudentupskilingBulk = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "issued_org", e.target.value)
-            }
+            ref={issuingorg}
+            onChange={(e) => handleInputChange(row.id, "issued_org",issuingorg)}
           />
         </td>
       </tr>
