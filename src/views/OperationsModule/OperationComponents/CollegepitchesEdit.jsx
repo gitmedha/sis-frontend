@@ -218,7 +218,6 @@ const CollepitchesEdit = (props) => {
     const date = new Date(dateString);
     return date;
   }
-  console.log(props.srm_name);
   if (props) {
     // initialValues ={...props.dtedata}
     initialValues["email"] = props.email;
@@ -226,7 +225,7 @@ const CollepitchesEdit = (props) => {
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name.id.toString();
+    initialValues["srm_name"] = props.srm_name?.id.toString() ;
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
