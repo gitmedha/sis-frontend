@@ -234,9 +234,9 @@ if(fieldvalue.email){
 
   const statuscheck =(e)=>{
     if(e.value =="Open"){
-      setStatus(true)
-    }else{
       setStatus(false)
+    }else{
+      setStatus(true)
     }
 
     props.handleChange(e, "status", row.id)
@@ -411,7 +411,7 @@ if(fieldvalue.email){
             defaultValue={startDate}
             min={startDate}
             value={endDate}
-            disabled={startDate && status ? false:true}
+            disabled={!isEmptyValue(startDate) && !status ? true:false}
             onChange={(e) => {
 
               setEndDate(e.target.value);
