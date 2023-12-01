@@ -24,7 +24,7 @@ import {
 } from "./operationsActions";
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
-import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
+import { checkEmptyValuesandplaceNA, isEmptyValue } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -49,6 +49,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
+      program_name:""
     },
     // Add more initial rows as needed
   ]);
@@ -66,6 +67,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
+      program_name:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -81,43 +83,78 @@ const StudentUpkillingBulkcreate = (props) => {
     category: "",
     sub_category: "",
     issued_org: "",
+    program_name:""
   });
   const [showLimit, setshowLimit] = useState(false);
   const [classValue, setclassValue] = useState({});
 
-  const addRow = () => {
-    let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
+  // const addRow = () => {
+  //   let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
 
-    if (value.student_name || value.gender) {
-      let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
+  //   if (value.student_name || value.gender) {
+  //     let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
 
-      setclassValue({});
-      if (
-        value.student_id
-      ) {
-        let obj = { [`class${[rows.length - 1]}`]: value };
-        setclassValue(obj);
-        return;
+  //     setclassValue({});
+  //     if (
+  //       value.student_id
+  //     ) {
+  //       let obj = { [`class${[rows.length - 1]}`]: value };
+  //       setclassValue(obj);
+  //       return;
+  //     }
+
+  //     if (rows.length >= 10) {
+  //       setAlert("You can't Add more than 10 items.", "error");
+  //     } else {
+  //       const newRowWithId = { ...newRow, id: rows.length + 1 };
+  //       setRows([...rows, newRowWithId]);     
+  //     }
+  //     return setclassValue(obj);
+  //   }
+
+  //   if (rows.length >= 10) {
+  //     setAlert("You can't Add more than 10 items.", "error");
+  //   } else {
+  //     const newRowWithId = { ...newRow, id: rows.length + 1 };
+  //     setRows([...rows, newRowWithId]);
+  //     // setNewRow({ id: '', name: '', age: '' });   
+  //   }
+  // };
+
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
       }
-
-      if (rows.length >= 10) {
-        setAlert("You can't Add more than 10 items.", "error");
-      } else {
-        const newRowWithId = { ...newRow, id: rows.length + 1 };
-        setRows([...rows, newRowWithId]);     
-      }
-      return setclassValue(obj);
     }
+  
+    return result;
+  }
+
+  const addRow = () => {
+    
+    let value =checkEmptyValues(rows[rows.length-1])
+    setclassValue({})
+    if(value.student_id || value.institution || value.batch || value.start_date || value.category || value.sub_category || value.course_name || value.program_name ){
+      let obj={[`class${[rows.length-1]}`]:value}
+      setclassValue(obj)
+      return ;
+    }
+    
 
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });   
+      // setNewRow({ id: '', name: '', age: '' });
+      
     }
   };
-
   const handleChange = (options, key, rowid) => {
     console.log(options.value);
     if (key == "state") {
