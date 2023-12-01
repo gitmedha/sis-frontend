@@ -58,7 +58,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
-    },
+    }, 
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,

@@ -70,6 +70,7 @@ const UpskillUpdate = (props) => {
   const [studentinput,setstudentinput]=useState("")
   const [subcategory,setSubcategory]=useState([])
   const [programeName,setProgramName]=useState([])
+  const [classValue,setclassValue]=useState({})
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -119,6 +120,8 @@ const UpskillUpdate = (props) => {
       return filterData;
     });
   }
+
+ 
 
   useEffect(() => {
     filterStudent(studentinput).then((data) => {
