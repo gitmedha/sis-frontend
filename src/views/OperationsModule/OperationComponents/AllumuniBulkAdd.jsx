@@ -159,6 +159,7 @@ const AllumuniBulkAdd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
+    // console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
         setAreaOptions([]);
@@ -385,7 +386,7 @@ const AllumuniBulkAdd = (props) => {
             <div className="d-flex ">
               
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Alumni Bulk Data"}
+                {props.id ? props.full_name : "Add New Alumni Query"}
               </h2>
             </div>
           </div>
@@ -428,7 +429,7 @@ const AllumuniBulkAdd = (props) => {
                   <th>Father's Name </th>
                   <th>Email ID</th>
                   <th>Mobile No.</th>
-                  <th>Medha Area</th>
+                  <th>Medha Area *</th>
                   <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>

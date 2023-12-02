@@ -58,7 +58,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
-    },
+    }, 
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
@@ -132,7 +132,7 @@ const CollegepitchesBulkadd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    console.log(options,"val");
     if (key == "state") {
       getStateDistricts().then((data) => {
         console.log("data", data);
@@ -148,6 +148,9 @@ const CollegepitchesBulkadd = (props) => {
         );
       });
       console.log(areaOptions);
+    }
+    if(key =="srm_name"){
+      updateRow(rowid, key, Number(options.value));
     }
     updateRow(rowid, key, options.value);
   };

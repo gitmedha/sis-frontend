@@ -201,7 +201,10 @@ const collegePitchesFields = `
     whatsapp
     email
     remarks
-    srm_name
+    srm_name {
+        id
+        username
+    }
     area
 `;
 

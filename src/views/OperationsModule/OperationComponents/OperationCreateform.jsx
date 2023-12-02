@@ -486,7 +486,7 @@ const OperationCreateform = (props) => {
           <div className="d-flex justify-content-between">
             <div className="d-flex ">
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Bulk Field Activities data"}
+                {props.id ? props.full_name : "Add New Field Activity"}
               </h2>
             </div>
           </div>

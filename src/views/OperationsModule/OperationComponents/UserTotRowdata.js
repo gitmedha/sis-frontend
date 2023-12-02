@@ -60,6 +60,7 @@ const UserTotRowdata = (props) => {
   const [partnerDept,setPartnerDept]=useState([])
   const [projectName,setProjectName]=useState([])
   const userName=useRef(null)
+  const designation=useRef(null)
   const college =useRef(null)
   const handleChange = (options, key) => {
     console.log(options, key);
@@ -220,21 +221,7 @@ const UserTotRowdata = (props) => {
             onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
-        <td>
-          <Select
-            className={`table-input  ${
-              props.classValue[`class${row.id - 1}`]?.area
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="area"
-            options={areaOptions}
-            onChange={(e) => props.handleChange(e, "city", row.id)}
-          />
-        </td>
+        
         <td>
           <Select
             className={`table-input  ${
@@ -250,14 +237,31 @@ const UserTotRowdata = (props) => {
             onChange={(e) => onStateChange(e, row.id, "state")}
           />
         </td>
+        <td>
+          <Select
+            className={`table-input  ${
+              props.classValue[`class${row.id - 1}`]?.area
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="area"
+            options={areaOptions}
+            onChange={(e) => props.handleChange(e, "city", row.id)}
+          />
+        </td>
          <td>
           <input
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
-            onChange={(e) =>
-              props.updateRow(row.id, "designation", e.target.value)
-            }
+            // onChange={(e) =>
+            //   props.updateRow(row.id, "designation", e.target.value)
+            // }
+            ref={designation}
+            onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
         <td>
