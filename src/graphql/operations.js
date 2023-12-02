@@ -2,6 +2,8 @@ const operationFields = `
     id
     activity_type
     created_at
+    updated_at 
+    program_name
     institution {
         name
         id
@@ -25,11 +27,11 @@ const operationFields = `
     username
     id
   }
-  Created_by {
+  createdby {
     username
     id
   }
-  Updated_by {
+  updatedby {
     username
     id
   }
@@ -39,12 +41,13 @@ const operationFields = `
 const usersTotsFields = `
     id
     created_at
+    updated_at
     user_name
-    Created_by {
+    createdby {
         id
         username
     }
-    Updated_by {
+    updatedby {
         id
         username
     }
@@ -76,6 +79,16 @@ const usersTotsFields = `
 const studentUpskillingFields = `
     id
     created_at
+    program_name
+    updated_at
+    createdby {
+        id
+        username
+    }
+    updatedby {
+        id
+        username
+    }
     assigned_to {
         id
         username
@@ -140,11 +153,11 @@ const dteSamarthSditFields = `
 const alumniQueriesFields = `
     id
     created_at
-    Created_by {
+    createdby {
         id
         username
     }
-    Updated_by {
+    updatedby {
         id
         username
     }
@@ -152,6 +165,9 @@ const alumniQueriesFields = `
         id
         full_name
         student_id
+        name_of_parent_or_guardian
+        email
+        phone
     }
     query_start
     student_name
@@ -168,11 +184,11 @@ const alumniQueriesFields = `
 const collegePitchesFields = `
     id
     created_at
-    Created_by {
+    createdby {
         id
         username
     }
-    Updated_by {
+    updatedby {
         id
         username
     }
@@ -185,7 +201,10 @@ const collegePitchesFields = `
     whatsapp
     email
     remarks
-    srm_name
+    srm_name {
+        id
+        username
+    }
     area
 `;
 

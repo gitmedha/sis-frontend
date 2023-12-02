@@ -24,7 +24,7 @@ import {
 } from "./operationsActions";
 import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
-import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
+import { checkEmptyValuesandplaceNA, isEmptyValue } from "../../../utils/function/OpsModulechecker";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -49,6 +49,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
+      program_name:""
     },
     // Add more initial rows as needed
   ]);
@@ -66,6 +67,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
+      program_name:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -81,19 +83,78 @@ const StudentUpkillingBulkcreate = (props) => {
     category: "",
     sub_category: "",
     issued_org: "",
+    program_name:""
   });
   const [showLimit, setshowLimit] = useState(false);
+  const [classValue, setclassValue] = useState({});
+
+  // const addRow = () => {
+  //   let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
+
+  //   if (value.student_name || value.gender) {
+  //     let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
+
+  //     setclassValue({});
+  //     if (
+  //       value.student_id
+  //     ) {
+  //       let obj = { [`class${[rows.length - 1]}`]: value };
+  //       setclassValue(obj);
+  //       return;
+  //     }
+
+  //     if (rows.length >= 10) {
+  //       setAlert("You can't Add more than 10 items.", "error");
+  //     } else {
+  //       const newRowWithId = { ...newRow, id: rows.length + 1 };
+  //       setRows([...rows, newRowWithId]);     
+  //     }
+  //     return setclassValue(obj);
+  //   }
+
+  //   if (rows.length >= 10) {
+  //     setAlert("You can't Add more than 10 items.", "error");
+  //   } else {
+  //     const newRowWithId = { ...newRow, id: rows.length + 1 };
+  //     setRows([...rows, newRowWithId]);
+  //     // setNewRow({ id: '', name: '', age: '' });   
+  //   }
+  // };
+
+  function checkEmptyValues(obj) {
+    const result = {};
+  
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const isEmpty = isEmptyValue(value);
+        result[key] = isEmpty;
+      }
+    }
+  
+    return result;
+  }
+
   const addRow = () => {
+    
+    let value =checkEmptyValues(rows[rows.length-1])
+    setclassValue({})
+    if(value.student_id || value.institution || value.batch || value.start_date || value.category || value.sub_category || value.course_name || value.program_name ){
+      let obj={[`class${[rows.length-1]}`]:value}
+      setclassValue(obj)
+      return ;
+    }
+    
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
   };
-
   const handleChange = (options, key, rowid) => {
     console.log(options.value);
     if (key == "state") {
@@ -213,14 +274,14 @@ const StudentUpkillingBulkcreate = (props) => {
       console.log(row["start_date"]);
       // console.log(row.start_date.split('/').reverse().join('-'))
       // row.start_date =row.start_date.split('/'/
-      row.created_by = Number(userId);
-      row.updated_by = userId;
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
       row.student_id = Number(row.student_id);
       row.isActive = true;
-      let value = checkEmptyValuesandplaceNA(row)
+      let value = checkEmptyValuesandplaceNA(row);
       return value;
     });
     console.log("data", data);
@@ -228,7 +289,9 @@ const StudentUpkillingBulkcreate = (props) => {
     try {
       const value = await bulkCreateStudentsUpskillings(data);
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
     } catch (error) {
+      setAlert("Data is not created yet", "danger");
       console.log("error", error);
     }
   };
@@ -378,10 +441,11 @@ const StudentUpkillingBulkcreate = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Assigned to</th>
+                  <th>Assigned To</th>
                   <th>Student </th>
                   <th>Institution</th>
-                  <th>Batch</th>
+                  <th>Batch Name</th>
+                  <th>Program Name</th>
                   <th>Certificate Course Name</th>
                   <th>Category</th>
                   <th>Sub Category</th>
@@ -405,6 +469,7 @@ const StudentUpkillingBulkcreate = (props) => {
                     updateRow={updateRow}
                     statedata={stateOptions}
                     areaOptions={areaOptions}
+                    classValue={classValue}
                   />
                 ))}
               </tbody>

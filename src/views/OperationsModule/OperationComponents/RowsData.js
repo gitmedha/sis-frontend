@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
 import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { getAllProgram } from "./operationsActions";
+import { getAllProgram, getOpsPickList } from "./operationsActions";
 import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
 
 const options = [
@@ -41,6 +41,10 @@ export const RowsData = (props) => {
     },
     // Add more initial rows as needed
   ]);
+  const guestname = useRef(null);
+  const guestDesignation = useRef(null);
+  const [programeName,setProgramName]=useState([])
+  const org = useRef(null);
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(new Date());
@@ -51,7 +55,7 @@ export const RowsData = (props) => {
 
   useEffect(() => {
     getAllProgram().then((data)=>{
-      console.log("data",data);
+      
       setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
             key: value.id,
             label: value.name,
@@ -78,12 +82,43 @@ export const RowsData = (props) => {
     }
     
   };
+  const handleInputChange = (id,data,value) => {
+    const input = value.current;
+    if (input) {
+      input.value = capitalizeFirstLetter(input.value);;
+      props.updateRow(id,data,input.value)
+    }
+   
+  };
+
+  const capitalizeFirstLetter = (text) => {
+    return text
+      .split(' ')
+      .map((word) => {
+        if (word.length > 0) {
+          return word[0].toUpperCase() + word.slice(1);
+        } else {
+          return word;
+        }
+      })
+      .join(' ');
+  };
+ 
 
   useEffect(async() => {
     
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+    let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
     
   }, []);
 
@@ -193,6 +228,17 @@ export const RowsData = (props) => {
         </td>
         <td>
           <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programeName}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
+          />
+        </td>
+        <td>
+          <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
             }`}
@@ -265,26 +311,34 @@ export const RowsData = (props) => {
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) => props.updateRow(row.id, "guest", e.target.value)}
+            ref={guestname}
+            onChange={(e) => handleInputChange(row.id, "guest",guestname)}
           />
         </td>
+    
         <td>
           <input
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "designation", e.target.value)
-            }
+            ref={guestDesignation}
+            onChange={(e) => handleInputChange(row.id, "designation",guestDesignation)}
+            // onChange={(e) =>
+            //   props.updateRow(row.id, "designation", e.target.value)
+            // }
           />
         </td>
+            {/* const GuestDesignation = useRef(null);
+  const org = useRef(null); */}
         <td>
           <input
             className="table-input h-2"
             type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "organization", e.target.value)
-            }
+            ref={org}
+            onChange={(e) => handleInputChange(row.id, "organization",org)}
+            // onChange={(e) =>
+            //   props.updateRow(row.id, "organization", e.target.value)
+            // }
           />
         </td>
         <td>

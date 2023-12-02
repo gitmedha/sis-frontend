@@ -15,14 +15,10 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import AsyncSelect from "react-select/async";
 import { MeiliSearch } from "meilisearch";
-import { Select } from "@material-ui/core";
-// import 'react-select/dist/react-select.css';
-import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity } from "./operationsActions";
+import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -54,9 +50,14 @@ const options = [
   { value: "Yes", label: "Yes" },
   { value: "No", label: "No" },
 ];
+const Activityoptions = [
+  { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
+  { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
+  { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
+  { value: 'Alumni Engagement', label: 'Alumni Engagement' },
+];
 
 const OperationDataupdateform = (props) => {
-  console.log(props, "props");
   let { onHide, show, closeopsedit } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -64,6 +65,7 @@ const OperationDataupdateform = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const [programeName,setProgramName]=useState([])
   const [disablevalue, setdisablevalue] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -172,7 +174,6 @@ const OperationDataupdateform = (props) => {
 
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
-
     newValueObject["assigned_to"] = Number(values["assigned_to"]);
     newValueObject["batch"] = Number(values["batch"]);
     newValueObject["students_attended"] = Number(values["students_attended"]);
@@ -184,26 +185,13 @@ const OperationDataupdateform = (props) => {
     );
     newValueObject["institution"] = Number(values["institution"]);
     newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
-    newValueObject["Updated_by"] = Number(userId);
+    newValueObject["updatedby"] = Number(userId);
 
-    delete newValueObject["updated_by"];
+    delete newValueObject["updatedby"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
-    delete newValueObject["created_by"];
+    delete newValueObject["createdby"];
     delete newValueObject["institute_name"];
-
-    // const errors = {};
-    // const { start_date, end_date } = newValueObject;
-
-    // if (!start_date || !end_date) {
-    //   errors.start_date = "Start date is required";
-    //   errors.end_date = " End date is required";
-    //   return;
-    // } else if (start_date >= end_date) {
-    //   errors.start_date = "Start date must be earlier than end date";
-    //   errors.end_date = "End date must be later than start date";
-    //   return;
-    // }
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     setDisableSaveButton(true);
@@ -225,20 +213,19 @@ const OperationDataupdateform = (props) => {
     start_date: "",
     end_date: "",
     designation: "",
-    updated_by: "",
+    updatedby: "",
     area: "",
     students_attended: "",
     batch: "",
   };
-  // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
-
+  
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
-
+    initialValues['program_name']=props.program_name
     initialValues["start_date"] = new Date(props.start_date);
     initialValues["end_date"] = new Date(props.end_date);
     initialValues["students_attended"] = props?.students_attended;
@@ -271,6 +258,19 @@ const OperationDataupdateform = (props) => {
         );
       }),
   });
+  useEffect(async() => {
+  let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
+  }, [])
+  console.log(props);
+  
 
   return (
     <>
@@ -315,13 +315,17 @@ const OperationDataupdateform = (props) => {
                     <div className="row">
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
+                          icon="down"
+                          control="lookup"
                           name="activity_type"
                           label="Activity Type"
+                          required
+                          options={Activityoptions}
                           className="form-control"
                           placeholder="Activity Type"
                         />
                       </div>
+                      
                       <div className="col-md-6 col-sm-12 mb-2">
                         {assigneeOptions.length && (
                           <Input
@@ -335,13 +339,25 @@ const OperationDataupdateform = (props) => {
                           />
                         )}
                       </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="program_name"
+                          label="Program Name"
+                          required
+                          options={programeName}
+                          className="form-control"
+                          placeholder="Program Name"
+                        />
+                      </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         {batchOptions.length && (
                           <Input
                             control="lookupAsync"
                             name="batch"
-                            label="Batch"
+                            label="Batch Name"
                             filterData={filterBatch}
                             defaultOptions={batchOptions}
                             className="form-control1"
@@ -355,7 +371,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             control="lookupAsync"
                             name="institution"
-                            label="Institution"
+                            label="Educational Institution"
                             filterData={filterInstitution}
                             defaultOptions={institutionOptions}
                             placeholder="Institution"
@@ -375,11 +391,7 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                        {/* {validationErrors.start_date && (
-                          <div className="error">
-                            {validationErrors.start_date}
-                          </div>
-                        )} */}
+                      
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -503,9 +515,9 @@ const OperationDataupdateform = (props) => {
                         <DetailField
                           label="Updated By"
                           value={
-                            props.Updated_by?.userName
-                              ? props.Updated_by?.userName
-                              : props.Created_by?.username
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
                           }
                         />
                         <DetailField
@@ -521,8 +533,8 @@ const OperationDataupdateform = (props) => {
                         <DetailField
                           label="Created By"
                           value={
-                            props.Created_by?.username
-                              ? props.Created_by?.username
+                            props.createdby?.username
+                              ? props.createdby?.username
                               : ""
                           }
                         />

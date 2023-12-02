@@ -17,16 +17,27 @@ export function isEmptyValue(value) {
 
   return false;
 }
+export const  capitalizeFirstLetter = (text) => {
+  return text
+    .split(' ')
+    .map((word) => {
+      if (word.length > 0) {
+        return word[0].toUpperCase() + word.slice(1);
+      } else {
+        return word;
+      }
+    })
+    .join(' ');
+};
 
 export const checkEmptyValuesandplaceNA = (obj) => {
   const result = {};
-
   for (const key in obj) {
     if (Object.hasOwnProperty.call(obj, key)) {
+      
       const value = obj[key];
       const isEmpty = isEmptyValue(value);
       if (isEmpty) {
-        console.log("result[key]", result[key]);
         result[key] = "N/A";
       } else {
         result[key] = value;

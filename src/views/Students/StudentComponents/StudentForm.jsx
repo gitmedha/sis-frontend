@@ -11,6 +11,7 @@ import { getStudentsPickList } from './StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { capitalizeFirstLetter } from '../../../utils/function/Checker';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -104,10 +105,13 @@ const StudentForm = (props) => {
     });
   };
 
+
   const onSubmit = async (values) => {
     if (logo) {
       values.logo = logo;
     }
+    values.full_name =capitalizeFirstLetter(values.full_name)
+    values.name_of_parent_or_guardian=capitalizeFirstLetter(values.name_of_parent_or_guardian)
     setDisableSaveButton(true);
     await onHide(values);
     setDisableSaveButton(false);

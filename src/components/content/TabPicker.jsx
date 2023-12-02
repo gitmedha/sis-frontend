@@ -6,22 +6,34 @@ const TabPicker = ({ options, setActiveTab = () => {} }) => {
   const [activeTab, setActive] = useState(options[0].key);
 
   const changeTab = (tab) => {
-    console.log("tabkey",tab.key);
+    console.log("tabkey", tab.key);
     setActive(tab.key);
     setActiveTab(tab);
   };
 
   return (
     <div className="topnav my-3 latto-regular">
-      {options.map((tab) => (
-        <div
-          key={tab.key}
-          onClick={() => changeTab(tab)}
-          className={activeTab === tab.key ? `active` : ""}
-        >
-          {tab.title}
-        </div>
-      ))}
+      {options.length == 1 ? ((
+        options.map((tab) => (
+          <div
+            key={tab.key}
+            onClick={() => changeTab(tab)}
+            className={ `active` }
+          >
+            {tab.title}
+          </div>
+        ))
+      )) : (
+        options.map((tab) => (
+          <div
+            key={tab.key}
+            onClick={() => changeTab(tab)}
+            className={activeTab === tab.key ? `active` : ""}
+          >
+            {tab.title}
+          </div>
+        ))
+      )}
     </div>
   );
 };

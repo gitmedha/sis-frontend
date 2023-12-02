@@ -2,21 +2,19 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { Anchor, Badge } from "../../../components/content/Utils";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
+import { Anchor, } from "../../../components/content/Utils";
 import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
 import {
   getEmploymentConnectionsPickList,
   getOpportunitiesPickList,
 } from "./StudentActions";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import Opsdatafeilds from "./Opsdatafeilds";
 import UpskillUpdate from "./UpskillUpdate";
 import { deactivate_user_students_upskills } from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -48,7 +46,11 @@ const Styled = styled.div`
 
 const Upskillingdatafield = (props) => {
   let { onHide } = props;
-  const [showedit, setshowedit] = useState(false);
+  const [showedit, setshowedit] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
+  
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -62,17 +64,44 @@ const Upskillingdatafield = (props) => {
     setoperationdata(props);
   }, []);
   const updatevalue = () => {
-    setshowedit(true);
+    setshowedit({
+      ...showedit,
+      dataAndEdit:true
+    });
   };
 
   const closeThepopup =async () =>{
-    deactivate_user_students_upskills(Number(props.id))
-    onHide()
+    setshowedit({
+      ...showedit,
+      dataAndEdit:false,
+      delete:true
+    });
   }
+  console.log(props);
 
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_students_upskills(Number(props.id))
+    if(data.status==200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+    
+    
+   }
+
+   const closepop =()=>{
+   
+    setshowedit({
+      ...showedit,
+      delete:false,
+    });
+  }
   return (
     <>
-      {!showedit ? (
+      {!showedit.dataAndEdit && (
         <Modal
           centered
           size="lg"
@@ -100,17 +129,13 @@ const Upskillingdatafield = (props) => {
                 <DetailField
                     
                     label="Student Name"
-                    value={props.student_id.full_name}
+                    value={<Anchor text={props.student_id.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
+                  
                   <DetailField
-                    
-                    label="Certificate received"
-                    value={props.certificate_received ? "Yes" : "No"}
-                  />
-                  <DetailField
-                    
+                    Bold={""}
                     label="Batch"
-                    value={props.batch?.name}
+                    value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />}
                   />
                   <DetailField
                     
@@ -121,16 +146,13 @@ const Upskillingdatafield = (props) => {
                         : ""
                     }
                   />
-
                   <DetailField
                     
-                    label="End Date"
-                    value={
-                      moment(props.end_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
-                        : ""
-                    }
+                    label="Certificate Received"
+                    value={props.certificate_received ? "Yes" : "No"}
                   />
+
+                  
                   <DetailField
                     
                     label="Course Name"
@@ -159,10 +181,10 @@ const Upskillingdatafield = (props) => {
                         : ""
                     }
                   />
-                  <DetailField
-                    
+                 <DetailField
+                    Bold={""}
                     label="Institute"
-                    value={props.institution.name}
+                    value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField
                     
@@ -174,7 +196,7 @@ const Upskillingdatafield = (props) => {
                     }
                   />
                 <DetailField
-                    label="Published at"
+                    label="Published At"
                     value={
                       moment(props.published_at).format("DD MMM YYYY")
                         ? moment(props.published_at).format("DD MMM YYYY")
@@ -187,46 +209,42 @@ const Upskillingdatafield = (props) => {
 
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
-                    label="Created By"
-                    value={
-                      props.Created_by ? props.Created_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={moment(
-                      props.updated_at
-                        ? props.created_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                 
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
-                    label="Updated By"
-                    value={
-                      props.Updated_by ? props.Updated_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-              </div>
+              <div className="row">
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Updated By"
+                          value={
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
+                          }
+                        />
+                        <DetailField
+                          label="Updated At"
+                          value={moment(
+                            props.updated_at
+                              ? props.updated_at
+                              : ""
+                          ).format("DD MMM YYYY, h:mm a")}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Created By"
+                          value={
+                            props.createdby?.username
+                              ? props.createdby?.username
+                              : ""
+                          }
+                        />
+                        <DetailField
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
+                    </div>
               {/* <div className="col-md-6 col-sm-12">
                 <DetailField Bold={'bold'}
                   label="Student Name "
@@ -308,13 +326,23 @@ const Upskillingdatafield = (props) => {
           
         } */}
         </Modal>
-      ) : (
-        <UpskillUpdate
-          {...operationdata}
-          show={showedit}
-          onHide={hideShowModal1}
-        />
       )}
+
+      { showedit.dataAndEdit &&
+        (
+          <UpskillUpdate
+            {...operationdata}
+            show={showedit}
+            onHide={hideShowModal1}
+          />
+        )
+      }
+
+      {
+       showedit.delete && (
+        <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+      ) 
+      }
     </>
   );
 };

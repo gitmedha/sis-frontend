@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import Skeleton from "react-loading-skeleton";
@@ -7,6 +7,8 @@ import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions
 import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import { getOpsPickList } from "./operationsActions";
+import { capitalizeFirstLetter } from "../../../utils/function/OpsModulechecker";
 
 const options = [
   { value: true, label: "Yes" },
@@ -39,6 +41,7 @@ const StudentupskilingBulk = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
+      program_name:""
     },
     // Add more initial rows as needed
   ]);
@@ -50,6 +53,9 @@ const StudentupskilingBulk = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [subcategory,setSubcategory]=useState([])
   const [studentinput,setstudentinput]=useState("")
+  const [programeName,setProgramName]=useState([])
+  const coursename=useRef(null)
+  const issuingorg=useRef(null)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -87,10 +93,19 @@ const StudentupskilingBulk = (props) => {
   const updateRow = (id, field, value) => {
     row[field] = value;
   };
-  useEffect(() => {
+  useEffect(async() => {
     filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
+    let data=await getOpsPickList().then(data=>{
+      return data.program_name.map((value) => ({
+          key: value,
+          label: value,
+          value: value,
+        }))
+    }) 
+
+    setProgramName(data);
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
@@ -120,12 +135,21 @@ const StudentupskilingBulk = (props) => {
       return filterData;
     });
   }
+    const handleInputChange = (id,data,value) => {
+    const input = value.current;
+    if (input) {
+      input.value = capitalizeFirstLetter(input.value);;
+      props.updateRow(id,data,input.value)
+    }
+   
+  };
+
   return (
     <>
       <tr key={row.id}>
       <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input h-2`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -138,7 +162,7 @@ const StudentupskilingBulk = (props) => {
           
 
           <Select
-            className="basic-single table-input "
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.student_id ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -154,7 +178,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.institution ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -165,37 +189,41 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.batch ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="batch"
             options={props.batchbdata}
             onChange={(e) => {
-              console.log(e);
               props.handleChange(e, "batch", row.id)}}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.program_name ? `border-red`:"table-input h-2"}`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programeName}
+            onChange={(e) => {
+              props.handleChange(e, "program_name", row.id)}}
           />
         </td>
 
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className="table-input h-2"
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.course_name ? `border-red`:"table-input h-2"}`}
             type="text"
-            // value={row.name}
-            onChange={(e) => updateRow(row.id, "course_name", e.target.value)}
+            ref={coursename}
+            onChange={(e) => handleInputChange(row.id, "course_name",coursename)}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "category", e.target.value)
-            }
-          /> */}
           <Select
-            className="basic-single table-input  "
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.category ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             name="category"
@@ -207,7 +235,7 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
         <Select
-            className="basic-single table-input  "
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.sub_category ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             name="sub_category"
@@ -216,11 +244,7 @@ const StudentupskilingBulk = (props) => {
               props.handleChange(e, "sub_category", row.id)
             }
           />
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "sub_category", true)}
-          /> */}
+         
         </td>
         
         
@@ -229,7 +253,7 @@ const StudentupskilingBulk = (props) => {
   
           <input
             type="date"
-            className="table-input h-2 "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
             defaultValue={startDate}
             onChange={(e) => {
               console.log(e.target.value);
@@ -256,8 +280,8 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input  date"
-            classNamePrefix="select"
+            className="table-input basic-single"
+            // classNamePrefix="select"
             isSearchable={true}
             name="area"
             options={options}
@@ -271,9 +295,8 @@ const StudentupskilingBulk = (props) => {
           <input
             className="table-input h-2"
             type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "issued_org", e.target.value)
-            }
+            ref={issuingorg}
+            onChange={(e) => handleInputChange(row.id, "issued_org",issuingorg)}
           />
         </td>
       </tr>

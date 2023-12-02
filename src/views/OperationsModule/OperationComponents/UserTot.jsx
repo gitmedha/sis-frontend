@@ -196,7 +196,6 @@ const UserTot = (props) => {
   }
   const addRow = () => {
     let value =checkEmptyValues(rows[rows.length-1])
-    
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
      
@@ -204,17 +203,16 @@ const UserTot = (props) => {
       //   delete obj['class0']
       // }else if(rows.length > 1){
       //   obj=delete obj[`class${[rows.length-2]}`]
-      // }
-      console.log("obj",obj);
+      // }   
       return setclassValue(obj)
     }
+   
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      // setNewRow({ id: '', name: '', age: '' });    
     }
   };
 
@@ -333,17 +331,11 @@ const UserTot = (props) => {
       console.log(row);
       delete row["id"];
       delete row["name"];
-
-      console.log(row["start_date"]);
-      // console.log(row.start_date.split('/').reverse().join('-'))
-      // row.start_date =row.start_date.split('/'/
-      row.updated_by = Number(userId);
       row.trainer_1 = Number(row.trainer_1 ? 24 : 24);
       row.trainer_2 = Number(row.trainer_2 ? 54 : 54);
       row.isActive = true;
-      row.created_by = Number(userId);
-      delete row.start_date;
-      delete row.end_date;
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
       return value;
     });
@@ -352,7 +344,9 @@ const UserTot = (props) => {
       const value = await bulkCreateUsersTots(data);
 
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
     } catch (error) {
+      setAlert("Data is not created yet", "danger");
       console.log("error", error);
     }
   };
@@ -461,7 +455,7 @@ const UserTot = (props) => {
             <div className="d-flex ">
              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New UserTot Data"}
+                {props.id ? props.full_name : "Add New TOT Data"}
               </h2>
             </div>
           </div>
@@ -503,14 +497,14 @@ const UserTot = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Participant Name</th>
+                  <th>Participant Name </th>
                   <th>Age </th>
                   <th>Gender </th>
-                  <th>Contact </th>
-                  <th>City *</th>
+                  <th>Mobile no.  </th>
                   <th>State *</th>
+                  <th>City *</th>
                   <th>Designation </th>
-                  <th>College</th>
+                  <th>College Name</th>
                   <th>Project Name</th>
                   <th>Partner Department</th>
                   <th>Module Name</th>

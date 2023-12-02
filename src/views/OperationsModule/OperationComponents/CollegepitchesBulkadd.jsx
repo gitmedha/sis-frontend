@@ -58,7 +58,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
-    },
+    }, 
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
@@ -111,7 +111,7 @@ const CollegepitchesBulkadd = (props) => {
   }
 
   const addRow = () => {
-    console.log(rows);
+    
     let value =checkEmptyValues(rows[rows.length-1])
     setclassValue({})
     if(value.area || value.course_name || value.course_year || value.college_name || value.student_name || value.whatsapp  ){
@@ -127,12 +127,12 @@ const CollegepitchesBulkadd = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
+    console.log(options,"val");
     if (key == "state") {
       getStateDistricts().then((data) => {
         console.log("data", data);
@@ -148,6 +148,9 @@ const CollegepitchesBulkadd = (props) => {
         );
       });
       console.log(areaOptions);
+    }
+    if(key =="srm_name"){
+      updateRow(rowid, key, Number(options.value));
     }
     updateRow(rowid, key, options.value);
   };
@@ -243,14 +246,12 @@ const CollegepitchesBulkadd = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
       delete row["id"];
       delete row["name"];
       row.isActive=true;
-      row.created_by = Number(userId);
-      row.updated_by = Number(userId);
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
-      console.log("value",value);
       return value;
     });
 
@@ -258,7 +259,9 @@ const CollegepitchesBulkadd = (props) => {
 
       const value = await bulkCreateCollegePitch(data);
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
     } catch (error) {
+      setAlert("Data is not created yet", "danger");
       console.log("error", error);
     }
   };
@@ -367,7 +370,7 @@ const CollegepitchesBulkadd = (props) => {
             <div className="d-flex ">
              
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add College Pitch Data"}
+                {props.id ? props.full_name : "Add Pitching Data"}
               </h2>
             </div>
           </div>
@@ -412,10 +415,10 @@ const CollegepitchesBulkadd = (props) => {
                   <th>College Name *</th>
                   <th>Phone *</th>
                   <th>Whatsapp Number *</th>
-                  <th>E-mail</th>
+                  <th>Email ID</th>
                   <th>Remarks</th>
-                  <th>Srm Name</th>
-                  <th>Area *</th>
+                  <th>SRM Name</th>
+                  <th>Medha Area *</th>
                  
                 </tr>
               </thead>

@@ -17,6 +17,8 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from './AllumuniEdit';
 import { deactivate_user_alumni_query } from './operationsActions';
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -47,7 +49,10 @@ const Styled = styled.div`
 `;
 const Alumuniqueriesdata = (props) => {
     let { onHide } = props;
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState({
+      dataAndEdit:false,
+      delete:false
+    });
     const [operationdata, setoperationdata] = useState(props);
     const hideShowModal1 = async (data) => {
       if (!data || data.isTrusted) {
@@ -58,22 +63,45 @@ const Alumuniqueriesdata = (props) => {
         onHide()
       }
     };
-    useEffect(() => {
-      console.log("props", props);
-      // setoperationdata(props)
-    }, []);
+   
     const updatevalue = () => {
-      console.log("hello");
-      setShowModal(true);
+      setShowModal({
+        ...showModal,
+        dataAndEdit:true
+      });
     };
     const closeThepopup =async () =>{
-      deactivate_user_alumni_query(Number(props.id))
-      onHide()
+      setShowModal({
+        ...showModal,
+        delete:true,
+        dataAndEdit:false 
+      });
+    }
+
+    const deleteEntry=async()=>{
+      const data=await deactivate_user_alumni_query(Number(props.id))
+      if(data.status==200){
+       setAlert("Entry Deleted Successfully.", "success");
+       onHide()
+      }else{
+       setAlert("Not Able to delete", "Danger");
+       onHide()
+      }
+      
+      
+     }
+
+     const closepop =()=>{
+   
+      setShowModal({
+        ...showModal,
+        delete:false,
+      });
     }
   
     return (
       <>
-        <Modal
+        {!showModal.dataAndEdit && (<Modal
           centered
           size="lg"
           show={true}
@@ -99,12 +127,21 @@ const Alumuniqueriesdata = (props) => {
                     label="Student Name"
                     value={props.student_name ? props.student_name : ""}
                   />
+                  {/* <DetailField
+                    label="Student Id"
+                    value={props.student_name ? props.student_id.student_id : ""}
+                  /> */}
+                    <DetailField
+                    
+                    label="Student Name"
+                    value={<Anchor text={props.student_name ? props.student_id.student_id : ""} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
+                  />
                   <DetailField label="Query Description" value={props.query_desc} />
-                  <DetailField label="Query Start" value={props.query_start} />
+                  <DetailField label="Query Start Date" value={props.query_start} />
   
-                  {/* <DetailField label="Batch" value={props.batch_name} /> */}
+                  <DetailField label="Medha Area" value={props.location} />
                   <DetailField
-                    label="Phone"
+                    label="Mobile No."
                     value={props.phone}
                   />
                   <DetailField label="Father Name" value={props.father_name} />
@@ -120,8 +157,8 @@ const Alumuniqueriesdata = (props) => {
                     value={props.query_type ? props.query_type : ""}
                   />
   
-                  <DetailField label="Query end" value={props.query_end} />
-                  <DetailField label="Email" value={props.email} />
+                  <DetailField label="Query End Date" value={props.query_end} />
+                  <DetailField label="Email ID" value={props.email} />
                   <DetailField
                     label="Conclusion"
                     value={props.conclusion}
@@ -133,33 +170,42 @@ const Alumuniqueriesdata = (props) => {
               
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={moment(
-                      props.created_at
-                        ? props.created_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-  
-                <div className="col-md-6 col-sm-12">
-                 
-                  <DetailField
-                    Bold={""}
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
-                </div>
-              </div>
+              <div className="row">
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Updated By"
+                          value={
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
+                          }
+                        />
+                        <DetailField
+                          label="Updated At"
+                          value={moment(
+                            props.updated_at
+                              ? props.updated_at
+                              : props.created_at
+                          ).format("DD MMM YYYY, h:mm a")}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Created By"
+                          value={
+                            props.createdby?.username
+                              ? props.createdby?.username
+                              : ""
+                          }
+                        />
+                        <DetailField
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
+                    </div>
             </Modal.Body>
             {(isSRM() || isAdmin()) && (
               <div className="row mt-4 mb-4">
@@ -182,17 +228,23 @@ const Alumuniqueriesdata = (props) => {
               </div>
             )}
           </Styled>
-        </Modal>
-  
-            {showModal ? (
+        </Modal>)}
+
+        { showModal.dataAndEdit &&
+          (
             <AllumuniEdit
                 {...operationdata}
                 show={showModal}
                 onHide={hideShowModal1}
             />
-            ) : (
-            ""
-            )}
+            )
+        }
+
+        {
+          showModal.delete && (
+            <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+          )
+        }
       </>
     );
   };

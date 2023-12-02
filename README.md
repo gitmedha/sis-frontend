@@ -16,6 +16,7 @@ In the project directory, you can run:
     ```sh
     npm install
     ```
+    While running `npm install` you might face `npm - "Can't find Python executable "python"` run `npm config set python python3` to fix this issue.
 
 2. Set up `.env` file using `.env.example` and update the environment variables.
     ```sh

@@ -5,36 +5,28 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
 import {
-  filterAssignedTo,
   getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import AsyncSelect from "react-select/async";
 import { MeiliSearch } from "meilisearch";
-import { Select } from "@material-ui/core";
-// import 'react-select/dist/react-select.css';
-import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity, updateUserTot } from "./operationsActions";
+import { getTotPickList,updateUserTot ,deactivate_user_ops} from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
 import {
   handleKeyPress,
-  handleKeyPresscharandspecialchar,
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
-import { GET_STUDENT, GET_STUDENTS } from "../../../graphql";
-import api from "../../../apis";
-import NP from "nprogress";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -85,6 +77,9 @@ const TotEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
+  const [moduleName,setModuleName]=useState([])
+  const [partnerDept,setPartnerDept]=useState([])
+  const [projectName,setProjectName]=useState([])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -134,7 +129,6 @@ const TotEdit = (props) => {
 
 
  useEffect(async() => {
-    // filterstate("new delhi",'city')
     let val=await getStateDistricts().then((data) => {
       console.log("district data",data.data.data.geographiesConnection.groupBy);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
@@ -155,8 +149,6 @@ const TotEdit = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-
         let filterData = data.hits.map((batch) => {
           return {
             ...batch,
@@ -164,11 +156,10 @@ const TotEdit = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };
+
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -283,6 +274,32 @@ const TotEdit = (props) => {
         setInstitutionOptions(data);
       });
     }
+    getTotPickList().then(data=>{
+      
+      // setModuleName(data.module_name.map(item))
+      setModuleName(
+        data.module_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setPartnerDept(
+        data.partner_dept.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setProjectName(
+        data.project_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+
+    })
   }, []);
 
   // console.log("props",initialValues.batch);
@@ -316,6 +333,20 @@ const TotEdit = (props) => {
       }),
   });
 
+
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_ops(Number(props.id))
+    if(data.status==200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+    
+    
+   }
+  
   return (
     <>
       {initialValues && props && (
@@ -345,8 +376,8 @@ const TotEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {console.log(props)}
-                {props.user_name ? props.user_name : `Edit tot Detail`}
+                
+                {props.user_name ? props.user_name  : `Edit tot Detail ----`}
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -371,11 +402,21 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="project_name"
                           label="Project Name"
                           onKeyPress={handleKeyPress}
+                          className="form-control"
+                          placeholder="Project Name"
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="project_name"
+                          label="Project Name"
+                          required
+                          options={projectName}
                           className="form-control"
                           placeholder="Project Name"
                         />
@@ -407,7 +448,7 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="module_name"
                           label="Module Name"
@@ -417,6 +458,16 @@ const TotEdit = (props) => {
                           onKeyPress={handleKeyPress}
                           // filterData={filterAssignedTo}
                           // defaultOptions={assigneeOptions}
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="module_name"
+                          label="Module Name"
+                          required
+                          options={moduleName}
+                          className="form-control"
+                          placeholder="Module Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -508,11 +559,21 @@ const TotEdit = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           control="input"
                           name="partner_dept"
                           label="Partner Department"
                           onKeyPress={handleKeyPresscharandspecialchar}
+                          className="form-control"
+                          placeholder="Partner Department"
+                        /> */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="partner_dept"
+                          label="Partner Department"
+                          required
+                          options={partnerDept}
                           className="form-control"
                           placeholder="Partner Department"
                         />

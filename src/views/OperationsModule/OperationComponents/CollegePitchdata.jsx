@@ -18,6 +18,8 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from "./AllumuniEdit";
 import CollepitchesEdit from "./CollegepitchesEdit";
 import { deactivate_user_college_pitch } from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -48,7 +50,12 @@ const Styled = styled.div`
 `;
 const CollegePitchdata = (props) => {
   let { onHide } = props;
-  const [showModal, setShowModal] = useState(false);
+
+  const [showModal, setShowModal] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
+
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -61,16 +68,41 @@ const CollegePitchdata = (props) => {
   };
 
   const updatevalue = () => {
-    setShowModal(true);
+    setShowModal({
+      ...showModal,
+      dataAndEdit:true
+    });
   };
   const closeThepopup = async () => {
-    deactivate_user_college_pitch(Number(props.id));
-    onHide();
+    setShowModal({
+      ...showModal,
+      delete:true,
+      dataAndEdit:false 
+    });
   };
 
+  const closepop =()=>{
+   
+    setShowModal({
+      ...showModal,
+      delete:false,
+    });
+  }
+
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_college_pitch(Number(props.id))
+    if(data.status===200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+   }
+   console.log(props);
   return (
     <>
-      <Modal
+     {!showModal.dataAndEdit && ( <Modal
         centered
         size="lg"
         show={true}
@@ -85,7 +117,7 @@ const CollegePitchdata = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              Allumuni Query Details
+            Pitching
             </h1>
           </Modal.Title>
         </Modal.Header>
@@ -99,23 +131,24 @@ const CollegePitchdata = (props) => {
                   value={props.student_name ? props.student_name : ""}
                 />
                 <DetailField label="Phone" value={props.phone} />
+                <DetailField label="Whatsapp Number" value={props.whatsapp} />
                 <DetailField label="College Name" value={props.college_name} />
                 <DetailField label="Course Year" value={props.course_year} />
 
-                {/* <DetailField label="Batch" value={props.batch_name} /> */}
+                
 
                 <DetailField label="Pitch Date" value={props.pitch_date} />
               </div>
 
               <div className="col-md-6 col-sm-12">
-                <DetailField label="SRM Name" value={props.srm_name} />
+                <DetailField label="SRM Name" value={props.srm_name?.username } />
                 <DetailField
-                  label="Area"
+                  label="Medha  Area"
                   value={props.area ? props.area : ""}
                 />
 
                 <DetailField label="Course Name" value={props.course_name} />
-                <DetailField label="Email" value={props.email} />
+                <DetailField label="Email ID" value={props.email} />
                 <DetailField label="Remark" value={props.remarks} />
                 {/* <DetailField label="Acad Year" value={props.acad_year} />
                   <DetailField label="Result" value={props.result} /> */}
@@ -124,27 +157,42 @@ const CollegePitchdata = (props) => {
 
             <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
             <h3 className="section-header ">Other Info</h3>
-            <div className="row  ">
-              <div className="col-md-6 col-sm-12">
-                <DetailField
-                  Bold={""}
-                  label="Created At"
-                  value={moment(
-                    props.created_at ? props.created_at : props.created_at
-                  ).format("DD MMM YYYY, h:mm a")}
-                />
-              </div>
-
-              <div className="col-md-6 col-sm-12">
-                <DetailField
-                  Bold={""}
-                  label="Updated At"
-                  value={moment(
-                    props.updated_at ? props.updated_at : props.created_at
-                  ).format("DD MMM YYYY, h:mm a")}
-                />
-              </div>
-            </div>
+            <div className="row">
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Updated By"
+                          value={
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
+                          }
+                        />
+                        <DetailField
+                          label="Updated At"
+                          value={moment(
+                            props.updated_at
+                              ? props.updated_at
+                              : props.created_at
+                          ).format("DD MMM YYYY, h:mm a")}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <DetailField
+                          label="Created By"
+                          value={
+                            props.createdby?.username
+                              ? props.createdby?.username
+                              : ""
+                          }
+                        />
+                        <DetailField
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
+                    </div>
           </Modal.Body>
           {(isSRM() || isAdmin())  && (
             <div className="row mt-4 mb-4">
@@ -167,17 +215,21 @@ const CollegePitchdata = (props) => {
             </div>
           )}
         </Styled>
-      </Modal>
+      </Modal>)}
 
-      {showModal ? (
+      {showModal.dataAndEdit &&(
         <CollepitchesEdit
           {...operationdata}
           show={showModal}
           onHide={hideShowModal1}
         />
-      ) : (
-        ""
       )}
+
+      {
+        showModal.delete && (
+          <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+        )
+      }
     </>
   );
 };

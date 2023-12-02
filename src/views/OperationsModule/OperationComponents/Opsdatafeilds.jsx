@@ -2,20 +2,15 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { Anchor, Badge } from "../../../components/content/Utils";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
-import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
-import {
-  getEmploymentConnectionsPickList,
-  getOpportunitiesPickList,
-} from "./StudentActions";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import OperationDataupdateform from "./OperationDataupdateform";
 import {deactivate_user_ops} from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { Link } from "react-router-dom";
+import { Anchor } from "../../../components/content/Utils";
 
 const Styled = styled.div`
   .icon-box {
@@ -45,28 +40,13 @@ const Styled = styled.div`
   }
 `;
 
-const FileStyled = styled.div`
-  .icon-box {
-    display: flex;
-    padding: 5px;
-    justify-content: center;
-  }
-  .cv-icon {
-    margin-right: 20px;
-    padding: 8px;
-    border: 1px solid transparent;
-    border-radius: 50%;
-
-    &:hover {
-      background-color: #eee;
-      box-shadow: 0 0 0 1px #c4c4c4;
-    }
-  }
-`;
-
 const Opsdatafeilds = (props) => {
   let { onHide } = props;
-  const [showModal, setShowModal] = useState(false);
+  const { setAlert } = props;
+  const [showModal, setShowModal] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -80,18 +60,46 @@ const Opsdatafeilds = (props) => {
   };
  
   const updatevalue = () => {
-    setShowModal(true);
+    setShowModal({
+      ...showModal,
+      dataAndEdit:true
+    });
   };
-
-  const closeThepopup =async () =>{
-    deactivate_user_ops(Number(props.id))
-    onHide()
+  const closepop =()=>{
+   
+    setShowModal({
+      ...showModal,
+      delete:false,
+    });
   }
 
+  const deleteEntry=async()=>{
+   const data=await deactivate_user_ops(Number(props.id))
+   if(data.status==200){
+    setAlert("Entry Deleted Successfully.", "success");
+    onHide()
+   }else{
+    setAlert("Not Able to delete", "Danger");
+    onHide()
+   }
+   
+   
+  }
+
+  const closeThepopup =async () =>{
+    // 
+    
+    setShowModal({
+      ...showModal,
+      delete:true,
+      dataAndEdit:false 
+    });
+  }
+  
 
   return (
     <>
-      {!showModal ? (
+      {!showModal.dataAndEdit && (
         <Modal
           centered
           size="lg"
@@ -107,7 +115,7 @@ const Opsdatafeilds = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                User Opts Details
+                Field Details
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -124,7 +132,7 @@ const Opsdatafeilds = (props) => {
                   <DetailField
                     Bold={""}
                     label="Batch"
-                    value={props.batch?.name}
+                    value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />}
                   />
                   <DetailField
                     Bold={""}
@@ -141,23 +149,17 @@ const Opsdatafeilds = (props) => {
                     label="Donor"
                     value={props.donor ? "Yes" : "No"}
                   />
-                  <DetailField
-                    Bold={""}
-                    label="Guest"
-                    value={props.guest}
-                  />
+                  <DetailField Bold={""} label="Guest" value={props.guest} />
                   <DetailField
                     Bold={""}
                     label="Organization"
                     value={props.organization}
                   />
-                   <DetailField
-                      Bold={""}
-                      label="Other Link"
-                      value={
-                        props.other_links ? props.other_links : "not found"
-                      }
-                    />
+                  <DetailField
+                    Bold={""}
+                    label="Other Link"
+                    value={props.other_links ? props.other_links : "not found"}
+                  />
                 </div>
 
                 <div className="col-md-6 col-sm-12">
@@ -172,8 +174,8 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Institution"
-                    value={props.institution?.name}
+                    label="Batch"
+                    value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField
                     Bold={""}
@@ -207,7 +209,11 @@ const Opsdatafeilds = (props) => {
                   </div>
 
                   <div className="col-md-6 col-sm-12">
-                    <DetailField Bold={""} label="Area" value={props.area} />
+                    <DetailField
+                      Bold={""}
+                      label="Medha Area"
+                      value={props.area}
+                    />
                   </div>
                 </div>
                 <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
@@ -217,30 +223,40 @@ const Opsdatafeilds = (props) => {
                     <DetailField
                       Bold={""}
                       label="Created By"
-                      value={props.Created_by ? props.Created_by.username : "not found"}
+                      value={
+                        props.createdby
+                          ? props.createdby.username
+                          : "not found"
+                      }
                     />
                     <DetailField
                       Bold={""}
                       label="Created At"
-                      value={props.Created_at ? props.Created_at : "not found"}
+                      value={moment(props.created_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      )}
                     />
-                   
                   </div>
 
                   <div className="col-md-6 col-sm-12">
                     <DetailField
                       Bold={""}
                       label="Updated By"
-                      value={props.Updated_by ? props.Updated_by.username : "not found"}
+                      value={
+                        props.updatedby
+                          ? props.updatedby.username
+                          : "not found"
+                      }
                     />
                     <DetailField
                       Bold={""}
                       label="Updated At"
-                      value={props.Updated_at ? props.Updated_at : "not found"}
+                      value={props.updated_at ? moment(props.updated_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      ): "not found"}
                     />
                   </div>
                 </div>
-             
 
                 {/* <DetailField label="Assigned to" value={props.institute.name} /> */}
               </div>
@@ -257,7 +273,7 @@ const Opsdatafeilds = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={()=>closeThepopup()}
+                    onClick={() => closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
                     DELETE
@@ -267,23 +283,33 @@ const Opsdatafeilds = (props) => {
             )}
           </Styled>
         </Modal>
-      ) : (
-        <OperationDataupdateform
-          {...operationdata}
-          show={showModal}
-          onHide={hideShowModal1}
-        />
       )}
+      {
+        showModal.dataAndEdit &&
+        (
+          <OperationDataupdateform
+            {...operationdata}
+            show={showModal}
+            onHide={hideShowModal1}
+          />
+        )
+      }
+      {
 
-      {/* {showModal && 
-        <Opsdatafeilds
-          {...operationdata}
-          show={showModal}
-          // onHide={hideShowModal1}
-        />
-      } */}
+showModal.delete && (
+  <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+)
+      }
     </>
   );
 };
 
-export default Opsdatafeilds;
+// export default Opsdatafeilds;
+
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Opsdatafeilds);

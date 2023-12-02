@@ -244,4 +244,5 @@ export const batchSendLinks = async (batchId) => {
   }).catch(error => {
     return Promise.reject(error);
   });
-};
+
+}

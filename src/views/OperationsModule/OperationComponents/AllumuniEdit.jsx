@@ -22,7 +22,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateAlumniQuery, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { getAlumniPickList, updateAlumniQuery, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
 import { handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker } from "../../../utils/function/OpsModulechecker";
 import * as Yup from "yup";
 
@@ -65,7 +65,7 @@ const AllumuniEdit = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-
+  const [queryTypes,setQueryType]=useState([])
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -227,6 +227,23 @@ const AllumuniEdit = (props) => {
         setInstitutionOptions(data);
       });
     }
+    getAlumniPickList().then((data) => {
+      setAreaOptions(
+        data.medha_area.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setQueryType(
+        data.query_type.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+    });
+    
   }, []);
 
   // console.log("props",initialValues.batch);
@@ -283,13 +300,15 @@ const AllumuniEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Student"}
+                {props.student_name ? props.student_name : "Add New Student"}
               </h1>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}
-            validationSchema={alumvalidation}
+            <Formik
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validationSchema={alumvalidation}
             >
               {({ values, setFieldValue }) => (
                 <Form>
@@ -308,7 +327,7 @@ const AllumuniEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
+                        <Input
                           control="input"
                           name="father_name"
                           label=" Father Name"
@@ -317,16 +336,14 @@ const AllumuniEdit = (props) => {
                           placeholder="Father Name"
                           onKeyPress={handleKeyPress}
                         />
-                        
                       </div>
 
                       {/*  */}
 
-                      
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="email"
-                          label="Email"
+                          label="Email ID"
                           // required
                           placeholder="Email"
                           control="input"
@@ -339,45 +356,57 @@ const AllumuniEdit = (props) => {
                         <Input
                           control="input"
                           name="phone"
-                          label="Phone"
+                          label="Mobile No."
                           onKeyPress={mobileNochecker}
                           className="form-control"
                           placeholder="Phone"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        
                         <Input
-                            icon="down"
-                            name="status"
-                            label="Status"
-                            control="lookup"
-                            options={Statusoptions}
-                            // onChange={onStateChange}
-                            placeholder="Status"
-                            className="form-control"
-                            // required
-                          />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="location"
-                          label="Location"
-                          // required
+                          icon="down"
+                          name="status"
+                          label="Status"
+                          control="lookup"
+                          options={Statusoptions}
+                          // onChange={onStateChange}
+                          placeholder="Status"
                           className="form-control"
-                          placeholder="Location"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
+                        
+
                         <Input
+                          icon="down"
+                          name="location"
+                          label="Medha Area"
+                          control="lookup"
+                          options={areaOptions}
+                          // onChange={onStateChange}
+                          placeholder="Medha Area"
+                          className="form-control"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        {/* <Input
                           icon="down"
                           control="input"
                           name="query_type"
                           label="Query Type"
-                           onKeyPress={handleKeyPresscharandspecialchar}
+                          onKeyPress={handleKeyPresscharandspecialchar}
                           className="form-control"
                           placeholder="Query Type"
+                        /> */}
+                         <Input
+                          icon="down"
+                          name="query_type"
+                          label="Query Type"
+                          control="lookup"
+                          options={queryTypes}
+                          // onChange={onStateChange}
+                          placeholder="Query Type"
+                          className="form-control"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -404,7 +433,7 @@ const AllumuniEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="query_end"
-                          label="Query End"
+                          label="Query End Date"
                           // required
                           placeholder="Query End Date"
                           control="datepicker"
@@ -412,10 +441,9 @@ const AllumuniEdit = (props) => {
                           autoComplete="off"
                         />
                       </div>
-                     
-                      
+
                       {/* status */}
-                      
+
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"

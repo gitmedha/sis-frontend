@@ -13,6 +13,7 @@ import {
 } from "../../Address/addressActions";
 import {
   filterAssignedTo,
+  getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import AsyncSelect from "react-select/async";
@@ -22,7 +23,7 @@ import { Select } from "@material-ui/core";
 import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { getPitchingPickList, updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { handleKeyPress, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -52,6 +53,7 @@ const meilisearchClient = new MeiliSearch({
 
 const CollepitchesEdit = (props) => {
   let { onHide, show } = props;
+  const [srmOption, setsrmOption] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -59,6 +61,9 @@ const CollepitchesEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [course, setcourse] = useState([]);
+  const [colleges,setCollege]=useState([])
+  const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
+
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -119,7 +124,7 @@ const CollepitchesEdit = (props) => {
       });
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     getAddressOptions().then((data) => {
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
@@ -130,31 +135,44 @@ const CollepitchesEdit = (props) => {
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
-      if (props.state) {
-        onStateChange({ value: props.state });
-      }
+
+      // if (props.state) {
+      //   onStateChange({ value: props.state });
+      // }
     });
+    let data = await getAllSrm(1);
+    setsrmOption(data);
     getProgramEnrollmentsPickList().then((data) => {
       setcourse(
         data?.course?.map((item) => ({ key: item, value: item, label: item }))
       );
+      setCurrentCourseYearOptions(
+        data.current_course_year.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+    
+    getPitchingPickList().then((data) => {
+      setCollege(
+        data.college_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setAreaOptions(
+        data.medha_area.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
     });
   }, []);
 
-  const onStateChange = async (value) => {
-    await getStateDistricts(value).then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.area
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-  };
 
   const onSubmit = async (values) => {
   
@@ -207,7 +225,7 @@ const CollepitchesEdit = (props) => {
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name;
+    initialValues["srm_name"] = props.srm_name?.id.toString() ;
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
@@ -288,7 +306,7 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
+                        <Input
                           name="course_name"
                           control="lookup"
                           icon="down"
@@ -303,27 +321,37 @@ const CollepitchesEdit = (props) => {
                       {/*  */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           name="course_year"
                           label="Course Year"
-                          // required
                           placeholder="Course Year"
                           onKeyPress={numberChecker}
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                        /> */}
+                        <Input
+                          name="course_year"
+                          label="Course Year"
+                          control="lookup"
+                          icon="down"
+                          options={currentCourseYearOptions}
+                          onKeyPress={handleKeyPress}
+                          className="form-control"
+                          placeholder="Course Year"
                         />
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
                           name="college_name"
                           label="College Name"
-                          // required
+                          control="lookup"
+                          icon="down"
+                          options={colleges}
                           onKeyPress={handleKeyPress}
                           className="form-control"
-                          placeholder="Phone"
+                          placeholder="College Name"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -341,11 +369,10 @@ const CollepitchesEdit = (props) => {
                         <Input
                           control="input"
                           name="whatsapp"
-                          label="Whatsapp"
-                          // required
+                          label="Whatsapp Number"
                           onKeyPress={mobileNochecker}
                           className="form-control"
-                          placeholder="Whatsapp"
+                          placeholder="Whatsapp Number"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -353,10 +380,9 @@ const CollepitchesEdit = (props) => {
                           icon="down"
                           control="input"
                           name="email"
-                          label="Email"
-                          // required
+                          label="Email ID"
                           className="form-control"
-                          placeholder="Email"
+                          placeholder="Email ID"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -369,43 +395,38 @@ const CollepitchesEdit = (props) => {
                           placeholder="Remarks"
                         />
                       </div>
-                      {/* query_start */}
                       <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
+                        {/* <Input
                           name="srm_name"
                           label="SRM Name"
-                          // required
                           placeholder="SRM Name"
                           control="input"
                           className="form-control"
                           autoComplete="off"
+                        /> */}
+                        <Input
+                          name="srm_name"
+                          label="SRM Name"
+                          placeholder="SRM Name"
+                          control="lookup"
+                          icon="down"
+                          options={srmOption}
+                          onKeyPress={handleKeyPress}
+                          className="form-control"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           name="area"
-                          label="Area"
-                          // required
-                          placeholder="Area"
-                          control="input"
+                          label="Medha Area"
+                          control="lookup"
+                          icon="down"
+                          options={areaOptions}
+                          onKeyPress={handleKeyPress}
                           className="form-control"
-                          autoComplete="off"
+                          placeholder="Medha Area"
                         />
                       </div>
-
-                      {/* status */}
-
-                      {/* <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="pitch_date"
-                          label="Pitch Date"
-                          // required
-                          placeholder="Pitch date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div> */}
                     </div>
                   </Section>
 

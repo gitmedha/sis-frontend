@@ -16,6 +16,8 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
+import Deletepopup from "./Deletepopup";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -47,7 +49,10 @@ const Styled = styled.div`
 
 const Totdatafield = (props) => {
   let { onHide } = props;
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({
+    dataAndEdit:false,
+    delete:false
+  });
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -63,20 +68,47 @@ const Totdatafield = (props) => {
   useEffect(() => {
     setoperationdata(props);
   }, [props]);
-  const updatevalue = () => {
-    setShowModal(true);
-  };
+  
   const closeThepopup =async () =>{
-    deactivate_user_tots(Number(props.id))
-    onHide()
+    setShowModal({
+      ...showModal,
+      delete:true,
+      dataAndEdit:false 
+    });
   }
 
+  const updatevalue = () => {
+    setShowModal({
+      ...showModal,
+      dataAndEdit:true
+    });
+  };
+  const closepop =()=>{
+   
+    setShowModal({
+      ...showModal,
+      delete:false,
+    });
+  }
+
+  const deleteEntry=async()=>{
+    const data=await deactivate_user_tots(Number(props.id))
+    if(data.status==200){
+     setAlert("Entry Deleted Successfully.", "success");
+     onHide()
+    }else{
+     setAlert("Not Able to delete", "Danger");
+     onHide()
+    }
+    
+    
+   }
   useEffect(()=>{
     fetchAllStudents()
   },[])
   return (
     <>
-      {!showModal ? (
+      {!showModal.dataAndEdit &&(
         <Modal
           centered
           size="lg"
@@ -101,7 +133,7 @@ const Totdatafield = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
-                <DetailField
+                  <DetailField
                     label="Participant Name"
                     value={props.user_name}
                   />
@@ -127,7 +159,7 @@ const Totdatafield = (props) => {
                     label="Project Type"
                     value={props.project_type}
                   />
-                  
+
                   <DetailField
                     label="Partner Department"
                     value={props.partner_dept}
@@ -145,7 +177,7 @@ const Totdatafield = (props) => {
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                {/* <DetailField
+                  {/* <DetailField
                     label="Trainer Name"
                     value={props.trainer_1.id}
                   /> */}
@@ -190,37 +222,35 @@ const Totdatafield = (props) => {
 
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
+              <div className="row">
+                <div className="col-md-6">
                   <DetailField
-                    Bold={""}
-                    label="Created By"
-                    value={
-                      props.Created_by ? props.Created_by.username : "not found"
-                    }
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Created At"
-                    value={props.created_at ? moment(props.created_at).format(
-                      "YYYY-MM-DD"
-      ) : "not found"}
-                  />
-                 
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
                     label="Updated By"
                     value={
-                      props.Updated_by ? props.Updated_by.username : "not found"
+                      props.updatedby?.userName
+                        ? props.updatedby?.userName
+                        : ""
                     }
                   />
                   <DetailField
-                    Bold={""}
                     label="Updated At"
-                    value={props.Updated_at ? props.Updated_at : "not found"}
+                    value={moment(
+                      props.updated_at ? props.updated_at : props.created_at
+                    ).format("DD MMM YYYY, h:mm a")}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <DetailField
+                    label="Created By"
+                    value={
+                      props.createdby?.username ? props.createdby?.username : ""
+                    }
+                  />
+                  <DetailField
+                    label="Created At"
+                    value={moment(props.created_at).format(
+                      "DD MMM YYYY, h:mm a"
+                    )}
                   />
                 </div>
               </div>
@@ -237,7 +267,7 @@ const Totdatafield = (props) => {
                   </button>
                   <button
                     type="button"
-                    onClick={()=>closeThepopup()}
+                    onClick={() => closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
                     Delete
@@ -247,9 +277,19 @@ const Totdatafield = (props) => {
             )}
           </Styled>
         </Modal>
-      ) : (
-        <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} />
       )}
+      {
+        showModal.dataAndEdit && 
+        (
+          <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} />
+        )
+      }
+      {
+
+showModal.delete && (
+  <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
+)
+      }
     </>
   );
 };

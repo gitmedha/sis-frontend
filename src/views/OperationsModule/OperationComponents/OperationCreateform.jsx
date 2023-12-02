@@ -259,7 +259,7 @@ const OperationCreateform = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      console.log(rows);
+      
     }
     // setclassValue({state:false,area:false,topic:false})
   };
@@ -304,10 +304,6 @@ const OperationCreateform = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -362,8 +358,8 @@ const OperationCreateform = (props) => {
     let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
-      row.created_by = Number(userId);
-      row.updated_by = userId;
+      row.createdby = Number(userId);
+      row.updatedby = Number(userId);
       row.batch = Number(row.batch);
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
@@ -378,8 +374,12 @@ const OperationCreateform = (props) => {
         "/users-ops-activities/createBulkOperations",
         data
       );
+
       props.ModalShow();
+      setAlert("Data created successfully.", "success");
+      
     } catch (error) {
+      setAlert("Data is not created yet", "danger");
       console.log("error", error);
     }
   };
@@ -486,7 +486,7 @@ const OperationCreateform = (props) => {
           <div className="d-flex justify-content-between">
             <div className="d-flex ">
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add Bulk Operation Data"}
+                {props.id ? props.full_name : "Add New Field Activity"}
               </h2>
             </div>
           </div>
@@ -535,12 +535,13 @@ const OperationCreateform = (props) => {
                   <th>Educational Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
+                  <th>Program Name</th>
                   <th>Batch Name *</th>
                   
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>
-                  <th>Project Founder</th>
+                  <th>Project Funder</th>
                   <th>Guest Name</th>
                   <th>Guest Designation</th>
                   <th>Organization</th>
