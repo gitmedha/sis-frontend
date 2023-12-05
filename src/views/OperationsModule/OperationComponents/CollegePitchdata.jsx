@@ -99,7 +99,6 @@ const CollegePitchdata = (props) => {
      onHide()
     }
    }
-   console.log(props);
   return (
     <>
      {!showModal.dataAndEdit && ( <Modal

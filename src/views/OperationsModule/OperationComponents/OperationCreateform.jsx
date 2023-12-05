@@ -187,7 +187,6 @@ const OperationCreateform = (props) => {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
         if(isEmpty){
-          console.log("result[key]",result[key]);
           result[key] = "N/A";
         }
         else{
@@ -247,9 +246,6 @@ const OperationCreateform = (props) => {
       value.assigned_to || value.students_attended
     ) {
       let obj = { [`class${[rows.length - 1]}`]: value };
-      console.log("obj", obj);
-      
-
       return setclassValue(obj);
     }
 
@@ -265,10 +261,8 @@ const OperationCreateform = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -280,7 +274,6 @@ const OperationCreateform = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
     }
     updateRow(rowid, key, options.value);
   };
@@ -317,17 +310,17 @@ const OperationCreateform = (props) => {
   }, []);
 
   const onStateChange = (value) => {
-    setDistrictOptions([]);
+    // setDistrictOptions([]);
     getStateDistricts(value).then((data) => {
-      setDistrictOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
-          .map((district) => ({
-            key: district.id,
-            label: district.key,
-            value: district.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
+      // setDistrictOptions(
+      //   data?.data?.data?.geographiesConnection.groupBy.district
+      //     .map((district) => ({
+      //       key: district.id,
+      //       label: district.key,
+      //       value: district.key,
+      //     }))
+      //     .sort((a, b) => a.label.localeCompare(b.label))
+      // );
       setAreaOptions([]);
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
@@ -343,7 +336,6 @@ const OperationCreateform = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -380,7 +372,6 @@ const OperationCreateform = (props) => {
       
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 
@@ -400,17 +391,14 @@ const OperationCreateform = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -452,8 +440,6 @@ const OperationCreateform = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };

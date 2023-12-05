@@ -19,6 +19,7 @@ export const getStateDistricts = async (value) => {
       state:value?.value
     },
   }).then(data => {
+    console.log("data",data);
     return data;
   }).catch(error => {
     return Promise.reject(error);

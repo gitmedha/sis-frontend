@@ -74,14 +74,12 @@ const AllumuniEdit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -124,8 +122,6 @@ const AllumuniEdit = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };
@@ -178,7 +174,6 @@ const AllumuniEdit = (props) => {
   };
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
   let initialValues = {
     query_start: "",
     student_name: "",
@@ -201,7 +196,6 @@ const AllumuniEdit = (props) => {
     ];
   
     const date = new Date(dateString);
-    console.log("date____123",date);
     return date
   }
   if (props) {
@@ -246,7 +240,6 @@ const AllumuniEdit = (props) => {
     
   }, []);
 
-  // console.log("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -464,9 +457,9 @@ const AllumuniEdit = (props) => {
                         <DetailField
                           label="Updated By"
                           value={
-                            props.Updated_by?.userName
-                              ? props.Updated_by?.userName
-                              : props.Created_by?.username
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
                           }
                         />
                         <DetailField
@@ -482,13 +475,13 @@ const AllumuniEdit = (props) => {
                         <DetailField
                           label="Created By"
                           value={
-                            props.Created_by?.username
-                              ? props.Created_by?.username
+                            props.createdby?.username
+                              ? props.createdby?.username
                               : ""
                           }
                         />
                         <DetailField
-                          label="Created At "
+                          label="Created At"
                           value={moment(props.created_at).format(
                             "DD MMM YYYY, h:mm a"
                           )}

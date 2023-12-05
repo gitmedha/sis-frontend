@@ -108,9 +108,8 @@ const CollegepitchesBulkrow = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+
   };
-  console.log(srmOption)
 
   return (
     <>
@@ -127,8 +126,6 @@ const CollegepitchesBulkrow = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
-
               setStartDate(e.target.value);
               props.updateRow(row.id, "pitch_date", e.target.value);
             }}

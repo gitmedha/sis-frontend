@@ -56,9 +56,8 @@ const StudentupskilingBulk = (props) => {
   const [programeName,setProgramName]=useState([])
   const coursename=useRef(null)
   const issuingorg=useRef(null)
-  const handleChange = (options, key) => {
-    console.log(options, key);
-  };
+  // const handleChange = (options, key) => {
+  // };
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -87,7 +86,6 @@ const StudentupskilingBulk = (props) => {
       })));
     });
     
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
@@ -109,7 +107,6 @@ const StudentupskilingBulk = (props) => {
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 1000,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -169,10 +166,8 @@ const StudentupskilingBulk = (props) => {
             filterData={filterStudent}
             options={studentOptions}
             onInputChange={(e)=>{
-              console.log("e",e)
               setstudentinput(e)}}
             onChange={(e) => {
-              console.log("filter",row.id);
               props.handleChange(e, "student_id", row.id)}}
           />
         </td>

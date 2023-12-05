@@ -153,17 +153,6 @@ let today = new Date();
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
         }
-        // const date = new Date(values.search_by_value);
-
-        // const yyyy = date.getFullYear();
-        // const mm = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
-        // const dd = String(date.getDate()).padStart(2, '0');
-
-        // const formattedDate = `${yyyy}-${mm}-${dd}`;
-        // // let baseUrl = 'alumni-queries'
-        // console.log("values",values);
-        // // await searchOperationTab(baseUrl,values.search_by_field,formattedDate)
-
 
 
       }
@@ -174,7 +163,7 @@ let today = new Date();
       }
       
     }
-    const formik = useFormik({ // Create a Formik reference using useFormik
+    const formik = useFormik({ 
       initialValues,
       onSubmit: handleSubmit,
   });

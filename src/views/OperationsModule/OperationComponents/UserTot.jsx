@@ -302,9 +302,9 @@ const UserTot = (props) => {
       );
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
+        data?.data?.data?.geographiesConnection.groupBy.district
           .map((area) => ({
-            key: area.id,
+            key: area.key,
             label: area.key,
             value: area.key,
           }))
