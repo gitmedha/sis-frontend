@@ -66,19 +66,19 @@ const UserTotRowdata = (props) => {
     console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
-    // getStateDistricts(value).then((data) => {
-    //   setAreaOptions([]);
-    //   setAreaOptions(
-    //     data?.data?.data?.geographiesConnection.groupBy.area
-    //       .map((area) => ({
-    //         key: area.id,
-    //         label: area.key,
-    //         value: area.key,
-    //       }))
-    //       .sort((a, b) => a.label.localeCompare(b.label))
-    //   );
-    // });
-    props.updateRow(rowid, field, value?.value);
+    getStateDistricts(value).then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.district
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+    // props.updateRow(rowid, field, value?.value);
   };
   useEffect(async () => {
     let data = await getAllSrm(1);
@@ -234,7 +234,7 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            onChange={(e) => props.handleChange(e, "state",row.id)}
           />
         </td>
         <td>
@@ -257,9 +257,6 @@ const UserTotRowdata = (props) => {
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
-            // onChange={(e) =>
-            //   props.updateRow(row.id, "designation", e.target.value)
-            // }
             ref={designation}
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />

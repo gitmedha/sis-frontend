@@ -132,10 +132,8 @@ const CollegepitchesBulkadd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options,"val");
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -147,7 +145,6 @@ const CollegepitchesBulkadd = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
     }
     if(key =="srm_name"){
       updateRow(rowid, key, Number(options.value));
@@ -190,10 +187,6 @@ const CollegepitchesBulkadd = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -233,7 +226,6 @@ const CollegepitchesBulkadd = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -282,17 +274,14 @@ const CollegepitchesBulkadd = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -334,8 +323,6 @@ const CollegepitchesBulkadd = (props) => {
             value: batch.name,
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };

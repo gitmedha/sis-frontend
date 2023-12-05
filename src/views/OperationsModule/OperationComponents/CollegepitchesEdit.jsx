@@ -433,13 +433,13 @@ const CollepitchesEdit = (props) => {
                   <Section>
                     <h3 className="section-header">Other Information</h3>
                     <div className="row">
-                      <div className="col-md-6">
+                    <div className="col-md-6">
                         <DetailField
                           label="Updated By"
                           value={
-                            props.Updated_by?.userName
-                              ? props.Updated_by?.userName
-                              : props.Created_by?.username
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
                           }
                         />
                         <DetailField
@@ -455,13 +455,13 @@ const CollepitchesEdit = (props) => {
                         <DetailField
                           label="Created By"
                           value={
-                            props.Created_by?.username
-                              ? props.Created_by?.username
+                            props.createdby?.username
+                              ? props.createdby?.username
                               : ""
                           }
                         />
                         <DetailField
-                          label="Created At "
+                          label="Created At"
                           value={moment(props.created_at).format(
                             "DD MMM YYYY, h:mm a"
                           )}
