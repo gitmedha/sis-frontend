@@ -78,7 +78,7 @@ const UserTotRowdata = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    // props.updateRow(rowid, field, value?.value);
+    props.handleChange(value, "state",row.id)
   };
   useEffect(async () => {
     let data = await getAllSrm(1);
@@ -234,7 +234,7 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => props.handleChange(e, "state",row.id)}
+            onChange={(e) => onStateChange(e, row.id, "state")}
           />
         </td>
         <td>
