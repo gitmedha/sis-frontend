@@ -270,8 +270,12 @@ const AllumuniBulkAdd = (props) => {
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
       row.isActive=true;
-
+      
+      
       let value = checkEmptyValuesandplaceNA(row)
+      if(value.status =="Open"){
+        value.query_end =null 
+      }
       return value;
     });
     
