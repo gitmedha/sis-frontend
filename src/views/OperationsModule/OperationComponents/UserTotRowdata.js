@@ -62,6 +62,7 @@ const UserTotRowdata = (props) => {
   const userName=useRef(null)
   const designation=useRef(null)
   const college =useRef(null)
+  const [state,setstate]=useState(true)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
@@ -79,6 +80,8 @@ const UserTotRowdata = (props) => {
       );
     });
     props.handleChange(value, "state",row.id)
+    setstate(false)
+
   };
   useEffect(async () => {
     let data = await getAllSrm(1);
@@ -106,13 +109,13 @@ const UserTotRowdata = (props) => {
         }))
       );
     });
-    getUpskillingPicklist().then((data) => {
-      console.log("data",data.subCategory.map((item) => ({
-        key: item,
-        value: item,
-        label: item,
-      })));
-    });
+    // getUpskillingPicklist().then((data) => {
+    //   // console.log("data",data.subCategory.map((item) => ({
+    //   //   key: item,
+    //   //   value: item,
+    //   //   label: item,
+    //   // })));
+    // });
   }, [props]);
 
   useEffect(() => {
@@ -249,6 +252,7 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="area"
             options={areaOptions}
+            isDisabled={state}
             onChange={(e) => props.handleChange(e, "city", row.id)}
           />
         </td>
