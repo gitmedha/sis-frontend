@@ -251,8 +251,6 @@ const StudentupskilingBulk = (props) => {
             className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
-
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
             }}

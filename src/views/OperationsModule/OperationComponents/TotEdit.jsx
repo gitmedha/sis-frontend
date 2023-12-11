@@ -100,7 +100,6 @@ const TotEdit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -130,7 +129,6 @@ const TotEdit = (props) => {
 
  useEffect(async() => {
     let val=await getStateDistricts().then((data) => {
-      console.log("district data",data.data.data.geographiesConnection.groupBy);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
         key: item.key,
         value: item.key,
@@ -302,7 +300,7 @@ const TotEdit = (props) => {
     })
   }, []);
 
-  // console.log("props",initialValues.batch);
+
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -658,9 +656,6 @@ const TotEdit = (props) => {
                             control="lookup"
                             options={stateOptions}
                             onChange={onStateChange}
-                            onInputChange={(e)=>{
-                              console.log("E",e)
-                            }}
                             placeholder="State"
                             className="form-control"
                           />
