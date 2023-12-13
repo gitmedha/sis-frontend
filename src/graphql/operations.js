@@ -197,6 +197,7 @@ const collegePitchesFields = `
     course_name
     course_year
     college_name
+    program_name
     phone
     whatsapp
     email

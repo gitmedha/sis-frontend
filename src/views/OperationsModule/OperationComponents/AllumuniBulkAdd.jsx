@@ -90,7 +90,6 @@ const AllumuniBulkAdd = (props) => {
     conclusion: "",
     status: "",
     query_end: "",
-    published_at: "",
   });
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
@@ -272,14 +271,20 @@ const AllumuniBulkAdd = (props) => {
       row.isActive=true;
 
       let value = checkEmptyValuesandplaceNA(row)
+      if(value.status =="Open"){
+        value.query_end =null 
+      }
+      // value.published_at =null
       return value;
     });
     
 
     try {
       const value = await bulkCreateAlumniQueries(data);
+      console.log(value); 
       props.ModalShow();
       setAlert("Data created successfully.", "success");
+      window.location.reload(true)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

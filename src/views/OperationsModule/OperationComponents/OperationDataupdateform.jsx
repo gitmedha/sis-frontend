@@ -71,7 +71,6 @@ const OperationDataupdateform = (props) => {
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
-      console.log("data", data);
       setAssigneeOptions(data);
     });
   }, []);
@@ -269,8 +268,7 @@ const OperationDataupdateform = (props) => {
 
     setProgramName(data);
   }, [])
-  console.log(props);
-  
+
 
   return (
     <>

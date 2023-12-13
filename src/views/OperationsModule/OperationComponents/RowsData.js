@@ -52,6 +52,7 @@ export const RowsData = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [classvalue, setclassvalue] = useState(props.classValue);
   const [programOptions,setProgramOption]=useState([])
+  const [state,setstate]=useState(true)
 
   useEffect(() => {
     getAllProgram().then((data)=>{
@@ -78,6 +79,7 @@ export const RowsData = (props) => {
       );
     });
     if(value){
+      setstate(false)
       props.updateRow(rowid, field, value.value);
     }
     
@@ -124,9 +126,9 @@ export const RowsData = (props) => {
 
 
 
-  const updateRow = (id, field, value) => {
-    row[field] = value;
-    console.log(id, field, value);
+  const updatestate = () => {
+    setstate(!state)
+    return true
   };
   
 
@@ -204,7 +206,7 @@ export const RowsData = (props) => {
               props.classValue[`class${row.id - 1}`]?.state ? `border-red` : ""
             }`}
             classNamePrefix="select"
-            isClearable={true}
+            isClearable={()=>updatestate()}
             isSearchable={true}
             name="state"
             options={props.statedata}
@@ -222,6 +224,7 @@ export const RowsData = (props) => {
               isSearchable={true}
               name="area"
               options={areaOptions}
+              isDisabled={state}
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
           
@@ -262,7 +265,6 @@ export const RowsData = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
             }}

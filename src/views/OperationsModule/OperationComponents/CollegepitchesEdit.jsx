@@ -63,6 +63,7 @@ const CollepitchesEdit = (props) => {
   const [course, setcourse] = useState([]);
   const [colleges,setCollege]=useState([])
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
+  const [programOptions, setProgramOptions] = useState(null);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -136,9 +137,12 @@ const CollepitchesEdit = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
 
-      // if (props.state) {
-      //   onStateChange({ value: props.state });
-      // }
+     
+      if (props.program_name) {
+        filterProgram(props.program_name).then(data => {
+          setProgramOptions(data);
+        });
+      }
     });
     let data = await getAllSrm(1);
     setsrmOption(data);
@@ -197,6 +201,7 @@ const CollepitchesEdit = (props) => {
     remarks: "",
     srm_name: "",
     area: "",
+    program_name:""
   };
 
   function formatDateStringToIndianStandardTime(dateString) {
@@ -232,6 +237,7 @@ const CollepitchesEdit = (props) => {
       : "";
     initialValues["remarks"] = props.remarks;
     initialValues['area']=props.area;
+    initialValues['program_name']=props.program_name
   }
 
   useEffect(() => {
@@ -253,6 +259,21 @@ const CollepitchesEdit = (props) => {
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
+
+  const filterProgram = async (filterValue) => {
+    return await meilisearchClient.index('programs').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(program => {
+        return {
+          ...program,
+          label: program.name,
+          value:program.name,
+        }
+      });
+    });
+  }
 
   return (
     <>
@@ -427,19 +448,34 @@ const CollepitchesEdit = (props) => {
                           placeholder="Medha Area"
                         />
                       </div>
+
+                      <div className="col-md-6 col-sm-12 mt-2">
+                    
+                      <Input
+                        name="program_name"
+                        label="Program Name"
+                        required
+                        control="lookupAsync"
+                        filterData={filterProgram}
+                        defaultOptions={ programOptions }
+                        placeholder="Program"
+                        className="form-control"
+                      />
+                    
+                  </div>
                     </div>
                   </Section>
 
                   <Section>
                     <h3 className="section-header">Other Information</h3>
                     <div className="row">
-                      <div className="col-md-6">
+                    <div className="col-md-6">
                         <DetailField
                           label="Updated By"
                           value={
-                            props.Updated_by?.userName
-                              ? props.Updated_by?.userName
-                              : props.Created_by?.username
+                            props.updatedby?.userName
+                              ? props.updatedby?.userName
+                              : props.createdby?.username
                           }
                         />
                         <DetailField
@@ -455,13 +491,13 @@ const CollepitchesEdit = (props) => {
                         <DetailField
                           label="Created By"
                           value={
-                            props.Created_by?.username
-                              ? props.Created_by?.username
+                            props.createdby?.username
+                              ? props.createdby?.username
                               : ""
                           }
                         />
                         <DetailField
-                          label="Created At "
+                          label="Created At"
                           value={moment(props.created_at).format(
                             "DD MMM YYYY, h:mm a"
                           )}

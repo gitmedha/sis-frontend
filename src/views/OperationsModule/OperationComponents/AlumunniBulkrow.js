@@ -87,7 +87,6 @@ const AlumunniBulkrow = (props) => {
     filterStudent(studentinput).then((data) => {
      
       setStudentOptions(data);
-      // console.log("filterStudent",data);
     });
   }, [studentinput]);
   const handleInputChange = (id,data,value) => {
@@ -101,7 +100,6 @@ const AlumunniBulkrow = (props) => {
 
   useEffect(() => {
     getStudent(name?.id).then(async(data)=>{
-      console.log(data);
       if(data){
         if(!isEmptyValue(data?.name_of_parent_or_guardian) || !isEmptyValue(data?.email) || !isEmptyValue(data?.phone)){
           setFatherName(data?.name_of_parent_or_guardian)
@@ -133,7 +131,6 @@ const AlumunniBulkrow = (props) => {
       
 
     })
-    console.log("fieldvalue",fieldvalue)
   }, [name])
 
 

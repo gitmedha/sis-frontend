@@ -62,23 +62,26 @@ const UserTotRowdata = (props) => {
   const userName=useRef(null)
   const designation=useRef(null)
   const college =useRef(null)
+  const [state,setstate]=useState(true)
   const handleChange = (options, key) => {
     console.log(options, key);
   };
   const onStateChange = (value, rowid, field) => {
-    // getStateDistricts(value).then((data) => {
-    //   setAreaOptions([]);
-    //   setAreaOptions(
-    //     data?.data?.data?.geographiesConnection.groupBy.area
-    //       .map((area) => ({
-    //         key: area.id,
-    //         label: area.key,
-    //         value: area.key,
-    //       }))
-    //       .sort((a, b) => a.label.localeCompare(b.label))
-    //   );
-    // });
-    props.updateRow(rowid, field, value?.value);
+    getStateDistricts(value).then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.district
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+    props.handleChange(value, "state",row.id)
+    setstate(false)
+
   };
   useEffect(async () => {
     let data = await getAllSrm(1);
@@ -106,13 +109,13 @@ const UserTotRowdata = (props) => {
         }))
       );
     });
-    getUpskillingPicklist().then((data) => {
-      console.log("data",data.subCategory.map((item) => ({
-        key: item,
-        value: item,
-        label: item,
-      })));
-    });
+    // getUpskillingPicklist().then((data) => {
+    //   // console.log("data",data.subCategory.map((item) => ({
+    //   //   key: item,
+    //   //   value: item,
+    //   //   label: item,
+    //   // })));
+    // });
   }, [props]);
 
   useEffect(() => {
@@ -249,6 +252,7 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="area"
             options={areaOptions}
+            isDisabled={state}
             onChange={(e) => props.handleChange(e, "city", row.id)}
           />
         </td>
@@ -257,9 +261,6 @@ const UserTotRowdata = (props) => {
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
-            // onChange={(e) =>
-            //   props.updateRow(row.id, "designation", e.target.value)
-            // }
             ref={designation}
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />

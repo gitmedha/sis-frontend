@@ -100,7 +100,6 @@ const TotEdit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -130,7 +129,6 @@ const TotEdit = (props) => {
 
  useEffect(async() => {
     let val=await getStateDistricts().then((data) => {
-      console.log("district data",data.data.data.geographiesConnection.groupBy);
       setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
         key: item.key,
         value: item.key,
@@ -302,7 +300,7 @@ const TotEdit = (props) => {
     })
   }, []);
 
-  // console.log("props",initialValues.batch);
+
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -658,9 +656,6 @@ const TotEdit = (props) => {
                             control="lookup"
                             options={stateOptions}
                             onChange={onStateChange}
-                            onInputChange={(e)=>{
-                              console.log("E",e)
-                            }}
                             placeholder="State"
                             className="form-control"
                           />
@@ -691,40 +686,43 @@ const TotEdit = (props) => {
                   <Section>
                     <h3 className="section-header">Other Information</h3>
                     <div className="row">
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Updated By"
-                          value={
-                            props.Updated_by?.userName
-                              ? props.Updated_by?.userName
-                              : props.Created_by?.username
-                          }
-                        />
-                        <DetailField
-                          label="Updated At"
-                          value={moment(
-                            props.updated_at
-                              ? props.updated_at
-                              : props.created_at
-                          ).format("DD MMM YYYY, h:mm a")}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Created By"
-                          value={
-                            props.Created_by?.username
-                              ? props.Created_by?.username
-                              : ""
-                          }
-                        />
-                        <DetailField
-                          label="Created At "
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
-                          )}
-                        />
-                      </div>
+                    <div className="col-md-6 col-sm-12">
+                    <DetailField
+                      Bold={""}
+                      label="Created By"
+                      value={
+                        props.createdby
+                          ? props.createdby.username
+                          : "not found"
+                      }
+                    />
+                    <DetailField
+                      Bold={""}
+                      label="Created At"
+                      value={moment(props.created_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      )}
+                    />
+                  </div>
+
+                  <div className="col-md-6 col-sm-12">
+                    <DetailField
+                      Bold={""}
+                      label="Updated By"
+                      value={
+                        props.updatedby
+                          ? props.updatedby.username
+                          : "not found"
+                      }
+                    />
+                    <DetailField
+                      Bold={""}
+                      label="Updated At"
+                      value={props.updated_at ? moment(props.updated_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      ): "not found"}
+                    />
+                  </div>
                     </div>
                   </Section>
 

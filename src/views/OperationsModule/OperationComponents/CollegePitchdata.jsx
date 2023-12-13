@@ -99,7 +99,6 @@ const CollegePitchdata = (props) => {
      onHide()
     }
    }
-   console.log(props);
   return (
     <>
      {!showModal.dataAndEdit && ( <Modal
@@ -150,8 +149,8 @@ const CollegePitchdata = (props) => {
                 <DetailField label="Course Name" value={props.course_name} />
                 <DetailField label="Email ID" value={props.email} />
                 <DetailField label="Remark" value={props.remarks} />
-                {/* <DetailField label="Acad Year" value={props.acad_year} />
-                  <DetailField label="Result" value={props.result} /> */}
+                {/* <DetailField label="Acad Year" value={props.acad_year} />*/}
+                  <DetailField label="Program Name" value={props.program_name} /> 
               </div>
             </div>
 

@@ -237,6 +237,7 @@ const UserTot = (props) => {
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
+    console.log (id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -272,10 +273,6 @@ const UserTot = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-      console.log(
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -302,9 +299,9 @@ const UserTot = (props) => {
       );
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
+        data?.data?.data?.geographiesConnection.groupBy.district
           .map((area) => ({
-            key: area.id,
+            key: area.key,
             label: area.key,
             value: area.key,
           }))
@@ -315,7 +312,6 @@ const UserTot = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-    console.log(e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -328,11 +324,10 @@ const UserTot = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-      console.log(row);
       delete row["id"];
       delete row["name"];
-      row.trainer_1 = Number(row.trainer_1 ? 24 : 24);
-      row.trainer_2 = Number(row.trainer_2 ? 54 : 54);
+      row.trainer_1 = Number(row.trainer_1 );
+      row.trainer_2 = Number(row.trainer_2);
       row.isActive = true;
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
@@ -345,6 +340,7 @@ const UserTot = (props) => {
 
       props.ModalShow();
       setAlert("Data created successfully.", "success");
+      window.location.reload(true)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -372,12 +368,10 @@ const UserTot = (props) => {
 
   useEffect(() => {
     filterInstitution().then((data) => {
-      console.log("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-      console.log("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -419,8 +413,6 @@ const UserTot = (props) => {
             value: Number(batch.id),
           };
         });
-
-        console.log(filterData);
         return filterData;
       });
   };
