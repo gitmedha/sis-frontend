@@ -453,7 +453,7 @@ const CollepitchesEdit = (props) => {
                     
                       <Input
                         name="program_name"
-                        label="Program"
+                        label="Program Name"
                         required
                         control="lookupAsync"
                         filterData={filterProgram}
