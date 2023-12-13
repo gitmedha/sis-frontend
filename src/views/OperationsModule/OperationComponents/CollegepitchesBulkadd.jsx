@@ -396,10 +396,11 @@ const CollegepitchesBulkadd = (props) => {
                 <tr>
                   <th>Date of Pitching * </th>
                   <th>Student Name *</th>
-                  {/* <th>programme Name</th> */}
+                 
                   <th>Course Name * </th>
                   <th>Course Year *</th>
                   <th>College Name *</th>
+                  <th>programme Name</th>
                   <th>Phone *</th>
                   <th>Whatsapp Number *</th>
                   <th>Email ID</th>

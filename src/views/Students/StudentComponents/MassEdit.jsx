@@ -1,26 +1,34 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
-import Textarea from '../../../utils/Form/Textarea';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import {
+  getStudentsPickList,
+  getAlumniServicePickList,
+} from "./StudentActions";
+import Textarea from "../../../utils/Form/Textarea";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
+import { MeiliSearch } from "meilisearch";
+import Select from 'react-select';
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -29,99 +37,164 @@ const Section = styled.div`
   }
 `;
 
-const AlumniServiceForm = (props) => {
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
+const MassEdit = (props) => {
   let { onHide, show } = props;
+  const [studentOptions, setStudentOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
-  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.alumniService ? props.alumniService.fee_submission_date : null);
-  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : '');
-  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
-  const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
+  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(
+    props.alumniService ? props.alumniService.fee_submission_date : null
+  );
+  const [feeAmountValue, setFeeAmountValue] = useState(
+    props.alumniService ? props.alumniService.fee_amount : ""
+  );
+  const [receiptNumberValue, setReceiptNumberValue] = useState(
+    props.alumniService ? props.alumniService.receipt_number : ""
+  );
+  const [validationRules, setValidationRules] = useState(
+    AlumniServiceValidations
+  );
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
 
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [students,setStudents]=useState([])
 
   useEffect(() => {
     if (props.alumniService) {
-      setSelectedCategory(props.alumniService ? props.alumniService.category : "");
+      setSelectedCategory(
+        props.alumniService ? props.alumniService.category : ""
+      );
     }
-  },[props.alumniService,show]);
+  }, [props.alumniService, show]);
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
-      setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
-      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
-      setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
+      setTypeOptions(
+        data.subcategory.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+          category: item.category,
+        }))
+      );
+      setCategoryOptions(
+        data.category.map((item) => ({ value: item.value, label: item.value }))
+      );
+      setProgramOptions(
+        data.program_mode.map((item) => ({
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
+    getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
 
     getStudentsPickList().then((data) => {
-      setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
+      setLocationOptions(
+        data.alumni_service_location.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
   useEffect(() => {
-    let fee_submission_date = Yup.string().nullable().required("Contribution submission date is required.");
-    let fee_amount = Yup.string().required("Contribution amount is required.");
-    let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
-    setFeeFieldsRequired(fieldsRequired);
-    if (fieldsRequired) {
-      setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
-    } else {
-      setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
-    }
-  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
-
-  useEffect(() => {
-    setFeeSubmissionDateValue(props.alumniService ? props.alumniService.fee_submission_date : null);
-    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : '');
-    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : '');
+    filterStudent().then((data) => {
+      console.log("student data", data);
+      setStudentOptions(data);
+    });
   }, [props]);
 
   let initialValues = {
-    alumni_service_student: props.student.full_name,
-    location:'',
-    program_mode:'',
-    receipt_number:'',
-    fee_amount:'',
-    comments:'',
-    start_date: null,
-    end_date: null,
-    fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id'),
-    category: null,
-    type:'',
+    student_ids: [],
+    employer_name: "",
+    opportunity_name: "",
+    status: "",
+    start_date: "",
+    end_date: "",
+    source: "",
+    salary_offered: "",
+    reason_if_rejected_other: "",
+    reason_if_rejected: "",
+    assigned_to: 54,
   };
 
-  if (props.alumniService) {
-    initialValues = {...initialValues, ...props.alumniService};
-    initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
-    initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
-    initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
-    initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
-    initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
-  }
+  //   if (props.alumniService) {
+  //     initialValues = {...initialValues, ...props.alumniService};
+  //     initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
+  //     initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
+  //     initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
+  //     initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
+  //     initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
+  //   }
 
   const handleClose = () => {
-    setSelectedCategory('');
+    setSelectedCategory("");
     onHide();
-  }
-
-  const onSubmit = async (values) => {
-    setSelectedCategory('');
-    onHide(values);
   };
 
-  const colourOptions = [
+  const onSubmit = async (values) => {
+    values.students=students;
+    console.log(values);
+    // setSelectedCategory('');
+    // onHide(values);
+  };
+
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "full_name", "student_id"],
+      })
+      .then((data) => {
+        let employmentConnectionStudent = props.employmentConnection
+          ? props.employmentConnection.student
+          : null;
+        let studentFoundInEmploymentList = false;
+        let filterData = data.hits.map((student) => {
+          if (
+            props.employmentConnection &&
+            student.id === Number(employmentConnectionStudent?.id)
+          ) {
+            studentFoundInEmploymentList = true;
+          }
+          return {
+            ...student,
+            label: `${student.full_name} (${student.student_id})`,
+            value: Number(student.id),
+          };
+        });
+        if (
+          props.employmentConnection &&
+          employmentConnectionStudent !== null &&
+          !studentFoundInEmploymentList
+        ) {
+          filterData.unshift({
+            label: employmentConnectionStudent.full_name,
+            value: Number(employmentConnectionStudent.id),
+          });
+        }
+        return filterData;
+      });
+  };
+
+const colourOptions = [
     { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
     { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
     { value: 'purple', label: 'Purple', color: '#5243AA' },
@@ -150,7 +223,10 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Service
+            {props.alumniService && props.alumniService.id
+              ? "Update"
+              : "Add New"}{" "}
+            Alumni Service
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -165,13 +241,27 @@ const AlumniServiceForm = (props) => {
               <Section>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="alumni_service_student"
-                      control="input"
+                    {/* <Input
+                      name="student_ids"
+                      control="lookupAsync"
                       label="Student"
+                      isMulti={true}
                       className="form-control"
                       placeholder="Student"
-                      disabled={true}
+                      filterData={filterStudent}
+                      defaultOptions={ studentOptions}
+                      required={true}
+                    /> */}
+                    <label className="leading-24">Student</label>
+                    <Select
+                    //   defaultValue={[colourOptions[2], colourOptions[3]]}
+                      isMulti
+                      
+                      name="student_ids"
+                      options={studentOptions}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onChange={(choice) => setStudents(choice)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -200,16 +290,20 @@ const AlumniServiceForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedCategory && <Input
-                      icon="down"
-                      control="lookup"
-                      name="type"
-                      label="Subcategory"
-                      options={typeOptions.filter(option => option.category === selectedCategory)}
-                      className="form-control"
-                      placeholder="Subcategory"
-                      required
-                    />}
+                    {selectedCategory && (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="type"
+                        label="Subcategory"
+                        options={typeOptions.filter(
+                          (option) => option.category === selectedCategory
+                        )}
+                        className="form-control"
+                        placeholder="Subcategory"
+                        required
+                      />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -264,7 +358,7 @@ const AlumniServiceForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                      onInput={value => setFeeSubmissionDateValue(value)}
+                      onInput={(value) => setFeeSubmissionDateValue(value)}
                       required={feeFieldsRequired}
                     />
                   </div>
@@ -278,7 +372,7 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={e => setFeeAmountValue(e.target.value)}
+                      onInput={(e) => setFeeAmountValue(e.target.value)}
                       required={feeFieldsRequired}
                     />
                   </div>
@@ -290,7 +384,7 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={e => setReceiptNumberValue(e.target.value)}
+                      onInput={(e) => setReceiptNumberValue(e.target.value)}
                       required={feeFieldsRequired}
                     />
                   </div>
@@ -308,16 +402,19 @@ const AlumniServiceForm = (props) => {
               </Section>
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">
-                      SAVE
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleClose}
-                      className="btn btn-secondary btn-regular mr-2"
-                    >
-                      CANCEL
-                    </button>
+                  <button
+                    className="btn btn-primary btn-regular mx-0"
+                    type="submit"
+                  >
+                    SAVE
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="btn btn-secondary btn-regular mr-2"
+                  >
+                    CANCEL
+                  </button>
                 </div>
               </div>
             </Form>
@@ -328,4 +425,4 @@ const AlumniServiceForm = (props) => {
   );
 };
 
-export default AlumniServiceForm;
+export default MassEdit;

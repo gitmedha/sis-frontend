@@ -28,6 +28,7 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
+import MassEdit from "./StudentComponents/MassEdit";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -62,6 +63,7 @@ const Students = (props) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  const [modalShow1, setModalShow1] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -350,6 +352,7 @@ const Students = (props) => {
               onTabChange={handleStudentStatusTabChange}
             />
             {(isSRM() || isAdmin()) && (
+              <>
               <button
                 className="btn btn-primary"
                 onClick={() => setModalShow(true)}
@@ -357,6 +360,14 @@ const Students = (props) => {
               >
                 Add New Student
               </button>
+               <button
+               className="btn btn-primary"
+               onClick={() => setModalShow1(true)}
+               style={{ marginLeft: "15px" }}
+             >
+               Mass Edit
+             </button>
+             </>
             )}
           </div>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
@@ -387,6 +398,7 @@ const Students = (props) => {
             />
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
+          <MassEdit show={modalShow1} />
         </div>
       </Styled>
     </Collapse>
