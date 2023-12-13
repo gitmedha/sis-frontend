@@ -340,6 +340,7 @@ const UserTot = (props) => {
 
       props.ModalShow();
       setAlert("Data created successfully.", "success");
+      window.location.reload(true)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

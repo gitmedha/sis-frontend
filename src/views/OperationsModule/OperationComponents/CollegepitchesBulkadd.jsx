@@ -41,6 +41,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
+      program_name:''
     },
     // Add more initial rows as needed
   ]);
@@ -58,6 +59,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
+      program_name:''
     }, 
   ]);
   const [newRow, setNewRow] = useState({
@@ -73,6 +75,7 @@ const CollegepitchesBulkadd = (props) => {
     remarks: "",
     srm_name: "",
     area: "",
+    program_name:''
   });
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
@@ -252,6 +255,7 @@ const CollegepitchesBulkadd = (props) => {
       const value = await bulkCreateCollegePitch(data);
       props.ModalShow();
       setAlert("Data created successfully.", "success");
+      window.location.reload(true)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -396,10 +400,11 @@ const CollegepitchesBulkadd = (props) => {
                 <tr>
                   <th>Date of Pitching * </th>
                   <th>Student Name *</th>
-                  {/* <th>programme Name</th> */}
+                  
                   <th>Course Name * </th>
                   <th>Course Year *</th>
                   <th>College Name *</th>
+                  <th>Programme Name</th>
                   <th>Phone *</th>
                   <th>Whatsapp Number *</th>
                   <th>Email ID</th>
