@@ -174,7 +174,7 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Batch"
+                    label="Institution"
                     value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField

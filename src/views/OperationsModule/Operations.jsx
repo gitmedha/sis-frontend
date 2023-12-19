@@ -40,6 +40,7 @@ import {
   sortAscending,
   resetSearch,
 } from "../../store/reducers/Operations/actions";
+import { bulkCreateAlumniQueries, bulkCreateCollegePitch, bulkCreateStudentsUpskillings, bulkCreateUsersTots } from "./OperationComponents/operationsActions";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -379,6 +380,7 @@ const Operations = ({
           variables,
         })
         .then((data) => {
+          console.log(data);
           setOpts(data.data.data.usersTotsConnection.values);
           setoptsAggregate(data.data.data.usersTotsConnection.aggregate);
         })
@@ -480,6 +482,13 @@ const Operations = ({
       fetchSearchedData(0, pageSize, []);
     }
   }, [isSearching]);
+
+  const onHide=async (data)=>{
+    const value = await api.post(
+      "/users-ops-activities/createBulkOperations",
+      data
+    );
+  }
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
@@ -701,11 +710,68 @@ const Operations = ({
       return;
     }
   };
-  const hideCreateModal = async (data) => {
-    if (!data || data.isTrusted) {
+  const hideCreateModal = async (key,data) => {
+    if (!data) {
       setModalShow(false);
       return;
     }
+    if(key =="feilddata"){
+      const value = await api.post(
+        "/users-ops-activities/createBulkOperations",
+        data
+      ).then((data) => {
+        setAlert("data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        console.log("CREATE_DETAILS_ERR", err);
+        setAlert("Unable to create feildata.", "error");
+      })
+    }
+    if(key =="alum"){
+      const value = await bulkCreateAlumniQueries(data).then((data) => {
+        setAlert("Alum data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        console.log("CREATE_DETAILS_ERR", err);
+        setAlert("Unable to create alum queries.", "error");
+      })
+    }
+    if(key =="collegepitches"){
+      const value = await bulkCreateCollegePitch(data).then((data) => {
+        setAlert("data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        console.log("CREATE_DETAILS_ERR", err);
+        setAlert("Unable to create pitching data.", "error");
+      })
+    }
+    if(key =="upskill"){
+      const value = await bulkCreateStudentsUpskillings(data).then((data) => {
+        setAlert("data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        console.log("CREATE_DETAILS_ERR", err);
+        setAlert("Unable to create upskilling data.", "error");
+      })
+    }
+
+    if(key =="tot"){
+      const value = await bulkCreateUsersTots(data).then((data) => {
+        setAlert("data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        console.log("CREATE_DETAILS_ERR", err);
+        setAlert("Unable to create upskilling data.", "error");
+      })
+    }
+   
+    setModalShow(false)
+    getoperations();
   };
 
   const showRowData = (key, data) => {

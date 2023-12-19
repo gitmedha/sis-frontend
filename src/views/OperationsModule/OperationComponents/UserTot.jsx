@@ -336,11 +336,12 @@ const UserTot = (props) => {
     });
 
     try {
-      const value = await bulkCreateUsersTots(data);
+      // const value = await bulkCreateUsersTots(data);
 
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
-      window.location.reload(true)
+      // props.ModalShow();
+      // setAlert("Data created successfully.", "success");
+      // window.location.reload(true)
+      onHide('tot',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

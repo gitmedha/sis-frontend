@@ -458,7 +458,7 @@ const AllumuniEdit = (props) => {
                           value={
                             props.updatedby?.userName
                               ? props.updatedby?.userName
-                              : props.createdby?.username
+                              : props.updatedby?.username
                           }
                         />
                         <DetailField

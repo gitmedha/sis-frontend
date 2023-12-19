@@ -74,7 +74,6 @@ const usersTotsFields = `
     gender
     contact
     designation
-    published_at
 `;
 const studentUpskillingFields = `
     id
