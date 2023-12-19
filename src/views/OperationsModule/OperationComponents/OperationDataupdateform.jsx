@@ -369,7 +369,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             control="lookupAsync"
                             name="institution"
-                            label="Educational Institution"
+                            label="Institution"
                             filterData={filterInstitution}
                             defaultOptions={institutionOptions}
                             placeholder="Institution"

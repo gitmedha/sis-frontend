@@ -252,10 +252,11 @@ const CollegepitchesBulkadd = (props) => {
 
     try {
 
-      const value = await bulkCreateCollegePitch(data);
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
-      window.location.reload(true)
+      // const value = await bulkCreateCollegePitch(data);
+      // props.ModalShow();
+      // setAlert("Data created successfully.", "success");
+      // window.location.reload(true)
+      onHide('collegepitches',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -403,7 +404,7 @@ const CollegepitchesBulkadd = (props) => {
                   
                   <th>Course Name * </th>
                   <th>Course Year *</th>
-                  <th>College Name *</th>
+                  <th> Institution *</th>
                   <th>Program Name</th>
                   <th>Phone *</th>
                   <th>Whatsapp Number *</th>

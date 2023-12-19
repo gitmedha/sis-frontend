@@ -362,14 +362,11 @@ const OperationCreateform = (props) => {
       return value;
     });
     try {
-      const value = await api.post(
-        "/users-ops-activities/createBulkOperations",
-        data
-      );
-
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
-      window.location.reload(true)
+      
+      onHide('feilddata',data)
+      // props.ModalShow();
+      // setAlert("Data created successfully.", "success");
+      // window.location.reload(true)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
@@ -518,7 +515,7 @@ const OperationCreateform = (props) => {
                   {/* <th className='id'>ID</th> */}
                   <th>Assigned To *</th>
                   <th>Activity Type *</th>
-                  <th>Educational Institution *</th>
+                  <th>Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
                   <th>Program Name</th>

@@ -8,6 +8,7 @@ import { MeiliSearch } from "meilisearch";
 import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 import { getOpsPickList } from "./operationsActions";
+// import { MeiliSearch } from 'meilisearch';
 import { capitalizeFirstLetter } from "../../../utils/function/OpsModulechecker";
 
 const options = [
@@ -54,6 +55,7 @@ const StudentupskilingBulk = (props) => {
   const [subcategory,setSubcategory]=useState([])
   const [studentinput,setstudentinput]=useState("")
   const [programeName,setProgramName]=useState([])
+  const [programOptions,setProgramOptions]=useState([])
   const coursename=useRef(null)
   const issuingorg=useRef(null)
   // const handleChange = (options, key) => {
@@ -74,6 +76,20 @@ const StudentupskilingBulk = (props) => {
     props.updateRow(rowid, field, value.value);
   };
 
+  const filterProgram = async (filterValue) => {
+    return await meilisearchClient.index('programs').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(program => {
+        return {
+          ...program,
+          label: program.name,
+          value: Number(program.id),
+        }
+      });
+    });
+  }
   useEffect(async() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -95,15 +111,18 @@ const StudentupskilingBulk = (props) => {
     filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
-    let data=await getOpsPickList().then(data=>{
-      return data.program_name.map((value) => ({
-          key: value,
-          label: value,
-          value: value,
-        }))
-    }) 
+    // let data=await getOpsPickList().then(data=>{
+    //   return data.program_name.map((value) => ({
+    //       key: value,
+    //       label: value,
+    //       value: value,
+    //     }))
+    // }) 
 
-    setProgramName(data);
+    // setProgramName(data);
+    filterProgram().then(data => {
+      setProgramOptions(data);
+    });
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
@@ -201,7 +220,8 @@ const StudentupskilingBulk = (props) => {
             isClearable={true}
             isSearchable={true}
             name="batch"
-            options={programeName}
+            options={programOptions}
+            filterData={filterProgram}
             onChange={(e) => {
               props.handleChange(e, "program_name", row.id)}}
           />
