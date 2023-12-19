@@ -170,7 +170,7 @@ const StudentUpkillingBulkcreate = (props) => {
         );
       });
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -273,10 +273,11 @@ const StudentUpkillingBulkcreate = (props) => {
     });
 
     try {
-      const value = await bulkCreateStudentsUpskillings(data);
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
-      window.location.reload(true)
+      // const value = await bulkCreateStudentsUpskillings(data);
+      // props.ModalShow();
+      // setAlert("Data created successfully.", "success");
+      // window.location.reload(true)
+      onHide('upskill',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

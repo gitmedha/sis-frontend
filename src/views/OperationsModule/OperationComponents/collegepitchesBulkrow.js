@@ -228,6 +228,7 @@ const CollegepitchesBulkrow = (props) => {
             isClearable={true}
             isSearchable={true}
             options={programOptions}
+            filterdata={filterProgram}
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
