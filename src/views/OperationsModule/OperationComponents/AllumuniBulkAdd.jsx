@@ -272,7 +272,7 @@ const AllumuniBulkAdd = (props) => {
       row.isActive=true;
 
       let value = checkEmptyValuesandplaceNA(row)
-      if(value.status =="Open"){
+      if(value.status =="Open"  ){
         value.query_end =null 
       }
       // value.published_at =null
@@ -280,47 +280,8 @@ const AllumuniBulkAdd = (props) => {
     });
     
 
-    try {
-      let isRequiredEmpty = false;
-// query_start: "",
-  // location: "",
-  // query_type: "",
-  // query_desc: "",
-  // student_name
-      
-      for(let ele = 0; ele<data.length;ele++){
-        if(data[ele].query_start === "N/A"){
-          isRequiredEmpty = true;
-          break;
-
-        }
-        else if (data[ele].location === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].query_type === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].query_desc === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-
-        else if (data[ele].student_name === "N/A"){
-          isRequiredEmpty = true;
-          break;
-          
-        }
-      }
-
-      if (isRequiredEmpty){
-        props.ModalShow();
-        setAlert("Please fill the required fields", "error");
-      }
-      else {
-        onHide('alum',data)
-      }
+    try {     
+      onHide('alum',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -345,6 +306,24 @@ const AllumuniBulkAdd = (props) => {
     // Do something with the row data
     // console.log(rowData);
   };
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+        if(!(key =='father_name') && !(key =='email') && !(key =='phone') && !(key =='conclusion') && !(key =='query_end') ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   useEffect(() => {
     filterInstitution().then((data) => {
@@ -474,7 +453,7 @@ const AllumuniBulkAdd = (props) => {
                   <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>
-                  <th>Status</th>
+                  <th>Status *</th>
                   <th>Query End Date</th>
                 </tr>
               </thead>

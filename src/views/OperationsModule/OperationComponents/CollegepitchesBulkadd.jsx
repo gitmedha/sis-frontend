@@ -238,6 +238,25 @@ const CollegepitchesBulkadd = (props) => {
       })
     );
   };
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+         // end_date,certificate_received,issued_org,assigned_to
+        if(!(key =='srm_name') && !(key =='remarks') && !(key=='email')  ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
@@ -258,51 +277,53 @@ const CollegepitchesBulkadd = (props) => {
 
       let isRequiredEmpty = false;
       
-      for(let ele = 0; ele<data.length;ele++){
-        if(data[ele].pitch_date === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      // for(let ele = 0; ele<data.length;ele++){
+      //   if(data[ele].pitch_date === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
 
-        }
-        else if (data[ele].student_name === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].course_year === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].course_name === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
+      //   }
+      //   else if (data[ele].student_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].course_year === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].course_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
 
-        else if (data[ele].college_name === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   else if (data[ele].college_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }else if (data[ele].phone === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   }else if (data[ele].phone === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }
-        else if (data[ele].whatsapp === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   }
+      //   else if (data[ele].whatsapp === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }
-        else if (data[ele].area === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   }
+      //   else if (data[ele].area === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }
-      }
-      if (isRequiredEmpty){
-        props.ModalShow();
-        setAlert("Please fill the required fields", "error");
-      }else{
-        onHide('collegepitches',data)
-      }
+      //   }
+      // }
+      // if (isRequiredEmpty){
+      //   props.ModalShow();
+      //   setAlert("Please fill the required fields", "error");
+      // }else{
+      //   onHide('collegepitches',data)
+      // }
+
+      onHide('collegepitches',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

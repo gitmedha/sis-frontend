@@ -101,7 +101,6 @@ const UserTot = (props) => {
       certificate_given: "",
       module_name: "",
       project_type: "",
-      new_entry: "",
       trainer_2: "",
       partner_dept: "",
       college: "",
@@ -125,7 +124,6 @@ const UserTot = (props) => {
       certificate_given: "",
       module_name: "",
       project_type: "",
-      new_entry: "",
       trainer_2: "",
       partner_dept: "",
       college: "",
@@ -147,7 +145,6 @@ const UserTot = (props) => {
     certificate_given: "",
     module_name: "",
     project_type: "",
-    new_entry: "",
     trainer_2: "",
     partner_dept: "",
     college: "",
@@ -199,12 +196,6 @@ const UserTot = (props) => {
     let value =checkEmptyValues(rows[rows.length-1])
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
-     
-      // if(obj.class0 && rows.length !== 1){
-      //   delete obj['class0']
-      // }else if(rows.length > 1){
-      //   obj=delete obj[`class${[rows.length-2]}`]
-      // }   
       return setclassValue(obj)
     }
    
@@ -323,6 +314,28 @@ const UserTot = (props) => {
     );
   };
 
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+  // participant_name,age,gender,mobile,designation,college_name,project_name,partner_dept,module_name,trainer_2
+ 
+    for (let row of rows) {
+      for(let key in row){
+        console.log("key",key);
+         // end_date,certificate_received,issued_org,assigned_to && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2')
+        if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    console.log(rows);
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
+
   const onSubmit = async () => {
     let data = rows.map((row) => {
       delete row["id"];
@@ -337,50 +350,50 @@ const UserTot = (props) => {
     });
 
     try {
-      let isRequiredEmpty = false;
+      // let isRequiredEmpty = false;
       
-      for(let ele = 0; ele<data.length;ele++){
-        if(data[ele].state === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      // for(let ele = 0; ele<data.length;ele++){
+      //   if(data[ele].state === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
 
-        }
-        else if (data[ele].city === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].start_date === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].end_date === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
+      //   }
+      //   else if (data[ele].city === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].start_date === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].end_date === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
 
-        else if (data[ele].trainer_1 === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   else if (data[ele].trainer_1 === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }else if (data[ele].certificate_given === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   }else if (data[ele].certificate_given === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }
-        else if (data[ele].project_type === "N/A"){
-          isRequiredEmpty = true;
-          break;
+      //   }
+      //   else if (data[ele].project_type === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
           
-        }
+      //   }
         
-      }
-      if (isRequiredEmpty){
-        props.ModalShow();
-        setAlert("Please fill the required fields", "error");
-      }else{
-        onHide('tot',data)
-      }
-      
+      // }
+      // if (isRequiredEmpty){
+      //   props.ModalShow();
+      //   setAlert("Please fill the required fields", "error");
+      // }else{
+      //   onHide('tot',data)
+      // }
+      onHide('tot',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -543,7 +556,7 @@ const UserTot = (props) => {
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Trainer 1 *</th>
-                  <th>Trainer 2</th>
+                  <th>Trainer 2 </th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
                   {/* <th>New Entry</th> */}

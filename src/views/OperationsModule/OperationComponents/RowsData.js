@@ -31,7 +31,6 @@ export const RowsData = (props) => {
   const [rows, setRows] = useState([
     {
       id: 1,
-      name: "",
       institution: "",
       batch: "",
       state: "",
@@ -178,7 +177,11 @@ export const RowsData = (props) => {
             onChange={(e) => updateRow(row.id, "activity_type", e.target.value)}
           /> */}
            <Select
-            className="basic-single table-input donor"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.activity_type
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isSearchable={true}
             name="area"
