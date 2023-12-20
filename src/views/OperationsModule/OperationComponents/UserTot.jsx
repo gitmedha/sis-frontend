@@ -550,7 +550,7 @@ const UserTot = (props) => {
                   <th>City *</th>
                   <th>Designation </th>
                   <th>College Name</th>
-                  <th>Project Name</th>
+                  <th>Project Name *</th>
                   <th>Partner Department</th>
                   <th>Module Name</th>
                   <th>Start Date *</th>
