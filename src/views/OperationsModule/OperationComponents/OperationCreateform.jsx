@@ -376,7 +376,7 @@ const OperationCreateform = (props) => {
       //   onHide("feilddata", data);
       // }
 
-      // onHide('feilddata',data)
+      onHide('feilddata',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
