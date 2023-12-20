@@ -228,7 +228,7 @@ if(fieldvalue.email){
           
 
           <Select
-            className="basic-single table-input "
+            className="basic-single table-input h-2"
             classNamePrefix="select"
             isClearable={handleClear}
             isSearchable={true}
@@ -264,7 +264,7 @@ if(fieldvalue.email){
         </td>
         <td>
           <input
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2  ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
             defaultValue={name?.full_name || ""}
             disabled={name?.full_name ? true :false}
@@ -309,7 +309,7 @@ if(fieldvalue.email){
             onChange={(e) => props.updateRow(row.id, "location", e.target.value)}
           /> */}
           <Select
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.location ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.location ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             options={areaOptions}
@@ -354,7 +354,7 @@ if(fieldvalue.email){
         
         <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input  ${props.classValue[`class${row.id-1}`]?.status ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             options={options}

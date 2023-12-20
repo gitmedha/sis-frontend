@@ -257,6 +257,26 @@ const StudentUpkillingBulkcreate = (props) => {
     );
   };
 
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+         // end_date,certificate_received,issued_org,assigned_to
+        if(!(key =='certificate_received') && !(key =='issued_org')  ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
+
   const onSubmit = async () => {
     let data = rows.map((row) => {
       delete row["id"];
@@ -269,65 +289,15 @@ const StudentUpkillingBulkcreate = (props) => {
       row.student_id = Number(row.student_id);
       row.isActive = true;
       let value = checkEmptyValuesandplaceNA(row);
+      if(value.certificate_received == 'N/A'){
+
+        value.certificate_received=false
+      }
       return value;
     });
 
-    try {
-      let isRequiredEmpty = false;
-      // assigned_to: "",
-      // student_id: "",
-      // institution: "",
-      // batch: "",
-      // start_date: "",
-      // end_date: "",
-      // course_name: "",
-      // certificate_received: "",
-      // category: "",
-      // sub_category: "",
-      // issued_org: "",
-      // program_name:""
-      
-      for(let ele = 0; ele<data.length;ele++){
-        if(data[ele].student_id === "N/A"){
-          isRequiredEmpty = true;
-          break;
-
-        }
-        else if (data[ele].institution === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].batch === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-        else if (data[ele].course_name === "N/A"){
-          isRequiredEmpty = true;
-          break;
-        }
-
-        else if (data[ele].category === "N/A"){
-          isRequiredEmpty = true;
-          break;
-          
-        }else if (data[ele].start_date === "N/A"){
-          isRequiredEmpty = true;
-          break;
-          
-        }
-        else if (data[ele].sub_category === "N/A"){
-          isRequiredEmpty = true;
-          break;
-          
-        }
-      }
-
-      if (isRequiredEmpty){
-        props.ModalShow();
-        setAlert("Please fill the required fields", "error");
-      }else{
-        onHide('upskill',data)
-      }
+    try {      
+      onHide('upskill',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -474,16 +444,16 @@ const StudentUpkillingBulkcreate = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Assigned To</th>
+                  <th>Assigned To *</th>
                   <th>Student *</th>
                   <th>Institution *</th>
                   <th>Batch *</th>
-                  <th>Program Name</th>
+                  <th>Program Name *</th>
                   <th>Certificate Course Name * </th>
                   <th>Category *</th>
                   <th>Sub Category *</th>
                   <th>Start Date *</th>
-                  <th>End Date</th>
+                  <th>End Date *</th>
                   <th>Certificate Received</th>
                   <th>Issuing Organization</th>
                 </tr>
