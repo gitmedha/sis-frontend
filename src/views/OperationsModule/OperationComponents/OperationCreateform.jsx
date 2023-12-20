@@ -536,7 +536,7 @@ const OperationCreateform = (props) => {
                   <th>Guest Name</th>
                   <th>Guest Designation</th>
                   <th>Organization</th>
-                  <th>No. Of Participants </th>
+                  <th>No. Of Participants *</th>
                 </tr>
               </thead>
               <tbody className="mb-4">
