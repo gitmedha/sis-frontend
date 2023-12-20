@@ -729,7 +729,7 @@ const Operations = ({
     }
     if(key =="alum"){
       const value = await bulkCreateAlumniQueries(data).then((data) => {
-        setAlert("Alum data created successfully.", "success");
+        setAlert("Alumni data created successfully.", "success");
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
