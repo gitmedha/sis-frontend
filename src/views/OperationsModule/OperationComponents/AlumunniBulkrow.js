@@ -408,7 +408,7 @@ if(fieldvalue.email){
             defaultValue={startDate}
             min={startDate}
             value={endDate}
-            disabled={!isEmptyValue(startDate) && !status ? true:false}
+            disabled={!isEmptyValue(startDate) && status ? false:true}
             onChange={(e) => {
 
               setEndDate(e.target.value);

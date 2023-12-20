@@ -273,11 +273,61 @@ const StudentUpkillingBulkcreate = (props) => {
     });
 
     try {
-      // const value = await bulkCreateStudentsUpskillings(data);
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
-      onHide('upskill',data)
+      let isRequiredEmpty = false;
+      // assigned_to: "",
+      // student_id: "",
+      // institution: "",
+      // batch: "",
+      // start_date: "",
+      // end_date: "",
+      // course_name: "",
+      // certificate_received: "",
+      // category: "",
+      // sub_category: "",
+      // issued_org: "",
+      // program_name:""
+      
+      for(let ele = 0; ele<data.length;ele++){
+        if(data[ele].student_id === "N/A"){
+          isRequiredEmpty = true;
+          break;
+
+        }
+        else if (data[ele].institution === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].batch === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].course_name === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+
+        else if (data[ele].category === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }else if (data[ele].start_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].sub_category === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+      }
+
+      if (isRequiredEmpty){
+        props.ModalShow();
+        setAlert("Please fill the required fields", "error");
+      }else{
+        onHide('upskill',data)
+      }
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

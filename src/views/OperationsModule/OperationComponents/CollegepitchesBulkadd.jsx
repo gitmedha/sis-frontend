@@ -252,11 +252,53 @@ const CollegepitchesBulkadd = (props) => {
 
     try {
 
-      // const value = await bulkCreateCollegePitch(data);
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
-      onHide('collegepitches',data)
+      let isRequiredEmpty = false;
+      
+      for(let ele = 0; ele<data.length;ele++){
+        if(data[ele].pitch_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+
+        }
+        else if (data[ele].student_name === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].course_year === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].course_name === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+
+        else if (data[ele].college_name === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }else if (data[ele].phone === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].whatsapp === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].area === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+      }
+      if (isRequiredEmpty){
+        props.ModalShow();
+        setAlert("Please fill the required fields", "error");
+      }else{
+        onHide('collegepitches',data)
+      }
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

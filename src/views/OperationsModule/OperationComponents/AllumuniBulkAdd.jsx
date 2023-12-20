@@ -319,7 +319,7 @@ const AllumuniBulkAdd = (props) => {
         setAlert("Please fill the required fields", "error");
       }
       else {
-        onHide('feilddata',data)
+        onHide('alum',data)
       }
     } catch (error) {
       setAlert("Data is not created yet", "danger");
