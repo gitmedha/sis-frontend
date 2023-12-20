@@ -503,6 +503,8 @@ const StudentUpkillingBulkcreate = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

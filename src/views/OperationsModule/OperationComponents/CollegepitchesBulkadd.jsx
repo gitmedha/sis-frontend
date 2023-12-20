@@ -152,7 +152,7 @@ const CollegepitchesBulkadd = (props) => {
     if(key =="srm_name"){
       updateRow(rowid, key, Number(options.value));
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -334,22 +334,20 @@ const CollegepitchesBulkadd = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
+    
     return await meilisearchClient
       .index("institutions")
       .search(filterValue, {
-        limit: 100,
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        let filterData = data.hits.map((institution) => {
+        return data.hits.map((institution) => {
           return {
             ...institution,
             label: institution.name,
             value: institution.name,
           };
         });
-
-        return filterData;
       });
   };
 
@@ -472,6 +470,8 @@ const CollegepitchesBulkadd = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

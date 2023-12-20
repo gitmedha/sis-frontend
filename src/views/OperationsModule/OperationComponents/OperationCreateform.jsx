@@ -610,6 +610,8 @@ const OperationCreateform = (props) => {
                       areaOptions={areaOptions}
                       classValue={classValue}
                       style={{marginTop:5}}
+                      filterInstitution={filterInstitution}
+                      setInstitutionOptions={setInstitutionOptions}
                     />
                   </tr>
                    
