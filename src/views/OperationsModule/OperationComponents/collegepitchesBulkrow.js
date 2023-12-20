@@ -128,7 +128,6 @@ const CollegepitchesBulkrow = (props) => {
       limit: 100,
       attributesToRetrieve: ['id', 'name']
     }).then(data => {
-      console.log('len',data);
       return data.hits.map(program => {
         return {
           ...program,
@@ -139,6 +138,7 @@ const CollegepitchesBulkrow = (props) => {
     });
   }
 
+  
   return (
     <>
       <tr key={row.id} className="mt-4">
@@ -212,8 +212,13 @@ const CollegepitchesBulkrow = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            options={colleges}
+            options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "college_name", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
           />
         </td>
 

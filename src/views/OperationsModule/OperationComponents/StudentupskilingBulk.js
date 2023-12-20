@@ -199,6 +199,11 @@ const StudentupskilingBulk = (props) => {
             name="institution"
             options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "institution", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
           />
         </td>
         <td>

@@ -160,6 +160,7 @@ const UserTot = (props) => {
     start_date:"",
     end_date:""
   });
+  // 
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
@@ -336,12 +337,50 @@ const UserTot = (props) => {
     });
 
     try {
-      // const value = await bulkCreateUsersTots(data);
+      let isRequiredEmpty = false;
+      
+      for(let ele = 0; ele<data.length;ele++){
+        if(data[ele].state === "N/A"){
+          isRequiredEmpty = true;
+          break;
 
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
-      onHide('tot',data)
+        }
+        else if (data[ele].city === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].start_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].end_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+
+        else if (data[ele].trainer_1 === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }else if (data[ele].certificate_given === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].project_type === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        
+      }
+      if (isRequiredEmpty){
+        props.ModalShow();
+        setAlert("Please fill the required fields", "error");
+      }else{
+        onHide('tot',data)
+      }
+      
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

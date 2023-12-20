@@ -55,6 +55,7 @@ const Activityoptions = [
   { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
   { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
   { value: 'Alumni Engagement', label: 'Alumni Engagement' },
+  {value:'Placement Drive',label:'Placement Drive'}
 ];
 
 const OperationDataupdateform = (props) => {
@@ -186,10 +187,10 @@ const OperationDataupdateform = (props) => {
     newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
     newValueObject["updatedby"] = Number(userId);
 
-    delete newValueObject["updatedby"];
+    // delete newValueObject["updatedby"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
-    delete newValueObject["createdby"];
+    // delete newValueObject["createdby"];
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
