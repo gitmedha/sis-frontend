@@ -247,6 +247,10 @@ const CollegepitchesBulkadd = (props) => {
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
+      if(!Number(value.srm_name)){
+        delete value.srm_name
+      }
+      
       return value;
     });
 
