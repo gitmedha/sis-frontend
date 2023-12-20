@@ -31,7 +31,6 @@ export const RowsData = (props) => {
   const [rows, setRows] = useState([
     {
       id: 1,
-      name: "",
       institution: "",
       batch: "",
       state: "",
@@ -63,16 +62,6 @@ export const RowsData = (props) => {
   const [state,setstate]=useState(true)
   const [activityoption,setActivityOption]=useState([])
 
-  useEffect(() => {
-    // getAllProgram().then((data)=>{
-      
-    //   setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
-    //         key: value.id,
-    //         label: value.name,
-    //         value: value.name,
-    //   })))
-    // });
-  }, [])
   
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -137,7 +126,6 @@ export const RowsData = (props) => {
       setAssigneeOptions(data);
     });
     let data=await getOpsPickList().then(data=>{
-      console.log(data);
       return data.activity_type.map((value) => ({
           key: value,
           label: value,
@@ -189,7 +177,11 @@ export const RowsData = (props) => {
             onChange={(e) => updateRow(row.id, "activity_type", e.target.value)}
           /> */}
            <Select
-            className="basic-single table-input donor"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.activity_type
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isSearchable={true}
             name="area"
@@ -211,6 +203,11 @@ export const RowsData = (props) => {
             name="institution"
             options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "institution", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
           />
         </td>
         <td>

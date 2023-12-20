@@ -380,7 +380,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data);
           setOpts(data.data.data.usersTotsConnection.values);
           setoptsAggregate(data.data.data.usersTotsConnection.aggregate);
         })
@@ -725,17 +724,17 @@ const Operations = ({
       })
       .catch((err) => {
         console.log("CREATE_DETAILS_ERR", err);
-        setAlert("Unable to create feildata.", "error");
+        setAlert("Unable to create field data .", "error");
       })
     }
     if(key =="alum"){
       const value = await bulkCreateAlumniQueries(data).then((data) => {
-        setAlert("Alum data created successfully.", "success");
+        setAlert("Alumni data created successfully.", "success");
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
         console.log("CREATE_DETAILS_ERR", err);
-        setAlert("Unable to create alum queries.", "error");
+        setAlert("Unable to create alumni queries.", "error");
       })
     }
     if(key =="collegepitches"){
@@ -877,7 +876,6 @@ if(activeTabMain.key == 'coreProgramme' ){
 if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && activeTab.key != 'my_data'  ){
   window.location.reload();
 }
-console.log("activeTab",activeTab);
 
   },[activeTabMain.key])
 

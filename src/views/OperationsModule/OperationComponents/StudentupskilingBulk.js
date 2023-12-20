@@ -165,7 +165,7 @@ const StudentupskilingBulk = (props) => {
       <tr key={row.id}>
       <td>
           <Select
-            className={`table-input h-2`}
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.assigned_to ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -199,6 +199,11 @@ const StudentupskilingBulk = (props) => {
             name="institution"
             options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "institution", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
           />
         </td>
         <td>
@@ -280,7 +285,7 @@ const StudentupskilingBulk = (props) => {
           
           <input
             type="date"
-            className="table-input h-2 "
+            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.end_date ? `border-red`:"table-input h-2"}`}
             min={startDate}
             value={endDate}
             disabled={!startDate ? true:false}

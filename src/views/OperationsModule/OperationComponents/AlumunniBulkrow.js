@@ -109,25 +109,9 @@ const AlumunniBulkrow = (props) => {
           setfieldvalue({...fieldvalue ,father_name:data?.name_of_parent_or_guardian,phone:data?.phone,email:data?.email})
           // await props.updateRow(row.id, "father_name", data?.name_of_parent_or_guardian)
         }
-        //  if(!isEmptyValue(data?.email)){
-        //   setEmail(data?.email)
-        //   // await props.updateRow(row.id, "email", data?.email)
-        //   setfieldvalue({...fieldvalue ,email:data?.email})
-        //   // 
-        // }
-        //  if( !isEmptyValue(data?.phone)){
-        //   setPhone(data?.phone)
-        //   // await props.updateRow(row.id, "phone", data?.phone)
-        //   setfieldvalue({...fieldvalue ,phone:data?.phone})
-        //   // 
-        // }
-        // if(!isEmptyValue(data?.medha_area)){
-        //   setArea({value: data.medha_area, label: data.medha_area})
-        // }else{
-        //   setName(data.full_name)
-        // }
+  
       }
-      // console.log('fieldvalue 123',fieldvalue);
+
       
 
     })
@@ -135,24 +119,7 @@ const AlumunniBulkrow = (props) => {
 
 
 useEffect(()=>{
-//   email
-// : 
-// "reenakispotta2@gmail.com"
-// father_name
-// : 
-// "Budhdev Oraon "
-// location
-// : 
-// ""
-// phone
-// : 
-// "7303402109"
-// student_id
-// : 
-// ""
-// student_name
-// : 
-// ""
+
 
 if(fieldvalue.email){
   props.updateRow(row.id, "email", fieldvalue.email)
@@ -160,13 +127,6 @@ if(fieldvalue.email){
   props.updateRow(row.id, "father_name", fieldvalue.father_name)
   props.updateRow(row.id, "phone", fieldvalue.phone)
 }
-// }else if(fieldvalue.father_name){
- 
-// }else if(fieldvalue.phone){
-  
-// }else{
-//   props.updateRow(row.id,'full_name',name.full_name)
-// }
 },[fieldvalue])
   
   
@@ -268,7 +228,7 @@ if(fieldvalue.email){
           
 
           <Select
-            className="basic-single table-input "
+            className="basic-single table-input h-2"
             classNamePrefix="select"
             isClearable={handleClear}
             isSearchable={true}
@@ -304,7 +264,7 @@ if(fieldvalue.email){
         </td>
         <td>
           <input
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2  ${props.classValue[`class${row.id-1}`]?.student_name ? `border-red`:"table-input h-2"}`}
             type="text"
             defaultValue={name?.full_name || ""}
             disabled={name?.full_name ? true :false}
@@ -349,7 +309,7 @@ if(fieldvalue.email){
             onChange={(e) => props.updateRow(row.id, "location", e.target.value)}
           /> */}
           <Select
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.location ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${props.classValue[`class${row.id-1}`]?.location ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             options={areaOptions}
@@ -394,7 +354,7 @@ if(fieldvalue.email){
         
         <td>
           <Select
-            className="basic-single table-input "
+            className={`table-input  ${props.classValue[`class${row.id-1}`]?.status ? `border-red`:"table-input h-2"}`}
             classNamePrefix="select"
             isSearchable={true}
             options={options}
@@ -408,7 +368,7 @@ if(fieldvalue.email){
             defaultValue={startDate}
             min={startDate}
             value={endDate}
-            disabled={!isEmptyValue(startDate) && !status ? true:false}
+            disabled={!isEmptyValue(startDate) && status ? false:true}
             onChange={(e) => {
 
               setEndDate(e.target.value);

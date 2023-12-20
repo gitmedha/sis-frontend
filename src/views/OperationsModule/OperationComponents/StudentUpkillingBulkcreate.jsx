@@ -257,6 +257,26 @@ const StudentUpkillingBulkcreate = (props) => {
     );
   };
 
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+         // end_date,certificate_received,issued_org,assigned_to
+        if(!(key =='certificate_received') && !(key =='issued_org')  ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
+
   const onSubmit = async () => {
     let data = rows.map((row) => {
       delete row["id"];
@@ -269,14 +289,14 @@ const StudentUpkillingBulkcreate = (props) => {
       row.student_id = Number(row.student_id);
       row.isActive = true;
       let value = checkEmptyValuesandplaceNA(row);
+      if(value.certificate_received == 'N/A'){
+
+        value.certificate_received=false
+      }
       return value;
     });
 
-    try {
-      // const value = await bulkCreateStudentsUpskillings(data);
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
+    try {      
       onHide('upskill',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
@@ -424,16 +444,16 @@ const StudentUpkillingBulkcreate = (props) => {
               <thead>
                 <tr>
                   {/* <th className="id">ID</th> */}
-                  <th>Assigned To</th>
-                  <th>Student </th>
-                  <th>Institution</th>
-                  <th>Batch Name</th>
-                  <th>Program Name</th>
-                  <th>Certificate Course Name</th>
-                  <th>Category</th>
-                  <th>Sub Category</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th>Assigned To *</th>
+                  <th>Student *</th>
+                  <th>Institution *</th>
+                  <th>Batch *</th>
+                  <th>Program Name *</th>
+                  <th>Certificate Course Name * </th>
+                  <th>Category *</th>
+                  <th>Sub Category *</th>
+                  <th>Start Date *</th>
+                  <th>End Date *</th>
                   <th>Certificate Received</th>
                   <th>Issuing Organization</th>
                 </tr>
@@ -453,6 +473,8 @@ const StudentUpkillingBulkcreate = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

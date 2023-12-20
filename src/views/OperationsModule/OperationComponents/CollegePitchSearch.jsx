@@ -30,25 +30,7 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
   let options = [{key:0,value:'area', label:'Medha Area'}, {key:1,value:'program_name',label:'Program Name'}]
         
   const [medhaAreaOptions,setMedhaAreaOptions] = useState([]);
-  const [programNameOptions] = useState([
-    {key:0, label:'B.Com II', value:'B.Com II'},
-    {key:1, label:'Employability Skills', value:'Employability Skills'},
-    {key:2, label:'Integrative Communication', value:'Integrative Communication'},
-    {key:3, label:'ITI Pilot', value:'ITI Pilot'},
-    {key:4, label:'School Intervention', value:'School Intervention'},
-    {key:5, label:'SEB', value:'SEB'},
-    {key:6, label:'Workshop', value:'Workshop'},
-    {key:7, label:'In The Bank', value:'In The Bank'},
-    {key:8, label:'CAB Plus Work from Home', value:'CAB Plus Work from Home'},
-    {key:9, label:'eTAB', value:'eTAB'},
-    {key:10, label:'Life Skills Advancement Bootcamp', value:'Life Skills Advancement Bootcamp'},
-    {key:11, label:'Svapoorna', value:'Svapoorna'},
-    {key:12, label:'eCAB', value:'eCAB'},
-    {key:13, label:'Swarambh', value:'Swarambh'},
-    {key:14, label:'Career Advancement Bootcamp', value:'Career Advancement Bootcamp'},
-    {key:15, label:'Technology Advancement Bootcamp', value:'Technology Advancement Bootcamp'},
-    {key:16, label:'BMC Design Lab', value:'BMC Design Lab'}
-  ]);
+  const [programNameOptions,setProgramOptions] = useState([]);
   const [selectedSearchField, setSelectedSearchField] = useState('');
 
     const initialValues = {
@@ -79,6 +61,10 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
       if(value === 'area'){
         setDropdownValues(value)
       }
+      else if (value === "program_name"){
+        setDropdownValues('program_name')
+  
+      }
 
     }
 
@@ -86,7 +72,14 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
     const setDropdownValues = async (fieldName)=>{
       try {
        const {data} =  await getFieldValues(fieldName, 'college-pitches')
-       setMedhaAreaOptions(data)
+       
+       if(fieldName === "area"){
+        setMedhaAreaOptions(data)
+       }
+
+       else if (fieldName === "program_name"){
+        setProgramOptions(data);
+       }
       
       } catch (error) {
         console.error("error", error);

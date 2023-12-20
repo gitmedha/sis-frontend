@@ -91,6 +91,7 @@ const AllumuniBulkAdd = (props) => {
     status: "",
     query_end: "",
   });
+  
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
@@ -271,7 +272,7 @@ const AllumuniBulkAdd = (props) => {
       row.isActive=true;
 
       let value = checkEmptyValuesandplaceNA(row)
-      if(value.status =="Open"){
+      if(value.status =="Open"  ){
         value.query_end =null 
       }
       // value.published_at =null
@@ -279,12 +280,7 @@ const AllumuniBulkAdd = (props) => {
     });
     
 
-    try {
-      const value = await bulkCreateAlumniQueries(data);
-      // console.log(value); 
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
+    try {     
       onHide('alum',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
@@ -310,6 +306,24 @@ const AllumuniBulkAdd = (props) => {
     // Do something with the row data
     // console.log(rowData);
   };
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+        if(!(key =='father_name') && !(key =='email') && !(key =='phone') && !(key =='conclusion') && !(key =='query_end') ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   useEffect(() => {
     filterInstitution().then((data) => {
@@ -439,7 +453,7 @@ const AllumuniBulkAdd = (props) => {
                   <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>
-                  <th>Status</th>
+                  <th>Status *</th>
                   <th>Query End Date</th>
                 </tr>
               </thead>
