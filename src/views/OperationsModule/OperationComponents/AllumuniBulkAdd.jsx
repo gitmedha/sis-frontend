@@ -91,6 +91,7 @@ const AllumuniBulkAdd = (props) => {
     status: "",
     query_end: "",
   });
+  
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
@@ -280,12 +281,46 @@ const AllumuniBulkAdd = (props) => {
     
 
     try {
-      const value = await bulkCreateAlumniQueries(data);
-      // console.log(value); 
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
-      onHide('alum',data)
+      let isRequiredEmpty = false;
+// query_start: "",
+  // location: "",
+  // query_type: "",
+  // query_desc: "",
+  // student_name
+      
+      for(let ele = 0; ele<data.length;ele++){
+        if(data[ele].query_start === "N/A"){
+          isRequiredEmpty = true;
+          break;
+
+        }
+        else if (data[ele].location === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].query_type === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].query_desc === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+
+        else if (data[ele].student_name === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+      }
+
+      if (isRequiredEmpty){
+        props.ModalShow();
+        setAlert("Please fill the required fields", "error");
+      }
+      else {
+        onHide('feilddata',data)
+      }
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

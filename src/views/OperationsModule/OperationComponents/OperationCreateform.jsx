@@ -99,7 +99,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const OperationCreateform = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show} = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [classValue, setclassValue] = useState({});
@@ -254,7 +254,6 @@ const OperationCreateform = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
       
     }
     // setclassValue({state:false,area:false,topic:false})
@@ -310,17 +309,9 @@ const OperationCreateform = (props) => {
   }, []);
 
   const onStateChange = (value) => {
-    // setDistrictOptions([]);
+    
     getStateDistricts(value).then((data) => {
-      // setDistrictOptions(
-      //   data?.data?.data?.geographiesConnection.groupBy.district
-      //     .map((district) => ({
-      //       key: district.id,
-      //       label: district.key,
-      //       value: district.key,
-      //     }))
-      //     .sort((a, b) => a.label.localeCompare(b.label))
-      // );
+     
       setAreaOptions([]);
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
@@ -362,11 +353,81 @@ const OperationCreateform = (props) => {
       return value;
     });
     try {
+
+      let isRequiredEmpty = false;
+
       
-      onHide('feilddata',data)
-      // props.ModalShow();
-      // setAlert("Data created successfully.", "success");
-      // window.location.reload(true)
+      for(let ele = 0; ele<data.length;ele++){
+        if(data[ele].activity_type === "N/A"){
+          isRequiredEmpty = true;
+          break;
+
+        }
+        else if (data[ele].activity_type === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].institution === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+        else if (data[ele].batch === "N/A"){
+          isRequiredEmpty = true;
+          break;
+        }
+
+        else if (data[ele].state === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }else if (data[ele].start_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].end_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].topic === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].end_date === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].assigned_to === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].area === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+        else if (data[ele].students_attended === "N/A"){
+          isRequiredEmpty = true;
+          break;
+          
+        }
+      }
+
+      if (isRequiredEmpty){
+        props.ModalShow();
+        setAlert("Please fill the required fields", "error");
+      }
+      else {
+        onHide('feilddata',data)
+      }
+
+      
+      // onHide('feilddata',data)
+    
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
@@ -428,7 +489,6 @@ const OperationCreateform = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
 
         let filterData = data.hits.map((batch) => {
           return {

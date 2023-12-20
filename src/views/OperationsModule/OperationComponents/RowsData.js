@@ -63,16 +63,6 @@ export const RowsData = (props) => {
   const [state,setstate]=useState(true)
   const [activityoption,setActivityOption]=useState([])
 
-  useEffect(() => {
-    // getAllProgram().then((data)=>{
-      
-    //   setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
-    //         key: value.id,
-    //         label: value.name,
-    //         value: value.name,
-    //   })))
-    // });
-  }, [])
   
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {

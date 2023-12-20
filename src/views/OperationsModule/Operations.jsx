@@ -725,7 +725,7 @@ const Operations = ({
       })
       .catch((err) => {
         console.log("CREATE_DETAILS_ERR", err);
-        setAlert("Unable to create feildata.", "error");
+        setAlert("Unable to create field data.", "error");
       })
     }
     if(key =="alum"){
