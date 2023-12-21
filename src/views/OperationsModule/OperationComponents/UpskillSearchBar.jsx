@@ -103,6 +103,15 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
           }
           
           await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+            //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
         }
         if(values.search_by_field == "end_date"){
           const date1 = formatdate(values.search_by_value_date_end_from);
@@ -112,10 +121,29 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
             end_date:date2
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+            //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
         }
       }
       else {
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
 
       }
     }

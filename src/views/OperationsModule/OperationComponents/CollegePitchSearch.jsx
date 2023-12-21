@@ -44,6 +44,15 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
         
       let baseUrl = "college-pitches";
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
     }
     const formik = useFormik({
       initialValues,

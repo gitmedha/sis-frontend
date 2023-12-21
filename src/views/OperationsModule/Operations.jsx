@@ -39,6 +39,7 @@ import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
   sortAscending,
   resetSearch,
+  searchOperationTab
 } from "../../store/reducers/Operations/actions";
 import { bulkCreateAlumniQueries, bulkCreateCollegePitch, bulkCreateStudentsUpskillings, bulkCreateUsersTots } from "./OperationComponents/operationsActions";
 
@@ -84,6 +85,7 @@ const Operations = ({
   resetSearch,
   isFound,
   isSearching,
+  searchOperationTab
 }) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
@@ -703,14 +705,28 @@ const Operations = ({
     }
   };
 
+  
   //it refreshes table on saving event
-  const refreshTableOnDataSaving = ()=>{
-    getoperations();
+  const refreshTableOnDataSaving = async()=>{
+    if(isSearching){
+        const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
+        await searchOperationTab(baseUrl,searchedProp,searchValue);
+    }
+    else {
+      getoperations();
+    }
+   
   }
 
 //it refreshes table on delete event
-  const refreshTableOnDeleting = ()=>{
+  const refreshTableOnDeleting = async()=>{
+    if(isSearching){
+      const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
+      await searchOperationTab(baseUrl,searchedProp,searchValue);
+  }
+  else {
     getoperations();
+  }
   }
 
   
@@ -1143,6 +1159,7 @@ const mapActionsToProps = {
   setAlert,
   sortAscending,
   resetSearch,
+  searchOperationTab
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

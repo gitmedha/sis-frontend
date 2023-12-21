@@ -64,6 +64,15 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     const handleSubmit = async(values) =>{
         let baseUrl = 'users-tots'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
     }
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,

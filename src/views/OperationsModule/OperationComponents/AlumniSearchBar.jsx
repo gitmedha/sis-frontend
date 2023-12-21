@@ -144,6 +144,14 @@ let today = new Date();
             query_end:date2
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
+            //stores the last searched result in the local storage as cache 
+            //we will use it to refresh the search results
+                
+              await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+                baseUrl:baseUrl,
+                searchedProp:values.search_by_field,
+                searchValue:val
+              }));
         }
         if(values.search_by_field == "query_end"){
           const date1 = formatdate(values.search_by_value_date_end_from);
@@ -153,6 +161,15 @@ let today = new Date();
             query_end:date2
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:val
+        }));
         }
 
 
@@ -160,6 +177,15 @@ let today = new Date();
       else {
         let baseUrl = 'alumni-queries'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
 
       }
       

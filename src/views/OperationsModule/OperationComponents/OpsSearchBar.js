@@ -40,8 +40,17 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
 
     const handleSubmit = async(values) =>{
       let baseUrl = 'users-ops-activities'
-
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
+
     }
 
     const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity Type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Medha Area'},{key:4, value:'program_name',label:'Program Name'}]
