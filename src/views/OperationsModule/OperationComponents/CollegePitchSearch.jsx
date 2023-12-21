@@ -31,7 +31,9 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
         
   const [medhaAreaOptions,setMedhaAreaOptions] = useState([]);
   const [programNameOptions,setProgramOptions] = useState([]);
-  const [selectedSearchField, setSelectedSearchField] = useState('');
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [disabled,setDisbaled] = useState(true);
+
 
     const initialValues = {
         search_by_field:'',
@@ -52,11 +54,15 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
+      setSelectedSearchField(null)
+      setDisbaled(true);
     }
 
 
     const setSearchItem = (value)=>{
       setSelectedSearchField(value)
+      setDisbaled(false);
+
     
       if(value === 'area'){
         setDropdownValues(value)
@@ -108,7 +114,7 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         {
-                        selectedSearchField === "" && <Input
+                        !selectedSearchField && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
@@ -126,6 +132,7 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
                                 control="lookup"
                                 options={medhaAreaOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
 
@@ -138,14 +145,15 @@ const CollegePitchSearch = ({searchOperationTab,resetSearch}) =>{
                                 control="lookup"
                                 options={programNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                        <button className="btn btn-primary btn-regular" type="submit">
+                        <button className="btn btn-primary btn-regular" type="submit" disabled={disabled?true:false}>
                         FIND
                     </button>
-                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
+                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={disabled?true:false}>
                         CLEAR
                     </button>
                 </div>   

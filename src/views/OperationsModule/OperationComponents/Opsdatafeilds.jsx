@@ -41,7 +41,7 @@ const Styled = styled.div`
 `;
 
 const Opsdatafeilds = (props) => {
-  let { onHide } = props;
+  let { onHide ,setIsEditing ,setIsDeleting} = props;
   const { setAlert } = props;
   const [showModal, setShowModal] = useState({
     dataAndEdit:false,
@@ -291,6 +291,8 @@ const Opsdatafeilds = (props) => {
             {...operationdata}
             show={showModal}
             onHide={hideShowModal1}
+            setIsEditing={setIsEditing}
+            setIsDeleting={setIsDeleting}
           />
         )
       }

@@ -40,7 +40,8 @@ const AlumniSearchBar =({searchOperationTab,resetSearch})=> {
   const [phoneOptions,setPhoneOptions] = useState([]);
   const [studentIdOptions,setStudentIdOptions] = useState([]);
   const [emailOptions,setEmailOptions] = useState([]);
-  const [selectedSearchField, setSelectedSearchField] = useState('');
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [disabled,setDisbaled] = useState(true);
   const [statusOptions] = useState([
     {key:2, value:'Closed', label:'Closed'},
     {key:1, value:'Open', label:'Open'},
@@ -50,6 +51,7 @@ const AlumniSearchBar =({searchOperationTab,resetSearch})=> {
 
 const setSearchItem = (value)=>{
   setSelectedSearchField(value)
+  setDisbaled(false);
 
   if(value === 'student_name'){
     setDropdownValues(value)
@@ -84,7 +86,6 @@ const setDropdownValues = async (fieldName)=>{
   }
   
   } catch (error) {
-    console.error("error", error);
   }
 }
         
@@ -172,6 +173,8 @@ let today = new Date();
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
+      setSelectedSearchField(null)
+      setDisbaled(true);
     }
 
   return (
@@ -197,7 +200,7 @@ let today = new Date();
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         {
-                        selectedSearchField === "" && <Input
+                        selectedSearchField === null && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
@@ -214,6 +217,7 @@ let today = new Date();
                                 control="lookup"
                                 options={studentNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -225,6 +229,7 @@ let today = new Date();
                                 control="lookup"
                                 options={phoneOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -236,6 +241,7 @@ let today = new Date();
                                 control="lookup"
                                 options={studentIdOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -247,6 +253,7 @@ let today = new Date();
                                 control="lookup"
                                 options={emailOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -258,6 +265,7 @@ let today = new Date();
                                 control="lookup"
                                 options={statusOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
 
@@ -271,6 +279,7 @@ let today = new Date();
                               control="datepicker"
                               className="form-control "
                               autoComplete="off"
+                              disabled={disabled?true:false}
 
                             />
                           </div>
@@ -282,6 +291,7 @@ let today = new Date();
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              disabled={disabled?true:false}
                             
                             />
                           </div>
@@ -302,6 +312,7 @@ let today = new Date();
                                 control="datepicker"
                                 className="form-control "
                                 autoComplete="off"
+                                disabled={disabled?true:false}
   
                               />
                             </div>
@@ -313,21 +324,20 @@ let today = new Date();
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
+                                disabled={disabled?true:false}
                               
                               />
                             </div>
-                             
-                              
                             </div>
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                        <button className="btn btn-primary btn-regular" type="submit">
-                        FIND
-                    </button>
-                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
-                        CLEAR
-                    </button>
+                        <button className="btn btn-primary btn-regular" type="submit" disabled={disabled ?true:false}>
+                            FIND
+                        </button>
+                        <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={disabled ?true:false}>
+                            CLEAR
+                        </button>
                 </div>   
                     </div>
                 </Section>
