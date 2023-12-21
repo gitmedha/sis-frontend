@@ -54,7 +54,6 @@ export const queryBuilder = async (params) => {
     });
     return data;
   } catch (err) {
-    console.log("ERR", err);
     throw err;
   }
 };

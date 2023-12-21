@@ -72,7 +72,6 @@ const Operation = (props) => {
         dataToSave['CV'] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
         setAlert("Unable to upload CV.", "error");
       });
     } else {
@@ -82,30 +81,12 @@ const Operation = (props) => {
 
   const updateStudentApi = (id, dataToSave) => {
     NP.start();
-    // updateStudent(Number(id), dataToSave).then(data => {
-    //   setAlert("Student updated successfully.", "success");
-    // }).catch(err => {
-    //   console.log("UPDATE_STUDENT_ERR", err);
-    //   setAlert("Unable to update student.", "error");
-    // }).finally(() => {
-    //   NP.done();
-    //   getStudent();
-    // });
     setModalShow(false);
   }
 
   const handleDelete = async () => {
     NP.start();
-    // deleteStudent(student.id).then(data => {
-    //   setAlert("Student deleted successfully.", "success");
-    // }).catch(err => {
-    //   console.log("STUDENT_DELETE_ERR", err);
-    //   setAlert("Unable to delete student.", "error");
-    // }).finally(() => {
-    //   setShowDeleteAlert(false);
-    //   NP.done();
-    //   history.push("/students");
-    // });
+    
   };
 
   const fileDelete = async () => {
@@ -113,7 +94,6 @@ const Operation = (props) => {
     deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
-      console.log("CV_DELETE_ERR", err);
       setAlert("Unable to delete CV.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -133,7 +113,6 @@ const Operation = (props) => {
       });
       setStudent(data.data.student);
     } catch (err) {
-      console.log("ERR", err);
     } finally {
       setLoading(false);
       NP.done();
@@ -141,31 +120,15 @@ const Operation = (props) => {
   };
 
   const getProgramEnrollments = async () => {
-    // getStudentProgramEnrollments(studentId).then(data => {
-    //   setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
-    //   setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
-    // }).catch(err => {
-    //   console.log("getStudentProgramEnrollments Error", err);
-    // });
+    
   }
 
   const getEmploymentConnections = async () => {
-    // getStudentEmploymentConnections(studentId).then(data => {
-    //   let employmentConnections = data.data.data.employmentConnectionsConnection.values;
-    //   setStudentEmploymentConnections(employmentConnections);
-    //   updateEmploymentConnectionsBadge(employmentConnections);
-    // }).catch(err => {
-    //   console.log("getStudentEmploymentConnections Error", err);
-    // });
+    
   }
 
   const getAlumniServices = async () => {
-    // getStudentAlumniServices(studentId).then(data => {
-    //   setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
-    //   setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
-    // }).catch(err => {
-    //   console.log("Error in getting alumni services: ", err);
-    // });
+    
   }
 
   const updateEmploymentConnectionsBadge = (employmentConnections) => {

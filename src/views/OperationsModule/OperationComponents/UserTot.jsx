@@ -209,10 +209,8 @@ const UserTot = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    console.log(options?.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-        console.log("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -224,12 +222,10 @@ const UserTot = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-      console.log(areaOptions);
     }
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
-    console.log (id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -321,7 +317,6 @@ const UserTot = (props) => {
  
     for (let row of rows) {
       for(let key in row){
-        console.log("key",key);
          // end_date,certificate_received,issued_org,assigned_to && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2')
         if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
           if(isEmptyValue(row[key])){
@@ -332,7 +327,6 @@ const UserTot = (props) => {
       }
      
     }
-    console.log(rows);
     setDisableSaveButton(isEmptyValuFound)
   }, [rows]);
 
@@ -396,7 +390,6 @@ const UserTot = (props) => {
       onHide('tot',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 
@@ -416,7 +409,6 @@ const UserTot = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    console.log(rowData);
   };
 
   useEffect(() => {

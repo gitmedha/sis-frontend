@@ -76,7 +76,7 @@ const BatchSessionForm = (props) => {
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
     } catch (err) {
-      console.log("ERR", err);
+      
     } finally {
       setLoading(false);
     }

@@ -326,7 +326,6 @@ const CollegepitchesBulkadd = (props) => {
       onHide('collegepitches',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 

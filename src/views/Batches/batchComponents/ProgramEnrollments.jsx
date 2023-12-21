@@ -84,7 +84,6 @@ const ProgramEnrollments = (props) => {
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(err => {
-      console.log("getBatchProgramEnrollments Error", err);
     })
     .finally(() => {
       setLoading(false);
@@ -231,7 +230,6 @@ const ProgramEnrollments = (props) => {
      createProgramEnrollment(dataToSave).then(data => {
       setAlert("Program Enrollment created successfully.", "success");
     }).catch(err => {
-      console.log("CREATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(async () => {
       NP.done();
@@ -257,7 +255,6 @@ const ProgramEnrollments = (props) => {
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
     }).catch(err => {
-      console.log("UPDATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(async () => {
       NP.done();
@@ -271,7 +268,6 @@ const ProgramEnrollments = (props) => {
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
-      console.log("STUDENT_DELETE_ERR", err);
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(async () => {
       setShowDeleteAlert(false);
@@ -286,7 +282,6 @@ const ProgramEnrollments = (props) => {
     deleteFile(selectedProgramEnrollment[value].id).then(data => {
       setAlert("Proof of enrollment deleted successfully.", "success");
     }).catch(err => {
-      console.log("FILE_DELETE_ERR", err);
       setAlert("Unable to delete proof of enrollment.", "error");
     }).finally(async () => {
       NP.done();

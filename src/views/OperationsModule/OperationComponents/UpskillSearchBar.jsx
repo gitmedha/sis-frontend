@@ -99,7 +99,6 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
             start_date:date1,
             end_date:date2
           }
-          console.log(val);
           await searchOperationTab(baseUrl,values.search_by_field,val)
         }
         if(values.search_by_field == "end_date"){

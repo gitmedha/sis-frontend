@@ -174,7 +174,6 @@ const EmploymentConnections = (props) => {
     createEmploymentConnection(dataToSave).then(data => {
       setAlert("Employment Connection created successfully.", "success");
     }).catch(err => {
-      console.log("CREATE_EMPLOYMENT_CONNECTION_ERR", err);
       setAlert("Unable to create Employment Connection.", "error");
     }).finally(() => {
       onDataUpdate();
@@ -198,7 +197,6 @@ const EmploymentConnections = (props) => {
     updateEmploymentConnection(Number(id), dataToSave).then(data => {
       setAlert("Employment Connection updated successfully.", "success");
     }).catch(err => {
-      console.log("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
       setAlert("Unable to update Employment Connection.", "error");
     }).finally(() => {
       onDataUpdate();
@@ -212,7 +210,6 @@ const EmploymentConnections = (props) => {
     deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
-      console.log("CERTIFICATE_DELETE_ERR", err);
       setAlert("Unable to delete Certificate.", "error");
     }).finally(() => {
       NP.done();
@@ -226,7 +223,6 @@ const EmploymentConnections = (props) => {
     deleteEmploymentConnection(selectedEmploymentConnection.id).then(data => {
       setAlert("Employment Connection deleted successfully.", "success");
     }).catch(err => {
-      console.log("EMPLOYMENT_CONNECTION_DELETE_ERR", err);
       setAlert("Unable to delete Employment Connection.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
