@@ -31,8 +31,8 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     {key:2, value:'partner_dept',label:'Project Department'}, 
     {key:6, value:'state',label:'State'},
     {key:3, value:'project_type',label:'Project Type'},
-    {key:4, value:'trainer_1',label:'Trainer 1'},
-    {key:5, value:'trainer_2',label:'Trainer 2'},  
+    {key:4, value:'trainer_1.username',label:'Trainer 1'},
+    {key:5, value:'trainer_2.username',label:'Trainer 2'},  
   ];
 
   const [cityOptions,setCityOptions] = useState([]);
@@ -104,11 +104,11 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
       else if (value === "partner_dept"){
         setDropdownValues('partner_dept')
       }
-      else if (value === "trainer_1"){
-        setDropdownValues('trainer_1')
+      else if (value === "trainer_1.username"){
+        setDropdownValues('trainer_1.username')
       }
-      else if (value === "trainer_2"){
-        setDropdownValues('trainer_2')
+      else if (value === "trainer_2.username"){
+        setDropdownValues('trainer_2.username')
       }
       else if (value === "state"){
         setDropdownValues('state')
@@ -130,10 +130,10 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
       else if (fieldName === "partner_dept"){
         setParnterDeptOptions(data)
       }
-      else if (fieldName === "trainer_1"){
+      else if (fieldName === "trainer_1.username"){
         setTrainerOneOptions(data)
       }
-      else if (fieldName === "trainer_2"){
+      else if (fieldName === "trainer_2.username"){
         setTrainerTwoOptions(data)
       }
       else if (fieldName === "state"){
@@ -225,7 +225,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                             />
                           }
                           {
-                            selectedSearchField === "trainer_1" &&
+                            selectedSearchField === "trainer_1.username" &&
                             <Input 
                                 icon="down"
                                 name="search_by_value"
@@ -237,7 +237,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                             />
                           }
                           {
-                            selectedSearchField === "trainer_2" &&
+                            selectedSearchField === "trainer_2.username" &&
                             <Input 
                                 icon="down"
                                 name="search_by_value"
