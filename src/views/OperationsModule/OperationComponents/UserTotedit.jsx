@@ -68,14 +68,12 @@ const UserTotedit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -119,7 +117,6 @@ const UserTotedit = (props) => {
           };
         });
 
-        console.log(filterData);
         return filterData;
       });
   };
@@ -172,12 +169,11 @@ const UserTotedit = (props) => {
     const value = await updateUserTot(Number(props.id), newValueObject);
     setDisableSaveButton(true);
     onHide(value);
-    closeopsedit();
     setDisableSaveButton(false);
   };
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
+  
   let initialValues = {
     user_name: "",
     trainer_1: "",
@@ -221,7 +217,6 @@ const UserTotedit = (props) => {
     }
   }, []);
 
-  // console.log("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -233,7 +228,7 @@ const UserTotedit = (props) => {
     end_date: Yup.date()
       .required("End date is required")
       .when("start_date", (start, schema) => {
-        console.log("working......");
+      
         return schema.min(
           start,
           "End date must be greter than or equal to start date"

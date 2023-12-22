@@ -24,7 +24,7 @@ const gqlService = async (variables, query) => {
     });
     return data;
   } catch (err) {
-    console.log(query, err);
+   
   }
 };
 
@@ -72,14 +72,14 @@ export const getSessions = (sessionID) => async (dispatch) => {
       payload: fakeAttendanceRec,
     });
   } catch (err) {
-    console.log("GET_SESSION", err);
+    
   } finally {
     dispatch(setLoading());
   }
 };
 
 export const deleteSession = (id) => async (dispatch, getState) => {
-  // console.log("CURRENT_STATE", getState());
+  
   try {
     dispatch(setLoading());
     let { attendances, session } = getState().sessionAttendance;
@@ -105,7 +105,7 @@ export const deleteSession = (id) => async (dispatch, getState) => {
     dispatch(setAlert("Session deleted successfully.", "success"));
   } catch (err) {
     dispatch(setAlert("Unable to delete the session.", "error"));
-    console.log("DELETE_ERR", err);
+  
   } finally {
     dispatch(setLoading());
   }

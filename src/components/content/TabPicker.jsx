@@ -6,7 +6,7 @@ const TabPicker = ({ options, setActiveTab = () => {} }) => {
   const [activeTab, setActive] = useState(options[0].key);
 
   const changeTab = (tab) => {
-    console.log("tabkey", tab.key);
+    
     setActive(tab.key);
     setActiveTab(tab);
   };

@@ -101,7 +101,6 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
             start_date:date1,
             end_date:date2
           }
-          
           await searchOperationTab(baseUrl,values.search_by_field,val)
 
           //stores the last searched result in the local storage as cache 

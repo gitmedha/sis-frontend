@@ -101,7 +101,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  // console.log("state",nextPage)
+ 
   const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -121,7 +121,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
   }, [fetchData, pageIndex, pageSize, sortBy,fetchSearchedData]);
 
   React.useEffect(() => {
-    // console.log("pageSize",pageSize);
+  
     onPageSizeChange(pageSize);
   }, [pageSize]);
 

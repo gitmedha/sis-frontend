@@ -36,7 +36,7 @@ const AddSession = (props) => {
       await markAttendance(Number(data.data.createSession.session.id));
       props.setAlert("Session added successfully.", "success");
     } catch (err) {
-      console.log("SESSION_CREATE_ERR", err);
+     
       props.setAlert("Unable to add session.", "error");
     } finally {
       setLoading(false);
@@ -61,7 +61,7 @@ const AddSession = (props) => {
         query: MARK_ATTENDANCE,
       });
     } catch (err) {
-      console.log("MARK_ATTENDANCE_ERR", err);
+     
     }
   };
 
@@ -76,7 +76,7 @@ const AddSession = (props) => {
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
     } catch (err) {
-      console.log("ERR", err);
+     
     } finally {
       setLoading(false);
     }

@@ -212,7 +212,7 @@ const tabPickerOptions = [
       setAlert("Opportunity created successfully.", "success");
       history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);
     }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
+     
       setAlert("Unable to create opportunity.", "error");
     }).finally(() => {
       nProgress.done();

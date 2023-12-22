@@ -185,7 +185,6 @@ const OperationCreateform = (props) => {
 
       for(let key in row){
        
-        console.log({key,row:row[key]});
         if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') ){
           if(isEmptyValue(row[key])){
             isEmptyValuFound=true

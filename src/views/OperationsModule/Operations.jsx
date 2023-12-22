@@ -747,7 +747,6 @@ const Operations = ({
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create field data .", "error");
       })
     }
@@ -757,7 +756,6 @@ const Operations = ({
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create alumni queries.", "error");
       })
     }
@@ -767,7 +765,6 @@ const Operations = ({
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create pitching data.", "error");
       })
     }
@@ -777,7 +774,6 @@ const Operations = ({
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create upskilling data.", "error");
       })
     }
@@ -788,7 +784,6 @@ const Operations = ({
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create upskilling data.", "error");
       })
     }
@@ -844,7 +839,6 @@ const Operations = ({
 
       await sortAscending(sortedData);
     } catch (err) {
-      console.log("error", err);
     }
   };
 

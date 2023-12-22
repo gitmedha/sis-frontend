@@ -83,14 +83,11 @@ const DteUpskilingBulk = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
-    // props.handleInputChange()
-    // setRows(updatedRows);
+  
   };
 
   return (
@@ -176,7 +173,6 @@ const DteUpskilingBulk = (props) => {
             className="table-input h-2"
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "dob", e.target.value);
@@ -290,7 +286,6 @@ const DteUpskilingBulk = (props) => {
             className="table-input  h-2"
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "doj", e.target.value);

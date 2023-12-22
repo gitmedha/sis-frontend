@@ -82,7 +82,6 @@ export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at"
     },{headers}).then(data=>{
         return data;
     }).catch(error=>{
-        console.log("error",error)
         return Promise.reject(error)
     })
 };
@@ -193,10 +192,8 @@ export const createOpsActivity = async (data)=>{
         query:CREATE_OPERATION,
         variables: {data},
     }).then(data=>{
-        console.log(data)
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 
@@ -258,7 +255,6 @@ export const updateOpsActivity = async(id,data)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -368,7 +364,6 @@ export const bulkCreateCollegePitch = async(data)=>{
 }
 
 export const bulkCreateAlumniQueries = async(data)=>{
-    console.log("data",data);
     try {
         const response = await api.post('/alumni-queries/create-bulk-alumni-queries', data);
         return response;
@@ -392,7 +387,6 @@ export const deactivate_user_ops = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -408,7 +402,6 @@ export const deactivate_user_tots = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -424,7 +417,6 @@ export const deactivate_user_dte_samarth = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -440,7 +432,6 @@ export const deactivate_user_students_upskills = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -456,7 +447,6 @@ export const deactivate_user_alumni_query = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -472,7 +462,6 @@ export const deactivate_user_college_pitch = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -505,7 +494,6 @@ export const getStudent = async (id) => {
     //   setStudent(values);
     return values
     } catch (err) {
-      console.log("ERR", err);
     } finally {
       NP.done();
     }
