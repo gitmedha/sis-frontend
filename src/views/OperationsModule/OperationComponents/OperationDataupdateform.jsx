@@ -59,7 +59,7 @@ const Activityoptions = [
 ];
 
 const OperationDataupdateform = (props) => {
-  let { onHide, show, closeopsedit } = props;
+  let { onHide, show, closeopsedit ,refreshTableOnDataSaving} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -186,14 +186,12 @@ const OperationDataupdateform = (props) => {
     newValueObject["institution"] = Number(values["institution"]);
     newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
     newValueObject["updatedby"] = Number(userId);
-
-    // delete newValueObject["updatedby"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
-    // delete newValueObject["createdby"];
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     closeopsedit();

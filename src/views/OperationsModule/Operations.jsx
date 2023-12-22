@@ -39,6 +39,7 @@ import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
   sortAscending,
   resetSearch,
+  searchOperationTab
 } from "../../store/reducers/Operations/actions";
 import { bulkCreateAlumniQueries, bulkCreateCollegePitch, bulkCreateStudentsUpskillings, bulkCreateUsersTots } from "./OperationComponents/operationsActions";
 
@@ -84,6 +85,7 @@ const Operations = ({
   resetSearch,
   isFound,
   isSearching,
+  searchOperationTab
 }) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
@@ -109,18 +111,11 @@ const Operations = ({
   const [layout, setLayout] = useState("list");
   const [activeTabMain, setActiveTabMain] = useState(tabPickerOptionsMain[0]);
   const [activeTab, setActiveTab] = useState(tabPickerOptions1[0]);
-  // const [tabpickestatus,settabpickerstatus]=useState({
-  //   tab1:true,
-    
-  // })
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
-  const userId = parseInt(localStorage.getItem("user_id"));
-  const state = localStorage.getItem("user_state");
-  const area = localStorage.getItem("user_area");
 
   const columns = useMemo(
     () => [
@@ -702,13 +697,42 @@ const Operations = ({
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
+  
   const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
-      getoperations();
-      setShowModal({ ...showModal, [key]: data });
-      return;
+        setShowModal({ ...showModal, [key]: data });
+        return;
     }
   };
+
+  
+  //it refreshes table on saving event
+  const refreshTableOnDataSaving = async()=>{
+    if(isSearching){
+        const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
+        await searchOperationTab(baseUrl,searchedProp,searchValue);
+    }
+    else {
+      getoperations();
+    }
+   
+  }
+
+//it refreshes table on delete event
+  const refreshTableOnDeleting = async()=>{
+    if(isSearching){
+      const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
+      await searchOperationTab(baseUrl,searchedProp,searchValue);
+  }
+  else {
+    getoperations();
+  }
+  }
+
+  
+
+
+  
   const hideCreateModal = async (key,data) => {
     if (!data) {
       setModalShow(false);
@@ -1066,6 +1090,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.opsdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("opsdata", false)}
+              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
+              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
             />
           )}
           {showModal.totdata && (isSRM() || isAdmin()) && (
@@ -1073,6 +1099,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.totdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("totdata", false)}
+              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
+              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
             />
           )}
           {showModal.upskilldata && (isSRM() || isAdmin()) && (
@@ -1080,6 +1108,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.upskilldata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("upskilldata", false)}
+              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
+              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
             />
           )}
           {showModal.sditdata && (isSRM() || isAdmin()) && (
@@ -1094,6 +1124,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("alumniQueriesdata", false)}
+              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
+              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
             />
           )}
           {showModal.collegePitches && (isSRM() || isAdmin()) && (
@@ -1101,6 +1133,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.collegePitches}
               show={showModal.opsdata}
               onHide={() => hideShowModal("collegePitches", false)}
+              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
+              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
             />
           )}
         </div>
@@ -1119,6 +1153,7 @@ const mapActionsToProps = {
   setAlert,
   sortAscending,
   resetSearch,
+  searchOperationTab
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

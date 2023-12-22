@@ -43,7 +43,9 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
 
   const [programNameOptions,setProgramOptions] = useState([]);
 
-   const [selectedSearchField, setSelectedSearchField] = useState('');
+   const [selectedSearchField, setSelectedSearchField] = useState(null);
+   const [disabled,setDisbaled] = useState(true);
+
         
    let today = new Date();
     const initialValues = {
@@ -100,6 +102,15 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
             end_date:date2
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+            //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
         }
         if(values.search_by_field == "end_date"){
           const date1 = formatdate(values.search_by_value_date_end_from);
@@ -109,11 +120,29 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
             end_date:date2
           }
           await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+            //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
         }
       }
       else {
-        // let baseUrl = 'alumni-queries'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
 
       }
     }
@@ -126,11 +155,15 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
+      setSelectedSearchField(null)
+      setDisbaled(true);
     }
 
     const setSearchItem = (value)=>{
 
       setSelectedSearchField(value)
+      setDisbaled(false);
+
    
       if(value === 'student_id.full_name'){
         setDropdownValues('student_id')
@@ -174,7 +207,6 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
        }
       
       } catch (error) {
-        console.error("error", error);
       }
     }
 
@@ -200,7 +232,7 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         {
-                        selectedSearchField === "" && <Input
+                        selectedSearchField === null && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
@@ -219,6 +251,7 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                               control="datepicker"
                               className="form-control "
                               autoComplete="off"
+                              disabled={disabled?true:false}
 
                             />
                           </div>
@@ -230,7 +263,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
-                            
+                              disabled={disabled?true:false}
+
                             />
                           </div>
                            
@@ -250,7 +284,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="datepicker"
                                 className="form-control "
                                 autoComplete="off"
-  
+                                disabled={disabled?true:false}
+
                               />
                             </div>
                             <div className='ml-2'>
@@ -261,7 +296,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="datepicker"
                                 className="form-control"
                                 autoComplete="off"
-                              
+                                disabled={disabled?true:false}
+
                               />
                             </div>
                              
@@ -278,6 +314,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="lookup"
                                 options={studentNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
+
                             />
                           }
 
@@ -290,6 +328,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="lookup"
                                 options={assignedToOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
+
                             />
                           }
                           {
@@ -301,6 +341,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="lookup"
                                 options={institutionOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
+
                             />
                           }
 
@@ -313,6 +355,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="lookup"
                                 options={courseNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
+
                             />
                           }
                           {
@@ -324,14 +368,16 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 control="lookup"
                                 options={programNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
+
                             />
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                        <button className="btn btn-primary btn-regular" type="submit">
+                        <button className="btn btn-primary btn-regular" type="submit" disabled={disabled?true:false}>
                         FIND
                     </button>
-                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
+                  <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={disabled?true:false}>
                         CLEAR
                     </button>
                 </div>   

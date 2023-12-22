@@ -56,7 +56,7 @@ const Statusoptions = [
 ];
 
 const AllumuniEdit = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show,refreshTableOnDataSaving } = props;
 
   const [assigneeOptions, setAssigneeOptions] = useState([]);
 
@@ -113,7 +113,6 @@ const AllumuniEdit = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
 
         let filterData = data.hits.map((batch) => {
           return {
@@ -168,6 +167,7 @@ const AllumuniEdit = (props) => {
 
     delete newObject['published_at'];
     const value = await updateAlumniQuery(Number(props.id), newObject);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     setDisableSaveButton(false);

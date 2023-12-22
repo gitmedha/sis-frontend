@@ -56,7 +56,7 @@ const categoryOptions = [
 ];
 
 const UpskillUpdate = (props) => {
-  let { onHide, show, closeopsedit } = props;
+  let { onHide, show,refreshTableOnDataSaving} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -109,12 +109,7 @@ const UpskillUpdate = (props) => {
           value: Number(student.id),
         }
       });
-      // if (!studentFoundInList)  {
-      //   filterData.unshift({
-      //     label: programEnrollmentStudent.full_name,
-      //     value: Number(programEnrollmentStudent.id),
-      //   });
-      // }
+      
       return filterData;
     });
   }
@@ -232,6 +227,7 @@ const UpskillUpdate = (props) => {
     newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
    
     const value = await updateStudetnsUpskills(Number(props.id), newObject);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     setDisableSaveButton(false);
