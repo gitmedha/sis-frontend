@@ -53,8 +53,10 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
 
   const [trainerOneOptions,setTrainerOneOptions] = useState([]);
   const [trainerTwoOptions,setTrainerTwoOptions] = useState([]);
-  const [selectedSearchField, setSelectedSearchField] = useState('');
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [stateOptions,setStateOptions] = useState([]);
+  const [disabled,setDisbaled] = useState(true);
+
         
     const initialValues = {
         search_by_field:'',
@@ -64,6 +66,15 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     const handleSubmit = async(values) =>{
         let baseUrl = 'users-tots'
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
     }
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
@@ -74,11 +85,14 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
+      setSelectedSearchField(null)
+      setDisbaled(true);
     }
 
     const setSearchItem = (value)=>{
 
       setSelectedSearchField(value)
+      setDisbaled(false);
    
       if(value === 'city'){
         setDropdownValues('city')
@@ -153,7 +167,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         {
-                        selectedSearchField === "" && <Input
+                        selectedSearchField === null && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
@@ -171,6 +185,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={cityOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -182,6 +197,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={projectNameOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -193,6 +209,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={partnerDeptOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -204,6 +221,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={projectTypeOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -215,6 +233,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={trainerOneOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -226,6 +245,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={trainerTwoOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -237,14 +257,15 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
                                 control="lookup"
                                 options={stateOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                        <button className="btn btn-primary btn-regular" type="submit">
+                        <button className="btn btn-primary btn-regular" type="submit"  disabled={disabled?true:false}>
                         FIND
                     </button>
-                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
+                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}  disabled={disabled?true:false}>
                         CLEAR
                     </button>
                 </div>   

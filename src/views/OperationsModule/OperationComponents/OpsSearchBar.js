@@ -30,20 +30,27 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
         search_by_value:''
     }
 
-    const [selectedSearchField, setSelectedSearchField] = useState('');
+    const [selectedSearchField, setSelectedSearchField] = useState(null);
     const [isFieldEmpty,setIsFieldEmpty] = useState(false);
     const [assignedToOptions,setAssignedOptions] = useState([]);
     const [batchOptions,setBatchOptions] = useState([]);
     const [areaOptions,setAreaOptions]= useState([]);
     const [programOptions,setProgramOptions] = useState([]);
-
-
-
+    const [disabled,setDisbaled] = useState(true);
 
     const handleSubmit = async(values) =>{
       let baseUrl = 'users-ops-activities'
-
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+
+        //stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
+        
+        await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+          baseUrl:baseUrl,
+          searchedProp:values.search_by_field,
+          searchValue:values.search_by_value
+        }));
+
     }
 
     const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity Type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Medha Area'},{key:4, value:'program_name',label:'Program Name'}]
@@ -65,9 +72,12 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
     const clear = async(formik)=>{
       formik.setValues(initialValues);
       await resetSearch()
+      setSelectedSearchField(null)
+      setDisbaled(true);
     }
   const setSearchItem = (value)=>{
     setSelectedSearchField(value)
+    setDisbaled(false);
     setIsFieldEmpty(false);
 
     if(value.includes('assigned_to')){
@@ -130,7 +140,7 @@ const setDropdownValues = async (fieldName)=>{
                         </div>
                         <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
                         {
-                        selectedSearchField === "" && <Input
+                        selectedSearchField === null && <Input
                             name="search_by_value"
                             control="input"
                             label="Search Value"
@@ -149,6 +159,7 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={programOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
 
@@ -161,6 +172,7 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={activityTypes}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
 
@@ -173,6 +185,7 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={assignedToOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -184,6 +197,7 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={batchOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                           {
@@ -195,14 +209,15 @@ const setDropdownValues = async (fieldName)=>{
                                 control="lookup"
                                 options={areaOptions}
                                 className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                        <button className="btn btn-primary btn-regular" type="submit">
+                        <button className="btn btn-primary btn-regular" type="submit" disabled={disabled?true:false}>
                         FIND
                     </button>
-                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
+                    <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={disabled?true:false}>
                         CLEAR
                     </button>
                 </div>   
