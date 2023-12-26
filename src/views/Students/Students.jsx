@@ -28,6 +28,7 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
+import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -110,6 +111,7 @@ const Students = (props) => {
     []
   );
 
+  console.log("activeTab",activeTab.key);
   const getStudents = async (
     status = "All",
     selectedTab,
@@ -118,6 +120,7 @@ const Students = (props) => {
     sortBy = "created_at",
     sortOrder = "desc"
   ) => {
+    console.log(status,selectedTab,limit,offset,sortBy,sortOrder);
     nProgress.start();
     setLoading(true);
     let variables = {
@@ -137,6 +140,8 @@ const Students = (props) => {
     } else if (selectedTab == "my_area") {
       Object.assign(variables, { area: area });
     }
+
+    console.log("variables:",variables);
     await api
       .post("/graphql", {
         query: GET_STUDENTS,
@@ -348,6 +353,8 @@ const Students = (props) => {
               options={studentStatusOptions}
               onTabChange={handleStudentStatusTabChange}
             />
+
+          
             {(isSRM() || isAdmin()) && (
               <button
                 className="btn btn-primary"
@@ -358,6 +365,8 @@ const Students = (props) => {
               </button>
             )}
           </div>
+          
+          <StudentsSearchBar tab={activeTab.key}/>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             <Table
               columns={columns}
