@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {connect} from 'react-redux';
 import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
+import { getFieldValues } from './StudentActions';
 
 
 const Section = styled.div`
@@ -26,30 +27,38 @@ const Section = styled.div`
 
 
 
-function StudentsSearchBar({tab}) {
+function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue}) {
 
     const initialValues = {
         search_by_field:'',
         search_by_value:''
     }
 
-    const [selectedSearchField, setSelectedSearchField] = useState(null);
-    const [studentsOptions,setStudentsOptions] = useState([
+    const [searchValueOptions,setSearchValueOptions] = useState([])
+    const [studentsOptions] = useState([
         {key:0, label:'Name',value:'full_name'}, 
         {key:1,label:'Student ID',value:'student_id'},
-        {key:2, label:'Area', value:'area'},
+        {key:2, label:'Area', value:'medha_area'},
         {key:3, label:'Phone',value:'phone'},
         {key:4, label:'Email', value:'email'},
         {key:5, label:'Status',value:'status'},
-        {key:6, label:'Registration Date', value:'registration_date'},
+        {key:6, label:'Registration Date', value:'registration_date_latest'},
         {key:7, label:'Assigned To', value:'assigned_to.username'}
     ]);
 
 
 
     const handleSubmit = async(values) =>{
-        let baseUrl = 'users-ops-activities'
-        //   await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
+        try {
+            await setSelectedSearchedValue(values.search_by_value)
+            setIsSearchEnable(true);
+            
+        } catch (error) {
+            console.error("error",error)
+        }
+       
+
+        //   await searchOperationTab(baseUrl,values.search_by_field,)
   
         //   //stores the last searched result in the local storage as cache 
         //   //we will use it to refresh the search results
@@ -74,6 +83,33 @@ function StudentsSearchBar({tab}) {
         // setDisbaled(true);
       }
 
+      //setting the value of the value drop down
+
+    
+      const filterSearchValue = async(newValue)=>{
+      
+        const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
+          )
+        return matchedObjects;
+      }
+    
+useEffect(()=>{
+    const setSearchValueDropDown = async () =>{
+      try {
+        const {data} = await getFieldValues(selectedSearchField,'students')
+        await setSearchValueOptions(data);
+
+      } catch (error) {
+        console.error("error",error)
+      }
+
+    }
+
+    if(selectedSearchField){
+        setSearchValueDropDown();
+    }
+}, [selectedSearchField])
+
   return (
     <Formik 
     initialValues={initialValues}
@@ -90,21 +126,24 @@ function StudentsSearchBar({tab}) {
                         control="lookup"
                         options={studentsOptions}
                         className="form-control"
-                        // onChange = {(e)=>setSearchItem(e.value)}
+                        onChange = {(e)=>setSelectedSearchField(e.value)}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
-                {
-                selectedSearchField === null && <Input
-                    name="search_by_value"
-                    control="input"
-                    label="Search Value"
-                    className="form-control"
-                    // onClick = {()=>setIsFieldEmpty(true)}
-                    disabled={true}
-                    />
-                    }
-
+                    {searchValueOptions.length ?<Input  name="search_by_value"
+                        label="Search Value"
+                        className="form-control"
+                        control="lookupAsync"
+                        defaultOptions={searchValueOptions.slice(0,100)}
+                        filterData={filterSearchValue}
+                        />:
+                        <Input
+                        name="search_by_value"
+                            control="input"
+                            label="Search Value"
+                            className="form-control"
+                            disabled={true} 
+                    />}
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
                 <button className="btn btn-primary btn-regular" type="submit">
