@@ -46,6 +46,8 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         {key:7, label:'Assigned To', value:'assigned_to.username'}
     ]);
 
+    const [isDisabled,setDisbaled] = useState(true);
+
 
 
     const handleSubmit = async(values) =>{
@@ -78,9 +80,10 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
 
     const clear = async(formik)=>{
         formik.setValues(initialValues);
-        // await resetSearch()
         setSelectedSearchField(null)
-        // setDisbaled(true);
+        setIsSearchEnable(false);
+        setDisbaled(true);
+        setSearchValueOptions([])
       }
 
       //setting the value of the value drop down
@@ -106,6 +109,7 @@ useEffect(()=>{
     }
 
     if(selectedSearchField){
+        setDisbaled(false);
         setSearchValueDropDown();
     }
 }, [selectedSearchField])
@@ -146,10 +150,10 @@ useEffect(()=>{
                     />}
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                <button className="btn btn-primary btn-regular" type="submit">
+                <button className="btn btn-primary btn-regular" type="submit" disabled={isDisabled?true:false}>
                 FIND
             </button>
-            <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)}>
+            <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={isDisabled?true:false}>
                 CLEAR
             </button>
         </div>   
