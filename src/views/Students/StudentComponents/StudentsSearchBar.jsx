@@ -1,6 +1,5 @@
-import React, {useState,useEffect,useReducer,useRef} from 'react';
-import {connect} from 'react-redux';
-import { Formik, FieldArray, Form ,useFormik} from 'formik';
+import React, {useState,useEffect} from 'react';
+import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
 import { getFieldValues } from './StudentActions';
@@ -36,8 +35,7 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
     const [studentDropDownValue,setStudentDropDownValue] = useState('')
-
-    const studentOptionsRef = useRef(null);
+    const [progress, setProgress] = useState(0);
 
     const [studentsOptions] = useState([
         {key:0, label:'Name',value:'full_name'}, 
@@ -107,12 +105,28 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
           )
         return matchedObjects;
       }
+
+const handleLoaderForSearch = async ()=>{
+  setProgress(0)
+}
     
 useEffect(()=>{
     const setSearchValueDropDown = async () =>{
       try {
+        const interval = setInterval(() => {
+          // Simulate progress update
+          setProgress((prevProgress) =>
+            prevProgress >= 90 ? 0 : prevProgress + 5
+          );
+          
+        }, 1000);
+
         const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
+        clearInterval(interval)
+        handleLoaderForSearch();
+  
         await setSearchValueOptions(data);
+        
 
       } catch (error) {
         console.error("error",error)
@@ -124,14 +138,13 @@ useEffect(()=>{
         setDisbaled(false);
         setSearchValueDropDown();
     }
+
 }, [selectedSearchField])
 
 useEffect(()=>{
   async function refreshOnTabChange(){
   await clear(formik);
 }
-
-console.log("studentOptionsRef",studentOptionsRef);
 
 refreshOnTabChange()
 },[tab])
@@ -156,22 +169,51 @@ refreshOnTabChange()
                         value={studentDropDownValue}
                     />
                 </div>
-                <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>
-                    {searchValueOptions.length ?<Input  name="search_by_value"
+                <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
+                    {searchValueOptions.length ? (
+                      <>
+                      <Input
+                        name="search_by_value"
                         label="Search Value"
                         className="form-control"
                         control="lookupAsync"
-                        defaultOptions={searchValueOptions.slice(0,100)}
+                        defaultOptions={searchValueOptions.slice(0, 100)}
                         filterData={filterSearchValue}
-                        />:
+                      />
+                      <div
+                          style={
+                            {
+                            position: "absolute",
+                            width: `${progress}%`,
+                            height: "4px",
+                            backgroundColor: "#198754",
+                          }
+                        }
+                        />
+                      </>
+                    ) : (
+                      <>
                         <Input
-                        name="search_by_value"
-                            control="input"
-                            label="Search Value"
-                            className="form-control"
-                            disabled={true} 
-                    />}
-                </div>
+                          name="search_by_value"
+                          control="input"
+                          label="Search Value"
+                          className="form-control"
+                          disabled={true} 
+                        />
+                        <div
+                          style={
+                            {
+                            position: "absolute",
+                            width: `${progress}%`,
+                            height: "4px",
+                            backgroundColor: "#198754",
+                          }
+                        }
+                        />
+                      </>
+                    )}
+                  </div>
+
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
                 <button className="btn btn-primary btn-regular" type="submit" disabled={isDisabled?true:false}>
                 FIND
