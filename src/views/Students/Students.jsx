@@ -29,6 +29,7 @@ import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import MassEdit from "./StudentComponents/MassEdit";
+import MassEmployerUpload from "./StudentComponents/MassEmployerUpload";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -64,6 +65,7 @@ const Students = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [modalShow1, setModalShow1] = useState(false);
+  const [modalShow2, setModalShow2] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -206,7 +208,6 @@ const Students = (props) => {
     [activeTab.key, activeStatus]
   );
 
-
   useEffect(() => {
     getStudentsPickList().then((data) => setPickList(data));
     fetchData(0, paginationPageSize, []);
@@ -217,7 +218,6 @@ const Students = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    console.log("whwhwhhwh");
     if (students) {
       let data = students;
       data = data.map((student) => {
@@ -321,6 +321,31 @@ const Students = (props) => {
     );
   };
 
+  const hideMassCreateModal = async (data, key) => {
+    if (key == "Alumni") {
+      try {
+        const response = await api.post(
+          "/alumni-services/createBulkAlumniServices",
+          data
+        );
+        setAlert("Alumni data created successfully.", "success");
+      } catch (error) {
+        setAlert("Unable to create Alumni Data.", "error");
+      }
+    }
+    else {
+      try {
+        const response = await api.post(
+          "/employment-connections/createBulkEmploymentConnection",
+          data
+        );
+        setAlert("Alumni data created successfully.", "error");
+      } catch (error) {
+        setAlert("Unable to create Alumni Data.", "error");
+      }
+    }
+  };
+
   return (
     <Collapse title="STUDENTS" type="plain" opened={true}>
       <Styled>
@@ -353,21 +378,29 @@ const Students = (props) => {
             />
             {(isSRM() || isAdmin()) && (
               <>
-              <button
-                className="btn btn-primary"
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "15px" }}
-              >
-                Add New Student
-              </button>
-               <button
-               className="btn btn-primary"
-               onClick={() => setModalShow1(true)}
-               style={{ marginLeft: "15px" }}
-             >
-               Mass Edit
-             </button>
-             </>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow(true)}
+                  style={{ marginLeft: "5px" }}
+                >
+                  Add New Student
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow1(true)}
+                  //  style={{ marginLeft: "15px" }}
+                >
+                  Mass Alumni Service
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow2(true)}
+                  //  style={{ marginLeft: "10px" }}
+                >
+                  Mass Employer
+                </button>
+              </>
             )}
           </div>
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
@@ -398,7 +431,8 @@ const Students = (props) => {
             />
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
-          <MassEdit show={modalShow1} />
+          <MassEdit data={studentsData} show={modalShow1} onHide={hideMassCreateModal} />
+          <MassEmployerUpload data={studentsData} show={modalShow2} onHide={hideMassCreateModal} />
         </div>
       </Styled>
     </Collapse>

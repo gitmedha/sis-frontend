@@ -74,7 +74,6 @@ const usersTotsFields = `
     gender
     contact
     designation
-    published_at
 `;
 const studentUpskillingFields = `
     id
@@ -197,6 +196,7 @@ const collegePitchesFields = `
     course_name
     course_year
     college_name
+    program_name
     phone
     whatsapp
     email

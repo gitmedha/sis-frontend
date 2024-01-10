@@ -8,6 +8,7 @@ import { AlumniServiceValidations } from "../../../validations/Student";
 import {
   getStudentsPickList,
   getAlumniServicePickList,
+  createBulkAlumniService,
 } from "./StudentActions";
 import Textarea from "../../../utils/Form/Textarea";
 import {
@@ -16,7 +17,9 @@ import {
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
 import { MeiliSearch } from "meilisearch";
-import Select from 'react-select';
+import Select from "react-select";
+import api from "../../../apis";
+import moment from "moment";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -65,7 +68,7 @@ const MassEdit = (props) => {
   const [programOptions, setProgramOptions] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [students,setStudents]=useState([])
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     if (props.alumniService) {
@@ -118,6 +121,9 @@ const MassEdit = (props) => {
       console.log("student data", data);
       setStudentOptions(data);
     });
+    setStudentOptions(props.data.map(obj=>{
+      return {value:obj.id,label:obj.full_name}
+    }))
   }, [props]);
 
   let initialValues = {
@@ -129,9 +135,9 @@ const MassEdit = (props) => {
     end_date: "",
     source: "",
     salary_offered: "",
-    reason_if_rejected_other: "",
-    reason_if_rejected: "",
-    assigned_to: 54,
+    category:"",
+    subcategory:"",
+    assigned_to: "",
   };
 
   //   if (props.alumniService) {
@@ -149,10 +155,31 @@ const MassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    values.students=students;
-    console.log(values);
-    // setSelectedCategory('');
-    // onHide(values);
+    values.students = students;
+
+    let newdata = values.students.map((obj) => {
+     let startDate= values.start_date ? moment(values.start_date).format("YYYY-MM-DD") : null;
+     let endDate= values.end_date ? moment(values.end_date).format("YYYY-MM-DD") : null;
+     let feeSubmission= values.fee_submission_date ? moment(values.fee_submission_date).format("YYYY-MM-DD") : null;
+     let feeAmount=values.fee_amount 
+    //  let receiptNumber=values.receipt_number ?values.receipt_number:""
+     let comments=values.comments ? values.comments :''
+      return {
+        student: obj.id,
+        assigned_to: values.assigned_to,
+        category: selectedCategory,
+        comments: comments,
+        end_date: endDate,
+        fee_amount: feeAmount,
+        fee_submission_date: feeSubmission,
+        location: values.location,
+        program_mode: values.program_mode,
+        // receipt_number: receiptNumber,
+        start_date: startDate,
+        type: values.type,
+      };
+    });
+    onHide(newdata,"Alumni");
   };
 
   const filterStudent = async (filterValue) => {
@@ -194,17 +221,17 @@ const MassEdit = (props) => {
       });
   };
 
-const colourOptions = [
-    { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-    { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
-    { value: 'purple', label: 'Purple', color: '#5243AA' },
-    { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-    { value: 'orange', label: 'Orange', color: '#FF8B00' },
-    { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-    { value: 'green', label: 'Green', color: '#36B37E' },
-    { value: 'forest', label: 'Forest', color: '#00875A' },
-    { value: 'slate', label: 'Slate', color: '#253858' },
-    { value: 'silver', label: 'Silver', color: '#666666' },
+  const colourOptions = [
+    { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
+    { value: "blue", label: "Blue", color: "#0052CC", isDisabled: true },
+    { value: "purple", label: "Purple", color: "#5243AA" },
+    { value: "red", label: "Red", color: "#FF5630", isFixed: true },
+    { value: "orange", label: "Orange", color: "#FF8B00" },
+    { value: "yellow", label: "Yellow", color: "#FFC400" },
+    { value: "green", label: "Green", color: "#36B37E" },
+    { value: "forest", label: "Forest", color: "#00875A" },
+    { value: "slate", label: "Slate", color: "#253858" },
+    { value: "silver", label: "Silver", color: "#666666" },
   ];
 
   return (
@@ -254,9 +281,8 @@ const colourOptions = [
                     /> */}
                     <label className="leading-24">Student</label>
                     <Select
-                    //   defaultValue={[colourOptions[2], colourOptions[3]]}
+                      //   defaultValue={[colourOptions[2], colourOptions[3]]}
                       isMulti
-                      
                       name="student_ids"
                       options={studentOptions}
                       className="basic-multi-select"
@@ -376,7 +402,7 @@ const colourOptions = [
                       required={feeFieldsRequired}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
+                  {/* <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
@@ -387,7 +413,7 @@ const colourOptions = [
                       onInput={(e) => setReceiptNumberValue(e.target.value)}
                       required={feeFieldsRequired}
                     />
-                  </div>
+                  </div> */}
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"

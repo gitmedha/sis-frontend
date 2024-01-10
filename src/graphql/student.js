@@ -453,6 +453,23 @@ export const CREATE_ALUMNI_SERVICE = `
   }
 `;
 
+
+export const BULK_ALUMNI_SERVICES = `
+  mutation CREATE_STUDENTS(
+    $data: [AlumniServiceInput!]!
+  ) {
+    createAlumniService(
+      input: {
+        data: $data
+      }
+    ) {
+      alumniService {
+        ${alumniServicesFields}
+      }
+    }
+  }
+`;
+
 export const UPDATE_ALUMNI_SERVICE = `
   mutation UPDATE_ALUMNI_SERVICE (
     $data: editAlumniServiceInput!
