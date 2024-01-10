@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useReducer,useRef} from 'react';
 import {connect} from 'react-redux';
 import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
@@ -27,7 +27,7 @@ const Section = styled.div`
 
 
 
-function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue}) {
+function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
 
     const initialValues = {
         search_by_field:'',
@@ -35,6 +35,10 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     }
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
+    const [studentDropDownValue,setStudentDropDownValue] = useState('')
+
+    const studentOptionsRef = useRef(null);
+
     const [studentsOptions] = useState([
         {key:0, label:'Name',value:'full_name'}, 
         {key:1,label:'Student ID',value:'student_id'},
@@ -46,6 +50,14 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         {key:7, label:'Assigned To', value:'assigned_to.username'}
     ]);
 
+    const initialState = [  {key:0, label:'Name',value:'full_name'}, 
+    {key:1,label:'Student ID',value:'student_id'},
+    {key:2, label:'Area', value:'medha_area'},
+    {key:3, label:'Phone',value:'phone'},
+    {key:4, label:'Email', value:'email'},
+    {key:5, label:'Status',value:'status'},
+    {key:6, label:'Registration Date', value:'registration_date_latest'},
+    {key:7, label:'Assigned To', value:'assigned_to.username'}]
     const [isDisabled,setDisbaled] = useState(true);
 
 
@@ -99,7 +111,7 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
 useEffect(()=>{
     const setSearchValueDropDown = async () =>{
       try {
-        const {data} = await getFieldValues(selectedSearchField,'students')
+        const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
         await setSearchValueOptions(data);
 
       } catch (error) {
@@ -113,6 +125,16 @@ useEffect(()=>{
         setSearchValueDropDown();
     }
 }, [selectedSearchField])
+
+useEffect(()=>{
+  async function refreshOnTabChange(){
+  await clear(formik);
+}
+
+console.log("studentOptionsRef",studentOptionsRef);
+
+refreshOnTabChange()
+},[tab])
 
   return (
     <Formik 
@@ -131,6 +153,7 @@ useEffect(()=>{
                         options={studentsOptions}
                         className="form-control"
                         onChange = {(e)=>setSelectedSearchField(e.value)}
+                        value={studentDropDownValue}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2'>

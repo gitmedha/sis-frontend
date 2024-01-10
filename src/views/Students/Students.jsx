@@ -115,6 +115,8 @@ const Students = (props) => {
   );
 
 
+
+
   useEffect(()=>{
     getStudents()
 
@@ -244,11 +246,6 @@ const StudentQuery = `query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $so
       variables,
     })
     .then((data) => {
-      // data?.data?.data?.studentsConnection.values.map((obj) => {
-      //  obj.full_name && obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
-      //     return match.toUpperCase();
-      //   });
-      // });
 
       setStudents(data?.data?.data?.studentsConnection.values);
       setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
@@ -540,6 +537,12 @@ else {
             setSelectedSearchField={setSelectedSearchField} 
             setIsSearchEnable={setIsSearchEnable}
             setSelectedSearchedValue={setSelectedSearchedValue}
+            tab={activeTab.key}
+            info={{
+              id:userId,
+              area:area,
+              state:state,
+            }}
             />
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             <Table

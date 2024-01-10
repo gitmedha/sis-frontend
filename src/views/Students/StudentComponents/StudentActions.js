@@ -370,10 +370,11 @@ export const getUpskillingPicklist = async () => {
 };
 
 
-export const getFieldValues = async (searchField,baseURL)=>{
+export const getFieldValues = async (searchField,baseURL,tab,info)=>{
   try{
   
-      const data = await api.get(`/${baseURL}/distinct/${searchField}`)
+      const data = await api.get(`/${baseURL}/distinct/${searchField}/${tab}/${new URLSearchParams(info).toString()
+      }`)
       return data;
   }
   catch(error){
