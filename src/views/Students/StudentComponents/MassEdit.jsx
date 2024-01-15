@@ -151,7 +151,7 @@ const MassEdit = (props) => {
 
   const handleClose = () => {
     setSelectedCategory("");
-    onHide();
+    onHide([],"Alumn");
   };
 
   const onSubmit = async (values) => {

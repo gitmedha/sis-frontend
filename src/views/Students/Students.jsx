@@ -333,7 +333,7 @@ const Students = (props) => {
         setAlert("Unable to create Alumni Data.", "error");
       }
     }
-    else {
+    if(key =="Empolymentconnection"){
       try {
         const response = await api.post(
           "/employment-connections/createBulkEmploymentConnection",

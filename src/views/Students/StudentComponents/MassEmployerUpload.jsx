@@ -109,10 +109,8 @@ const MassEmployerUpload = (props) => {
   }, [props]);
 
   const onModalClose = () => {
-    if (!props.employmentConnection) {
-      setEmployerOpportunityOptions([]);
-    }
-    onHide();
+    // modals
+    onHide([],"Empolymentconnection");
   };
 
   const onSubmit = async (data) => {
