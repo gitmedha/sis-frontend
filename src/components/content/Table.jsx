@@ -74,7 +74,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -115,7 +115,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
       fetchSearchedData(pageIndex, pageSize, sortBy)
     }
     else {
-      fetchData(pageIndex, pageSize, sortBy);
+      fetchData(pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField);
     }
     
   }, [fetchData, pageIndex, pageSize, sortBy,fetchSearchedData]);

@@ -28,6 +28,7 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
+import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -71,6 +72,9 @@ const Students = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [isSearchEnable,setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
 
   const columns = useMemo(
     () => [
@@ -110,6 +114,151 @@ const Students = (props) => {
     []
   );
 
+
+
+
+  useEffect(()=>{
+    getStudents()
+
+  },[isSearchEnable])
+
+  const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+
+    const studentFields = `
+    id
+    full_name
+    email
+    phone
+    alternate_phone
+    status
+    name_of_parent_or_guardian
+    date_of_birth
+    category
+    gender
+    registration_date_latest
+    certification_date_latest
+    internship_date_latest
+    placement_date_latest
+    course_type_latest
+    income_level
+    family_annual_income
+    old_sis_id
+    medha_champion
+    interested_in_employment_opportunities
+    city
+    pin_code
+    medha_area
+    address
+    state
+    how_did_you_hear_about_us
+    how_did_you_hear_about_us_other
+    created_at
+    updated_at
+    created_by_frontend{
+      email
+      username
+    }
+    updated_by_frontend{
+      username
+      email
+    }
+    district
+    student_id
+    assigned_to{
+      id
+      username
+      email
+      area
+    }
+    registered_by{
+      id
+      username
+      email
+    }
+    logo {
+      id
+      url
+    }
+    CV {
+      id
+      url
+      previewUrl
+      updated_at
+    }
+  `;
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (status !== "All") {
+    variables.status = studentStatusOptions.find(
+      (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
+    )?.picklistMatch;
+  }
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else {
+    variables[selectedSearchField] = selectedSearchedValue.trim();
+  }
+
+  
+
+const StudentQuery = `query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String, ${selectedSearchField === 'medha_area'|| selectedSearchField === 'status'?'':`$${selectedSearchField}:String`}) {
+    studentsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit,
+      where: {
+        assigned_to: {
+          id: $id
+        },
+        medha_area: $area
+        state:$state,
+        status:$status,
+        ${selectedSearchField === 'medha_area' || selectedSearchField === 'status'?'':`${selectedSearchField}:$${selectedSearchField}`}
+      }
+    ) {
+      values {
+        ${studentFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }`
+
+
+   
+  await api
+    .post("/graphql", {
+      query: StudentQuery,
+      variables,
+    })
+    .then((data) => {
+
+      setStudents(data?.data?.data?.studentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+  }
+ 
   const getStudents = async (
     status = "All",
     selectedTab,
@@ -118,51 +267,62 @@ const Students = (props) => {
     sortBy = "created_at",
     sortOrder = "desc"
   ) => {
+
     nProgress.start();
     setLoading(true);
-    let variables = {
-      limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
-    };
-    if (status !== "All") {
-      variables.status = studentStatusOptions.find(
-        (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
-      )?.picklistMatch;
-    }
-    if (selectedTab == "my_data") {
-      Object.assign(variables, { id: userId });
-    } else if (selectedTab == "my_state") {
-      Object.assign(variables, { state: state });
-    } else if (selectedTab == "my_area") {
-      Object.assign(variables, { area: area });
-    }
-    await api
-      .post("/graphql", {
-        query: GET_STUDENTS,
-        variables,
-      })
-      .then((data) => {
-        let value = data?.data?.data?.studentsConnection.values.map((obj) => {
-          obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
-            return match.toUpperCase();
-          });
-        });
 
-        setStudents(data?.data?.data?.studentsConnection.values);
-        setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        nProgress.done();
+if(isSearchEnable){
+  await getStudentsBySearchFilter(status,selectedTab,limit,offset,selectedSearchedValue,selectedSearchField);
+
+}
+else {
+  let variables = {
+    limit,
+    start: offset,
+    sort: `${sortBy}:${sortOrder}`,
+  };
+  if (status !== "All") {
+    variables.status = studentStatusOptions.find(
+      (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
+    )?.picklistMatch;
+  }
+  if (selectedTab == "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab == "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab == "my_area") {
+    Object.assign(variables, { area: area });
+  }
+
+  
+  await api
+    .post("/graphql", {
+      query: GET_STUDENTS,
+      variables,
+    })
+    .then((data) => {
+      let value = data?.data?.data?.studentsConnection.values.map((obj) => {
+        obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
+          return match.toUpperCase();
+        });
       });
+
+      setStudents(data?.data?.data?.studentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    })
+    .finally(() => {
+      setLoading(false);
+      nProgress.done();
+    });
+}
   };
 
   const fetchData = useCallback(
-    (pageIndex, pageSize, sortBy) => {
+    (pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
+    
       if (sortBy.length) {
         let sortByField = "full_name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -184,21 +344,32 @@ const Students = (props) => {
             sortByField = "full_name";
             break;
         }
-        getStudents(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex,
-          sortByField,
-          sortOrder
-        );
+        if(isSearchEnable){
+          getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+        }
+        else {
+          getStudents(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        }
+       
       } else {
-        getStudents(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex
-        );
+        if(isSearchEnable){
+          getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+
+        }else {
+          getStudents(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
       }
     },
     [activeTab.key, activeStatus]
@@ -348,6 +519,8 @@ const Students = (props) => {
               options={studentStatusOptions}
               onTabChange={handleStudentStatusTabChange}
             />
+
+          
             {(isSRM() || isAdmin()) && (
               <button
                 className="btn btn-primary"
@@ -358,6 +531,19 @@ const Students = (props) => {
               </button>
             )}
           </div>
+          
+          <StudentsSearchBar 
+            selectedSearchField={selectedSearchField} 
+            setSelectedSearchField={setSelectedSearchField} 
+            setIsSearchEnable={setIsSearchEnable}
+            setSelectedSearchedValue={setSelectedSearchedValue}
+            tab={activeTab.key}
+            info={{
+              id:userId,
+              area:area,
+              state:state,
+            }}
+            />
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             <Table
               columns={columns}
@@ -369,6 +555,9 @@ const Students = (props) => {
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
+              isSearchEnable={isSearchEnable}
+              selectedSearchField={selectedSearchField}
+              selectedSearchedValue={selectedSearchedValue}
             />
           </div>
         </div>
