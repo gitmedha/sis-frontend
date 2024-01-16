@@ -177,7 +177,19 @@ const EnrollmentConnectionForm = (props) => {
     } else {
       filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
     }
-    setStatusOptions(filteredOptions);
+    // setStatusOptions(filteredOptions);
+
+    setStatusOptions(filteredOptions.map(item => {
+     
+      if (
+        localStorage.getItem('user_role').toLowerCase() === 'srm' &&
+        item.value.toLowerCase() === 'unknown'
+      ) {
+        return {isDisabled:true};
+      } else {
+        return { key: item.value, value: item.value, label: item.value };
+      }
+    }));
   }, [selectedOpportunityType, allStatusOptions]);
 
   const updateEmployerOpportunityOptions = (employer) => {
