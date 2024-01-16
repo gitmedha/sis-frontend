@@ -74,7 +74,7 @@ const StudentForm = (props) => {
           localStorage.getItem('user_role').toLowerCase() === 'srm' &&
           item.value.toLowerCase() === 'unknown'
         ) {
-          return {isDisabled:true}
+          return {isDisabled:true }
         } else {
           return { key: item.value, value: item.value, label: item.value };
         }
