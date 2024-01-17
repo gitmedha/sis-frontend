@@ -67,6 +67,7 @@ const SelectField = (props) => {
     defaultOptions,
     isDisabled,
     isClearable,
+    isMulti
   } = props;
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
@@ -108,6 +109,7 @@ const SelectField = (props) => {
         }
         defaultOptions={defaultOptions}
         cacheOptions
+        isMulti={isMulti}
         isDisabled={isDisabled}
         isClearable={isClearable}
       />

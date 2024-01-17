@@ -172,9 +172,13 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
                 page.length ? (
                   page.map((row, index) => {
                     prepareRow(row)
-                    return (
+                    return (<>
+                      {/* <td className="border-0" onClick={()=>console.log(row.original)}><input type="checkbox" />      </td> */}
                       <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
+                        
                         {indexes &&
+                        <>
+                          
                           <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
                             {
                               row.original.href && !rowClickFunctionExists ? (
@@ -186,6 +190,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
                               )
                             }
                           </td>
+                        </>
                         }
                         {row.cells.map(cell => {
                           return (
@@ -199,6 +204,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
                           )
                         })}
                       </tr>
+                      </>
                     )
                   })
                 ) : (

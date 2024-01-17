@@ -28,6 +28,9 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
+import MassEdit from "./StudentComponents/MassEdit";
+import MassEmployerUpload from "./StudentComponents/MassEmployerUpload";
+import { isEmptyArray } from "formik";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 
 const tabPickerOptions = [
@@ -63,6 +66,8 @@ const Students = (props) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  const [modalShow1, setModalShow1] = useState(false);
+  const [modalShow2, setModalShow2] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -375,7 +380,6 @@ else {
     [activeTab.key, activeStatus]
   );
 
-
   useEffect(() => {
     getStudentsPickList().then((data) => setPickList(data));
     fetchData(0, paginationPageSize, []);
@@ -489,6 +493,42 @@ else {
     );
   };
 
+
+  const HideMassEmployeCreateModal =async(data)=>{
+      if(data.length ==0){
+        // return ;
+        setAlert("Unable to create Employment Connection Data.", "error");
+      }else{
+        try {
+          const response = await api.post(
+            "/employment-connections/createBulkEmploymentConnection",
+            data
+          );
+          setAlert("Employment Connection data created successfully.", "error");
+        } catch (error) {
+          setAlert("Unable to create Employment Connection Data.", "error");
+        }
+      }
+  }
+
+  const hideMassCreateModal = async (data) => {
+    if(data.length ==0){
+      setAlert("Unable to create Alumni Data.", "error");
+    }
+    else {
+      try {
+        const response = await api.post(
+          "/alumni-services/createBulkAlumniServices",
+          data
+        );
+        setAlert("Alumni data created successfully.", "success");
+      } catch (error) {
+        setAlert("Unable to create Alumni Data.", "error");
+      }
+    }
+    
+  };
+
   return (
     <Collapse title="STUDENTS" type="plain" opened={true}>
       <Styled>
@@ -522,13 +562,30 @@ else {
 
           
             {(isSRM() || isAdmin()) && (
-              <button
-                className="btn btn-primary"
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "15px" }}
-              >
-                Add New Student
-              </button>
+              <>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow(true)}
+                  style={{ marginLeft: "5px" }}
+                >
+                  Add New Student
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow1(true)}
+                  //  style={{ marginLeft: "15px" }}
+                >
+                  Mass Alumni Service
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow2(true)}
+                  //  style={{ marginLeft: "10px" }}
+                >
+                  Mass Employer
+                </button>
+              </>
             )}
           </div>
           
@@ -575,6 +632,8 @@ else {
             />
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
+          <MassEdit data={studentsData} show={modalShow1} onHide={hideMassCreateModal} />
+          <MassEmployerUpload data={studentsData} show={modalShow2} onHide={HideMassEmployeCreateModal} />
         </div>
       </Styled>
     </Collapse>
