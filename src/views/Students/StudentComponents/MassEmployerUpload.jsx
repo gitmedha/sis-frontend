@@ -168,7 +168,8 @@ const MassEmployerUpload = (props) => {
       : null;
     dataToSave["opportunity"] = data.opportunity_id;
     dataToSave["student"] = student.id;
-    onHide(newdata);
+    // onHide(newdata);
+    return ;
   };
   const filterStudent = async (filterValue) => {
     return await meilisearchClient

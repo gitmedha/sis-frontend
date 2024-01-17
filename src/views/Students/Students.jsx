@@ -323,7 +323,7 @@ const Students = (props) => {
   };
 
 
-  const HideMassEmployeCreateModal =async =async(data)=>{
+  const HideMassEmployeCreateModal =async(data)=>{
       if(data.length ==0){
         setAlert("Unable to create Employment Connection Data.", "error");
       }else{
