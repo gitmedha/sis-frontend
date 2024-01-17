@@ -48,7 +48,7 @@ const Styled = styled.div`
 `;
 
 const Totdatafield = (props) => {
-  let { onHide } = props;
+  let { onHide ,refreshTableOnDataSaving,refreshTableOnDeleting} = props;
   const [showModal, setShowModal] = useState({
     dataAndEdit:false,
     delete:false
@@ -95,6 +95,7 @@ const Totdatafield = (props) => {
     const data=await deactivate_user_tots(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
+     refreshTableOnDeleting()
      onHide()
     }else{
      setAlert("Not Able to delete", "Danger");
@@ -281,7 +282,7 @@ const Totdatafield = (props) => {
       {
         showModal.dataAndEdit && 
         (
-          <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} />
+          <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} refreshTableOnDataSaving={refreshTableOnDataSaving}/>
         )
       }
       {

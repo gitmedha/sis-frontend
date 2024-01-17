@@ -41,16 +41,15 @@ const Styled = styled.div`
 `;
 
 const Opsdatafeilds = (props) => {
-  let { onHide } = props;
+  let { onHide,refreshTableOnDataSaving,refreshTableOnDeleting} = props;
   const { setAlert } = props;
   const [showModal, setShowModal] = useState({
     dataAndEdit:false,
     delete:false
   });
-  const [operationdata, setoperationdata] = useState(props);
+  const [operationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
-      setShowModal(false);
       onHide()
       return 0;
     }else{
@@ -75,8 +74,9 @@ const Opsdatafeilds = (props) => {
 
   const deleteEntry=async()=>{
    const data=await deactivate_user_ops(Number(props.id))
-   if(data.status==200){
+   if(data.status===200){
     setAlert("Entry Deleted Successfully.", "success");
+    refreshTableOnDeleting()
     onHide()
    }else{
     setAlert("Not Able to delete", "Danger");
@@ -174,7 +174,7 @@ const Opsdatafeilds = (props) => {
                   />
                   <DetailField
                     Bold={""}
-                    label="Batch"
+                    label="Institution"
                     value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
                   />
                   <DetailField
@@ -291,6 +291,7 @@ const Opsdatafeilds = (props) => {
             {...operationdata}
             show={showModal}
             onHide={hideShowModal1}
+            refreshTableOnDataSaving={refreshTableOnDataSaving}
           />
         )
       }

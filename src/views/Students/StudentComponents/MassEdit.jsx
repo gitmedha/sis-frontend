@@ -179,7 +179,7 @@ const MassEdit = (props) => {
         type: values.type,
       };
     });
-    onHide(newdata,"Alumni");
+    onHide(newdata);
   };
 
   const filterStudent = async (filterValue) => {

@@ -155,7 +155,7 @@ const StudentModal = (props) => {
       });
       setDetails(data.data.student);
     } catch (err) {
-      console.log("ERROR_STUDENT_DETAILS: 148 AgGridUitls.jsx", err);
+     
     } finally {
       setLoading(false);
     }

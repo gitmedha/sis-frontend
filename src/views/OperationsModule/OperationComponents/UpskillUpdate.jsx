@@ -56,7 +56,7 @@ const categoryOptions = [
 ];
 
 const UpskillUpdate = (props) => {
-  let { onHide, show, closeopsedit } = props;
+  let { onHide, show,refreshTableOnDataSaving} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -88,14 +88,12 @@ const UpskillUpdate = (props) => {
   useEffect(() => {
     if (props.student_id.id) {
       filterStudent(props.student_id.full_name).then(data => {
-        console.log("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']
@@ -111,12 +109,7 @@ const UpskillUpdate = (props) => {
           value: Number(student.id),
         }
       });
-      // if (!studentFoundInList)  {
-      //   filterData.unshift({
-      //     label: programEnrollmentStudent.full_name,
-      //     value: Number(programEnrollmentStudent.id),
-      //   });
-      // }
+      
       return filterData;
     });
   }
@@ -234,6 +227,7 @@ const UpskillUpdate = (props) => {
     newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
    
     const value = await updateStudetnsUpskills(Number(props.id), newObject);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     setDisableSaveButton(false);

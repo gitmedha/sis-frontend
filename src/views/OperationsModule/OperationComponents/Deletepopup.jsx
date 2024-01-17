@@ -4,14 +4,13 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const Deletepopup = (props) => {
-    console.log("props");
     const handleClose = () => props.setShowModal();
 
   return (
     <>
       <Modal show={true} className='' >
         <Modal.Header >
-          <Modal.Title className=' text-heading text--xl'>Are you sure, You want to delete this</Modal.Title>
+          <Modal.Title className=' text-heading text--xl'>Are you sure you want to delete?</Modal.Title>
         </Modal.Header>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

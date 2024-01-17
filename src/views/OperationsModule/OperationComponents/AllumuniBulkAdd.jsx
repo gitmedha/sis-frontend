@@ -91,6 +91,7 @@ const AllumuniBulkAdd = (props) => {
     status: "",
     query_end: "",
   });
+  
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
@@ -158,7 +159,6 @@ const AllumuniBulkAdd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    // console.log(options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
         setAreaOptions([]);
@@ -271,7 +271,7 @@ const AllumuniBulkAdd = (props) => {
       row.isActive=true;
 
       let value = checkEmptyValuesandplaceNA(row)
-      if(value.status =="Open"){
+      if(value.status =="Open"  ){
         value.query_end =null 
       }
       // value.published_at =null
@@ -279,13 +279,10 @@ const AllumuniBulkAdd = (props) => {
     });
     
 
-    try {
-      const value = await bulkCreateAlumniQueries(data);
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
+    try {     
+      onHide('alum',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 
@@ -303,10 +300,25 @@ const AllumuniBulkAdd = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-    // console.log(rowData);
-  };
+  
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+        if(!(key =='father_name') && !(key =='email') && !(key =='phone') && !(key =='conclusion') && !(key =='query_end') ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   useEffect(() => {
     filterInstitution().then((data) => {
@@ -436,7 +448,7 @@ const AllumuniBulkAdd = (props) => {
                   <th>Query Type *</th>
                   <th>Query Description *</th>
                   <th>Conclusion</th>
-                  <th>Status</th>
+                  <th>Status *</th>
                   <th>Query End Date</th>
                 </tr>
               </thead>

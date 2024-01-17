@@ -80,7 +80,7 @@ const Section = styled.div`
   }
 `;
 const marginTop = {
-  marginTop:'2rem',
+  marginTop: "2rem",
 };
 const modalStyle = {
   position: "fixed",
@@ -109,7 +109,7 @@ const OperationCreateform = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
-  const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [disableSaveButton, setDisableSaveButton] = useState(true);
   const [typeOptions, setTypeOptions] = useState([]);
   const [show1, setShow1] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
@@ -136,7 +136,7 @@ const OperationCreateform = (props) => {
       organization: "",
       assigned_to: "",
       area: "",
-      students_attended:"",
+      students_attended: "",
     },
     // Add more initial rows as needed
   ]);
@@ -144,7 +144,6 @@ const OperationCreateform = (props) => {
     {
       id: 1,
       assigned_to: "",
-      name: "",
       institution: "",
       batch: "",
       activity_type: "",
@@ -157,12 +156,11 @@ const OperationCreateform = (props) => {
       guest: "",
       designation: "",
       organization: "",
-      students_attended:""
+      students_attended: "",
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: "",
-    name: "",
     institution: "",
     batch: "",
     state: "",
@@ -176,8 +174,28 @@ const OperationCreateform = (props) => {
     organization: "",
     assigned_to: "",
     area: "",
-    students_attended:""
+    students_attended: "",
   });
+
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+       
+        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   function checkEmptyValuesandplaceNA(obj) {
     const result = {};
@@ -186,11 +204,10 @@ const OperationCreateform = (props) => {
       if (Object.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
-        if(isEmpty){
+        if (isEmpty) {
           result[key] = "N/A";
-        }
-        else{
-          result[key]=value
+        } else {
+          result[key] = value;
         }
       }
     }
@@ -243,7 +260,8 @@ const OperationCreateform = (props) => {
       value.end_date ||
       value.institution ||
       value.batch ||
-      value.assigned_to || value.students_attended
+      value.assigned_to ||
+      value.students_attended
     ) {
       let obj = { [`class${[rows.length - 1]}`]: value };
       return setclassValue(obj);
@@ -254,8 +272,6 @@ const OperationCreateform = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
-      
     }
     // setclassValue({state:false,area:false,topic:false})
   };
@@ -310,17 +326,7 @@ const OperationCreateform = (props) => {
   }, []);
 
   const onStateChange = (value) => {
-    // setDistrictOptions([]);
     getStateDistricts(value).then((data) => {
-      // setDistrictOptions(
-      //   data?.data?.data?.geographiesConnection.groupBy.district
-      //     .map((district) => ({
-      //       key: district.id,
-      //       label: district.key,
-      //       value: district.key,
-      //     }))
-      //     .sort((a, b) => a.label.localeCompare(b.label))
-      // );
       setAreaOptions([]);
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
@@ -358,18 +364,18 @@ const OperationCreateform = (props) => {
       row.students_attended = Number(row.students_attended);
       row.donor = row.donor ? true : false;
       row.isActive = true;
-      let value =checkEmptyValuesandplaceNA(row);
+      let value = checkEmptyValuesandplaceNA(row);
       return value;
     });
     try {
-      const value = await api.post(
-        "/users-ops-activities/createBulkOperations",
-        data
-      );
+      // if (isRequiredEmpty) {
+      //   props.ModalShow();
+      //   setAlert("Please fill the required fields", "error");
+      // } else {
+      //   onHide("feilddata", data);
+      // }
 
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
-      
+      onHide('feilddata',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
@@ -431,8 +437,6 @@ const OperationCreateform = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-
         let filterData = data.hits.map((batch) => {
           return {
             ...batch,
@@ -518,12 +522,12 @@ const OperationCreateform = (props) => {
                   {/* <th className='id'>ID</th> */}
                   <th>Assigned To *</th>
                   <th>Activity Type *</th>
-                  <th>Educational Institution *</th>
+                  <th>Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
-                  <th>Program Name</th>
+                  <th>Program Name *</th>
                   <th>Batch Name *</th>
-                  
+
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>
@@ -531,14 +535,13 @@ const OperationCreateform = (props) => {
                   <th>Guest Name</th>
                   <th>Guest Designation</th>
                   <th>Organization</th>
-                  <th>No. Of Participants </th>
+                  <th>No. Of Participants *</th>
                 </tr>
               </thead>
               <tbody className="mb-4">
-
                 {rows.map((row, id) => (
                   <tr key={id} className="mt-4">
-                     <RowsData
+                    <RowsData
                       key={id}
                       handleInputChange={handleInputChange}
                       handleChange={handleChange}
@@ -552,11 +555,11 @@ const OperationCreateform = (props) => {
                       statedata={stateOptions}
                       areaOptions={areaOptions}
                       classValue={classValue}
-                      style={{marginTop:5}}
+                      style={{ marginTop: 5 }}
+                      filterInstitution={filterInstitution}
+                      setInstitutionOptions={setInstitutionOptions}
                     />
                   </tr>
-                   
-                  
                 ))}
               </tbody>
             </table>
@@ -595,3 +598,58 @@ const mapActionsToProps = {
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(OperationCreateform);
+
+
+
+
+
+ // if (isEmptyValue(rows[ele].activity_type )) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].activity_type )) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].institution)) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].batch) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].state)) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].start_date)) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].end_date) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].topic) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].end_date) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].assigned_to) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } else if (isEmptyValue(rows[ele].area )) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // } 
+      // else if (isEmptyValue(rows[ele].students_attended) ) {
+      //   // isRequiredEmpty = true;
+      //   setDisableSaveButton(false)
+      //   break;
+      // }

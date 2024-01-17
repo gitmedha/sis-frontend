@@ -55,10 +55,11 @@ const Activityoptions = [
   { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
   { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
   { value: 'Alumni Engagement', label: 'Alumni Engagement' },
+  {value:'Placement Drive',label:'Placement Drive'}
 ];
 
 const OperationDataupdateform = (props) => {
-  let { onHide, show, closeopsedit } = props;
+  let { onHide, show, closeopsedit ,refreshTableOnDataSaving} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -185,14 +186,12 @@ const OperationDataupdateform = (props) => {
     newValueObject["institution"] = Number(values["institution"]);
     newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
     newValueObject["updatedby"] = Number(userId);
-
-    delete newValueObject["updatedby"];
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
-    delete newValueObject["createdby"];
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     closeopsedit();
@@ -369,7 +368,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             control="lookupAsync"
                             name="institution"
-                            label="Educational Institution"
+                            label="Institution"
                             filterData={filterInstitution}
                             defaultOptions={institutionOptions}
                             placeholder="Institution"

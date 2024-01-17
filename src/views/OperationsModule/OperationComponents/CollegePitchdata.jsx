@@ -49,7 +49,7 @@ const Styled = styled.div`
   }
 `;
 const CollegePitchdata = (props) => {
-  let { onHide } = props;
+  let { onHide,refreshTableOnDataSaving,refreshTableOnDeleting } = props;
 
   const [showModal, setShowModal] = useState({
     dataAndEdit:false,
@@ -93,6 +93,7 @@ const CollegePitchdata = (props) => {
     const data=await deactivate_user_college_pitch(Number(props.id))
     if(data.status===200){
      setAlert("Entry Deleted Successfully.", "success");
+     refreshTableOnDeleting()
      onHide()
     }else{
      setAlert("Not Able to delete", "Danger");
@@ -149,8 +150,8 @@ const CollegePitchdata = (props) => {
                 <DetailField label="Course Name" value={props.course_name} />
                 <DetailField label="Email ID" value={props.email} />
                 <DetailField label="Remark" value={props.remarks} />
-                {/* <DetailField label="Acad Year" value={props.acad_year} />
-                  <DetailField label="Result" value={props.result} /> */}
+                {/* <DetailField label="Acad Year" value={props.acad_year} />*/}
+                  <DetailField label="Program Name" value={props.program_name} /> 
               </div>
             </div>
 
@@ -221,6 +222,7 @@ const CollegePitchdata = (props) => {
           {...operationdata}
           show={showModal}
           onHide={hideShowModal1}
+          refreshTableOnDataSaving={refreshTableOnDataSaving}
         />
       )}
 

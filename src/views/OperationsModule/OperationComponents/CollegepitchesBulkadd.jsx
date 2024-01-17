@@ -41,6 +41,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
+      program_name:''
     },
     // Add more initial rows as needed
   ]);
@@ -58,6 +59,7 @@ const CollegepitchesBulkadd = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
+      program_name:''
     }, 
   ]);
   const [newRow, setNewRow] = useState({
@@ -73,6 +75,7 @@ const CollegepitchesBulkadd = (props) => {
     remarks: "",
     srm_name: "",
     area: "",
+    program_name:''
   });
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
@@ -149,7 +152,7 @@ const CollegepitchesBulkadd = (props) => {
     if(key =="srm_name"){
       updateRow(rowid, key, Number(options.value));
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -235,6 +238,25 @@ const CollegepitchesBulkadd = (props) => {
       })
     );
   };
+  useEffect(() => {
+    
+    let isEmptyValuFound=false
+
+    for (let row of rows) {
+
+      for(let key in row){
+         // end_date,certificate_received,issued_org,assigned_to
+        if(!(key =='srm_name') && !(key =='remarks') && !(key=='email')  ){
+          if(isEmptyValue(row[key])){
+            isEmptyValuFound=true
+          }
+         
+        }
+      }
+     
+    }
+    setDisableSaveButton(isEmptyValuFound)
+  }, [rows]);
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
@@ -244,17 +266,66 @@ const CollegepitchesBulkadd = (props) => {
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
+      if(!Number(value.srm_name)){
+        delete value.srm_name
+      }
+      
       return value;
     });
 
     try {
 
-      const value = await bulkCreateCollegePitch(data);
-      props.ModalShow();
-      setAlert("Data created successfully.", "success");
+      let isRequiredEmpty = false;
+      
+      // for(let ele = 0; ele<data.length;ele++){
+      //   if(data[ele].pitch_date === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+
+      //   }
+      //   else if (data[ele].student_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].course_year === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+      //   else if (data[ele].course_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+      //   }
+
+      //   else if (data[ele].college_name === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+          
+      //   }else if (data[ele].phone === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+          
+      //   }
+      //   else if (data[ele].whatsapp === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+          
+      //   }
+      //   else if (data[ele].area === "N/A"){
+      //     isRequiredEmpty = true;
+      //     break;
+          
+      //   }
+      // }
+      // if (isRequiredEmpty){
+      //   props.ModalShow();
+      //   setAlert("Please fill the required fields", "error");
+      // }else{
+      //   onHide('collegepitches',data)
+      // }
+
+      onHide('collegepitches',data)
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 
@@ -287,22 +358,20 @@ const CollegepitchesBulkadd = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
+    
     return await meilisearchClient
       .index("institutions")
       .search(filterValue, {
-        limit: 100,
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
-        let filterData = data.hits.map((institution) => {
+        return data.hits.map((institution) => {
           return {
             ...institution,
             label: institution.name,
             value: institution.name,
           };
         });
-
-        return filterData;
       });
   };
 
@@ -396,11 +465,11 @@ const CollegepitchesBulkadd = (props) => {
                 <tr>
                   <th>Date of Pitching * </th>
                   <th>Student Name *</th>
-                 
+                  
                   <th>Course Name * </th>
                   <th>Course Year *</th>
-                  <th>College Name *</th>
-                  <th>programme Name</th>
+                  <th> Institution *</th>
+                  <th>Program Name *</th>
                   <th>Phone *</th>
                   <th>Whatsapp Number *</th>
                   <th>Email ID</th>
@@ -425,6 +494,8 @@ const CollegepitchesBulkadd = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

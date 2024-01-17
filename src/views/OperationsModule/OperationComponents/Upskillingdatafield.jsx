@@ -45,7 +45,7 @@ const Styled = styled.div`
 `;
 
 const Upskillingdatafield = (props) => {
-  let { onHide } = props;
+  let { onHide,refreshTableOnDataSaving,refreshTableOnDeleting } = props;
   const [showedit, setshowedit] = useState({
     dataAndEdit:false,
     delete:false
@@ -77,12 +77,12 @@ const Upskillingdatafield = (props) => {
       delete:true
     });
   }
-  console.log(props);
 
   const deleteEntry=async()=>{
     const data=await deactivate_user_students_upskills(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
+     refreshTableOnDeleting()
      onHide()
     }else{
      setAlert("Not Able to delete", "Danger");
@@ -245,61 +245,7 @@ const Upskillingdatafield = (props) => {
                         />
                       </div>
                     </div>
-              {/* <div className="col-md-6 col-sm-12">
-                <DetailField Bold={'bold'}
-                  label="Student Name "
-                  value={
-                    props.student_id.full_name ? props.student_id.full_name : ""
-                  }
-                />
-                
-                <DetailField Bold={'bold'} label="Sub Category" value={props.sub_category} />
-                
-                
-              </div> */}
-              {/* <div className="col-md-6 col-sm-12">
-                
-                <DetailField Bold={'bold'}
-                  label="Published at"
-                  value={
-                    moment(props.published_at).format("DD MMM YYYY")
-                      ? moment(props.published_at).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="Start date"
-                  value={
-                    moment(props.start_date).format("DD MMM YYYY")
-                      ? moment(props.start_date).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="End date"
-                  value={
-                    moment(props.end_date).format("DD MMM YYYY")
-                      ? moment(props.end_date).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="Created At"
-                  value={
-                    moment(props.Created_at).format("DD MMM YYYY")
-                      ? moment(props.Created_at).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-                <DetailField Bold={'bold'}
-                  label="Updated At"
-                  value={
-                    moment(props.Updated_at).format("DD MMM YYYY")
-                      ? moment(props.Updated_at).format("DD MMM YYYY")
-                      : ""
-                  }
-                />
-              </div> */}
+            
             </Modal.Body>
             {(isSRM() || isAdmin()) && (
               <div className="row mt-4 mb-4">
@@ -322,9 +268,7 @@ const Upskillingdatafield = (props) => {
               </div>
             )}
           </Styled>
-          {/* {showedit &&
           
-        } */}
         </Modal>
       )}
 
@@ -334,6 +278,7 @@ const Upskillingdatafield = (props) => {
             {...operationdata}
             show={showedit}
             onHide={hideShowModal1}
+            refreshTableOnDataSaving={refreshTableOnDataSaving}
           />
         )
       }

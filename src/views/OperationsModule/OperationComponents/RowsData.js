@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { getAllProgram, getOpsPickList } from "./operationsActions";
 import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
+import { MeiliSearch } from 'meilisearch'
 
 const options = [
   { value: true, label: "Yes" },
@@ -17,14 +18,19 @@ const Activityoptions = [
   { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
   { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
   { value: 'Alumni Engagement', label: 'Alumni Engagement' },
-  // Workshop/Training Session/Activity (In/Off campus)
-  // Alumni Engagement
+  {value:'Placement Drive',label:'Placement Drive'}
 ];
+
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
 export const RowsData = (props) => {
   const [rows, setRows] = useState([
     {
       id: 1,
-      name: "",
       institution: "",
       batch: "",
       state: "",
@@ -42,6 +48,7 @@ export const RowsData = (props) => {
     // Add more initial rows as needed
   ]);
   const guestname = useRef(null);
+  const topic=useRef(null);
   const guestDesignation = useRef(null);
   const [programeName,setProgramName]=useState([])
   const org = useRef(null);
@@ -51,19 +58,10 @@ export const RowsData = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [classvalue, setclassvalue] = useState(props.classValue);
-  const [programOptions,setProgramOption]=useState([])
+  const [programOptions,setProgramOptions]=useState([])
   const [state,setstate]=useState(true)
+  const [activityoption,setActivityOption]=useState([])
 
-  useEffect(() => {
-    getAllProgram().then((data)=>{
-      
-      setProgramOption(data?.data?.data?.programsConnection?.values.map((value)=>({
-            key: value.id,
-            label: value.name,
-            value: value.name,
-      })))
-    });
-  }, [])
   
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -105,6 +103,21 @@ export const RowsData = (props) => {
       })
       .join(' ');
   };
+
+  const filterProgram = async (filterValue) => {
+    return await meilisearchClient.index('programs').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(program => {
+        return {
+          ...program,
+          label: program.name,
+          value: Number(program.id),
+        }
+      });
+    });
+  }
  
 
   useEffect(async() => {
@@ -113,15 +126,17 @@ export const RowsData = (props) => {
       setAssigneeOptions(data);
     });
     let data=await getOpsPickList().then(data=>{
-      return data.program_name.map((value) => ({
+      return data.activity_type.map((value) => ({
           key: value,
           label: value,
           value: value,
         }))
     }) 
 
-    setProgramName(data);
-    
+    setActivityOption(data);
+    filterProgram().then(data => {
+      setProgramOptions(data);
+    });
   }, []);
 
 
@@ -162,29 +177,19 @@ export const RowsData = (props) => {
             onChange={(e) => updateRow(row.id, "activity_type", e.target.value)}
           /> */}
            <Select
-            className="basic-single table-input donor"
-            classNamePrefix="select"
-            isSearchable={true}
-            name="area"
-            options={Activityoptions}
-            onChange={(e) => props.handleChange(e, "activity_type", row.id)}
-          />
-        </td>
-        {/* <td>
-          <Select
             className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.institution
+              props.classValue[`class${row.id - 1}`]?.activity_type
                 ? `border-red`
                 : ""
             }`}
             classNamePrefix="select"
-            isClearable={true}
             isSearchable={true}
-            name="institution"
-            options={programOptions}
-            onChange={(e) => props.handleChange(e, "institution", row.id)}
+            name="area"
+            options={activityoption}
+            onChange={(e) => props.handleChange(e, "activity_type", row.id)}
           />
-        </td> */}
+        </td>
+        
         <td>
           <Select
             className={`table-input ${
@@ -198,6 +203,11 @@ export const RowsData = (props) => {
             name="institution"
             options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "institution", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
           />
         </td>
         <td>
@@ -236,7 +246,8 @@ export const RowsData = (props) => {
             isClearable={true}
             isSearchable={true}
             name="batch"
-            options={programeName}
+            options={programOptions}
+            filterData={filterProgram}
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
@@ -294,8 +305,9 @@ export const RowsData = (props) => {
               props.classValue[`class${row.id - 1}`]?.topic ? "border-red" : ""
             }`}
             type="text"
-            
-            onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}
+            ref={topic}
+            onChange={(e) => handleInputChange(row.id, "topic",topic)}
+            // onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}
           />
         </td>
         <td>
@@ -325,22 +337,16 @@ export const RowsData = (props) => {
             onKeyPress={handleKeyPresscharandspecialchar}
             ref={guestDesignation}
             onChange={(e) => handleInputChange(row.id, "designation",guestDesignation)}
-            // onChange={(e) =>
-            //   props.updateRow(row.id, "designation", e.target.value)
-            // }
           />
         </td>
-            {/* const GuestDesignation = useRef(null);
-  const org = useRef(null); */}
+
         <td>
           <input
             className="table-input h-2"
             type="text"
             ref={org}
             onChange={(e) => handleInputChange(row.id, "organization",org)}
-            // onChange={(e) =>
-            //   props.updateRow(row.id, "organization", e.target.value)
-            // }
+
           />
         </td>
         <td>

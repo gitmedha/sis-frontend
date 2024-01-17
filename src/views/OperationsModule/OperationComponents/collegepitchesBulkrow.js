@@ -7,11 +7,17 @@ import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lo
 import { capitalizeFirstLetter, handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getPitchingPickList } from "./operationsActions";
+import { MeiliSearch } from 'meilisearch'
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 
 const CollegepitchesBulkrow = (props) => {
   const [rows, setRows] = useState([
@@ -28,6 +34,7 @@ const CollegepitchesBulkrow = (props) => {
       remarks: "",
       srm_name: "",
       area: "",
+      program_name:''
     },
     // Add more initial rows as needed
   ]);
@@ -39,9 +46,11 @@ const CollegepitchesBulkrow = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [colleges,setCollege]=useState([])
+  const [programOptions, setProgramOptions] = useState(null);
   const [courseName,setCourseName]=useState([])
   const studentName=useRef(null)
   const remark=useRef(null)
+
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -104,6 +113,9 @@ const CollegepitchesBulkrow = (props) => {
         }))
       );
     });
+    filterProgram().then(data => {
+      setProgramOptions(data);
+    });
   }, []);
 
   const updateRow = (id, field, value) => {
@@ -111,6 +123,22 @@ const CollegepitchesBulkrow = (props) => {
 
   };
 
+  const filterProgram = async (filterValue) => {
+    return await meilisearchClient.index('programs').search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ['id', 'name']
+    }).then(data => {
+      return data.hits.map(program => {
+        return {
+          ...program,
+          label: program.name,
+          value: program.name,
+        }
+      });
+    });
+  }
+
+  
   return (
     <>
       <tr key={row.id} className="mt-4">
@@ -184,8 +212,29 @@ const CollegepitchesBulkrow = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            options={colleges}
+            options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "college_name", row.id)}
+            onInputChange={inputValue=> {
+              props.filterInstitution(inputValue).then(data=>{
+                props.setInstitutionOptions(data)
+              })
+            }}
+          />
+        </td>
+
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.college_name
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            options={programOptions}
+            filterdata={filterProgram}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
 

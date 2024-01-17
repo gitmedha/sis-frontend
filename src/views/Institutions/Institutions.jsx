@@ -217,7 +217,6 @@ const Institutions = (props) => {
               mou_file: response.data.data.upload.id,
             });
           } catch (err) {
-            console.log("mou upload err", err);
             setAlert("Unable to upload MoU.", "error");
           }
         })
@@ -242,7 +241,6 @@ const Institutions = (props) => {
         }
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create institution.", "error");
         setModalShow(false);
         getInstitutions();

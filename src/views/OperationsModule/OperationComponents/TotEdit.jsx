@@ -67,7 +67,7 @@ const certificateoptions = [
 ];
 
 const TotEdit = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show ,refreshTableOnDataSaving} = props;
   const currentDate = new Date();
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
@@ -93,7 +93,6 @@ const TotEdit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
@@ -177,18 +176,6 @@ const TotEdit = (props) => {
   }, []);
 
   const onStateChange = async (value) => {
-    // await getStateDistricts(value).then((data) => {
-    //   setAreaOptions([]);
-    //   setAreaOptions(
-    //     data?.data?.data?.geographiesConnection?.groupBy?.area
-    //       .map((area) => ({
-    //         key: area.id,
-    //         label: area.key,
-    //         value: area.key,
-    //       }))
-    //       .sort((a, b) => a.label.localeCompare(b.label))
-    //   );
-    // });
   };
 
   useEffect(() => {
@@ -211,13 +198,9 @@ const TotEdit = (props) => {
     newObject.end_date = moment(values["end_date"]).format("YYYY-MM-DD");
 
     newObject.published_at = values?.published_at ? values.published_at : "";
-    // delete values["start_date"];
-    // delete values["end_date"];
     delete values["published_at"];
-    // delete values["trainer_1"];
-    // delete values["trainer_2"];
     const value = await updateUserTot(Number(props.id), newObject);
-
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
 

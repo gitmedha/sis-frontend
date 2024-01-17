@@ -30,6 +30,7 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import MassEdit from "./StudentComponents/MassEdit";
 import MassEmployerUpload from "./StudentComponents/MassEmployerUpload";
+import { isEmptyArray } from "formik";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -285,7 +286,7 @@ const Students = (props) => {
           createStudentApi(dataToSave);
         })
         .catch((err) => {
-          console.log("CV_UPLOAD_ERR", err);
+         
           setAlert("Unable to upload CV.", "error");
         });
     } else {
@@ -301,7 +302,7 @@ const Students = (props) => {
         history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
+        
         setAlert("Unable to create student.", "error");
       })
       .finally(() => {
@@ -321,8 +322,28 @@ const Students = (props) => {
     );
   };
 
-  const hideMassCreateModal = async (data, key) => {
-    if (key == "Alumni") {
+
+  const HideMassEmployeCreateModal =async =async(data)=>{
+      if(data.length ==0){
+        setAlert("Unable to create Employment Connection Data.", "error");
+      }else{
+        try {
+          const response = await api.post(
+            "/employment-connections/createBulkEmploymentConnection",
+            data
+          );
+          setAlert("Employment Connection data created successfully.", "error");
+        } catch (error) {
+          setAlert("Unable to create Employment Connection Data.", "error");
+        }
+      }
+  }
+
+  const hideMassCreateModal = async (data) => {
+    if(data.length ==0){
+      setAlert("Unable to create Alumni Data.", "error");
+    }
+    else {
       try {
         const response = await api.post(
           "/alumni-services/createBulkAlumniServices",
@@ -333,17 +354,7 @@ const Students = (props) => {
         setAlert("Unable to create Alumni Data.", "error");
       }
     }
-    if(key =="Empolymentconnection"){
-      try {
-        const response = await api.post(
-          "/employment-connections/createBulkEmploymentConnection",
-          data
-        );
-        setAlert("Alumni data created successfully.", "error");
-      } catch (error) {
-        setAlert("Unable to create Alumni Data.", "error");
-      }
-    }
+    
   };
 
   return (
@@ -432,7 +443,7 @@ const Students = (props) => {
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
           <MassEdit data={studentsData} show={modalShow1} onHide={hideMassCreateModal} />
-          <MassEmployerUpload data={studentsData} show={modalShow2} onHide={hideMassCreateModal} />
+          <MassEmployerUpload data={studentsData} show={modalShow2} onHide={HideMassEmployeCreateModal} />
         </div>
       </Styled>
     </Collapse>
