@@ -57,15 +57,28 @@ const StudentForm = (props) => {
     {key: false, value: false, label: "No"},
   ];
 
+ 
+
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
+    console.log(localStorage.getItem('user_role'));
   }, []);
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setStatusOptions(data.status.map(item => {
+        console.log(item.value === 'unknown');
+        if (
+          localStorage.getItem('user_role').toLowerCase() === 'srm' &&
+          item.value.toLowerCase() === 'unknown'
+        ) {
+          return {isDisabled:true }
+        } else {
+          return { key: item.value, value: item.value, label: item.value };
+        }
+      }));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
