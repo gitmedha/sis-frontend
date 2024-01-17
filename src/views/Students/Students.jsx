@@ -123,12 +123,14 @@ const Students = (props) => {
 
 
   useEffect(()=>{
-    getStudents()
+    if(isSearchEnable){
+      getStudents()
+    }
+    
 
   },[isSearchEnable])
 
   const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
-
     const studentFields = `
     id
     full_name
