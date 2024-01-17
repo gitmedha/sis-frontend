@@ -126,11 +126,14 @@ const EmployerForm = (props) => {
     })
     .join(" ");
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
-  values.address = values.address
+  values.address = values.address ? values.address 
     .split(" ")
     .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ");
+      if(word){
+        return word[0].toUpperCase() + word.substring(1);
+      }
+      
+    }).join(" "):""
 
 
   //  const isDuplicate =  await FindDuplicate(values.name); 
