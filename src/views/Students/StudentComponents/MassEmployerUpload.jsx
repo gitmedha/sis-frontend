@@ -12,7 +12,10 @@ import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
 } from "./StudentActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
 import moment from "moment";
 
 const Section = styled.div`
@@ -40,27 +43,33 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const MassEmployerUpload = (props) => {
-  let { onHide, show, student ,employmentConnection} = props;
+  let { onHide, show, student, employmentConnection } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
-  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
+    []
+  );
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
-  const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(
+    props.employmentConnection?.opportunity?.type
+  );
+  const [selectedStatus, setSelectedStatus] = useState(
+    props?.employmentConnection?.status
+  );
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
-  const [rejectionreason,setrejectionreason]=useState([])
-  const [otherrejection,setotherrejection]=useState(false)
-  const [showOther,setShowother]=useState(false)
-  const [isRejected,setRejected] = useState(false);
-  const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
+  const [rejectionreason, setrejectionreason] = useState([]);
+  const [otherrejection, setotherrejection] = useState(false);
+  const [showOther, setShowother] = useState(false);
+  const [isRejected, setRejected] = useState(false);
+  const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
   const [students, setStudents] = useState([]);
-  
-  const userId = localStorage.getItem('user_id');
+
+  const userId = localStorage.getItem("user_id");
   let initialValues = {
     employment_connection_student: "",
     employer_id: "",
@@ -71,7 +80,7 @@ const MassEmployerUpload = (props) => {
     source: "",
     salary_offered: "",
     reason_if_rejected: "",
-    reason_if_rejected_other:"",
+    reason_if_rejected_other: "",
     assigned_to: userId,
   };
 
@@ -80,15 +89,18 @@ const MassEmployerUpload = (props) => {
     // initialValues["employer_id"] = props.employmentConnection
     //   ? Number(props.employmentConnection.opportunity?.employer?.id)
     //   : null;
-    
-    let dataval=rejectionreason?.find(obj=>obj.value === employmentConnection.reason_if_rejected);
-    if(dataval){
-      if(dataval.value == employmentConnection.reason_if_rejected){
-        initialValues['reason_if_rejected']=employmentConnection.reason_if_rejected
+
+    let dataval = rejectionreason?.find(
+      (obj) => obj.value === employmentConnection.reason_if_rejected
+    );
+    if (dataval) {
+      if (dataval.value == employmentConnection.reason_if_rejected) {
+        initialValues["reason_if_rejected"] =
+          employmentConnection.reason_if_rejected;
       }
     }
-    
-    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
+
+    initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
     initialValues["opportunity_id"] = props.employmentConnection.opportunity
       ? props.employmentConnection.opportunity.id
       : null;
@@ -103,73 +115,42 @@ const MassEmployerUpload = (props) => {
     filterStudent().then((data) => {
       setStudentOptions(data);
     });
-    setStudentOptions(props.data.map(obj=>{
-      return {value:obj.id,label:obj.full_name}
-    }))
+    setStudentOptions(
+      props.data.map((obj) => {
+        return { value: obj.id, label: obj.full_name };
+      })
+    );
   }, [props]);
 
   const onModalClose = () => {
-    // modals
-    onHide([],"Empolymentconnection");
+    onHide([]);
   };
 
   const onSubmit = async (data) => {
     data.students = students;
-    // console.log(values);
-
-    // let newdata = values.students.map((obj) => {
-    //  let startDate= values.start_date ? moment(values.start_date).format("YYYY-MM-DD") : null;
-    //  let endDate= values.end_date ? moment(values.end_date).format("YYYY-MM-DD") : null;
-    //  let feeSubmission= values.fee_submission_date ? moment(values.fee_submission_date).format("YYYY-MM-DD") : null;
-    //  let feeAmount=values.fee_amount ? Number(values.fee_amount) : '';
-    // //  let receiptNumber=values.receipt_number ?values.receipt_number:""
-    //  let comments=values.comments ?values.comments :''
-    //   return {
-    //     employment_connection_student: obj.full_name,
-    //     employer_id: "",
-    //     status: "",
-    //     start_date: startDate,
-    //     source: "",
-    //     salary_offered: "",
-    //     reason_if_rejected: "",
-    //     reason_if_rejected_other:"",
-    //     assigned_to: values.assigned_to,
-    //   };
-    // });
-
-    if (!data || data.isTrusted) {
-      // setCreateModalShow(false);
-      return;
-    }
-
-    // need to remove some data from the payload that's not accepted by the API
-    let {
-      id,
-      employer,
-      employer_id,
-      opportunity_id,
-      employment_connection_student,
-      employment_connection_opportunity,
-      registration_date_formatted,
-      status_badge,
-      role_or_designation,
-      opportunity_icon,
-      employer_name,
-      ...dataToSave
-    } = data;
-    dataToSave["start_date"] = data.start_date
-      ? moment(data.start_date).format("YYYY-MM-DD")
-      : null;
-    dataToSave["end_date"] = data.end_date
-      ? moment(data.end_date).format("YYYY-MM-DD")
-      : null;
-    dataToSave["salary_offered"] = data.salary_offered
-      ? Number(data.salary_offered)
-      : null;
-    dataToSave["opportunity"] = data.opportunity_id;
-    dataToSave["student"] = student.id;
-    // onHide(newdata);
-    return ;
+    let newdata = data.students.map((obj) => {
+      let startDate = data.start_date
+        ? moment(data.start_date).format("YYYY-MM-DD")
+        : null;
+        let endDate = data.end_date
+        ? moment(data.end_date).format("YYYY-MM-DD")
+        : null;
+      return {
+        assigned_to: data.assigned_to,
+        end_date: endDate,
+        number_of_internship_hours: data.number_of_internship_hours,
+        opportunity: data.opportunity_id,
+        reason_if_rejected: data.reason_if_rejected,
+        reason_if_rejected_other: data.reason_if_rejected_other,
+        salary_offered: data.salary_offered,
+        source: data.source,
+        start_date: startDate,
+        status: data.status,
+        student: obj.id,
+        work_engagement: data.work_engagement,
+      };
+    });
+    onHide(newdata);
   };
   const filterStudent = async (filterValue) => {
     return await meilisearchClient
@@ -216,19 +197,28 @@ const MassEmployerUpload = (props) => {
   }, [props.employmentConnection]);
 
   useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-    setEndDateMandatory(selectedStatus === 'Internship Complete');
+    setShowEndDate(
+      selectedStatus === "Internship Complete" ||
+        selectedStatus === "Offer Accepted by Student"
+    );
+    setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus]);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
+    getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
   }, []);
 
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
-      setrejectionreason(data.reason_if_rejected?.map(item=>({ key: item.value, value: item.value, label: item.value })))
+      setrejectionreason(
+        data.reason_if_rejected?.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
       setWorkEngagementOptions(
         data.work_engagement.map((item) => ({
           ...item,
@@ -273,19 +263,30 @@ const MassEmployerUpload = (props) => {
   }, [props]);
 
   useEffect(() => {
-
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship') {
-      filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Both');
+    if (
+      selectedOpportunityType === "Job" ||
+      selectedOpportunityType === "Internship" ||
+      selectedOpportunityType === "UnPaid GIG" ||
+      selectedOpportunityType === "Paid GIG" ||
+      selectedOpportunityType === "Apprenticeship"
+    ) {
+      filteredOptions = allStatusOptions.filter(
+        (item) =>
+          item["applicable-to"].includes(selectedOpportunityType) ||
+          item["applicable-to"] === "Both"
+      );
     } else {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+      filteredOptions = allStatusOptions.filter(
+        (item) => item["applicable-to"] === "Both"
+      );
     }
     setStatusOptions(filteredOptions);
   }, [selectedOpportunityType, allStatusOptions]);
 
   const updateEmployerOpportunityOptions = (employer) => {
     setEmployerOpportunityOptions([]);
-    
+
     getEmployerOpportunities(Number(employer.value)).then((data) => {
       setEmployerOpportunityOptions(
         data?.data?.data?.opportunities.map((opportunity) => ({
@@ -337,39 +338,30 @@ const MassEmployerUpload = (props) => {
         return filterData;
       });
   };
-  
 
-
-
-  
   useEffect(() => {
-    if(initialValues.reason_if_rejected in rejectionreason){
-      setShowother(true)
+    if (initialValues.reason_if_rejected in rejectionreason) {
+      setShowother(true);
     }
-  }, [])
-  
-  const handleStatusChange = async(value)=>{
-  
+  }, []);
+
+  const handleStatusChange = async (value) => {
     setSelectedStatus(value);
 
-    if(value === "Rejected by Employer"){
-      setRejected(true)
+    if (value === "Rejected by Employer") {
+      setRejected(true);
+    } else if (value === "Student Dropped Out") {
+      setRejected(true);
+    } else if (value === "Offer Rejected by Student") {
+      setRejected(true);
+    } else {
+      setRejected(false);
     }
-    else if (value === "Student Dropped Out"){
-      setRejected(true)
-    }
-    else if (value === "Offer Rejected by Student"){
-      setRejected(true)
-    }
-    else {
-      setRejected(false)
-    }
+  };
 
-  }
-
-  useEffect(()=>{
-    setotherrejection(false)
-  },[employmentConnection])
+  useEffect(() => {
+    setotherrejection(false);
+  }, [employmentConnection]);
 
   return (
     <Modal
@@ -405,7 +397,7 @@ const MassEmployerUpload = (props) => {
               <Section>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
-                  <label className="leading-24">Student</label>
+                    <label className="leading-24">Student</label>
                     <Select
                       //   defaultValue={[colourOptions[2], colourOptions[3]]}
                       isMulti
@@ -444,7 +436,7 @@ const MassEmployerUpload = (props) => {
                       }
                       className="form-control"
                       placeholder="Employer"
-                      onChange={employer => {
+                      onChange={(employer) => {
                         setSelectedOpportunityType(null);
                         updateEmployerOpportunityOptions(employer);
                       }}
@@ -485,7 +477,7 @@ const MassEmployerUpload = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange={(e) =>handleStatusChange(e.value)}
+                      onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -536,40 +528,51 @@ const MassEmployerUpload = (props) => {
                       placeholder="Source"
                     />
                   </div>
-               
-                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="reason_if_rejected"
-                      label="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
-                      options={rejectionreason}
-                      className="form-control"
-                      onChange={(e)=>{
-                        setFieldValue("reason_if_rejected",e.value)
-                        if(e.value === "Others"){
-                          setIfSelectedOthers(true)
+
+                  {isRejected ||
+                  (initialValues.reason_if_rejected &&
+                    initialValues.reason_if_rejected.length) ? (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="reason_if_rejected"
+                        label="Reason if Rejected"
+                        required={
+                          selectedStatus === "Offer Rejected by Student"
                         }
-                        else {
-                          setIfSelectedOthers(false)
-                        }
-                      }}
-                      placeholder="Reason if Rejected"
-                    />
-                  </div>:<div></div>}
-                  {
-                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="reason_if_rejected_other"
-                      control="input"
-                      label="If Other, Specify"
-                      required
-                      className="form-control"
-                      placeholder="If Other, Specify"
-                    />
-                  </div>: <div></div>
-                  }
+                        options={rejectionreason}
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("reason_if_rejected", e.value);
+                          if (e.value === "Others") {
+                            setIfSelectedOthers(true);
+                          } else {
+                            setIfSelectedOthers(false);
+                          }
+                        }}
+                        placeholder="Reason if Rejected"
+                      />
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                  {ifSelectedOthers ||
+                  (initialValues.reason_if_rejected_other &&
+                    initialValues.reason_if_rejected_other.length) ? (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="reason_if_rejected_other"
+                        control="input"
+                        label="If Other, Specify"
+                        required
+                        className="form-control"
+                        placeholder="If Other, Specify"
+                      />
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
@@ -582,8 +585,8 @@ const MassEmployerUpload = (props) => {
                       required
                     />
                   </div>
-                  
-                  {selectedOpportunityType === 'Internship' &&
+
+                  {selectedOpportunityType === "Internship" && (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}
@@ -596,7 +599,7 @@ const MassEmployerUpload = (props) => {
                         placeholder="Number of Internship hours"
                       />
                     </div>
-                  }
+                  )}
                 </div>
               </Section>
               <div className="row mt-3 py-3">
@@ -604,7 +607,7 @@ const MassEmployerUpload = (props) => {
                   <button
                     className="btn btn-primary btn-regular mx-0"
                     type="submit"
-                    onClick={()=>onSubmit(values)}
+                    onClick={() => onSubmit(values)}
                   >
                     SAVE
                   </button>
@@ -626,4 +629,3 @@ const MassEmployerUpload = (props) => {
 };
 
 export default MassEmployerUpload;
-
