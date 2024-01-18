@@ -557,7 +557,9 @@ const OperationCreateform = (props) => {
                       classValue={classValue}
                       style={{ marginTop: 5 }}
                       filterInstitution={filterInstitution}
+                      filterBatch={filterBatch}
                       setInstitutionOptions={setInstitutionOptions}
+                      setBatchOptions={setBatchOptions}
                     />
                   </tr>
                 ))}
