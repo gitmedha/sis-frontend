@@ -291,7 +291,7 @@ const OperationCreateform = (props) => {
         );
       });
     }
-    updateRow(rowid, key, options.value);
+    updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -368,14 +368,29 @@ const OperationCreateform = (props) => {
       return value;
     });
     try {
-      // if (isRequiredEmpty) {
-      //   props.ModalShow();
-      //   setAlert("Please fill the required fields", "error");
-      // } else {
-      //   onHide("feilddata", data);
-      // }
+  
 
       onHide('feilddata',data)
+      setRows([
+        {
+          id: 1,
+          name: "",
+          activity_type: "",
+          institution: "",
+          batch: "",
+          state: "",
+          start_date: "",
+          end_date: "",
+          topic: "",
+          donor: "",
+          guest: "",
+          designation: "",
+          organization: "",
+          assigned_to: "",
+          area: "",
+          students_attended: "",
+        }
+      ])
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
