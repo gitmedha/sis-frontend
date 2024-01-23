@@ -349,7 +349,7 @@ const Operations = ({
       limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
-      isActive: false,
+      isActive: true,
     };
     if (activeTab.key == "my_data") {
       await resetSearch();
@@ -359,9 +359,9 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          setOpts(data.data.data.usersOpsActivitiesConnection.values);
+          setOpts(data.data.data.activeOperations.values);
           setoptsAggregate(
-            data.data.data.usersOpsActivitiesConnection.aggregate
+            data.data.data.allOperations.aggregate
           );
         })
         .catch((error) => {
@@ -380,8 +380,9 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          setOpts(data.data.data.usersTotsConnection.values);
-          setoptsAggregate(data.data.data.usersTotsConnection.aggregate);
+          setOpts(data.data.data.activeUserstots.values);
+          console.log(data.data.data.allUserstots.aggregate);
+          setoptsAggregate(data.data.data.allUserstots.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -401,9 +402,9 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          setOpts(data.data.data.studentsUpskillingsConnection.values);
+          setOpts(data.data.data.activeStudentsUpskillings.values);
           setoptsAggregate(
-            data.data.data.studentsUpskillingsConnection.aggregate
+            data.data.data.allStudentsUpskillings.aggregate
           );
         })
         .catch((error) => {
@@ -443,8 +444,8 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          setOpts(data.data.data.alumniQueriesConnection.values);
-          setoptsAggregate(data.data.data.alumniQueriesConnection.aggregate);
+          setOpts(data.data.data.activeAlumniQueries.values);
+          setoptsAggregate(data.data.data.allAlumniQueries.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -463,8 +464,8 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          setOpts(data.data.data.collegePitchesConnection.values);
-          setoptsAggregate(data.data.data.collegePitchesConnection.aggregate);
+          setOpts(data.data.data.activeCollegePitches.values);
+          setoptsAggregate(data.data.data.allCollegePitches.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);

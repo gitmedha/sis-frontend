@@ -350,50 +350,29 @@ const UserTot = (props) => {
     });
 
     try {
-      // let isRequiredEmpty = false;
-      
-      // for(let ele = 0; ele<data.length;ele++){
-      //   if(data[ele].state === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-
-      //   }
-      //   else if (data[ele].city === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-      //   }
-      //   else if (data[ele].start_date === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-      //   }
-      //   else if (data[ele].end_date === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-      //   }
-
-      //   else if (data[ele].trainer_1 === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-          
-      //   }else if (data[ele].certificate_given === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-          
-      //   }
-      //   else if (data[ele].project_type === "N/A"){
-      //     isRequiredEmpty = true;
-      //     break;
-          
-      //   }
-        
-      // }
-      // if (isRequiredEmpty){
-      //   props.ModalShow();
-      //   setAlert("Please fill the required fields", "error");
-      // }else{
-      //   onHide('tot',data)
-      // }
       onHide('tot',data)
+      setRows([
+        {
+          id: 1,
+          user_name: "",
+          trainer_1: "",
+          project_name: "",
+          certificate_given: "",
+          module_name: "",
+          project_type: "",
+          trainer_2: "",
+          partner_dept: "",
+          college: "",
+          city: "",
+          state: "",
+          age: "",
+          gender: "",
+          contact: "",
+          designation: "",
+          start_date:"",
+          end_date:""
+        },
+      ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

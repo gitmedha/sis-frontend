@@ -216,6 +216,11 @@ const StudentupskilingBulk = (props) => {
             options={props.batchbdata}
             onChange={(e) => {
               props.handleChange(e, "batch", row.id)}}
+            onInputChange={(inputValue) => {
+              props.filterBatch(inputValue).then((data) => {
+                props.setBatchOptions(data);
+              });
+            }}
           />
         </td>
         <td>

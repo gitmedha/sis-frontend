@@ -298,6 +298,23 @@ const StudentUpkillingBulkcreate = (props) => {
 
     try {      
       onHide('upskill',data)
+      setRows([
+        {
+          id: 1,
+          assigned_to: "",
+          student_id: "",
+          institution: "",
+          batch: "",
+          start_date: "",
+          end_date: "",
+          course_name: "",
+          certificate_received: "",
+          category: "",
+          sub_category: "",
+          issued_org: "",
+          program_name:""
+        },
+      ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);
@@ -475,6 +492,8 @@ const StudentUpkillingBulkcreate = (props) => {
                     classValue={classValue}
                     filterInstitution={filterInstitution}
                     setInstitutionOptions={setInstitutionOptions}
+                    setBatchOptions={setBatchOptions}
+                    filterBatch={filterBatch}
                   />
                 ))}
               </tbody>
