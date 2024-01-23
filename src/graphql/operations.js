@@ -210,19 +210,22 @@ const collegePitchesFields = `
 
 
 
+
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
-        usersOpsActivitiesConnection(
-            sort: $sort,
-            start: $start,
-            limit:$limit,
-            where:{isactive:true}
-        ){
-            values {
-                ${operationFields}
-            }
+        allOperations: usersOpsActivitiesConnection {
             aggregate {
                 count
+            }
+        }
+        activeOperations: usersOpsActivitiesConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${operationFields}
             }
         }
     } 
@@ -232,42 +235,47 @@ export const GET_OPERATIONS = `
 
 
 
-
 export const GET_USERSTOTS = `
-    query GET_USERSTOTS ($limit:Int,$start:Int, $sort:String){
-        usersTotsConnection(
-            sort:$sort,
-            start:$start,
-            limit:$limit,
-            where:{isactive:true}
-        ){
+    query GET_USERSTOTS($limit:Int, $start:Int, $sort:String) {
+        allUserstots: usersTotsConnection {
+            aggregate {
+                count
+            }
+        }
+        activeUserstots: usersTotsConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
             values {
                 ${usersTotsFields}
             }
+        }
+    }
+`;
+
+
+export const GET_STUDENTS_UPSKILLINGS = `
+    query GET_STUDENTS_UPSKILLINGS($limit: Int, $start: Int, $sort: String) {
+        allStudentsUpskillings: studentsUpskillingsConnection {
             aggregate {
                 count
+            }
+        }
+        activeStudentsUpskillings: studentsUpskillingsConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${studentUpskillingFields}
             }
         }
     }
 `;
 
-export const GET_STUDENTS_UPSKILLINGS = `
-    query GET_STUDENTS_UPSKILLINGS($limit:Int, $start:Int,$sort: String){
-        studentsUpskillingsConnection(
-            sort:$sort,
-            start:$start,
-            limit:$limit,
-            where:{isactive:true}
-        ){
-            values {
-                ${studentUpskillingFields}
-            }
-            aggregate {
-                count
-            }
-        }
-    }
-`;
 
 export const GET_DTE_SAMARTH_SDITS = `
     query GET_DTE_SAMARTH_SDITS($limit:Int,$start:Int,$sort:String) {
@@ -289,39 +297,44 @@ export const GET_DTE_SAMARTH_SDITS = `
 `;
 
 export const GET_ALUMNI_QUERIES = `
-    query GET_ALUMNI_QUERIES($limit:Int,$start:Int,$sort:String) {
-        alumniQueriesConnection(
-            sort:$sort,
-            start:$start,
-            limit:$limit,
-            where:{isactive:true}
-        ){
-            values {
-                ${alumniQueriesFields}
-            }
+    query GET_ALUMNI_QUERIES($limit: Int, $start: Int, $sort: String) {
+        allAlumniQueries: alumniQueriesConnection {
             aggregate {
                 count
+            }
+        }
+        activeAlumniQueries: alumniQueriesConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${alumniQueriesFields}
             }
         }
     }
 `;
 
+
 export const GET_COLLEGE_PITCHES = `
-    query GET_COLLEGE_PITCHES($limit:Int,$start:Int,$sort:String) {
-        collegePitchesConnection(
-        sort:$sort,
-        start:$start,
-        limit:$limit,
-        where:{isactive:true}
-    ){
-        values {
-            ${collegePitchesFields}
+    query GET_COLLEGE_PITCHES($limit: Int, $start: Int, $sort: String) {
+        allCollegePitches: collegePitchesConnection {
+            aggregate {
+                count
+            }
         }
-        aggregate {
-            count
+        activeCollegePitches: collegePitchesConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${collegePitchesFields}
+            }
         }
     }
-}
 `;
 
 export const CREATE_OPERATION = `
