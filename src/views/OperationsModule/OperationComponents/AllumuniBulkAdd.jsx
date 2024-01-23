@@ -282,6 +282,24 @@ const AllumuniBulkAdd = (props) => {
 
     try {     
       onHide('alum',data)
+      setRows([
+        {
+          id: 1,
+          query_start: "",
+          student_name: "",
+          student_id:"",
+          father_name: "",
+          email: "",
+          phone: "",
+          location: "",
+          query_type: "",
+          query_desc: "",
+          conclusion: "",
+          status: "",
+          query_end: "",
+          // published_at: "",
+        },
+      ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
       console.log("error", error);

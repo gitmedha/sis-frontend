@@ -369,14 +369,28 @@ const OperationCreateform = (props) => {
       return value;
     });
     try {
-      // if (isRequiredEmpty) {
-      //   props.ModalShow();
-      //   setAlert("Please fill the required fields", "error");
-      // } else {
-      //   onHide("feilddata", data);
-      // }
+     
 
       onHide('feilddata',data)
+      setRows([
+        {
+          id: 1,
+          name: "",
+          activity_type: "",
+          institution: "",
+          batch: "",
+          state: "",
+          start_date: "",
+          end_date: "",
+          topic: "",
+          donor: "",
+          guest: "",
+          designation: "",
+          organization: "",
+          assigned_to: "",
+          area: "",
+          students_attended: "",
+        }]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
@@ -558,7 +572,9 @@ const OperationCreateform = (props) => {
                       classValue={classValue}
                       style={{ marginTop: 5 }}
                       filterInstitution={filterInstitution}
+                      filterBatch={filterBatch}
                       setInstitutionOptions={setInstitutionOptions}
+                      setBatchOptions={setBatchOptions}
                     />
                   </tr>
                 ))}
