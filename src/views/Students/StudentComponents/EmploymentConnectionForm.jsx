@@ -172,9 +172,12 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
 
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship') {
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' ) {
       filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Both');
-    } else {
+    }if(selectedOpportunityType === 'Apprenticeship'){
+      filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Apprenticeship');
+    } 
+    else {
       filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
     }
     // setStatusOptions(filteredOptions);
@@ -309,7 +312,7 @@ const EnrollmentConnectionForm = (props) => {
           initialValues={initialValues}
           validationSchema={EmploymentConnectionValidations}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue}) => (
             <Form>
               <Section>
                 <div className="row">
@@ -511,7 +514,6 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     className="btn btn-primary btn-regular mx-0"
                     type="submit"
-                    onClick={()=>onSubmit(values)}
                   >
                     SAVE
                   </button>
