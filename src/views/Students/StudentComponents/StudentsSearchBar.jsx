@@ -59,6 +59,10 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     const [isDisabled,setDisbaled] = useState(true);
 
 
+    const handleStundentsOptions = async (value)=>{
+      setSelectedSearchField(value);
+      setSearchValueOptions([])
+    }
 
     const handleSubmit = async(values) =>{
         try {
@@ -106,10 +110,14 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         return matchedObjects;
       }
 
+
+
 const handleLoaderForSearch = async ()=>{
   setProgress(0)
 }
     
+
+
 useEffect(()=>{
     const setSearchValueDropDown = async () =>{
       try {
@@ -165,7 +173,7 @@ refreshOnTabChange()
                         control="lookup"
                         options={studentsOptions}
                         className="form-control"
-                        onChange = {(e)=>setSelectedSearchField(e.value)}
+                        onChange = {(e)=>handleStundentsOptions(e.value)}
                         value={studentDropDownValue}
                     />
                 </div>
