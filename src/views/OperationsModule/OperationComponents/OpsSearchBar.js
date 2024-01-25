@@ -5,6 +5,7 @@ import { Formik, FieldArray, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import {searchOperationTab,resetSearch} from '../../../store/reducers/Operations/actions';
 import {getFieldValues} from './operationsActions';
+import * as Yup from "yup";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -25,9 +26,15 @@ const Section = styled.div`
 `;
 const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}) {
 
+  let today = new Date();
+
     const initialValues = {
         search_by_field:'',
-        search_by_value:''
+        search_by_value:'',
+        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() )),
     }
 
     const [selectedSearchField, setSelectedSearchField] = useState(null);
@@ -38,8 +45,62 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
     const [programOptions,setProgramOptions] = useState([]);
     const [disabled,setDisbaled] = useState(true);
 
+    const formatdate =(dateval)=>{
+      const date = new Date(dateval);
+
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
+      const dd = String(date.getDate()).padStart(2, "0");
+
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      return formattedDate;
+
+    }
+
     const handleSubmit = async(values) =>{
       let baseUrl = 'users-ops-activities'
+
+      if(values.search_by_field === "start_date" || values.search_by_field === "end_date"){
+        
+        if(values.search_by_field === "start_date"){
+          const date1 = formatdate(values.search_by_value_date);
+          const date2 = formatdate(values.search_by_value_date_to);
+          let val ={
+            start_date:date1,
+            end_date:date2
+          }
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+          //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
+        }
+        if(values.search_by_field === "end_date"){
+          const date1 = formatdate(values.search_by_value_date_end_from);
+          const date2 = formatdate(values.search_by_value_date_end_to);
+          let val ={
+            start_date:date1,
+            end_date:date2
+          }
+          await searchOperationTab(baseUrl,values.search_by_field,val)
+
+          //stores the last searched result in the local storage as cache 
+          //we will use it to refresh the search results
+                
+            await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
+              baseUrl:baseUrl,
+              searchedProp:values.search_by_field,
+              searchValue:val
+            }));
+        }
+      }
+      else {
+        
         await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
 
         //stores the last searched result in the local storage as cache 
@@ -50,10 +111,11 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
           searchedProp:values.search_by_field,
           searchValue:values.search_by_value
         }));
+      }
 
     }
 
-    const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity Type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Medha Area'},{key:4, value:'program_name',label:'Program Name'}]
+    const options = [{key:0,value:'assigned_to.username',label:'Assigned To'}, {key:1,value:'activity_type',label:'Activity Type'}, {key:2, value:'batch.name', label:'Batch'},{key:3, value:'area', label:'Medha Area'},{key:4, value:'program_name',label:'Program Name'}, {key:5,value:'start_date',label:'Start Date'}, {key:6,value:'end_date',label:'End Date'}].sort((a,b) => a.label - b.label)
     const formik = useFormik({ // Create a Formik reference using useFormik
       initialValues,
       onSubmit: handleSubmit,
@@ -66,7 +128,7 @@ const OpsSearchDropdown = function OpsSearchBar({searchOperationTab,resetSearch}
     {key:1,label:'Industry Talk/Expert Talk',value:'Industry Talk/Expert Talk'},
     {key:2,label:'Alumni Engagement',value:'Alumni Engagement'},
     {key:3,label:'Industry Visit/Exposure Visit',value:'Industry Visit/Exposure Visit'},
-    {key:4, label:'Placement Drive', value:'Placement Drive'}
+    {key:4, label:'Placement Drive', value:'Placement Drive'},
   ];
 
     const clear = async(formik)=>{
@@ -211,6 +273,67 @@ const setDropdownValues = async (fieldName)=>{
                                 className="form-control"
                                 disabled={disabled?true:false}
                             />
+                          }
+                          { selectedSearchField === "start_date" && 
+                          <div className='d-flex justify-content-between align-items-center'>
+                          <div className='mr-3'>
+                          <Input
+                              name="search_by_value_date"
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control "
+                              autoComplete="off"
+                              disabled={disabled?true:false}
+
+                            />
+                          </div>
+                          <div className='ml-2'>
+                          <Input
+                              name="search_by_value_date_to"
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled?true:false}
+
+                            />
+                          </div>
+                           
+                            
+                          </div>    
+                          }
+
+                          { selectedSearchField === "end_date" && 
+                            <div className='d-flex justify-content-between align-items-center'>
+                            <div className='mr-3'>
+                            <Input
+                                name="search_by_value_date_end_from"
+                                label="From"
+                                placeholder="Start Date"
+                                control="datepicker"
+                                className="form-control "
+                                autoComplete="off"
+                                disabled={disabled?true:false}
+
+                              />
+                            </div>
+                            <div className='ml-2'>
+                            <Input
+                                name="search_by_value_date_end_to"
+                                label="To"
+                                placeholder="End Date"
+                                control="datepicker"
+                                className="form-control"
+                                autoComplete="off"
+                                disabled={disabled?true:false}
+
+                              />
+                            </div>
+                             
+                              
+                            </div>
                           }
                         </div>
                         <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
