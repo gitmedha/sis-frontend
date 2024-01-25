@@ -34,7 +34,8 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
     {key:5, value:'start_date', label:'Start Date'},
     {key:0,value:'student_id.full_name',label:'Student Name'}, 
     {key:4, value:'program_name', label:'Program Name'},
-  ]
+    {key:7, value:'category', label:'Category'}
+  ].sort((a,b) => a.label - b.label)
 
   const [studentNameOptions, setStudentNameOptions] = useState([]);
   const [assignedToOptions, setAssignedToOptions] = useState([]);
@@ -42,6 +43,7 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
   const [courseNameOptions, setCourseNameOptions] = useState([]);
 
   const [programNameOptions,setProgramOptions] = useState([]);
+  const [categoryOptions,setCategoryOptions] = useState([])
 
    const [selectedSearchField, setSelectedSearchField] = useState(null);
    const [disabled,setDisbaled] = useState(true);
@@ -182,6 +184,9 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
         setDropdownValues('program_name')
   
       }
+    else {
+      setDropdownValues('category');
+    }
 
     }
 
@@ -205,8 +210,12 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
       else if (fieldName === "program_name"){
         setProgramOptions(data);
        }
+       else {
+        setCategoryOptions(data);
+       }
       
       } catch (error) {
+        console.error(error);
       }
     }
 
@@ -241,7 +250,7 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                             />
                             }
 
-{ selectedSearchField === "start_date" && 
+                        { selectedSearchField === "start_date" && 
                           <div className='d-flex justify-content-between align-items-center'>
                           <div className='mr-3'>
                           <Input
@@ -269,9 +278,7 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                           </div>
                            
                             
-                          </div>
-                            
-                            
+                          </div>    
                           }
 
                           { selectedSearchField === "end_date" && 
@@ -370,6 +377,19 @@ const UpSkillSearchBar = function UpSkillSearch({searchOperationTab,resetSearch}
                                 className="form-control"
                                 disabled={disabled?true:false}
 
+                            />
+                          }
+
+                          {
+                            selectedSearchField === "category" &&  
+                            <Input 
+                                icon="down"
+                                name="search_by_value"
+                                label="Search Value"
+                                control="lookup"
+                                options={categoryOptions}
+                                className="form-control"
+                                disabled={disabled?true:false}
                             />
                           }
                         </div>
