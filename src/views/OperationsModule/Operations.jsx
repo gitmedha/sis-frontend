@@ -146,8 +146,8 @@ const Operations = ({
         accessor: "end_date",
       },
       {
-        Header: "Topic",
-        accessor: "topic",
+        Header: "Program Name",
+        accessor: "program_name",
       },
 
       // {
@@ -215,12 +215,20 @@ const Operations = ({
       },
       {
         Header: "Batch",
-        accessor: "batch.name",
+        accessor: "program_name",
       },
 
       {
         Header: "Category",
         accessor: "category",
+      },
+      {
+        Header: "Start Date",
+        accessor: "start_date",
+      },
+      {
+        Header: "End Date",
+        accessor: "end_date",
       },
     ],
     []
@@ -327,6 +335,10 @@ const Operations = ({
         Header: "Pitch Date",
         accessor: "pitch_date",
       },
+      {
+        Header:'Program Name',
+        accessor:'program_name'
+      }
     ],
     []
   );
