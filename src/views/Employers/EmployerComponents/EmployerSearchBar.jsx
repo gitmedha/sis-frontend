@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
-import { getFieldValues } from './StudentActions';
+import { getFieldValues } from './employerAction';
 
 
 const Section = styled.div`
@@ -34,28 +34,17 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     }
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
-    const [studentDropDownValue,setStudentDropDownValue] = useState('')
     const [progress, setProgress] = useState(0);
 
-    const [studentsOptions] = useState([
-        {key:0, label:'Name',value:'full_name'}, 
-        {key:1,label:'Student ID',value:'student_id'},
+    const [employersOptions] = useState([
+        {key:0, label:'Assigned To',value:'assigned_to'}, 
+        {key:1,label:'Status',value:'status'},
         {key:2, label:'Area', value:'medha_area'},
-        {key:3, label:'Phone',value:'phone'},
-        {key:4, label:'Email', value:'email'},
-        {key:5, label:'Status',value:'status'},
-        {key:6, label:'Registration Date', value:'registration_date_latest'},
-        {key:7, label:'Assigned To', value:'assigned_to.username'}
+        {key:3, label:'Industry',value:'industry'}
     ]);
 
-    const initialState = [  {key:0, label:'Name',value:'full_name'}, 
-    {key:1,label:'Student ID',value:'student_id'},
-    {key:2, label:'Area', value:'medha_area'},
-    {key:3, label:'Phone',value:'phone'},
-    {key:4, label:'Email', value:'email'},
-    {key:5, label:'Status',value:'status'},
-    {key:6, label:'Registration Date', value:'registration_date_latest'},
-    {key:7, label:'Assigned To', value:'assigned_to.username'}]
+    const [defaultSearchArray,setDefaultSearchArray] = useState([])
+
     const [isDisabled,setDisbaled] = useState(true);
 
 
@@ -91,9 +80,9 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     const clear = async(formik)=>{
         formik.setValues(initialValues);
         setSelectedSearchField(null)
-        setIsSearchEnable(false);
         setDisbaled(true);
         setSearchValueOptions([])
+        setIsSearchEnable(false);
       }
 
       //setting the value of the value drop down
@@ -109,38 +98,48 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
 const handleLoaderForSearch = async ()=>{
   setProgress(0)
 }
+
+const handleBatchOptions = async (value)=>{
+  await setSearchValueOptions([])
+  setIsSearchEnable(false);
+  setSelectedSearchField(value);
+}
+
     
 useEffect(()=>{
-    const setSearchValueDropDown = async () =>{
-      try {
-        const interval = setInterval(() => {
-          // Simulate progress update
-          setProgress((prevProgress) =>
-            prevProgress >= 90 ? 0 : prevProgress + 5
-          );
-          
-        }, 1000);
-
-        const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
-        clearInterval(interval)
-        handleLoaderForSearch();
-  
-        await setSearchValueOptions(data);
+    
+  const setSearchValueDropDown = async () =>{
+    try {
+      const interval = setInterval(() => {
+        // Simulate progress update
+        setProgress((prevProgress) =>
+          prevProgress >= 90 ? 0 : prevProgress + 5
+        );
         
+      }, 1000);
 
-      } catch (error) {
-        console.error("error",error)
-      }
+      const {data} = await getFieldValues(selectedSearchField,'employers',tab,info)
+      clearInterval(interval)
+      handleLoaderForSearch();
+     
+      await setSearchValueOptions(data);
+      const shortedArray = await data.slice(0, 10)
 
+      await setDefaultSearchArray(shortedArray)
+      
+
+    } catch (error) {
+      console.error("error",error)
     }
 
-    if(selectedSearchField){
-        setDisbaled(false);
-        setSearchValueDropDown();
-    }
+  }
+
+  if(selectedSearchField){
+      setDisbaled(false);
+      setSearchValueDropDown();
+  }
 
 }, [selectedSearchField])
-
 useEffect(()=>{
   async function refreshOnTabChange(){
   await clear(formik);
@@ -163,10 +162,9 @@ refreshOnTabChange()
                         name="search_by_field"
                         label="Search Field"
                         control="lookup"
-                        options={studentsOptions}
+                        options={employersOptions}
                         className="form-control"
-                        onChange = {(e)=>setSelectedSearchField(e.value)}
-                        value={studentDropDownValue}
+                        onChange = {(e)=>handleBatchOptions(e.value)}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
@@ -177,8 +175,9 @@ refreshOnTabChange()
                         label="Search Value"
                         className="form-control"
                         control="lookupAsync"
-                        defaultOptions={searchValueOptions.slice(0, 100)}
+                        defaultOptions ={defaultSearchArray}
                         filterData={filterSearchValue}
+                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={
