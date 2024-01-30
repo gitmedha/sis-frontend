@@ -142,3 +142,16 @@ export const getAllInstitutions = async () => {
   ;
 
 
+  export const getFieldValues = async (searchField,baseURL,tab,info)=>{
+    try{
+    
+        const data = await api.get(`/${baseURL}/distinct/${searchField}/${tab}/${new URLSearchParams(info).toString()
+        }`)
+        return data;
+    }
+    catch(error){
+        return console.error("error", error);
+    }
+  
+  }
+

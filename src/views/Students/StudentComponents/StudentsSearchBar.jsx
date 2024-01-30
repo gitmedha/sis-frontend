@@ -38,14 +38,10 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     const [progress, setProgress] = useState(0);
 
     const [studentsOptions] = useState([
-        {key:0, label:'Name',value:'full_name'}, 
-        {key:1,label:'Student ID',value:'student_id'},
-        {key:2, label:'Area', value:'medha_area'},
-        {key:3, label:'Phone',value:'phone'},
-        {key:4, label:'Email', value:'email'},
-        {key:5, label:'Status',value:'status'},
-        {key:6, label:'Registration Date', value:'registration_date_latest'},
-        {key:7, label:'Assigned To', value:'assigned_to.username'}
+        {key:0, label:'Area', value:'medha_area'},
+        {key:1, label:'Status',value:'status'},
+        {key:2, label:'Registration Date', value:'registration_date_latest'},
+        {key:3, label:'Assigned To', value:'assigned_to.username'}
     ]);
 
     const initialState = [  {key:0, label:'Name',value:'full_name'}, 
@@ -69,11 +65,9 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
             console.error("error",error)
         }
        
-
-        //   await searchOperationTab(baseUrl,values.search_by_field,)
   
-        //   //stores the last searched result in the local storage as cache 
-        //   //we will use it to refresh the search results
+        ///stores the last searched result in the local storage as cache 
+        //we will use it to refresh the search results
           
         //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
         //     baseUrl:baseUrl,
