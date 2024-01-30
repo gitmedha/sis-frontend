@@ -118,7 +118,6 @@ const MassEdit = (props) => {
 
   useEffect(() => {
     filterStudent().then((data) => {
-      console.log("student data", data);
       setStudentOptions(data);
     });
     setStudentOptions(props.data.map(obj=>{

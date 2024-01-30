@@ -15,6 +15,7 @@ import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import TabPicker from "../../components/content/TabPicker";
+import BatchSearchBar from "./batchComponents/BatchSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -22,6 +23,7 @@ const tabPickerOptions = [
   { title: "My State", key: "my_state" },
   { title: "All Medha", key: "all_medha" },
 ];
+
 
 const Batches = (props) => {
   const [batches, setBatches] = useState([]);
@@ -38,34 +40,180 @@ const Batches = (props) => {
   const userId  = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [isSearchEnable,setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
 
   useEffect(() => {
     getBatches(activeTab.key);
   }, [activeTab]);
 
-  const getBatches = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
-    NP.start();
-    setLoading(true);
-    let variables= {
-      limit: limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
+
+  const getBatchesBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+    const batchFields = `
+    id
+    name
+    start_date
+    end_date
+    status
+    medha_area
+    mode_of_payment
+    state
+    enrollment_type
+    created_at
+    updated_at
+    per_student_fees
+    name_in_current_sis
+    require_assignment_file_for_certification
+    seats_available
+    certificates_generated_at
+    certificates_emailed_at
+    grant {
+      id
+      name
+      donor
     }
+    assigned_to {
+      id
+      email
+      username
+    }
+    updated_by_frontend{
+      username
+      email
+    }
+    institution {
+      id
+      name
+    }
+    program {
+      id
+      name
+      status
+      start_date
+      end_date
+    }
+    created_by_frontend{
+      id
+      username
+      email
+    }
+    assigned_to{
+      username
+    }
+    logo {
+      url
+    }
+    link_sent_at
+    number_of_sessions_planned
+    program {
+      name
+    }`
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "state"){
+    Object.assign(variables, { state: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "program"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "institution"){
+    Object.assign(variables, { institution_name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "start_date"){
+    Object.assign(variables, { 
+      from_start_date: selectedSearchedValue.start_date.trim(),
+      to_start_date:selectedSearchedValue.end_date.trim()
+    });
+
+  }
+  else if(selectedSearchField === "end_date"){
+    Object.assign(variables, { 
+      from_end_date: selectedSearchedValue.start_date.trim(),
+      to_end_date:selectedSearchedValue.end_date.trim()
+    });
+
+  }
 
 
-    if(selectedTab == "my_data"){
-      Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
-      Object.assign(variables, {state: state})
-    } else if(selectedTab == "my_area"){
-      Object.assign(variables, {area: area})
+const batchQuery = `query GET_BATCHES(
+  $id: Int,
+  $limit: Int,
+  $start: Int,
+  $sort: String,
+  $status: String,
+  $state: String,
+  $area: String,
+  $username: String,
+  $name: String,
+  $institution_name: String,
+  $from_start_date: Date,
+  $to_start_date: Date,
+  $from_end_date: Date,
+  $to_end_date: Date
+) {
+  batchesConnection(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      assigned_to: {
+        id: $id
+        username: $username
+      }
+      program: {
+        name: $name
+      }
+      institution: {
+        name: $institution_name
+      }
+      medha_area: $area
+      state: $state
+      status: $status
+      start_date_gte: $from_start_date
+      start_date_lte: $to_start_date
+      end_date_gte: $from_end_date
+      end_date_lte: $to_end_date
     }
-    await api.post("/graphql", {
-      query: GET_BATCHES,
+  ) {
+    values {
+      ${batchFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`
+   
+  await api
+    .post("/graphql", {
+      query: batchQuery,
       variables,
     })
-    .then(batchesData => {
+    .then(batchesData=>{
       getStudentCountByBatch().then(data => {
         let batchStudentsCount = {};
         data.data.data.programEnrollmentsConnection.groupBy.batch.map(item => batchStudentsCount[item.key] = item.connection.aggregate.count);
@@ -81,13 +229,67 @@ const Batches = (props) => {
         setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
       });
     })
-    .catch(error => {
+    .catch((error) => {
       return Promise.reject(error);
     })
     .finally(() => {
       setLoading(false);
       NP.done();
     });
+  }
+
+
+  const getBatches = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+    NP.start();
+    setLoading(true);
+
+    if(isSearchEnable){
+      await getBatchesBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
+    }
+    else {
+      let variables= {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      }
+  
+  
+      if(selectedTab == "my_data"){
+        Object.assign(variables, {id: userId})
+      } else if(selectedTab == "my_state"){
+        Object.assign(variables, {state: state})
+      } else if(selectedTab == "my_area"){
+        Object.assign(variables, {area: area})
+      }
+      await api.post("/graphql", {
+        query: GET_BATCHES,
+        variables,
+      })
+      .then(batchesData => {
+        getStudentCountByBatch().then(data => {
+          let batchStudentsCount = {};
+          data.data.data.programEnrollmentsConnection.groupBy.batch.map(item => batchStudentsCount[item.key] = item.connection.aggregate.count);
+          // adding batch students count to batches data
+          let batches = batchesData?.data?.data?.batchesConnection.values.map(batch => {
+            return {
+              ...batch,
+              students_count: batchStudentsCount[batch.id],
+            }
+          });
+  
+          setBatches(batches);
+          setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
+        });
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        NP.done();
+      });
+    }
+    
   };
 
   useEffect(() => {
@@ -111,6 +313,15 @@ const Batches = (props) => {
     });
     setBatchesTableData(data);
   }, [batches, pickList]);
+
+  
+  useEffect(()=>{
+    if(isSearchEnable){
+      getBatches()
+    }
+
+  },[isSearchEnable])
+
 
   const columns = useMemo(
     () => [
@@ -150,7 +361,7 @@ const Batches = (props) => {
     []
   );
 
-  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy, isSearchEnable,selectedSearchedValue,selectedSearchField) => {
     if (sortBy.length) {
       let sortByField = 'created_at';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -176,9 +387,22 @@ const Batches = (props) => {
           sortByField = 'created_at';
           break;
       }
-      getBatches(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      if(isSearchEnable){
+        getBatchesBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+
+      }
+      else {
+        getBatches(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      }
     } else {
-      getBatches(activeTab.key, pageSize, pageSize * pageIndex);
+      if(isSearchEnable){
+        getBatchesBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+
+      }
+      else {
+        getBatches(activeTab.key, pageSize, pageSize * pageIndex);
+
+      }
     }
   }, [activeTab.key]);
 
@@ -228,7 +452,21 @@ const Batches = (props) => {
               Add New Batch
             </button>
         </div>
-      <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} />
+      <BatchSearchBar
+        selectedSearchField={selectedSearchField} 
+        setSelectedSearchField={setSelectedSearchField} 
+        setIsSearchEnable={setIsSearchEnable}
+        setSelectedSearchedValue={setSelectedSearchedValue}
+        tab={activeTab.key}
+        info={{
+          id:userId,
+          area:area,
+          state:state,
+        }}
+      />
+      <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} isSearchEnable={isSearchEnable}
+          selectedSearchField={selectedSearchField}
+          selectedSearchedValue={selectedSearchedValue} />
       <BatchForm
         show={modalShow}
         onHide={hideCreateModal}
