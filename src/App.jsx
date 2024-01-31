@@ -175,8 +175,13 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
-                    <PrivateRoute path="/operation" exact component={operations} />
+                    
                   </>
+                  }
+                  {
+                    (isAdmin()) &&(
+                      <PrivateRoute path="/operation" exact component={operations} />
+                    )
                   }
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
