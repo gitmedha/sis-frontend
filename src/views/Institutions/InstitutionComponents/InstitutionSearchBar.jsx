@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
-import { getFieldValues } from './StudentActions';
+import { getFieldValues } from './instituteActions';
 
 
 const Section = styled.div`
@@ -26,7 +26,7 @@ const Section = styled.div`
 
 
 
-function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function InstitutionSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
 
     const initialValues = {
         search_by_field:'',
@@ -34,40 +34,30 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     }
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
-    const [studentDropDownValue,setStudentDropDownValue] = useState('')
     const [progress, setProgress] = useState(0);
 
-    const [studentsOptions] = useState([
-        {key:0, label:'Area', value:'medha_area'},
-        {key:1, label:'Status',value:'status'},
-        {key:2, label:'Registration Date', value:'registration_date_latest'},
-        {key:3, label:'Assigned To', value:'assigned_to.username'}
+    const [institutionsOptions] = useState([
+        {key:0, label:'Area',value:'medha_area'}, 
+        {key:1,label:'Type',value:'type'},
+        {key:2, label:'State',value:'state'},
+        {key:3, label:'Status',value:'status'},
+        {key:4, label:'Assigned To', value:'assigned_to'}
     ]);
 
-    const initialState = [  {key:0, label:'Name',value:'full_name'}, 
-    {key:1,label:'Student ID',value:'student_id'},
-    {key:2, label:'Area', value:'medha_area'},
-    {key:3, label:'Phone',value:'phone'},
-    {key:4, label:'Email', value:'email'},
-    {key:5, label:'Status',value:'status'},
-    {key:6, label:'Registration Date', value:'registration_date_latest'},
-    {key:7, label:'Assigned To', value:'assigned_to.username'}]
     const [isDisabled,setDisbaled] = useState(true);
-
-
 
     const handleSubmit = async(values) =>{
         try {
+         
             await setSelectedSearchedValue(values.search_by_value)
             setIsSearchEnable(true);
             
         } catch (error) {
             console.error("error",error)
         }
-       
   
         ///stores the last searched result in the local storage as cache 
-        //we will use it to refresh the search results
+        ///we will use it to refresh the search results
           
         //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
         //     baseUrl:baseUrl,
@@ -75,6 +65,12 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         //     searchValue:values.search_by_value
         //   }));
   
+      }
+
+      const handleStundentsOptions = async (value)=>{
+        await setSearchValueOptions([])
+        setIsSearchEnable(false);
+        setSelectedSearchField(value);
       }
 
     const formik = useFormik({ // Create a Formik reference using useFormik
@@ -105,6 +101,7 @@ const handleLoaderForSearch = async ()=>{
 }
     
 useEffect(()=>{
+    
     const setSearchValueDropDown = async () =>{
       try {
         const interval = setInterval(() => {
@@ -115,10 +112,9 @@ useEffect(()=>{
           
         }, 1000);
 
-        const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
+        const {data} = await getFieldValues(selectedSearchField,'institutions',tab,info)
         clearInterval(interval)
         handleLoaderForSearch();
-  
         await setSearchValueOptions(data);
         
 
@@ -157,10 +153,9 @@ refreshOnTabChange()
                         name="search_by_field"
                         label="Search Field"
                         control="lookup"
-                        options={studentsOptions}
+                        options={institutionsOptions}
                         className="form-control"
-                        onChange = {(e)=>setSelectedSearchField(e.value)}
-                        value={studentDropDownValue}
+                        onChange = {(e)=>handleStundentsOptions(e.value)}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
@@ -173,6 +168,7 @@ refreshOnTabChange()
                         control="lookupAsync"
                         defaultOptions={searchValueOptions.slice(0, 100)}
                         filterData={filterSearchValue}
+                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={
@@ -224,4 +220,4 @@ refreshOnTabChange()
   )
 }
 
-export default StudentsSearchBar
+export default InstitutionSearchBar;

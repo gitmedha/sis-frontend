@@ -63,13 +63,11 @@ const StudentForm = (props) => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
-    console.log(localStorage.getItem('user_role'));
   }, []);
 
   useEffect(() => {
     getStudentsPickList().then(data => {
       setStatusOptions(data.status.map(item => {
-        console.log(item.value === 'unknown');
         if (
           localStorage.getItem('user_role').toLowerCase() === 'srm' &&
           item.value.toLowerCase() === 'unknown'

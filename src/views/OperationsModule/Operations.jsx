@@ -392,7 +392,6 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeUserstots.values);
-          console.log(data.data.data.allUserstots.aggregate);
           setoptsAggregate(data.data.data.allUserstots.aggregate);
         })
         .catch((error) => {

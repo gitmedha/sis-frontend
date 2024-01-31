@@ -173,7 +173,6 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
                   page.map((row, index) => {
                     prepareRow(row)
                     return (<>
-                      {/* <td className="border-0" onClick={()=>console.log(row.original)}><input type="checkbox" />      </td> */}
                       <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
                         
                         {indexes &&

@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
-import { getFieldValues } from './StudentActions';
+import { getFieldValues } from '../batchActions';
 
 
 const Section = styled.div`
@@ -26,48 +26,88 @@ const Section = styled.div`
 
 
 
-function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+
+  let today = new Date();
 
     const initialValues = {
         search_by_field:'',
-        search_by_value:''
+        search_by_value:'',
+        search_by_value_date_to:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_from:new Date(new Date(today).setDate(today.getDate() )),
+        search_by_value_date_end_to:new Date(new Date(today).setDate(today.getDate() )),
     }
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
-    const [studentDropDownValue,setStudentDropDownValue] = useState('')
     const [progress, setProgress] = useState(0);
 
-    const [studentsOptions] = useState([
-        {key:0, label:'Area', value:'medha_area'},
-        {key:1, label:'Status',value:'status'},
-        {key:2, label:'Registration Date', value:'registration_date_latest'},
-        {key:3, label:'Assigned To', value:'assigned_to.username'}
+    const [batchOptions] = useState([
+        {key:0, label:'Program',value:'program'}, 
+        {key:1,label:'Start Date',value:'start_date'},
+        {key:2, label:'End Date',value:'end_date'},
+        {key:3, label:'Assigned To',value:'assigned_to'},
+        {key:4, label:'Area', value:'medha_area'}, 
+        {key:5, label:'Status', value:'status'},
+        {key:6,label:'Institution',value:'institution'}
     ]);
 
-    const initialState = [  {key:0, label:'Name',value:'full_name'}, 
-    {key:1,label:'Student ID',value:'student_id'},
-    {key:2, label:'Area', value:'medha_area'},
-    {key:3, label:'Phone',value:'phone'},
-    {key:4, label:'Email', value:'email'},
-    {key:5, label:'Status',value:'status'},
-    {key:6, label:'Registration Date', value:'registration_date_latest'},
-    {key:7, label:'Assigned To', value:'assigned_to.username'}]
+    const [defaultSearchArray,setDefaultSearchArray] = useState([])
+
     const [isDisabled,setDisbaled] = useState(true);
 
+    const formatdate =(dateval)=>{
+      const date = new Date(dateval);
 
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
+      const dd = String(date.getDate()).padStart(2, "0");
+
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      return formattedDate;
+
+    }
 
     const handleSubmit = async(values) =>{
         try {
+          if(values.search_by_field === "start_date" || values.search_by_field === "end_date"){
+        
+            if(values.search_by_field === "start_date"){
+              const date1 = formatdate(values.search_by_value_date);
+              const date2 = formatdate(values.search_by_value_date_to);
+              let val ={
+                start_date:date1,
+                end_date:date2
+              }
+              await setSelectedSearchedValue(val)
+    
+              //stores the last searched result in the local storage as cache 
+              //we will use it to refresh the search results
+                    
+            }
+            if(values.search_by_field === "end_date"){
+              const date1 = formatdate(values.search_by_value_date_end_from);
+              const date2 = formatdate(values.search_by_value_date_end_to);
+              let val ={
+                start_date:date1,
+                end_date:date2
+              }
+              await setSelectedSearchedValue(val)
+            }
+
+            setIsSearchEnable(true);
+          }
+          else {
             await setSelectedSearchedValue(values.search_by_value)
             setIsSearchEnable(true);
+          }
             
         } catch (error) {
             console.error("error",error)
         }
-       
   
         ///stores the last searched result in the local storage as cache 
-        //we will use it to refresh the search results
+        ///we will use it to refresh the search results
           
         //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
         //     baseUrl:baseUrl,
@@ -75,6 +115,12 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         //     searchValue:values.search_by_value
         //   }));
   
+      }
+
+      const handleBatchOptions = async (value)=>{
+        await setSearchValueOptions([])
+        setIsSearchEnable(false);
+        setSelectedSearchField(value);
       }
 
     const formik = useFormik({ // Create a Formik reference using useFormik
@@ -105,6 +151,7 @@ const handleLoaderForSearch = async ()=>{
 }
     
 useEffect(()=>{
+    
     const setSearchValueDropDown = async () =>{
       try {
         const interval = setInterval(() => {
@@ -115,11 +162,14 @@ useEffect(()=>{
           
         }, 1000);
 
-        const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
+        const {data} = await getFieldValues(selectedSearchField,'batch',tab,info)
         clearInterval(interval)
         handleLoaderForSearch();
-  
+       
         await setSearchValueOptions(data);
+        const shortedArray = await data.slice(0, 10)
+
+        await setDefaultSearchArray(shortedArray)
         
 
       } catch (error) {
@@ -157,13 +207,12 @@ refreshOnTabChange()
                         name="search_by_field"
                         label="Search Field"
                         control="lookup"
-                        options={studentsOptions}
+                        options={batchOptions}
                         className="form-control"
-                        onChange = {(e)=>setSelectedSearchField(e.value)}
-                        value={studentDropDownValue}
+                        onChange = {(e)=>handleBatchOptions(e.value)}
                     />
                 </div>
-                <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
+                {(selectedSearchField!=="start_date" && selectedSearchField!== "end_date") && <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
                     {searchValueOptions.length ? (
                       <>
                       <Input
@@ -171,8 +220,9 @@ refreshOnTabChange()
                         label="Search Value"
                         className="form-control"
                         control="lookupAsync"
-                        defaultOptions={searchValueOptions.slice(0, 100)}
+                        defaultOptions ={defaultSearchArray}
                         filterData={filterSearchValue}
+                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={
@@ -205,8 +255,42 @@ refreshOnTabChange()
                         }
                         />
                       </>
+                      
                     )}
+                  </div>}
+
+                {
+                  selectedSearchField==="start_date" && <div className='col-lg-2 col-md-4 col-sm-12 mb-2'>
+                    <div className='d-flex justify-content-between align-items-center'>
+                          <div className='mr-3'>
+                          <Input
+                              name="search_by_value_date"
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control "
+                              autoComplete="off"
+                              disabled={isDisabled?true:false}
+
+                            />
+                          </div>
+                          <div className='ml-2'>
+                          <Input
+                              name="search_by_value_date_to"
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={isDisabled?true:false}
+
+                            />
+                          </div>
+                           
+                            
+                          </div>
                   </div>
+                }
 
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
                 <button className="btn btn-primary btn-regular" type="submit" disabled={isDisabled?true:false}>
@@ -224,4 +308,4 @@ refreshOnTabChange()
   )
 }
 
-export default StudentsSearchBar
+export default BatchSearchBar;

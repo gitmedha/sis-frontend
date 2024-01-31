@@ -13,6 +13,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { Badge } from "../../components/content/Utils";
+import OpportunitySearchBar from "./OpportunityComponents/OpportunitySearchBar";
 
 const tabPickerOptions = [
     { title: "My Data", key: "my_data" },
@@ -36,6 +37,9 @@ const tabPickerOptions = [
     const userId = parseInt(localStorage.getItem('user_id'))
     const state = localStorage.getItem('user_state');
     const area = localStorage.getItem('user_area')
+    const [selectedSearchField, setSelectedSearchField] = useState(null);
+    const [isSearchEnable,setIsSearchEnable] = useState(false);
+    const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
 
     const OpportunityIcon = ({opportunity, name}) => {
       let icon = null;
@@ -70,6 +74,14 @@ const tabPickerOptions = [
   useEffect(() => {
     getOpportunities(activeTab.key);
   }, [activeTab]);
+
+
+  useEffect(()=>{
+    if(isSearchEnable){
+      getOpportunities();
+    }
+  }, [isSearchEnable])
+  
 
   const columns = useMemo(
     () => [
@@ -111,40 +123,191 @@ const tabPickerOptions = [
     });
   }, [])
 
-  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
-    nProgress.start();
-    setLoading(true);
-    let variables = {
-      limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
-    }
-    if(selectedTab == "my_data"){
-      Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_area"){
-      Object.assign(variables, {area: area})
-    }else if(selectedTab == "my_state"){
-      Object.assign(variables, {state: state})
-    }
 
-    await api.post("/graphql", {
-      query: GET_OPPORTUNITIES,
+  const getOpportunitiesBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+    const opportunityFields = `
+    id
+    type
+    role_or_designation
+    number_of_opportunities
+    created_at
+    updated_at
+    status
+    department_or_team
+    role_description
+    skills_required
+    compensation_type
+    salary
+    address
+    city
+    state
+    pin_code
+    medha_area
+    district
+    job_description_file {
+      id
+      url
+      created_at
+    }
+    created_by_frontend{
+      username
+      email
+    }
+    updated_by_frontend{
+      username
+      email
+    }
+    assigned_to {
+      id
+      username
+      email
+    }
+    employer{
+      id
+      name
+      address
+      district
+      state
+      medha_area
+      logo{
+        url
+      }
+    }
+    `
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "type"){
+    Object.assign(variables, { type: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "employer"){
+    Object.assign(variables, { employer_name: selectedSearchedValue.trim()});
+  }
+  
+
+const opportunityQuery = `query GET_OPPORTUNITIES(
+  $id: Int,
+  $limit: Int,
+  $start: Int,
+  $sort: String,
+  $status: String,
+  $state: String,
+  $area: String,
+  $username: String,
+  $employer_name:String,
+  $type:String
+) {
+  opportunitiesConnection(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      assigned_to: {
+        id: $id
+        username: $username
+      }
+      medha_area: $area
+      state: $state
+      status: $status
+      type:$type
+      employer: {
+        name:$employer_name
+      }
+    }
+  ) {
+    values {
+      ${opportunityFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`
+   
+  await api
+    .post("/graphql", {
+      query: opportunityQuery,
       variables,
     })
     .then(data => {
+  
       setOpportunities(data?.data?.data?.opportunitiesConnection.values);
       setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
     })
-    .catch(error => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
-      setLoading(false);
-      nProgress.done();
-    });
+      .catch((error) => {
+        return Promise.reject(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        nProgress.done();
+      });
+  }
+
+
+  const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
+    nProgress.start();
+    setLoading(true);
+
+    if(isSearchEnable){
+      await getOpportunitiesBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
+
+    }
+    else {
+      let variables = {
+        limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      }
+      if(selectedTab == "my_data"){
+        Object.assign(variables, {id: userId})
+      } else if(selectedTab == "my_area"){
+        Object.assign(variables, {area: area})
+      }else if(selectedTab == "my_state"){
+        Object.assign(variables, {state: state})
+      }
+  
+      await api.post("/graphql", {
+        query: GET_OPPORTUNITIES,
+        variables,
+      })
+      .then(data => {
+        setOpportunities(data?.data?.data?.opportunitiesConnection.values);
+        setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        nProgress.done();
+      });
+
+    }
+    
   };
 
-  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
     if (sortBy.length) {
       let sortByField = 'role';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -173,9 +336,23 @@ const tabPickerOptions = [
           sortByField = 'role_or_designation';
           break;
       }
-      getOpportunities(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      if(isSearchEnable){
+        getOpportunitiesBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+
+      }
+      else {
+        getOpportunities(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+
+
+      }
     } else {
-      getOpportunities(activeTab.key, pageSize, pageSize * pageIndex);
+      if(isSearchEnable){
+        getOpportunitiesBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+      }
+      else {
+        getOpportunities(activeTab.key, pageSize, pageSize * pageIndex);
+
+      }
     }
   }, [activeTab.key]);
 
@@ -236,8 +413,36 @@ const tabPickerOptions = [
               Add New Opportunity
             </button>
           </div>
+          
         </div>
-        <Table columns={columns} data={opportunitiesTableData} totalRecords={opportunitiesAggregate.count} fetchData={fetchData} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
+
+        
+        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+        <OpportunitySearchBar 
+        selectedSearchField={selectedSearchField} 
+        setSelectedSearchField={setSelectedSearchField} 
+        setIsSearchEnable={setIsSearchEnable}
+        setSelectedSearchedValue={setSelectedSearchedValue}
+        tab={activeTab.key}
+        info={{
+          id:userId,
+          area:area,
+          state:state,
+        }}
+        />
+        </div>
+        
+        <Table 
+          columns={columns} 
+          data={opportunitiesTableData} 
+          totalRecords={opportunitiesAggregate.count} 
+          fetchData={fetchData} 
+          paginationPageSize={paginationPageSize} 
+          onPageSizeChange={setPaginationPageSize}
+          isSearchEnable={isSearchEnable}
+          selectedSearchField={selectedSearchField}
+          selectedSearchedValue={selectedSearchedValue}
+          />
         <OpportunityForm
           show={modalShow}
           onHide={hideCreateModal}
