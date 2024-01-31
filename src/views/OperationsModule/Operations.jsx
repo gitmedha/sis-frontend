@@ -230,6 +230,10 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+      {
+        Header: "Project Name",
+        accessor: "project_name",
+      },
     ],
     []
   );
