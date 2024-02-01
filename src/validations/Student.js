@@ -139,7 +139,8 @@ export const StudentValidations = Yup.object({
     'Please remove extra space.',
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
   ),
-  name_of_parent_or_guardian: Yup.string().test(
+  name_of_parent_or_guardian: Yup.string().required('Parents name is required.') // Check for required input
+  .test(
     'no-trailing-space',
     'Please remove extra space.',
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
@@ -152,7 +153,12 @@ export const StudentValidations = Yup.object({
   status: student_status,
   income_level,
   family_annual_income,
-  city,
+  city:Yup.string().required('City is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   pin_code,
   medha_area,
   address : Yup.string().test(
