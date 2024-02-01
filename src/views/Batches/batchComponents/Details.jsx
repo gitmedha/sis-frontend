@@ -83,7 +83,7 @@ const Details = ({ batch, sessions=[] }) => {
           <DetailField label="End Date" value={<Moment date={batch.end_date} format={"DD MMM YYYY"} />} />
           &nbsp;
           <DetailField label="Area" value={batch.medha_area} />
-          <DetailField label="Donor" value={batch.grant.donor} />
+          <DetailField label="Donor" value={batch.grant?.donor} />
           &nbsp;
           <DetailField label="Per Student Contribution" value={batch.per_student_fees} />
           <DetailField label="Mode of Payment" value={batch.mode_of_payment} />

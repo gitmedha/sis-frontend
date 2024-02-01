@@ -58,16 +58,41 @@ const contacts = Yup.array().of(
 );
 
 export const InstituteValidations = Yup.object({
-  name,
+  name: Yup.string().required('Name is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   type,
-  email,
-  phone,
+  email:Yup.string().required('Email is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  phone :Yup.string().required('Phone is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   status,
   assigned_to,
-  address,
+  address:Yup.string().required('Address is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   state,
   pin_code,
-  city,
+  city:Yup.string().required('City is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   medha_area,
   contacts,
   district,
