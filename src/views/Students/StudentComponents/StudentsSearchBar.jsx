@@ -2,7 +2,7 @@ import React, {useState,useEffect} from 'react';
 import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
-import { getFieldValues } from '../batchActions';
+import { getFieldValues } from './StudentActions';
 
 
 const Section = styled.div`
