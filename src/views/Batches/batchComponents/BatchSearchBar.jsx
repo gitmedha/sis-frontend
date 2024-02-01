@@ -291,6 +291,38 @@ refreshOnTabChange()
                           </div>
                   </div>
                 }
+                {
+                  selectedSearchField==="end_date" && <div className='col-lg-2 col-md-4 col-sm-12 mb-2'>
+                    <div className='d-flex justify-content-between align-items-center'>
+                          <div className='mr-3'>
+                          <Input
+                              name="search_by_value_date_end_from"
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control "
+                              autoComplete="off"
+                              disabled={isDisabled?true:false}
+
+                            />
+                          </div>
+                          <div className='ml-2'>
+                          <Input
+                              name="search_by_value_date_end_to"
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={isDisabled?true:false}
+
+                            />
+                          </div>
+                           
+                            
+                          </div>
+                  </div>
+                }
 
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
                 <button className="btn btn-primary btn-regular" type="submit" disabled={isDisabled?true:false}>

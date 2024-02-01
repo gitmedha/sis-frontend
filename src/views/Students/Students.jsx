@@ -215,13 +215,36 @@ const Students = (props) => {
   else if(selectedSearchField === "medha_area"){
     Object.assign(variables, { area: selectedSearchedValue.trim()});
   }
-  else {
-    variables[selectedSearchField] = selectedSearchedValue.trim();
+  else if(selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "registration_date_latest"){
+    Object.assign(variables, { 
+      from_registration: selectedSearchedValue.start_date.trim(),
+      to_registration:selectedSearchedValue.end_date.trim()
+    });
   }
 
   
 
-const StudentQuery = `query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String, ${selectedSearchField === 'medha_area'|| selectedSearchField === 'status'?'':`$${selectedSearchField}:String`}) {
+const StudentQuery = `query GET_STUDENTS(
+  $id: Int, 
+  $limit: Int, 
+  $start: Int, 
+  $sort: String, 
+  $status:String, 
+  $state:String, 
+  $area:String,
+  $username:String,
+  $from_registration:String,
+  $to_registration:String
+  ) {
     studentsConnection (
       sort: $sort
       start: $start
@@ -229,11 +252,13 @@ const StudentQuery = `query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $so
       where: {
         assigned_to: {
           id: $id
-        },
+          username:$username
+        }
         medha_area: $area
-        state:$state,
-        status:$status,
-        ${selectedSearchField === 'medha_area' || selectedSearchField === 'status'?'':`${selectedSearchField}:$${selectedSearchField}`}
+        state:$state
+        status:$status
+        registration_date_latest_gte:from_registration
+        registration_date_latest_lte:to_registration
       }
     ) {
       values {
