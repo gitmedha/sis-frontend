@@ -121,10 +121,29 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
 });
 
 export const StudentValidations = Yup.object({
-  full_name,
-  phone,
-  alternate_phone,
-  name_of_parent_or_guardian,
+  full_name : Yup.string().required('Name is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  phone : Yup.string() .required('Phone is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  alternate_phone :Yup.string().required('Alternate phone is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  name_of_parent_or_guardian: Yup.string().test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   category,
   // email,
   gender,
@@ -136,7 +155,11 @@ export const StudentValidations = Yup.object({
   city,
   pin_code,
   medha_area,
-  address,
+  address : Yup.string().test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   state,
   district,
   how_did_you_hear_about_us,
