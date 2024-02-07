@@ -32,6 +32,7 @@ import MassEdit from "./StudentComponents/MassEdit";
 import MassEmployerUpload from "./StudentComponents/MassEmployerUpload";
 import { isEmptyArray } from "formik";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
+import ModalShowmassedit from "./StudentComponents/ModalShowmassedit";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -66,8 +67,6 @@ const Students = (props) => {
   const [studentsData, setStudentsData] = useState([]);
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [modalShow1, setModalShow1] = useState(false);
-  const [modalShow2, setModalShow2] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -80,6 +79,7 @@ const Students = (props) => {
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable,setIsSearchEnable] = useState(false);
   const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
+  const [ModalShowmassEdit,setModalShowmassEdit]=useState(false)
 
   const columns = useMemo(
     () => [
@@ -531,6 +531,18 @@ else {
     
   };
 
+  const hideCreateMassEdit=(value)=>{
+    setModalShowmassEdit(value)
+  }
+
+  const uploadData=(data)=>{
+    HideMassEmployeCreateModal(data)
+  }
+
+  const uploadAlumniData=(data)=>{
+    hideMassCreateModal(data)
+  }
+
   return (
     <Collapse title="STUDENTS" type="plain" opened={true}>
       <Styled>
@@ -572,10 +584,9 @@ else {
                 >
                   Add New Student
                 </button>
-                <button
+                {/* <button
                   className="btn btn-primary"
                   onClick={() => setModalShow1(true)}
-                  //  style={{ marginLeft: "15px" }}
                 >
                   Mass Alumni Service
                 </button>
@@ -583,9 +594,15 @@ else {
                 <button
                   className="btn btn-primary"
                   onClick={() => setModalShow2(true)}
-                  //  style={{ marginLeft: "10px" }}
+                  
                 >
                   Mass Employer
+                </button> */}
+                <button
+                  className="btn btn-primary"
+                  onClick={()=>setModalShowmassEdit(true)}
+                >
+                  Mass Edit 
                 </button>
               </>
             )}
@@ -634,8 +651,8 @@ else {
             />
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
-          <MassEdit data={studentsData} show={modalShow1} onHide={hideMassCreateModal} />
-          <MassEmployerUpload data={studentsData} show={modalShow2} onHide={HideMassEmployeCreateModal} />
+         
+          <ModalShowmassedit data={studentsData} onHide={()=>hideCreateMassEdit(false)} show={ModalShowmassEdit} uploadData={uploadData} uploadAlumniData={uploadAlumniData} />
         </div>
       </Styled>
     </Collapse>
