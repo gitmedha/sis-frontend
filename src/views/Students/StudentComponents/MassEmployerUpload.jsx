@@ -150,7 +150,7 @@ const MassEmployerUpload = (props) => {
         work_engagement: data.work_engagement,
       };
     });
-    onHide(newdata);
+    props.uploadData(newdata);
   };
   const filterStudent = async (filterValue) => {
     return await meilisearchClient
