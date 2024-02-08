@@ -17,21 +17,29 @@ import { connect } from "react-redux";
 import MassEdit from "./MassEdit";
 import MassEmployerUpload from "./MassEmployerUpload";
 
+const Styled = styled.div`
+  .cont {
+    position: absolute;
+    right: 0;
+    bottom:5rem;
+  }
+`;
+
 const ModalShowmassedit = (props) => {
   let { onHide, show } = props;
   const [modalShow1, setModalShow1] = useState(false);
   const [modalShow2, setModalShow2] = useState(false);
 
-  const handleMassAlumuni =(data)=>{
-    setModalShow1(!modalShow1)
-    onHide()
-  }
+  const handleMassAlumuni = (data) => {
+    setModalShow1(!modalShow1);
+    onHide();
+  };
 
-  const HideMassEmployeCreateModal =async(data)=>{
-    if(data.length ==0){
+  const HideMassEmployeCreateModal = async (data) => {
+    if (data.length == 0) {
       // return ;
       setAlert("Unable to create Employment Connection Data.", "error");
-    }else{
+    } else {
       try {
         const response = await api.post(
           "/employment-connections/createBulkEmploymentConnection",
@@ -42,39 +50,36 @@ const ModalShowmassedit = (props) => {
         setAlert("Unable to create Employment Connection Data.", "error");
       }
     }
-}
+  };
 
-const hideMassCreateModal = async (data) => {
-  if(data.length ==0){
-    setAlert("Unable to create Alumni Data.", "error");
-  }
-  else {
-    try {
-      const response = await api.post(
-        "/alumni-services/createBulkAlumniServices",
-        data
-      );
-      setAlert("Alumni data created successfully.", "success");
-    } catch (error) {
+  const hideMassCreateModal = async (data) => {
+    if (data.length == 0) {
       setAlert("Unable to create Alumni Data.", "error");
+    } else {
+      try {
+        const response = await api.post(
+          "/alumni-services/createBulkAlumniServices",
+          data
+        );
+        setAlert("Alumni data created successfully.", "success");
+      } catch (error) {
+        setAlert("Unable to create Alumni Data.", "error");
+      }
     }
-  }
-  
-};
-  const handleMassemployer =()=>{
-    setModalShow2(!modalShow2)
-    onHide()
-  }
+  };
+  const handleMassemployer = () => {
+    setModalShow2(!modalShow2);
+    onHide();
+  };
 
-  const uploadData=(data)=>{
+  const uploadData = (data) => {
     props.uploadData(data);
     handleMassemployer();
-  }
+  };
 
-  const uploadAlumniData=(data)=>{
-    props.uploadAlumniData(data)
-  }
-
+  const uploadAlumniData = (data) => {
+    props.uploadAlumniData(data);
+  };
 
   return (
     <div>
@@ -87,17 +92,30 @@ const hideMassCreateModal = async (data) => {
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal"
       >
-        <Modal.Header id="example-custom-modal-styling-title" className="bg-white" >
+        <Modal.Header
+          id="example-custom-modal-styling-title"
+          className="bg-white"
+        >
           <Modal.Title
             id="contained-modal-title-vcenter"
-            className="d-flex align-items-center "
+            className="d-flex "
           >
-            <h1 className="text--primary bebas-thick mb-0">
-              Please select one option
-            </h1>
-            <button onClick={onHide} className="btn btn-danger btn-regular mr-2" >
-              Close
-            </button>
+            <Styled>
+              <div>
+                <h1 className="text--primary bebas-thick mb-0">
+                  Please select one option
+                </h1>
+              </div>
+
+              <div className="cont ">
+                <button
+                  onClick={onHide}
+                  className="btn btn-danger btn-regular close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </Styled>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-white">
@@ -144,5 +162,4 @@ const mapActionsToProps = {
   setAlert,
 };
 
-
-export default connect(mapStateToProps, mapActionsToProps)(ModalShowmassedit); 
+export default connect(mapStateToProps, mapActionsToProps)(ModalShowmassedit);
