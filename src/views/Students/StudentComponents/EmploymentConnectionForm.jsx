@@ -114,14 +114,14 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
    
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student' ) ;
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student' || selectedOpportunityType ==='Apprenticeship') ;
     setEndDateMandatory(selectedStatus === 'Internship Complete');
-  }, [selectedStatus]);
+  }, [selectedStatus,selectedOpportunityType]);
 
   
-  useEffect(()=>{
-    setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
-  },[selectedOpportunityType])
+  // useEffect(()=>{
+  //   setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
+  // },[selectedOpportunityType])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
