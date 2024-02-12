@@ -37,7 +37,10 @@ const EmploymentConnection = (props) => {
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   let endDate = '';
-  if (employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && employmentConnection.status === 'Internship Complete') {
+  console.log("employmentConnection",employmentConnection);
+  if (employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && employmentConnection.status === 'Internship Complete' ) {
+    endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
+  }if(employmentConnection.opportunity && employmentConnection.opportunity.type === 'Apprenticeship' && employmentConnection.status === 'Apprenticeship Started'){
     endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
   }
 
