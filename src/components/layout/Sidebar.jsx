@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog } from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog ,FaCalendarDay} from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -63,6 +63,13 @@ const routes = [
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,
+    show: isAdmin(),
+  },
+  {
+    to:'/calender',
+    title:"Calendar",
+    aliases: ['calender'],
+    icon:<FaCalendarDay {...iconProps}/>,
     show: isAdmin(),
   },
   {
