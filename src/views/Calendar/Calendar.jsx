@@ -1,10 +1,25 @@
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import {useState} from 'react';
+import { Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
+import CreateEventForm from './CreateEventForm';
 
 const localizer = momentLocalizer(moment)
 
 
 const EventCalendar = (props) => {
+
+  const [createEventForm,setCreateEventForm] = useState(false);
+
+  const showCreateEventForm = async()=>{
+    console.log("show")
+    setCreateEventForm(true);
+
+  }
+
+  const hideCreateEventForm = async()=>{
+    console.log("hide")
+    setCreateEventForm(false);
+  }
 
   const myEventsList = [
     {
@@ -29,9 +44,12 @@ const EventCalendar = (props) => {
       endAccessor="end"
       selectable
       style={{ height: 500 ,width:'90%'}}
-      onSelectSlot={(slotInfo) => console.log("sf",slotInfo)}
+      onSelectSlot={(slotInfo) => showCreateEventForm()}
       onSelectEvent={(event, e) => console.log("ff",event)}
     />
+    {
+      createEventForm && <CreateEventForm onHide={hideCreateEventForm}/>
+    }
   </div>
 )}
 
