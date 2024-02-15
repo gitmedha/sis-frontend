@@ -113,9 +113,15 @@ const EnrollmentConnectionForm = (props) => {
   }, [props.employmentConnection]);
 
   useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
+   
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student' || selectedOpportunityType ==='Apprenticeship') ;
     setEndDateMandatory(selectedStatus === 'Internship Complete');
-  }, [selectedStatus]);
+  }, [selectedStatus,selectedOpportunityType]);
+
+  
+  // useEffect(()=>{
+  //   setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
+  // },[selectedOpportunityType])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -172,12 +178,28 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
 
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship') {
+    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship' ) {
       filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Both');
-    } else {
+    }
+    // if(selectedOpportunityType === 'Apprenticeship'){
+    //   filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Apprenticeship');
+    // } 
+    else {
       filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
     }
-    setStatusOptions(filteredOptions);
+    // setStatusOptions(filteredOptions);
+
+    setStatusOptions(filteredOptions.map(item => {
+     
+      if (
+        localStorage.getItem('user_role').toLowerCase() === 'srm' &&
+        item.value.toLowerCase() === 'unknown'
+      ) {
+        return {isDisabled:true};
+      } else {
+        return { key: item.value, value: item.value, label: item.value };
+      }
+    }));
   }, [selectedOpportunityType, allStatusOptions]);
 
   const updateEmployerOpportunityOptions = (employer) => {
@@ -246,7 +268,6 @@ const EnrollmentConnectionForm = (props) => {
   }, [])
   
   const handleStatusChange = async(value)=>{
-  
     setSelectedStatus(value);
 
     if(value === "Rejected by Employer"){
@@ -297,7 +318,7 @@ const EnrollmentConnectionForm = (props) => {
           initialValues={initialValues}
           validationSchema={EmploymentConnectionValidations}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue}) => (
             <Form>
               <Section>
                 <div className="row">
@@ -499,7 +520,6 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     className="btn btn-primary btn-regular mx-0"
                     type="submit"
-                    onClick={()=>onSubmit(values)}
                   >
                     SAVE
                   </button>
