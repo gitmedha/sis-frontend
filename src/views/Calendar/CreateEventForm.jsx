@@ -3,10 +3,9 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { Input } from "../../utils/Form";
-import { getDefaultAssigneeOptions } from '../../utils/function/lookupOptions';
+import { filterAssignedTo,getDefaultAssigneeOptions } from '../../utils/function/lookupOptions';
 import {getAlumniServicePickList} from './calendarActions';
 import {calendarValidations} from '../../validations/Calendar';
-import DetailField from '../../components/content/DetailField';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -135,7 +134,7 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
                         required
                         className="form-control capitalize"
                         placeholder="Assigned To"
-                        // filterData={filterAssignedTo}
+                        filterData={filterAssignedTo}
                         defaultOptions={assigneeOptions}
                       />
                    
