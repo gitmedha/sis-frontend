@@ -122,7 +122,7 @@ const OpportunityForm = (props) => {
       setCompensationTypeOptions(data.paid.map((item) => {
         return {
           key: item.value,
-          label: item.value == "Yes" ? "Paid" : "Unpaid" ,
+          label: item.value,
           value: item.value,
         };
       }));
