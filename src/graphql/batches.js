@@ -1,4 +1,4 @@
-const batchesFields = `
+export const batchesFields = `
   id
   name
   start_date

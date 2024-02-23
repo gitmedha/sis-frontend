@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { connectHits } from 'react-instantsearch-dom';
+// import { connectHits } from 'react-instantsearch-dom';
 import { useHistory } from "react-router-dom";
 
 import SearchHighlight from './SearchHighlight';
+import {useEffect} from 'react';
+import { func } from "prop-types";
 
 const SearchHitsContainer = styled.div`
   height: 320px;
@@ -83,14 +85,17 @@ const SearchHitsContainer = styled.div`
 
 const SearchHits = props => {
   let { hits, searchIndex } = props;
+
+  
   const history = useHistory();
   let columns = [];
   let tableData = <></>;
 
   switch (searchIndex) {
+    
     case 'employers':
       columns = ['Name','District','State','Industry','Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
@@ -113,7 +118,7 @@ const SearchHits = props => {
 
     case 'batches':
       columns = ['Name', 'Program', 'Status', 'Student Enrolled', 'Start Date', 'Enrollment Type', 'Area', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
@@ -145,7 +150,7 @@ const SearchHits = props => {
 
     case 'institutions':
       columns = ['Name', 'Area', 'State', 'Type', 'Status', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="name" />
@@ -172,7 +177,7 @@ const SearchHits = props => {
     case 'students':
     default:
       columns = ['Name', 'Student ID','Area', 'Phone', 'Email', 'Status','Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="full_name" />
@@ -201,7 +206,7 @@ const SearchHits = props => {
 
     case 'opportunities':
       columns = ['Role/Designation', 'Employer', 'District', 'Type', 'Status', 'Opening', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
             <SearchHighlight hit={hit} attribute="role_or_designation" />
@@ -228,6 +233,9 @@ const SearchHits = props => {
       ))
       break;
   }
+  
+  
+  
 
   const clickHandler = hit => {
     props.setSearchState({
@@ -276,4 +284,4 @@ const SearchHits = props => {
   )
 };
 
-export default connectHits(SearchHits);
+export default SearchHits;

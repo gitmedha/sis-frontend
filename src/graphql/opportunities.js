@@ -1,4 +1,4 @@
-const opportunitiesFields = `
+export const opportunitiesFields = `
 id
 type
 role_or_designation

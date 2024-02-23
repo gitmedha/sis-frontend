@@ -1,4 +1,4 @@
-const studentFields = `
+export const studentFields = `
   id
   full_name
   email

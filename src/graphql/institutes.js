@@ -1,3 +1,28 @@
+export const institutionFields =`
+      id
+      name
+      state
+      city
+      medha_area
+      contacts{
+        id
+        email
+        phone
+        full_name
+        designation
+      }
+      logo{
+        url
+      }
+      assigned_to{
+        id
+        username
+        email
+      }
+      status
+      type
+      created_at
+`
 export const GET_MY_INSTITUTES = `
 query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
   institutions(

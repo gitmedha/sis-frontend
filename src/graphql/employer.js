@@ -1,4 +1,4 @@
-const employerFields = `
+export const employerFields = `
   id
   name
   phone
