@@ -84,10 +84,8 @@ const SearchHitsContainer = styled.div`
 `;
 
 const SearchHits = props => {
-  let { hits, searchIndex } = props;
+  let { hits, searchIndex ,searchState} = props;
 
-  
-  const history = useHistory();
   let columns = [];
   let tableData = <></>;
 
@@ -98,16 +96,16 @@ const SearchHits = props => {
       tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="district" />
+            <SearchHighlight hit={hit} attribute="district" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="state" />
+            <SearchHighlight hit={hit} attribute="state" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="industry" />
+            <SearchHighlight hit={hit} attribute="industry" searchTerm={searchState}/>
           </td>
           <td>
           {hit?.assigned_to?.username}
@@ -121,25 +119,25 @@ const SearchHits = props => {
       tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
           {hit?.program?.name }
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="status" />
+            <SearchHighlight hit={hit} attribute="status" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="student_count" />
+            <SearchHighlight hit={hit} attribute="student_count" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="start_date" />
+            <SearchHighlight hit={hit} attribute="start_date" searchTerm={searchState}/>
           </td>
           <td>
            {hit?.enrollment_type} 
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="medha_area" />
+            <SearchHighlight hit={hit} attribute="medha_area" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.assigned_to?.username}
@@ -153,16 +151,16 @@ const SearchHits = props => {
       tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
-            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ''}
+            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" searchTerm={searchState}/> : ''}
           </td>
           <td>
-            {hit.state ? <SearchHighlight hit={hit} attribute="state" /> : ''}
+            {hit.state ? <SearchHighlight hit={hit} attribute="state" searchTerm={searchState}/> : ''}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" searchTerm={searchState}/> : ''}
           </td>
           <td>
             {hit?.status}
@@ -180,7 +178,7 @@ const SearchHits = props => {
       tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="full_name" />
+            <SearchHighlight hit={hit} attribute="full_name" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.student_id}
@@ -192,7 +190,7 @@ const SearchHits = props => {
             {hit?.phone}
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="email" />
+            <SearchHighlight hit={hit} attribute="email" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.status}
@@ -209,7 +207,7 @@ const SearchHits = props => {
       tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="role_or_designation" />
+            <SearchHighlight hit={hit} attribute="role_or_designation" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.employer?.name}
@@ -218,7 +216,7 @@ const SearchHits = props => {
             {hit?.district}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" searchTerm={searchState} /> : ''}
           </td>
           <td>
             {hit?.status}

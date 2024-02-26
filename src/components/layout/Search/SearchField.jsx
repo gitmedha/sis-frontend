@@ -47,6 +47,7 @@ const SearchField = ({onSearchVQueryChange,searchQuery}) => {
           placeholder="search for..."
           value={searchQuery}
           onChange={event => onSearchVQueryChange(event.currentTarget.value)}
+          id="input-search-query"
         />
         <div className="icon" hidden={searchQuery.length}>
           <FaSearch size="20" />

@@ -120,25 +120,38 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  let { searchState, setSearchState,onSearchIndexUpdate, hitsData,searchResults } = props;
-  const hasQuery = props.searchState.length ?true:false
+  let { searchState, setSearchState,onSearchIndexUpdate, hitsData,searchResults,setHitsData } = props;
+
   const [activeFilterBy, setActiveFilterBy] = useState(props.searchIndex || 'institutions');
+  const [hasQuery,setHasQuery] = useState( props.searchState.length ?true:false)
 
   const handleFilterBy = (indexName) => {
     setActiveFilterBy(indexName);
     onSearchIndexUpdate(indexName);
   }
 
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    const element = document.getElementById('search-state-container');
+    const inputMeilisearch = document.getElementById('input-meilisearch');
 
-  // SearchStateResults.handleClickOutside = (event) => {
-  //   let element = document.getElementById('search-state-container');
-  //   if (!element.hasAttribute('hidden') && event.target.id !== 'input-meilisearch') {
-  //     setSearchState({
-  //       ...searchState,
-  //       query: '',
-  //     });
-  //   }
-  // }
+    if (element && !element.hasAttribute('hidden') && event.target !== inputMeilisearch) {
+      setSearchState('');
+    }
+  };
+
+  const clickOutsideConfig = {
+    excludeScrollbar: true,
+    handleClickOutside,
+  };
+  document.addEventListener('click', handleClickOutside,clickOutsideConfig);
+
+
+  return () => {
+    document.removeEventListener('click', handleClickOutside,clickOutsideConfig);
+  };
+}, [searchState,setSearchState]);
+
 
   return (
     <SearchStateContainer id="search-state-container" hidden={!hasQuery}>
@@ -173,10 +186,5 @@ const SearchStateResults = (props) => {
     </SearchStateContainer>
   );
 };
-
-// const clickOutsideConfig = {
-//   excludeScrollbar: true,
-//   handleClickOutside: () => SearchStateResults.handleClickOutside,
-// };
 
 export default SearchStateResults;
