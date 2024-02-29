@@ -123,7 +123,7 @@ const SearchStateResults = (props) => {
   let { searchState, setSearchState,onSearchIndexUpdate, hitsData,searchResults,setHitsData } = props;
 
   const [activeFilterBy, setActiveFilterBy] = useState(props.searchIndex || 'institutions');
-  const [hasQuery,setHasQuery] = useState( props.searchState.length ?true:false)
+ const hasQuery =  props.searchState.length ?true:false
 
   const handleFilterBy = (indexName) => {
     setActiveFilterBy(indexName);
