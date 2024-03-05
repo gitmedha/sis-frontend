@@ -10,6 +10,7 @@ import { EmploymentConnectionValidations } from "../../../validations";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
+  searchEmployers
 } from "./StudentActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
@@ -218,19 +219,15 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let employmentConnectionEmployer = props.employmentConnection
+    try {
+      const employerData = await searchEmployers(filterValue);
+
+      let employmentConnectionEmployer = props.employmentConnection
           ? props.employmentConnection.opportunity?.employer
           : null;
         let employerFoundInList = false;
 
-        let filterData = data.hits.map((employer) => {
+        let filterData = employerData.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)
@@ -254,7 +251,10 @@ const EnrollmentConnectionForm = (props) => {
           });
         }
         return filterData;
-      });
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
   
 
@@ -268,7 +268,7 @@ const EnrollmentConnectionForm = (props) => {
   }, [])
   
   const handleStatusChange = async(value)=>{
-    console.log("value",value);
+    
     setSelectedStatus(value);
 
     if(value === "Rejected by Employer"){

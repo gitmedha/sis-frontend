@@ -23,7 +23,8 @@ import {
   DELETE_ALUMNI_SERVICE, 
   BULK_ALUMNI_SERVICES,
   SEARCH_INSTITUITIONS,
-  SEARCH_BY_BATCHES
+  SEARCH_BY_BATCHES,
+  SEARCH_BY_EMPLOYERS
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -446,6 +447,24 @@ export const searchBatch = async function(searchValue){
   try {
     const {data} = await api.post('/graphql', {
       query:SEARCH_BY_BATCHES,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+export const searchEmployers = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_EMPLOYERS,
       variables:{
         limit:20,
         name:searchValue,

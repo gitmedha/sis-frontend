@@ -559,3 +559,22 @@ export const SEARCH_BY_BATCHES = `
     }
   }
 `
+
+export const SEARCH_BY_EMPLOYERS = `
+  query SEARCH_BY_EMPLOYERS($query:String, $limit:Int, $sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+    }
+  }
+`
