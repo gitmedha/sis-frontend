@@ -22,7 +22,8 @@ import {
   UPDATE_ALUMNI_SERVICE, 
   DELETE_ALUMNI_SERVICE, 
   BULK_ALUMNI_SERVICES,
-  SEARCH_INSTITUITIONS
+  SEARCH_INSTITUITIONS,
+  SEARCH_BY_BATCHES
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -430,7 +431,7 @@ export const searchInstitution = async function(searchValue){
       variables:{
         limit:20,
         name:searchValue,
-        sort:`name:asc`
+        sort:'name:asc'
       }
     })
 
@@ -438,5 +439,23 @@ export const searchInstitution = async function(searchValue){
     
   } catch (error) {
     console.error("error:",error);
+  }
+}
+
+export const searchBatch = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_BATCHES,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
   }
 }

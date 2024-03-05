@@ -539,3 +539,23 @@ export const SEARCH_INSTITUITIONS = `
     }
   }
 `
+
+
+export const SEARCH_BY_BATCHES = `
+  query SEARCH_BY_BATCHES($query:String, $limit:Int, $sort:String){
+    batchesConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+    }
+  }
+`
