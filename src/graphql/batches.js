@@ -583,3 +583,97 @@ query GET_BATCH_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $sort: 
 //     enrollment_type
 //   }
 // }`;
+
+
+export const SEARCH_BY_GRANTS = `
+  query SEARCH_BY_GRANTS($query:String, $limit:Int,$sort:String){
+    grantsConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+          {donor_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+        donor
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+export const SEARCH_BY_INSTITUTIONS = `
+  query SEARCH_BY_INSTITUTIONS($query:String, $limit:Int, $sort:String){
+    institutionsConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+` 
+
+export const SEARCH_BY_PROGRAMS = `
+  query SEARCH_BY_PROGRAMS($query:String, $limit:Int, $sort:String){
+    programsConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+
+`
+
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String,$limit:Int, $sort:String){
+    studentsConnection(
+      sort:$sort,
+      limit:$limit
+      where:{
+        _or:[
+          {full_name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        full_name
+        student_id
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+
+`

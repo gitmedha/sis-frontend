@@ -516,3 +516,26 @@ export const GET_ALL_STUDENT = `
     }
   }
 `;
+
+
+export const SEARCH_INSTITUITIONS = `
+  query SEARCH_INSTIUTION($name:String,$limit:Int,$sort:String){
+    institutionsConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$name}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`

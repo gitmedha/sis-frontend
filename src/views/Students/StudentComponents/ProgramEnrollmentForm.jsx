@@ -9,7 +9,8 @@ import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
+import {searchInstitution} from "../StudentComponents/StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -133,13 +134,11 @@ const ProgramEnrollmentForm = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
+    try {
+      let data = await searchInstitution(filterValue);
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let institutionFoundInList = false;
-      let filterData = data.hits.map(institution => {
+      let filterData = data.institutionsConnection.values.map(institution=>{
         if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
           institutionFoundInList = true;
         }
@@ -149,6 +148,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
+
       if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
         filterData.unshift({
           label: programEnrollmentInstitution.name,
@@ -156,7 +156,10 @@ const ProgramEnrollmentForm = (props) => {
         });
       }
       return filterData;
-    });
+      
+    } catch (error) {
+      console.error("error:",error);
+    }
   }
 
   const filterBatch = async (filterValue) => {
