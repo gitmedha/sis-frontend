@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik";
-import { Modal } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
@@ -20,6 +20,8 @@ import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
 import api from "../../../apis";
 import moment from "moment";
+import CheckBoxForm from "./CheckBoxForm";
+import AlumMassEdit from "../MassEdit/AlumMassEdit";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -69,6 +71,8 @@ const MassEdit = (props) => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [students, setStudents] = useState([]);
+  const [bulkAddCheck,setBulkAddCheck]=useState(true)
+  const [massEditCheck,setMassEditCheck]=useState(false)
 
   useEffect(() => {
     if (props.alumniService) {
@@ -120,9 +124,11 @@ const MassEdit = (props) => {
     filterStudent().then((data) => {
       setStudentOptions(data);
     });
-    setStudentOptions(props.data.map(obj=>{
-      return {value:obj.id,label:obj.full_name}
-    }))
+    setStudentOptions(
+      props.data.map((obj) => {
+        return { value: obj.id, label: obj.full_name };
+      })
+    );
   }, [props]);
 
   let initialValues = {
@@ -134,35 +140,34 @@ const MassEdit = (props) => {
     end_date: "",
     source: "",
     salary_offered: "",
-    category:"",
-    subcategory:"",
+    category: "",
+    subcategory: "",
     assigned_to: "",
   };
 
-  //   if (props.alumniService) {
-  //     initialValues = {...initialValues, ...props.alumniService};
-  //     initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
-  //     initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
-  //     initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
-  //     initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
-  //     initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
-  //   }
+
 
   const handleClose = () => {
     setSelectedCategory("");
-    onHide([],"Alumn");
+    onHide([], "Alumn");
   };
 
   const onSubmit = async (values) => {
     values.students = students;
 
     let newdata = values.students.map((obj) => {
-     let startDate= values.start_date ? moment(values.start_date).format("YYYY-MM-DD") : null;
-     let endDate= values.end_date ? moment(values.end_date).format("YYYY-MM-DD") : null;
-     let feeSubmission= values.fee_submission_date ? moment(values.fee_submission_date).format("YYYY-MM-DD") : null;
-     let feeAmount=values.fee_amount 
-    //  let receiptNumber=values.receipt_number ?values.receipt_number:""
-     let comments=values.comments ? values.comments :''
+      let startDate = values.start_date
+        ? moment(values.start_date).format("YYYY-MM-DD")
+        : null;
+      let endDate = values.end_date
+        ? moment(values.end_date).format("YYYY-MM-DD")
+        : null;
+      let feeSubmission = values.fee_submission_date
+        ? moment(values.fee_submission_date).format("YYYY-MM-DD")
+        : null;
+      let feeAmount = values.fee_amount;
+      //  let receiptNumber=values.receipt_number ?values.receipt_number:""
+      let comments = values.comments ? values.comments : "";
       return {
         student: obj.id,
         assigned_to: values.assigned_to,
@@ -233,6 +238,11 @@ const MassEdit = (props) => {
     { value: "silver", label: "Silver", color: "#666666" },
   ];
 
+  useEffect(()=>{
+    console.log("bulkAddCheck",bulkAddCheck);
+    console.log("massEditcheck",massEditCheck)
+  },[bulkAddCheck,massEditCheck])
+
   return (
     <Modal
       centered
@@ -257,17 +267,22 @@ const MassEdit = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
-        <Formik
-          onSubmit={onSubmit}
-          initialValues={initialValues}
-          validationSchema={validationRules}
-        >
-          {({ values }) => (
-            <Form>
-              <Section>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {/* <Input
+        {
+          <CheckBoxForm bulkAdd="Bulk Add" bulkcheck={bulkAddCheck} masscheck={massEditCheck} massEdit="Mass Edit"  setBulkAddCheck={setBulkAddCheck} setMassEditCheck={setMassEditCheck} />
+        }
+
+        {bulkAddCheck ? (
+          <Formik
+            onSubmit={onSubmit}
+            initialValues={initialValues}
+            validationSchema={validationRules}
+          >
+            {({ values }) => (
+              <Form>
+                <Section>
+                  <div className="row">
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      {/* <Input
                       name="student_ids"
                       control="lookupAsync"
                       label="Student"
@@ -278,130 +293,130 @@ const MassEdit = (props) => {
                       defaultOptions={ studentOptions}
                       required={true}
                     /> */}
-                    <label className="leading-24">Student</label>
-                    <Select
-                      //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                      isMulti
-                      name="student_ids"
-                      options={studentOptions}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      onChange={(choice) => setStudents(choice)}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="lookupAsync"
-                      name="assigned_to"
-                      label="Assigned To"
-                      required
-                      className="form-control"
-                      placeholder="Assigned To"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="category"
-                      label="Category"
-                      placeholder="Category"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={categoryOptions}
-                      onChange={(e) => setSelectedCategory(e.value)}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedCategory && (
+                      <label className="leading-24">Student</label>
+                      <Select
+                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
+                        isMulti
+                        name="student_ids"
+                        options={studentOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={(choice) => setStudents(choice)}
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="category"
+                        label="Category"
+                        placeholder="Category"
+                        control="lookup"
+                        icon="down"
+                        className="form-control"
+                        options={categoryOptions}
+                        onChange={(e) => setSelectedCategory(e.value)}
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      {selectedCategory && (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="type"
+                          label="Subcategory"
+                          options={typeOptions.filter(
+                            (option) => option.category === selectedCategory
+                          )}
+                          className="form-control"
+                          placeholder="Subcategory"
+                          required
+                        />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        control="lookup"
+                        icon="down"
+                        name="program_mode"
+                        label="Program Mode"
+                        options={programOptions}
+                        className="form-control"
+                        placeholder="Program Mode"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         icon="down"
                         control="lookup"
-                        name="type"
-                        label="Subcategory"
-                        options={typeOptions.filter(
-                          (option) => option.category === selectedCategory
-                        )}
+                        name="location"
+                        label="Location"
+                        options={locationOptions}
                         className="form-control"
-                        placeholder="Subcategory"
+                        placeholder="Location"
                         required
                       />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="lookup"
-                      icon="down"
-                      name="program_mode"
-                      label="Program Mode"
-                      options={programOptions}
-                      className="form-control"
-                      placeholder="Program Mode"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="location"
-                      label="Location"
-                      options={locationOptions}
-                      className="form-control"
-                      placeholder="Location"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="start_date"
-                      label="Start Date"
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="end_date"
-                      label="End Date"
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="fee_submission_date"
-                      label="Contribution Submission Date"
-                      placeholder="Contribution Submission Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                      onInput={(value) => setFeeSubmissionDateValue(value)}
-                      required={feeFieldsRequired}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      min={0}
-                      type="number"
-                      name="fee_amount"
-                      label="Contribution Amount"
-                      placeholder="Contribution Amount"
-                      control="input"
-                      className="form-control"
-                      autoComplete="off"
-                      onInput={(e) => setFeeAmountValue(e.target.value)}
-                      required={feeFieldsRequired}
-                    />
-                  </div>
-                  {/* <div className="col-md-6 col-sm-12 mt-2">
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="start_date"
+                        label="Start Date"
+                        placeholder="Start Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="fee_submission_date"
+                        label="Contribution Submission Date"
+                        placeholder="Contribution Submission Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        onInput={(value) => setFeeSubmissionDateValue(value)}
+                        required={feeFieldsRequired}
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        min={0}
+                        type="number"
+                        name="fee_amount"
+                        label="Contribution Amount"
+                        placeholder="Contribution Amount"
+                        control="input"
+                        className="form-control"
+                        autoComplete="off"
+                        onInput={(e) => setFeeAmountValue(e.target.value)}
+                        required={feeFieldsRequired}
+                      />
+                    </div>
+                    {/* <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
@@ -413,38 +428,44 @@ const MassEdit = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div> */}
-                  <div className="col-md-12 col-sm-12 mt-2">
-                    <Textarea
-                      name="comments"
-                      label="Comments"
-                      placeholder="Comments"
-                      control="input"
-                      className="form-control"
-                      autoComplete="off"
-                    ></Textarea>
+                    <div className="col-md-12 col-sm-12 mt-2">
+                      <Textarea
+                        name="comments"
+                        label="Comments"
+                        placeholder="Comments"
+                        control="input"
+                        className="form-control"
+                        autoComplete="off"
+                      ></Textarea>
+                    </div>
+                  </div>
+                </Section>
+                <div className="row mt-3 py-3">
+                  <div className="d-flex justify-content-start">
+                    <button
+                      className="btn btn-primary btn-regular mx-0"
+                      type="submit"
+                    >
+                      SAVE
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      className="btn btn-secondary btn-regular mr-2"
+                    >
+                      CANCEL
+                    </button>
                   </div>
                 </div>
-              </Section>
-              <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-start">
-                  <button
-                    className="btn btn-primary btn-regular mx-0"
-                    type="submit"
-                  >
-                    SAVE
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleClose}
-                    className="btn btn-secondary btn-regular mr-2"
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </div>
-            </Form>
-          )}
-        </Formik>
+              </Form>
+            )}
+          </Formik>
+        ) : (
+          <AlumMassEdit  
+          setBulkAddCheck={setBulkAddCheck}
+          setMassEditCheck={setMassEditCheck}
+          />
+        )} 
       </Modal.Body>
     </Modal>
   );

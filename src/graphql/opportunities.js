@@ -118,6 +118,16 @@ opportunitiesConnection(
 }`
 ;
 
+export const GET_ALL_OPPORTUNITIES = `
+query GET_OPPORTUNITIES() {
+opportunitiesConnection() {
+  values {
+    id,
+  }
+ }
+}`
+;
+
 export const GET_OPPORTUNITY=`
 query OPPORTUNITY($id:ID!) {
   opportunity(id: $id) {
