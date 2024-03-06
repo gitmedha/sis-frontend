@@ -24,7 +24,8 @@ import {
   BULK_ALUMNI_SERVICES,
   SEARCH_INSTITUITIONS,
   SEARCH_BY_BATCHES,
-  SEARCH_BY_EMPLOYERS
+  SEARCH_BY_EMPLOYERS,
+  SEARCH_BY_STUDENTS
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -469,6 +470,25 @@ export const searchEmployers = async function(searchValue){
         limit:20,
         name:searchValue,
         sort:'name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
+export const searchStudents = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_STUDENTS,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'full_name:asc'
       }
     })
 

@@ -11,6 +11,8 @@ import { EmploymentConnectionValidations } from "../../../validations";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
+  searchEmployers,
+  searchStudents
 } from "./StudentActions";
 import {
   filterAssignedTo,
@@ -153,18 +155,14 @@ const MassEmployerUpload = (props) => {
     props.uploadData(newdata);
   };
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      })
-      .then((data) => {
-        let employmentConnectionStudent = props.employmentConnection
+    try {
+      const {data} = await searchStudents(filterValue);
+
+      let employmentConnectionStudent = props.employmentConnection
           ? props.employmentConnection.student
           : null;
         let studentFoundInEmploymentList = false;
-        let filterData = data.hits.map((student) => {
+        let filterData = data.studentsConnection.values.map((student) => {
           if (
             props.employmentConnection &&
             student.id === Number(employmentConnectionStudent?.id)
@@ -188,7 +186,10 @@ const MassEmployerUpload = (props) => {
           });
         }
         return filterData;
-      });
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -300,19 +301,16 @@ const MassEmployerUpload = (props) => {
   };
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let employmentConnectionEmployer = props.employmentConnection
+    
+    try {
+      const {data} = await searchEmployers(filterValue);
+
+      let employmentConnectionEmployer = props.employmentConnection
           ? props.employmentConnection.opportunity?.employer
           : null;
         let employerFoundInList = false;
 
-        let filterData = data.hits.map((employer) => {
+        let filterData = data.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)
@@ -336,7 +334,11 @@ const MassEmployerUpload = (props) => {
           });
         }
         return filterData;
-      });
+
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

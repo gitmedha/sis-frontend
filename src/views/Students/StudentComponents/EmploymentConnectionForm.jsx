@@ -33,11 +33,6 @@ const Section = styled.div`
   }
 `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student ,employmentConnection} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -227,7 +222,7 @@ const EnrollmentConnectionForm = (props) => {
           : null;
         let employerFoundInList = false;
 
-        let filterData = employerData.employersConnection.values.map((employer) => {
+        let filterData = employerData.data.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)

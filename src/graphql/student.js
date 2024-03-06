@@ -578,3 +578,26 @@ export const SEARCH_BY_EMPLOYERS = `
     }
   }
 `
+
+
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String, $limit:Int, $sort:String){
+    studentsConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {full_name_contains:$query}
+          {student_id_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        full_name
+        student_id
+      }
+    }
+  }
+`
+
