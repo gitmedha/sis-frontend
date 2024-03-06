@@ -41,7 +41,7 @@ const Styled = styled.div`
 
 const options = [
   { value: "feild_activity", label: "Feild Activity" },
-  { value: "feild_activity", label: "CollegePitches" },
+  { value: "collegePitch", label: "CollegePitches" },
 ];
 const UploadFile = (props) => {
   let { onHide } = props;
@@ -50,6 +50,9 @@ const UploadFile = (props) => {
   const [batchOption,setBatchOption]=useState([])
   const [institutionOption,setInstituteOption]=useState([])
   const [assigneOption ,setAssigneeOption]=useState([])
+  const [excelData,setExcelData]=useState([])
+  const [notUploadedData,setNotuploadedData]=useState([])
+  const [fileType,setFileType]=useState('')
 //   const readUploadFile = (e) => {
 //     e.preventDefault();
 //     if (e.target.files) {
@@ -253,9 +256,9 @@ const readUploadFile = (e) => {
         }
       });
 
-      console.log("Formatted Data:", formattedData);
-      props.uploadExcel(formattedData)
-      console.log("Data with Missing Batch or Institute Information:", notFoundData);
+      setExcelData(formattedData)
+      setNotuploadedData(notFoundData)
+
     };
     reader.readAsArrayBuffer(e.target.files[0]);
   }
@@ -270,7 +273,13 @@ const readUploadFile = (e) => {
 
 
 const updatevalue=()=>{
-  props.uploadExcel()
+  if(notUploadedData.length ==0){
+    props.uploadExcel(excelData,fileType)
+   
+  }else{
+    props.alertForNotuploadedData(notUploadedData,fileType)
+  }
+  
 }
 
 
@@ -304,7 +313,7 @@ const updatevalue=()=>{
               name="batch"
               options={options}
               onChange={(e) => {
-                console.log(e, "program_name");
+                setFileType(e.value);
               }}
             />
             <form>
@@ -322,7 +331,7 @@ const updatevalue=()=>{
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
-                  // onClick={() => updatevalue()}
+                  onClick={() => updatevalue()}
                   className="btn btn-primary px-4 mx-4"
                 >
                   EDIT
