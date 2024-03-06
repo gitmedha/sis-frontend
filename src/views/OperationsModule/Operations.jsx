@@ -39,9 +39,15 @@ import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
   sortAscending,
   resetSearch,
-  searchOperationTab
+  searchOperationTab,
 } from "../../store/reducers/Operations/actions";
-import { bulkCreateAlumniQueries, bulkCreateCollegePitch, bulkCreateStudentsUpskillings, bulkCreateUsersTots } from "./OperationComponents/operationsActions";
+import {
+  bulkCreateAlumniQueries,
+  bulkCreateCollegePitch,
+  bulkCreateStudentsUpskillings,
+  bulkCreateUsersTots,
+} from "./OperationComponents/operationsActions";
+import UploadFile from "./OperationComponents/UploadFile";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -55,12 +61,8 @@ const tabPickerOptions1 = [
   // { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Pitching", key: "collegePitches" },
 ];
-const tabPickerOptions2=[
-  { title: "Alumni Queries", key: "alumniQueries" },
-]
-const tabPickerOptions3 =[
-  { title: "TOT", key: "useTot" },
-]
+const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
+const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -85,7 +87,7 @@ const Operations = ({
   resetSearch,
   isFound,
   isSearching,
-  searchOperationTab
+  searchOperationTab,
 }) => {
   const [showModal, setShowModal] = useState({
     opsdata: false,
@@ -116,6 +118,7 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
+  const [uploadModal,setUploadModal]=useState(false)
 
   const columns = useMemo(
     () => [
@@ -340,9 +343,9 @@ const Operations = ({
         accessor: "pitch_date",
       },
       {
-        Header:'Program Name',
-        accessor:'program_name'
-      }
+        Header: "Program Name",
+        accessor: "program_name",
+      },
     ],
     []
   );
@@ -371,9 +374,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeOperations.values);
-          setoptsAggregate(
-            data.data.data.allOperations.aggregate
-          );
+          setoptsAggregate(data.data.data.allOperations.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -413,9 +414,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeStudentsUpskillings.values);
-          setoptsAggregate(
-            data.data.data.allStudentsUpskillings.aggregate
-          );
+          setoptsAggregate(data.data.data.allStudentsUpskillings.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -493,12 +492,12 @@ const Operations = ({
     }
   }, [isSearching]);
 
-  const onHide=async (data)=>{
+  const onHide = async (data) => {
     const value = await api.post(
       "/users-ops-activities/createBulkOperations",
       data
     );
-  }
+  };
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
@@ -704,7 +703,6 @@ const Operations = ({
     [activeTab, activeStatus]
   );
 
-
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
   }, [activeTab.key, activeStatus]);
@@ -713,98 +711,96 @@ const Operations = ({
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
-  
   const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
-        setShowModal({ ...showModal, [key]: data });
-        return;
+      setShowModal({ ...showModal, [key]: data });
+      return;
     }
   };
 
-  
   //it refreshes table on saving event
-  const refreshTableOnDataSaving = async()=>{
-    if(isSearching){
-        const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
-        await searchOperationTab(baseUrl,searchedProp,searchValue);
-    }
-    else {
+  const refreshTableOnDataSaving = async () => {
+    if (isSearching) {
+      const { baseUrl, searchedProp, searchValue } = await JSON.parse(
+        localStorage.getItem("prevSearchedPropsAndValues")
+      );
+      await searchOperationTab(baseUrl, searchedProp, searchValue);
+    } else {
       getoperations();
     }
-   
-  }
+  };
 
-//it refreshes table on delete event
-  const refreshTableOnDeleting = async()=>{
-    if(isSearching){
-      const {baseUrl,searchedProp,searchValue} = await JSON.parse(localStorage.getItem("prevSearchedPropsAndValues"));
-      await searchOperationTab(baseUrl,searchedProp,searchValue);
-  }
-  else {
-    getoperations();
-  }
-  }
+  //it refreshes table on delete event
+  const refreshTableOnDeleting = async () => {
+    if (isSearching) {
+      const { baseUrl, searchedProp, searchValue } = await JSON.parse(
+        localStorage.getItem("prevSearchedPropsAndValues")
+      );
+      await searchOperationTab(baseUrl, searchedProp, searchValue);
+    } else {
+      getoperations();
+    }
+  };
 
-  
-
-
-  
-  const hideCreateModal = async (key,data) => {
+  const hideCreateModal = async (key, data) => {
     if (!data) {
       setModalShow(false);
       return;
     }
-    if(key =="feilddata"){
-      const value = await api.post(
-        "/users-ops-activities/createBulkOperations",
-        data
-      ).then((data) => {
-        setAlert("data created successfully.", "success");
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      })
-      .catch((err) => {
-        setAlert("Unable to create field data .", "error");
-      })
+    if (key == "feilddata") {
+      const value = await api
+        .post("/users-ops-activities/createBulkOperations", data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create field data .", "error");
+        });
     }
-    if(key =="alum"){
-      const value = await bulkCreateAlumniQueries(data).then((data) => {
-        setAlert("Alumni data created successfully.", "success");
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      })
-      .catch((err) => {
-        setAlert("Unable to create alumni queries.", "error");
-      })
+    if (key == "alum") {
+      const value = await bulkCreateAlumniQueries(data)
+        .then((data) => {
+          setAlert("Alumni data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create alumni queries.", "error");
+        });
     }
-    if(key =="collegepitches"){
-      const value = await bulkCreateCollegePitch(data).then((data) => {
-        setAlert("data created successfully.", "success");
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      })
-      .catch((err) => {
-        setAlert("Unable to create pitching data.", "error");
-      })
+    if (key == "collegepitches") {
+      const value = await bulkCreateCollegePitch(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create pitching data.", "error");
+        });
     }
-    if(key =="upskill"){
-      const value = await bulkCreateStudentsUpskillings(data).then((data) => {
-        setAlert("data created successfully.", "success");
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      })
-      .catch((err) => {
-        setAlert("Unable to create upskilling data.", "error");
-      })
+    if (key == "upskill") {
+      const value = await bulkCreateStudentsUpskillings(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
     }
 
-    if(key =="tot"){
-      const value = await bulkCreateUsersTots(data).then((data) => {
-        setAlert("data created successfully.", "success");
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      })
-      .catch((err) => {
-        setAlert("Unable to create upskilling data.", "error");
-      })
+    if (key == "tot") {
+      const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
     }
-   
-    setModalShow(false)
+
+    setModalShow(false);
     getoperations();
   };
 
@@ -854,8 +850,7 @@ const Operations = ({
       });
 
       await sortAscending(sortedData);
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const getField = (object, fieldPath) => {
@@ -894,24 +889,39 @@ const Operations = ({
     },
     [opsData]
   );
-  useEffect(()=>{
-if(activeTabMain.key == 'alum' ){
-  setActiveTab(tabPickerOptions2[0])
-  
-}
+  useEffect(() => {
+    if (activeTabMain.key == "alum") {
+      setActiveTab(tabPickerOptions2[0]);
+    }
+
+    if (activeTabMain.key == "systemAdoption") {
+      setActiveTab(tabPickerOptions3[0]);
+    }
+    if (activeTabMain.key == "coreProgramme") {
+      setActiveTab(tabPickerOptions1[0]);
+    }
+    if (
+      activeTabMain.key != "alum" &&
+      activeTabMain.key != "systemAdoption" &&
+      activeTab.key != "my_data"
+    ) {
+      window.location.reload();
+    }
+  }, [activeTabMain.key]);
 
 
-if(activeTabMain.key == 'systemAdoption' ){
-  setActiveTab(tabPickerOptions3[0])
-}
-if(activeTabMain.key == 'coreProgramme' ){
-  setActiveTab(tabPickerOptions1[0])
-}
-if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && activeTab.key != 'my_data'  ){
-  window.location.reload();
-}
 
-  },[activeTabMain.key])
+  const uploadExcel=async(data)=>{
+    const value = await api
+        .post("/users-ops-activities/createBulkOperations", data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create field data .", "error");
+        });
+  }
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -922,26 +932,49 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-             {
-              activeTabMain.key =='coreProgramme'? <TabPicker options={tabPickerOptions1} setActiveTab={setActiveTab} /> : activeTabMain.key =='alum'? <TabPicker options={tabPickerOptions2} setActiveTab={setActiveTab} />:activeTabMain.key =='systemAdoption' ? <TabPicker options={tabPickerOptions3} setActiveTab={setActiveTab} /> :''
-            }
+            {activeTabMain.key == "coreProgramme" ? (
+              <TabPicker
+                options={tabPickerOptions1}
+                setActiveTab={setActiveTab}
+              />
+            ) : activeTabMain.key == "alum" ? (
+              <TabPicker
+                options={tabPickerOptions2}
+                setActiveTab={setActiveTab}
+              />
+            ) : activeTabMain.key == "systemAdoption" ? (
+              <TabPicker
+                options={tabPickerOptions3}
+                setActiveTab={setActiveTab}
+              />
+            ) : (
+              ""
+            )}
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-        
-           
-        {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
+              {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
 
-        {(isSRM() || isAdmin()) && (
-          <button
-            className="btn btn-primary"
-            onClick={() => setModalShow(true)}
-            style={{ marginLeft: "15px" }}
-          >
-            Add New Data
-          </button>
-        )}
-      </div>
+              {(isSRM() || isAdmin()) && (
+                <>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setModalShow(true)}
+                    style={{ marginLeft: "15px" }}
+                  >
+                    Add New Data
+                  </button>
+
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setUploadModal(true)}
+                    style={{ marginLeft: "15px" }}
+                  >
+                    Upload Data
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          
+
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             {activeTab.key == "my_data" ? (
               <>
@@ -1106,8 +1139,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.opsdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("opsdata", false)}
-              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
-              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
           {showModal.totdata && (isSRM() || isAdmin()) && (
@@ -1115,8 +1148,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.totdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("totdata", false)}
-              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
-              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
           {showModal.upskilldata && (isSRM() || isAdmin()) && (
@@ -1124,8 +1157,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.upskilldata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("upskilldata", false)}
-              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
-              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
           {showModal.sditdata && (isSRM() || isAdmin()) && (
@@ -1140,8 +1173,8 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("alumniQueriesdata", false)}
-              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
-              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
           {showModal.collegePitches && (isSRM() || isAdmin()) && (
@@ -1149,10 +1182,18 @@ if( activeTabMain.key != 'alum' && activeTabMain.key !='systemAdoption'  && acti
               {...optsdata.collegePitches}
               show={showModal.opsdata}
               onHide={() => hideShowModal("collegePitches", false)}
-              refreshTableOnDataSaving={()=>refreshTableOnDataSaving()}
-              refreshTableOnDeleting={()=>refreshTableOnDeleting()}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
+
+          {uploadModal  &&
+          <>
+            <UploadFile 
+              uploadExcel={uploadExcel}
+            />
+          </>
+          }
         </div>
       </Styled>
     </Collapse>
@@ -1169,7 +1210,7 @@ const mapActionsToProps = {
   setAlert,
   sortAscending,
   resetSearch,
-  searchOperationTab
+  searchOperationTab,
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(Operations);

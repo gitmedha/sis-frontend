@@ -178,7 +178,7 @@ const MassEdit = (props) => {
         type: values.type,
       };
     });
-    onHide(newdata);
+    props.uploadAlumniData(newdata);
   };
 
   const filterStudent = async (filterValue) => {
