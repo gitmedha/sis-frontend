@@ -16,7 +16,6 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
 import moment from "moment";
 

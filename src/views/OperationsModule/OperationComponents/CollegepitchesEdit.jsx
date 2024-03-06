@@ -1,31 +1,23 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
-  getAddressOptions,
-  getStateDistricts,
+  getAddressOptions
 } from "../../Address/addressActions";
 import {
-  filterAssignedTo,
   getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import AsyncSelect from "react-select/async";
-import { MeiliSearch } from "meilisearch";
-import { Select } from "@material-ui/core";
-// import 'react-select/dist/react-select.css';
-import { MenuItem } from "material-ui";
+
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getPitchingPickList, updateCollegePitch, updateOpsActivity, updateSamarthSdit } from "./operationsActions";
+import { getPitchingPickList, updateCollegePitch,searchPrograms,searchBatches,searchInstitutions} from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { handleKeyPress, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
+import { handleKeyPress, mobileNochecker} from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -45,11 +37,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const CollepitchesEdit = (props) => {
   let { onHide, show,refreshTableOnDataSaving } = props;
@@ -85,44 +72,40 @@ const CollepitchesEdit = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
-        });
-        return filterData;
+    try {
+      const {data} = await searchBatches(filterValue);
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        };
       });
+      return filterData;
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(async () => {
@@ -262,18 +245,18 @@ const CollepitchesEdit = (props) => {
   };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(program => {
+    try {
+      const {data} = await searchPrograms(filterValue);
+      return data.programsConnection.values.map(program => {
         return {
           ...program,
           label: program.name,
           value:program.name,
         }
       });
-    });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

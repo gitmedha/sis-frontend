@@ -3,7 +3,6 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
 
 import { Input } from "../../../utils/Form";
@@ -38,11 +37,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const MassEmployerUpload = (props) => {
   let { onHide, show, student, employmentConnection } = props;
