@@ -53,22 +53,6 @@ const UploadFile = (props) => {
   const [excelData,setExcelData]=useState([])
   const [notUploadedData,setNotuploadedData]=useState([])
   const [fileType,setFileType]=useState('')
-//   const readUploadFile = (e) => {
-//     e.preventDefault();
-//     if (e.target.files) {
-//         const reader = new FileReader();
-//         reader.onload = (e) => {
-//             const data = e.target.result;
-//             const workbook = xlsx.read(data, { type: "array" });
-//             const sheetName = workbook.SheetNames[0];
-//             const worksheet = workbook.Sheets[sheetName];
-//             // console.log("worksheet",worksheet);
-//             const json = xlsx.utils.sheet_to_json(worksheet);
-//             console.log(json);
-//         };
-//         reader.readAsArrayBuffer(e.target.files[0]);
-//     }
-// }
 
 
 useEffect(() => {
@@ -81,8 +65,6 @@ useEffect(() => {
   };
   
   getbatch();
-
-  console.log("institutionOption",assigneOption);
 
 }, [props]);
 
@@ -109,84 +91,10 @@ const getAllInstitute=async ()=>{
   }
 }
 
-// const readUploadFile = (e) => {
-//   e.preventDefault();
-//   if (e.target.files) {
-//       const reader = new FileReader();
-//       reader.onload = (e) => {
-//           const data = e.target.result;
-//           const workbook = xlsx.read(data, { type: "array" });
-//           const sheetName = workbook.SheetNames[0];
-//           const worksheet = workbook.Sheets[sheetName];
-//           const json = xlsx.utils.sheet_to_json(worksheet);
-
-//           // Mapping incoming data to the desired format
-//           const formattedData = json.map(item => ({
-//               institution: item["Educational Institution"] || "",
-//               batch: item["Batch Name"] || "",
-//               state: item["State"] || "",
-//               start_date: item["Start Date"] || "",
-//               end_date: item["End Date"] || "",
-//               topic: item["Session Topic"] || "",
-//               donor: item["Project / Funder"] || "",
-//               guest: item["Guest Name "] || "",
-//               designation: item["Guest Designation"] || "",
-//               organization: item["Organization"] || "",
-//               activity_type: item["Activity Type"] || "",
-//               assigned_to: item["Assigned To"] || "",
-//               area: item["Medha Area"] || ""
-//           }));
-//       };
-//       reader.readAsArrayBuffer(e.target.files[0]);
-//   }
-// };
-
-
-// const readUploadFile = (e) => {
-//   e.preventDefault();
-//   if (e.target.files) {
-//     const reader = new FileReader();
-//     reader.onload = async (e) => {
-//       const data = e.target.result;
-//       const workbook = xlsx.read(data, { type: "array" });
-//       const sheetName = workbook.SheetNames[0];
-//       const worksheet = workbook.Sheets[sheetName];
-//       const json = xlsx.utils.sheet_to_json(worksheet);
-
-//       // Initialize arrays to store filtered and non-filtered data
-//       const formattedData = json.map((item) => {
-//         // Check if batch and institute are present in their respective options
-//         const batchId = batchOption.find((batch) => batch.name === item["Batch Name"])?.id;
-//         const instituteId = institutionOption.find((institute) => institute.name === item["Educational Institution"])?.id;
-        
-//         return {
-//           institution: instituteId,
-//           batch: batchId,
-//           state: item["State"] || "",
-//           start_date: item["Start Date"] || "",
-//           end_date: item["End Date"] || "",
-//           topic: item["Session Topic"] || "",
-//           donor: item["Project / Funder"] || "",
-//           guest: item["Guest Name "] || "",
-//           designation: item["Guest Designation"] || "",
-//           organization: item["Organization"] || "",
-//           activity_type: item["Activity Type"] || "",
-//           assigned_to: item["Assigned To"] || "",
-//           area: item["Medha Area"] || "",
-//         };
-//       });
-
-//       console.log("Formatted Data:", formattedData);
-//     };
-//     reader.readAsArrayBuffer(e.target.files[0]);
-//   }
-// };
-
-
 const convertExcelDateToJSDate = (excelDate) => {
   const millisecondsInDay = 24 * 60 * 60 * 1000;
   const date = new Date((excelDate - 1) * millisecondsInDay + Date.parse("1899-12-31"));
-  return date.toISOString().split("T")[0]; // Return in YYYY-MM-DD format
+  return date.toISOString().split("T")[0]; 
 };
 
 const readUploadFile = (e) => {
@@ -200,13 +108,10 @@ const readUploadFile = (e) => {
       const worksheet = workbook.Sheets[sheetName];
       const json = xlsx.utils.sheet_to_json(worksheet);
 
-      // Initialize arrays to store filtered and non-filtered data
       const formattedData = [];
       const notFoundData = [];
 
       json.forEach((item) => {
-        console.log(item);
-        // Check if batch and institute are present in their respective options
         const batchId = batchOption.find((batch) => batch.name === item["Batch Name"])?.id;
         const instituteId = institutionOption.find((institute) => institute.name === item["Educational Institution"])?.id;
         const userId =assigneOption.find((user) => user.name ===  item["Assigned To"])?.id;
@@ -216,7 +121,7 @@ const readUploadFile = (e) => {
         const donor = item["Project / Funder"].toLowerCase() === "no" ? false : true;
         const currentUser=localStorage.getItem("user_id")
                 
-        // Check if either batchId or instituteId is undefined
+        // Check if batchId or instituteId or userId is  not defined
         if (batchId === undefined || instituteId === undefined || userId === undefined) {
           notFoundData.push({
             institution: item["Educational Institution"],
@@ -234,7 +139,6 @@ const readUploadFile = (e) => {
             area: item["Medha Area"] || "",
           });
         } else {
-          // Add to formattedData array if both batchId and instituteId are defined
           formattedData.push({
             institution: instituteId,
             batch: batchId,
@@ -265,12 +169,6 @@ const readUploadFile = (e) => {
 };
 
 
-/**
-|--------------------------------------------------
-| uploadExcel
-|--------------------------------------------------
-*/
-
 
 const updatevalue=()=>{
   if(notUploadedData.length ==0){
@@ -283,7 +181,6 @@ const updatevalue=()=>{
 }
 
 const closeThepopup =()=>{
-  console.log("closeThepopup");
   props.alertForNotuploadedData("")
 }
 
