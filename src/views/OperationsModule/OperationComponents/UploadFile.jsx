@@ -171,12 +171,14 @@ const readUploadFile = (e) => {
 
 
 const updatevalue=()=>{
-  if(notUploadedData.length ==0){
-    props.uploadExcel(excelData,fileType)
+  // if(notUploadedData.length == 0){
+  //   props.uploadExcel(excelData,fileType)
    
-  }else{
-    props.alertForNotuploadedData(notUploadedData,fileType)
-  }
+  // }else{
+  //   props.alertForNotuploadedData(notUploadedData,fileType)
+  // }
+
+  props.uploadExcel(excelData,fileType)
   
 }
 
