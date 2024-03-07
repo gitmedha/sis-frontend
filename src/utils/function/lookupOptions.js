@@ -112,6 +112,22 @@ export const getDefaultAssigneeOptions = async () => {
   return filteredData;
 }
 
+
+export const getAllMedhaUsers = async () => {
+  let userId = localStorage.getItem("user_id");
+  let data = await queryBuilder({
+    query: GET_ALL_USERS
+  });
+  let userIdFound = false;
+  let filteredData = data.data.users.map(user => {
+    return {
+      name: user.username,
+      id: user.id,
+    }
+  });
+  return filteredData;
+}
+
 export const filterAssignedTo = async (newValue) => {
   let data = await queryBuilder({
     query: FILTER_USERS_BY_NAME,

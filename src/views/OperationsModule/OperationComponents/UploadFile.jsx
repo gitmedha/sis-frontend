@@ -7,6 +7,9 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { Input } from "../../../utils/Form";
 import FileUploader from "../../../components/content/FileUploader";
 import * as xlsx from "xlsx";
+import { GET_ALL_BATCHES, GET_ALL_BATCHS, GET_ALL_INSTITUTES } from "../../../graphql";
+import { queryBuilder } from "../../../apis";
+import { getAllMedhaUsers, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 const Styled = styled.div`
   .icon-box {
@@ -38,28 +41,151 @@ const Styled = styled.div`
 
 const options = [
   { value: "feild_activity", label: "Feild Activity" },
-  { value: "feild_activity", label: "CollegePitches" },
+  { value: "collegePitch", label: "CollegePitches" },
 ];
 const UploadFile = (props) => {
   let { onHide } = props;
   const [File, setFile] = useState(null);
   const handler = (data) => setFile(data);
+  const [batchOption,setBatchOption]=useState([])
+  const [institutionOption,setInstituteOption]=useState([])
+  const [assigneOption ,setAssigneeOption]=useState([])
+  const [excelData,setExcelData]=useState([])
+  const [notUploadedData,setNotuploadedData]=useState([])
+  const [fileType,setFileType]=useState('')
 
-  const readUploadFile = (e) => {
-    e.preventDefault();
-    if (e.target.files) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = e.target.result;
-            const workbook = xlsx.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const json = xlsx.utils.sheet_to_json(worksheet);
-            console.log(json);
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
-    }
+
+useEffect(() => {
+  const getbatch = async () => {
+    await getAllBatchs();
+    const instutiondata=await getAllInstitute()
+    let data =await getAllMedhaUsers();
+    setInstituteOption(instutiondata);
+    setAssigneeOption(data)
+  };
+  
+  getbatch();
+
+}, [props]);
+
+
+const getAllBatchs = async () => {
+  try {
+    let { data } = await queryBuilder({
+      query: GET_ALL_BATCHES
+    });
+    setBatchOption(data.batches)
+  } catch (err) {
+ 
+  }
+};
+
+const getAllInstitute=async ()=>{
+  try {
+    let {data} =await queryBuilder({
+      query:GET_ALL_INSTITUTES
+    });
+   return data.institutions;
+  } catch (err) {
+    
+  }
 }
+
+const convertExcelDateToJSDate = (excelDate) => {
+  const millisecondsInDay = 24 * 60 * 60 * 1000;
+  const date = new Date((excelDate - 1) * millisecondsInDay + Date.parse("1899-12-31"));
+  return date.toISOString().split("T")[0]; 
+};
+
+const readUploadFile = (e) => {
+  e.preventDefault();
+  if (e.target.files) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = e.target.result;
+      const workbook = xlsx.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = xlsx.utils.sheet_to_json(worksheet);
+
+      const formattedData = [];
+      const notFoundData = [];
+
+      json.forEach((item) => {
+        const batchId = batchOption.find((batch) => batch.name === item["Batch Name"])?.id;
+        const instituteId = institutionOption.find((institute) => institute.name === item["Educational Institution"])?.id;
+        const userId =assigneOption.find((user) => user.name ===  item["Assigned To"])?.id;
+        const startDate = convertExcelDateToJSDate(item["Start Date"]);
+        const endDate = convertExcelDateToJSDate(item["End Date"]);
+        // Set donor based on condition
+        const donor = item["Project / Funder"].toLowerCase() === "no" ? false : true;
+        const currentUser=localStorage.getItem("user_id")
+                
+        // Check if batchId or instituteId or userId is  not defined
+        if (batchId === undefined || instituteId === undefined || userId === undefined) {
+          notFoundData.push({
+            institution: item["Educational Institution"],
+            batch: item["Batch Name"],
+            state: item["State"] || "",
+            start_date: item["Start Date"] || "",
+            end_date: item["End Date"] || "",
+            topic: item["Session Topic"] || "",
+            donor: item["Project / Funder"] || "",
+            guest: item["Guest Name "] || "",
+            designation: item["Guest Designation"] || "",
+            organization: item["Organization"] || "",
+            activity_type: item["Activity Type"] || "",
+            assigned_to: item["Assigned To"] || "",
+            area: item["Medha Area"] || "",
+          });
+        } else {
+          formattedData.push({
+            institution: instituteId,
+            batch: batchId,
+            state: item["State"] || "",
+            start_date: startDate,
+            end_date: endDate,
+            topic: item["Session Topic"] || "",
+            donor: donor,
+            guest: item["Guest Name "] || "",
+            designation: item["Guest Designation"] || "",
+            organization: item["Organization"] || "",
+            activity_type: item["Activity Type"] || "",
+            assigned_to: userId || "",
+            area: item["Medha Area"] || "",
+            isactive:true,
+            createdby:userId,
+            updatedby:currentUser
+          });
+        }
+      });
+
+      setExcelData(formattedData)
+      setNotuploadedData(notFoundData)
+
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+  }
+};
+
+
+
+const updatevalue=()=>{
+  if(notUploadedData.length ==0){
+    props.uploadExcel(excelData,fileType)
+   
+  }else{
+    props.alertForNotuploadedData(notUploadedData,fileType)
+  }
+  
+}
+
+const closeThepopup =()=>{
+  props.alertForNotuploadedData("")
+}
+
+
+
 
   return (
     <>
@@ -89,7 +215,7 @@ const UploadFile = (props) => {
               name="batch"
               options={options}
               onChange={(e) => {
-                console.log(e, "program_name");
+                setFileType(e.value);
               }}
             />
             <form>
@@ -107,17 +233,17 @@ const UploadFile = (props) => {
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
-                  // onClick={() => updatevalue()}
+                  onClick={() => updatevalue()}
                   className="btn btn-primary px-4 mx-4"
                 >
                   EDIT
                 </button>
                 <button
                   type="button"
-                  // onClick={() => closeThepopup()}
+                  onClick={() => closeThepopup()}
                   className="btn btn-danger px-4 mx-4"
                 >
-                  Delete
+                  Close
                 </button>
               </div>
             </div>
