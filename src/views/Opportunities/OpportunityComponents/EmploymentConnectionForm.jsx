@@ -1,13 +1,12 @@
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch';
-
+import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
 import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import {searchStudents} from './opportunityAction';
 
 
 const Section = styled.div`
@@ -28,12 +27,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, opportunity,employmentConnection } = props;
@@ -152,13 +145,11 @@ const EnrollmentConnectionForm = (props) => {
   }, [selectedOpportunityType, allStatusOptions]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
-    }).then(data => {
+    try {
+      const studentsData = await searchStudents(filterValue);
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let studentFoundInEmploymentList = false;
-      let filterData = data.hits.map(student => {
+      let filterData = studentsData.data.studentsConnection.values.map(student => {
         if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
           studentFoundInEmploymentList = true;
         }
@@ -175,7 +166,10 @@ const EnrollmentConnectionForm = (props) => {
         });
       }
       return filterData;
-    });
+
+    } catch (error) {
+      console.error(error);
+    }
   }
   const handlechange = (e) => {
     if(e.value == 'Others'){

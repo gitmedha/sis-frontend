@@ -22,9 +22,88 @@ import {
     CREATE_COLLEGE_PITCH,
     UPDATE_COLLEGE_PITCH,
     GET_ALL_PROGRAMS,
-    GET_ALL_STUDENTS
-    
+    GET_ALL_STUDENTS,
+    SEARCH_INSTITUITIONS,
+    SEARCH_BY_BATCHES,
+    SEARCH_BY_STUDENTS,
+    SEARCH_BY_PROGRAMS  
 } from "../../../graphql/operations";
+
+
+export const searchPrograms = async function(searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_PROGRAMS,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+export const searchStudents = async function(searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_STUDENTS,
+            variables:{
+                limit:20,
+                sort:'full_name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+
+export const searchBatches = async function (searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_BATCHES,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+export const searchInstitutions = async function (searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_INSTITUITIONS,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+        
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
 
 export const getAllProgram=async()=>{
     return await api.post('/graphql',{

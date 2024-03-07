@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { connectHighlight } from 'react-instantsearch-dom';
+// import { connectHighlight } from 'react-instantsearch-dom';
 
 const HighlightedText = styled.span`
   padding-top: 5px;
@@ -7,25 +7,30 @@ const HighlightedText = styled.span`
   background: rgba(218, 91, 91, 0.3);
 `;
 
-const SearchHighlight = ({ highlight, attribute, hit }) => {
-  const parsedHit = highlight({
-    highlightProperty: '_highlightResult',
-    attribute,
-    hit,
-  });
+const SearchHighlight = ({ attribute, hit ,searchTerm}) => {
+
+  const value = hit[attribute] ? String(hit[attribute]) : "";
+  if (!searchTerm) {
+    return <span>{value}</span>;
+  }
+
+  const escapedSearchTerm = searchTerm.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+  const parts = value.split(new RegExp(`(${escapedSearchTerm})`, 'gi'));
+
 
   return (
     <span>
-      {parsedHit.map(
-        (part, index) =>
-          part.isHighlighted ? (
-            <HighlightedText key={index}>{part.value}</HighlightedText>
-          ) : (
-            <span key={index}>{part.value}</span>
-          )
+    {parts.map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+          <HighlightedText key={index}>{part}</HighlightedText>
+        ) : (
+          <span key={index}>{part}</span>
+        )
       )}
-    </span>
+  </span>
+
   );
 };
 
-export default connectHighlight(SearchHighlight);
+export default SearchHighlight;

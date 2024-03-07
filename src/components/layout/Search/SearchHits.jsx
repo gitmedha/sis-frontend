@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { connectHits } from 'react-instantsearch-dom';
+// import { connectHits } from 'react-instantsearch-dom';
 import { useHistory } from "react-router-dom";
 
 import SearchHighlight from './SearchHighlight';
+import {useEffect} from 'react';
+import { func } from "prop-types";
 
 const SearchHitsContainer = styled.div`
   height: 320px;
@@ -82,27 +84,28 @@ const SearchHitsContainer = styled.div`
 `;
 
 const SearchHits = props => {
-  let { hits, searchIndex } = props;
-  const history = useHistory();
+  let { hits, searchIndex ,searchState} = props;
+
   let columns = [];
   let tableData = <></>;
 
   switch (searchIndex) {
+    
     case 'employers':
       columns = ['Name','District','State','Industry','Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="district" />
+            <SearchHighlight hit={hit} attribute="district" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="state" />
+            <SearchHighlight hit={hit} attribute="state" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="industry" />
+            <SearchHighlight hit={hit} attribute="industry" searchTerm={searchState}/>
           </td>
           <td>
           {hit?.assigned_to?.username}
@@ -113,28 +116,28 @@ const SearchHits = props => {
 
     case 'batches':
       columns = ['Name', 'Program', 'Status', 'Student Enrolled', 'Start Date', 'Enrollment Type', 'Area', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
           {hit?.program?.name }
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="status" />
+            <SearchHighlight hit={hit} attribute="status" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="student_count" />
+            <SearchHighlight hit={hit} attribute="student_count" searchTerm={searchState}/>
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="start_date" />
+            <SearchHighlight hit={hit} attribute="start_date" searchTerm={searchState}/>
           </td>
           <td>
            {hit?.enrollment_type} 
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="medha_area" />
+            <SearchHighlight hit={hit} attribute="medha_area" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.assigned_to?.username}
@@ -145,19 +148,19 @@ const SearchHits = props => {
 
     case 'institutions':
       columns = ['Name', 'Area', 'State', 'Type', 'Status', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="name" />
+            <SearchHighlight hit={hit} attribute="name" searchTerm={searchState}/>
           </td>
           <td>
-            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" /> : ''}
+            {hit.medha_area ? <SearchHighlight hit={hit} attribute="medha_area" searchTerm={searchState}/> : ''}
           </td>
           <td>
-            {hit.state ? <SearchHighlight hit={hit} attribute="state" /> : ''}
+            {hit.state ? <SearchHighlight hit={hit} attribute="state" searchTerm={searchState}/> : ''}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" searchTerm={searchState}/> : ''}
           </td>
           <td>
             {hit?.status}
@@ -172,10 +175,10 @@ const SearchHits = props => {
     case 'students':
     default:
       columns = ['Name', 'Student ID','Area', 'Phone', 'Email', 'Status','Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="full_name" />
+            <SearchHighlight hit={hit} attribute="full_name" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.student_id}
@@ -187,7 +190,7 @@ const SearchHits = props => {
             {hit?.phone}
           </td>
           <td>
-            <SearchHighlight hit={hit} attribute="email" />
+            <SearchHighlight hit={hit} attribute="email" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.status}
@@ -201,10 +204,10 @@ const SearchHits = props => {
 
     case 'opportunities':
       columns = ['Role/Designation', 'Employer', 'District', 'Type', 'Status', 'Opening', 'Assigned To'];
-      tableData = hits.map(hit => (
+      tableData = hits[searchIndex].hits.map(hit => (
         <tr key={hit.id} className="hit" onClick={() => clickHandler(hit)}>
           <td>
-            <SearchHighlight hit={hit} attribute="role_or_designation" />
+            <SearchHighlight hit={hit} attribute="role_or_designation" searchTerm={searchState}/>
           </td>
           <td>
             {hit?.employer?.name}
@@ -213,7 +216,7 @@ const SearchHits = props => {
             {hit?.district}
           </td>
           <td>
-            {hit.type ? <SearchHighlight hit={hit} attribute="type" /> : ''}
+            {hit.type ? <SearchHighlight hit={hit} attribute="type" searchTerm={searchState} /> : ''}
           </td>
           <td>
             {hit?.status}
@@ -228,6 +231,9 @@ const SearchHits = props => {
       ))
       break;
   }
+  
+  
+  
 
   const clickHandler = hit => {
     props.setSearchState({
@@ -276,4 +282,4 @@ const SearchHits = props => {
   )
 };
 
-export default connectHits(SearchHits);
+export default SearchHits;

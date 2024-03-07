@@ -1,5 +1,32 @@
 import api from "../../../apis";
-import { GET_ALL_STUDENTS, CREATE_STUDENT, CREATE_EMPLOYMENT_CONNECTION, CREATE_PROGRAM_ENROLLMENT, DELETE_EMPLOYMENT_CONNECTION, DELETE_PROGRAM_ENROLLMENT, DELETE_STUDENT, GET_ALL_BATCHES, GET_ALL_EMPLOYERS, GET_ALL_INSTITUTES, GET_EMPLOYER_OPPORTUNITIES, GET_PICKLIST, GET_STUDENT, GET_STUDENT_EMPLOYMENT_CONNECTIONS, GET_STUDENT_PROGRAM_ENROLLMENTS, UPDATE_EMPLOYMENT_CONNECTION, UPDATE_PROGRAM_ENROLLMENT, UPDATE_STUDENT, GET_STUDENT_ALUMNI_SERVICES, CREATE_ALUMNI_SERVICE, UPDATE_ALUMNI_SERVICE, DELETE_ALUMNI_SERVICE, BULK_ALUMNI_SERVICES } from "../../../graphql";
+import { 
+  GET_ALL_STUDENTS, 
+  CREATE_STUDENT, 
+  CREATE_EMPLOYMENT_CONNECTION, 
+  CREATE_PROGRAM_ENROLLMENT, 
+  DELETE_EMPLOYMENT_CONNECTION, 
+  DELETE_PROGRAM_ENROLLMENT, 
+  DELETE_STUDENT, 
+  GET_ALL_BATCHES, 
+  GET_ALL_EMPLOYERS, 
+  GET_ALL_INSTITUTES, 
+  GET_EMPLOYER_OPPORTUNITIES, 
+  GET_PICKLIST, GET_STUDENT, 
+  GET_STUDENT_EMPLOYMENT_CONNECTIONS, 
+  GET_STUDENT_PROGRAM_ENROLLMENTS, 
+  UPDATE_EMPLOYMENT_CONNECTION, 
+  UPDATE_PROGRAM_ENROLLMENT, 
+  UPDATE_STUDENT, 
+  GET_STUDENT_ALUMNI_SERVICES, 
+  CREATE_ALUMNI_SERVICE, 
+  UPDATE_ALUMNI_SERVICE, 
+  DELETE_ALUMNI_SERVICE, 
+  BULK_ALUMNI_SERVICES,
+  SEARCH_INSTITUITIONS,
+  SEARCH_BY_BATCHES,
+  SEARCH_BY_EMPLOYERS,
+  SEARCH_BY_STUDENTS
+} from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
 return await api.post("/graphql", {
@@ -396,4 +423,78 @@ export const getFieldValues = async (searchField,baseURL,tab,info)=>{
       return console.error("error", error);
   }
 
+}
+
+
+export const searchInstitution = async function(searchValue){
+  try {
+    const {data} =  await api.post('/graphql', {
+      query:SEARCH_INSTITUITIONS,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'name:asc'
+      }
+    })
+
+    return data
+    
+  } catch (error) {
+    console.error("error:",error);
+  }
+}
+
+export const searchBatch = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_BATCHES,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+export const searchEmployers = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_EMPLOYERS,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
+export const searchStudents = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_STUDENTS,
+      variables:{
+        limit:20,
+        name:searchValue,
+        sort:'full_name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error.message);
+  }
 }

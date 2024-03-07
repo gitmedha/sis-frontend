@@ -1,13 +1,7 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
-import styled from "styled-components";
+import { Modal} from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
@@ -15,21 +9,12 @@ import {
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
 
-import { MeiliSearch } from "meilisearch";
-
-import { RowsData } from "./RowsData";
 import {
-  bulkCreateStudentsUpskillings,
-  createOperation,
+  searchBatches,
+  searchInstitutions
 } from "./operationsActions";
-import api from "../../../apis";
 import StudentupskilingBulk from "./StudentupskilingBulk";
 import { checkEmptyValuesandplaceNA, isEmptyValue } from "../../../utils/function/OpsModulechecker";
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const StudentUpkillingBulkcreate = (props) => {
   let { onHide, show } = props;
@@ -88,39 +73,6 @@ const StudentUpkillingBulkcreate = (props) => {
   const [showLimit, setshowLimit] = useState(false);
   const [classValue, setclassValue] = useState({});
 
-  // const addRow = () => {
-  //   let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
-
-  //   if (value.student_name || value.gender) {
-  //     let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
-
-  //     setclassValue({});
-  //     if (
-  //       value.student_id
-  //     ) {
-  //       let obj = { [`class${[rows.length - 1]}`]: value };
-  //       setclassValue(obj);
-  //       return;
-  //     }
-
-  //     if (rows.length >= 10) {
-  //       setAlert("You can't Add more than 10 items.", "error");
-  //     } else {
-  //       const newRowWithId = { ...newRow, id: rows.length + 1 };
-  //       setRows([...rows, newRowWithId]);     
-  //     }
-  //     return setclassValue(obj);
-  //   }
-
-  //   if (rows.length >= 10) {
-  //     setAlert("You can't Add more than 10 items.", "error");
-  //   } else {
-  //     const newRowWithId = { ...newRow, id: rows.length + 1 };
-  //     setRows([...rows, newRowWithId]);
-  //     // setNewRow({ id: '', name: '', age: '' });   
-  //   }
-  // };
-
   function checkEmptyValues(obj) {
     const result = {};
   
@@ -151,7 +103,6 @@ const StudentUpkillingBulkcreate = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });
       
     }
   };
@@ -196,7 +147,6 @@ const StudentUpkillingBulkcreate = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const [typeOptions, setTypeOptions] = useState([]);
   const [show1, setShow1] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
@@ -334,10 +284,6 @@ const StudentUpkillingBulkcreate = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
-
   useEffect(() => {
     filterInstitution().then((data) => {
       setInstitutionOptions(data);
@@ -349,51 +295,41 @@ const StudentUpkillingBulkcreate = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
-        });
-        return filterData;
+      
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        };
       });
-  };
+      return filterData;
 
-  const onConfirm = () => {
-    setshowLimit(true);
-  };
-  const onCancel = () => {
-    setshowLimit(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

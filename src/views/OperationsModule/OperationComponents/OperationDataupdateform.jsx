@@ -1,11 +1,10 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form} from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -15,10 +14,9 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getOpsPickList, updateOpsActivity } from "./operationsActions";
+import { getOpsPickList, updateOpsActivity ,searchBatches,searchInstitutions} from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -40,11 +38,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const options = [
   { value: "Yes", label: "Yes" },
@@ -90,37 +83,32 @@ const OperationDataupdateform = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let batchInformtion = props ? props.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
+
+      let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
 
-        let filterData = data.hits.map((batch) => {
+        let filterData = data.batchesConnection.values.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
@@ -137,7 +125,11 @@ const OperationDataupdateform = (props) => {
           });
         }
         return filterData;
-      });
+      
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
