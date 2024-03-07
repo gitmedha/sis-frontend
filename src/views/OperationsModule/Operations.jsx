@@ -927,8 +927,12 @@ const Operations = ({
     getoperations();
   }
 
-  const alertForNotuploadedData=async(data,key)=>{
-    if(key =='feild_activity'){
+  const alertForNotuploadedData=async(key)=>{
+    if(key =='feild_activity' ){
+      setUploadModal(false)
+      setAlert("There are some issue in your file please check", "error");
+    }
+    else{
       setUploadModal(false)
       setAlert("There are some issue in your file please check", "error");
     }

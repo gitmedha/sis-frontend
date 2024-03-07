@@ -282,6 +282,11 @@ const updatevalue=()=>{
   
 }
 
+const closeThepopup =()=>{
+  console.log("closeThepopup");
+  props.alertForNotuploadedData("")
+}
+
 
 
 
@@ -338,10 +343,10 @@ const updatevalue=()=>{
                 </button>
                 <button
                   type="button"
-                  // onClick={() => closeThepopup()}
+                  onClick={() => closeThepopup()}
                   className="btn btn-danger px-4 mx-4"
                 >
-                  Delete
+                  Close
                 </button>
               </div>
             </div>
