@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
-import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { filterAssignedTo, getDefaultAssignee, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 
 
@@ -12,58 +12,88 @@ const meilisearchClient = new MeiliSearch({
 
 function BulkMassEmployerEdit(props) {
 
-  const {dataPoints}=props;
+  // const {dataPoints}=props;
+  // const [assigneeOptions, setAssigneeOptions] = useState([]);
+  // const [defaultAssignedTo, setDefaultAssignedTo] = useState({});
+  // const [startdate,setStartDate]=useState('');
+  // const [employerOptions, setEmployerOptions] = useState([]);
+  // let datavalues={
+  //   assigned_to:dataPoints.assigned_to,
+  //   end_date: dataPoints.end_date,
+  //   start_date: dataPoints.start_date,
+  //   student_id: dataPoints.student_id,
+  //   id:dataPoints.id
+  // }
+
+  const { dataPoints } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [defaultAssignee,setDefaultAssignee]=useState({})
+  const [defaultAssignedTo, setDefaultAssignedTo] = useState({});
   const [startdate,setStartDate]=useState('');
-  const [employerOptions, setEmployerOptions] = useState([]);
-  let datavalues={
-    assigned_to:dataPoints.assigned_to,
-    end_date: dataPoints.end_date,
-    start_date: dataPoints.start_date,
-    student_id: dataPoints.student_id,
-    id:dataPoints.id
-  }
+  const [loading, setLoading] = useState(true);
 
-  useEffect(async() => {
-    // console.log(props.statusOptions);
-    // console.log(await filterAssignedTo(datavalues.assigned_to));
-    console.log("dataPoints",dataPoints);
-    // console.log({value:dataPoints.status,label:dataPoints.status});
-   
-  }, [props])
 
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDefaultAssigneeOptions();
+        setAssigneeOptions(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching assignee options:", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(()=>{
+    console.log(assigneeOptions);
+
+
+    console.log("\n ",defaultAssignedTo)
+  },[assigneeOptions,defaultAssignedTo])
+
+  useEffect(() => {
     const fetchData = async () => {
-      // let defaultEmployer = await props.filterEmployer(dataPoints.employer);
-      // console.log(defaultEmployer);
+      try {
+        const data = await getDefaultAssignee(dataPoints.assigned_to);
+        const userId = data.find((user) => user.value === dataPoints.assigned_to);
+        setDefaultAssignedTo(userId || { value: "", label: "" });
+      } catch (error) {
+        console.error("Error fetching default assignee:", error);
+      }
+    };
+    fetchData();
+  }, [dataPoints.assigned_to]);
 
-      let data = await getDefaultAssigneeOptions(dataPoints.assigned_to);
-      setAssigneeOptions(data);
-      let value = data.find(obj => obj.value === dataPoints.assigned_to);
 
-      setDefaultAssignee(value);
-  };
-  fetchData()
-  },[])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     let datavalue = await getDefaultAssignee(dataPoints.assigned_to);
+  //     const userId = datavalue.find((user) => user.value === dataPoints.assigned_to);
+  //     console.log(userId);
+  //     setDefaultAssignee(userId || { value: "", label: "" });
+  //   };
+  
+  //   fetchData();
+  // }, [dataPoints.assigned_to]);
   
   
   return (
     <>
       <td>
-        <Select
-          className={`table-input-select `}
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="assigned_to"
-          options={assigneeOptions}
-          defaultValue={defaultAssignee}
-          onChange={(e) =>
-            props.handelChange(dataPoints.id, { assigned_to: e?.value })
-          }
-        />
+      <Select
+        className={`table-input-select `}
+        classNamePrefix="select"
+        isClearable={true}
+        isSearchable={true}
+        name="assigned_to"
+        options={assigneeOptions}
+        value={defaultAssignedTo} 
+        onChange={(selectedOption) => props.handelChange(dataPoints.id, { assigned_to: selectedOption?.value })}
+      />
       </td>
       <td>
         <Select

@@ -114,9 +114,7 @@ const EmploymentmassEdit = (props) => {
         
       }, [studentinput]);
     
-      useEffect(() => {
-        console.log("studentinput", students);
-      }, [students])
+
       
     
       const updateEmployerOpportunityOptions = (employer) => {
@@ -138,25 +136,13 @@ const EmploymentmassEdit = (props) => {
       useEffect(()=>{
          const employers=async()=>{
           let filterData =await  filterEmployer()
+          
           console.log(filterData)
          }
          employers()
       },[])
 
 
-      const getOpportunities = async () => {
-        await api.post("/graphql", {
-          query: GET_ALL_OPPORTUNITIES,
-        })
-        .then(data => {
-          console.log("GET_ALL_OPPORTUNITIES",data);
-          // setOpportunities(data?.data?.data?.opportunitiesConnection.values);
-          // setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
-        })
-        .catch(error => {
-          return Promise.reject(error);
-        })
-      };
     
       useEffect(() => {
         getEmploymentConnectionsPickList().then((data) => {
@@ -280,7 +266,7 @@ const EmploymentmassEdit = (props) => {
     }))
     }
 
-    const uploadData =()=>{
+    const uploadData =async()=>{
       const modifiedStudents = students.map(obj => {
         if (typeof obj.opportunity === "object" && obj.opportunity !== null) {
           obj.opportunity = obj.opportunity.value;
@@ -290,13 +276,19 @@ const EmploymentmassEdit = (props) => {
         }
         return obj;
       });
-
-      console.log("modifiedStudents",modifiedStudents);
+      // /employment-connections/bulk-update
+      const value = await api
+      .post("/employment-connections/bulk-update", modifiedStudents)
+      .then((data) => {
+        
+        console.log("yes");
+      })
+      .catch((err) => {
+        console.log("Unable to create field data .", "error");
+      });
     }
     
-    // useEffect(()=>{
-    //   console.log("student data,",students);
-    // },[students])
+
   return (
     <>
       <Modal

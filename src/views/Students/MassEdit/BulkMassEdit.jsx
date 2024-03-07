@@ -4,6 +4,7 @@ import { Input } from "../../../utils/Form";
 import styled from "styled-components";
 import {
   filterAssignedTo,
+  getDefaultAssignee,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import Select from "react-select";
@@ -30,6 +31,7 @@ const BulkMassEdit = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [startdate,setStartDate]=useState('')
+  // const [defaultAssigne,setDefaultAssignee]=useState()
   const [categoryOption,setcategoryOption]=useState([{
     value:datavalues.category,
     label:datavalues.category
@@ -49,20 +51,33 @@ const BulkMassEdit = (props) => {
     });
   }, []);
 
+  const [defaultAssigne, setDefaultAssignee] = useState({ value: "", label: "" });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let datavalue = await getDefaultAssignee(dataPoints.assigned_to);
+      const userId = datavalue.find((user) => user.value === dataPoints.assigned_to);
+      console.log(userId);
+      setDefaultAssignee(userId || { value: "", label: "" });
+    };
+  
+    fetchData();
+  }, [dataPoints.assigned_to]);
+
   return (
     <>
       <td>
-        <Select
-          className={`table-input-select `}
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="assigned_to"
-          options={assigneeOptions}
-          defaultValue={() => filterAssignedTo(datavalues.assigned_to)}
-          onChange={(e) =>  props.handelChange(dataPoints.id , {assigned_to:e?.value} )}
-        />
-      </td>
+      <Select
+        className={`table-input-select `}
+        classNamePrefix="select"
+        isClearable={true}
+        isSearchable={true}
+        name="assigned_to"
+        options={assigneeOptions}
+        value={defaultAssigne} 
+        onChange={(selectedOption) => props.handelChange(dataPoints.id, { assigned_to: selectedOption?.value })}
+      />
+    </td>
       <td>
         <Select
           className={`table-input-select `}
