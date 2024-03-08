@@ -372,6 +372,11 @@ const MassEmployerUpload = (props) => {
     props.handelSubmitMassEdit(data,key)
   }
 
+  const handelCancel=()=>{
+    setBulkAddCheck(!bulkAddCheck)
+    setMassEditCheck(!massEditCheck)
+  }
+
   return (
     <Modal
       centered
@@ -642,7 +647,8 @@ const MassEmployerUpload = (props) => {
         <EmploymentmassEdit
         setBulkAddCheck={setBulkAddCheck}
         setMassEditCheck={setMassEditCheck}
-        handelSubmitMassEdit={handelSubmitMassEdit}      
+        handelSubmitMassEdit={handelSubmitMassEdit}   
+        handelCancel={handelCancel}   
         />}
         
       </Modal.Body>

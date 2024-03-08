@@ -52,6 +52,10 @@ const Section1 = styled.table`
     position: absolute;
     right: 0;
   }
+  .submitbtnclear{
+    position: absolute;
+    right:10%;
+  }
   .table-input-select-wrapper {
   width: 8rem;
   padding: 2px;
@@ -192,6 +196,10 @@ const AlumMassEdit = (props) => {
   // }
   props.handelSubmit(students,"AlumniBuldEdit")
   }
+
+  const handelCancel=()=>{
+    props.handelCancel()
+  }
   return (
     <Modal
       centered
@@ -256,6 +264,7 @@ const AlumMassEdit = (props) => {
             </tbody>
           </table>
           <div className="d-flex">
+            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
             <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>handelSubmit()}>Submit</button>
           </div>
         </Section1>

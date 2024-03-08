@@ -574,13 +574,13 @@ else {
       .post("/alumni-services/bulk-update", data)
       .then((data) => {
         // Return data
-        setAlert("Data created successfully.", "success");
+        setAlert("Data Edited Successfully.", "success");
         setTimeout(() => {
           window.location.reload(false);
         }, 3000);
       })
       .catch((err) => {
-        setAlert("Unable to create field data.", "error");
+        setAlert("Unable To Edit.", "error");
         setTimeout(() => {
           window.location.reload(false);
         }, 1000);
@@ -593,13 +593,13 @@ else {
       .post("/employment-connections/bulk-update", data)
       .then((data) => {
         // Return data
-        setAlert("Data created successfully.", "success");
+        setAlert("Data Edited Successfully.", "success");
         setTimeout(() => {
           window.location.reload(false);
         }, 3000);
       })
       .catch((err) => {
-        setAlert("Unable to create field data.", "error");
+        setAlert("Unable To Edit", "error");
         setTimeout(() => {
           window.location.reload(false);
         }, 1000);

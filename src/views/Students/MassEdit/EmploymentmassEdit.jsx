@@ -65,6 +65,10 @@ const Section1 = styled.table`
     position:absolute;
     right:0;
   }
+  .submitbtnclear{
+    position: absolute;
+    right:10%;
+  }
   
 `;
 
@@ -290,6 +294,9 @@ const EmploymentmassEdit = (props) => {
     //   });
     }
     
+    const handelCancel=()=>{
+      props.handelCancel()
+    }
 
   return (
     <>
@@ -368,6 +375,7 @@ const EmploymentmassEdit = (props) => {
               </tbody>
             </table>
             <div className="d-flex ">
+            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
               <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>uploadData()}>Submit</button>
             </div>
             {/* Add a submit button here */}

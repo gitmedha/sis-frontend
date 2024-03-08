@@ -248,6 +248,10 @@ const MassEdit = (props) => {
     props.handelSubmit(data,key)
   }
 
+  const handelCancel=()=>{
+    setBulkAddCheck(!bulkAddCheck)
+    setMassEditCheck(!massEditCheck)
+  }
   return (
     <Modal
       centered
@@ -470,6 +474,7 @@ const MassEdit = (props) => {
           setBulkAddCheck={setBulkAddCheck}
           setMassEditCheck={setMassEditCheck}
           handelSubmit={handelSubmit}
+          handelCancel={handelCancel}
           />
         )} 
       </Modal.Body>
