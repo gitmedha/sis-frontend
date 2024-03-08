@@ -1,13 +1,7 @@
-import { Formik, Form } from "formik";
-import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
+import { Modal} from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, Fragment } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
+import { useState, useEffect} from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
@@ -15,88 +9,9 @@ import {
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
 
-import { MeiliSearch } from "meilisearch";
-
 import { RowsData } from "./RowsData";
-import { createOperation } from "./operationsActions";
-import api from "../../../apis";
-const Section = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
+import {searchInstitutions,searchBatches} from "./operationsActions";
 
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
-  }
-
-  // .App {
-  //   margin: 2rem auto;
-  //   width: 80%;
-  // }
-
-  .create_data_table {
-    border-collapse: collapse !important;
-    width: 100%;
-    overflow: auto;
-  }
-
-  th,
-  td {
-    border: #6c757d;
-    padding: 8px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #f2f2f2;
-  }
-
-  .table-input {
-    // border: none;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-  }
-
-  button {
-    margin-top: 1rem;
-  }
-  // .table-input:focus {
-  //   outline: none;
-  // }
-  .adddeletebtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-`;
-const marginTop = {
-  marginTop: "2rem",
-};
-const modalStyle = {
-  position: "fixed",
-  top: "20px", // Gap from the top
-  right: "20px", // Gap from the right
-  bottom: "20px", // Gap from the bottom
-  left: "20px", // Gap from the left
-  width: "calc(100% - 40px)", // Adjust width to account for left and right gaps
-  height: "calc(100% - 40px)", // Adjust height to account for top and bottom gaps
-  overflow: "auto",
-};
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
@@ -107,18 +22,12 @@ const OperationCreateform = (props) => {
   const userId = localStorage.getItem("user_id");
 
   const [stateOptions, setStateOptions] = useState([]);
-  const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [show1, setShow1] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [showLimit, setshowLimit] = useState(false);
-  const handleClose = () => setShow1(false);
-  const handleShow = () => setShow1(true);
+  const [endDate] = useState(new Date());
   const [data, setData] = useState([
     {
       id: 1,
@@ -159,7 +68,7 @@ const OperationCreateform = (props) => {
       students_attended: "",
     },
   ]);
-  const [newRow, setNewRow] = useState({
+  const [newRow] = useState({
     id: "",
     institution: "",
     batch: "",
@@ -325,20 +234,6 @@ const OperationCreateform = (props) => {
     });
   }, []);
 
-  const onStateChange = (value) => {
-    getStateDistricts(value).then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-  };
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
@@ -410,10 +305,6 @@ const OperationCreateform = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
-
   useEffect(() => {
     filterInstitution().then((data) => {
       setInstitutionOptions(data);
@@ -425,49 +316,40 @@ const OperationCreateform = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
 
-        return filterData;
+    try {
+      const {data} = await searchInstitutions(filterValue);
+
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
-        });
-        return filterData;
+    try {
+      const {data} = await searchBatches(filterValue);
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        };
       });
-  };
+      return filterData;
 
-  const onConfirm = () => {
-    setshowLimit(true);
-  };
-  const onCancel = () => {
-    setshowLimit(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

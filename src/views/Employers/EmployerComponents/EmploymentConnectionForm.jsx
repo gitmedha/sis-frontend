@@ -1,14 +1,14 @@
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch';
+import { useState, useEffect} from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations/Employer";
 import { getEmployerOpportunities, getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import {searchStudents,searchEmployers} from './employerAction';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -28,11 +28,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 
 const EnrollmentConnectionForm = (props) => {
@@ -155,18 +150,13 @@ const EnrollmentConnectionForm = (props) => {
   }, [props]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      })
-      .then((data) => {
-        let employmentConnectionStudent = props.employmentConnection
+    try {
+      const studentsData = await searchStudents(filterValue);
+      let employmentConnectionStudent = props.employmentConnection
           ? props.employmentConnection.student
           : null;
         let studentFoundInList = false;
-        let filterData = data.hits.map((student) => {
+        let filterData = studentsData.studentsConnection.values.map((student) => {
           if (
             props.employmentConnection &&
             student.id === Number(employmentConnectionStudent?.id)
@@ -190,23 +180,25 @@ const EnrollmentConnectionForm = (props) => {
           });
         }
         return filterData;
-      });
-  };
+
+      
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
+      try {
+
+        const employerData = await searchEmployers(filterValue);
+
         let employmentConnectionEmployer = props.employer
           ? props.employer
           : null;
         let employerFoundInList = false;
 
-        let filterData = data.hits.map((employer) => {
+        let filterData = employerData.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)
@@ -231,7 +223,9 @@ const EnrollmentConnectionForm = (props) => {
           });
         }
         return filterData;
-      });
+      } catch (error) {
+        console.error(error);
+      }    
   };
 
   useEffect(() => {

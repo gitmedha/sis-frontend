@@ -2,13 +2,13 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch'
+import { useState, useEffect} from "react";
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Institute";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
+import {searchStudents,searchBatch} from './instituteActions';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -28,11 +28,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, institution,programEnrollment } = props;
@@ -134,13 +129,12 @@ const ProgramEnrollmentForm = (props) => {
 
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
-    }).then(data => {
+    try {
+
+      const studentData = await searchStudents(filterValue)
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let studentFoundInList = false;
-      let filterData = data.hits.map(student => {
+      let filterData = studentData.studentsConnection.values.map(student => {
         if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
           studentFoundInList = true;
         }
@@ -157,17 +151,19 @@ const ProgramEnrollmentForm = (props) => {
         });
       }
       return filterData;
-    });
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient.index('batches').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
+    try {
+
+      const batchData = await searchBatch(filterValue)
       let batchFoundInList = false;
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let filterData = data.hits.map(batch => {
+      let filterData = batchData.batchesConnection.values.map(batch => {
         if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
           batchFoundInList = true;
         }
@@ -184,7 +180,10 @@ const ProgramEnrollmentForm = (props) => {
         });
       }
       return filterData;
-    });
+    } catch (error) {
+      console.error(error);
+    }
+   
   }
   const handlechange = (e,target) => {
     if(e.value == 'Other'){

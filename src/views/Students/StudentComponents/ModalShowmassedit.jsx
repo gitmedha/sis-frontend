@@ -81,6 +81,10 @@ const ModalShowmassedit = (props) => {
     props.uploadAlumniData(data);
   };
 
+  const handelSubmit=(data,key)=>{
+    props.handelSubmitMassEdit(data,key)
+  }
+
   return (
     <div>
       <Modal
@@ -108,12 +112,12 @@ const ModalShowmassedit = (props) => {
               </div>
 
               <div className="cont ">
-                <button
+                {/* <button
                   onClick={onHide}
                   className="btn btn-danger btn-regular close-btn"
                 >
                   Close
-                </button>
+                </button> */}
               </div>
             </Styled>
           </Modal.Title>
@@ -134,6 +138,13 @@ const ModalShowmassedit = (props) => {
             >
               Mass Employer Edit
             </button>
+
+            <button
+                  onClick={onHide}
+                  className="btn btn-secondary btn-regular close-btn"
+            >
+              Cancel
+            </button>
           </div>
         </Modal.Body>
       </Modal>
@@ -144,12 +155,14 @@ const ModalShowmassedit = (props) => {
         onHide={handleMassAlumuni}
         uploadData={hideMassCreateModal}
         uploadAlumniData={uploadAlumniData}
+        handelSubmit={handelSubmit}
       />
       <MassEmployerUpload
         data={props.data}
         show={modalShow2}
         onHide={handleMassemployer}
         uploadData={uploadData}
+        handelSubmitMassEdit={handelSubmit}
         // onHide={HideMassEmployeCreateModal}
       />
     </div>
