@@ -1,14 +1,20 @@
 import styled from "styled-components";
+import { InstantSearch } from 'react-instantsearch-dom';
+import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
 import SearchField from './SearchField';
 import SearchStateResults from './SearchStateResults';
 import { useEffect, useState } from "react";
-import {studentFields} from '../../../graphql/student';
-import {institutionFields} from '../../../graphql/institutes';
-import {opportunitiesFields} from '../../../graphql/opportunities';
-import {batchesFields} from '../../../graphql/batches';
-import {employerFields} from '../../../graphql/employer';
+import { MeiliSearch } from 'meilisearch'
 
-import api from '../../../apis'
+const searchClient = instantMeiliSearch(
+  process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  process.env.REACT_APP_MEILISEARCH_API_KEY,
+);
+
+const client = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 
 const SearchContainer = styled.div`
   font-family: 'Latto-Regular';
@@ -16,224 +22,57 @@ const SearchContainer = styled.div`
   width: 100%;
 `;
 
-const SEARCH_QUERY = `
-query SearchQuery($query: String!,$limit: Int) {
-  studentsConnection(
-    limit:$limit
-    where: {
-      _or:[
-        {full_name_contains: $query}
-       {  assigned_to:{
-        username_contains:$query
-      }}
-      ]
-    }
-  ) {
-    values {
-      ${studentFields}
-    }
-    aggregate {
-      count
-    }
-  }
-  institutionsConnection(
-    limit:$limit
-    where: {
-      _or:[
-        {name_contains:$query}
-        {assigned_to:{
-          username_contains:$query
-        }}
-      ]
-    }
-  ){
-    values {
-      ${institutionFields}
-    }
-    aggregate {
-      count
-    }
-  }
-  opportunitiesConnection(
-    limit:$limit
-    where:{
-      _or:[
-        {
-          employer: {
-            name_contains:$query
-          }
-          assigned_to: {
-            username_contains:$query
-          }
-        }
-      ]
-    }
-  ){
-    values {
-      ${opportunitiesFields}
-    }
-    aggregate {
-      count
-    }
-  }
-  batchesConnection(
-    limit:$limit,
-    where:{
-      _or:[
-        {
-          program:{
-            name_contains:$query
-          }
-        }
-        {enrollment_type_contains:$query}
-        {assigned_to:{
-          username_contains:$query
-        }}
-      ]
-    }
-  ){
-    values {
-      ${batchesFields}
-    }
-    aggregate {
-      count
-    }
-  }
-  employersConnection(
-    limit:$limit
-    where:{
-      _or:[
-        {assigned_to:{
-          username_contains:$query
-        }}
-        {name_contains:$query}
-      ]
-    }
-  ){
-    values {
-      ${employerFields}
-    }
-    aggregate {
-      count
-    }
-  }
-
-}
-`;
-
-
-
-
 const SearchBar = () => {
-  const [hasResults,setHasResults] = useState(false);
+  const [searchState, setSearchState] = useState({});
   const [searchIndexName, setSearchIndexName] = useState('students');
-  const [searchQuery,setSearchQuery] = useState('')
-  
   const [hitsData, setHitsData] = useState({
-    students: {},
-    institutions: {},
-    employers: {},
-    batches: {},
-    opportunities:{},
+    students: [],
+    institutions: [],
+    employers: [],
+    batches: [],
+    opportunities:[],
   });
 
-  useEffect(() => {
-    if (searchQuery === '') {
+  useEffect(async () => {
+    let apiHitsData = {};
+
+    if (searchState.query === '') {
       return;
     }
 
-    async function callGraphQlSearch(){
-      let apiHitsData = {}
-
-      try {
-        const {
-          data
-        } = await api.post("/graphql", {
-          query:SEARCH_QUERY,
-          variables:{
-            query: searchQuery || "",
-            limit:20
-          }
-      })
-
-      if(data?.data?.studentsConnection?.values.length){
-        apiHitsData['students'] = {
-          hits:data?.data?.studentsConnection.values,
-          limit:20,
-          nbHits:data?.data?.studentsConnection.aggregate.count,
-          query:searchQuery
-        }
-      }
-      if(data?.data?.institutionsConnection?.values.length){
-        apiHitsData['institutions'] = {
-          hits:data?.data?.institutionsConnection.values,
-          limit:20,
-          nbHits:data?.data?.institutionsConnection.aggregate.count,
-          query:searchQuery
-        }
-
-      }
-      if(data?.data?.batchesConnection?.values.length){
-        apiHitsData['batches'] = {
-          hits:data?.data?.batchesConnection.values,
-          limit:20,
-          nbHits:data?.data?.batchesConnection.aggregate.count,
-          query:searchQuery
-        }
-
-      }
-      if(data?.data?.employersConnection?.values.length){
-        apiHitsData['employers'] = {
-          hits:data?.data?.employersConnection.values,
-          limit:20,
-          nbHits:data?.data?.employersConnection.aggregate.count,
-          query:searchQuery
-        }
-
-      }
-      if(data?.data?.opportunitiesConnection?.values.length){
-        apiHitsData['opportunities'] = {
-          hits:data?.data?.opportunitiesConnection.values,
-          limit:20,
-          nbHits:data?.data?.opportunitiesConnection.aggregate.count,
-          query:searchQuery
-        }
-
-      }
-      await setHitsData(apiHitsData)
-    
-      } catch (error) {
-        console.log("error", error)
-      }
-     
-    }
-
-    callGraphQlSearch();
-    
-  }, [searchQuery]);
-
-  useEffect(()=>{
-    if(Object.keys(hitsData.students).length ||
-    Object.keys(hitsData.employers).length ||
-    Object.keys(hitsData.opportunities).length ||
-    Object.keys(hitsData.batches).length ||
-    Object.keys(hitsData.institutions).length){
-      setHasResults(true);
-    }
-
-  },[hitsData])
+    // make api call to students
+    await client.index('students').search(searchState.query).then(async data => {
+      apiHitsData['students'] = data;
+    });
+    // make api call to institutions
+    await client.index('institutions').search(searchState.query).then(async data => {
+      apiHitsData['institutions'] = data;
+    });
+    // make api call to batches
+    await client.index('batches').search(searchState.query).then(async data => {
+      apiHitsData['batches'] = data;
+    });
+    // make api call to employers
+    await client.index('employers').search(searchState.query).then(async data => {
+      apiHitsData['employers'] = data;
+    });
+    await client.index('opportunities').search(searchState.query).then(async data => {
+      apiHitsData['opportunities'] = data;
+    });
+    setHitsData(apiHitsData);
+  }, [searchState])
 
   return (
     <SearchContainer className="mr-auto">
-      <SearchField onSearchVQueryChange={setSearchQuery} searchQuery={searchQuery}/>
-        <SearchStateResults 
-        searchState={searchQuery} 
-        setSearchState={setSearchQuery} 
-        searchIndex={searchIndexName} 
-        onSearchIndexUpdate={setSearchIndexName} 
-        hitsData={hitsData}
-        searchResults={hasResults}
-        />
+      <InstantSearch
+        searchClient={searchClient}
+        indexName={searchIndexName}
+        searchState={searchState}
+        onSearchStateChange={setSearchState}
+      >
+        <SearchField />
+        <SearchStateResults searchState={searchState} setSearchState={setSearchState} searchIndex={searchIndexName} onSearchIndexUpdate={setSearchIndexName} hitsData={hitsData} />
+      </InstantSearch>
     </SearchContainer>
   );
 }

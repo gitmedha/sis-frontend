@@ -1,7 +1,7 @@
 import styled from "styled-components";
-// import { connectStateResults } from 'react-instantsearch-dom';
+import { connectStateResults } from 'react-instantsearch-dom';
 import SearchHits from './SearchHits';
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import onClickOutside from "react-onclickoutside";
 
 const SearchStateContainer = styled.div`
@@ -120,38 +120,25 @@ const SearchStateContainer = styled.div`
 `;
 
 const SearchStateResults = (props) => {
-  let { searchState, setSearchState,onSearchIndexUpdate, hitsData,searchResults,setHitsData } = props;
-
+  let { searchState, setSearchState, searchResults, onSearchIndexUpdate, hitsData } = props;
+  const hasResults = searchResults && searchResults.nbHits !== 0;
+  const hasQuery = props.searchState && props.searchState.query;
   const [activeFilterBy, setActiveFilterBy] = useState(props.searchIndex || 'institutions');
- const hasQuery =  props.searchState.length ?true:false
 
   const handleFilterBy = (indexName) => {
     setActiveFilterBy(indexName);
     onSearchIndexUpdate(indexName);
   }
 
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    const element = document.getElementById('search-state-container');
-    const inputMeilisearch = document.getElementById('input-meilisearch');
-
-    if (element && !element.hasAttribute('hidden') && event.target !== inputMeilisearch) {
-      setSearchState('');
+  SearchStateResults.handleClickOutside = (event) => {
+    let element = document.getElementById('search-state-container');
+    if (!element.hasAttribute('hidden') && event.target.id !== 'input-meilisearch') {
+      setSearchState({
+        ...searchState,
+        query: '',
+      });
     }
-  };
-
-  const clickOutsideConfig = {
-    excludeScrollbar: true,
-    handleClickOutside,
-  };
-  document.addEventListener('click', handleClickOutside,clickOutsideConfig);
-
-
-  return () => {
-    document.removeEventListener('click', handleClickOutside,clickOutsideConfig);
-  };
-}, [searchState,setSearchState]);
-
+  }
 
   return (
     <SearchStateContainer id="search-state-container" hidden={!hasQuery}>
@@ -159,24 +146,24 @@ useEffect(() => {
         <div className="filter-by-text">Filter by</div>
         <div className="badges">
           <div className={`badge ${activeFilterBy === 'students' ? 'badge-students' : (hitsData.students && hitsData.students.nbHits ? 'badge-students-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('students')}>
-            Students {hitsData?.students?.hits?.length ? `(${hitsData.students.nbHits})` : ''}
+            Students {hitsData.students ? `(${hitsData.students.nbHits})` : ''}
           </div>
           <div className={`badge ${activeFilterBy === 'institutions' ? 'badge-institutions' : (hitsData.institutions && hitsData.institutions.nbHits ? 'badge-institutions-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('institutions')}>
-            Institutions {hitsData.institutions?.hits?.length ? `(${hitsData.institutions.nbHits})` : ''}
+            Institutions {hitsData.institutions ? `(${hitsData.institutions.nbHits})` : ''}
           </div>
           <div className={`badge ${activeFilterBy === 'batches' ? 'badge-batches' : (hitsData.batches && hitsData.batches.nbHits ? 'badge-batches-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('batches')}>
-            Batches {hitsData.batches?.hits?.length ? `(${hitsData.batches.nbHits})` : ''}
+            Batches {hitsData.batches ? `(${hitsData.batches.nbHits})` : ''}
           </div>
           <div className={`badge ${activeFilterBy === 'employers' ? 'badge-employers' : (hitsData.employers && hitsData.employers.nbHits ? 'badge-employers-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('employers')}>
-            Employers {hitsData.employers?.hits?.length ? `(${hitsData.employers.nbHits})` : ''}
+            Employers {hitsData.employers ? `(${hitsData.employers.nbHits})` : ''}
           </div>
           <div className={`badge ${activeFilterBy === 'opportunities' ? 'badge-opportunities' : (hitsData.opportunities && hitsData.opportunities.nbHits ? 'badge-opportunities-light' : 'badge-disabled')}`} onClick={() => handleFilterBy('opportunities')}>
-            Opportunities {hitsData.opportunities?.hits?.length ? `(${hitsData.opportunities.nbHits})` : ''}
+            Opportunities {hitsData.opportunities ? `(${hitsData.opportunities.nbHits})` : ''}
           </div>
         </div>
       </div>
-      {searchResults ? (
-        <SearchHits searchState={searchState} setSearchState={setSearchState} searchIndex={activeFilterBy} hits={hitsData}/>
+      {hasResults ? (
+        <SearchHits searchState={searchState} setSearchState={setSearchState} searchIndex={activeFilterBy} />
       ) : (
         <div className="no-results">
           No results found
@@ -187,4 +174,9 @@ useEffect(() => {
   );
 };
 
-export default SearchStateResults;
+const clickOutsideConfig = {
+  excludeScrollbar: true,
+  handleClickOutside: () => SearchStateResults.handleClickOutside,
+};
+
+export default onClickOutside(connectStateResults(SearchStateResults), clickOutsideConfig);
