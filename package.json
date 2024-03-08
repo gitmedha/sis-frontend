@@ -60,6 +60,7 @@
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.3.0",
     "web-vitals": "^1.1.2",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },
   "scripts": {
