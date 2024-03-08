@@ -568,6 +568,46 @@ else {
     hideMassCreateModal(data)
   }
 
+  const handelSubmitMassEdit=async(data,key)=>{
+    if(key =='AlumniBuldEdit'){
+      const value = await api
+      .post("/alumni-services/bulk-update", data)
+      .then((data) => {
+        // Return data
+        setAlert("Data Edited Successfully.", "success");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 3000);
+      })
+      .catch((err) => {
+        setAlert("Unable To Edit.", "error");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      });
+    }
+
+
+    if(key =='EmployerBulkdEdit'){
+      const value = await api
+      .post("/employment-connections/bulk-update", data)
+      .then((data) => {
+        // Return data
+        setAlert("Data Edited Successfully.", "success");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 3000);
+      })
+      .catch((err) => {
+        setAlert("Unable To Edit", "error");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      });
+    }
+    
+  }
+
   return (
     <Collapse title="STUDENTS" type="plain" opened={true}>
       <Styled>
@@ -677,7 +717,7 @@ else {
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
          
-          <ModalShowmassedit data={studentsData} onHide={()=>hideCreateMassEdit(false)} show={ModalShowmassEdit} uploadData={uploadData} uploadAlumniData={uploadAlumniData} />
+          <ModalShowmassedit handelSubmitMassEdit={handelSubmitMassEdit} data={studentsData} onHide={()=>hideCreateMassEdit(false)} show={ModalShowmassEdit} uploadData={uploadData} uploadAlumniData={uploadAlumniData} />
         </div>
       </Styled>
     </Collapse>

@@ -81,6 +81,10 @@ const ModalShowmassedit = (props) => {
     props.uploadAlumniData(data);
   };
 
+  const handelSubmit=(data,key)=>{
+    props.handelSubmitMassEdit(data,key)
+  }
+
   return (
     <div>
       <Modal
@@ -151,12 +155,14 @@ const ModalShowmassedit = (props) => {
         onHide={handleMassAlumuni}
         uploadData={hideMassCreateModal}
         uploadAlumniData={uploadAlumniData}
+        handelSubmit={handelSubmit}
       />
       <MassEmployerUpload
         data={props.data}
         show={modalShow2}
         onHide={handleMassemployer}
         uploadData={uploadData}
+        handelSubmitMassEdit={handelSubmit}
         // onHide={HideMassEmployeCreateModal}
       />
     </div>

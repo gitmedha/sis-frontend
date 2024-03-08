@@ -65,6 +65,10 @@ const Section1 = styled.table`
     position:absolute;
     right:0;
   }
+  .submitbtnclear{
+    position: absolute;
+    right:10%;
+  }
   
 `;
 
@@ -277,17 +281,22 @@ const EmploymentmassEdit = (props) => {
         return obj;
       });
       // /employment-connections/bulk-update
-      const value = await api
-      .post("/employment-connections/bulk-update", modifiedStudents)
-      .then((data) => {
+
+     props.handelSubmitMassEdit(modifiedStudents,"EmployerBulkdEdit")
+    //   const value = await api
+    //   .post("/employment-connections/bulk-update", modifiedStudents)
+    //   .then((data) => {
         
-        console.log("yes");
-      })
-      .catch((err) => {
-        console.log("Unable to create field data .", "error");
-      });
+    //     console.log("yes");
+    //   })
+    //   .catch((err) => {
+    //     console.log("Unable to create field data .", "error");
+    //   });
     }
     
+    const handelCancel=()=>{
+      props.handelCancel()
+    }
 
   return (
     <>
@@ -366,6 +375,7 @@ const EmploymentmassEdit = (props) => {
               </tbody>
             </table>
             <div className="d-flex ">
+            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
               <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>uploadData()}>Submit</button>
             </div>
             {/* Add a submit button here */}

@@ -7,6 +7,8 @@ import { getDefaultAssignee } from "../../../utils/function/lookupOptions";
 import { getAlumniServicePickList, getStudentAlumniServices, getStudentsPickList } from "../StudentComponents/StudentActions";
 import BulkMassEdit from "./BulkMassEdit";
 import api from "../../../apis";
+import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -50,6 +52,10 @@ const Section1 = styled.table`
     position: absolute;
     right: 0;
   }
+  .submitbtnclear{
+    position: absolute;
+    right:10%;
+  }
   .table-input-select-wrapper {
   width: 8rem;
   padding: 2px;
@@ -76,7 +82,7 @@ const Section1 = styled.table`
 }
 `;
 
-const AlumMassEdit = () => {
+const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
   const [studentInput, setStudentInput] = useState("");
@@ -86,7 +92,7 @@ const AlumMassEdit = () => {
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
 
-  useEffect(() => {
+  useEffect((props) => {
     getAlumniServicePickList().then((data) => {
       setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
       setCategoryOptions(data.category.map((item) => ({ value: item.value, label: item.value })));
@@ -157,20 +163,43 @@ const AlumMassEdit = () => {
   };
 
   const handelSubmit=async()=>{
-    console.log("students",students);
+  //   console.log("students",students);
 
-    const value = await api
-        .post("/alumni-services/bulk-update", students)
-        .then((data) => {
-          // setAlert("data created successfully.", "success");
-          console.log("yes");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
-        })
-        .catch((err) => {
-          console.log("Unable to create field data .", "error");
-        });
+  //   const value = await api
+  // .post("/alumni-services/bulk-update", students)
+  // .then((data) => {
+  //   // Return data
+  //   setAlert("Data created successfully.", "success");
+  //   setTimeout(() => {
+  //     window.location.reload(false);
+  //   }, 3000);
+  // })
+  // .catch((err) => {
+  //   setAlert("Unable to create field data.", "error");
+  //   setTimeout(() => {
+  //     window.location.reload(false);
+  //   }, 1000);
+  // });
+
+  // try {
+  //   const value = await api.post("/alumni-services/bulk-update", students);
+   
+  //   setTimeout(async() => {
+  //     await window.location.reload(false);
+  //     setAlert("Unable to create field data.", "success");
+  //       }, 1000);
+    
+  //   // Fetch updated data or update state with latest data here
+  // } catch (error) {
+  //   console.error(error);
+  //   setAlert("Unable to create field data.", "error");
+  // }
+  props.handelSubmit(students,"AlumniBuldEdit")
   }
 
+  const handelCancel=()=>{
+    props.handelCancel()
+  }
   return (
     <Modal
       centered
@@ -235,6 +264,7 @@ const AlumMassEdit = () => {
             </tbody>
           </table>
           <div className="d-flex">
+            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
             <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>handelSubmit()}>Submit</button>
           </div>
         </Section1>
@@ -243,4 +273,11 @@ const AlumMassEdit = () => {
   );
 };
 
-export default AlumMassEdit;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(AlumMassEdit);
+
