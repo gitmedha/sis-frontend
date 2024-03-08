@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import { connectSearchBox } from 'react-instantsearch-dom';
 import { FaSearch } from "react-icons/fa";
-import {useState} from 'react';
 
 const SearchInput = styled.div`
   width: 100%;
@@ -37,24 +37,23 @@ const SearchInput = styled.div`
 `;
 
 
-const SearchField = ({onSearchVQueryChange,searchQuery}) => {
-  return(
+const SearchField = ({ currentRefinement, refine }) => (
   <SearchInput>
     <form noValidate action="" role="search">
       <div className="input-group">
         <input
           type="search"
           placeholder="search for..."
-          value={searchQuery}
-          onChange={event => onSearchVQueryChange(event.currentTarget.value)}
-          id="input-search-query"
+          id="input-meilisearch"
+          value={currentRefinement}
+          onChange={event => refine(event.currentTarget.value)}
         />
-        <div className="icon" hidden={searchQuery.length}>
+        <div className="icon" hidden={currentRefinement}>
           <FaSearch size="20" />
         </div>
       </div>
     </form>
   </SearchInput>
-)};
+);
 
-export default SearchField;
+export default connectSearchBox(SearchField);
