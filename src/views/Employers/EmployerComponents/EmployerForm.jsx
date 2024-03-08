@@ -4,10 +4,9 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
-
 import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
-import  {getEmployersPickList, getAssigneeOptions} from "./employerAction"
+import  {getEmployersPickList} from "./employerAction"
 import { urlPath } from "../../../constants";
 import { getAddressOptions , getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions'

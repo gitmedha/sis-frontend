@@ -2,9 +2,7 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch'
-
+import { useState, useEffect} from "react";
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Batch";
 import { getAllBatches,searchInstitutes ,searchStudents} from "../batchActions";
@@ -141,7 +139,7 @@ const ProgramEnrollmentForm = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const data = await searchInstitutes(filterValue);
+      const {data} = await searchInstitutes(filterValue);
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let institutionFoundInList = false;
       let filterData = data.institutionsConnection.values.map(institution => {
@@ -169,7 +167,7 @@ const ProgramEnrollmentForm = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-      const data = await searchStudents(filterValue);
+      const {data} = await searchStudents(filterValue);
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let studentFoundInList = false;
       let filterData = data.studentsConnection.values.map(student => {

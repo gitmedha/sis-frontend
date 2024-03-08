@@ -432,7 +432,7 @@ export const searchInstitution = async function(searchValue){
       query:SEARCH_INSTITUITIONS,
       variables:{
         limit:20,
-        name:searchValue,
+        query:searchValue,
         sort:'name:asc'
       }
     })
@@ -450,7 +450,7 @@ export const searchBatch = async function(searchValue){
       query:SEARCH_BY_BATCHES,
       variables:{
         limit:20,
-        name:searchValue,
+        query:searchValue,
         sort:'name:asc'
       }
     })
@@ -468,7 +468,7 @@ export const searchEmployers = async function(searchValue){
       query:SEARCH_BY_EMPLOYERS,
       variables:{
         limit:20,
-        name:searchValue,
+        query:searchValue,
         sort:'name:asc'
       }
     })
@@ -487,7 +487,7 @@ export const searchStudents = async function(searchValue){
       query:SEARCH_BY_STUDENTS,
       variables:{
         limit:20,
-        name:searchValue,
+        query:searchValue,
         sort:'full_name:asc'
       }
     })

@@ -519,13 +519,13 @@ export const GET_ALL_STUDENT = `
 
 
 export const SEARCH_INSTITUITIONS = `
-  query SEARCH_INSTIUTION($name:String,$limit:Int,$sort:String){
+  query SEARCH_INSTIUTION($query:String,$limit:Int,$sort:String){
     institutionsConnection(
       sort:$sort
       limit:$limit
       where:{
         _or:[
-          {name_contains:$name}
+          {name_contains:$query}
         ]
       }
     ){
