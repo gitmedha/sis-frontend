@@ -151,12 +151,12 @@ const EnrollmentConnectionForm = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-      const studentsData = await searchStudents(filterValue);
+      const {data} = await searchStudents(filterValue);
       let employmentConnectionStudent = props.employmentConnection
           ? props.employmentConnection.student
           : null;
         let studentFoundInList = false;
-        let filterData = studentsData.studentsConnection.values.map((student) => {
+        let filterData = data.studentsConnection.values.map((student) => {
           if (
             props.employmentConnection &&
             student.id === Number(employmentConnectionStudent?.id)
@@ -191,14 +191,14 @@ const EnrollmentConnectionForm = (props) => {
   const filterEmployer = async (filterValue) => {
       try {
 
-        const employerData = await searchEmployers(filterValue);
+        const {data} = await searchEmployers(filterValue);
 
         let employmentConnectionEmployer = props.employer
           ? props.employer
           : null;
         let employerFoundInList = false;
 
-        let filterData = employerData.employersConnection.values.map((employer) => {
+        let filterData = data.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)

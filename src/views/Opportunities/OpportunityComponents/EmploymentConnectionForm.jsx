@@ -146,10 +146,10 @@ const EnrollmentConnectionForm = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-      const studentsData = await searchStudents(filterValue);
+      const {data} = await searchStudents(filterValue);
       let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
       let studentFoundInEmploymentList = false;
-      let filterData = studentsData.data.studentsConnection.values.map(student => {
+      let filterData = data.studentsConnection.values.map(student => {
         if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
           studentFoundInEmploymentList = true;
         }

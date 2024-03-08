@@ -131,10 +131,10 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     try {
 
-      const studentData = await searchStudents(filterValue)
+      const {data}= await searchStudents(filterValue)
       let programEnrollmentStudent = props.programEnrollment ? props.programEnrollment.student : null;
       let studentFoundInList = false;
-      let filterData = studentData.studentsConnection.values.map(student => {
+      let filterData = data.studentsConnection.values.map(student => {
         if (props.programEnrollment && student.id === Number(programEnrollmentStudent?.id)) {
           studentFoundInList = true;
         }
@@ -160,10 +160,10 @@ const ProgramEnrollmentForm = (props) => {
   const filterBatch = async (filterValue) => {
     try {
 
-      const batchData = await searchBatch(filterValue)
+      const {data} = await searchBatch(filterValue)
       let batchFoundInList = false;
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
-      let filterData = batchData.batchesConnection.values.map(batch => {
+      let filterData = data.batchesConnection.values.map(batch => {
         if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
           batchFoundInList = true;
         }

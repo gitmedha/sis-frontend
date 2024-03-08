@@ -168,8 +168,8 @@ const OpportunityForm = (props) => {
 
   const filterEmployer = async (filterValue) => {
     try {
-      const employerData = await searchEmployers(filterValue);
-      return employerData.data.employersConnection.values.map(employer => {
+      const {data} = await searchEmployers(filterValue);
+      return data.employersConnection.values.map(employer => {
         return {
           ...employer,
           label: employer.name,
