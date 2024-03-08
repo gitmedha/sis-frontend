@@ -108,12 +108,12 @@ const ModalShowmassedit = (props) => {
               </div>
 
               <div className="cont ">
-                <button
+                {/* <button
                   onClick={onHide}
                   className="btn btn-danger btn-regular close-btn"
                 >
                   Close
-                </button>
+                </button> */}
               </div>
             </Styled>
           </Modal.Title>
@@ -133,6 +133,13 @@ const ModalShowmassedit = (props) => {
               className="btn btn-primary btn-regular mr-2"
             >
               Mass Employer Edit
+            </button>
+
+            <button
+                  onClick={onHide}
+                  className="btn btn-secondary btn-regular close-btn"
+            >
+              Cancel
             </button>
           </div>
         </Modal.Body>
