@@ -277,15 +277,17 @@ const EmploymentmassEdit = (props) => {
         return obj;
       });
       // /employment-connections/bulk-update
-      const value = await api
-      .post("/employment-connections/bulk-update", modifiedStudents)
-      .then((data) => {
+
+     props.handelSubmitMassEdit(modifiedStudents,"EmployerBulkdEdit")
+    //   const value = await api
+    //   .post("/employment-connections/bulk-update", modifiedStudents)
+    //   .then((data) => {
         
-        console.log("yes");
-      })
-      .catch((err) => {
-        console.log("Unable to create field data .", "error");
-      });
+    //     console.log("yes");
+    //   })
+    //   .catch((err) => {
+    //     console.log("Unable to create field data .", "error");
+    //   });
     }
     
 

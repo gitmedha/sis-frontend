@@ -368,6 +368,10 @@ const MassEmployerUpload = (props) => {
     setotherrejection(false);
   }, [employmentConnection]);
 
+  const handelSubmitMassEdit=(data,key)=>{
+    props.handelSubmitMassEdit(data,key)
+  }
+
   return (
     <Modal
       centered
@@ -638,7 +642,7 @@ const MassEmployerUpload = (props) => {
         <EmploymentmassEdit
         setBulkAddCheck={setBulkAddCheck}
         setMassEditCheck={setMassEditCheck}
-                  
+        handelSubmitMassEdit={handelSubmitMassEdit}      
         />}
         
       </Modal.Body>
