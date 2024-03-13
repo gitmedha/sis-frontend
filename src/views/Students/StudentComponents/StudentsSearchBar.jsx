@@ -41,10 +41,14 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
     const [progress, setProgress] = useState(0);
 
     const [studentsOptions] = useState([
-        {key:0,label:'Registration Date',value:'registration_date_latest'},
-        {key:1, label:'Assigned To',value:'assigned_to'},
-        {key:2, label:'Area', value:'medha_area'}, 
-        {key:3, label:'Status', value:'status'},
+        {key:0, label:'Name', value:'full_name'},
+        {key:1,label:'Registration Date',value:'registration_date_latest'},
+        {key:2, label:'Assigned To',value:'assigned_to'},
+        {key:3, label:'Area', value:'medha_area'}, 
+        {key:4, label:'Status', value:'status'},
+        {key:5, label:'Email', value:'email'},
+        {key:6, label:'Phone', value:'phone'},
+        {key:7, label:'Student ID', value:'student_id'}
     ]);
 
     const [defaultSearchArray,setDefaultSearchArray] = useState([])
