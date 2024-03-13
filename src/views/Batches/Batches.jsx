@@ -301,7 +301,7 @@ const batchQuery = `query GET_BATCHES(
     data = data.map((batch, index) => {
       return {
         ...batch,
-        assigned_to:batch.assigned_to.username,
+        assigned_to:batch.assigned_to?.username,
         start_date: moment(batch.start_date).format("DD MMM YYYY"),
         status: <Badge value={batch.status} pickList={pickList.status || []} />,
         program: batch?.program?.name,

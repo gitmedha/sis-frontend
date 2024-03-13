@@ -339,8 +339,8 @@ const ProgramEnrollments = (props) => {
             </>
           }
         >
-          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.name}</p>
-          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program.name}</p>
+          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch?.name}</p>
+          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program?.name}</p>
         </SweetAlert>
     </div>
   );

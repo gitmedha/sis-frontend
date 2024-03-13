@@ -63,7 +63,7 @@ const routes = [
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,
-    show: isSRM() || isAdmin(),
+    show: isAdmin(),
   },
   {
     to: "https://data.medha.org.in/",

@@ -47,7 +47,13 @@ export const sessionValidations = Yup.object({
 });
 
 export const BatchValidations = Yup.object({
-  name,
+  name :Yup.string()
+  .required('name is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   grant,
   status,
   program,

@@ -178,6 +178,7 @@ const App = (props) => {
                     <PrivateRoute path="/operation" exact component={operations} />
                   </>
                   }
+                  
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
