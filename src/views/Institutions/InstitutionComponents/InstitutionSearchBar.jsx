@@ -37,11 +37,12 @@ function InstitutionSearchBar({selectedSearchField,setSelectedSearchField,setIsS
     const [progress, setProgress] = useState(0);
 
     const [institutionsOptions] = useState([
-        {key:0, label:'Area',value:'medha_area'}, 
-        {key:1,label:'Type',value:'type'},
-        {key:2, label:'State',value:'state'},
-        {key:3, label:'Status',value:'status'},
-        {key:4, label:'Assigned To', value:'assigned_to'}
+        {key:0,label:'Name', value:'name'},
+        {key:1, label:'Area',value:'medha_area'}, 
+        {key:2,label:'Type',value:'type'},
+        {key:3, label:'State',value:'state'},
+        {key:4, label:'Status',value:'status'},
+        {key:5, label:'Assigned To', value:'assigned_to'}
     ]);
 
     const [isDisabled,setDisbaled] = useState(true);
