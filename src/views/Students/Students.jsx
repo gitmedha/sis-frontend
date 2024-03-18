@@ -4,7 +4,6 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
@@ -28,9 +27,6 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
-import MassEdit from "./StudentComponents/MassEdit";
-import MassEmployerUpload from "./StudentComponents/MassEmployerUpload";
-import { isEmptyArray } from "formik";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 import ModalShowmassedit from "./StudentComponents/ModalShowmassedit";
 
@@ -58,7 +54,7 @@ const Styled = styled.div`
 `;
 
 const Students = (props) => {
-  let { isSidebarOpen, batch } = props;
+  let { isSidebarOpen} = props;
   const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
