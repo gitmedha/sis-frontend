@@ -40,7 +40,8 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         {key:0, label:'Assigned To',value:'assigned_to'}, 
         {key:1,label:'Status',value:'status'},
         {key:2, label:'Area', value:'medha_area'},
-        {key:3, label:'Industry',value:'industry'}
+        {key:3, label:'Industry',value:'industry'},
+        {key:4, label:'Name', value:'name'}
     ]);
 
     const [defaultSearchArray,setDefaultSearchArray] = useState([])

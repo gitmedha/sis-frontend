@@ -15,25 +15,13 @@ import {
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
 
-import { MeiliSearch } from "meilisearch";
-
-import { RowsData } from "./RowsData";
 import {
-  bulkCreateAlumniQueries,
-  bulkCreateSamarth,
-  createOperation,
-  createSamarthSdit,
+  searchBatches,
+  searchInstitutions
 } from "./operationsActions";
-import api from "../../../apis";
-import StudentupskilingBulk from "./StudentupskilingBulk";
-import DteUpskilingBulk from "./DteUpskilingBulk";
 import AlumunniBulkrow from "./AlumunniBulkrow";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const AllumuniBulkAdd = (props) => {
   let { onHide, show } = props;
@@ -349,44 +337,38 @@ const AllumuniBulkAdd = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: institution.name,
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: institution.name,
+        };
       });
+
+      return filterData; 
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: batch.name,
-          };
-        });
-        return filterData;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: batch.name,
+        };
       });
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onConfirm = () => {

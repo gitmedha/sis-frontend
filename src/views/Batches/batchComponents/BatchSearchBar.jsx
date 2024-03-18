@@ -49,7 +49,9 @@ function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchE
         {key:3, label:'Assigned To',value:'assigned_to'},
         {key:4, label:'Area', value:'medha_area'}, 
         {key:5, label:'Status', value:'status'},
-        {key:6,label:'Institution',value:'institution'}
+        {key:6,label:'Institution',value:'institution'},
+        {key:7, label:'Name', value:'name'},
+        {key:8, label:'Grant', value:'grant'}
     ]);
 
     const [defaultSearchArray,setDefaultSearchArray] = useState([])

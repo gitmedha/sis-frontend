@@ -1,4 +1,3 @@
-import moment from "moment";
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";

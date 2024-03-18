@@ -1,4 +1,4 @@
-const studentFields = `
+export const studentFields = `
   id
   full_name
   email
@@ -516,3 +516,88 @@ export const GET_ALL_STUDENT = `
     }
   }
 `;
+
+
+export const SEARCH_INSTITUITIONS = `
+  query SEARCH_INSTIUTION($query:String,$limit:Int,$sort:String){
+    institutionsConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+
+export const SEARCH_BY_BATCHES = `
+  query SEARCH_BY_BATCHES($query:String, $limit:Int, $sort:String){
+    batchesConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+    }
+  }
+`
+
+export const SEARCH_BY_EMPLOYERS = `
+  query SEARCH_BY_EMPLOYERS($query:String, $limit:Int, $sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+    }
+  }
+`
+
+
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String, $limit:Int, $sort:String){
+    studentsConnection(
+      sort:$sort
+      limit:$limit
+      where: {
+        _or:[
+          {full_name_contains:$query}
+          {student_id_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        full_name
+        student_id
+      }
+    }
+  }
+`
+

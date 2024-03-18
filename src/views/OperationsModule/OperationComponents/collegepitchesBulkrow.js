@@ -1,23 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getAllSrm, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { capitalizeFirstLetter, handleKeyPress, handleKeyPresscharandspecialchar, mobileNochecker, numberChecker } from "../../../utils/function/OpsModulechecker";
+import { capitalizeFirstLetter, handleKeyPress, mobileNochecker } from "../../../utils/function/OpsModulechecker";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { getPitchingPickList } from "./operationsActions";
-import { MeiliSearch } from 'meilisearch'
+import { getPitchingPickList ,searchPrograms} from "./operationsActions";
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const CollegepitchesBulkrow = (props) => {
   const [rows, setRows] = useState([
@@ -124,18 +117,19 @@ const CollegepitchesBulkrow = (props) => {
   };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(program => {
+    try {
+      const {data} = await searchPrograms(filterValue);
+
+      return data.programsConnection.values.map(program => {
         return {
           ...program,
           label: program.name,
           value: program.name,
         }
       });
-    });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   

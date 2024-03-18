@@ -10,6 +10,7 @@ import { EmploymentConnectionValidations } from "../../../validations";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
+  searchEmployers
 } from "./StudentActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
@@ -31,11 +32,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student ,employmentConnection} = props;
@@ -114,14 +110,14 @@ const EnrollmentConnectionForm = (props) => {
 
   useEffect(() => {
    
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student' ) ;
+    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student' || selectedOpportunityType ==='Apprenticeship') ;
     setEndDateMandatory(selectedStatus === 'Internship Complete');
-  }, [selectedStatus]);
+  }, [selectedStatus,selectedOpportunityType]);
 
   
-  useEffect(()=>{
-    setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
-  },[selectedOpportunityType])
+  // useEffect(()=>{
+  //   setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
+  // },[selectedOpportunityType])
 
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
@@ -218,19 +214,15 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let employmentConnectionEmployer = props.employmentConnection
+    try {
+      const employerData = await searchEmployers(filterValue);
+
+      let employmentConnectionEmployer = props.employmentConnection
           ? props.employmentConnection.opportunity?.employer
           : null;
         let employerFoundInList = false;
 
-        let filterData = data.hits.map((employer) => {
+        let filterData = employerData.data.employersConnection.values.map((employer) => {
           if (
             props.employmentConnection &&
             employer.id === Number(employmentConnectionEmployer?.id)
@@ -254,7 +246,10 @@ const EnrollmentConnectionForm = (props) => {
           });
         }
         return filterData;
-      });
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
   
 
@@ -268,7 +263,7 @@ const EnrollmentConnectionForm = (props) => {
   }, [])
   
   const handleStatusChange = async(value)=>{
-    console.log("value",value);
+    
     setSelectedStatus(value);
 
     if(value === "Rejected by Employer"){

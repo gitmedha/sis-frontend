@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
-import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
-import { getOpsPickList } from "./operationsActions";
-// import { MeiliSearch } from 'meilisearch';
+import {searchPrograms, searchStudents} from "./operationsActions";
 import { capitalizeFirstLetter } from "../../../utils/function/OpsModulechecker";
 
 const options = [
@@ -21,10 +16,6 @@ const categoryOptions = [
   { value: "Creative", label: "Creative" },
 ];
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const StudentupskilingBulk = (props) => {
   const [rows, setRows] = useState([
@@ -76,21 +67,20 @@ const StudentupskilingBulk = (props) => {
   };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient
-      .index("programs")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        return data.hits.map((program) => {
-          return {
-            ...program,
-            label: program.name,
-            value: Number(program.id),
-          };
-        });
+    try {
+      const {data} = await searchPrograms(filterValue);
+
+      return data.programsConnection.values.map((program) => {
+        return {
+          ...program,
+          label: program.name,
+          value: Number(program.id),
+        };
       });
+
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(async () => {
     getDefaultAssigneeOptions().then((data) => {
@@ -114,48 +104,32 @@ const StudentupskilingBulk = (props) => {
     filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
-    // let data=await getOpsPickList().then(data=>{
-    //   return data.program_name.map((value) => ({
-    //       key: value,
-    //       label: value,
-    //       value: value,
-    //     }))
-    // })
-
-    // setProgramName(data);
     filterProgram().then((data) => {
       setProgramOptions(data);
     });
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 1000,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      })
-      .then((data) => {
-        let programEnrollmentStudent = "112";
-        let studentFoundInList = false;
-        let filterData = data.hits.map((student) => {
-          if (student.id === Number(props?.id)) {
-            studentFoundInList = true;
-          }
-          return {
-            ...student,
-            label: `${student.full_name} (${student.student_id})`,
-            value: Number(student.id),
-          };
-        });
-        // if (!studentFoundInList)  {
-        //   filterData.unshift({
-        //     label: programEnrollmentStudent.full_name,
-        //     value: Number(programEnrollmentStudent.id),
-        //   });
-        // }
-        return filterData;
+    try {
+      const {data} = await searchStudents(filterValue);
+      let programEnrollmentStudent = "112";
+      let studentFoundInList = false;
+      let filterData = data.studentsConnection.values.map((student) => {
+        if (student.id === Number(props?.id)) {
+          studentFoundInList = true;
+        }
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        };
       });
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
+    
   };
   const handleInputChange = (id, data, value) => {
     const input = value.current;

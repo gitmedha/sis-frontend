@@ -3,15 +3,15 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
-import { BatchValidations ,alterBatchValidations} from "../../../validations";
+import { BatchValidations} from "../../../validations";
 import { getBatchesPickList } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin, isPartnership, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isPartnership} from "../../../common/commonFunctions";
+import {searchInstitutes,searchGrants,searchPrograms} from '../batchActions'
 
 
 const Section = styled.div`
@@ -32,11 +32,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const BatchForm = (props) => {
   let { onHide, show } = props;
@@ -72,18 +67,20 @@ const BatchForm = (props) => {
   }, []);
 
   const filterGrant = async (filterValue) => {
-    return await meilisearchClient.index('grants').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name', 'donor']
-    }).then(data => {
-      return data.hits.map(grant => {
+    try {
+      const {data} = await searchGrants(filterValue);
+
+      return data.grantsConnection.values.map(grant=> {
         return {
           ...grant,
           label: `${grant.name} | ${grant.donor}`,
           value: Number(grant.id),
         }
-      });
-    });
+      })
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const [initialValues, setInitialValues] = useState({
@@ -226,33 +223,34 @@ const getModeOfPayment = (event) =>{
 }
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(institution => {
+    try {
+      const {data} = await searchInstitutes(filterValue);
+
+      return data.institutionsConnection.values.map(institution=>{
         return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
         }
-      });
-    });
+      })
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(program => {
+    try {
+      const {data} = await searchPrograms(filterValue);
+      return data.programsConnection.values.map(program=>{
         return {
           ...program,
-          label: program.name,
-          value: Number(program.id),
+          label:program.name,
+          value:Number(program.id)
         }
-      });
-    });
+      })
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
