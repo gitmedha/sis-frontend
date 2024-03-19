@@ -2,10 +2,10 @@ import React,{useState,useEffect} from 'react'
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { Input } from "../../utils/Form";
-import { filterAssignedTo,getDefaultAssigneeOptions } from '../../utils/function/lookupOptions';
+import { Input } from "../../../utils/Form";
+import { filterAssignedTo,getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import {getAlumniServicePickList} from './calendarActions';
-import {calendarValidations} from '../../validations/Calendar';
+import {calendarValidations} from '../../../validations/Calendar';
 
 const Section = styled.div`
   padding-top: 30px;
@@ -77,7 +77,6 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
     })
   }, []);
 
-  console.log("alumniServiceOptions",alumniServiceOptions);
 
   const initialValues = {
     assigned_to:userId.toString(),
