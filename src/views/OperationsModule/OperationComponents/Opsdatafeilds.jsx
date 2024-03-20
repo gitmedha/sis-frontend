@@ -95,6 +95,8 @@ const Opsdatafeilds = (props) => {
       dataAndEdit:false 
     });
   }
+
+  console.log(props);
   
 
   return (
@@ -191,6 +193,11 @@ const Opsdatafeilds = (props) => {
                     Bold={""}
                     label="Designation"
                     value={props.designation ? props.designation : "Not found"}
+                  />
+                  <DetailField
+                    Bold={""}
+                    label="Program Name"
+                    value={props.program_name ? props.program_name : "Not found"}
                   />
                   <DetailField
                     Bold={""}
