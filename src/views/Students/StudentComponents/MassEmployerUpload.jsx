@@ -392,7 +392,7 @@ const MassEmployerUpload = (props) => {
             {props.employmentConnection && props.employmentConnection.id
               ? "Update "
               : "Add New "}
-            Employment Connection
+            Mass Employment connection
           </h1>
         </Modal.Title>
       </Modal.Header>
