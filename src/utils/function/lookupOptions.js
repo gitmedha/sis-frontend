@@ -158,7 +158,6 @@ export const getAllMedhaUsers = async () => {
 }
 
 export const filterAssignedTo = async (newValue) => {
-  console.log(newValue)
   let data = await queryBuilder({
     query: FILTER_USERS_BY_NAME,
     variables: {

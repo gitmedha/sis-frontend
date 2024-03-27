@@ -4,7 +4,11 @@ import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { getDefaultAssignee } from "../../../utils/function/lookupOptions";
-import { getAlumniServicePickList, getStudentAlumniServices, getStudentsPickList } from "../StudentComponents/StudentActions";
+import {
+  getAlumniServicePickList,
+  getStudentAlumniServices,
+  getStudentsPickList,
+} from "../StudentComponents/StudentActions";
 import BulkMassEdit from "./BulkMassEdit";
 import api from "../../../apis";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -52,34 +56,34 @@ const Section1 = styled.table`
     position: absolute;
     right: 0;
   }
-  .submitbtnclear{
+  .submitbtnclear {
     position: absolute;
-    right:10%;
+    right: 10%;
   }
   .table-input-select-wrapper {
-  width: 8rem;
-  padding: 2px;
-  margin: 0;
-  background-color: initial;
-  border-radius: 5px;
-  border: 1px solid #bebfc0;
-}
+    width: 8rem;
+    padding: 2px;
+    margin: 0;
+    background-color: initial;
+    border-radius: 5px;
+    border: 1px solid #bebfc0;
+  }
 
-.select__control {
-  border: none; /* Remove the border from the control */
-}
+  .select__control {
+    border: none; /* Remove the border from the control */
+  }
 
-.select__control:hover {
-  border: none; /* Remove the border on hover */
-}
+  .select__control:hover {
+    border: none; /* Remove the border on hover */
+  }
 
-.select__menu {
-  border: 1px solid #bebfc0; /* Add border to the dropdown menu */
-}
+  .select__menu {
+    border: 1px solid #bebfc0; /* Add border to the dropdown menu */
+  }
 
-.select__menu-list {
-  border: none; /* Remove border from menu items */
-}
+  .select__menu-list {
+    border: none; /* Remove border from menu items */
+  }
 `;
 
 const AlumMassEdit = (props) => {
@@ -94,23 +98,41 @@ const AlumMassEdit = (props) => {
 
   useEffect((props) => {
     getAlumniServicePickList().then((data) => {
-      setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
-      setCategoryOptions(data.category.map((item) => ({ value: item.value, label: item.value })));
-      setProgramOptions(data.program_mode.map((item) => ({ value: item.value, label: item.value })));
+      setTypeOptions(
+        data.subcategory.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+          category: item.category,
+        }))
+      );
+      setCategoryOptions(
+        data.category.map((item) => ({ value: item.value, label: item.value }))
+      );
+      setProgramOptions(
+        data.program_mode.map((item) => ({
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
 
     getStudentsPickList().then((data) => {
-      setLocationOptions(data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
+      setLocationOptions(
+        data.alumni_service_location.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
   const filterStudent = async (filterValue) => {
-    const data = await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      });
+    const data = await meilisearchClient.index("students").search(filterValue, {
+      limit: 100,
+      attributesToRetrieve: ["id", "full_name", "student_id"],
+    });
 
     return data.hits.map((student) => ({
       ...student,
@@ -127,29 +149,33 @@ const AlumMassEdit = (props) => {
 
   const handleSubmit = async () => {
     try {
-      const alumData = await Promise.all(students.map(async (obj) => {
-        try {
-          const data = await getStudentAlumniServices(obj.id);
-          return data.data.data.alumniServicesConnection.values.map((val) => ({
-            assigned_to: val.assigned_to.id,
-            category: val.category,
-            comments: val.comments,
-            end_date: val.end_date,
-            fee_amount: val.fee_amount,
-            fee_submission_date: val.fee_submission_date,
-            location: val.location,
-            program_mode: val.program_mode,
-            receipt_number: val.receipt_number,
-            start_date: val.start_date,
-            type: val.type,
-            student_id: obj.id,
-            id: Number(val.id),
-          }));
-        } catch (err) {
-          console.error(err);
-          return [];
-        }
-      }));
+      const alumData = await Promise.all(
+        students.map(async (obj) => {
+          try {
+            const data = await getStudentAlumniServices(obj.id);
+            return data.data.data.alumniServicesConnection.values.map(
+              (val) => ({
+                assigned_to: val.assigned_to.id,
+                category: val.category,
+                comments: val.comments,
+                end_date: val.end_date,
+                fee_amount: val.fee_amount,
+                fee_submission_date: val.fee_submission_date,
+                location: val.location,
+                program_mode: val.program_mode,
+                receipt_number: val.receipt_number,
+                start_date: val.start_date,
+                type: val.type,
+                student_id: obj.id,
+                id: Number(val.id),
+              })
+            );
+          } catch (err) {
+            console.error(err);
+            return [];
+          }
+        })
+      );
 
       setStudents(alumData.flat());
       setFormStatus(true);
@@ -159,47 +185,49 @@ const AlumMassEdit = (props) => {
   };
 
   const handleChange = (id, newData) => {
-    setStudents(students.map(obj => (obj.id === id ? { ...obj, ...newData } : obj)));
+    setStudents(
+      students.map((obj) => (obj.id === id ? { ...obj, ...newData } : obj))
+    );
   };
 
-  const handelSubmit=async()=>{
-  //   console.log("students",students);
+  const handelSubmit = async () => {
+    //   console.log("students",students);
 
-  //   const value = await api
-  // .post("/alumni-services/bulk-update", students)
-  // .then((data) => {
-  //   // Return data
-  //   setAlert("Data created successfully.", "success");
-  //   setTimeout(() => {
-  //     window.location.reload(false);
-  //   }, 3000);
-  // })
-  // .catch((err) => {
-  //   setAlert("Unable to create field data.", "error");
-  //   setTimeout(() => {
-  //     window.location.reload(false);
-  //   }, 1000);
-  // });
+    //   const value = await api
+    // .post("/alumni-services/bulk-update", students)
+    // .then((data) => {
+    //   // Return data
+    //   setAlert("Data created successfully.", "success");
+    //   setTimeout(() => {
+    //     window.location.reload(false);
+    //   }, 3000);
+    // })
+    // .catch((err) => {
+    //   setAlert("Unable to create field data.", "error");
+    //   setTimeout(() => {
+    //     window.location.reload(false);
+    //   }, 1000);
+    // });
 
-  // try {
-  //   const value = await api.post("/alumni-services/bulk-update", students);
-   
-  //   setTimeout(async() => {
-  //     await window.location.reload(false);
-  //     setAlert("Unable to create field data.", "success");
-  //       }, 1000);
-    
-  //   // Fetch updated data or update state with latest data here
-  // } catch (error) {
-  //   console.error(error);
-  //   setAlert("Unable to create field data.", "error");
-  // }
-  props.handelSubmit(students,"AlumniBuldEdit")
-  }
+    // try {
+    //   const value = await api.post("/alumni-services/bulk-update", students);
 
-  const handelCancel=()=>{
-    props.handelCancel()
-  }
+    //   setTimeout(async() => {
+    //     await window.location.reload(false);
+    //     setAlert("Unable to create field data.", "success");
+    //       }, 1000);
+
+    //   // Fetch updated data or update state with latest data here
+    // } catch (error) {
+    //   console.error(error);
+    //   setAlert("Unable to create field data.", "error");
+    // }
+    props.handelSubmit(students, "AlumniBuldEdit");
+  };
+
+  const handelCancel = () => {
+    props.handelCancel();
+  };
   return (
     <Modal
       centered
@@ -226,49 +254,71 @@ const AlumMassEdit = (props) => {
             />
           </div>
           <div>
-            <button className="btn btn-primary mt-3" onClick={handleSubmit}>Submit</button>
+            <button className="btn btn-primary mt-3" onClick={handleSubmit}>
+              Submit
+            </button>
           </div>
         </div>
       )}
 
-      {formStatus && (
-        <Section1>
-          <table className="create_data_table mt-5">
-            <thead className="border mt-5">
-              <tr>
-                <th className="border">Assigned To</th>
-                <th className="border">Category </th>
-                <th className="border">Sub Category </th>
-                <th className="border">Start Date </th>
-                <th className="border">End Date </th>
-                <th className="border">Fee Amount</th>
-                <th className="border">Fee Submission Date</th>
-                <th className="border">Location </th>
-                <th className="border">Program Mode </th>
-                <th className="border">Receipt Number </th>
-              </tr>
-            </thead>
-            <tbody className="mb-4">
-              {students.map((student, id) => (
-                <tr key={id} className="mt-4">
-                  <BulkMassEdit
-                    categoryOptions={categoryOptions}
-                    programOptions={programOptions}
-                    typeOptions={typeOptions}
-                    locationOptions={locationOptions}
-                    dataPoints={student}
-                    handelChange={handleChange}
-                  />
+      {formStatus &&
+        (students.length > 0 ? (
+          <Section1>
+            <table className="create_data_table mt-5">
+              <thead className="border mt-5">
+                <tr>
+                  <th className="border">Assigned To</th>
+                  <th className="border">Category </th>
+                  <th className="border">Sub Category </th>
+                  <th className="border">Start Date </th>
+                  <th className="border">End Date </th>
+                  <th className="border">Fee Amount</th>
+                  <th className="border">Fee Submission Date</th>
+                  <th className="border">Location </th>
+                  <th className="border">Program Mode </th>
+                  <th className="border">Receipt Number </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="d-flex">
-            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
-            <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>handelSubmit()}>Submit</button>
+              </thead>
+              <tbody className="mb-4">
+                {students.map((student, id) => (
+                  <tr key={id} className="mt-4">
+                    <BulkMassEdit
+                      categoryOptions={categoryOptions}
+                      programOptions={programOptions}
+                      typeOptions={typeOptions}
+                      locationOptions={locationOptions}
+                      dataPoints={student}
+                      handelChange={handleChange}
+                    />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="d-flex">
+              <button
+                className="btn submitbtnclear btn-danger btn-regular my-5"
+                onClick={() => handelCancel()}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn submitbtn btn-primary btn-regular my-5"
+                onClick={() => handelSubmit()}
+              >
+                Submit
+              </button>
+            </div>
+          </Section1>
+        ) : (
+          <div className="">
+            <button
+              className="btn submitbtnclear btn-danger btn-regular my-5"
+              onClick={() => handelCancel()}
+            >
+              Jump Back to previous page <label>no</label>
+            </button>
           </div>
-        </Section1>
-      )}
+        ))}
     </Modal>
   );
 };
@@ -280,4 +330,3 @@ const mapActionsToProps = {
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(AlumMassEdit);
-

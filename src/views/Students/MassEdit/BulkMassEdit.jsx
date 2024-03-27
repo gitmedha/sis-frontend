@@ -167,7 +167,9 @@ const BulkMassEdit = (props) => {
         />
       </td>
       <td>
-        <input className="table-input" defaultValue={dataPoints.receipt_number} type="text" name="sub_category" />
+        <input className="table-input" defaultValue={dataPoints.receipt_number} type="text" name="sub_category"  onChange={(e) => {
+              props.handelChange(dataPoints.id , {receipt_number:e?.target.value})
+            }}/>
       </td>
     </>
   );

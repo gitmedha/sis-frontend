@@ -20,6 +20,7 @@ import Select from "react-select";
 import moment from "moment";
 import CheckBoxForm from "./CheckBoxForm";
 import AlumMassEdit from "../MassEdit/AlumMassEdit";
+import Skeleton from "react-loading-skeleton";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -67,6 +68,7 @@ const MassEdit = (props) => {
   const [students, setStudents] = useState([]);
   const [bulkAddCheck,setBulkAddCheck]=useState(true)
   const [massEditCheck,setMassEditCheck]=useState(false)
+  const [studentInput, setStudentInput] = useState("");
 
   useEffect(() => {
     if (props.alumniService) {
@@ -124,6 +126,12 @@ const MassEdit = (props) => {
       })
     );
   }, [props]);
+
+  useEffect(() => {
+    filterStudent(studentInput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentInput]);
 
   let initialValues = {
     student_ids: [],
@@ -220,23 +228,7 @@ const MassEdit = (props) => {
     }
   };
 
-  const colourOptions = [
-    { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
-    { value: "blue", label: "Blue", color: "#0052CC", isDisabled: true },
-    { value: "purple", label: "Purple", color: "#5243AA" },
-    { value: "red", label: "Red", color: "#FF5630", isFixed: true },
-    { value: "orange", label: "Orange", color: "#FF8B00" },
-    { value: "yellow", label: "Yellow", color: "#FFC400" },
-    { value: "green", label: "Green", color: "#36B37E" },
-    { value: "forest", label: "Forest", color: "#00875A" },
-    { value: "slate", label: "Slate", color: "#253858" },
-    { value: "silver", label: "Silver", color: "#666666" },
-  ];
 
-  useEffect(()=>{
-    console.log("bulkAddCheck",bulkAddCheck);
-    console.log("massEditcheck",massEditCheck)
-  },[bulkAddCheck,massEditCheck])
 
 
   const handelSubmit=(data,key)=>{
@@ -266,7 +258,7 @@ const MassEdit = (props) => {
             {props.alumniService && props.alumniService.id
               ? "Update"
               : "Add New"}{" "}
-            Alumni Service
+            Alumni Engagement
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -305,20 +297,25 @@ const MassEdit = (props) => {
                         options={studentOptions}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        onInputChange={(e) => setStudentInput(e)}
                         onChange={(choice) => setStudents(choice)}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
+                    {assigneeOptions.length ? (
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                    />
+                  ) : (
+                    <Skeleton count={1} height={45} />
+                  )}
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
