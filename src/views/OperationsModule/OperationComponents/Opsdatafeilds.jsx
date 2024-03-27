@@ -96,7 +96,6 @@ const Opsdatafeilds = (props) => {
     });
   }
 
-  console.log(props);
   
 
   return (
