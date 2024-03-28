@@ -52,7 +52,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const CollepitchesEdit = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show,refreshTableOnDataSaving } = props;
   const [srmOption, setsrmOption] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -183,6 +183,7 @@ const CollepitchesEdit = (props) => {
     const newObj = {...values};
     values.pitch_date ? newObj["pitch_date"] = moment(values["pitch_date"]).format("YYYY-MM-DD"): delete newObj['pitch_date'];
     const value = await updateCollegePitch(Number(props.id), newObj);
+    refreshTableOnDataSaving()
     setDisableSaveButton(true);
     onHide(value);
     setDisableSaveButton(false);
