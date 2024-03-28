@@ -1,16 +1,15 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import { Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
-import CreateEventForm from './calendarComponents/CreateEventForm';
+import EventForm from './calendarComponents/EventForm';
 import ViewEvent from './calendarComponents/ViewEvent';
+import {getEvents} from './calendarComponents/calendarActions';
+import NP from "nprogress";
 
 const localizer = momentLocalizer(moment)
 
-
 const EventCalendar = (props) => {
 
-  const [createEventForm,setCreateEventForm] = useState(false);
-  const [viewEventModal,setViewEventModal] = useState(false);
   const [eventData,setEventData] = useState({
     assgined_to:"",
     alumni_service:"",
@@ -19,9 +18,57 @@ const EventCalendar = (props) => {
     status:''
   })
 
-  const showCreateEventForm = async(slotInfo)=>{
-    setCreateEventForm(true);
+  const [eventList,setEventList] = useState([{
+    title: '',
+    start: '',
+    end: '',
+    assgined_to:'',
+    event_status:''
+  }])
 
+  
+  const [createEventForm,setCreateEventForm] = useState(false);
+  const [viewEventModal,setViewEventModal] = useState(false);
+  const [slotInfo,setSlotInfo] = useState('')
+  const [currentView,setCurrentView] = useState('month');
+
+
+  const formateResponseToEventList = async (response) =>{
+
+    const formattedEvents = response.map(event => ({
+      title: event.name,
+      start: new Date(event.start_date),
+      end: new Date(event.end_date),
+      assigned_to: event.assgined_to.username,
+      event_status: event.status
+    }));
+
+    setEventList(formattedEvents);
+  }
+
+  useEffect(()=>{
+    async function populateEvents(){
+      NP.start()
+     const response =  await getEvents();
+     await formateResponseToEventList(response)
+     NP.done();
+    }
+    
+    populateEvents();
+
+  },[])
+
+  const fetchEventsAgain = async () => {
+    NP.start();
+    const response = await getEvents();
+    await formateResponseToEventList(response);
+    NP.done();
+  };
+  
+
+  const showCreateEventForm = async(info)=>{
+    await setSlotInfo(info);
+    setCreateEventForm(true);
   }
 
   const hideCreateEventForm = async()=>{
@@ -33,9 +80,8 @@ const EventCalendar = (props) => {
   }
 
   const openViewEventModal = async(eventInfo)=>{
-    console.log("eventInfo:",eventInfo)
    await setEventData({
-      assgined_to:"Deepak",
+      assgined_to:eventInfo.assigned_to,
       start_date:eventInfo.start,
       end_date:eventInfo.end,
       alumni_service:eventInfo.title,
@@ -43,39 +89,50 @@ const EventCalendar = (props) => {
     })
     setViewEventModal(true);
   }
-  const myEventsList = [
-    {
-      title: 'Meeting with Client',
-      start: new Date('2024-03-09T10:00:00'),
-      end: new Date('2024-03-10T12:00:00'),
-      assgined_to:'Deepak Sharma',
-      event_status:'open'
-    },
-    {
-      title: 'Lunch Break',
-      start: new Date('2024-03-09T12:30:00'),
-      end: new Date('2024-03-09T13:30:00'),
+
+  const eventStyleGetter = (event) => {
+    let backgroundColor = '#ced4da'; // Default color (grey)
+    if (event.event_status === 'Open') {
+      backgroundColor = '#257b69'; // Green for open events
     }
-  ];
+    return {
+      style: {
+        backgroundColor,
+      },
+    };
+  };
+
+  const handleViewChange = (view) => {
+    setCurrentView(view);
+  };
+  
 
   return (
   <div>
     <Calendar
       localizer={localizer}
-      events={myEventsList}
+      events={eventList}
       startAccessor="start"
       endAccessor="end"
       selectable
-      style={{ height: 500 ,width:'90%'}}
-      onSelectSlot={(slotInfo) => showCreateEventForm(slotInfo)}
+      style={{ height: 600 ,width:'97%'}}
+      onView={handleViewChange}
+      onSelectSlot={(slotInfo) => {
+        if (currentView === 'month') {
+          showCreateEventForm(slotInfo);
+        }
+      }}
       onSelectEvent={(event) =>openViewEventModal(event)}
+      eventPropGetter={eventStyleGetter}
+      views={['month', 'week', 'day']}
     />
     {
-      createEventForm && <CreateEventForm onHide={hideCreateEventForm}/>
+      createEventForm && <EventForm onHide={hideCreateEventForm} onEventCreated={fetchEventsAgain} slotInfo={slotInfo}/>
     }
     {
       viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData}/>
     }
+
   </div>
 )}
 

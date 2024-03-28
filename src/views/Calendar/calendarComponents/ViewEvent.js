@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
+import {FaEdit} from 'react-icons/fa'
 
 const Styled = styled.div`
   .icon-box {
@@ -54,10 +55,15 @@ function ViewEvent(props) {
             id="contained-modal-title-vcenter"
             className="d-flex align-items-center"
           >
-            <h1 className="text--primary bebas-thick mb-0">
-            Event Info
-            </h1>
+             <h1 className="text--primary bebas-thick mb-0">
+              Event Info
+              </h1>
+         
           </Modal.Title>
+          <div style={{ cursor: 'pointer' }}>
+          <FaEdit size={25} color='#808080'/>
+          </div>
+       
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
