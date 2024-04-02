@@ -27,6 +27,7 @@ import AddSession from "./views/Batches/batchComponents/AddSession";
 import updateSession from "./views/Batches/sessions/updateSession";
 import Employer from "./views/Employers/Employer";
 import Employers from "./views/Employers/Employers";
+import EventCalendar from "./views/Calendar/Calendar";
 import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
@@ -176,9 +177,10 @@ const App = (props) => {
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
                     <PrivateRoute path="/operation" exact component={operations} />
+                    <PrivateRoute path="/calender" exact component={EventCalendar}/>
                   </>
                   }
-                  
+                 
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
