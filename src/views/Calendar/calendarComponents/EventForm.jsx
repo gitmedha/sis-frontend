@@ -4,8 +4,10 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { filterAssignedTo,getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import {getAlumniServicePickList,createEvent} from './calendarActions';
+import {getAlumniServicePickList,createEvent,updateEvent} from './calendarActions';
 import {calendarValidations} from '../../../validations/Calendar';
+import {setAlert} from "../../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
 import NP from "nprogress";
 
 const Section = styled.div`
@@ -30,6 +32,7 @@ const Section = styled.div`
 
 export const EventForm = (props) => {
 
+  const {setAlert} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [statusOptions] = useState([
     {
@@ -50,37 +53,60 @@ const initialValues = {};
   const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
-      setAssigneeOptions(data);
-    });
 
+    
     getAlumniServicePickList().then(data=>{
       setAlumniServiceOptions([...data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })),...data.category.map((item)=> ({value: item.value, label: item.value}))])
     })
 
-if(props.eventData){
+    
+    getDefaultAssigneeOptions().then(data => {
+      setAssigneeOptions(data);
+    });
 
-}
-else {
+      if(props.eventData){
+
+        initialValues.assgined_to = props.eventData.assgined_to.id.toString()
+        initialValues.start_date = props.eventData.start_date;
+        initialValues.end_date =props.eventData.end_date;
+        initialValues.status = props.eventData.status
+        initialValues.alumni_service = props.eventData.alumni_service;
+        initialValues.id = props.eventData.id;
   
-  initialValues.assgined_to = userId.toString()
-  initialValues.start_date = new Date()
-  initialValues.end_date = new Date()
-  initialValues.reporting_date = new Date()
-  initialValues.status = ''
-  initialValues.alumni_service = ''
-  initialValues.name = localStorage.getItem('user_name')
-}
-  }, []);
+      }
+      else {
+        initialValues.assgined_to = userId.toString()
+        initialValues.start_date = props.slotData.start;
+        initialValues.end_date = props.slotData.end;
+        initialValues.reporting_date = new Date()
+        initialValues.status = 'Open'
+        initialValues.alumni_service = ''
+        initialValues.name = localStorage.getItem('user_name')
+      }
+    }, []);
 
 
   const handleSubmit = async(values)=>{
     try {
       NP.start()
-      await createEvent(values);
+      if(props.eventData){
+        values.name = values.alumni_service;
+        await updateEvent(values,props.eventData.id)
+        setAlert("Details updated successfully.", "success")
+        
       NP.done();
-      await props.onEventCreated();
+      await props.onRefresh();
       props.onHide();
+      }
+      else {
+        await createEvent(values);
+        setAlert("Event created successfully.", "success")
+        
+      NP.done();
+      await props.onRefresh();
+      props.onHide();
+      }
+     
 
     } catch (error) {
       console.error(error);
@@ -105,7 +131,7 @@ else {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            Add New Event
+            {props.eventData ? 'Update Event':'Add New Event'}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -189,7 +215,7 @@ else {
            
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={()=>handleSubmit(values)}>SAVE</button>
+                 <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={()=>handleSubmit(values)}>{props.eventData ? "UPDATE":"SAVE"}</button>
                     <button
                       type="button"
                       onClick={props.onHide}
@@ -209,4 +235,10 @@ else {
   )
 }
 
-export default EventForm;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(EventForm);
