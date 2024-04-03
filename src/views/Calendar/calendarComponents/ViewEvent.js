@@ -37,7 +37,7 @@ const Styled = styled.div`
 
 function ViewEvent(props) {
 
-  const {onHide, event} = props;
+  const {onHide, event,openEditForm} = props;
 
 
   return (
@@ -60,7 +60,7 @@ function ViewEvent(props) {
               </h1>
          
           </Modal.Title>
-          <div style={{ cursor: 'pointer' }}>
+          <div style={{ cursor: 'pointer' }} onClick={()=>openEditForm()}>
           <FaEdit size={25} color='#808080'/>
           </div>
        
@@ -71,7 +71,7 @@ function ViewEvent(props) {
               <div className="col-md-6 col-sm-12 mb-2">
                 <DetailField
                   label="Assigned To"
-                  value={event.assgined_to ? event.assgined_to : ""}
+                  value={event.assgined_to ? event.assgined_to.username : ""}
                 />
               </div>
               <div className='col-md-6 col-sm-12 mb-2'>
