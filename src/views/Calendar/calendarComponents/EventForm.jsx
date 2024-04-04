@@ -90,21 +90,22 @@ const initialValues = {};
     try {
       NP.start()
       if(props.eventData){
+     
         values.name = values.alumni_service;
         await updateEvent(values,props.eventData.id)
         setAlert("Details updated successfully.", "success")
-        
-      NP.done();
-      await props.onRefresh();
-      props.onHide();
+          
+        NP.done();
+        await props.onRefresh();
+        props.onHide();
       }
       else {
+      
         await createEvent(values);
         setAlert("Event created successfully.", "success")
-        
-      NP.done();
-      await props.onRefresh();
-      props.onHide();
+        NP.done();
+        await props.onRefresh();
+        props.onHide();
       }
      
 
