@@ -84,7 +84,7 @@ const EventCalendar = (props) => {
 
   const showCreateEventForm = async(info)=>{
    
-    setSelectedSlotInfo(info);
+    await setSelectedSlotInfo(info);
     setCreateEventForm(true);
   }
 
@@ -157,7 +157,7 @@ const EventCalendar = (props) => {
       views={['month', 'week', 'day']}
     />
     {
-      createEventForm && <EventForm onHide={hideCreateEventForm} onEventCreated={fetchEventsAgain} slotData={selectedSlotInfo}/>
+      createEventForm && <EventForm onHide={hideCreateEventForm} onRefresh={fetchEventsAgain} slotData={selectedSlotInfo}/>
     }
     {
       viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData} openEditForm={enableEditing} />
