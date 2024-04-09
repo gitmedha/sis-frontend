@@ -33,9 +33,16 @@ export const createEvent = async (reportingData)=>{
 export const getEvents = async function(){
   try {
     const {data} = await api.post('/alumni-events/get-events',{});
-    console.log("data",data);
     return data;
   } catch (error) {
     console.error(error);
   }
 }
+
+export const updateEvent = async (updatedData,id)=>{
+  try {
+    await api.post(`/alumni-events/update-event/${id}`, updatedData)
+  } catch (error) {
+    console.error(error);
+  }
+};

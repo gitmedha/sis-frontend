@@ -11,7 +11,12 @@ const localizer = momentLocalizer(moment)
 const EventCalendar = (props) => {
 
   const [eventData,setEventData] = useState({
-    assgined_to:"",
+    id:0,
+    assgined_to:{
+      id:0,
+      username:'',
+      email:''
+    },
     alumni_service:"",
     start_date:"",
     end_date:'',
@@ -19,27 +24,38 @@ const EventCalendar = (props) => {
   })
 
   const [eventList,setEventList] = useState([{
+    id:0,
     title: '',
     start: '',
     end: '',
-    assgined_to:'',
+    assgined_to:{
+      username:'',
+      email:'',
+      userId:0
+    },
     event_status:''
   }])
 
   
   const [createEventForm,setCreateEventForm] = useState(false);
   const [viewEventModal,setViewEventModal] = useState(false);
-  const [slotInfo,setSlotInfo] = useState('')
   const [currentView,setCurrentView] = useState('month');
+  const [isEditing,setIsEditing] = useState(false);
+  const [selectedSlotInfo,setSelectedSlotInfo] = useState({})
 
 
   const formateResponseToEventList = async (response) =>{
 
     const formattedEvents = response.map(event => ({
+      id:event.id,
       title: event.name,
       start: new Date(event.start_date),
       end: new Date(event.end_date),
-      assigned_to: event.assgined_to.username,
+      assigned_to: {
+        username:event.assgined_to.username,
+        email:event.assgined_to.email,
+        userId:event.assgined_to.id
+      },
       event_status: event.status
     }));
 
@@ -67,7 +83,8 @@ const EventCalendar = (props) => {
   
 
   const showCreateEventForm = async(info)=>{
-    await setSlotInfo(info);
+   
+    await setSelectedSlotInfo(info);
     setCreateEventForm(true);
   }
 
@@ -79,21 +96,34 @@ const EventCalendar = (props) => {
     setViewEventModal(false);
   }
 
+  const enableEditing = async()=>{
+    setViewEventModal(false);
+    setIsEditing(true);
+  }
+
+  const disableEditing = async ()=>{
+    setIsEditing(false);
+  }
   const openViewEventModal = async(eventInfo)=>{
    await setEventData({
-      assgined_to:eventInfo.assigned_to,
+      assgined_to:{
+        id:eventInfo.assigned_to.userId,
+        username:eventInfo.assigned_to.username,
+        email:eventInfo.assigned_to.email
+      },
       start_date:eventInfo.start,
       end_date:eventInfo.end,
       alumni_service:eventInfo.title,
-      status:eventInfo.event_status
+      status:eventInfo.event_status,
+      id:eventInfo.id
     })
     setViewEventModal(true);
   }
 
   const eventStyleGetter = (event) => {
-    let backgroundColor = '#ced4da'; // Default color (grey)
+    let backgroundColor = '#ced4da';
     if (event.event_status === 'Open') {
-      backgroundColor = '#257b69'; // Green for open events
+      backgroundColor = '#257b69';
     }
     return {
       style: {
@@ -127,11 +157,13 @@ const EventCalendar = (props) => {
       views={['month', 'week', 'day']}
     />
     {
-      createEventForm && <EventForm onHide={hideCreateEventForm} onEventCreated={fetchEventsAgain} slotInfo={slotInfo}/>
+      createEventForm && <EventForm onHide={hideCreateEventForm} onRefresh={fetchEventsAgain} slotData={selectedSlotInfo}/>
     }
     {
-      viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData}/>
+      viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData} openEditForm={enableEditing} />
     }
+
+    {isEditing && <EventForm onHide={disableEditing} onRefresh={fetchEventsAgain} eventData={eventData}/>}
 
   </div>
 )}
