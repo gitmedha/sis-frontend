@@ -121,7 +121,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
 });
 
 export const StudentValidations = Yup.object({
-  full_name : Yup.string().required('Name is required.') // Check for required input
+  full_name : Yup.string().required('Name is required.') 
   .test(
     'no-trailing-space',
     'Please remove extra space.',
