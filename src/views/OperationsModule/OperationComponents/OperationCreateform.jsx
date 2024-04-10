@@ -13,6 +13,21 @@ import { RowsData } from "./RowsData";
 import {searchInstitutions,searchBatches} from "./operationsActions";
 
 
+
+
+const hideBatchName = [
+  "New Enrollments_CAB",
+  "New Enrollments_LAB",
+  "New Enrollments_TAB",
+  "New Enrollments_eCAB",
+  "New Enrollments_eTAB",
+  "New Enrollments_CAB Plus Work from Home",
+  "New Enrollments_Svapoorna",
+  "New Enrollments_Swarambh",
+  "New Enrollments_Workshop",
+  "New Enrollments_BMC Design Lab",
+];
+
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
@@ -339,11 +354,18 @@ const OperationCreateform = (props) => {
     try {
       const {data} = await searchBatches(filterValue);
       let filterData = data.batchesConnection.values.map((batch) => {
-        return {
-          ...batch,
-          label: batch.name,
-          value: Number(batch.id),
-        };
+        if(hideBatchName.includes(batch.name)){
+          return {
+
+          };
+        }else{
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
+        
       });
       return filterData;
 
