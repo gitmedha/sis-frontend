@@ -95,6 +95,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
   };
+  
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = Number(props.programEnrollment.batch?.id);
@@ -112,6 +113,7 @@ const ProgramEnrollmentForm = (props) => {
     
   };
 
+  console.log(initialValues);
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -436,7 +438,7 @@ const ProgramEnrollmentForm = (props) => {
 
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_other && initialValues.course_name_other.length))?
+                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
                    <Input
                       name="course_name_other"
                       control="input"
