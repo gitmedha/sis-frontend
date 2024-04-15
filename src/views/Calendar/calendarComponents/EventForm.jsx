@@ -77,7 +77,7 @@ const initialValues = {};
       else {
         initialValues.assgined_to = userId.toString()
         initialValues.start_date = props.slotData.start;
-        initialValues.end_date = props.slotData.end;
+        initialValues.end_date = props.slotData.start;
         initialValues.reporting_date = new Date()
         initialValues.status = 'Open'
         initialValues.alumni_service = ''
