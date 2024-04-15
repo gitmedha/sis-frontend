@@ -387,7 +387,7 @@ const EmploymentmassEdit = (props) => {
           className="btn submitbtnclear btn-danger btn-regular my-5"
           onClick={() => handelCancel()}
         >
-          Jump Back to previous page <label>no</label>
+          Jump Back to previous page 
         </button>
       </div>))}
       </Modal>
