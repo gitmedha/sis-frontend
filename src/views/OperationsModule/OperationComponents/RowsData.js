@@ -10,6 +10,10 @@ const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+const studenTypeOption = [
+  { value: 'Medha Student', label: "Medha Student" },
+  { value: 'Non-Medha Student', label: "Non-Medha Student" },
+];
 
 
 export const RowsData = (props) => {
@@ -29,6 +33,7 @@ export const RowsData = (props) => {
       activity_type: "",
       assigned_to: "",
       area: "",
+      student_type:""
     },
     // Add more initial rows as needed
   ]);
@@ -238,6 +243,18 @@ export const RowsData = (props) => {
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={ studenTypeOption }
+            onChange={(e) => props.handleChange(e, "student_type", row.id)}
+          />
+        </td>
+       
         <td>
           <Select
             className={`table-input ${
