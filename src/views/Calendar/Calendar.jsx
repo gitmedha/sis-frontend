@@ -39,7 +39,6 @@ const EventCalendar = (props) => {
   
   const [createEventForm,setCreateEventForm] = useState(false);
   const [viewEventModal,setViewEventModal] = useState(false);
-  const [currentView,setCurrentView] = useState('month');
   const [isEditing,setIsEditing] = useState(false);
   const [selectedSlotInfo,setSelectedSlotInfo] = useState({})
 
@@ -131,10 +130,6 @@ const EventCalendar = (props) => {
       },
     };
   };
-
-  const handleViewChange = (view) => {
-    setCurrentView(view);
-  };
   
 
   return (
@@ -146,12 +141,7 @@ const EventCalendar = (props) => {
       endAccessor="end"
       selectable
       style={{ height: 600 ,width:'97%'}}
-      onView={handleViewChange}
-      onSelectSlot={(slotInfo) => {
-        if (currentView === 'month') {
-          showCreateEventForm(slotInfo);
-        }
-      }}
+      onSelectSlot={(slotInfo) => showCreateEventForm(slotInfo)}
       onSelectEvent={(event) =>openViewEventModal(event)}
       eventPropGetter={eventStyleGetter}
       views={['month', 'week', 'day']}

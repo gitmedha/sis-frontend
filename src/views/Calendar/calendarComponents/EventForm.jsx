@@ -44,6 +44,10 @@ export const EventForm = (props) => {
     key:1,
     label:'Close',
     value:'Close'
+  },{
+    key:2,
+    label:'Cancelled',
+    value:'Cancelled'
   }
 ]);
 

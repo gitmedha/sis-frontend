@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import {FaEdit} from 'react-icons/fa'
+import {FaEdit,FaTrash} from 'react-icons/fa'
 
 const Styled = styled.div`
   .icon-box {
@@ -60,10 +60,14 @@ function ViewEvent(props) {
               </h1>
          
           </Modal.Title>
-          <div style={{ cursor: 'pointer' }} onClick={()=>openEditForm()}>
-          <FaEdit size={25} color='#808080'/>
+          <div style={{display:'flex',justifyContent:'space-around'}}>
+            <div style={{ cursor: 'pointer' ,marginRight:'10px'}} onClick={()=>openEditForm()}>
+            <FaEdit size={25} color='#808080'/>
+            </div>
+            <div style={{cursor:'pointer'}}>
+            <FaTrash size={22} color='red'/>
+            </div>
           </div>
-       
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
@@ -81,10 +85,10 @@ function ViewEvent(props) {
               <DetailField label="Status" value={event.status ? event.status:""} />
               </div>
               <div className='col-md-6 col-sm-12 mb-2'>
-              <DetailField label="Start Date" value={event.start_date?moment(event.start_date).format("DD MMM YYYY, h:mm a"):""} />
+              <DetailField label="Start Date" value={event.start_date?moment(event.start_date).format("DD MMM YYYY"):""} />
               </div>
               <div className='col-md-6 col-sm-12 mb-2'>
-              <DetailField label="End Date" value={event.end_date?moment(event.end_date).format("DD MMM YYYY, h:mm: a"):"" } />
+              <DetailField label="End Date" value={event.end_date?moment(event.end_date).format("DD MMM YYYY"):"" } />
               </div>
             </div>
           </Modal.Body>
