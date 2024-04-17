@@ -132,6 +132,7 @@ const Opsdatafeilds = (props) => {
     <DetailField className='' Bold={""} label="Guest" value={props.guest} />
     <DetailField className='' Bold={""} label="Organization" value={props.organization} />
     <DetailField className='' Bold={""} label="Student Attended" value={props.students_attended} />
+    
   </div>
   <div className="col-md-6 col-sm-12">
     <DetailField className='' label="Assigned to" value={props.assigned_to?.username ? props.assigned_to?.username : ""} Bold={""} />
@@ -140,6 +141,7 @@ const Opsdatafeilds = (props) => {
     <DetailField className='' Bold={""} label="Topic" value={props.topic} />
     <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
     <DetailField className='' Bold={""} label="Program Name" value={props.program_name ? props.program_name : "Not found"} />
+    <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/>
   </div>
 </div>
 
