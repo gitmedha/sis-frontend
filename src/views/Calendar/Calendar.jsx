@@ -39,8 +39,9 @@ const EventCalendar = (props) => {
   
   const [createEventForm,setCreateEventForm] = useState(false);
   const [viewEventModal,setViewEventModal] = useState(false);
+  const [openDeleteAlert,setDeleteAlert] = useState(false);
   const [isEditing,setIsEditing] = useState(false);
-  const [selectedSlotInfo,setSelectedSlotInfo] = useState({})
+  const [selectedSlotInfo,setSelectedSlotInfo] = useState({});
 
 
   const formateResponseToEventList = async (response) =>{
@@ -123,15 +124,32 @@ const EventCalendar = (props) => {
     let backgroundColor = '#ced4da';
     if (event.event_status === 'Open') {
       backgroundColor = '#257b69';
+      return {
+        style: {
+          backgroundColor,
+        },
+      };
     }
-    return {
-      style: {
-        backgroundColor,
-      },
-    };
+    else if (event.event_status === 'Cancelled') {
+      backgroundColor = '#D0312D';
+      let textDecoration = 'line-through';
+
+      return {
+        style: {
+          backgroundColor,
+          textDecoration,
+        },
+      };
+    }
+    else {
+      return {
+        style: {
+          backgroundColor,
+        },
+      };
+    }
   };
   
-
   return (
   <div>
     <Calendar
@@ -150,7 +168,14 @@ const EventCalendar = (props) => {
       createEventForm && <EventForm onHide={hideCreateEventForm} onRefresh={fetchEventsAgain} slotData={selectedSlotInfo}/>
     }
     {
-      viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData} openEditForm={enableEditing} />
+      viewEventModal && <ViewEvent 
+                            onHide={hideViewEventModal} 
+                            event={eventData} 
+                            openEditForm={enableEditing} 
+                            openDeleteAlert={openDeleteAlert}
+                            setDeleteAlert={setDeleteAlert}
+                            onRefresh={fetchEventsAgain}
+                            />
     }
 
     {isEditing && <EventForm onHide={disableEditing} onRefresh={fetchEventsAgain} eventData={eventData}/>}
