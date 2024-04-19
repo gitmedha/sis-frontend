@@ -417,20 +417,18 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
         </div>
 
         
-        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
         <OpportunitySearchBar 
-        selectedSearchField={selectedSearchField} 
-        setSelectedSearchField={setSelectedSearchField} 
-        setIsSearchEnable={setIsSearchEnable}
-        setSelectedSearchedValue={setSelectedSearchedValue}
-        tab={activeTab.key}
-        info={{
-          id:userId,
-          area:area,
-          state:state,
-        }}
+          selectedSearchField={selectedSearchField} 
+          setSelectedSearchField={setSelectedSearchField} 
+          setIsSearchEnable={setIsSearchEnable}
+          setSelectedSearchedValue={setSelectedSearchedValue}
+          tab={activeTab.key}
+          info={{
+            id:userId,
+            area:area,
+            state:state,
+          }}
         />
-        </div>
         
         <Table 
           columns={columns} 
