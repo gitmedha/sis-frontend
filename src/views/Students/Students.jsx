@@ -680,6 +680,7 @@ else {
               area:area,
               state:state,
             }}
+            isDisable={studentsAggregate.count ? false:true}
             />
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             <Table

@@ -26,7 +26,7 @@ const Section = styled.div`
 
 
 
-function OpportunitySearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function OpportunitySearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info,isDisable}) {
 
     const initialValues = {
         search_by_field:'',
@@ -165,6 +165,7 @@ refreshOnTabChange()
                         options={opportunityOptions}
                         className="form-control"
                         onChange = {(e)=>handleOpportunityOptions(e.value)}
+                        isDisabled={isDisable}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>

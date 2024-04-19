@@ -404,6 +404,8 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
           area:area,
           state:state,
         }}
+        isDisable={institutionsAggregate.count ? false:true}
+
         />
         <Table
           columns={columns}
