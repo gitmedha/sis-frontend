@@ -16,6 +16,8 @@ import {searchInstitutions,searchBatches} from "./operationsActions";
 
 
 const hideBatchName = [
+  "new",
+  "New",
   "New Enrollments_CAB",
   "New Enrollments_LAB",
   "New Enrollments_TAB",
@@ -61,6 +63,7 @@ const OperationCreateform = (props) => {
       assigned_to: "",
       area: "",
       students_attended: "",
+      student_type:""
     },
     // Add more initial rows as needed
   ]);
@@ -81,6 +84,7 @@ const OperationCreateform = (props) => {
       designation: "",
       organization: "",
       students_attended: "",
+      student_type:""
     },
   ]);
   const [newRow] = useState({
@@ -99,6 +103,7 @@ const OperationCreateform = (props) => {
     assigned_to: "",
     area: "",
     students_attended: "",
+    student_type:""
   });
 
   useEffect(() => {
@@ -299,6 +304,7 @@ const OperationCreateform = (props) => {
           assigned_to: "",
           area: "",
           students_attended: "",
+          student_type:""
         }
       ])
     } catch (error) {
@@ -445,6 +451,7 @@ const OperationCreateform = (props) => {
                   <th>State *</th>
                   <th>Medha Area *</th>
                   <th>Program Name *</th>
+                  <th>Student Type</th>
                   <th>Batch Name *</th>
 
                   <th>Start Date *</th>
