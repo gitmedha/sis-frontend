@@ -26,7 +26,7 @@ const Section = styled.div`
 
 
 
-function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info,isDisable}) {
 
   let today = new Date();
 
@@ -193,6 +193,7 @@ refreshOnTabChange()
                         options={studentsOptions}
                         className="form-control"
                         onChange = {(e)=>handleStudentsOptions(e.value)}
+                        isDisabled={isDisable}
                     />
                 </div>
                 {selectedSearchField!=="registration_date_latest" && <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>

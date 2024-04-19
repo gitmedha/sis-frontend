@@ -428,6 +428,7 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
             area:area,
             state:state,
           }}
+          isDisable={opportunitiesAggregate.count ? false:true}
         />
         
         <Table 

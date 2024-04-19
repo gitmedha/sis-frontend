@@ -26,7 +26,7 @@ const Section = styled.div`
 
 
 
-function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info,isDisable}) {
 
   let today = new Date();
 
@@ -212,6 +212,7 @@ refreshOnTabChange()
                         options={batchOptions}
                         className="form-control"
                         onChange = {(e)=>handleBatchOptions(e.value)}
+                        isDisabled={isDisable}
                     />
                 </div>
                 {(selectedSearchField!=="start_date" && selectedSearchField!== "end_date") && <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>
