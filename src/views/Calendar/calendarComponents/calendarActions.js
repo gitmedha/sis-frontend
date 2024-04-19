@@ -46,3 +46,11 @@ export const updateEvent = async (updatedData,id)=>{
     console.error(error);
   }
 };
+
+export const deleteEvent = async (updatedData,id)=>{
+  try {
+    await api.post(`/alumni-events/update-event/${id}`, updatedData)
+  } catch (error) {
+    console.error(error);
+  }
+}
