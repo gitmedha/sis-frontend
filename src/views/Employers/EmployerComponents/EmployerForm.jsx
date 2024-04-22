@@ -328,15 +328,23 @@ const EmployerForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {stateOptions.length ? (
                     <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
+                      icon="down"
+                      name="state"
+                      label="State"
+                      control="lookup"
+                      options={stateOptions}
+                      onChange={onStateChange}
+                      placeholder="State"
                       className="form-control"
                       required
                     />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
@@ -385,22 +393,16 @@ const EmployerForm = (props) => {
                       </>
                     )}
                   </div>
+                 
                   <div className="col-md-6 col-sm-12 mb-2">
-                  {stateOptions.length ? (
                     <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      control="lookup"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                      placeholder="State"
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
                       className="form-control"
                       required
                     />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
                   </div>
                 </div>
               </Section>

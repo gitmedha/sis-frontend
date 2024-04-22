@@ -113,8 +113,12 @@ const OperationCreateform = (props) => {
     for (let row of rows) {
 
       for(let key in row){
-       
-        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') ){
+       if( row[key]==="Medha Student" && key=="batch" ){
+        if(isEmptyValue(row[key])){
+          isEmptyValuFound=false
+        }
+       }
+        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') && !(key =='student_type' ) && !(key =='batch' ) ){
           if(isEmptyValue(row[key])){
             isEmptyValuFound=true
           }
