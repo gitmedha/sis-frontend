@@ -150,7 +150,7 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Service
+            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Engagement
           </h1>
         </Modal.Title>
       </Modal.Header>

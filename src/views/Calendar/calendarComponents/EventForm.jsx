@@ -167,10 +167,10 @@ const initialValues = {};
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="alumni_service"
-                      label="Alumni Service"
+                      label="Alumni Engagement"
                       required
                       control="lookup"
-                      placeholder="Alumni Service"
+                      placeholder="Alumni Engagement"
                       className="form-control capitalize"
                       options={alumniServiceOptions}
                     />
