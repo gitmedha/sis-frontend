@@ -51,6 +51,7 @@ export const RowsData = (props) => {
   const [programOptions,setProgramOptions]=useState([])
   const [state,setstate]=useState(true)
   const [activityoption,setActivityOption]=useState([])
+  const [studentType,setStudenttype]=useState(true)
 
   
   const onStateChange = (value, rowid, field) => {
@@ -137,6 +138,15 @@ export const RowsData = (props) => {
     setstate(!state)
     return true
   };
+
+  const handleStudentType =(e,id)=>{
+    if(e.value == 'Medha Student'){
+      setStudenttype(false)
+      props.handleChange(e,"student_type",id)
+    }else{
+      setStudenttype(true)
+    }
+  }
   
 
   return (
@@ -251,11 +261,12 @@ export const RowsData = (props) => {
             isSearchable={true}
             name="batch"
             options={ studenTypeOption }
-            onChange={(e) => props.handleChange(e, "student_type", row.id)}
+            onChange={(e) =>handleStudentType(e, row.id)}
           />
         </td>
        
         <td>
+
           <Select
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
@@ -263,6 +274,7 @@ export const RowsData = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
+            isDisabled={studentType}
             name="batch"
             options={props.batchbdata}
             onChange={(e) => props.handleChange(e, "batch", row.id)}
