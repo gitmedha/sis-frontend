@@ -343,13 +343,11 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      icon="down"
-                      control="lookup"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      options={districtOptions}
+                      control="input"
+                      name="city"
+                      label="City"
                       className="form-control"
+                      placeholder="City"
                       required
                     />
                   </div>
@@ -367,14 +365,18 @@ const OpportunityForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
-                      control="input"
-                      name="city"
-                      label="City"
+                      icon="down"
+                      control="lookup"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      options={districtOptions}
                       className="form-control"
-                      placeholder="City"
                       required
                     />
                   </div>
+                  
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
