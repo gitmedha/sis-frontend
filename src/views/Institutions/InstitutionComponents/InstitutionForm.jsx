@@ -464,28 +464,14 @@ const InstitutionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {districtOptions.length ? (
-                      <Input
-                        control="lookup"
-                        icon="down"
-                        label="District"
-                        required
-                        name="district"
-                        options={districtOptions}
-                        placeholder="District"
-                        className="form-control"
-                      />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
-                        >
-                          Please select State to view Districts
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
+                    <Input
+                      control="input"
+                      name="city"
+                      label="City"
+                      required
+                      placeholder="City"
+                      className="form-control capitalize"
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {areaOptions.length ? (
@@ -512,15 +498,31 @@ const InstitutionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      required
-                      placeholder="City"
-                      className="form-control capitalize"
-                    />
+                    {districtOptions.length ? (
+                      <Input
+                        control="lookup"
+                        icon="down"
+                        label="District"
+                        required
+                        name="district"
+                        options={districtOptions}
+                        placeholder="District"
+                        className="form-control"
+                      />
+                    ) : (
+                      <>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Please select State to view Districts
+                        </label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
+                  
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
