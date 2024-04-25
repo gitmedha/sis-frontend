@@ -138,7 +138,12 @@ const OperationCreateform = (props) => {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
         if (isEmpty) {
-          result[key] = "N/A";
+          if(key =='batch' && isEmptyValue(obj['batch'])){
+            delete result[key]
+          }else{
+            result[key] = "N/A";
+          }
+
         } else {
           result[key] = value;
         }
@@ -277,7 +282,7 @@ const OperationCreateform = (props) => {
       delete row["name"];
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      row.batch = Number(row.batch);
+      row.batch = row.batch ? Number(row.batch) :"" ;
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
       row.students_attended = Number(row.students_attended);
