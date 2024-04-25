@@ -16,6 +16,25 @@ import {
 import StudentupskilingBulk from "./StudentupskilingBulk";
 import { checkEmptyValuesandplaceNA, isEmptyValue } from "../../../utils/function/OpsModulechecker";
 
+
+
+
+const hideBatchName = [
+  "new",
+  "New",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
+
 const StudentUpkillingBulkcreate = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
@@ -316,14 +335,19 @@ const StudentUpkillingBulkcreate = (props) => {
   const filterBatch = async (filterValue) => {
     try {
       const {data} = await searchBatches(filterValue);
-
-      
       let filterData = data.batchesConnection.values.map((batch) => {
-        return {
-          ...batch,
-          label: batch.name,
-          value: Number(batch.id),
-        };
+        if(hideBatchName.includes(batch.name)){
+          return {
+
+          };
+        }else{
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
+        
       });
       return filterData;
 
