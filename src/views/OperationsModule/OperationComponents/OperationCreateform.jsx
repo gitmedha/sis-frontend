@@ -18,16 +18,17 @@ import {searchInstitutions,searchBatches} from "./operationsActions";
 const hideBatchName = [
   "new",
   "New",
-  "New Enrollments_CAB",
-  "New Enrollments_LAB",
-  "New Enrollments_TAB",
-  "New Enrollments_eCAB",
-  "New Enrollments_eTAB",
-  "New Enrollments_CAB Plus Work from Home",
-  "New Enrollments_Svapoorna",
-  "New Enrollments_Swarambh",
-  "New Enrollments_Workshop",
-  "New Enrollments_BMC Design Lab",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
 ];
 
 const OperationCreateform = (props) => {
