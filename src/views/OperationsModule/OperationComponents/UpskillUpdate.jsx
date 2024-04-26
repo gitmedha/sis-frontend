@@ -44,6 +44,21 @@ const categoryOptions = [
   { value: 'Career', label: "Career" },
   { value: 'Creative', label: "Creative" },
 ];
+const hideBatchName = [
+  "new",
+  "New",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
 
 const UpskillUpdate = (props) => {
   let { onHide, show,refreshTableOnDataSaving} = props;
@@ -145,26 +160,21 @@ const UpskillUpdate = (props) => {
   const filterBatch = async (filterValue) => {
     try {
       const {data} = await searchBatches(filterValue);
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if(hideBatchName.includes(batch.name)){
+          return {
 
-      let batchInformtion = props ? props.batch : null;
-        let batchFoundInList = false;
-        let filterData = data.batchesConnection.values.map((batch) => {
-          if (props && batch.id === Number(batchInformtion?.id)) {
-            batchFoundInList = true;
-          }
+          };
+        }else{
           return {
             ...batch,
             label: batch.name,
             value: Number(batch.id),
           };
-        });
-        if (props && batchInformtion !== null && !batchFoundInList) {
-          filterData.unshift({
-            label: batchInformtion.name,
-            value: Number(batchInformtion.id),
-          });
         }
-        return filterData;
+        
+      });
+      return filterData;
 
     } catch (error) {
       console.error(error);
