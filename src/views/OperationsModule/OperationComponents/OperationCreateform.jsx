@@ -114,7 +114,7 @@ const OperationCreateform = (props) => {
     for (let row of rows) {
 
       for(let key in row){
-       if( row[key]==="Medha Student" && key=="batch" ){
+       if( row[key]== "Medha Student" && key=="batch" ){
         if(isEmptyValue(row[key])){
           isEmptyValuFound=false
         }
@@ -139,11 +139,12 @@ const OperationCreateform = (props) => {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
         if (isEmpty) {
-          if(key =='batch' && isEmptyValue(obj['batch'])){
-            delete result[key]
+          if(key ==='batch' && isEmptyValue(obj['batch']) ){
+            delete result['batch']
           }else{
             result[key] = "N/A";
           }
+            
 
         } else {
           result[key] = value;
@@ -233,6 +234,7 @@ const OperationCreateform = (props) => {
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
+    console.log(id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };

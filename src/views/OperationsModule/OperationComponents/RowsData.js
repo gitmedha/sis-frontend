@@ -145,6 +145,7 @@ export const RowsData = (props) => {
       props.handleChange(e,"student_type",id)
     }else{
       setStudenttype(true)
+      props.handleChange(e,"student_type",id)
     }
   }
   
@@ -259,7 +260,7 @@ export const RowsData = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="batch"
+            name="student"
             options={ studenTypeOption }
             onChange={(e) =>handleStudentType(e, row.id)}
           />
