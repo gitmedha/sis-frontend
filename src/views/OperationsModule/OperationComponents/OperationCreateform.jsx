@@ -462,10 +462,9 @@ const OperationCreateform = (props) => {
                   <th>Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
-                  <th>Program Name *</th>
                   <th>Student Type</th>
                   <th>Batch Name *</th>
-
+                  <th>Program Name *</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>

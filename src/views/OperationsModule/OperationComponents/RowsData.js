@@ -242,18 +242,7 @@ export const RowsData = (props) => {
             />
           
         </td>
-        <td>
-          <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={programOptions}
-            filterData={filterProgram}
-            onChange={(e) => props.handleChange(e, "program_name", row.id)}
-          />
-        </td>
+        
         <td>
           <Select
             className="basic-single table-input"
@@ -284,6 +273,18 @@ export const RowsData = (props) => {
                 props.setBatchOptions(data)
               })
             }}
+          />
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programOptions}
+            filterData={filterProgram}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
         
