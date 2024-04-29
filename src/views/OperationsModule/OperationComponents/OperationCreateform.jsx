@@ -13,6 +13,24 @@ import { RowsData } from "./RowsData";
 import {searchInstitutions,searchBatches} from "./operationsActions";
 
 
+
+
+const hideBatchName = [
+  "new",
+  "New",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
+
 const OperationCreateform = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
@@ -46,6 +64,7 @@ const OperationCreateform = (props) => {
       assigned_to: "",
       area: "",
       students_attended: "",
+      student_type:""
     },
     // Add more initial rows as needed
   ]);
@@ -66,6 +85,7 @@ const OperationCreateform = (props) => {
       designation: "",
       organization: "",
       students_attended: "",
+      student_type:""
     },
   ]);
   const [newRow] = useState({
@@ -84,6 +104,7 @@ const OperationCreateform = (props) => {
     assigned_to: "",
     area: "",
     students_attended: "",
+    student_type:""
   });
 
   useEffect(() => {
@@ -93,8 +114,12 @@ const OperationCreateform = (props) => {
     for (let row of rows) {
 
       for(let key in row){
-       
-        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') ){
+       if( row[key]== "Medha Student" && key=="batch" ){
+        if(isEmptyValue(row[key])){
+          isEmptyValuFound=false
+        }
+       }
+        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') && !(key =='student_type' ) && !(key =='batch' ) ){
           if(isEmptyValue(row[key])){
             isEmptyValuFound=true
           }
@@ -114,7 +139,13 @@ const OperationCreateform = (props) => {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
         if (isEmpty) {
-          result[key] = "N/A";
+          if(key ==='batch' && isEmptyValue(obj['batch']) ){
+            delete result['batch']
+          }else{
+            result[key] = "N/A";
+          }
+            
+
         } else {
           result[key] = value;
         }
@@ -203,6 +234,7 @@ const OperationCreateform = (props) => {
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
+    console.log(id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -253,7 +285,7 @@ const OperationCreateform = (props) => {
       delete row["name"];
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      row.batch = Number(row.batch);
+      row.batch = row.batch ? Number(row.batch) :"" ;
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
       row.students_attended = Number(row.students_attended);
@@ -284,6 +316,7 @@ const OperationCreateform = (props) => {
           assigned_to: "",
           area: "",
           students_attended: "",
+          student_type:""
         }
       ])
     } catch (error) {
@@ -339,11 +372,18 @@ const OperationCreateform = (props) => {
     try {
       const {data} = await searchBatches(filterValue);
       let filterData = data.batchesConnection.values.map((batch) => {
-        return {
-          ...batch,
-          label: batch.name,
-          value: Number(batch.id),
-        };
+        if(hideBatchName.includes(batch.name)){
+          return {
+
+          };
+        }else{
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
+        
       });
       return filterData;
 
@@ -422,9 +462,9 @@ const OperationCreateform = (props) => {
                   <th>Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
-                  <th>Program Name *</th>
+                  <th>Student Type</th>
                   <th>Batch Name *</th>
-
+                  <th>Program Name *</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>

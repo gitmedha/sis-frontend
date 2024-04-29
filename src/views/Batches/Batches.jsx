@@ -463,7 +463,8 @@ const batchQuery = `query GET_BATCHES(
           area:area,
           state:state,
         }}
-      />
+        isDisable={batchesAggregate.count ? false:true}
+        />
       <Table columns={columns} data={batchesTableData} totalRecords={batchesAggregate.count} fetchData={fetchData} loading={loading} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize} isSearchEnable={isSearchEnable}
           selectedSearchField={selectedSearchField}
           selectedSearchedValue={selectedSearchedValue} />

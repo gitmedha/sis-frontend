@@ -36,6 +36,7 @@ const operationFields = `
     id
   }
   isactive
+  student_type
 `;
 
 const usersTotsFields = `

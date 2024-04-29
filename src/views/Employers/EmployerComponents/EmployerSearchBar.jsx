@@ -26,7 +26,7 @@ const Section = styled.div`
 
 
 
-function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info}) {
+function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchEnable,setSelectedSearchedValue,tab,info,isDisable}) {
 
     const initialValues = {
         search_by_field:'',
@@ -166,6 +166,7 @@ refreshOnTabChange()
                         options={employersOptions}
                         className="form-control"
                         onChange = {(e)=>handleBatchOptions(e.value)}
+                        isDisabled={isDisable}
                     />
                 </div>
                 <div className='col-lg-3 col-md-4 col-sm-12 mb-2' style={{position:'relative'}}>

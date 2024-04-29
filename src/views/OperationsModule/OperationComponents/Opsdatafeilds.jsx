@@ -95,6 +95,7 @@ const Opsdatafeilds = (props) => {
       dataAndEdit:false 
     });
   }
+
   
 
   return (
@@ -102,7 +103,7 @@ const Opsdatafeilds = (props) => {
       {!showModal.dataAndEdit && (
         <Modal
           centered
-          size="lg"
+          size="xl"
           show={true}
           onHide={onHide}
           animation={false}
@@ -122,83 +123,28 @@ const Opsdatafeilds = (props) => {
           <Styled>
             <Modal.Body className="bg-white">
               <h4 className="section-header ">Basic Info</h4>
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    Bold={""}
-                    label="Activity Type"
-                    value={props.activity_type}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Batch"
-                    value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Start Date"
-                    value={
-                      moment(props.start_date).format("DD MMM YYYY")
-                        ? moment(props.start_date).format("DD MMM YYYY")
-                        : ""
-                    }
-                  />
+              <div className="row">
+  <div className="col-md-6 col-sm-12">
+    <DetailField className='' Bold={""} label="Activity Type" value={props.activity_type} />
+    <DetailField className='' Bold={""} label="Batch" value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />} />
+    <DetailField className='' Bold={""} label="Start Date" value={moment(props.start_date).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
+    <DetailField className='' Bold={""} label="Donor" value={props.donor ? "Yes" : "No"} />
+    <DetailField className='' Bold={""} label="Guest" value={props.guest} />
+    <DetailField className='' Bold={""} label="Organization" value={props.organization} />
+    <DetailField className='' Bold={""} label="Student Attended" value={props.students_attended} />
+    
+  </div>
+  <div className="col-md-6 col-sm-12">
+    <DetailField className='' label="Assigned to" value={props.assigned_to?.username ? props.assigned_to?.username : ""} Bold={""} />
+    <DetailField className='' Bold={""} label="Institution" value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />} />
+    <DetailField className='' Bold={""} label="End Date" value={moment(props.end_date).format("DD MMM YYYY") ? moment(props.end_date).format("DD MMM YYYY") : ""} />
+    <DetailField className='' Bold={""} label="Topic" value={props.topic} />
+    <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
+    <DetailField className='' Bold={""} label="Program Name" value={props.program_name ? props.program_name : "Not found"} />
+    <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/>
+  </div>
+</div>
 
-                  <DetailField
-                    Bold={""}
-                    label="Donor"
-                    value={props.donor ? "Yes" : "No"}
-                  />
-                  <DetailField Bold={""} label="Guest" value={props.guest} />
-                  <DetailField
-                    Bold={""}
-                    label="Organization"
-                    value={props.organization}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Other Link"
-                    value={props.other_links ? props.other_links : "not found"}
-                  />
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Assigned to"
-                    value={
-                      props.assigned_to?.username
-                        ? props.assigned_to?.username
-                        : ""
-                    }
-                    Bold={""}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Institution"
-                    value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="End Date"
-                    value={
-                      moment(props.end_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
-                        : ""
-                    }
-                  />
-                  <DetailField Bold={""} label="Topic" value={props.topic} />
-                  <DetailField
-                    Bold={""}
-                    label="Designation"
-                    value={props.designation ? props.designation : "Not found"}
-                  />
-                  <DetailField
-                    Bold={""}
-                    label="Student Attended"
-                    value={props.students_attended}
-                  />
-                </div>
-              </div>
               <div className="">
                 <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
                 <h4 className="section-header">Address Info</h4>

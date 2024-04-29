@@ -383,7 +383,7 @@ const employerQuery = `query GET_EMPLOYERS(
           area:area,
           state:state,
         }}
-        
+        isDisable={employersAggregate.count ? false:true}
         />
         <Table
           columns={columns}

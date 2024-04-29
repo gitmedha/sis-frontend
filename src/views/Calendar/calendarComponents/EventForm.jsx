@@ -4,8 +4,11 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { filterAssignedTo,getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import {getAlumniServicePickList} from './calendarActions';
+import {getAlumniServicePickList,createEvent,updateEvent} from './calendarActions';
 import {calendarValidations} from '../../../validations/Calendar';
+import {setAlert} from "../../../store/reducers/Notifications/actions";
+import { connect } from "react-redux";
+import NP from "nprogress";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -26,70 +29,89 @@ const Section = styled.div`
   }
 `;
 
-const Detail = styled.div`
-margin-bottom: 15px;
-  font-family: 'Latto-Regular';
-  font-size: 14px;
-  line-height: 1.2;
 
-  .detail-label {
-    color: #787B96;
-  }
+export const EventForm = (props) => {
 
-  .detail-value {
-    color: #424141;
-  }
-  .capitalize{
-    text-transform: capitalize !important;
-  }
-
-
-`
-
-
-export const CreateEventForm = ({onHide}) => {
-
+  const {setAlert} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [statusOptions] = useState([
     {
       key:0,
       label:'Open',
-      value:'open'
+      value:'Open'
     },
   {
     key:1,
     label:'Close',
-    value:'close'
+    value:'Close'
   }
 ]);
 
 const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
+const initialValues = {};
 
   const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(() => {
+
+    
+    getAlumniServicePickList().then(data=>{
+      setAlumniServiceOptions([...data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })),...data.category.map((item)=> ({value: item.value, label: item.value}))])
+    })
+
+    
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
     });
 
-    getAlumniServicePickList().then(data=>{
-      setAlumniServiceOptions([...data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })),...data.category.map((item)=> ({value: item.value, label: item.value}))])
-    })
-  }, []);
+      if(props.eventData){
+
+        initialValues.assgined_to = props.eventData.assgined_to.id.toString()
+        initialValues.start_date = props.eventData.start_date;
+        initialValues.end_date =props.eventData.end_date;
+        initialValues.status = props.eventData.status
+        initialValues.alumni_service = props.eventData.alumni_service;
+        initialValues.id = props.eventData.id;
+  
+      }
+      else {
+        initialValues.assgined_to = userId.toString()
+        initialValues.start_date = props.slotData.start;
+        initialValues.end_date = props.slotData.start;
+        initialValues.reporting_date = new Date()
+        initialValues.status = 'Open'
+        initialValues.alumni_service = ''
+        initialValues.name = localStorage.getItem('user_name')
+      }
+    }, []);
 
 
-  const initialValues = {
-    assigned_to:userId.toString(),
-    start_date:'',
-    end_date:'',
-    reporting_date:'',
-    status:'',
-    alumni_service:'',
-    
-  }
+  const handleSubmit = async(values)=>{
+    try {
+      NP.start()
+      if(props.eventData){
+     
+        values.name = values.alumni_service;
+        await updateEvent(values,props.eventData.id)
+        setAlert("Details updated successfully.", "success")
+          
+        NP.done();
+        await props.onRefresh();
+        props.onHide();
+      }
+      else {
+      
+        await createEvent(values);
+        setAlert("Event created successfully.", "success")
+        NP.done();
+        await props.onRefresh();
+        props.onHide();
+      }
+     
 
-  const onSubmit = async()=>{
-
+    } catch (error) {
+      console.error(error);
+    }
   };
 
 
@@ -99,7 +121,7 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
     centered
     size="lg"
     show={true}
-    onHide={onHide}
+    onHide={props.onHide}
     animation={false}
     aria-labelledby="contained-modal-title-vcenter"
     className="form-modal"
@@ -110,13 +132,13 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            Add New Event
+            {props.eventData ? 'Update Event':'Add New Event'}
           </h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
         <Formik
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
           initialValues={initialValues}
           validationSchema={calendarValidations}
         >
@@ -128,23 +150,27 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
                   <div className="col-md-6 col-sm-12 mb-2">
                       <Input
                         control="lookupAsync"
-                        name="assigned_to"
+                        name="assgined_to"
                         label="Assigned To"
                         required
                         className="form-control capitalize"
                         placeholder="Assigned To"
                         filterData={filterAssignedTo}
                         defaultOptions={assigneeOptions}
+                        onChange={(e)=>{
+                          setFieldValue('name',e.label.split('(')[0].trim())
+                          setFieldValue('assgined_to',Number(e.value))
+                        }}
                       />
                    
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="alumni_service"
-                      label="Alumni Service"
+                      label="Alumni Engagement"
                       required
                       control="lookup"
-                      placeholder="Alumni Service"
+                      placeholder="Alumni Engagement"
                       className="form-control capitalize"
                       options={alumniServiceOptions}
                     />
@@ -190,10 +216,10 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
            
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
+                 <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={()=>handleSubmit(values)}>{props.eventData ? "UPDATE":"SAVE"}</button>
                     <button
                       type="button"
-                      onClick={onHide}
+                      onClick={props.onHide}
                       className="btn btn-secondary btn-regular mr-2"
                     >
                       CANCEL
@@ -210,4 +236,10 @@ const [alumniServiceOptions,setAlumniServiceOptions] = useState([]);
   )
 }
 
-export default CreateEventForm;
+const mapStateToProps = (state) => ({});
+
+const mapActionsToProps = {
+  setAlert,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(EventForm);

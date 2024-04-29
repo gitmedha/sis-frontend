@@ -48,6 +48,7 @@ import {
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
 import UploadFile from "./OperationComponents/UploadFile";
+import { FaDownload } from "react-icons/fa";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -76,6 +77,9 @@ const Styled = styled.div`
     .MuiSwitch-track {
       background-color: #c4c4c4;
       opacity: 1;
+    }
+    .ml-2 {
+      margin-left: 1.2rem;
     }
   }
 `;
@@ -118,7 +122,7 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
-  const [uploadModal,setUploadModal]=useState(false)
+  const [uploadModal, setUploadModal] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -217,11 +221,6 @@ const Operations = ({
         accessor: "course_name",
       },
       {
-        Header: "Batch",
-        accessor: "program_name",
-      },
-
-      {
         Header: "Category",
         accessor: "category",
       },
@@ -234,8 +233,8 @@ const Operations = ({
         accessor: "end_date",
       },
       {
-        Header: "Project Name",
-        accessor: "project_name",
+        Header: "Program Name",
+        accessor: "program_name",
       },
     ],
     []
@@ -909,10 +908,8 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-
-
-  const uploadExcel=async(data,key)=>{
-    if(key =="feild_activity"){
+  const uploadExcel = async (data, key) => {
+    if (key == "feild_activity") {
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -923,23 +920,19 @@ const Operations = ({
           setAlert("Unable to create field data .", "error");
         });
     }
-    setUploadModal(false)
+    setUploadModal(false);
     getoperations();
-  }
+  };
 
-  const alertForNotuploadedData=async(key)=>{
-    if(key =='feild_activity' ){
-      setUploadModal(false)
-      setAlert("There are some issue in your file please check", "error");
+  const alertForNotuploadedData = async (key) => {
+    if (key == "feild_activity") {
+      setUploadModal(false);
+      // setAlert("There are some issue in your file please check", "error");
+    } else {
+      setUploadModal(false);
+      // setAlert("There are some issue in your file please check", "error");
     }
-    else{
-      setUploadModal(false)
-      setAlert("There are some issue in your file please check", "error");
-    }
-   
-  }
-
-
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -987,6 +980,28 @@ const Operations = ({
                     style={{ marginLeft: "15px" }}
                   >
                     Upload Data
+                  </button>
+                  <button className="btn btn-primary mx-3 ">
+                    <div>
+                      {" "}
+                      <a
+                        href={
+                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
+                        }
+                        target="_blank"
+                        className="c-pointer mb-1 d-block text-light text-decoration-none "
+                      >
+                        <span className="mr-3">Sample File</span>
+                        <FaDownload size="20" className="ml-2" color="#fff" />
+                      </a>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          fontFamily: "Latto-Italic",
+                          color: "#787B96",
+                        }}
+                      ></div>
+                    </div>
                   </button>
                 </>
               )}
@@ -1205,14 +1220,14 @@ const Operations = ({
             />
           )}
 
-          {uploadModal  &&
-          <>
-            <UploadFile 
-              uploadExcel={uploadExcel}
-              alertForNotuploadedData={alertForNotuploadedData}
-            />
-          </>
-          }
+          {uploadModal && (
+            <>
+              <UploadFile
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+              />
+            </>
+          )}
         </div>
       </Styled>
     </Collapse>

@@ -10,6 +10,10 @@ const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+const studenTypeOption = [
+  { value: 'Medha Student', label: "Medha Student" },
+  { value: 'Non-Medha Student', label: "Non-Medha Student" },
+];
 
 
 export const RowsData = (props) => {
@@ -29,6 +33,7 @@ export const RowsData = (props) => {
       activity_type: "",
       assigned_to: "",
       area: "",
+      student_type:""
     },
     // Add more initial rows as needed
   ]);
@@ -46,6 +51,7 @@ export const RowsData = (props) => {
   const [programOptions,setProgramOptions]=useState([])
   const [state,setstate]=useState(true)
   const [activityoption,setActivityOption]=useState([])
+  const [studentType,setStudenttype]=useState(true)
 
   
   const onStateChange = (value, rowid, field) => {
@@ -132,6 +138,16 @@ export const RowsData = (props) => {
     setstate(!state)
     return true
   };
+
+  const handleStudentType =(e,id)=>{
+    if(e.value == 'Medha Student'){
+      setStudenttype(false)
+      props.handleChange(e,"student_type",id)
+    }else{
+      setStudenttype(true)
+      props.handleChange(e,"student_type",id)
+    }
+  }
   
 
   return (
@@ -226,6 +242,39 @@ export const RowsData = (props) => {
             />
           
         </td>
+        
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="student"
+            options={ studenTypeOption }
+            onChange={(e) =>handleStudentType(e, row.id)}
+          />
+        </td>
+       
+        <td>
+
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            isDisabled={studentType}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => props.handleChange(e, "batch", row.id)}
+            onInputChange={inputValue=> {
+              props.filterBatch(inputValue).then(data=>{
+                props.setBatchOptions(data)
+              })
+            }}
+          />
+        </td>
         <td>
           <Select
             className="basic-single table-input"
@@ -236,24 +285,6 @@ export const RowsData = (props) => {
             options={programOptions}
             filterData={filterProgram}
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={props.batchbdata}
-            onChange={(e) => props.handleChange(e, "batch", row.id)}
-            onInputChange={inputValue=> {
-              props.filterBatch(inputValue).then(data=>{
-                props.setBatchOptions(data)
-              })
-            }}
           />
         </td>
         

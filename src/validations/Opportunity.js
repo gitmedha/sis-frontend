@@ -43,7 +43,12 @@ export const OpportunityValidations = Yup.object({
     'Please remove extra space.',
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
   ),
-  role_description,
+  role_description:Yup.string().required('Description is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   address:Yup.string().required('Address is required.') // Check for required input
   .test(
     'no-trailing-space',

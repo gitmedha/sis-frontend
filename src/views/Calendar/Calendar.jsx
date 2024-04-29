@@ -1,27 +1,91 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import { Calendar, momentLocalizer} from 'react-big-calendar'
 import moment from 'moment'
-import CreateEventForm from './calendarComponents/CreateEventForm';
+import EventForm from './calendarComponents/EventForm';
 import ViewEvent from './calendarComponents/ViewEvent';
+import {getEvents} from './calendarComponents/calendarActions';
+import NP from "nprogress";
 
 const localizer = momentLocalizer(moment)
 
-
 const EventCalendar = (props) => {
 
-  const [createEventForm,setCreateEventForm] = useState(false);
-  const [viewEventModal,setViewEventModal] = useState(false);
   const [eventData,setEventData] = useState({
-    assigned_to:"",
+    id:0,
+    assgined_to:{
+      id:0,
+      username:'',
+      email:''
+    },
     alumni_service:"",
     start_date:"",
     end_date:'',
     status:''
   })
 
-  const showCreateEventForm = async(slotInfo)=>{
-    setCreateEventForm(true);
+  const [eventList,setEventList] = useState([{
+    id:0,
+    title: '',
+    start: '',
+    end: '',
+    assgined_to:{
+      username:'',
+      email:'',
+      userId:0
+    },
+    event_status:''
+  }])
 
+  
+  const [createEventForm,setCreateEventForm] = useState(false);
+  const [viewEventModal,setViewEventModal] = useState(false);
+  const [openDeleteAlert,setDeleteAlert] = useState(false);
+  const [isEditing,setIsEditing] = useState(false);
+  const [selectedSlotInfo,setSelectedSlotInfo] = useState({});
+
+
+  const formateResponseToEventList = async (response) =>{
+
+    const formattedEvents = response.map(event => ({
+      id:event.id,
+      title: event.name,
+      start: new Date(event.start_date),
+      end: new Date(event.end_date),
+      assigned_to: {
+        username:event.assgined_to.username,
+        email:event.assgined_to.email,
+        userId:event.assgined_to.id
+      },
+      event_status: event.status
+    }));
+
+    setEventList(formattedEvents);
+  }
+
+  useEffect(()=>{
+    async function populateEvents(){
+      NP.start()
+     const response =  await getEvents();
+     await formateResponseToEventList(response)
+     NP.done();
+    }
+    
+    populateEvents();
+
+  },[])
+
+  const fetchEventsAgain = async () => {
+    NP.start();
+    const response = await getEvents();
+    await formateResponseToEventList(response);
+    NP.done();
+  };
+  
+
+  const showCreateEventForm = async(info)=>{
+   
+    await setSelectedSlotInfo(info);
+    setCreateEventForm(true);
   }
 
   const hideCreateEventForm = async()=>{
@@ -32,50 +96,90 @@ const EventCalendar = (props) => {
     setViewEventModal(false);
   }
 
+  const enableEditing = async()=>{
+    setViewEventModal(false);
+    setIsEditing(true);
+  }
+
+  const disableEditing = async ()=>{
+    setIsEditing(false);
+  }
   const openViewEventModal = async(eventInfo)=>{
-    console.log("eventInfo:",eventInfo)
    await setEventData({
-      assigned_to:"Deepak",
+      assgined_to:{
+        id:eventInfo.assigned_to.userId,
+        username:eventInfo.assigned_to.username,
+        email:eventInfo.assigned_to.email
+      },
       start_date:eventInfo.start,
       end_date:eventInfo.end,
       alumni_service:eventInfo.title,
-      status:eventInfo.event_status
+      status:eventInfo.event_status,
+      id:eventInfo.id
     })
     setViewEventModal(true);
   }
-  const myEventsList = [
-    {
-      title: 'Meeting with Client',
-      start: new Date('2024-03-09T10:00:00'),
-      end: new Date('2024-03-10T12:00:00'),
-      assigned_to:'Deepak Sharma',
-      event_status:'open'
-    },
-    {
-      title: 'Lunch Break',
-      start: new Date('2024-03-09T12:30:00'),
-      end: new Date('2024-03-09T13:30:00'),
-    }
-  ];
 
+  const eventStyleGetter = (event) => {
+    let backgroundColor = '#ced4da';
+    if (event.event_status === 'Open') {
+      backgroundColor = '#257b69';
+      return {
+        style: {
+          backgroundColor,
+        },
+      };
+    }
+    else if (event.event_status === 'Cancelled') {
+      backgroundColor = '#D0312D';
+      let textDecoration = 'line-through';
+
+      return {
+        style: {
+          backgroundColor,
+          textDecoration,
+        },
+      };
+    }
+    else {
+      return {
+        style: {
+          backgroundColor,
+        },
+      };
+    }
+  };
+  
   return (
   <div>
     <Calendar
       localizer={localizer}
-      events={myEventsList}
+      events={eventList}
       startAccessor="start"
       endAccessor="end"
       selectable
-      style={{ height: 500 ,width:'90%'}}
+      style={{ height: 600 ,width:'97%'}}
       onSelectSlot={(slotInfo) => showCreateEventForm(slotInfo)}
       onSelectEvent={(event) =>openViewEventModal(event)}
+      eventPropGetter={eventStyleGetter}
+      views={['month', 'week', 'day']}
     />
     {
-      createEventForm && <CreateEventForm onHide={hideCreateEventForm}/>
+      createEventForm && <EventForm onHide={hideCreateEventForm} onRefresh={fetchEventsAgain} slotData={selectedSlotInfo}/>
     }
     {
-      viewEventModal && <ViewEvent onHide={hideViewEventModal} event={eventData}/>
+      viewEventModal && <ViewEvent 
+                            onHide={hideViewEventModal} 
+                            event={eventData} 
+                            openEditForm={enableEditing} 
+                            openDeleteAlert={openDeleteAlert}
+                            setDeleteAlert={setDeleteAlert}
+                            onRefresh={fetchEventsAgain}
+                            />
     }
+
+    {isEditing && <EventForm onHide={disableEditing} onRefresh={fetchEventsAgain} eventData={eventData}/>}
+
   </div>
 )}
 

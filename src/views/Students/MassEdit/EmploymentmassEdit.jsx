@@ -336,7 +336,7 @@ const EmploymentmassEdit = (props) => {
         )}
         
         
-        {formStatus && (
+        {formStatus && (students.length >0 ? 
           <Section1>
             <table className="create_data_table mt-5">
               <thead className="border mt-5">
@@ -382,7 +382,14 @@ const EmploymentmassEdit = (props) => {
             
             {/* <button onClick={handleCancel}>Cancel</button> */}
           </Section1>
-        )}
+        :(<div className="">
+        <button
+          className="btn submitbtnclear btn-danger btn-regular my-5"
+          onClick={() => handelCancel()}
+        >
+          Jump Back to previous page 
+        </button>
+      </div>))}
       </Modal>
     </>
   )

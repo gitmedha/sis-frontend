@@ -389,10 +389,8 @@ const MassEmployerUpload = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id
-              ? "Update "
-              : "Add New "}
-            Employment Connection
+            
+            Mass Employment connection
           </h1>
         </Modal.Title>
       </Modal.Header>

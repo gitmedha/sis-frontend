@@ -17,3 +17,40 @@ export const getAlumniServicePickList = async () => {
       return Promise.reject(error);
     });
     }
+
+
+export const createEvent = async (reportingData)=>{
+  try {
+    await api.post('/alumni-events/create-events', reportingData);
+
+  } catch (error) {
+    console.error(error);
+  }
+
+};
+
+
+export const getEvents = async function(){
+  try {
+    const {data} = await api.post('/alumni-events/get-events',{});
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const updateEvent = async (updatedData,id)=>{
+  try {
+    await api.post(`/alumni-events/update-event/${id}`, updatedData)
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteEvent = async (updatedData,id)=>{
+  try {
+    await api.post(`/alumni-events/update-event/${id}`, updatedData)
+  } catch (error) {
+    console.error(error);
+  }
+}
