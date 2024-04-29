@@ -31,6 +31,20 @@ const meilisearchClient = new MeiliSearch({
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
 
+
+const hideBatchName = [
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
 const StudentUpkillingBulkcreate = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
@@ -380,11 +394,17 @@ const StudentUpkillingBulkcreate = (props) => {
         // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
 
         let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
+          if(hideBatchName.includes(batch.name)){
+            return {
+  
+            };
+          }else{
+            return {
+              ...batch,
+              label: batch.name,
+              value: Number(batch.id),
+            };
+          }
         });
         return filterData;
       });

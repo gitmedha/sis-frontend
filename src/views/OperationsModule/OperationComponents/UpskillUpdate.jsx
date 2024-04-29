@@ -46,6 +46,20 @@ const Section = styled.div`
   }
 `;
 
+const hideBatchName = [
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
+
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
@@ -170,11 +184,17 @@ const UpskillUpdate = (props) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
+          if(hideBatchName.includes(batch.name)){
+            return {
+  
+            };
+          }else{
+            return {
+              ...batch,
+              label: batch.name,
+              value: Number(batch.id),
+            };
+          }
         });
         if (props && batchInformtion !== null && !batchFoundInList) {
           filterData.unshift({

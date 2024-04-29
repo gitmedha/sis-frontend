@@ -169,10 +169,10 @@ const AlumniServices = (props) => {
 
      NP.start();
      createAlumniService(dataToSave).then(data => {
-      setAlert("Alumni Service created successfully.", "success");
+      setAlert("Alumni Engagement created successfully.", "success");
     }).catch(err => {
       console.log("Unable to create alumni service: ", err);
-      setAlert("Unable to create Alumni Service.", "error");
+      setAlert("Unable to create Alumni Engagement.", "error");
     }).finally(() => {
       NP.done();
       fetchStudentAlumniServices();
@@ -198,10 +198,10 @@ const AlumniServices = (props) => {
 
     NP.start();
     updateAlumniService(Number(id), dataToSave).then(data => {
-      setAlert("Alumni Service updated successfully.", "success");
+      setAlert("Alumni Engagement updated successfully.", "success");
     }).catch(err => {
       console.log("Error updating alumni service: ", err);
-      setAlert("Unable to update Alumni Service.", "error");
+      setAlert("Unable to update Alumni Engagement.", "error");
     }).finally(() => {
       NP.done();
       fetchStudentAlumniServices();
@@ -213,10 +213,10 @@ const AlumniServices = (props) => {
   const handleDelete = async () => {
     NP.start();
     deleteAlumniService(selectedAlumniService.id).then(data => {
-      setAlert("Alumni Service deleted successfully.", "success");
+      setAlert("Alumni Engagement deleted successfully.", "success");
     }).catch(err => {
       console.log("Error deleting alumni service: ", err);
-      setAlert("Unable to delete Alumni Service.", "error");
+      setAlert("Unable to delete Alumni Engagement.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
       fetchStudentAlumniServices();
@@ -271,7 +271,7 @@ const AlumniServices = (props) => {
         onConfirm={() => handleDelete()}
         onCancel={() => setShowDeleteAlert(false)}
         title={
-          <span className="text--primary latto-bold">Delete Alumni Service?</span>
+          <span className="text--primary latto-bold">Delete Alumni Engagement?</span>
         }
         customButtons={
           <>
