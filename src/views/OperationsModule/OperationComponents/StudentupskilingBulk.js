@@ -85,7 +85,7 @@ const StudentupskilingBulk = (props) => {
         return {
           ...program,
           label: program.name,
-          value: Number(program.id),
+          value: program.name,
         }
       });
     });
