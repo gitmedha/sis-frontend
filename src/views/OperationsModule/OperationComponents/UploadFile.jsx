@@ -18,6 +18,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import { FaFileCsv, FaFileImage, FaFileUpload } from "react-icons/fa";
+import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 
 const Styled = styled.div`
   .icon-box {
@@ -45,6 +46,14 @@ const Styled = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+  .uploader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+  }
+  
+ 
 `;
 
 const options = [
@@ -62,6 +71,7 @@ const UploadFile = (props) => {
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [fileType, setFileType] = useState("");
   const [uploadSuccesFully,setUploadSuccesFully]=useState('')
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const getbatch = async () => {
@@ -147,8 +157,8 @@ const UploadFile = (props) => {
               institution: item["Educational Institution"],
               batch: item["Batch Name"],
               state: item["State"] || "",
-              start_date: item["Start Date"] || "",
-              end_date: item["End Date"] || "",
+              start_date: startDate,
+              end_date:endDate,
               topic: item["Session Topic"] || "",
               donor: item["Project / Funder"] || "",
               guest: item["Guest Name "] || "",
@@ -197,13 +207,18 @@ const UploadFile = (props) => {
     // }else{
     //   props.alertForNotuploadedData(notUploadedData,fileType)
     // }
+    
 
-    props.uploadExcel(excelData, fileType);
+    // props.uploadExcel(excelData, fileType);
   };
 
   const closeThepopup = () => {
     props.alertForNotuploadedData("");
   };
+
+const hideShowModal =()=>{
+  setShowModal(false)
+}
 
   return (
     <>
@@ -226,7 +241,7 @@ const UploadFile = (props) => {
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
-            <Select
+            {/* <Select
               classNamePrefix="select"
               isClearable={true}
               isSearchable={true}
@@ -235,7 +250,7 @@ const UploadFile = (props) => {
               onChange={(e) => {
                 setFileType(e.value);
               }}
-            />
+            /> */}
            
             <div className="uploader-container">
               <div className="imageUploader">
@@ -265,14 +280,14 @@ const UploadFile = (props) => {
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
-                  onClick={() => updatevalue()}
+                  onClick={() => setShowModal(true)}
                   className="btn btn-primary px-4 mx-4"
                 >
-                  Upload
+                  Next
                 </button>
                 <button
                   type="button"
-                  onClick={() => closeThepopup()}
+                  // onClick={() => closeThepopup()}
                   className="btn btn-danger px-4 mx-4"
                 >
                   Close
@@ -282,6 +297,20 @@ const UploadFile = (props) => {
           )}
         </Styled>
       </Modal>
+
+      {/* {
+        showModal.dataAndEdit &&
+        ( */}
+          <CheckValuesOpsUploadedData
+            // {...operationdata}
+            show={showModal}
+            onHide={hideShowModal}
+            notUploadedData={notUploadedData}
+            excelData={excelData}
+            // refreshTableOnDataSaving={refreshTableOnDataSaving}
+          />
+        {/* )
+      } */}
     </>
   );
 };
