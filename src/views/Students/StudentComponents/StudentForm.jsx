@@ -65,7 +65,16 @@ const StudentForm = (props) => {
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setStatusOptions(data.status.map(item => {
+        if (
+          localStorage.getItem('user_role').toLowerCase() === 'srm' &&
+          item.value.toLowerCase() === 'unknown'
+        ) {
+          return {isDisabled:true }
+        } else {
+          return { key: item.value, value: item.value, label: item.value };
+        }
+      }));
       setGenderOptions(data.gender.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
@@ -421,14 +430,23 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {stateOptions.length ? (
                     <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
+                      icon="down"
+                      name="state"
+                      label="State"
+                      control="lookup"
+                      options={stateOptions}
+                      onChange={onStateChange}
+                      placeholder="State"
                       className="form-control"
+                      required
                     />
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
                   </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
@@ -458,23 +476,7 @@ const StudentForm = (props) => {
                       </>
                     )}
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {stateOptions.length ? (
-                    <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      control="lookup"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                      placeholder="State"
-                      className="form-control"
-                      required
-                    />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                   {districtOptions.length ? (
                     <Input
@@ -493,6 +495,15 @@ const StudentForm = (props) => {
                         <Skeleton count={1} height={35} />
                       </>
                     )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
+                      className="form-control"
+                    />
                   </div>
                 </div>
               </Section>
