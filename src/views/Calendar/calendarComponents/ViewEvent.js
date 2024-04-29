@@ -65,7 +65,7 @@ function ViewEvent(props) {
               <div className="col-md-6 col-sm-12 mb-2">
                 <DetailField
                   label="Assigned To"
-                  value={event.assgined_to ? event.assgined_to : ""}
+                  value={event.assigned_to ? event.assigned_to : ""}
                 />
               </div>
               <div className='col-md-6 col-sm-12 mb-2'>

@@ -12,7 +12,7 @@ const EventCalendar = (props) => {
   const [createEventForm,setCreateEventForm] = useState(false);
   const [viewEventModal,setViewEventModal] = useState(false);
   const [eventData,setEventData] = useState({
-    assgined_to:"",
+    assigned_to:"",
     alumni_service:"",
     start_date:"",
     end_date:'',
@@ -35,7 +35,7 @@ const EventCalendar = (props) => {
   const openViewEventModal = async(eventInfo)=>{
     console.log("eventInfo:",eventInfo)
    await setEventData({
-      assgined_to:"Deepak",
+      assigned_to:"Deepak",
       start_date:eventInfo.start,
       end_date:eventInfo.end,
       alumni_service:eventInfo.title,
@@ -48,7 +48,7 @@ const EventCalendar = (props) => {
       title: 'Meeting with Client',
       start: new Date('2024-03-09T10:00:00'),
       end: new Date('2024-03-10T12:00:00'),
-      assgined_to:'Deepak Sharma',
+      assigned_to:'Deepak Sharma',
       event_status:'open'
     },
     {
