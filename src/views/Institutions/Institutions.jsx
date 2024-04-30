@@ -51,7 +51,7 @@ const Institutions = (props) => {
 
   useEffect(() => {
     getInstitutions(activeTab.key);
-  }, [activeTab,isSearchEnable]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
