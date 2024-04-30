@@ -221,11 +221,6 @@ const Operations = ({
         accessor: "course_name",
       },
       {
-        Header: "Batch",
-        accessor: "program_name",
-      },
-
-      {
         Header: "Category",
         accessor: "category",
       },
@@ -238,8 +233,8 @@ const Operations = ({
         accessor: "end_date",
       },
       {
-        Header: "Project Name",
-        accessor: "project_name",
+        Header: "Program Name",
+        accessor: "program_name",
       },
     ],
     []

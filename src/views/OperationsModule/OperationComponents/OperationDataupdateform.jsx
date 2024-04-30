@@ -43,6 +43,28 @@ const options = [
   { value: "Yes", label: "Yes" },
   { value: "No", label: "No" },
 ];
+
+const studenTypeOption = [
+  { value: 'Medha Student', label: "Medha Student" },
+  { value: 'Non-Medha Student', label: "Non-Medha Student" },
+];
+
+const hideBatchName = [
+  "new",
+  "New",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
+
 const Activityoptions = [
   { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
   { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
@@ -104,28 +126,21 @@ const OperationDataupdateform = (props) => {
   const filterBatch = async (filterValue) => {
     try {
       const {data} = await searchBatches(filterValue);
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if(hideBatchName.includes(batch.name)){
+          return {
 
-      let batchInformtion = props ? props.batch : null;
-        let batchFoundInList = false;
-
-        let filterData = data.batchesConnection.values.map((batch) => {
-          if (props && batch.id === Number(batchInformtion?.id)) {
-            batchFoundInList = true;
-          }
+          };
+        }else{
           return {
             ...batch,
             label: batch.name,
             value: Number(batch.id),
           };
-        });
-        if (props && batchInformtion !== null && !batchFoundInList) {
-          filterData.unshift({
-            label: batchInformtion.name,
-            value: Number(batchInformtion.id),
-          });
         }
-        return filterData;
-      
+        
+      });
+      return filterData;
 
     } catch (error) {
       console.error(error);
@@ -210,7 +225,7 @@ const OperationDataupdateform = (props) => {
   };
   
   if (props) {
-    initialValues["batch"] = Number(props.batch.id);
+    initialValues["batch"] = props.batch ? Number(props.batch.id) : null;
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
@@ -227,6 +242,7 @@ const OperationDataupdateform = (props) => {
     initialValues["institute_name"] = Number(props?.institution?.id);
     initialValues["donor"] = props.donor ? "Yes" : "No";
     initialValues["area"] = props.area ? props.area : null;
+    initialValues["student_type"]=props.student_type ?props.student_type :null
   }
 
   useEffect(() => {
@@ -342,7 +358,7 @@ const OperationDataupdateform = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {batchOptions.length && (
+
                           <Input
                             control="lookupAsync"
                             name="batch"
@@ -352,7 +368,7 @@ const OperationDataupdateform = (props) => {
                             className="form-control1"
                             placeholder="Batch"
                           />
-                        )}
+                        
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -394,6 +410,17 @@ const OperationDataupdateform = (props) => {
                        
                       </div>
 
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="student_type"
+                          label="Student Type"
+                          options={studenTypeOption}
+                          className="form-control"
+                          placeholder="New Entry"
+                        />
+                      </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"

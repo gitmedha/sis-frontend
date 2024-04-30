@@ -18,16 +18,17 @@ import {searchInstitutions,searchBatches} from "./operationsActions";
 const hideBatchName = [
   "new",
   "New",
-  "New Enrollments_CAB",
-  "New Enrollments_LAB",
-  "New Enrollments_TAB",
-  "New Enrollments_eCAB",
-  "New Enrollments_eTAB",
-  "New Enrollments_CAB Plus Work from Home",
-  "New Enrollments_Svapoorna",
-  "New Enrollments_Swarambh",
-  "New Enrollments_Workshop",
-  "New Enrollments_BMC Design Lab",
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
 ];
 
 const OperationCreateform = (props) => {
@@ -113,7 +114,7 @@ const OperationCreateform = (props) => {
     for (let row of rows) {
 
       for(let key in row){
-       if( row[key]==="Medha Student" && key=="batch" ){
+       if( row[key]== "Medha Student" && key=="batch" ){
         if(isEmptyValue(row[key])){
           isEmptyValuFound=false
         }
@@ -138,7 +139,13 @@ const OperationCreateform = (props) => {
         const value = obj[key];
         const isEmpty = isEmptyValue(value);
         if (isEmpty) {
-          result[key] = "N/A";
+          if(key ==='batch' && isEmptyValue(obj['batch']) ){
+            delete result['batch']
+          }else{
+            result[key] = "N/A";
+          }
+            
+
         } else {
           result[key] = value;
         }
@@ -227,6 +234,7 @@ const OperationCreateform = (props) => {
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
+    console.log(id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -277,7 +285,7 @@ const OperationCreateform = (props) => {
       delete row["name"];
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      row.batch = Number(row.batch);
+      row.batch = row.batch ? Number(row.batch) :"" ;
       row.assigned_to = Number(row.assigned_to);
       row.institution = Number(row.institution);
       row.students_attended = Number(row.students_attended);
@@ -454,10 +462,9 @@ const OperationCreateform = (props) => {
                   <th>Institution *</th>
                   <th>State *</th>
                   <th>Medha Area *</th>
-                  <th>Program Name *</th>
                   <th>Student Type</th>
                   <th>Batch Name *</th>
-
+                  <th>Program Name *</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Session Topic *</th>
