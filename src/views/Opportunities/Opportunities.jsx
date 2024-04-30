@@ -73,14 +73,7 @@ const tabPickerOptions = [
 
   useEffect(() => {
     getOpportunities(activeTab.key);
-  }, [activeTab]);
-
-
-  useEffect(()=>{
-    if(isSearchEnable){
-      getOpportunities();
-    }
-  }, [isSearchEnable])
+  }, [activeTab,isSearchEnable]);
   
 
   const columns = useMemo(
@@ -203,6 +196,9 @@ const tabPickerOptions = [
   else if(selectedSearchField === "employer"){
     Object.assign(variables, { employer_name: selectedSearchedValue.trim()});
   }
+  else if(selectedSearchField === "role_or_designation"){
+    Object.assign(variables, { role_or_designation: selectedSearchedValue.trim()});
+  }
   
 
 const opportunityQuery = `query GET_OPPORTUNITIES(
@@ -215,7 +211,8 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
   $area: String,
   $username: String,
   $employer_name:String,
-  $type:String
+  $type:String,
+  $role_or_designation:String
 ) {
   opportunitiesConnection(
     sort: $sort
@@ -233,6 +230,7 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
       employer: {
         name:$employer_name
       }
+      role_or_designation:$role_or_designation
     }
   ) {
     values {
@@ -254,14 +252,14 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
   
       setOpportunities(data?.data?.data?.opportunitiesConnection.values);
       setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
     })
       .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
         setLoading(false);
         nProgress.done();
-      });
+        return Promise.reject(error);
+      })
   }
 
 
