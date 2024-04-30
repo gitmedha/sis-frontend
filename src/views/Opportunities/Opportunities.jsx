@@ -73,7 +73,7 @@ const tabPickerOptions = [
 
   useEffect(() => {
     getOpportunities(activeTab.key);
-  }, [activeTab,isSearchEnable]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
   
 
   const columns = useMemo(

@@ -134,7 +134,6 @@ const handleLoaderForSearch = async ()=>{
 }
     
 useEffect(()=>{
-    
     const setSearchValueDropDown = async () =>{
       try {
         const interval = setInterval(() => {
@@ -206,7 +205,6 @@ refreshOnTabChange()
                         control="lookupAsync"
                         defaultOptions ={defaultSearchArray}
                         filterData={filterSearchValue}
-                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={
