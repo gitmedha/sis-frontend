@@ -9,7 +9,7 @@ import {
 import moment from "moment";
 import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback,useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -77,6 +77,9 @@ const Students = (props) => {
   const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
   const [ModalShowmassEdit,setModalShowmassEdit]=useState(false)
 
+  const prevIsSearchEnableRef = useRef();
+
+
   const columns = useMemo(
     () => [
       {
@@ -119,8 +122,20 @@ const Students = (props) => {
 
 
   useEffect(()=>{
-    getStudents(activeTab.key)
-  },[isSearchEnable])
+  
+  if(isSearchEnable){
+    getStudents(activeTab.key);
+  }
+  if (prevIsSearchEnableRef.current !== undefined) {
+    if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+      getStudents(activeTab.key);
+    }
+  }
+
+  prevIsSearchEnableRef.current = isSearchEnable;
+
+  },[isSearchEnable,activeTab.key])
+
 
   const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
     const studentFields = `
@@ -226,7 +241,7 @@ const Students = (props) => {
     Object.assign(variables, { phone: selectedSearchedValue.trim()});
   }
   else if(selectedSearchField === "student_id"){
-    Object.assign(variables, { phone: selectedSearchedValue.trim()});
+    Object.assign(variables, { student_id: selectedSearchedValue.trim()});
   }
   else if(selectedSearchField === "registration_date_latest"){
     Object.assign(variables, { 
@@ -257,7 +272,7 @@ const StudentQuery = `query GET_STUDENTS(
     studentsConnection (
       sort: $sort
       start: $start
-      limit: $limit,
+      limit: $limit
       where: {
         assigned_to: {
           id: $id
@@ -268,10 +283,10 @@ const StudentQuery = `query GET_STUDENTS(
         status:$status
         registration_date_latest_gte:$from_registration
         registration_date_latest_lte:$to_registration
-        full_name:$full_name,
-        email:$email,
-        phone:$phone,
-        student_id:$student_id
+        full_name_contains:$full_name
+        email_contains:$email
+        phone:$phone
+        student_id_contains:$student_id
       }
     ) {
       values {
