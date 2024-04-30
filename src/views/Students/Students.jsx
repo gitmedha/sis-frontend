@@ -134,7 +134,7 @@ const Students = (props) => {
 
   prevIsSearchEnableRef.current = isSearchEnable;
 
-  },[isSearchEnable,activeTab.key])
+  },[isSearchEnable,activeTab.key,selectedSearchedValue])
 
 
   const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
@@ -424,6 +424,7 @@ else {
           getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
 
         }else {
+          console.log("this is working");
           getStudents(
             activeStatus,
             activeTab.key,
