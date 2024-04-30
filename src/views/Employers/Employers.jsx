@@ -48,7 +48,7 @@ const Employers = (props) => {
 
   useEffect(() => {
     getEmployers(activeTab.key);
-  }, [activeTab,isSearchEnable]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
