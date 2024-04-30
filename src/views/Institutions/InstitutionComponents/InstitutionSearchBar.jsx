@@ -170,7 +170,6 @@ refreshOnTabChange()
                         control="lookupAsync"
                         defaultOptions={searchValueOptions.slice(0, 100)}
                         filterData={filterSearchValue}
-                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={

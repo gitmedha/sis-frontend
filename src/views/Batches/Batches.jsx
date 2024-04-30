@@ -47,7 +47,7 @@ const Batches = (props) => {
 
   useEffect(() => {
     getBatches(activeTab.key);
-  }, [activeTab,isSearchEnable]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
 
   const resetSearchFilter = async()=>{
