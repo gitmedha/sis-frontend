@@ -1,18 +1,12 @@
 import * as Yup from "yup";
 
-const status = Yup.string().required("Status is required.");
-const assigned_to = Yup.string().required("Assignee is required.");
-const start_date = Yup.string().required("Start Date is required.");
-const end_date = Yup.string().required("End Date is required.");
-const alumni_service = Yup.string().required("Alumni Service is required.");
-const reporting_date = Yup.string().required("Reporting Date is required");
-
-
 export const calendarValidations = Yup.object({
-    status,
-    assigned_to,
-    start_date,
-    end_date,
-    alumni_service,
-    reporting_date
+    status: Yup.string(),
+  assigned_to: Yup.string(),
+  start_date: Yup.date(),
+  end_date: Yup.date().when('start_date', (start_date, schema) =>
+    start_date ? schema.min(start_date, 'End date must be greater than start date') : schema
+  ),
+  alumni_service: Yup.string().required("Alumni Service is required."),
+  reporting_date: Yup.date()
 })

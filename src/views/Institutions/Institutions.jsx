@@ -51,16 +51,7 @@ const Institutions = (props) => {
 
   useEffect(() => {
     getInstitutions(activeTab.key);
-  }, [activeTab]);
-
-
-  useEffect(()=>{
-    if(isSearchEnable){
-      getInstitutions()
-    }
-
-
-  },[isSearchEnable])
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
@@ -147,8 +138,11 @@ const Institutions = (props) => {
   else if(selectedSearchField === "assigned_to"){
     Object.assign(variables, { username: selectedSearchedValue.trim()});
   }
+  else if(selectedSearchField === "name"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
 
-const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String) {
+const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
   institutionsConnection (
       sort: $sort
       start: $start
@@ -161,7 +155,8 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
         medha_area: $area
         state:$state,
         status:$status,
-        type:$type
+        type:$type,
+        name:$name
       }
     ) {
       values {
@@ -182,14 +177,14 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
 
       setInstitutions(data?.data?.data?.institutionsConnection.values);
       setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
       setLoading(false);
       nProgress.done();
-    });
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
   }
 
   const getInstitutions = async (
