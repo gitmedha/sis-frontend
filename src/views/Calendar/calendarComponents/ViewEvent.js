@@ -85,9 +85,9 @@ function ViewEvent(props) {
             
               </Modal.Title>
               <div style={{display:'flex',justifyContent:'space-around'}}>
-                <div style={{ cursor: 'pointer' ,marginRight:'10px'}} onClick={()=>openEditForm()}>
+                {event.status !== "Cancelled" ?<div style={{ cursor: 'pointer' ,marginRight:'10px'}} onClick={()=>openEditForm()}>
                 <FaEdit size={25} color='#808080'/>
-                </div>
+                </div>:<div></div>}
                 {event.status !== "Cancelled" ?<div style={{cursor:'pointer'}} onClick={() => setDeleteAlert(true)}>
                 <FaTrash size={22} color='red'/>
                 </div>:<div></div>}
