@@ -3,6 +3,17 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
+import styled from "styled-components";
+
+
+const Style = styled.div`
+  overflow-x: auto;
+  max-width: 120%;
+
+  td {
+    width: 50px;
+  }
+`;
 
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
@@ -18,7 +29,7 @@ const CheckValuesOpsUploadedData = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal"
         id="custom-modal"
-        dialogClassName="fullscreen-modal"
+        // dialogClassName="fullscreen-modal"
       >
         <Modal.Header className="bg-white">
           <Modal.Title
@@ -30,8 +41,10 @@ const CheckValuesOpsUploadedData = (props) => {
             </h1>
           </Modal.Title>
         </Modal.Header>
-        <>
+        <Style>
           <Modal.Body className="bg-white">
+            <div style={{width:'100%',height:'450px',overflow:'scroll'}}>
+
             <Table striped bordered hover responsive size="sm">
               <thead>
                 <tr>
@@ -53,7 +66,7 @@ const CheckValuesOpsUploadedData = (props) => {
               <tbody>
                 {props.notUploadedData.map((obj, i) => (
                   <tr key={i}>
-                    <td>{i + 1}</td>
+                    <td >{i + 1}</td>
                     <td>{obj.assigned_to}</td>
                     <td>{obj.activity_type}</td>
                     <td>{obj.institution}</td>
@@ -70,6 +83,8 @@ const CheckValuesOpsUploadedData = (props) => {
                 ))}
               </tbody>
             </Table>
+            </div>
+            
             
             {/* <h1> Upload SuccesFully</h1>
             <Table striped bordered hover responsive size="sm">
@@ -133,7 +148,7 @@ const CheckValuesOpsUploadedData = (props) => {
               </div>
             </div>
           )}
-        </>
+        </Style>
       </Modal>
     </>
   );

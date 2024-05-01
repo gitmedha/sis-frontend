@@ -72,21 +72,21 @@ const work_engagement = Yup.string().nullable().required("Work Engagement is req
 const course_name_other=Yup.string().nullable().required("Other Course Name is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
-  institution,
-  batch,
-  status: program_enrollment_status,
-  course_year,
-  course_name_in_current_sis,
-  course_level,
-  course_type,
-  year_of_course_completion,
-  registration_date,
-  fee_status,
-  course_name_other:Yup.string().when('course_name_in_current_sis', {
-    is: (course_name_in_current_sis) => course_name_in_current_sis === 'other', 
-    then: Yup.string().required('Field is required'),
+  institution: Yup.string().required('Institution is required'),
+  batch: Yup.string().required('Batch is required'),
+  status: Yup.string().required('Program Status is required'),
+  course_year: Yup.string().required('Current Course Year is required'),
+  course_name_in_current_sis: Yup.string().required('Course Name is required'),
+  course_level: Yup.string().required('Course Level is required'),
+  course_type: Yup.string().required('Course Type is required'),
+  year_of_course_completion: Yup.string().required('Year of Completion is required'),
+  registration_date: Yup.date().required('Registration Date is required'),
+  fee_status: Yup.string().required('Contribution Status is required'),
+  course_name_other: Yup.string().when('course_name_in_current_sis', {
+    is: 'other',
+    then: Yup.string().required('If Other, Specify is required'),
     otherwise: Yup.string(),
-})
+  }),
 });
 
 export const EmploymentConnectionValidations = Yup.object({
