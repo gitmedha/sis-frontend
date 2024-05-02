@@ -83,7 +83,7 @@ export const ProgramEnrollmentValidations = Yup.object({
   registration_date,
   fee_status,
   course_name_other:Yup.string().when('course_name_in_current_sis', {
-    is: (course_name_in_current_sis) => course_name_in_current_sis === 'other', 
+    is: (course_name_in_current_sis) => course_name_in_current_sis === 'Other', 
     then: Yup.string().required('Field is required'),
     otherwise: Yup.string(),
 })
