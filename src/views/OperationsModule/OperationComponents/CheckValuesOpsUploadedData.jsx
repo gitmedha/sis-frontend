@@ -11,7 +11,15 @@ const Style = styled.div`
   max-width: 120%;
 
   td {
-    width: 50px;
+    width: 200px !important; /* Default width */
+  }
+
+  td:nth-child(1) { /* First column */
+    width: 100px !important;
+  }
+
+  td:nth-child(2) { /* Second column */
+    width: 250px !important;
   }
 `;
 
@@ -29,7 +37,7 @@ const CheckValuesOpsUploadedData = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal"
         id="custom-modal"
-        // dialogClassName="fullscreen-modal"
+        dialogClassName="fullscreen-modal"
       >
         <Modal.Header className="bg-white">
           <Modal.Title
