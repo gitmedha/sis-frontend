@@ -3,7 +3,7 @@ import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { getDefaultAssignee } from "../../../utils/function/lookupOptions";
+import { getDefaultAssignee, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
@@ -13,11 +13,33 @@ import BulkMassEdit from "./BulkMassEdit";
 import api from "../../../apis";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
+import Textarea from "../../../utils/Form/Textarea";
+import { Input } from "../../../utils/Form";
+import { Form, Formik } from "formik";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
   apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
 });
+
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #c4c4c4;
+  }
+
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
 
 const Section1 = styled.table`
   .create_data_table {
@@ -95,6 +117,7 @@ const AlumMassEdit = (props) => {
   const [programOptions, setProgramOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
 
   useEffect((props) => {
     getAlumniServicePickList().then((data) => {
@@ -153,6 +176,7 @@ const AlumMassEdit = (props) => {
         students.map(async (obj) => {
           try {
             const data = await getStudentAlumniServices(obj.id);
+            console.log("data",data.data.data.alumniServicesConnection.values);
             return data.data.data.alumniServicesConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -182,6 +206,7 @@ const AlumMassEdit = (props) => {
     } catch (error) {
       console.error(error);
     }
+    // setFormStatus(true)
   };
 
   const handleChange = (id, newData) => {
@@ -225,21 +250,42 @@ const AlumMassEdit = (props) => {
     props.handelSubmit(students, "AlumniBuldEdit");
   };
 
+  useEffect(() => {
+    getDefaultAssigneeOptions().then((data) => {
+      setAssigneeOptions(data);
+    });
+
+    getStudentsPickList().then((data) => {
+      setLocationOptions(
+        data.alumni_service_location.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+  }, []);
+  useEffect(() => {
+    console.log(students);
+  }, [])
+  
+
   const handelCancel = () => {
     props.handelCancel();
   };
   return (
     <Modal
       centered
-      size="xl"
+      size="lg"
+      // style={{ height: '700px' }}
       responsive
       show={true}
       aria-labelledby="contained-modal-title-vcenter"
       className="form-modal"
-      dialogClassName="fullscreen-modal"
+      // dialogClassName="fullscreen-modal"
     >
-      {!formStatus && (
-        <div className="col-md-6 col-sm-12 mt-2" style={{ marginLeft: "2rem" }}>
+      { !formStatus && (
+        <div className="col-md-6 col-sm-12 px-3" >
           <div>
             <label className="leading-24">Student</label>
             <Select
@@ -263,37 +309,187 @@ const AlumMassEdit = (props) => {
 
       {formStatus &&
         (students.length > 0 ? (
-          <Section1>
-            <table className="create_data_table mt-5">
-              <thead className="border mt-5">
-                <tr>
-                  <th className="border">Assigned To</th>
-                  <th className="border">Category </th>
-                  <th className="border">Sub Category </th>
-                  <th className="border">Start Date </th>
-                  <th className="border">End Date </th>
-                  <th className="border">Fee Amount</th>
-                  <th className="border">Fee Submission Date</th>
-                  <th className="border">Location </th>
-                  <th className="border">Program Mode </th>
-                  <th className="border">Receipt Number </th>
-                </tr>
-              </thead>
-              <tbody className="mb-4">
-                {students.map((student, id) => (
-                  <tr key={id} className="mt-4">
-                    <BulkMassEdit
-                      categoryOptions={categoryOptions}
-                      programOptions={programOptions}
-                      typeOptions={typeOptions}
-                      locationOptions={locationOptions}
-                      dataPoints={student}
-                      handelChange={handleChange}
+          
+          <>
+             <Modal.Header className="bg-white">
+        <Modal.Title
+          id="contained-modal-title-vcenter"
+          className="d-flex align-items-center"
+        >
+          <h1 className="text--primary bebas-thick mb-0">
+            
+            Mass Edit Alumni Engagement
+          </h1>
+        </Modal.Title>
+      </Modal.Header>
+            <Formik
+            // onSubmit={onSubmit}
+            // initialValues={initialValues}
+            // validationSchema={validationRules}
+          >
+            {/* {({ values }) => ( */}
+              <Form>
+                <>
+                  <div className="row px-3">
+                    <div className="col-md-6 col-sm-12 mt-2">
+                     
+                      <label className="leading-24">Student</label>
+                      <Select
+                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
+                        isMulti
+                        isDisabled={true}
+                        name="student_ids"
+                        options={studentOptions}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        // onInputChange={(e) => setStudentInput(e)}
+                        // onChange={(choice) => setStudents(choice)}
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                    {/* {assigneeOptions.length ? ( */}
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      // filterData={filterAssignedTo}
+                      // defaultOptions={assigneeOptions}
                     />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  {/* ) : (
+                    <Skeleton count={1} height={45} />
+                  )} */}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="category"
+                        label="Category"
+                        placeholder="Category"
+                        control="lookup"
+                        icon="down"
+                        className="form-control"
+                        // options={categoryOptions}
+                        // onChange={(e) => setSelectedCategory(e.value)}
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      {/* {selectedCategory && ( */}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="type"
+                          label="Subcategory"
+                          // options={typeOptions.filter(
+                          //   (option) => option.category === selectedCategory
+                          // )}
+                          className="form-control"
+                          placeholder="Subcategory"
+                          required
+                        />
+                      {/* )} */}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        control="lookup"
+                        icon="down"
+                        name="program_mode"
+                        label="Program Mode"
+                        // options={programOptions}
+                        className="form-control"
+                        placeholder="Program Mode"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="location"
+                        label="Location"
+                        // options={locationOptions}
+                        className="form-control"
+                        placeholder="Location"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="start_date"
+                        label="Start Date"
+                        placeholder="Start Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="fee_submission_date"
+                        label="Contribution Submission Date"
+                        placeholder="Contribution Submission Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        // onInput={(value) => setFeeSubmissionDateValue(value)}
+                        // required={feeFieldsRequired}
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        min={0}
+                        type="number"
+                        name="fee_amount"
+                        label="Contribution Amount"
+                        placeholder="Contribution Amount"
+                        control="input"
+                        className="form-control"
+                        autoComplete="off"
+                        // onInput={(e) => setFeeAmountValue(e.target.value)}
+                        // required={feeFieldsRequired}
+                      />
+                    </div>
+                    {/* <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="receipt_number"
+                      label="Receipt Number"
+                      placeholder="Receipt Number"
+                      control="input"
+                      className="form-control"
+                      autoComplete="off"
+                      onInput={(e) => setReceiptNumberValue(e.target.value)}
+                      required={feeFieldsRequired}
+                    />
+                  </div> */}
+                    <div className="col-md-12 col-sm-12 mt-2">
+                      <Textarea
+                        name="comments"
+                        label="Comments"
+                        placeholder="Comments"
+                        control="input"
+                        className="form-control"
+                        autoComplete="off"
+                      ></Textarea>
+                    </div>
+                  </div>
+                </>
+                
+              </Form>
+            {/* )} */}
+          </Formik>
             <div className="d-flex">
               <button
                 className="btn submitbtnclear btn-danger btn-regular my-5"
@@ -308,15 +504,15 @@ const AlumMassEdit = (props) => {
                 Submit
               </button>
             </div>
-          </Section1>
+          </>
         ) : (
           <div className="">
-            <button
+            {/* <button
               className="btn submitbtnclear btn-danger btn-regular my-5"
               onClick={() => handelCancel()}
             >
               Jump Back to previous page 
-            </button>
+            </button> */}
           </div>
         ))}
     </Modal>
