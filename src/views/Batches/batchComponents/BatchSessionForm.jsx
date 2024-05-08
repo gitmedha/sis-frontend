@@ -215,9 +215,28 @@ const BatchSessionForm = (props) => {
                   </div>
                 </div>
               </Section>
-              <div className="row mt-3 py-3">
+              <div className="row justify-content-center">
+                <div className="col-auto">
+                  <button type='submit' className='btn btn-primary btn-regular batch_session_form_buttons'disabled={isSubmitting}>
+                    SAVE
+                  </button>
+                </div>
+                <div className="col-auto">
+                   <button 
+                   onClick={onHide} className='btn btn-secondary btn-regular batch_session_form_buttons'>
+                    CANCEL                    
+                  </button>
+                </div>
+                {batch.status === 'In Progress' && onDelete && <div className="col-auto">
+                  <button 
+                    onClick={() => {setShowDeleteAlert(true)}} className='btn btn-danger btn-regular batch_session_form_buttons'>
+                    DELETE
+                  </button>
+                </div>}
+              </div>
+              {/* <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-between">
-                  <div className="d-flex justify-content-start">
+                  <div className="d-flex justify-content-between">
                     <button
                       type="submit"
                       className="btn btn-primary btn-regular mx-0"
@@ -244,7 +263,7 @@ const BatchSessionForm = (props) => {
                   </button>
                   }
                 </div>
-              </div>
+              </div> */}
             </Form>
           )}
         </Formik>
