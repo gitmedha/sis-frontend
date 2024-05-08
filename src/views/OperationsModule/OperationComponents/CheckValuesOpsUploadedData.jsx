@@ -8,17 +8,17 @@ import styled from "styled-components";
 
 const Style = styled.div`
   overflow-x: auto;
-  max-width: 120%;
+  // width: 120%;
 
-  td {
-    width: 200px !important; /* Default width */
-  }
+  
 
-  td:nth-child(1) { /* First column */
-    width: 100px !important;
-  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 
-  td:nth-child(2) { /* Second column */
+  td { 
     width: 250px !important;
   }
 `;
@@ -26,6 +26,8 @@ const Style = styled.div`
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
 
+
+  console.log(props);
   return (
     <>
       <Modal
@@ -37,7 +39,7 @@ const CheckValuesOpsUploadedData = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal"
         id="custom-modal"
-        dialogClassName="fullscreen-modal"
+        // dialogClassName="fullscreen-modal"
       >
         <Modal.Header className="bg-white">
           <Modal.Title
@@ -139,13 +141,20 @@ const CheckValuesOpsUploadedData = (props) => {
           {(isSRM() || isAdmin()) && (
             <div className="row mt-4 mb-4">
               <div className="col-md-12 d-flex justify-content-center">
-                <button
+               {props.notUploadedData.length ===0 ? <button
                   type="button"
-                  //   onClick={() => updatevalue()}
+                    onClick={() => props.uploadExcel(props.excelData)}
                   className="btn btn-primary px-4 mx-4"
                 >
                   Upload
-                </button>
+                </button>:<button
+                  type="button"
+                    onClick={() => props.uploadExcel(props.excelData)}
+                  className="btn btn-primary px-4 mx-4"
+                  disabled
+                >
+                  Upload
+                </button>}
                 <button
                   type="button"
                   onClick={() => onHide()}
