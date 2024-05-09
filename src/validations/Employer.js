@@ -72,18 +72,43 @@ export const EmploymentConnectionValidations = Yup.object({
 });
 
 export const EmployerValidations = Yup.object({
-    name,
+    name:Yup.string().required('Name is required.') // Check for required input
+    .test(
+      'no-trailing-space',
+      'Please remove extra space.',
+      (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+    ),
     status,
-    phone,
+    phone:Yup.string().required('Phone is required.') // Check for required input
+    .test(
+      'no-trailing-space',
+      'Please remove extra space.',
+      (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+    ),
     assigned_to,
     industry,
-    address,
+    address:Yup.string().required('Address is required.') // Check for required input
+    .test(
+      'no-trailing-space',
+      'Please remove extra space.',
+      (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+    ),
     medha_area,
     state,
-    city,
+    city:Yup.string().required('City is required.') // Check for required input
+    .test(
+      'no-trailing-space',
+      'Please remove extra space.',
+      (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+    ),
     pin_code,
     contacts,
-    email,
+    email:Yup.string().required('Email is required.') // Check for required input
+    .test(
+      'no-trailing-space',
+      'Please remove extra space.',
+      (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+    ),
     district,
 });
 
