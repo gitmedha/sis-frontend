@@ -27,18 +27,43 @@ export const OpportunityValidations = Yup.object({
   assigned_to,
   type,
   employer,
-  role_or_designation,
+  role_or_designation :Yup.string().required('Role is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   number_of_opportunities,
   department_or_team,
   salary,
   compensation_type,
-  skills_required,
-  role_description,
-  address,
+  skills_required :Yup.string().required('Skill is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  role_description:Yup.string().required('Description is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
+  address:Yup.string().required('Address is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   medha_area,
   district,
   state,
-  city,
+  city:Yup.string().required('City is required.') // Check for required input
+  .test(
+    'no-trailing-space',
+    'Please remove extra space.',
+    (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
+  ),
   pin_code,
 });
 
