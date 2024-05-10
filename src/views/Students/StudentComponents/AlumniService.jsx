@@ -85,7 +85,7 @@ const AlumniService = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              Alumni Engagement Details
+            Alumni Engagement Details
             </h1>
           </Modal.Title>
         </Modal.Header>

@@ -47,7 +47,7 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
-import UploadFile from "./OperationComponents/UploadFile";
+// import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload } from "react-icons/fa";
 
 const tabPickerOptionsMain = [
@@ -1220,14 +1220,14 @@ const Operations = ({
             />
           )}
 
-          {uploadModal && (
+          {/* {uploadModal && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
               />
             </>
-          )}
+          )} */}
         </div>
       </Styled>
     </Collapse>
