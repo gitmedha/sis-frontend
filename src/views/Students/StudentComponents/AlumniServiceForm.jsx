@@ -29,6 +29,11 @@ const Section = styled.div`
   }
 `;
 
+const statusOption = [
+  { value: 'Paid', label: 'Paid' },
+  { value: 'Unpaid', label: 'Unpaid' }
+]
+
 const AlumniServiceForm = (props) => {
   let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -291,6 +296,19 @@ const AlumniServiceForm = (props) => {
                       className="form-control"
                       autoComplete="off"
                       onInput={e => setReceiptNumberValue(e.target.value)}
+                      required={feeFieldsRequired}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon='down'
+                      options={statusOption}
                       required={feeFieldsRequired}
                     />
                   </div>
