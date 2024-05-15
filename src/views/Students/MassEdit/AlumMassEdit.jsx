@@ -273,7 +273,7 @@ const AlumMassEdit = (props) => {
 
   const onSubmit = async (values) => {
     console.log(values);
-    students.map((obj) => {
+    let data =students.map((obj) => {
       return {
         assigned_to: values.assigned_to ?values.assigned_to: obj.assigned_to,
         category: values.category? values.category :obj.category,
@@ -287,24 +287,11 @@ const AlumMassEdit = (props) => {
         start_date: values.start_date ? values.start_date: obj.start_date,
         type: values.type,
         student_id: obj.id,
-        // id: Number(values.id),
+        id: Number(obj.id),
       };
     });
-
-    // try {
-    //   const value = await api.post("/alumni-services/bulk-update", students);
-
-    //   setTimeout(async() => {
-    //     await window.location.reload(false);
-    //     setAlert("Unable to create field data.", "success");
-    //       }, 1000);
-
-    //   // Fetch updated data or update state with latest data here
-    // } catch (error) {
-    //   console.error(error);
-    //   setAlert("Unable to create field data.", "error");
-    // }
-    // props.handelSubmit(students, "AlumniBuldEdit");
+    console.log("data",data);
+    props.handelSubmit(data, "AlumniBuldEdit");
     console.log("yessss.......");
   };
 
