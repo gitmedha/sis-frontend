@@ -2,12 +2,11 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
-import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
 
@@ -36,8 +35,7 @@ const meilisearchClient = new MeiliSearch({
 });
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student,programEnrollment,allBatches } = props;
-  const [loading, setLoading] = useState(false);
+  let { onHide, show, student,allBatches } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
@@ -52,6 +50,7 @@ const ProgramEnrollmentForm = (props) => {
   const [options, setOptions] = useState(null);
   const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const [courseName,setCourseName] = useState('');
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -59,6 +58,7 @@ const ProgramEnrollmentForm = (props) => {
     setLookUpLoading(false);
   };
 
+  console.log("courseName",courseName);
   useEffect(() => {
     if ( props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(data => {
@@ -104,6 +104,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_refund_date: null,
   };
   if (props.programEnrollment) {
+    console.log("props",props);
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = Number(props.programEnrollment.batch?.id);
     initialValues['institution'] = Number(props.programEnrollment.institution?.id);
@@ -111,6 +112,8 @@ const ProgramEnrollmentForm = (props) => {
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
     initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
+    console.log("initialValues",initialValues)
+    // setCourseName(initialValues.course_name_in_current_sis)
   }
 
   const onSubmit = async (values) => {
@@ -119,7 +122,6 @@ const ProgramEnrollmentForm = (props) => {
     }
     
   };
-
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -186,15 +188,18 @@ const ProgramEnrollmentForm = (props) => {
     });
   }
   const handlechange = (e,target) => {
-    if(e.value == 'Other'){
+    // console.log("e",e);
+    // console.log("target",target)
+    // if(e.value == 'Other'){
 
-      setOthertargetValue({ ...OthertargetValue,[target]:true})
-    }
+    //   setOthertargetValue({ ...OthertargetValue,[target]:true})
+    // }
     
   };
-  useEffect(()=>{
-    setOthertargetValue({course1:false,course2:false})
-  },[programEnrollment])
+
+  // useEffect(()=>{
+  //   setOthertargetValue({course1:false,course2:false})
+  // },[programEnrollment])
 
 
   const handleBatchChange = async (e)=> {
@@ -202,11 +207,11 @@ const ProgramEnrollmentForm = (props) => {
     if(props.programEnrollment){
       let found = false;
       allBatches.forEach(element => {
-        if(props.programEnrollment.batch.id == e.id){
+        if(props.programEnrollment.batch.id === e.id){
           found = false
         }
   
-        else if(e.id == element.batch.id){
+        else if(e.id === element.batch.id){
           found = true
         }
       });
@@ -226,7 +231,7 @@ const ProgramEnrollmentForm = (props) => {
       let found = false
       allBatches.forEach(element => {
   
-        if(e.id == element.batch.id){
+        if(e.id === element.batch.id){
           found = true
         }
       });
@@ -414,32 +419,24 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {OthertargetValue.course1 ?
                   <Input
-                      name="course_name_in_current_sis"
-                      control="input"
-                      label="Course Name"
-                      options={course}
-                      className="form-control"
-                      placeholder="Course Name"
-                    />
-                     :
-                    <Input
                       name="course_name_in_current_sis"
                       control="lookup"
                       icon="down"
                       label="Course Name"
                       options={course}
-                      onChange={(e)=>handlechange(e,"course1")}
                       className="form-control"
                       placeholder="Course Name"
+                      onChange={(e)=>{
+                        initialValues['course_name_in_current_sis'] = e.value;
+                        initialValues['course_name_other'] = '';
+                        setCourseName(e.value)
+                      }}
                     />
-                    }
                   </div>
-
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_other && initialValues.course_name_other.length))?
+                  props.programEnrollment.course_name_in_current_sis === 'Other' || courseName === 'Other'?
                    <Input
                       name="course_name_other"
                       control="input"
