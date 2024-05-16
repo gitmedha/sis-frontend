@@ -72,7 +72,6 @@ const Student = (props) => {
         dataToSave['CV'] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
-      
         setAlert("Unable to upload CV.", "error");
       });
     } else {
