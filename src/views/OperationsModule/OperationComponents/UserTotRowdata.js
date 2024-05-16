@@ -64,7 +64,7 @@ const UserTotRowdata = (props) => {
   const college =useRef(null)
   const [state,setstate]=useState(true)
   const handleChange = (options, key) => {
-    console.log(options, key);
+     (options, key);
   };
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -110,7 +110,7 @@ const UserTotRowdata = (props) => {
       );
     });
     // getUpskillingPicklist().then((data) => {
-    //   // console.log("data",data.subCategory.map((item) => ({
+    //   //  ("data",data.subCategory.map((item) => ({
     //   //   key: item,
     //   //   value: item,
     //   //   label: item,
@@ -146,12 +146,12 @@ const UserTotRowdata = (props) => {
         }))
       );
     })
-    // console.log("assigneeOptions ; \n ",assigneeOptions);
+    //  ("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    console.log(id, field, value);
+     (id, field, value);
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -280,7 +280,7 @@ const UserTotRowdata = (props) => {
             type="Text"
             onKeyPress={handleKeyPress}
             onChange={(e) => {
-              console.log("e",e.target.value)
+               ("e",e.target.value)
               updateRow(row.id, "project_name", e.target.value)}}
           /> */}
           <Select
@@ -340,7 +340,7 @@ const UserTotRowdata = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-              console.log(e.target.value);
+               (e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);

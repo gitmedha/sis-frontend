@@ -109,7 +109,6 @@ const StudentModal = (props) => {
       });
       setDetails(data.data.student);
     } catch (err) {
-      console.log("Cannot fetch student details: ", err);
     } finally {
       setLoading(false);
     }

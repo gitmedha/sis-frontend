@@ -97,7 +97,7 @@ const Opportunity = (props) => {
         setAlert("Opportunity updated successfully.", "success");
       })
       .catch((err) => {
-        console.log("UPDATE_DETAILS_ERR", err);
+         ("UPDATE_DETAILS_ERR", err);
         setAlert("Unable to update opportunity.", "error");
       })
       .finally(() => {
@@ -114,7 +114,7 @@ const Opportunity = (props) => {
         setAlert("Opportunity deleted successfully.", "success");
       })
       .catch((err) => {
-        console.log("OPPORTUNITY_DELETE_ERR", err);
+         ("OPPORTUNITY_DELETE_ERR", err);
         setAlert("Unable to delete opportunity.", "error");
       })
       .finally(() => {
@@ -132,10 +132,10 @@ const Opportunity = (props) => {
         query: GET_OPPORTUNITY,
         variables: { id: opportunityId },
       });
-      console.log("data.data.opportunity", data.data.opportunity);
+       ("data.data.opportunity", data.data.opportunity);
       setOpportunityData(data.data.opportunity);
     } catch (err) {
-      console.log("ERR", err);
+       ("ERR", err);
     } finally {
       NP.done();
       setLoading(false);
@@ -150,7 +150,7 @@ const Opportunity = (props) => {
         setOpportunityEmploymentConnections(employmentConnections);
       })
       .catch((err) => {
-        console.log("getStudentEmploymentConnections Error", err);
+         ("getStudentEmploymentConnections Error", err);
       });
   };
 
@@ -166,7 +166,7 @@ const Opportunity = (props) => {
         setAlert("File deleted successfully.", "success");
       })
       .catch((err) => {
-        console.log("FILE_DELETE_ERR", err);
+         ("FILE_DELETE_ERR", err);
         setAlert("Unable to delete file.", "error");
       })
       .finally(() => {

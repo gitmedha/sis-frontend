@@ -10,14 +10,12 @@ export const initApp = () => async (dispatch) => {
       dispatch(getAuthUser());
     }
   } catch (err) {
-    console.log("LOGGING_OUT_USER", err.response.data);
   } finally {
     dispatch(setAuthLoading());
   }
 };
 
 export const authenticateUser = (userDets) => async (dispatch) => {
-  console.log(userDets);
   localStorage.setItem("token", userDets.jwt);
   dispatch({
     type: LOGIN_USER,
@@ -27,7 +25,6 @@ export const authenticateUser = (userDets) => async (dispatch) => {
 
 export const getAuthUser = () => async (dispatch) => {
   try {
-    // console.log("GET_AUTH_USER");
     let { data } = await api.get("/users/me");
     dispatch({
       payload: data,

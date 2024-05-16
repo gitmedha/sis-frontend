@@ -93,7 +93,7 @@ const TotEdit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
+      //  ("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });

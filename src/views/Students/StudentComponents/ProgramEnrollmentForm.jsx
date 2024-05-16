@@ -4,7 +4,6 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect} from "react";
 import { MeiliSearch } from 'meilisearch'
-
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
@@ -58,7 +57,11 @@ const ProgramEnrollmentForm = (props) => {
     setLookUpLoading(false);
   };
 
-  console.log("courseName",courseName);
+  // useEffect(() => {
+  //   if (props.programEnrollment) {
+  //   }
+  // }, [props.programEnrollment]);
+
   useEffect(() => {
     if ( props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(data => {
@@ -69,6 +72,10 @@ const ProgramEnrollmentForm = (props) => {
       filterInstitution(props.programEnrollment.batch.name).then(data => {
         setBatchOptions(data);
       });
+    }
+    if(props.programEnrollment){
+      setCourseName(props.programEnrollment.course_name_in_current_sis || '');
+
     }
   }, [props])
 
@@ -104,7 +111,6 @@ const ProgramEnrollmentForm = (props) => {
     fee_refund_date: null,
   };
   if (props.programEnrollment) {
-    console.log("props",props);
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = Number(props.programEnrollment.batch?.id);
     initialValues['institution'] = Number(props.programEnrollment.institution?.id);
@@ -112,16 +118,17 @@ const ProgramEnrollmentForm = (props) => {
     initialValues['certification_date'] = props.programEnrollment.certification_date ? new Date(props.programEnrollment.certification_date) : null;
     initialValues['fee_payment_date'] = props.programEnrollment.fee_payment_date ? new Date(props.programEnrollment.fee_payment_date) : null;
     initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
-    console.log("initialValues",initialValues)
-    // setCourseName(initialValues.course_name_in_current_sis)
   }
 
+  
   const onSubmit = async (values) => {
     if(!showDuplicateWarning){
       onHide(values);
     }
     
+
   };
+
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -187,19 +194,6 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
     });
   }
-  const handlechange = (e,target) => {
-    // console.log("e",e);
-    // console.log("target",target)
-    // if(e.value == 'Other'){
-
-    //   setOthertargetValue({ ...OthertargetValue,[target]:true})
-    // }
-    
-  };
-
-  // useEffect(()=>{
-  //   setOthertargetValue({course1:false,course2:false})
-  // },[programEnrollment])
 
 
   const handleBatchChange = async (e)=> {
@@ -272,7 +266,7 @@ const ProgramEnrollmentForm = (props) => {
           initialValues={initialValues}
           validationSchema={ProgramEnrollmentValidations}
         >
-          {({ values }) => (
+          {({ values}) => (
             <Form>
               <Section>
                 <h3 className="section-header">Enrollment Details</h3>
@@ -429,14 +423,13 @@ const ProgramEnrollmentForm = (props) => {
                       placeholder="Course Name"
                       onChange={(e)=>{
                         initialValues['course_name_in_current_sis'] = e.value;
-                        initialValues['course_name_other'] = '';
                         setCourseName(e.value)
                       }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  props.programEnrollment.course_name_in_current_sis === 'Other' || courseName === 'Other'?
+                  courseName === 'Other'?
                    <Input
                       name="course_name_other"
                       control="input"
@@ -469,7 +462,6 @@ const ProgramEnrollmentForm = (props) => {
                       name="higher_education_course_name"
                       control="lookup"
                       label="Course Name"
-                      onChange={(e)=>handlechange(e,"course2")}
                       options={course}
                       className="form-control"
                       placeholder="Course Name"

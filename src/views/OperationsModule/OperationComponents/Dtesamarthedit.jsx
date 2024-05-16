@@ -76,14 +76,14 @@ const Dtesamarthedit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      // console.log("props filterInstitution", props.institution)
+      //  ("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
       filterBatch().then((data) => {
-        console.log("dataBatch1:", data);
+         ("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -137,7 +137,7 @@ const Dtesamarthedit = (props) => {
           };
         });
 
-        console.log(filterData);
+         (filterData);
         return filterData;
       });
   };
@@ -183,7 +183,7 @@ const Dtesamarthedit = (props) => {
   };
 
   const userId = localStorage.getItem("user_id");
-  // console.log("userId", props.assigned_to.id);
+  //  ("userId", props.assigned_to.id);
   let initialValues = {
     registration_id: "",
     registration_date: "",
@@ -261,7 +261,7 @@ const Dtesamarthedit = (props) => {
     }
   }, []);
 
-  // console.log("props",initialValues.batch);
+  //  ("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 

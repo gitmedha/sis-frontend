@@ -95,7 +95,7 @@ const Sessions = (props) => {
         createSessionAttendance(sessionId, student);
       });
     }).catch(err => {
-      console.log("CREATE_SESSION_ERR", err);
+       ("CREATE_SESSION_ERR", err);
       setAlert("Unable to create session.", "error");
     }).finally(() => {
       onDataUpdate();
@@ -141,7 +141,7 @@ const Sessions = (props) => {
         }
       });
     }).catch(err => {
-      console.log("UPDATE_SESSION_ERR", err);
+       ("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update session.", "error");
     }).finally(() => {
       onDataUpdate();
@@ -153,7 +153,7 @@ const Sessions = (props) => {
     await deleteSession(batchSessionAttendanceFormData.id).then(() => {
       setAlert("Session deleted successfully.", "success");
     }).catch(err => {
-      console.log("DELETE_SESSION_ERR", err);
+       ("DELETE_SESSION_ERR", err);
       setAlert("Unable to delete session.", "error");
     }).finally(() => {
       onDataUpdate();

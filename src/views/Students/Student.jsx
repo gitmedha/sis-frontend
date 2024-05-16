@@ -72,7 +72,7 @@ const Student = (props) => {
         dataToSave['CV'] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
-        console.log("CV_UPLOAD_ERR", err);
+         ("CV_UPLOAD_ERR", err);
         setAlert("Unable to upload CV.", "error");
       });
     } else {
@@ -85,7 +85,7 @@ const Student = (props) => {
     updateStudent(Number(id), dataToSave).then(data => {
       setAlert("Student updated successfully.", "success");
     }).catch(err => {
-      console.log("UPDATE_STUDENT_ERR", err);
+       ("UPDATE_STUDENT_ERR", err);
       setAlert("Unable to update student.", "error");
     }).finally(() => {
       NP.done();
@@ -99,7 +99,7 @@ const Student = (props) => {
     deleteStudent(student.id).then(data => {
       setAlert("Student deleted successfully.", "success");
     }).catch(err => {
-      console.log("STUDENT_DELETE_ERR", err);
+       ("STUDENT_DELETE_ERR", err);
       setAlert("Unable to delete student.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -113,7 +113,7 @@ const Student = (props) => {
     deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
-      console.log("CV_DELETE_ERR", err);
+       ("CV_DELETE_ERR", err);
       setAlert("Unable to delete CV.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -137,7 +137,7 @@ const Student = (props) => {
       values.full_name=values.full_name.toLowerCase()
       setStudent(values);
     } catch (err) {
-      console.log("ERR", err);
+       ("ERR", err);
     } finally {
       setLoading(false);
       NP.done();
@@ -149,7 +149,7 @@ const Student = (props) => {
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
-      console.log("getStudentProgramEnrollments Error", err);
+       ("getStudentProgramEnrollments Error", err);
     });
   }
 
@@ -159,7 +159,7 @@ const Student = (props) => {
       setStudentEmploymentConnections(employmentConnections);
       updateEmploymentConnectionsBadge(employmentConnections);
     }).catch(err => {
-      console.log("getStudentEmploymentConnections Error", err);
+       ("getStudentEmploymentConnections Error", err);
     });
   }
 
@@ -168,7 +168,7 @@ const Student = (props) => {
       setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
       setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
     }).catch(err => {
-      console.log("Error in getting alumni services: ", err);
+       ("Error in getting alumni services: ", err);
     });
   }
 

@@ -206,7 +206,7 @@ const Batches = (props) => {
       history.push(`/batch/${data.data.data.createBatch.batch.id}`);
       }
     }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
+       ("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create batch.", "error");
       getBatches();
       setModalShow(false);

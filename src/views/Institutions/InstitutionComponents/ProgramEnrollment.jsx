@@ -84,7 +84,7 @@ const ProgramEnrollment = (props) => {
         setProgramEnrollment(data.programEnrollment);
       }
     } catch (error) {
-      console.log('CERTIFICATE_GENERATION_ERROR: ', error);
+       ('CERTIFICATE_GENERATION_ERROR: ', error);
     } finally {
       setLoadingCertificationButton(false);
     }
@@ -98,7 +98,7 @@ const ProgramEnrollment = (props) => {
         setProgramEnrollment(data.programEnrollment);
       }
     } catch (error) {
-      console.log('CERTIFICATE_DELETE_ERROR: ', error);
+       ('CERTIFICATE_DELETE_ERROR: ', error);
     } finally {
       setLoadingCertificationButton(false);
     }

@@ -94,7 +94,7 @@ const Institute = (props) => {
               });
             }
           } catch (err) {
-            console.log("mou upload err", err);
+             ("mou upload err", err);
             setAlert("Unable to upload MoU.", "error");
           }
         })
@@ -110,7 +110,7 @@ const Institute = (props) => {
         setAlert("Institution updated successfully.", "success");
       })
       .catch((err) => {
-        console.log("UPDATE_DETAILS_ERR", err);
+         ("UPDATE_DETAILS_ERR", err);
         setAlert("Unable to update institution.", "error");
       })
       .finally(() => {
@@ -127,7 +127,7 @@ const Institute = (props) => {
         setAlert("Institution deleted successfully.", "success");
       })
       .catch((err) => {
-        console.log("INSTITUTION_DELETE_ERR", err);
+         ("INSTITUTION_DELETE_ERR", err);
         setAlert("Unable to delete institution.", "error");
       })
       .finally(() => {
@@ -147,7 +147,7 @@ const Institute = (props) => {
       });
       setInstituteData(data.data.institution);
     } catch (err) {
-      console.log("ERR", err);
+       ("ERR", err);
     } finally {
       setLoading(false);
       NP.done();
@@ -165,7 +165,7 @@ const Institute = (props) => {
         );
       })
       .catch((err) => {
-        console.log("getInstitutionProgramEnrollments Error", err);
+         ("getInstitutionProgramEnrollments Error", err);
       });
   };
 

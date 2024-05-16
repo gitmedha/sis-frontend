@@ -55,7 +55,6 @@ const FileUploader = ({
         path: fileUrl || urlPath(data.data.upload.url.substring(1)),
       });
     } catch (err) {
-      console.log("UPLOAD_ERR", err);
     } finally {
       setUploading(false);
     }

@@ -64,7 +64,7 @@ const Employer = (props) => {
     updateEmployer(Number(id), dataToSave).then(data => {
       setAlert("Employer updated successfully.", "success");
     }).catch(err => {
-      console.log("UPDATE_DETAILS_ERR", err);
+       ("UPDATE_DETAILS_ERR", err);
       setAlert("Unable to update employer.", "error");
     }).finally(() => {
       NP.done();
@@ -78,7 +78,7 @@ const Employer = (props) => {
     deleteEmployer(employerData.id).then(data => {
       setAlert("Employer deleted successfully.", "success");
     }).catch(err => {
-      console.log("Employer_DELETE_ERR", err);
+       ("Employer_DELETE_ERR", err);
       setAlert("Unable to delete employer.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -97,7 +97,7 @@ const Employer = (props) => {
       });
       setEmployerData(data.data.employer);
     } catch (err) {
-      console.log("ERR", err);
+       ("ERR", err);
     }finally {
       setLoading(false);
       NP.done();
@@ -127,7 +127,7 @@ const Employer = (props) => {
       let employmentConnections = data.data.data.employmentConnectionsConnection.values;
       setEmployerEmploymentConnections(employmentConnections);
     }).catch(err => {
-      console.log("getStudentEmploymentConnections Error", err);
+       ("getStudentEmploymentConnections Error", err);
     });
   }
 
@@ -149,7 +149,7 @@ const Employer = (props) => {
     deleteFile(employerData.mou_file.id).then(data => {
       setAlert("File deleted successfully.", "success");
     }).catch(err => {
-      console.log("FILE_DELETE_ERR", err);
+       ("FILE_DELETE_ERR", err);
       setAlert("Unable to delete file.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);

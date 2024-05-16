@@ -215,7 +215,7 @@ const Students = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    console.log("whwhwhhwh");
+     ("whwhwhhwh");
     if (students) {
       let data = students;
       data = data.map((student) => {
@@ -283,7 +283,7 @@ const Students = (props) => {
           createStudentApi(dataToSave);
         })
         .catch((err) => {
-          console.log("CV_UPLOAD_ERR", err);
+           ("CV_UPLOAD_ERR", err);
           setAlert("Unable to upload CV.", "error");
         });
     } else {
@@ -299,7 +299,7 @@ const Students = (props) => {
         history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
+         ("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create student.", "error");
       })
       .finally(() => {

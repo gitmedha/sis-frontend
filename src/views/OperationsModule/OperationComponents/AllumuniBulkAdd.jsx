@@ -159,7 +159,7 @@ const AllumuniBulkAdd = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-    // console.log(options.value);
+    //  (options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
         setAreaOptions([]);
@@ -302,7 +302,7 @@ const AllumuniBulkAdd = (props) => {
       ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
+       ("error", error);
     }
   };
 
@@ -322,7 +322,7 @@ const AllumuniBulkAdd = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-    // console.log(rowData);
+    //  (rowData);
   };
   useEffect(() => {
     

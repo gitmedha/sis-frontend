@@ -110,7 +110,7 @@ const UpdateSession = (props) => {
       await attendanceUpdated();
       setAlert("Session updated successfully.", "success");
     } catch (err) {
-      console.log("UPDATE_SESSION_ERR", err);
+       ("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update the session.", "error");
     } finally {
       setUpdating(false);

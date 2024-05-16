@@ -96,7 +96,7 @@ const ProgramEnrollments = (props) => {
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(err => {
-      console.log("getInstitutionProgramEnrollments Error", err);
+       ("getInstitutionProgramEnrollments Error", err);
     })
     .finally(() => {
       setLoading(false);

@@ -20,7 +20,7 @@ const Details = (props) => {
   } = props;
 
   const [pickList, setPickList] = useState([]);
-  console.log(props)
+   (props)
   useEffect(() => {
     getInstitutionsPickList().then(data => {
       setPickList(data);
