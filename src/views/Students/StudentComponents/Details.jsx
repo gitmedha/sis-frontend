@@ -139,7 +139,6 @@ const Details = (props) => {
     });
   }
 
-  console.log("student",props);
   return (
     <Styled>
       <div className="container-fluid my-3">

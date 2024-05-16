@@ -68,7 +68,6 @@ const StudentForm = (props) => {
 
   useEffect(() => {
     getStudentsPickList().then(data => {
-      console.log("data",data);
       setStatusOptions(data.status.map(item => {
         if (
           localStorage.getItem('user_role').toLowerCase() === 'srm' &&
@@ -83,7 +82,6 @@ const StudentForm = (props) => {
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // console.log(data.your_plan_after_your_current_course.map(item => ({ key: item, value: item, label: item })));
       setyourPlanFfterYourCurrentCourse(data.your_plan_after_your_current_course.map(item => ({ key: item,value: item, label: item })));
     });
 
