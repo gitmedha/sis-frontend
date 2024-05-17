@@ -244,7 +244,7 @@ const Dtesamarth = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-       
+     
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -300,8 +300,6 @@ const Dtesamarth = (props) => {
       delete row["name"];
       row.isActive = true;
       row.created_by = Number(userId);
-      // row.state=Number(row.state)
-      // row.district=Number(row.district)
       row.updated_by = Number(userId);
       let value = checkEmptyValuesandplaceNA(row)
       return value;
@@ -328,9 +326,6 @@ const Dtesamarth = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
 
   useEffect(() => {
     filterInstitution().then((data) => {

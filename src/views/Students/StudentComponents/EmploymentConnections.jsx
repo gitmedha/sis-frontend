@@ -188,6 +188,7 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection created successfully.", "success");
       })
       .catch((err) => {
+        
         setAlert("Unable to create Employment Connection.", "error");
       })
       .finally(() => {
@@ -241,6 +242,7 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection updated successfully.", "success");
       })
       .catch((err) => {
+        
         setAlert("Unable to update Employment Connection.", "error");
       })
       .finally(() => {
@@ -255,6 +257,7 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection deleted successfully.", "success");
       })
       .catch((err) => {
+        
         setAlert("Unable to delete Employment Connection.", "error");
       })
       .finally(() => {
@@ -268,6 +271,7 @@ const EmploymentConnections = (props) => {
     deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
+    
       setAlert("Unable to delete Certificate.", "error");
     }).finally(() => {
       NP.done();

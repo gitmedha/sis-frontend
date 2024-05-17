@@ -1,4 +1,4 @@
-const opportunitiesFields = `
+export const opportunitiesFields = `
 id
 type
 role_or_designation
@@ -118,6 +118,16 @@ opportunitiesConnection(
 }`
 ;
 
+export const GET_ALL_OPPORTUNITIES = `
+query GET_OPPORTUNITIES() {
+opportunitiesConnection() {
+  values {
+    id,
+  }
+ }
+}`
+;
+
 export const GET_OPPORTUNITY=`
 query OPPORTUNITY($id:ID!) {
   opportunity(id: $id) {
@@ -193,6 +203,50 @@ export const GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS = `
       }
       aggregate {
         count
+      }
+    }
+  }
+`
+export const SEARCH_BY_EMPLOYERS =`
+  query SEARCH_BY_EMPLOYERS($query:String,$limit:Int, $sort:String){
+    employersConnections(
+      limit:$limit
+      sort:$sort
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+        state
+        district
+        city
+        pin_code
+        medha_area
+        address
+      }
+    }
+  }
+`
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String,$limit:Int,$sort:String){
+    studentsConnection(
+      limit:$limit
+      sort:$sort
+      where:{
+        _or:[
+          {student_id_contains:$query}
+          {full_name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        full_name
+        student_id
       }
     }
   }

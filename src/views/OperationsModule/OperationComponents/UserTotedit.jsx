@@ -1,11 +1,10 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form} from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -15,14 +14,9 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import AsyncSelect from "react-select/async";
-import { MeiliSearch } from "meilisearch";
-import { Select } from "@material-ui/core";
-// import 'react-select/dist/react-select.css';
-import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { updateOpsActivity, updateUserTot } from "./operationsActions";
+import { updateUserTot,searchInstitutions,searchBatches } from "./operationsActions";
 import * as Yup from "yup";
 
 const Section = styled.div`
@@ -44,11 +38,6 @@ const Section = styled.div`
   }
 `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 const UserTotedit = (props) => {
   let { onHide, show } = props;
 
@@ -68,60 +57,53 @@ const UserTotedit = (props) => {
 
   useEffect(() => {
     if (props.institution) {
-      //  ("props filterInstitution", props.institution)
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.batch) {
       filterBatch().then((data) => {
-         ("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
-        });
-
-         (filterData);
-        return filterData;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -172,12 +154,11 @@ const UserTotedit = (props) => {
     const value = await updateUserTot(Number(props.id), newValueObject);
     setDisableSaveButton(true);
     onHide(value);
-    closeopsedit();
     setDisableSaveButton(false);
   };
 
   const userId = localStorage.getItem("user_id");
-  //  ("userId", props.assigned_to.id);
+  
   let initialValues = {
     user_name: "",
     trainer_1: "",
@@ -221,7 +202,6 @@ const UserTotedit = (props) => {
     }
   }, []);
 
-  //  ("props",initialValues.batch);
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -233,7 +213,7 @@ const UserTotedit = (props) => {
     end_date: Yup.date()
       .required("End date is required")
       .when("start_date", (start, schema) => {
-         ("working......");
+      
         return schema.min(
           start,
           "End date must be greter than or equal to start date"

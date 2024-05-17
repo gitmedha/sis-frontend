@@ -56,6 +56,7 @@ const ProgramEnrollments = (props) => {
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(err => {
+     
     })
     .finally(() => {
       nProgress.done();
@@ -180,6 +181,7 @@ const ProgramEnrollments = (props) => {
      createProgramEnrollment(dataToSave).then(data => {
       setAlert("Program Enrollment created successfully.", "success");
     }).catch(err => {
+  
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       NP.done();
@@ -206,6 +208,7 @@ const ProgramEnrollments = (props) => {
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
     }).catch(err => {
+  
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
        NP.done();
@@ -219,6 +222,7 @@ const ProgramEnrollments = (props) => {
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -232,6 +236,7 @@ const ProgramEnrollments = (props) => {
     deleteFile(selectedProgramEnrollment[value].id).then(data => {
       setAlert("Proof of enrollment deleted successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to delete proof of enrollment.", "error");
     }).finally(() => {
       NP.done();
@@ -306,8 +311,8 @@ const ProgramEnrollments = (props) => {
             </>
           }
         >
-          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.name}</p>
-          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program.name}</p>
+          <p>Batch name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch?.name}</p>
+          <p>Program name: {selectedProgramEnrollment.batch && selectedProgramEnrollment.batch.program?.name}</p>
         </SweetAlert>
     </div>
   );

@@ -74,7 +74,7 @@ const Styles = styled.div`
   }
 `
 
-const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -101,6 +101,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+ 
   const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -114,12 +115,13 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
       fetchSearchedData(pageIndex, pageSize, sortBy)
     }
     else {
-      fetchData(pageIndex, pageSize, sortBy);
+      fetchData(pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField);
     }
     
   }, [fetchData, pageIndex, pageSize, sortBy,fetchSearchedData]);
 
   React.useEffect(() => {
+  
     onPageSizeChange(pageSize);
   }, [pageSize]);
 
@@ -170,9 +172,12 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
                 page.length ? (
                   page.map((row, index) => {
                     prepareRow(row)
-                    return (
+                    return (<>
                       <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
+                        
                         {indexes &&
+                        <>
+                          
                           <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
                             {
                               row.original.href && !rowClickFunctionExists ? (
@@ -184,6 +189,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
                               )
                             }
                           </td>
+                        </>
                         }
                         {row.cells.map(cell => {
                           return (
@@ -197,6 +203,7 @@ const Table = ({fetchSearchedData, columns, data, fetchData, totalRecords, loadi
                           )
                         })}
                       </tr>
+                      </>
                     )
                   })
                 ) : (

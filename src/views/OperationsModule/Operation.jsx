@@ -7,16 +7,9 @@ import moment from "moment";
 import api from "../../apis";
 import ProgressBar from "../../components/content/ProgressBar";
 
-// import Details from "./StudentComponents/Details";
-// import Address from "./StudentComponents/Address";
-// import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
-// import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-// import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
-// import EmploymentConnections from "./StudentComponents/EmploymentConnections";
-// import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
@@ -24,7 +17,7 @@ import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
-import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../common/commonFunctions";
 import StudentForm from "../Students/StudentComponents/StudentForm";
 
 const Styled = styled.div`
@@ -81,30 +74,12 @@ const Operation = (props) => {
 
   const updateStudentApi = (id, dataToSave) => {
     NP.start();
-    // updateStudent(Number(id), dataToSave).then(data => {
-    //   setAlert("Student updated successfully.", "success");
-    // }).catch(err => {
-    //    ("UPDATE_STUDENT_ERR", err);
-    //   setAlert("Unable to update student.", "error");
-    // }).finally(() => {
-    //   NP.done();
-    //   getStudent();
-    // });
     setModalShow(false);
   }
 
   const handleDelete = async () => {
     NP.start();
-    // deleteStudent(student.id).then(data => {
-    //   setAlert("Student deleted successfully.", "success");
-    // }).catch(err => {
-    //    ("STUDENT_DELETE_ERR", err);
-    //   setAlert("Unable to delete student.", "error");
-    // }).finally(() => {
-    //   setShowDeleteAlert(false);
-    //   NP.done();
-    //   history.push("/students");
-    // });
+    
   };
 
   const fileDelete = async () => {
@@ -138,31 +113,15 @@ const Operation = (props) => {
   };
 
   const getProgramEnrollments = async () => {
-    // getStudentProgramEnrollments(studentId).then(data => {
-    //   setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
-    //   setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
-    // }).catch(err => {
-    //    ("getStudentProgramEnrollments Error", err);
-    // });
+    
   }
 
   const getEmploymentConnections = async () => {
-    // getStudentEmploymentConnections(studentId).then(data => {
-    //   let employmentConnections = data.data.data.employmentConnectionsConnection.values;
-    //   setStudentEmploymentConnections(employmentConnections);
-    //   updateEmploymentConnectionsBadge(employmentConnections);
-    // }).catch(err => {
-    //    ("getStudentEmploymentConnections Error", err);
-    // });
+    
   }
 
   const getAlumniServices = async () => {
-    // getStudentAlumniServices(studentId).then(data => {
-    //   setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
-    //   setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
-    // }).catch(err => {
-    //    ("Error in getting alumni services: ", err);
-    // });
+    
   }
 
   const updateEmploymentConnectionsBadge = (employmentConnections) => {

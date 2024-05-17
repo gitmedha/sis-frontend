@@ -1,3 +1,28 @@
+export const institutionFields =`
+      id
+      name
+      state
+      city
+      medha_area
+      contacts{
+        id
+        email
+        phone
+        full_name
+        designation
+      }
+      logo{
+        url
+      }
+      assigned_to{
+        id
+        username
+        email
+      }
+      status
+      type
+      created_at
+`
 export const GET_MY_INSTITUTES = `
 query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
   institutions(
@@ -453,3 +478,43 @@ query GET_INSTITUTION_PROGRAM_ENROLLMENTS ($id: Int, $limit: Int, $start: Int, $
   }
 }
 `;
+
+
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String,$limit:Int,$sort:String){
+    studentsConnection(
+      limit:$limit,
+      sort:$sort,
+      where:{
+        _or:[
+          {full_name_contains:$query}
+          {student_id_contains:$query}
+        ]
+      }
+    )
+    {
+      values {
+        id
+        full_name
+        student_id
+      }
+    }
+  }
+`
+export const SEARCH_BY_BATCHES = `
+  query SEARCH_BY_BATCHES($query:String, $limit:Int, $sort:String){
+    batchesConnection(
+      limit:$limit,
+      sort:$sort,
+      where:{
+        _or:[{name_contains:$query}]
+      }
+    )
+    {
+      values {
+        id
+        name
+      }
+    }
+  }
+`

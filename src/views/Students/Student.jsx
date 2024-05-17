@@ -84,6 +84,7 @@ const Student = (props) => {
     updateStudent(Number(id), dataToSave).then(data => {
       setAlert("Student updated successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to update student.", "error");
     }).finally(() => {
       NP.done();
@@ -97,6 +98,7 @@ const Student = (props) => {
     deleteStudent(student.id).then(data => {
       setAlert("Student deleted successfully.", "success");
     }).catch(err => {
+   
       setAlert("Unable to delete student.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -110,6 +112,7 @@ const Student = (props) => {
     deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to delete CV.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -133,6 +136,7 @@ const Student = (props) => {
       values.full_name=values.full_name.toLowerCase()
       setStudent(values);
     } catch (err) {
+      
     } finally {
       setLoading(false);
       NP.done();
@@ -144,6 +148,7 @@ const Student = (props) => {
       setStudentProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
+      
     });
   }
 
@@ -153,6 +158,7 @@ const Student = (props) => {
       setStudentEmploymentConnections(employmentConnections);
       updateEmploymentConnectionsBadge(employmentConnections);
     }).catch(err => {
+      
     });
   }
 
@@ -161,6 +167,7 @@ const Student = (props) => {
       setStudentAlumniServices(data.data.data.alumniServicesConnection.values);
       setAlumniServiceAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
     }).catch(err => {
+      
     });
   }
 

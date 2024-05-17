@@ -83,13 +83,11 @@ const DteUpskilingBulk = (props) => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-    //  ("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    // props.handleInputChange()
-    // setRows(updatedRows);
+  
   };
 
   return (

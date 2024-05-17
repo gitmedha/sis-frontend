@@ -1,6 +1,5 @@
 import React from "react";
 import { Modal} from "react-bootstrap";
-import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
@@ -9,75 +8,9 @@ import {
   getStateDistricts,
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
-
-import { MeiliSearch } from "meilisearch";
-
+import { searchInstitutions,searchBatches} from "./operationsActions";
 import UserTotRowdata from "./UserTotRowdata";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
-
-const Section = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
-
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
-  }
-
-  // .App {
-  //   margin: 2rem auto;
-  //   width: 80%;
-  // }
-
-  .create_data_table {
-    border-collapse: collapse !important;
-    width: 100%;
-    overflow: auto;
-  }
-
-  th,
-  td {
-    padding: 8px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #f2f2f2;
-  }
-
-  .table-input {
-    border: none;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-  }
-
-  button {
-    margin-top: 1rem;
-  }
-  .table-input:focus {
-    outline: none;
-  }
-  .adddeletebtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-`;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const UserTot = (props) => {
   let { onHide, show } = props;
@@ -393,44 +326,41 @@ const UserTot = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
 
-        return filterData;
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
-        });
-        return filterData;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: Number(batch.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onConfirm = () => {
@@ -498,7 +428,7 @@ const UserTot = (props) => {
                 />
               </button>
             )}
-            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
+           
           </div>
           <div className="table-container">
             <table className="create_data_table">
@@ -565,12 +495,9 @@ const UserTot = (props) => {
         </div>
       </Modal.Body>
 
-      {/* {showLimit ? <SweetAlert title="You can't dd more than 10 items!" onConfirm={onConfirm} onCancel={()=>onCancel()} /> :""} */}
     </Modal>
   );
 };
-
-// export default OperationCreateform;
 
 const mapStateToProps = (state) => ({});
 

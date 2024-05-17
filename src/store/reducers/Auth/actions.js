@@ -10,12 +10,14 @@ export const initApp = () => async (dispatch) => {
       dispatch(getAuthUser());
     }
   } catch (err) {
+   
   } finally {
     dispatch(setAuthLoading());
   }
 };
 
 export const authenticateUser = (userDets) => async (dispatch) => {
+ 
   localStorage.setItem("token", userDets.jwt);
   dispatch({
     type: LOGIN_USER,
@@ -25,6 +27,7 @@ export const authenticateUser = (userDets) => async (dispatch) => {
 
 export const getAuthUser = () => async (dispatch) => {
   try {
+    
     let { data } = await api.get("/users/me");
     dispatch({
       payload: data,

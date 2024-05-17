@@ -2,10 +2,10 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const TabPicker = ({ options, setActiveTab = () => {} }) => {
-  // const [tabs, setTabs] = useState(options);
   const [activeTab, setActive] = useState(options[0].key);
 
   const changeTab = (tab) => {
+    
     setActive(tab.key);
     setActiveTab(tab);
   };

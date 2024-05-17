@@ -1,31 +1,20 @@
 import React, { useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { useEffect } from "react";
 import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { getAllProgram, getOpsPickList } from "./operationsActions";
-import { handleKeyPress, handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
-import { MeiliSearch } from 'meilisearch'
+import {getOpsPickList,searchPrograms } from "./operationsActions";
+import { handleKeyPresscharandspecialchar } from "../../../utils/function/OpsModulechecker";
 
 const options = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
-const Activityoptions = [
-  { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
-  { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
-  { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
-  { value: 'Alumni Engagement', label: 'Alumni Engagement' },
-  {value:'Placement Drive',label:'Placement Drive'}
+const studenTypeOption = [
+  { value: 'Medha Student', label: "Medha Student" },
+  { value: 'Non-Medha Student', label: "Non-Medha Student" },
 ];
 
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 export const RowsData = (props) => {
   const [rows, setRows] = useState([
@@ -44,6 +33,7 @@ export const RowsData = (props) => {
       activity_type: "",
       assigned_to: "",
       area: "",
+      student_type:""
     },
     // Add more initial rows as needed
   ]);
@@ -61,6 +51,7 @@ export const RowsData = (props) => {
   const [programOptions,setProgramOptions]=useState([])
   const [state,setstate]=useState(true)
   const [activityoption,setActivityOption]=useState([])
+  const [studentType,setStudenttype]=useState(true)
 
   
   const onStateChange = (value, rowid, field) => {
@@ -105,18 +96,20 @@ export const RowsData = (props) => {
   };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(program => {
+    try {
+      const {data} = await searchPrograms(filterValue);
+
+      return data.programsConnection.values.map(program => {
         return {
           ...program,
           label: program.name,
           value: program.name,
         }
       });
-    });
+
+    } catch (error) {
+      console.error(error);
+    }
   }
  
 
@@ -145,6 +138,16 @@ export const RowsData = (props) => {
     setstate(!state)
     return true
   };
+
+  const handleStudentType =(e,id)=>{
+    if(e.value == 'Medha Student'){
+      setStudenttype(false)
+      props.handleChange(e,"student_type",id)
+    }else{
+      setStudenttype(true)
+      props.handleChange(e,"student_type",id)
+    }
+  }
   
 
   return (
@@ -238,6 +241,39 @@ export const RowsData = (props) => {
               onChange={(e) => props.handleChange(e, "area", row.id)}
             />
           
+        </td>
+        
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="student"
+            options={ studenTypeOption }
+            onChange={(e) =>handleStudentType(e, row.id)}
+          />
+        </td>
+       
+        <td>
+
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            isDisabled={studentType}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => props.handleChange(e, "batch", row.id)}
+            onInputChange={inputValue=> {
+              props.filterBatch(inputValue).then(data=>{
+                props.setBatchOptions(data)
+              })
+            }}
+          />
         </td>
         <td>
           <Select

@@ -55,6 +55,7 @@ const ImageUploader = ({
         path: imageUrl || urlPath(data.data.upload.url.substring(1)),
       });
     } catch (err) {
+      
     } finally {
       setUploading(false);
     }

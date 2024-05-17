@@ -19,6 +19,7 @@ import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
+import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -43,11 +44,13 @@ const Institutions = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [isSearchEnable,setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
 
   useEffect(() => {
     getInstitutions(activeTab.key);
-  }, [activeTab]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
@@ -79,6 +82,110 @@ const Institutions = (props) => {
     []
   );
 
+  const getInstitutionsBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+    const InstitutionFields = `
+      id
+      name
+      state
+      city
+      medha_area
+      contacts{
+        id
+        email
+        phone
+        full_name
+        designation
+      }
+      logo{
+        url
+      }
+      assigned_to{
+        id
+        username
+        email
+      }
+      status
+      type
+      created_at
+  `;
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "state"){
+    Object.assign(variables, { state: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "type"){
+    Object.assign(variables, { type: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "name"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
+
+const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
+  institutionsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit,
+      where: {
+        assigned_to: {
+          id: $id,
+          username:$username
+        }
+        medha_area: $area
+        state:$state,
+        status:$status,
+        type:$type,
+        name:$name
+      }
+    ) {
+      values {
+        ${InstitutionFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }`
+   
+  await api
+    .post("/graphql", {
+      query: InstitutionQuery,
+      variables,
+    })
+    .then((data) => {
+
+      setInstitutions(data?.data?.data?.institutionsConnection.values);
+      setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
+  }
+
   const getInstitutions = async (
     selectedTab,
     limit = paginationPageSize,
@@ -89,7 +196,12 @@ const Institutions = (props) => {
     nProgress.start();
     setLoading(true);
 
+    if(isSearchEnable){
+      await getInstitutionsBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField);
 
+    }
+    else {
+      
     let variables = {
       limit: limit,
       start: offset,
@@ -122,10 +234,13 @@ const Institutions = (props) => {
         setLoading(false);
         nProgress.done();
       });
+    }
+
+
   };
 
   const fetchData = useCallback(
-    (pageIndex, pageSize, sortBy) => {
+    (pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
       if (sortBy.length) {
         let sortByField = "name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -153,16 +268,26 @@ const Institutions = (props) => {
         if(sortBy[0].id == "medha_area"){
           sortByField = sortBy[0].id;
         }
-
-        getInstitutions(
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex,
-          sortByField,
-          sortOrder
-        );
+        if(isSearchEnable){
+          getInstitutionsBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+        }
+        else {
+          getInstitutions(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        }
       } else {
-        getInstitutions(activeTab.key, pageSize, pageSize * pageIndex);
+        if(isSearchEnable){
+          getInstitutionsBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+        }
+        else {
+          getInstitutions(activeTab.key, pageSize, pageSize * pageIndex);
+        }
+       
       }
     },
     [activeTab.key]
@@ -262,6 +387,20 @@ const Institutions = (props) => {
             Add New Institution
           </button>
         </div>
+        <InstitutionSearchBar 
+        selectedSearchField={selectedSearchField} 
+        setSelectedSearchField={setSelectedSearchField} 
+        setIsSearchEnable={setIsSearchEnable}
+        setSelectedSearchedValue={setSelectedSearchedValue}
+        tab={activeTab.key}
+        info={{
+          id:userId,
+          area:area,
+          state:state,
+        }}
+        isDisable={institutionsAggregate.count ? false:true}
+
+        />
         <Table
           columns={columns}
           data={institutionsTableData}
@@ -270,6 +409,9 @@ const Institutions = (props) => {
           loading={loading}
           paginationPageSize={paginationPageSize}
           onPageSizeChange={setPaginationPageSize}
+          isSearchEnable={isSearchEnable}
+          selectedSearchField={selectedSearchField}
+          selectedSearchedValue={selectedSearchedValue}
         />
         <InstitutionForm
           show={modalShow}

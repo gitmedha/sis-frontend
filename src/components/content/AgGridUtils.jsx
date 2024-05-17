@@ -155,6 +155,7 @@ const StudentModal = (props) => {
       });
       setDetails(data.data.student);
     } catch (err) {
+     
     } finally {
       setLoading(false);
     }

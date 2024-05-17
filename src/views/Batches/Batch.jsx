@@ -61,8 +61,10 @@ const Batch = (props) => {
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
+     
       setBatch(data.batch);
     } catch (err) {
+   
     }
   };
 
@@ -70,6 +72,7 @@ const Batch = (props) => {
     getBatchSessions(batchID, sortBy, sortOrder).then(async data => {
       await getAttendanceStats(data.data.data.sessionsConnection.values);
     }).catch(err => {
+     
     });
   };
 
@@ -100,6 +103,7 @@ const Batch = (props) => {
 
       await setSessions(sessionsList);
     }).catch(err => {
+      
     });
   };
 
@@ -127,6 +131,7 @@ const Batch = (props) => {
         setStudents(studentsWithAttendance);
       });
     } catch (err) {
+    
     }
   };
 
@@ -137,6 +142,7 @@ const Batch = (props) => {
     }).then(data => {
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
@@ -152,6 +158,7 @@ const Batch = (props) => {
     }).then(data => {
       setAlert("Certificate generation in progress. Please check after some time.", "success");
     }).catch(err => {
+      
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
@@ -167,6 +174,7 @@ const Batch = (props) => {
     }).then(data => {
       setAlert("Emails sent successfully.", "success");
     }).catch(err => {
+     
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
@@ -220,6 +228,7 @@ const Batch = (props) => {
     updateBatch(Number(id), dataToSave).then(data => {
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to update batch.", "error");
     }).finally(async () => {
       NP.done();
@@ -233,6 +242,7 @@ const Batch = (props) => {
     deleteBatch(batch.id).then(data => {
       setAlert("Batch deleted successfully.", "success");
     }).catch(err => {
+      
       setAlert("Unable to delete batch.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -265,6 +275,7 @@ const Batch = (props) => {
       setBatchProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     }).catch(err => {
+     
     });
   }
 

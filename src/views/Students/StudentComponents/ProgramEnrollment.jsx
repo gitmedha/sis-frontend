@@ -86,6 +86,7 @@ const ProgramEnrollment = (props) => {
         setProgramEnrollment(data.programEnrollment);
       }
     } catch (error) {
+     
     } finally {
       setLoadingCertificationButton(false);
     }
@@ -99,6 +100,7 @@ const ProgramEnrollment = (props) => {
         setProgramEnrollment(data.programEnrollment);
       }
     } catch (error) {
+     
     } finally {
       setLoadingCertificationButton(false);
     }

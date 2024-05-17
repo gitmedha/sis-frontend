@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
-import { Input } from "../../../utils/Form";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
-import { getOpsPickList } from "./operationsActions";
-// import { MeiliSearch } from 'meilisearch';
+import {searchPrograms, searchStudents} from "./operationsActions";
 import { capitalizeFirstLetter } from "../../../utils/function/OpsModulechecker";
 
 const options = [
@@ -17,15 +12,10 @@ const options = [
 ];
 
 const categoryOptions = [
-  { value: 'Career', label: "Career" },
-  { value: 'Creative', label: "Creative" },
+  { value: "Career", label: "Career" },
+  { value: "Creative", label: "Creative" },
 ];
 
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const StudentupskilingBulk = (props) => {
   const [rows, setRows] = useState([
@@ -42,22 +32,22 @@ const StudentupskilingBulk = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
-      program_name:""
+      program_name: "",
     },
     // Add more initial rows as needed
   ]);
   const [row, setRowData] = useState(props.row);
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
-  const [subcategory,setSubcategory]=useState([])
-  const [studentinput,setstudentinput]=useState("")
-  const [programeName,setProgramName]=useState([])
-  const [programOptions,setProgramOptions]=useState([])
-  const coursename=useRef(null)
-  const issuingorg=useRef(null)
+  const [subcategory, setSubcategory] = useState([]);
+  const [studentinput, setstudentinput] = useState("");
+  const [programeName, setProgramName] = useState([]);
+  const [programOptions, setProgramOptions] = useState([]);
+  const coursename = useRef(null);
+  const issuingorg = useRef(null);
   // const handleChange = (options, key) => {
   // };
   const onStateChange = (value, rowid, field) => {
@@ -77,62 +67,54 @@ const StudentupskilingBulk = (props) => {
   };
 
   const filterProgram = async (filterValue) => {
-    return await meilisearchClient.index('programs').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
-      return data.hits.map(program => {
+    try {
+      const {data} = await searchPrograms(filterValue);
+
+      return data.programsConnection.values.map((program) => {
         return {
           ...program,
           label: program.name,
           value: program.name,
         }
       });
-    });
-  }
-  useEffect(async() => {
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(async () => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
     getUpskillingPicklist().then((data) => {
-      setSubcategory(data.subCategory.map((item) => ({
-        key: item,
-        value: item,
-        label: item,
-      })));
+      setSubcategory(
+        data.subCategory.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
     });
-    
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
   };
-  useEffect(async() => {
+  useEffect(async () => {
     filterStudent(studentinput).then((data) => {
       setStudentOptions(data);
     });
-    // let data=await getOpsPickList().then(data=>{
-    //   return data.program_name.map((value) => ({
-    //       key: value,
-    //       label: value,
-    //       value: value,
-    //     }))
-    // }) 
-
-    // setProgramName(data);
-    filterProgram().then(data => {
+    filterProgram().then((data) => {
       setProgramOptions(data);
     });
   }, [studentinput]);
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
-      limit: 1000,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
-    }).then(data => {
-      let programEnrollmentStudent =  '112';
+    try {
+      const {data} = await searchStudents(filterValue);
+      let programEnrollmentStudent = "112";
       let studentFoundInList = false;
-      let filterData = data.hits.map(student => {
+      let filterData = data.studentsConnection.values.map((student) => {
         if (student.id === Number(props?.id)) {
           studentFoundInList = true;
         }
@@ -140,32 +122,33 @@ const StudentupskilingBulk = (props) => {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
-        }
+        };
       });
-      // if (!studentFoundInList)  {
-      //   filterData.unshift({
-      //     label: programEnrollmentStudent.full_name,
-      //     value: Number(programEnrollmentStudent.id),
-      //   });
-      // }
       return filterData;
-    });
-  }
-    const handleInputChange = (id,data,value) => {
+
+    } catch (error) {
+      console.error(error);
+    }
+    
+  };
+  const handleInputChange = (id, data, value) => {
     const input = value.current;
     if (input) {
-      input.value = capitalizeFirstLetter(input.value);;
-      props.updateRow(id,data,input.value)
+      input.value = capitalizeFirstLetter(input.value);
+      props.updateRow(id, data, input.value);
     }
-   
   };
 
   return (
     <>
       <tr key={row.id}>
-      <td>
+        <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.assigned_to ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.assigned_to
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -175,40 +158,52 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          
-
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.student_id ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.student_id
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             filterData={filterStudent}
             options={studentOptions}
-            onInputChange={(e)=>{
-              setstudentinput(e)}}
+            onInputChange={(e) => {
+              setstudentinput(e);
+            }}
             onChange={(e) => {
-              props.handleChange(e, "student_id", row.id)}}
+              props.handleChange(e, "student_id", row.id);
+            }}
           />
         </td>
         <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.institution ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.institution
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="institution"
             options={props.institutiondata}
             onChange={(e) => props.handleChange(e, "institution", row.id)}
-            onInputChange={inputValue=> {
-              props.filterInstitution(inputValue).then(data=>{
-                props.setInstitutionOptions(data)
-              })
+            onInputChange={(inputValue) => {
+              props.filterInstitution(inputValue).then((data) => {
+                props.setInstitutionOptions(data);
+              });
             }}
           />
         </td>
         <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.batch ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -225,7 +220,11 @@ const StudentupskilingBulk = (props) => {
         </td>
         <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.program_name ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.program_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -233,52 +232,63 @@ const StudentupskilingBulk = (props) => {
             options={programOptions}
             filterData={filterProgram}
             onChange={(e) => {
-              props.handleChange(e, "program_name", row.id)}}
+              props.handleChange(e, "program_name", row.id);
+            }}
           />
         </td>
 
         {/* <td>{row.id}</td> */}
         <td>
           <input
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.course_name ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.course_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             type="text"
             ref={coursename}
-            onChange={(e) => handleInputChange(row.id, "course_name",coursename)}
+            onChange={(e) =>
+              handleInputChange(row.id, "course_name", coursename)
+            }
           />
         </td>
         <td>
           <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.category ? `border-red`:"table-input h-2"}`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.category
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isSearchable={true}
             name="category"
             options={categoryOptions}
-            onChange={(e) =>
-              props.handleChange(e, "category", row.id)
-            }
+            onChange={(e) => props.handleChange(e, "category", row.id)}
           />
         </td>
         <td>
-        <Select
-            className={`table-input ${props.classValue[`class${row.id-1}`]?.sub_category ? `border-red`:"table-input h-2"}`}
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.sub_category
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isSearchable={true}
             name="sub_category"
             options={subcategory}
-            onChange={(e) =>
-              props.handleChange(e, "sub_category", row.id)
-            }
+            onChange={(e) => props.handleChange(e, "sub_category", row.id)}
           />
-         
         </td>
-        
-        
-       
+
         <td>
-  
           <input
             type="date"
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.start_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.start_date
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             defaultValue={startDate}
             onChange={(e) => {
               setStartDate(e.target.value);
@@ -287,13 +297,16 @@ const StudentupskilingBulk = (props) => {
           />
         </td>
         <td>
-          
           <input
             type="date"
-            className={`table-input h-2 ${props.classValue[`class${row.id-1}`]?.end_date ? `border-red`:"table-input h-2"}`}
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.end_date
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             min={startDate}
             value={endDate}
-            disabled={!startDate ? true:false}
+            disabled={!startDate ? true : false}
             onChange={(event) => {
               const date = event.target.value;
               setEndDate(date);
@@ -313,13 +326,15 @@ const StudentupskilingBulk = (props) => {
             }
           />
         </td>
-        
+
         <td>
           <input
             className="table-input h-2"
             type="text"
             ref={issuingorg}
-            onChange={(e) => handleInputChange(row.id, "issued_org",issuingorg)}
+            onChange={(e) =>
+              handleInputChange(row.id, "issued_org", issuingorg)
+            }
           />
         </td>
       </tr>

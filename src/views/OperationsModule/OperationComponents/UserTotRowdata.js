@@ -107,13 +107,7 @@ const UserTotRowdata = (props) => {
         }))
       );
     });
-    // getUpskillingPicklist().then((data) => {
-    //   //  ("data",data.subCategory.map((item) => ({
-    //   //   key: item,
-    //   //   value: item,
-    //   //   label: item,
-    //   // })));
-    // });
+   
   }, [props]);
 
   useEffect(() => {
@@ -144,13 +138,11 @@ const UserTotRowdata = (props) => {
         }))
       );
     })
-    //  ("assigneeOptions ; \n ",assigneeOptions);
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    // props.handleInputChange()
-    // setRows(updatedRows);
+    
   };
   const handleInputChange = (id,data,value) => {
     const input = value.current;
@@ -272,14 +264,7 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="Text"
-            onKeyPress={handleKeyPress}
-            onChange={(e) => {
-               ("e",e.target.value)
-              updateRow(row.id, "project_name", e.target.value)}}
-          /> */}
+          
           <Select
             className="table-input h-2"
             classNamePrefix="select"
@@ -337,6 +322,7 @@ const UserTotRowdata = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
+             
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);

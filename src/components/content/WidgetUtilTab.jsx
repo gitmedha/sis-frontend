@@ -27,6 +27,7 @@ const TabPicker = () => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
+   
     if (!end) return;
     openDatePicker(false);
   };
