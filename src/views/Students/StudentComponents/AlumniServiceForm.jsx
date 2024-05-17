@@ -28,10 +28,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const statusOption = [
-  { value: 'Paid', label: 'Paid' },
-  { value: 'Unpaid', label: 'Unpaid' }
-]
 
 const AlumniServiceForm = (props) => {
   let { onHide, show } = props;
@@ -258,19 +254,6 @@ const AlumniServiceForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                    />
-                  </div>
-                  
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="status"
-                      label="Status"
-                      placeholder="Status"
-                      control="lookup"
-                      className="form-control"
-                      autoComplete="off"
-                      icon='down'
-                      options={statusOption}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

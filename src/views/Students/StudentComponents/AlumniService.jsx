@@ -100,7 +100,6 @@ const AlumniService = (props) => {
                 <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Receipt Number" value={alumniService.receipt_number} />
                 <DetailField label="Comments" value={alumniService.comments} />
-                <DetailField label="Status" value={alumniService.status ? alumniService.status :'' } />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Assigned To" value={alumniService.assigned_to?.username} />
