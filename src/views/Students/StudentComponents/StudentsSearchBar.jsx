@@ -148,11 +148,12 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
           })
 
           if(data?.data?.studentsConnection?.values?.length){
-            return [{
-              key:searchValueOptions[searchValueOptions.length],
-              label:data?.data?.studentsConnection?.values[0]['full_name'],
-              value:data?.data?.studentsConnection?.values[0]['full_name']
-            }]
+            let matchedOptions = data?.data?.studentsConnection?.values.map((matches,index)=>{
+              return {key:index,label:matches.full_name,value:matches.full_name}
+            }).filter((option, index, self) =>
+              index === self.findIndex((o) => o.value.trim() === option.value.trim())
+            );
+            return matchedOptions;
           }
           
         } catch (error) {

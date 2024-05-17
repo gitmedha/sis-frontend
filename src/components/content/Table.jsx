@@ -19,7 +19,7 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-
+    margin-top:2rem;
     thead {
       th {
         color: #787B96;
@@ -73,6 +73,13 @@ const Styles = styled.div`
     padding-right: 15px;
   }
 `
+
+const StickyPagination = styled.div`
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid #D7D7E0;
+`;
 
 const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
   const tableInstance = useTable(
@@ -240,7 +247,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
           )}
         </div>
       </Styles>
-      {showPagination && <Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />}
+      {showPagination && <StickyPagination><Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} /></StickyPagination> }
     </>
   )
 };
