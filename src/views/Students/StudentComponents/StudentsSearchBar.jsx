@@ -3,6 +3,8 @@ import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
 import { getFieldValues } from './StudentActions';
+import api from "../../../apis";
+
 
 
 const Section = styled.div`
@@ -39,7 +41,7 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
 
     const [searchValueOptions,setSearchValueOptions] = useState([])
     const [progress, setProgress] = useState(0);
-
+   
     const [studentsOptions] = useState([
         {key:0, label:'Name', value:'full_name'},
         {key:1,label:'Registration Date',value:'registration_date_latest'},
@@ -119,19 +121,64 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         setSearchValueOptions([])
       }
 
-      //setting the value of the value drop down
+     
 
+      //search values in the table when it is not there in the default array
+
+      const searchNotFound = async(newValue)=>{
+
+        const query = `
+          query GET_VALUE($full_name:String!){
+            studentsConnection(
+              where:{
+                full_name_contains:$full_name
+              }
+            ){
+              values {
+                full_name
+              }
+            }
+          }
+        `
+
+        try {
+          const {data} =  await api.post('/graphql', {
+            query:query,
+            variables:{full_name:newValue},
+          })
+
+          if(data?.data?.studentsConnection?.values?.length){
+            return [{
+              key:searchValueOptions[searchValueOptions.length],
+              label:data?.data?.studentsConnection?.values[0]['full_name'],
+              value:data?.data?.studentsConnection?.values[0]['full_name']
+            }]
+          }
+          
+        } catch (error) {
+          console.error(error);
+        }
+
+      }
     
+       //setting the value of the value drop down
+
       const filterSearchValue = async(newValue)=>{
-      
         const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
           )
-        return matchedObjects;
+          if(!matchedObjects.length){
+            return searchNotFound(newValue)
+          }
+          else {
+            return matchedObjects;
+          }
+        
       }
 
 const handleLoaderForSearch = async ()=>{
   setProgress(0)
 }
+
     
 useEffect(()=>{
     const setSearchValueDropDown = async () =>{
@@ -144,14 +191,13 @@ useEffect(()=>{
           
         }, 1000);
 
+
         const {data} = await getFieldValues(selectedSearchField,'students',tab,info)
         clearInterval(interval)
         handleLoaderForSearch();
        
         await setSearchValueOptions(data);
-        const shortedArray = await data.slice(0, 10)
-
-        await setDefaultSearchArray(shortedArray)
+        await setDefaultSearchArray(data);
         
 
       } catch (error) {
