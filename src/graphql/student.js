@@ -26,6 +26,7 @@ export const studentFields = `
   state
   how_did_you_hear_about_us
   how_did_you_hear_about_us_other
+  your_plan_after_your_current_course
   created_at
   updated_at
   created_by_frontend{
@@ -130,6 +131,7 @@ const alumniServicesFields = `
   category
   fee_amount
   comments
+  status
   created_at
   updated_at
 `;

@@ -86,7 +86,7 @@ export const ProgramEnrollmentValidations = Yup.object({
     is: (course_name_in_current_sis) => course_name_in_current_sis === 'Other', 
     then: Yup.string().required('Field is required'),
     otherwise: Yup.string(),
-})
+  }),
 });
 
 export const EmploymentConnectionValidations = Yup.object({
