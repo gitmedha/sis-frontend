@@ -83,7 +83,6 @@ const Dtesamarthedit = (props) => {
     }
     if (props.batch) {
       filterBatch().then((data) => {
-         ("dataBatch1:", data);
         setBatchOptions(data);
       });
     }
@@ -137,7 +136,6 @@ const Dtesamarthedit = (props) => {
           };
         });
 
-         (filterData);
         return filterData;
       });
   };

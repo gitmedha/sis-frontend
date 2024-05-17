@@ -82,7 +82,6 @@ export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at"
     },{headers}).then(data=>{
         return data;
     }).catch(error=>{
-         ("error",error)
         return Promise.reject(error)
     })
 };
@@ -193,10 +192,8 @@ export const createOpsActivity = async (data)=>{
         query:CREATE_OPERATION,
         variables: {data},
     }).then(data=>{
-         (data)
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 
@@ -258,7 +255,6 @@ export const updateOpsActivity = async(id,data)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -368,7 +364,6 @@ export const bulkCreateCollegePitch = async(data)=>{
 }
 
 export const bulkCreateAlumniQueries = async(data)=>{
-     ("data",data);
     try {
         const response = await api.post('/alumni-queries/create-bulk-alumni-queries', data);
         return response;
@@ -392,7 +387,6 @@ export const deactivate_user_ops = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -408,7 +402,6 @@ export const deactivate_user_tots = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -424,7 +417,6 @@ export const deactivate_user_dte_samarth = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -440,7 +432,6 @@ export const deactivate_user_students_upskills = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -456,7 +447,6 @@ export const deactivate_user_alumni_query = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -472,7 +462,6 @@ export const deactivate_user_college_pitch = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-         (error)
         return Promise.reject(error);
     })
 }
@@ -500,12 +489,8 @@ export const getStudent = async (id) => {
     
       let values=data.data.student;
       
-    //   values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()
-    //   values.full_name=values.full_name.toLowerCase()
-    //   setStudent(values);
     return values
     } catch (err) {
-       ("ERR", err);
     } finally {
       NP.done();
     }

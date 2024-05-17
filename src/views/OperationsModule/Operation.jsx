@@ -72,7 +72,6 @@ const Operation = (props) => {
         dataToSave['CV'] = data.data.data.upload.id;
         updateStudentApi(id, dataToSave);
       }).catch(err => {
-         ("CV_UPLOAD_ERR", err);
         setAlert("Unable to upload CV.", "error");
       });
     } else {
@@ -113,7 +112,6 @@ const Operation = (props) => {
     deleteFile(student.CV.id).then(data => {
       setAlert("CV deleted successfully.", "success");
     }).catch(err => {
-       ("CV_DELETE_ERR", err);
       setAlert("Unable to delete CV.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -133,7 +131,6 @@ const Operation = (props) => {
       });
       setStudent(data.data.student);
     } catch (err) {
-       ("ERR", err);
     } finally {
       setLoading(false);
       NP.done();

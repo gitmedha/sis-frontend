@@ -33,10 +33,8 @@ const UpdateSession = (props) => {
   const [gridIntialized, setInitialized] = useState(false);
 
   // Original Copy of attendance List
-  const [oriAttendanceList, setOriAttendanceList] = useState([]);
 
   // Update Flag
-  const [updated, setUpdated] = useState(false);
 
   const history = useHistory();
 
@@ -110,7 +108,6 @@ const UpdateSession = (props) => {
       await attendanceUpdated();
       setAlert("Session updated successfully.", "success");
     } catch (err) {
-       ("UPDATE_SESSION_ERR", err);
       setAlert("Unable to update the session.", "error");
     } finally {
       setUpdating(false);

@@ -7,7 +7,7 @@ import { MeiliSearch } from 'meilisearch'
 
 import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
+import  {getOpportunitiesPickList} from "./opportunityAction"
 import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
@@ -195,7 +195,6 @@ const OpportunityForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-     (values);
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
   values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
  delete values.updated_at

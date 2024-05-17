@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
 import { Anchor, } from "../../../components/content/Utils";
-import { urlPath } from "../../../constants";
 import {
   getEmploymentConnectionsPickList,
   getOpportunitiesPickList,
@@ -77,7 +76,6 @@ const Upskillingdatafield = (props) => {
       delete:true
     });
   }
-   (props);
 
   const deleteEntry=async()=>{
     const data=await deactivate_user_students_upskills(Number(props.id))

@@ -23,7 +23,6 @@ const tabPickerOptions = [
 
   const Opportunities = (props) => {
     const history = useHistory();
-    const [loading, setLoading] = useState(false);
     const [opportunities, setOpportunities] = useState([]);
     const [pickList, setPickList] = useState([]);
     const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
@@ -113,7 +112,6 @@ const tabPickerOptions = [
 
   const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
-    setLoading(true);
     let variables = {
       limit,
       start: offset,
@@ -139,7 +137,6 @@ const tabPickerOptions = [
       return Promise.reject(error);
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };
@@ -212,7 +209,6 @@ const tabPickerOptions = [
       setAlert("Opportunity created successfully.", "success");
       history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);
     }).catch(err => {
-       ("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create opportunity.", "error");
     }).finally(() => {
       nProgress.done();

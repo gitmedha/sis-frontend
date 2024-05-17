@@ -8,7 +8,6 @@ export const queryBuilder = async (params) => {
     });
     return data;
   } catch (err) {
-     ("ERR", err);
     throw err;
   }
 };

@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -20,33 +19,8 @@ import nProgress from "nprogress";
 import api from "../../../apis";
 import { deleteFile } from "../../../common/commonActions";
 
-const Styled = styled.div`
-.img-profile-container {
-  position: relative;
-  .status-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1px 5px 5px 5px;
-  }
-  .img-profile {
-    width: 160px;
-    margin-left: auto;
-    }
-}
-.separator {
-  background-color: #C4C4C4;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-hr {
-  height: 1px;
-}
-`;
-
 const ProgramEnrollments = (props) => {
-  let { id, institution, onDataUpdate } = props;
-  const [loading, setLoading] = useState(false);
+  let { id, institution } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -68,7 +42,6 @@ const ProgramEnrollments = (props) => {
 
   const getInstitutionProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='student.full_name', sortOrder = 'asc') => {
     nProgress.start();
-    setLoading(true);
     await api.post("/graphql", {
       query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
       variables: {
@@ -83,10 +56,8 @@ const ProgramEnrollments = (props) => {
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(err => {
-       ("getInstitutionProgramEnrollments Error", err);
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };
@@ -208,7 +179,6 @@ const ProgramEnrollments = (props) => {
      createProgramEnrollment(dataToSave).then(data => {
       setAlert("Program Enrollment created successfully.", "success");
     }).catch(err => {
-       ("CREATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to create program Enrollment.", "error");
     }).finally(() => {
       NP.done();
@@ -234,7 +204,6 @@ const ProgramEnrollments = (props) => {
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
       setAlert("Program Enrollment updated successfully.", "success");
     }).catch(err => {
-       ("UPDATE_PROGRAM_ENROLLMENT_ERR", err);
       setAlert("Unable to update program Enrollment.", "error");
     }).finally(() => {
        NP.done();
@@ -248,7 +217,6 @@ const ProgramEnrollments = (props) => {
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
-       ("STUDENT_DELETE_ERR", err);
       setAlert("Unable to delete program enrollment.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);
@@ -263,7 +231,6 @@ const ProgramEnrollments = (props) => {
     deleteFile(selectedProgramEnrollment[value].id).then(data => {
       setAlert("Proof of enrollment deleted successfully.", "success");
     }).catch(err => {
-       ("FILE_DELETE_ERR", err);
       setAlert("Unable to delete proof of enrollment.", "error");
     }).finally(() => {
       NP.done();

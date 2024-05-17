@@ -192,10 +192,8 @@ const Dtesamarth = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-     (options.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-         ("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -207,7 +205,6 @@ const Dtesamarth = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-       (areaOptions);
     }
     updateRow(rowid, key, options.value);
   };
@@ -247,10 +244,7 @@ const Dtesamarth = (props) => {
 
   useEffect(() => {
     getAddressOptions().then((data) => {
-       (
-        "data--------------->",
-        data?.data?.data?.geographiesConnection
-      );
+       
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
@@ -290,7 +284,6 @@ const Dtesamarth = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
-     (e.target.value, "index", index, "feild", field);
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -303,7 +296,6 @@ const Dtesamarth = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-       (row);
       delete row["id"];
       delete row["name"];
       row.isActive = true;
@@ -317,10 +309,8 @@ const Dtesamarth = (props) => {
 
     try {
       const value = await bulkCreateSamarth(data);
-       ("vallue", value);
       props.ModalShow();
     } catch (error) {
-       ("error", error);
     }
   };
 
@@ -340,17 +330,14 @@ const Dtesamarth = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-     (rowData);
   };
 
   useEffect(() => {
     filterInstitution().then((data) => {
-       ("data institute", data);
       setInstitutionOptions(data);
     });
 
     filterBatch().then((data) => {
-       ("dataBatch1:", data);
       setBatchOptions(data);
     });
   }, []);
@@ -393,7 +380,6 @@ const Dtesamarth = (props) => {
           };
         });
 
-         (filterData);
         return filterData;
       });
   };

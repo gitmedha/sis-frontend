@@ -63,9 +63,7 @@ const UserTotRowdata = (props) => {
   const designation=useRef(null)
   const college =useRef(null)
   const [state,setstate]=useState(true)
-  const handleChange = (options, key) => {
-     (options, key);
-  };
+ 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -151,7 +149,6 @@ const UserTotRowdata = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-     (id, field, value);
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -340,7 +337,6 @@ const UserTotRowdata = (props) => {
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-               (e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);

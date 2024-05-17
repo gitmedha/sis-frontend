@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from "moment";
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
@@ -15,20 +14,11 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import EmploymentConnection from "./EmploymentConnection";
 import CreateEmploymentConnectionForm from "./EmploymentConnectionForm";
 import UpdateEmploymentConnectionForm from "./EmploymentConnectionForm";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { connect } from "react-redux";
 import NP from "nprogress";
 import { deleteFile } from "../../../common/commonActions";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const EmploymentConnections = (props) => {
   let { employmentConnections, student, onDataUpdate } = props;
@@ -43,7 +33,6 @@ const EmploymentConnections = (props) => {
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] =
     useState({});
   
-  const userId = localStorage.getItem("user_id") || 2;
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   useEffect(() => {
@@ -199,7 +188,6 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection created successfully.", "success");
       })
       .catch((err) => {
-         ("CREATE_EMPLOYMENT_CONNECTION_ERR", err);
         setAlert("Unable to create Employment Connection.", "error");
       })
       .finally(() => {
@@ -253,7 +241,6 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection updated successfully.", "success");
       })
       .catch((err) => {
-         ("UPDATE_EMPLOYMENT_CONNECTION_ERR", err);
         setAlert("Unable to update Employment Connection.", "error");
       })
       .finally(() => {
@@ -268,7 +255,6 @@ const EmploymentConnections = (props) => {
         setAlert("Employment Connection deleted successfully.", "success");
       })
       .catch((err) => {
-         ("EMPLOYMENT_CONNECTION_DELETE_ERR", err);
         setAlert("Unable to delete Employment Connection.", "error");
       })
       .finally(() => {
@@ -282,7 +268,6 @@ const EmploymentConnections = (props) => {
     deleteFile(selectedEmploymentConnection[value].id).then(data => {
       setAlert("Certificate deleted successfully.", "success");
     }).catch(err => {
-       ("CERTIFICATE_DELETE_ERR", err);
       setAlert("Unable to delete Certificate.", "error");
     }).finally(() => {
       NP.done();

@@ -1,18 +1,13 @@
 import nProgress from "nprogress";
 import api from "../../../apis";
 import moment from "moment";
-import Avatar from "../../../components/content/Avatar";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import TabPicker from "../../../components/content/TabPicker";
 import Table from '../../../components/content/Table';
-import WidgetUtilTab from "../../../components/content/WidgetUtilTab";
 import { GET_DASHBOARD_PROGRAM_ENROLLMENTS, } from "../../../graphql/dashboard";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../../components/content/CollapsiblePanels";
-import { getOpportunitiesPickList } from "../../Opportunities/OpportunityComponents/opportunityAction";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import { Badge } from "../../../components/content/Utils";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 
@@ -24,11 +19,8 @@ const tabPickerOptions = [
 ];
 
 const ProgramEnrollments = (props) => {
-  const history = useHistory();
-  const [loading, setLoading] = useState(false);
   const [programEnrollments, setProgramEnrollments] = useState([]);
   const [pickList, setPickList] = useState([]);
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [programEnrollmentTableData, setProgramEnrollmentTableData] = useState([]);
@@ -83,7 +75,6 @@ const ProgramEnrollments = (props) => {
 
   const getProgramEnrollment = async (limit=10) => {
     nProgress.start();
-    setLoading(true);
     await api.post("/graphql", {
       query: GET_DASHBOARD_PROGRAM_ENROLLMENTS,
       variables: {
@@ -96,10 +87,8 @@ const ProgramEnrollments = (props) => {
       setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
     })
     .catch(err => {
-       ("getInstitutionProgramEnrollments Error", err);
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };

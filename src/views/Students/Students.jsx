@@ -4,7 +4,6 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
@@ -143,12 +142,6 @@ const Students = (props) => {
         variables,
       })
       .then((data) => {
-        let value = data?.data?.data?.studentsConnection.values.map((obj) => {
-          obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
-            return match.toUpperCase();
-          });
-        });
-
         setStudents(data?.data?.data?.studentsConnection.values);
         setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
       })
@@ -215,7 +208,6 @@ const Students = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-     ("whwhwhhwh");
     if (students) {
       let data = students;
       data = data.map((student) => {
@@ -283,7 +275,6 @@ const Students = (props) => {
           createStudentApi(dataToSave);
         })
         .catch((err) => {
-           ("CV_UPLOAD_ERR", err);
           setAlert("Unable to upload CV.", "error");
         });
     } else {
@@ -299,7 +290,6 @@ const Students = (props) => {
         history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-         ("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create student.", "error");
       })
       .finally(() => {

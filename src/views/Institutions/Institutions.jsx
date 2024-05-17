@@ -18,7 +18,6 @@ import {
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import NP from "nprogress";
 import Collapse from "../../components/content/CollapsiblePanels";
 
 const tabPickerOptions = [
@@ -217,7 +216,6 @@ const Institutions = (props) => {
               mou_file: response.data.data.upload.id,
             });
           } catch (err) {
-             ("mou upload err", err);
             setAlert("Unable to upload MoU.", "error");
           }
         })
@@ -242,7 +240,6 @@ const Institutions = (props) => {
         }
       })
       .catch((err) => {
-         ("CREATE_DETAILS_ERR", err);
         setAlert("Unable to create institution.", "error");
         setModalShow(false);
         getInstitutions();

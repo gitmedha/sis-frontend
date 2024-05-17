@@ -102,14 +102,12 @@ const UpskillUpdate = (props) => {
   useEffect(() => {
     if (props.student_id.id) {
       filterStudent(props.student_id.full_name).then(data => {
-         ("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-     ("filtervalue",filterValue);
     return await meilisearchClient.index('students').search(filterValue, {
       limit: 100,
       attributesToRetrieve: ['id', 'full_name', 'student_id']

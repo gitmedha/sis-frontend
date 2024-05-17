@@ -88,7 +88,6 @@ const DteUpskilingBulk = (props) => {
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-     (id, field, value);
     // props.handleInputChange()
     // setRows(updatedRows);
   };
@@ -176,7 +175,6 @@ const DteUpskilingBulk = (props) => {
             className="table-input h-2"
             defaultValue={startDate}
             onChange={(e) => {
-               (e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "dob", e.target.value);
@@ -290,7 +288,6 @@ const DteUpskilingBulk = (props) => {
             className="table-input  h-2"
             defaultValue={startDate}
             onChange={(e) => {
-               (e.target.value);
 
               setStartDate(e.target.value);
               props.updateRow(row.id, "doj", e.target.value);

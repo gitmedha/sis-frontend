@@ -31,7 +31,6 @@ const AlumniServices = (props) => {
       setAlumniServicesAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
     })
     .catch(err => {
-       ("Error in fetching alumni services: ", err);
     })
     .finally(() => {
       NP.done();
@@ -165,13 +164,11 @@ const AlumniServices = (props) => {
     dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
     dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
-     ('dataToSave', dataToSave);
 
      NP.start();
      createAlumniService(dataToSave).then(data => {
       setAlert("Alumni Engagement created successfully.", "success");
     }).catch(err => {
-       ("Unable to create alumni service: ", err);
       setAlert("Unable to create Alumni Engagement.", "error");
     }).finally(() => {
       NP.done();
@@ -194,13 +191,11 @@ const AlumniServices = (props) => {
     dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
     dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
     dataToSave['student'] = student.id;
-     ('dataToSave', dataToSave);
 
     NP.start();
     updateAlumniService(Number(id), dataToSave).then(data => {
       setAlert("Alumni Engagement updated successfully.", "success");
     }).catch(err => {
-       ("Error updating alumni service: ", err);
       setAlert("Unable to update Alumni Engagement.", "error");
     }).finally(() => {
       NP.done();
@@ -215,7 +210,6 @@ const AlumniServices = (props) => {
     deleteAlumniService(selectedAlumniService.id).then(data => {
       setAlert("Alumni Engagement deleted successfully.", "success");
     }).catch(err => {
-       ("Error deleting alumni service: ", err);
       setAlert("Unable to delete Alumni Engagement.", "error");
     }).finally(() => {
       setShowDeleteAlert(false);

@@ -296,7 +296,6 @@ const CollegepitchesBulkadd = (props) => {
       ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-       ("error", error);
     }
   };
 

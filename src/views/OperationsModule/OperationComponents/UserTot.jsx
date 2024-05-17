@@ -1,13 +1,8 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
+import { Modal} from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
@@ -17,9 +12,6 @@ import { connect } from "react-redux";
 
 import { MeiliSearch } from "meilisearch";
 
-import { RowsData } from "./RowsData";
-import { bulkCreateUsersTots, createOperation } from "./operationsActions";
-import api from "../../../apis";
 import UserTotRowdata from "./UserTotRowdata";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
@@ -209,10 +201,8 @@ const UserTot = (props) => {
   };
 
   const handleChange = (options, key, rowid) => {
-     (options?.value);
     if (key == "state") {
       getStateDistricts().then((data) => {
-         ("data", data);
         setAreaOptions([]);
         setAreaOptions(
           data?.data?.data?.geographiesConnection.groupBy.area
@@ -224,12 +214,10 @@ const UserTot = (props) => {
             .sort((a, b) => a.label.localeCompare(b.label))
         );
       });
-       (areaOptions);
     }
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
-      (id, field, value);
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -321,7 +309,6 @@ const UserTot = (props) => {
  
     for (let row of rows) {
       for(let key in row){
-         ("key",key);
          // end_date,certificate_received,issued_org,assigned_to && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2')
         if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
           if(isEmptyValue(row[key])){
@@ -332,7 +319,6 @@ const UserTot = (props) => {
       }
      
     }
-     (rows);
     setDisableSaveButton(isEmptyValuFound)
   }, [rows]);
 
@@ -375,7 +361,6 @@ const UserTot = (props) => {
       ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-       ("error", error);
     }
   };
 
@@ -395,7 +380,6 @@ const UserTot = (props) => {
 
   const handleRowData = (rowData) => {
     // Do something with the row data
-     (rowData);
   };
 
   useEffect(() => {
