@@ -69,7 +69,6 @@ const district= Yup.string().required("District is required.");
 const alumni_service_type = Yup.string().required("Type is required.");
 const alumni_service_location= Yup.string().required("Location is required.");
 const work_engagement = Yup.string().nullable().required("Work Engagement is required.");
-const course_name_other=Yup.string().nullable().required("Other Course Name is required.");
 
 export const ProgramEnrollmentValidations = Yup.object({
   institution,
@@ -84,7 +83,7 @@ export const ProgramEnrollmentValidations = Yup.object({
   fee_status,
   course_name_other:Yup.string().when('course_name_in_current_sis', {
     is: (course_name_in_current_sis) => course_name_in_current_sis === 'Other', 
-    then: Yup.string().required('Field is required'),
+    then: Yup.string().nullable().required('Field is required'),
     otherwise: Yup.string(),
   }),
 });

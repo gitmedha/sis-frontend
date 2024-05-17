@@ -29,7 +29,7 @@ const Section = styled.div`
 `;
 
 const ProgramEnrollmentForm = (props) => {
-  let { onHide, show, student,programEnrollment,allBatches } = props;
+  let { onHide, show, student,allBatches } = props;
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
@@ -42,8 +42,8 @@ const ProgramEnrollmentForm = (props) => {
   const [requiresFee, setRequiresFee] = useState(true); // Not free by default.
   const [lookUpLoading, setLookUpLoading] = useState(false);
   const [options, setOptions] = useState(null);
-  const [OthertargetValue,setOthertargetValue]=useState({course1:false,course2:false})
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const [courseName,setCourseName] = useState('');
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -61,6 +61,10 @@ const ProgramEnrollmentForm = (props) => {
       filterInstitution(props.programEnrollment.batch.name).then(data => {
         setBatchOptions(data);
       });
+    }
+    if(props.programEnrollment){
+      setCourseName(props.programEnrollment.course_name_in_current_sis || '');
+
     }
   }, [props])
 
@@ -106,14 +110,15 @@ const ProgramEnrollmentForm = (props) => {
     initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
   }
 
+  
   const onSubmit = async (values) => {
     if(!showDuplicateWarning){
       onHide(values);
     }
     
+
   };
 
-  console.log(initialValues);
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -151,7 +156,6 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
       
     } catch (error) {
-      console.error("error:",error);
     }
   }
 
@@ -184,16 +188,6 @@ const ProgramEnrollmentForm = (props) => {
     }
     
   }
-  const handlechange = (e,target) => {
-    if(e.value == 'Other'){
-
-      setOthertargetValue({ ...OthertargetValue,[target]:true})
-    }
-    
-  };
-  useEffect(()=>{
-    setOthertargetValue({course1:false,course2:false})
-  },[programEnrollment])
 
 
   const handleBatchChange = async (e)=> {
@@ -201,11 +195,11 @@ const ProgramEnrollmentForm = (props) => {
     if(props.programEnrollment){
       let found = false;
       allBatches.forEach(element => {
-        if(props.programEnrollment.batch.id == e.id){
+        if(props.programEnrollment.batch.id === e.id){
           found = false
         }
   
-        else if(e.id == element.batch.id){
+        else if(e.id === element.batch.id){
           found = true
         }
       });
@@ -225,7 +219,7 @@ const ProgramEnrollmentForm = (props) => {
       let found = false
       allBatches.forEach(element => {
   
-        if(e.id == element.batch.id){
+        if(e.id === element.batch.id){
           found = true
         }
       });
@@ -266,7 +260,7 @@ const ProgramEnrollmentForm = (props) => {
           initialValues={initialValues}
           validationSchema={ProgramEnrollmentValidations}
         >
-          {({ values }) => (
+          {({ values}) => (
             <Form>
               <Section>
                 <h3 className="section-header">Enrollment Details</h3>
@@ -413,32 +407,23 @@ const ProgramEnrollmentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {OthertargetValue.course1 ?
                   <Input
-                      name="course_name_in_current_sis"
-                      control="input"
-                      label="Course Name"
-                      options={course}
-                      className="form-control"
-                      placeholder="Course Name"
-                    />
-                     :
-                    <Input
                       name="course_name_in_current_sis"
                       control="lookup"
                       icon="down"
                       label="Course Name"
                       options={course}
-                      onChange={(e)=>handlechange(e,"course1")}
                       className="form-control"
                       placeholder="Course Name"
+                      onChange={(e)=>{
+                        initialValues['course_name_in_current_sis'] = e.value;
+                        setCourseName(e.value)
+                      }}
                     />
-                    }
                   </div>
-
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                  courseName === 'Other'?
                    <Input
                       name="course_name_other"
                       control="input"
@@ -456,27 +441,16 @@ const ProgramEnrollmentForm = (props) => {
                 <h3 className="section-header">Higher Education</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {OthertargetValue.course2 ? 
-                    <Input
-                    name="higher_education_course_name"
-                    control="input"
-                    label="Course Name"
-                    options={course}
-                    className="form-control"
-                    placeholder="Course Name"
-                  />
-                    
-                    :<Input
+                  <Input
                       icon="down"
                       name="higher_education_course_name"
                       control="lookup"
                       label="Course Name"
-                      onChange={(e)=>handlechange(e,"course2")}
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
                       
-                    />}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input

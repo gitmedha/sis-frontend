@@ -18,7 +18,6 @@ import {
 import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import NP from "nprogress";
 import Collapse from "../../components/content/CollapsiblePanels";
 import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
 

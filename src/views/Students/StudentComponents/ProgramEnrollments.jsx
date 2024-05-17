@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -13,7 +12,6 @@ import ProgramEnrollment from "./ProgramEnrollment";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { urlPath } from "../../../constants";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import NP from "nprogress";
 import nProgress from "nprogress";
 import api from "../../../apis";
@@ -21,40 +19,15 @@ import {GET_STUDENT_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import { deleteFile } from "../../../common/commonActions";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 
-const Styled = styled.div`
-  .img-profile-container {
-    position: relative;
-    .status-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1px 5px 5px 5px;
-    }
-    .img-profile {
-      width: 160px;
-      margin-left: auto;
-    }
-  }
-  .separator {
-    background-color: #C4C4C4;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  hr {
-    height: 1px;
-  }
-`;
 
 const ProgramEnrollments = (props) => {
-  let { id, student, onDataUpdate } = props;
-  const [loading, setLoading] = useState(false);
+  let { id, student} = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [pickList, setPickList] = useState([]);
   const {setAlert} = props;
-  const history = useHistory();
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
@@ -69,7 +42,6 @@ const ProgramEnrollments = (props) => {
 
   const getStudentProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     nProgress.start();
-    setLoading(true);
     await api.post("/graphql", {
       query: GET_STUDENT_PROGRAM_ENROLLMENTS,
       variables: {
@@ -87,7 +59,6 @@ const ProgramEnrollments = (props) => {
      
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };
@@ -231,6 +202,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave['course_name_other'] = data.course_name_in_current_sis === 'Other' ? data.course_name_other:null
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
