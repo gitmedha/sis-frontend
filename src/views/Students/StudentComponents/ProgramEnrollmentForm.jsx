@@ -119,7 +119,6 @@ const ProgramEnrollmentForm = (props) => {
 
   };
 
-  console.log(initialValues);
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -157,7 +156,6 @@ const ProgramEnrollmentForm = (props) => {
       return filterData;
       
     } catch (error) {
-      console.error("error:",error);
     }
   }
 
