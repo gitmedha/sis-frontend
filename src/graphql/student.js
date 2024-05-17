@@ -130,6 +130,7 @@ const alumniServicesFields = `
   category
   fee_amount
   comments
+  status
   created_at
   updated_at
 `;
