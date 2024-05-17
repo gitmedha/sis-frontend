@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
 import { capitalizeFirstLetter, handleKeyPress, handleKeyPresscharandspecialchar, isEmptyValue, mobileNochecker } from "../../../utils/function/OpsModulechecker";
-import { getAlumniPickList,getStudent } from "./operationsActions";
+import { getAlumniPickList,getStudent,searchStudents } from "./operationsActions";
 
 
 const options = [
@@ -14,10 +11,6 @@ const options = [
   { value: 'Resolved', label: "Resolved" },
   { value: 'Closed', label: "Closed" }
 ];
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const AlumunniBulkrow = (props) => {
   const [name,setName]=useState("")
@@ -63,13 +56,10 @@ const AlumunniBulkrow = (props) => {
     location: "",})
  
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient.index('students').search(filterValue, {
-      limit: 1000,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
-    }).then(data => {
-      let programEnrollmentStudent =  '112';
+    try {
+      const {data} = await searchStudents(filterValue);
       let studentFoundInList = false;
-      let filterData = data.hits.map(student => {
+      let filterData = data.studentsConnection.values.map(student => {
         if (student.id === Number(props?.id)) {
           studentFoundInList = true;
         }
@@ -81,7 +71,10 @@ const AlumunniBulkrow = (props) => {
       });
 
       return filterData;
-    });
+
+    } catch (error) {
+      console.error(error);
+    }
   }
   useEffect(() => {
     filterStudent(studentinput).then((data) => {
@@ -223,10 +216,7 @@ if(fieldvalue.email){
   return (
     <>
       <tr key={row.id}>
-        {/* <td>{row.id}</td> */}
         <td>
-          
-
           <Select
             className="basic-single table-input h-2"
             classNamePrefix="select"

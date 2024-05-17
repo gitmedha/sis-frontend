@@ -1,11 +1,10 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form} from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -15,17 +14,13 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import AsyncSelect from "react-select/async";
-import { MeiliSearch } from "meilisearch";
-import { Select } from "@material-ui/core";
-// import 'react-select/dist/react-select.css';
-import { MenuItem } from "material-ui";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getOpsPickList, updateOpsActivity, updateStudetnsUpskills } from "./operationsActions";
+import { getOpsPickList, updateStudetnsUpskills,searchStudents,searchBatches,searchInstitutions } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
+import { MeiliSearch } from "meilisearch";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -77,14 +72,12 @@ const UpskillUpdate = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-  const [disablevalue, setdisablevalue] = useState(false);
-  const [lookUpLoading, setLookUpLoading] = useState(false);
+  const [lookUpLoading] = useState(false);
   const [course, setcourse] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
-  const [studentinput,setstudentinput]=useState("")
+  const [studentinput]=useState("")
   const [subcategory,setSubcategory]=useState([])
   const [programeName,setProgramName]=useState([])
-  const [classValue,setclassValue]=useState({})
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -102,20 +95,17 @@ const UpskillUpdate = (props) => {
   useEffect(() => {
     if (props.student_id.id) {
       filterStudent(props.student_id.full_name).then(data => {
-        console.log("line 76",data);
         setStudentOptions(data);
       });
     }
   }, [props])
 
   const filterStudent = async (filterValue) => {
-    console.log("filtervalue",filterValue);
-    return await meilisearchClient.index('students').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'full_name', 'student_id']
-    }).then(data => {
+    try {
+      const {data} = await searchStudents(filterValue);
+
       let studentFoundInList = false;
-      let filterData = data.hits.map(student => {
+      let filterData = data.studentsConnection.values.map(student => {
         if (student.id === Number(props?.id)) {
           studentFoundInList = true;
         }
@@ -127,7 +117,10 @@ const UpskillUpdate = (props) => {
       });
       
       return filterData;
-    });
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
  
@@ -151,23 +144,21 @@ const UpskillUpdate = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const {data} = await searchInstitutions(filterValue);
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
@@ -204,7 +195,8 @@ const UpskillUpdate = (props) => {
         }
         return filterData;
       });
-  };
+    }
+  
 
   useEffect(() => {
     getAddressOptions().then((data) => {

@@ -3,12 +3,10 @@ import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { MeiliSearch } from 'meilisearch'
-
 import { Input } from "../../../utils/Form";
 import { OpportunityValidations } from "../../../validations";
-import  {getOpportunitiesPickList, getAssigneeOptions} from "./opportunityAction"
-import { getAllEmployers } from '../../Students/StudentComponents/StudentActions';
+import  {getOpportunitiesPickList} from "./opportunityAction"
+import { getAllEmployers,searchEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 
@@ -40,11 +38,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const OpportunityForm = (props) => {
   let { onHide, show } = props;
@@ -174,11 +167,9 @@ const OpportunityForm = (props) => {
   }, [props]);
 
   const filterEmployer = async (filterValue) => {
-    return await meilisearchClient.index('employers').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name','state','district','city','pin_code','medha_area','address']
-    }).then(data => {
-      return data.hits.map(employer => {
+    try {
+      const {data} = await searchEmployers(filterValue);
+      return data.employersConnection.values.map(employer => {
         return {
           ...employer,
           label: employer.name,
@@ -191,11 +182,14 @@ const OpportunityForm = (props) => {
           medha_area: employer.medha_area,
         }
       });
-    });
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const onSubmit = async (values) => {
-    console.log(values);
+    
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
   values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
  delete values.updated_at
@@ -214,7 +208,7 @@ const OpportunityForm = (props) => {
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
-  console.log(values);
+ 
     onHide(values);
   };
 

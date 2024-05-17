@@ -16,6 +16,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
+import EmployerSearchBar from "./EmployerComponents/EmployerSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -39,12 +40,15 @@ const Employers = (props) => {
   const userId = parseInt(localStorage.getItem('user_id'))
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area')
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [isSearchEnable,setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
 
 
   useEffect(() => {
     getEmployers(activeTab.key);
-  }, [activeTab]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
@@ -72,37 +76,191 @@ const Employers = (props) => {
     []
   );
 
-  const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
-    nProgress.start();
-    setLoading(true);
-    let variables ={
-      limit: limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
+  const getEmployerBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+    const employerFields = `
+    id
+    name
+    phone
+    status
+    website
+    email
+    type
+    industry
+    paid_leaves
+    employee_benefits
+    employment_contract
+    offer_letter
+    medha_partner
+    address
+    district
+    pin_code
+    state
+    medha_area
+    address
+    city
+    created_at
+    updated_at
+    logo {
+      id
+      url
     }
-    if(selectedTab == "my_data"){
-      Object.assign(variables, {id: userId})
-    } else if(selectedTab == "my_state"){
-      Object.assign(variables, {state: state})
-    } else if(selectedTab == "my_area"){
-      Object.assign(variables, {area: area})
+    assigned_to{
+      id
+      username
+      email
     }
-    await api.post("/graphql", {
-      query: GET_USER_EMPLOYERS,
+    mou_file {
+      id
+      url
+      created_at
+    }
+    created_by_frontend{
+      username
+      email
+    }
+    updated_by_frontend{
+      username
+      email
+    }
+    logo {
+      url
+    }
+    contacts {
+      id
+      email
+      phone
+      full_name
+      designation
+    }
+  `
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "state"){
+    Object.assign(variables, { state: selectedSearchedValue.trim()});
+  }
+  else if (selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "industry"){
+    Object.assign(variables, { industry_name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "name"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
+
+
+const employerQuery = `query GET_EMPLOYERS(
+  $id: Int,
+  $limit: Int,
+  $start: Int,
+  $sort: String,
+  $status: String,
+  $state: String,
+  $area: String,
+  $username: String,
+  $industry_name:String,
+  $name:String
+) {
+  employersConnection(
+    sort: $sort
+    start: $start
+    limit: $limit
+    where: {
+      assigned_to: {
+        id: $id
+        username: $username
+      }
+      medha_area: $area
+      state: $state
+      status: $status
+      industry:$industry_name
+      name:$name
+    }
+  ) {
+    values {
+      ${employerFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`
+   
+  await api
+    .post("/graphql", {
+      query: employerQuery,
       variables,
     })
     .then(data => {
-
+  
       setEmployers(data?.data?.data?.employersConnection.values);
       setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
     })
       .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
         setLoading(false);
         nProgress.done();
-      });
+        return Promise.reject(error);
+      })
+  }
+
+  const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+    nProgress.start();
+    setLoading(true);
+    if(isSearchEnable){
+      await getEmployerBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
+    }
+    else {
+      let variables ={
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      }
+      if(selectedTab == "my_data"){
+        Object.assign(variables, {id: userId})
+      } else if(selectedTab == "my_state"){
+        Object.assign(variables, {state: state})
+      } else if(selectedTab == "my_area"){
+        Object.assign(variables, {area: area})
+      }
+      await api.post("/graphql", {
+        query: GET_USER_EMPLOYERS,
+        variables,
+      })
+      .then(data => {
+  
+        setEmployers(data?.data?.data?.employersConnection.values);
+        setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
+      })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+    
   };
   useEffect(() => {
   getEmployersPickList().then(data => setPickList(data));
@@ -123,7 +281,7 @@ const Employers = (props) => {
     setEmployersTableData(data);
   }, [employers, pickList]);
 
-  const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
+  const fetchData = useCallback((pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
     if (sortBy.length) {
       let sortByField = 'name';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
@@ -148,9 +306,24 @@ const Employers = (props) => {
           sortByField = 'name';
           break;
       }
-      getEmployers(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      if(isSearchEnable){
+        getEmployerBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+
+      }
+      else {
+        getEmployers(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
+
+      }
     } else {
-      getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
+      if(isSearchEnable){
+        getEmployerBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+
+      }
+      else {
+        getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
+
+      }
+
     }
   }, [activeTab.key]);
 
@@ -175,7 +348,6 @@ const Employers = (props) => {
       history.push(`/employer/${data.data.data.createEmployer.employer.id}`);
       }
     }).catch(err => {
-      console.log("CREATE_DETAILS_ERR", err);
       setAlert("Unable to create employer.", "error");
       getEmployers();
       setModalShow(false);
@@ -198,6 +370,19 @@ const Employers = (props) => {
             Add New Employer
           </button>
         </div>
+        <EmployerSearchBar
+        selectedSearchField={selectedSearchField} 
+        setSelectedSearchField={setSelectedSearchField} 
+        setIsSearchEnable={setIsSearchEnable}
+        setSelectedSearchedValue={setSelectedSearchedValue}
+        tab={activeTab.key}
+        info={{
+          id:userId,
+          area:area,
+          state:state,
+        }}
+        isDisable={employersAggregate.count ? false:true}
+        />
         <Table
           columns={columns}
           data={employersTableData}
@@ -206,6 +391,9 @@ const Employers = (props) => {
           fetchData={fetchData}
           loading={loading}
           onPageSizeChange={setPaginationPageSize}
+          isSearchEnable={isSearchEnable}
+          selectedSearchField={selectedSearchField}
+          selectedSearchedValue={selectedSearchedValue}
         />
         <EmployerForm
           show={modalShow}

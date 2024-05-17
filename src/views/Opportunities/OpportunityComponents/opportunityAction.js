@@ -5,7 +5,9 @@ import {
   UPDATE_OPPORTUNITY,
   DELETE_OPPORTUNITY,
   CREATE_OPPORTUNITY,
-  GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS
+  GET_OPPORTUNITY_EMPLOYMENT_CONNECTIONS,
+  SEARCH_BY_EMPLOYERS,
+  SEARCH_BY_STUDENTS
 } from "../../../graphql";
 
 export const getOpportunitiesPickList = async () => {
@@ -99,4 +101,54 @@ export const getOpportunityEmploymentConnections = async (opportunityId, limit=1
   }).catch(error => {
     return Promise.reject(error);
   });
+}
+
+
+export const getFieldValues = async (searchField,baseURL,tab,info)=>{
+  try{
+  
+      const data = await api.get(`/${baseURL}/distinct/${searchField}/${tab}/${new URLSearchParams(info).toString()
+      }`)
+      return data;
+  }
+  catch(error){
+      return console.error("error", error);
+  }
+
+}
+
+export const searchEmployers = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_EMPLOYERS,
+      variables:{
+        query:searchValue,
+        limit:20,
+        sort:'name:asc'
+      }
+    })
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+export const searchStudents = async function(searchValue){
+  try {
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_STUDENTS,
+      variables : {
+        query:searchValue,
+        limit:20,
+        sort:'full_name:asc'
+      }
+    })
+
+    return data;
+    
+  } catch (error) {
+    console.error(error);
+  }
 }

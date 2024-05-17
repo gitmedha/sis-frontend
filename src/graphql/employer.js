@@ -1,4 +1,4 @@
-const employerFields = `
+export const employerFields = `
   id
   name
   phone
@@ -293,3 +293,44 @@ query GET_EMPLOYER_EMPLOYMENT_CONNECTIONS(
     }
   }
 }`;
+
+
+export const SEARCH_BY_STUDENTS = `
+  query SEARCH_BY_STUDENTS($query:String,$limit:Int,$sort:String){
+    studentsConnection(
+      limit:$limit
+      sort:$sort
+      where: {
+        _or:[
+          {full_name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        full_name
+        student_id
+      }
+    }
+  }
+`
+
+
+export const SEARCH_BY_EMPLOYER = `
+  query SEARCH_BY_EMPLOYER($query:String,$limit:Int,$sort:String){
+    employerConnection(
+      limit:$limit,
+      sort:$sort,
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values{
+        id
+        name
+      }
+    }
+  }
+`

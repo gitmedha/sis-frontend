@@ -112,6 +112,51 @@ export const getDefaultAssigneeOptions = async () => {
   return filteredData;
 }
 
+
+
+export const getDefaultAssignee = async (id) => {
+  let userId = id;
+  let data = await queryBuilder({
+    query: GET_ALL_USERS
+  });
+  let userIdFound = false;
+  let filteredData = data.data.users.map(user => {
+    if (userId === user.id) {
+      userIdFound = true;
+    }
+
+    return {
+      label: `${user.username} (${user.email})`,
+      value: user.id,
+    }
+  });
+  if (!userIdFound) {
+    let userName = localStorage.getItem("user_name");
+    let userEmail = localStorage.getItem("user_email");
+    filteredData.unshift({
+      label: `${userName} (${userEmail})`,
+      value: userId,
+    });
+  }
+  return filteredData;
+}
+
+
+export const getAllMedhaUsers = async () => {
+  let userId = localStorage.getItem("user_id");
+  let data = await queryBuilder({
+    query: GET_ALL_USERS
+  });
+  let userIdFound = false;
+  let filteredData = data.data.users.map(user => {
+    return {
+      name: user.username,
+      id: user.id,
+    }
+  });
+  return filteredData;
+}
+
 export const filterAssignedTo = async (newValue) => {
   let data = await queryBuilder({
     query: FILTER_USERS_BY_NAME,

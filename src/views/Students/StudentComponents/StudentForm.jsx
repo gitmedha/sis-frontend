@@ -57,6 +57,8 @@ const StudentForm = (props) => {
     {key: false, value: false, label: "No"},
   ];
 
+ 
+
   useEffect(() => {
     getDefaultAssigneeOptions().then(data => {
       setAssigneeOptions(data);
@@ -166,7 +168,7 @@ const StudentForm = (props) => {
       const cvUrlSplit = props.CV.url.split('/');
       fileName = cvUrlSplit[cvUrlSplit.length - 1];
     }
-    // console.log(props);
+   
   }
 
 

@@ -95,6 +95,7 @@ const Opsdatafeilds = (props) => {
       dataAndEdit:false 
     });
   }
+
   
 
   return (
@@ -102,7 +103,7 @@ const Opsdatafeilds = (props) => {
       {!showModal.dataAndEdit && (
         <Modal
           centered
-          size="lg"
+          size="xl"
           show={true}
           onHide={onHide}
           animation={false}

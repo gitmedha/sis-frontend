@@ -1,5 +1,16 @@
 import api from "../../../apis";
-import { GET_ALL_INSTITUTES, GET_INSTITUTION_PROGRAM_ENROLLMENTS, GET_PICKLIST, GET_ASSIGNEES_LIST, GET_INSTITUTION_STUDENTS, UPDATE_INSTITUTION, CREATE_NEW_INSTITUTE, DELETE_INSTITUTION } from "../../../graphql";
+import { 
+  GET_ALL_INSTITUTES, 
+  GET_INSTITUTION_PROGRAM_ENROLLMENTS, 
+  GET_PICKLIST, 
+  GET_ASSIGNEES_LIST, 
+  GET_INSTITUTION_STUDENTS, 
+  UPDATE_INSTITUTION, 
+  CREATE_NEW_INSTITUTE, 
+  DELETE_INSTITUTION,
+  SEARCH_BY_STUDENTS,
+  SEARCH_BY_BATCHES 
+} from "../../../graphql";
 
 export const queryBuilder = async (params) => {
   try {
@@ -8,7 +19,6 @@ export const queryBuilder = async (params) => {
     });
     return data;
   } catch (err) {
-    console.log("ERR", err);
     throw err;
   }
 };
@@ -142,4 +152,53 @@ export const getAllInstitutions = async () => {
 }
   ;
 
+
+  export const getFieldValues = async (searchField,baseURL,tab,info)=>{
+    try{
+    
+        const data = await api.get(`/${baseURL}/distinct/${searchField}/${tab}/${new URLSearchParams(info).toString()
+        }`)
+        return data;
+    }
+    catch(error){
+        return console.error("error", error);
+    }
+  
+  }
+
+  export const searchStudents = async function(searchValue){
+    try {
+      const {data}= await api.post('/graphql', {
+        query:SEARCH_BY_STUDENTS,
+        variables:{
+          query:searchValue,
+          limit:20,
+          sort:'full_name:asc'
+        }
+      })
+
+      return data;
+    } catch (error) {
+      console.error(error.message);
+    }
+
+  }
+
+  export const searchBatch = async function(searchValue){
+    try {
+      const {data}= await api.post('/graphql', {
+        query:SEARCH_BY_BATCHES,
+        variables:{
+          query:searchValue,
+          limit:20,
+          sort:'name:asc'
+        }
+      })
+
+      return data;
+    } catch (error) {
+      console.error(error.message);
+    }
+
+  }
 

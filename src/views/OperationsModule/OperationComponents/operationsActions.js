@@ -22,9 +22,88 @@ import {
     CREATE_COLLEGE_PITCH,
     UPDATE_COLLEGE_PITCH,
     GET_ALL_PROGRAMS,
-    GET_ALL_STUDENTS
-    
+    GET_ALL_STUDENTS,
+    SEARCH_INSTITUITIONS,
+    SEARCH_BY_BATCHES,
+    SEARCH_BY_STUDENTS,
+    SEARCH_BY_PROGRAMS  
 } from "../../../graphql/operations";
+
+
+export const searchPrograms = async function(searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_PROGRAMS,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+export const searchStudents = async function(searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_STUDENTS,
+            variables:{
+                limit:20,
+                sort:'full_name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+
+export const searchBatches = async function (searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_BY_BATCHES,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
+export const searchInstitutions = async function (searchValue){
+    try {
+        const {data} = await api.post('/graphql', {
+            query:SEARCH_INSTITUITIONS,
+            variables:{
+                limit:20,
+                sort:'name:asc',
+                query:searchValue
+            }
+        })
+        
+        return data;
+        
+    } catch (error) {
+        console.error(error.message);
+    }
+
+}
+
 
 export const getAllProgram=async()=>{
     return await api.post('/graphql',{
@@ -82,7 +161,6 @@ export const getAllOpsActivities = async (limit=100,offset=0,sortBy="created_at"
     },{headers}).then(data=>{
         return data;
     }).catch(error=>{
-        console.log("error",error)
         return Promise.reject(error)
     })
 };
@@ -193,10 +271,8 @@ export const createOpsActivity = async (data)=>{
         query:CREATE_OPERATION,
         variables: {data},
     }).then(data=>{
-        console.log(data)
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 
@@ -258,7 +334,6 @@ export const updateOpsActivity = async(id,data)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -368,7 +443,6 @@ export const bulkCreateCollegePitch = async(data)=>{
 }
 
 export const bulkCreateAlumniQueries = async(data)=>{
-    console.log("data",data);
     try {
         const response = await api.post('/alumni-queries/create-bulk-alumni-queries', data);
         return response;
@@ -392,7 +466,6 @@ export const deactivate_user_ops = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -408,7 +481,6 @@ export const deactivate_user_tots = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -424,7 +496,6 @@ export const deactivate_user_dte_samarth = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -440,7 +511,6 @@ export const deactivate_user_students_upskills = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -456,7 +526,6 @@ export const deactivate_user_alumni_query = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -472,7 +541,6 @@ export const deactivate_user_college_pitch = async(id)=>{
     }).then(data=>{
         return data;
     }).catch(error=>{
-        console.log(error)
         return Promise.reject(error);
     })
 }
@@ -505,7 +573,6 @@ export const getStudent = async (id) => {
     //   setStudent(values);
     return values
     } catch (err) {
-      console.log("ERR", err);
     } finally {
       NP.done();
     }

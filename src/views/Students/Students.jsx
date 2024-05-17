@@ -4,13 +4,12 @@ import api from "../../apis";
 import {
   TableRowDetailLink,
   Badge,
-  Anchor,
   uploadFile,
 } from "../../components/content/Utils";
 import moment from "moment";
 import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback,useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -28,6 +27,8 @@ import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
+import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
+import ModalShowmassedit from "./StudentComponents/ModalShowmassedit";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -53,7 +54,7 @@ const Styled = styled.div`
 `;
 
 const Students = (props) => {
-  let { isSidebarOpen, batch } = props;
+  let { isSidebarOpen} = props;
   const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -71,6 +72,13 @@ const Students = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [isSearchEnable,setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
+  const [ModalShowmassEdit,setModalShowmassEdit]=useState(false)
+
+  const prevIsSearchEnableRef = useRef();
+
 
   const columns = useMemo(
     () => [
@@ -110,6 +118,208 @@ const Students = (props) => {
     []
   );
 
+
+
+
+  useEffect(()=>{
+  
+  if(isSearchEnable){
+    getStudents(activeTab.key);
+  }
+  if (prevIsSearchEnableRef.current !== undefined) {
+    if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+      getStudents(activeTab.key);
+    }
+  }
+
+  prevIsSearchEnableRef.current = isSearchEnable;
+
+  },[isSearchEnable,activeTab.key,selectedSearchedValue])
+
+
+  const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+    const studentFields = `
+    id
+    full_name
+    email
+    phone
+    alternate_phone
+    status
+    name_of_parent_or_guardian
+    date_of_birth
+    category
+    gender
+    registration_date_latest
+    certification_date_latest
+    internship_date_latest
+    placement_date_latest
+    course_type_latest
+    income_level
+    family_annual_income
+    old_sis_id
+    medha_champion
+    interested_in_employment_opportunities
+    city
+    pin_code
+    medha_area
+    address
+    state
+    how_did_you_hear_about_us
+    how_did_you_hear_about_us_other
+    created_at
+    updated_at
+    created_by_frontend{
+      email
+      username
+    }
+    updated_by_frontend{
+      username
+      email
+    }
+    district
+    student_id
+    assigned_to{
+      id
+      username
+      email
+      area
+    }
+    registered_by{
+      id
+      username
+      email
+    }
+    logo {
+      id
+      url
+    }
+    CV {
+      id
+      url
+      previewUrl
+      updated_at
+    }
+  `;
+
+  let variables = {
+    limit,
+    start:offset,
+    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
+  }
+
+  if (status !== "All") {
+    variables.status = studentStatusOptions.find(
+      (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
+    )?.picklistMatch;
+  }
+  if (selectedTab === "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab === "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab === "my_area") {
+    Object.assign(variables, { area: area });
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "status"){
+    Object.assign(variables, { status: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "assigned_to"){
+    Object.assign(variables, { username: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "medha_area"){
+    Object.assign(variables, { area: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "full_name"){
+    Object.assign(variables, { full_name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "email"){
+    Object.assign(variables, { email: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "phone"){
+    Object.assign(variables, { phone: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "student_id"){
+    Object.assign(variables, { student_id: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "registration_date_latest"){
+    Object.assign(variables, { 
+      from_registration: selectedSearchedValue.start_date.trim(),
+      to_registration:selectedSearchedValue.end_date.trim()
+    });
+  }
+  
+
+  
+
+const StudentQuery = `query GET_STUDENTS(
+  $id: Int, 
+  $limit: Int, 
+  $start: Int, 
+  $sort: String, 
+  $status:String, 
+  $state:String, 
+  $area:String,
+  $username:String,
+  $from_registration:String,
+  $to_registration:String,
+  $full_name:String,
+  $email:String,
+  $phone:String,
+  $student_id:String
+  ) {
+    studentsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit
+      where: {
+        assigned_to: {
+          id: $id
+          username:$username
+        }
+        medha_area: $area
+        state:$state
+        status:$status
+        registration_date_latest_gte:$from_registration
+        registration_date_latest_lte:$to_registration
+        full_name_contains:$full_name
+        email_contains:$email
+        phone:$phone
+        student_id_contains:$student_id
+      }
+    ) {
+      values {
+        ${studentFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }`
+
+
+   
+  await api
+    .post("/graphql", {
+      query: StudentQuery,
+      variables,
+    })
+    .then((data) => {
+
+      setStudents(data?.data?.data?.studentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
+    
+  }
+ 
   const getStudents = async (
     status = "All",
     selectedTab,
@@ -118,51 +328,62 @@ const Students = (props) => {
     sortBy = "created_at",
     sortOrder = "desc"
   ) => {
+
     nProgress.start();
     setLoading(true);
-    let variables = {
-      limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
-    };
-    if (status !== "All") {
-      variables.status = studentStatusOptions.find(
-        (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
-      )?.picklistMatch;
-    }
-    if (selectedTab == "my_data") {
-      Object.assign(variables, { id: userId });
-    } else if (selectedTab == "my_state") {
-      Object.assign(variables, { state: state });
-    } else if (selectedTab == "my_area") {
-      Object.assign(variables, { area: area });
-    }
-    await api
-      .post("/graphql", {
-        query: GET_STUDENTS,
-        variables,
-      })
-      .then((data) => {
-        let value = data?.data?.data?.studentsConnection.values.map((obj) => {
-          obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
-            return match.toUpperCase();
-          });
-        });
 
-        setStudents(data?.data?.data?.studentsConnection.values);
-        setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        nProgress.done();
+if(isSearchEnable){
+  await getStudentsBySearchFilter(status,selectedTab,limit,offset,selectedSearchedValue,selectedSearchField);
+
+}
+else {
+  let variables = {
+    limit,
+    start: offset,
+    sort: `${sortBy}:${sortOrder}`,
+  };
+  if (status !== "All") {
+    variables.status = studentStatusOptions.find(
+      (tabStatus) => tabStatus.title?.toLowerCase() === status.toLowerCase()
+    )?.picklistMatch;
+  }
+  if (selectedTab == "my_data") {
+    Object.assign(variables, { id: userId });
+  } else if (selectedTab == "my_state") {
+    Object.assign(variables, { state: state });
+  } else if (selectedTab == "my_area") {
+    Object.assign(variables, { area: area });
+  }
+
+  
+  await api
+    .post("/graphql", {
+      query: GET_STUDENTS,
+      variables,
+    })
+    .then((data) => {
+      let value = data?.data?.data?.studentsConnection.values.map((obj) => {
+        obj.full_name = obj.full_name.replace(/\b\w/g, (match) => {
+          return match.toUpperCase();
+        });
       });
+
+      setStudents(data?.data?.data?.studentsConnection.values);
+      setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
+}
   };
 
   const fetchData = useCallback(
-    (pageIndex, pageSize, sortBy) => {
+    (pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
+    
       if (sortBy.length) {
         let sortByField = "full_name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -184,26 +405,37 @@ const Students = (props) => {
             sortByField = "full_name";
             break;
         }
-        getStudents(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex,
-          sortByField,
-          sortOrder
-        );
+        if(isSearchEnable){
+          getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
+        }
+        else {
+          getStudents(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        }
+       
       } else {
-        getStudents(
-          activeStatus,
-          activeTab.key,
-          pageSize,
-          pageSize * pageIndex
-        );
+        if(isSearchEnable){
+          getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
+
+        }else {
+          console.log("this is working");
+          getStudents(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
       }
     },
     [activeTab.key, activeStatus]
   );
-
 
   useEffect(() => {
     getStudentsPickList().then((data) => setPickList(data));
@@ -215,7 +447,6 @@ const Students = (props) => {
   }, [activeTab.key, activeStatus]);
 
   useEffect(() => {
-    console.log("whwhwhhwh");
     if (students) {
       let data = students;
       data = data.map((student) => {
@@ -283,7 +514,7 @@ const Students = (props) => {
           createStudentApi(dataToSave);
         })
         .catch((err) => {
-          console.log("CV_UPLOAD_ERR", err);
+         
           setAlert("Unable to upload CV.", "error");
         });
     } else {
@@ -299,7 +530,7 @@ const Students = (props) => {
         history.push(`/student/${data.data.data.createStudent.student.id}`);
       })
       .catch((err) => {
-        console.log("CREATE_DETAILS_ERR", err);
+        
         setAlert("Unable to create student.", "error");
       })
       .finally(() => {
@@ -318,6 +549,94 @@ const Students = (props) => {
       paginationPageSize * paginationPageIndex
     );
   };
+
+
+  const HideMassEmployeCreateModal =async(data)=>{
+      if(data.length ==0){
+        // return ;
+        setAlert("Unable to create Employment Connection Data.", "error");
+      }else{
+        try {
+          const response = await api.post(
+            "/employment-connections/createBulkEmploymentConnection",
+            data
+          );
+          setAlert("Employment Connection data created successfully.", "error");
+        } catch (error) {
+          setAlert("Unable to create Employment Connection Data.", "error");
+        }
+      }
+  }
+
+  const hideMassCreateModal = async (data) => {
+    if(data.length ==0){
+      setAlert("Unable to create Alumni Data.", "error");
+    }
+    else {
+      try {
+        const response = await api.post(
+          "/alumni-services/createBulkAlumniServices",
+          data
+        );
+        setAlert("Alumni data created successfully.", "success");
+      } catch (error) {
+        setAlert("Unable to create Alumni Data.", "error");
+      }
+    }
+    
+  };
+
+  const hideCreateMassEdit=(value)=>{
+    setModalShowmassEdit(value)
+  }
+
+  const uploadData=(data)=>{
+    HideMassEmployeCreateModal(data)
+  }
+
+  const uploadAlumniData=(data)=>{
+    hideMassCreateModal(data)
+  }
+
+  const handelSubmitMassEdit=async(data,key)=>{
+    if(key =='AlumniBuldEdit'){
+      const value = await api
+      .post("/alumni-services/bulk-update", data)
+      .then((data) => {
+        // Return data
+        setAlert("Data Edited Successfully.", "success");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 3000);
+      })
+      .catch((err) => {
+        setAlert("Unable To Edit.", "error");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      });
+    }
+
+
+    if(key =='EmployerBulkdEdit'){
+      const value = await api
+      .post("/employment-connections/bulk-update", data)
+      .then((data) => {
+        // Return data
+        setAlert("Data Edited Successfully.", "success");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 3000);
+      })
+      .catch((err) => {
+        setAlert("Unable To Edit", "error");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 1000);
+      });
+    }
+    
+  }
 
   return (
     <Collapse title="STUDENTS" type="plain" opened={true}>
@@ -349,16 +668,54 @@ const Students = (props) => {
               options={studentStatusOptions}
               onTabChange={handleStudentStatusTabChange}
             />
+
+          
             {(isSRM() || isAdmin()) && (
-              <button
-                className="btn btn-primary"
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "15px" }}
-              >
-                Add New Student
-              </button>
+              <>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow(true)}
+                  style={{ marginLeft: "5px" }}
+                >
+                  Add New Student
+                </button>
+                {/* <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow1(true)}
+                >
+                  Mass Alumni Service
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setModalShow2(true)}
+                  
+                >
+                  Mass Employer
+                </button> */}
+                <button
+                  className="btn btn-primary"
+                  onClick={()=>setModalShowmassEdit(true)}
+                >
+                  Mass Edit 
+                </button>
+              </>
             )}
           </div>
+          
+          <StudentsSearchBar 
+            selectedSearchField={selectedSearchField} 
+            setSelectedSearchField={setSelectedSearchField} 
+            setIsSearchEnable={setIsSearchEnable}
+            setSelectedSearchedValue={setSelectedSearchedValue}
+            tab={activeTab.key}
+            info={{
+              id:userId,
+              area:area,
+              state:state,
+            }}
+            isDisable={studentsAggregate.count ? false:true}
+            />
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
             <Table
               columns={columns}
@@ -370,6 +727,9 @@ const Students = (props) => {
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
+              isSearchEnable={isSearchEnable}
+              selectedSearchField={selectedSearchField}
+              selectedSearchedValue={selectedSearchedValue}
             />
           </div>
         </div>
@@ -387,6 +747,8 @@ const Students = (props) => {
             />
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
+         
+          <ModalShowmassedit handelSubmitMassEdit={handelSubmitMassEdit} data={studentsData} onHide={()=>hideCreateMassEdit(false)} show={ModalShowmassEdit} uploadData={uploadData} uploadAlumniData={uploadAlumniData} />
         </div>
       </Styled>
     </Collapse>

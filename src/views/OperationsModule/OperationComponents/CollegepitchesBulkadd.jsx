@@ -9,18 +9,13 @@ import {
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
 
-import { MeiliSearch } from "meilisearch";
 import {
-  bulkCreateCollegePitch,
+  searchBatches,
+  searchInstitutions
 } from "./operationsActions";
-import api from "../../../apis";
 import CollegepitchesBulkrow from "./collegepitchesBulkrow";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const CollegepitchesBulkadd = (props) => {
   let { onHide, show } = props;
@@ -296,7 +291,6 @@ const CollegepitchesBulkadd = (props) => {
       ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
-      console.log("error", error);
     }
   };
 
@@ -329,42 +323,39 @@ const CollegepitchesBulkadd = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        return data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: institution.name,
-          };
-        });
+    try {
+      const {data} = await searchInstitutions(filterValue);
+      return data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: institution.name,
+        };
       });
+      
+    } catch (error) {
+      console.error(error); 
+    }
+    
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const {data} = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          return {
-            ...batch,
-            label: batch.name,
-            value: batch.name,
-          };
-        });
-        return filterData;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        return {
+          ...batch,
+          label: batch.name,
+          value: batch.name,
+        };
       });
+      return filterData;
+
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onConfirm = () => {

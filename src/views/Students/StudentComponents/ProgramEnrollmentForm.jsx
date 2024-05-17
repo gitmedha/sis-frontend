@@ -2,14 +2,12 @@ import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect, useMemo } from "react";
-import { MeiliSearch } from 'meilisearch'
-
+import { useState, useEffect} from "react";
 import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
-import { getAllBatches, getAllInstitutions, getStudentsPickList } from "./StudentActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { batchLookUpOptions } from "../../../utils/function/lookupOptions"
+import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
+import {searchInstitution,searchBatch} from "../StudentComponents/StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -30,14 +28,8 @@ const Section = styled.div`
   }
 `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 const ProgramEnrollmentForm = (props) => {
   let { onHide, show, student,programEnrollment,allBatches } = props;
-  const [loading, setLoading] = useState(false);
   const [statusOptions, setStatusOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
@@ -103,6 +95,7 @@ const ProgramEnrollmentForm = (props) => {
     fee_payment_date: null,
     fee_refund_date: null,
   };
+  
   if (props.programEnrollment) {
     initialValues = {...initialValues, ...props.programEnrollment};
     initialValues['batch'] = Number(props.programEnrollment.batch?.id);
@@ -120,6 +113,7 @@ const ProgramEnrollmentForm = (props) => {
     
   };
 
+  console.log(initialValues);
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
@@ -133,13 +127,11 @@ const ProgramEnrollmentForm = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient.index('institutions').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
+    try {
+      let {data} = await searchInstitution(filterValue);
       let programEnrollmentInstitution = props.programEnrollment ? props.programEnrollment.institution : null;
       let institutionFoundInList = false;
-      let filterData = data.hits.map(institution => {
+      let filterData = data.institutionsConnection.values.map(institution=>{
         if (props.programEnrollment && institution.id === Number(programEnrollmentInstitution?.id)) {
           institutionFoundInList = true;
         }
@@ -149,6 +141,7 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         }
       });
+
       if (props.programEnrollment && programEnrollmentInstitution !== null && !institutionFoundInList) {
         filterData.unshift({
           label: programEnrollmentInstitution.name,
@@ -156,17 +149,19 @@ const ProgramEnrollmentForm = (props) => {
         });
       }
       return filterData;
-    });
+      
+    } catch (error) {
+      console.error("error:",error);
+    }
   }
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient.index('batches').search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ['id', 'name']
-    }).then(data => {
+
+    try {
+      const {data} = await searchBatch(filterValue);
       let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
       let batchFoundInList = false;
-      let filterData = data.hits.map(batch => {
+      let filterData = data.batchesConnection.values.map(batch => {
         if (props.programEnrollment && batch.id === Number(programEnrollmentBatch?.id)) {
           batchFoundInList = true;
         }
@@ -183,7 +178,11 @@ const ProgramEnrollmentForm = (props) => {
         });
       }
       return filterData;
-    });
+
+    } catch (error) {
+        console.error(error);
+    }
+    
   }
   const handlechange = (e,target) => {
     if(e.value == 'Other'){
@@ -439,7 +438,7 @@ const ProgramEnrollmentForm = (props) => {
 
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_other && initialValues.course_name_other.length))?
+                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
                    <Input
                       name="course_name_other"
                       control="input"
