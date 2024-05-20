@@ -45,6 +45,7 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
   const [yourPlanFfterYourCurrentCourse,setyourPlanFfterYourCurrentCourse]=useState([])
@@ -115,6 +116,12 @@ const StudentForm = (props) => {
         label: area.key,
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      })))
     });
   };
 
@@ -467,14 +474,23 @@ const StudentForm = (props) => {
                   </div>
                   
                   <div className="col-md-6 col-sm-12 mb-2">
+                    {cityOptions.length ? (
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="city"
                       label="City"
-                      className="form-control capitalize"
+                      className="form-control"
                       placeholder="City"
                       required
+                      options={cityOptions}
                     />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   {areaOptions.length ? (
