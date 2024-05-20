@@ -19,8 +19,13 @@ query GET_ALL_ADDRESS {
         area {
           key
         }
+        city {
+          key
+        }
       }
     }
   }
   
 `;
+
+
