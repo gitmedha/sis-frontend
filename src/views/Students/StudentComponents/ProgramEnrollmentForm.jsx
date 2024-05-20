@@ -62,10 +62,6 @@ const ProgramEnrollmentForm = (props) => {
         setBatchOptions(data);
       });
     }
-    if(props.programEnrollment){
-      setCourseName(props.programEnrollment.course_name_in_current_sis || '');
-
-    }
   }, [props])
 
   useEffect(() => {
@@ -78,6 +74,7 @@ const ProgramEnrollmentForm = (props) => {
     setRequiresFee(props?.programEnrollment?.fee_status?.toLowerCase() !=='free')
   }, [props.programEnrollment]);
 
+  
   let initialValues = {
     program_enrollment_student: student.full_name,
     status: '',
@@ -110,7 +107,6 @@ const ProgramEnrollmentForm = (props) => {
     initialValues['fee_refund_date'] = props.programEnrollment.fee_refund_date ? new Date(props.programEnrollment.fee_refund_date) : null;
   }
 
-  
   const onSubmit = async (values) => {
     if(!showDuplicateWarning){
       onHide(values);
@@ -260,7 +256,7 @@ const ProgramEnrollmentForm = (props) => {
           initialValues={initialValues}
           validationSchema={ProgramEnrollmentValidations}
         >
-          {({ values}) => (
+          {({ values,setFieldValue}) => (
             <Form>
               <Section>
                 <h3 className="section-header">Enrollment Details</h3>
@@ -415,15 +411,16 @@ const ProgramEnrollmentForm = (props) => {
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
-                      onChange={(e)=>{
-                        initialValues['course_name_in_current_sis'] = e.value;
-                        setCourseName(e.value)
+                      onChange={(e) => {
+                        if (e.value !== 'Other') {
+                          setFieldValue('course_name_other', '');
+                        }
                       }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  courseName === 'Other'?
+                  values.course_name_in_current_sis === 'Other'?
                    <Input
                       name="course_name_other"
                       control="input"
