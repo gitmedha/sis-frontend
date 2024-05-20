@@ -121,7 +121,7 @@ const StudentForm = (props) => {
         key:city.key,
         value:city.key,
         label:city.key
-      })))
+      }))).sort((a,b)=>a.label.localeCompare(b.label))
     });
   };
 
@@ -487,7 +487,7 @@ const StudentForm = (props) => {
                     />
                      ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
