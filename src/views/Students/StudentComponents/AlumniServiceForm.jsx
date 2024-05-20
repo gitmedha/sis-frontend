@@ -263,6 +263,19 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon='down'
+                      options={statusOption}
+                      required={feeFieldsRequired}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       name="fee_submission_date"
                       label="Contribution Submission Date"
                       placeholder="Contribution Submission Date"
@@ -299,19 +312,7 @@ const AlumniServiceForm = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="status"
-                      label="Status"
-                      placeholder="Status"
-                      control="lookup"
-                      className="form-control"
-                      autoComplete="off"
-                      icon='down'
-                      options={statusOption}
-                      required={feeFieldsRequired}
-                    />
-                  </div>
+                  
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
