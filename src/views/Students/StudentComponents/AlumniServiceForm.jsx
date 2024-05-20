@@ -174,7 +174,7 @@ const AlumniServiceForm = (props) => {
                       name="alumni_service_student"
                       control="input"
                       label="Student"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="Student"
                       disabled={true}
                     />
