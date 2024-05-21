@@ -493,6 +493,25 @@ const StudentForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                  {districtOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="district"
+                      label="District"
+                      placeholder="District"
+                      className="form-control"
+                      required
+                      options={districtOptions}
+                    />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
                   {areaOptions.length ? (
                     <Input
                       icon="down"
@@ -512,25 +531,7 @@ const StudentForm = (props) => {
                     )}
                   </div>
                   
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {districtOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="district"
-                      label="District"
-                      placeholder="District"
-                      className="form-control"
-                      required
-                      options={districtOptions}
-                    />
-                     ) : (
-                      <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Districts</label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
+                 
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
