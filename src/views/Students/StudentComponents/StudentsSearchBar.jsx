@@ -39,8 +39,11 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         search_by_value_date:new Date(new Date(today).setDate(today.getDate() ))
     }
 
+    console.log("initialValues",initialValues);
+
     const [searchValueOptions,setSearchValueOptions] = useState([])
     const [progress, setProgress] = useState(0);
+    const [value,setValue] = useState(null);
    
     const [studentsOptions] = useState([
         {key:0, label:'Name', value:'full_name'},
@@ -148,11 +151,23 @@ function StudentsSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
           })
 
           if(data?.data?.studentsConnection?.values?.length){
-            return [{
-              key:searchValueOptions[searchValueOptions.length],
-              label:data?.data?.studentsConnection?.values[0]['full_name'],
-              value:data?.data?.studentsConnection?.values[0]['full_name']
-            }]
+
+            let uniqueNames = new Set();
+            let matchedOptions = data?.data?.studentsConnection?.values
+              .filter(value => {
+                if (!uniqueNames.has(value.full_name)) {
+                  uniqueNames.add(value.full_name);
+                  return true;
+                }
+                return false;
+              })
+              .map((value) => ({
+                label: value.full_name,
+                value: value.full_name
+              }));
+
+            return matchedOptions;
+
           }
           
         } catch (error) {
@@ -251,6 +266,12 @@ refreshOnTabChange()
                         control="lookupAsync"
                         defaultOptions ={defaultSearchArray}
                         filterData={filterSearchValue}
+                        onChange={(e) => {
+                          console.log("e",e)
+                          formik.setFieldValue("search_by_value",e ? e.value : '')
+                          // handleChange(e);
+                          // handleSearchValueChange(e);
+                        }}
                       />
                       <div
                           style={
