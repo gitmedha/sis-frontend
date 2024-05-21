@@ -45,8 +45,10 @@ const StudentForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [showCVSubLabel, setShowCVSubLabel] = useState(props.CV && props.CV.url);
+  const [yourPlanFfterYourCurrentCourse,setyourPlanFfterYourCurrentCourse]=useState([])
   const userId = parseInt(localStorage.getItem('user_id'))
   const medhaChampionOptions = [
     {key: true, value: true, label: "Yes"},
@@ -81,6 +83,7 @@ const StudentForm = (props) => {
       setCategoryOptions(data.category.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setIncomeLevelOptions(data.income_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setyourPlanFfterYourCurrentCourse(data.your_plan_after_your_current_course.map(item => ({ key: item,value: item, label: item })));
     });
 
     getAddressOptions().then(data => {
@@ -113,6 +116,12 @@ const StudentForm = (props) => {
         label: area.key,
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      }))).sort((a,b)=>a.label.localeCompare(b.label))
     });
   };
 
@@ -153,6 +162,7 @@ const StudentForm = (props) => {
     registered_by:userId.toString(),
     how_did_you_hear_about_us: '',
     how_did_you_hear_about_us_other: '',
+    your_plan_after_your_current_course:''
   };
 
   let fileName = '';
@@ -387,6 +397,7 @@ const StudentForm = (props) => {
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
+                  
                   {selectedHowDidYouHearAboutUs?.toLowerCase() === 'other' && <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="how_did_you_hear_about_us_other"
@@ -397,6 +408,19 @@ const StudentForm = (props) => {
                       required
                     />
                   </div>}
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="your_plan_after_your_current_course"
+                        label="Your plan after your current course"
+                        options={yourPlanFfterYourCurrentCourse}
+                        className="form-control"
+                        placeholder="Your plan after your current course" 
+                      />
+                    
+                  </div>
                   {(isSRM() || isAdmin()) && <div className="col-sm-12 mb-2">
                     <div className="col-md-6">
                       <Input
@@ -450,14 +474,23 @@ const StudentForm = (props) => {
                   </div>
                   
                   <div className="col-md-6 col-sm-12 mb-2">
+                    {cityOptions.length ? (
                     <Input
-                      control="input"
+                      icon="down"
+                      control="lookup"
                       name="city"
                       label="City"
-                      className="form-control capitalize"
+                      className="form-control"
                       placeholder="City"
                       required
+                      options={cityOptions}
                     />
+                     ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   {areaOptions.length ? (

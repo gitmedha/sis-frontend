@@ -50,6 +50,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -247,6 +248,12 @@ const OpportunityForm = (props) => {
         label: area.key,
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      })))
     });
   };
 
@@ -440,14 +447,21 @@ const OpportunityForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
+                    {cityOptions.length ?(<Input
+                      control="lookup"
                       name="city"
                       label="City"
+                      icon='down'
                       className="form-control capitalize"
                       placeholder="City"
+                      options={cityOptions}
                       required
-                    />
+                    />):(
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                   {areaOptions.length ? (

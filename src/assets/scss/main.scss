@@ -335,4 +335,24 @@ color:black;
   color: #000 !important;
 }
 
+body::-webkit-scrollbar {
+	width: 4px;
+}
+
+div::-webkit-scrollbar {
+	background-color: transparent;
+	width: 4px;
+}
+
+div::-webkit-scrollbar-thumb {
+	width: 4px;
+	background-color: rgb(179, 174, 174);
+	border-radius: 4px;
+}
+
+
 @import './media/md.scss';
+
+
+
+
