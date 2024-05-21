@@ -73,6 +73,7 @@ const UploadFile = (props) => {
   const [fileType, setFileType] = useState("");
   const [uploadSuccesFully,setUploadSuccesFully]=useState('')
   const [showModal, setShowModal] = useState(false);
+  const [check,setCheck]=useState(false)
 
 
   const [jsonData, setJsonData] = useState(null);
@@ -99,7 +100,6 @@ const UploadFile = (props) => {
   const notFoundData = [];
 
   results.data.forEach(item => {
-    // Map each value to its corresponding header
     const newItem = {};
     Object.keys(item).forEach(key => {
       newItem[key] = item[key];
@@ -118,7 +118,7 @@ const UploadFile = (props) => {
     // const endDate = convertExcelDateToJSDate(newItem["End Date"]);
     const donor = newItem["Project / Funder"] && newItem["Project / Funder"].toLowerCase() === "no" ? false : true;
     const currentUser = localStorage.getItem("user_id");
-    if (batchId === undefined || instituteId === undefined || userId === undefined) {
+    if (batchId === '' || instituteId === undefined || userId === undefined)   {
       notFoundData.push({
         institution: newItem["Educational Institution"],
         batch: newItem["Batch Name"],
@@ -195,7 +195,63 @@ const UploadFile = (props) => {
     } catch (err) {}
   };
 
+  function hasNullValue(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      console.log(arr[i]);
+        if (arr[i].activity_type === '' || arr[i].activity_type===undefined) {
+            return true;
+        }
+        
+// activity_type
+// : 
+// ""
+// area
+// : 
+// ""
+// assigned_to
+// : 
+// ""
+// batch
+// : 
+// undefined
+// designation
+// : 
+// ""
+// donor
+// : 
+// ""
+// end_date
+// : 
+// undefined
+// guest
+// : 
+// ""
+// institution
+// : 
+// undefined
+// organization
+// : 
+// ""
+// start_date
+// : 
+// undefined
+// state
+// : 
+// ""
+// topic
+// : 
+// ""
+    }
+    return false;
+}
 
+useEffect (()=>{
+  if(notUploadedData.length === 1){
+    console.log("notUploadedData.includes('') ----->",hasNullValue(notUploadedData));
+    setCheck(hasNullValue(notUploadedData))
+  }
+  
+},[notUploadedData])
 
 
 
@@ -292,7 +348,7 @@ const hideShowModal =()=>{
             // {...operationdata}
             show={showModal}
             onHide={hideShowModal}
-            notUploadedData={notUploadedData}
+            notUploadedData={!check ? notUploadedData:[]}
             excelData={excelData}
             uploadExcel={props.uploadExcel}
             // refreshTableOnDataSaving={refreshTableOnDataSaving}

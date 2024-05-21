@@ -54,7 +54,7 @@ const CheckValuesOpsUploadedData = (props) => {
         <Style>
           <Modal.Body className="bg-white">
             <div style={{width:'100%',height:'450px',overflow:'scroll'}}>
-
+{props.notUploadedData.length > 0 ?
             <Table striped bordered hover responsive size="sm">
               <thead>
                 <tr>
@@ -92,7 +92,9 @@ const CheckValuesOpsUploadedData = (props) => {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </Table>:<div className="d-flex justify-content-center align-content-center">
+                  <h2 className="text--primary bebas-thick mb-0">Everthing looks fine,you can upload the data</h2>
+            </div>}
             </div>
             
             
