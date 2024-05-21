@@ -908,8 +908,7 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-  const uploadExcel = async (data, key) => {
-    if (key == "feild_activity") {
+  const uploadExcel = async (data) => {
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -919,7 +918,7 @@ const Operations = ({
         .catch((err) => {
           setAlert("Unable to create field data .", "error");
         });
-    }
+    
     setUploadModal(false);
     getoperations();
   };
@@ -933,6 +932,9 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
+  const closeUpload=()=>{
+    setUploadModal(false)
+  }
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1225,6 +1227,7 @@ const Operations = ({
               <UploadFile
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
               />
             </>
           )}

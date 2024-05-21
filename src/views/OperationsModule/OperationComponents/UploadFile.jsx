@@ -116,7 +116,6 @@ const UploadFile = (props) => {
     )?.id;
     // const startDate = (newItem["Start Date"]);
     // const endDate = convertExcelDateToJSDate(newItem["End Date"]);
-    // Set donor based on condition
     const donor = newItem["Project / Funder"] && newItem["Project / Funder"].toLowerCase() === "no" ? false : true;
     const currentUser = localStorage.getItem("user_id");
     if (batchId === undefined || instituteId === undefined || userId === undefined) {
@@ -265,6 +264,13 @@ const hideShowModal =()=>{
           {(isSRM() || isAdmin()) && (
             <div className="row mt-4 mb-4">
               <div className="col-md-12 d-flex justify-content-center">
+              <button
+                  type="button"
+                  onClick={() => props.closeThepopus()}
+                  className="btn btn-danger px-4 mx-4"
+                >
+                  Close
+                </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(true)}
@@ -272,13 +278,7 @@ const hideShowModal =()=>{
                 >
                   Next
                 </button>
-                <button
-                  type="button"
-                  // onClick={() => closeThepopup()}
-                  className="btn btn-danger px-4 mx-4"
-                >
-                  Close
-                </button>
+               
               </div>
             </div>
           )}
@@ -294,6 +294,7 @@ const hideShowModal =()=>{
             onHide={hideShowModal}
             notUploadedData={notUploadedData}
             excelData={excelData}
+            uploadExcel={props.uploadExcel}
             // refreshTableOnDataSaving={refreshTableOnDataSaving}
           />
         {/* )
