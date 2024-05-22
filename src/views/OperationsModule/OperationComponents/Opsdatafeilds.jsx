@@ -123,8 +123,8 @@ const Opsdatafeilds = (props) => {
           <Styled>
             <Modal.Body className="bg-white">
               <h4 className="section-header ">Basic Info</h4>
-              <div className="row">
-  <div className="col-md-6 col-sm-12">
+              <div className="row  ">
+              <div className="col-md-6 col-sm-12">
     <DetailField className='' Bold={""} label="Activity Type" value={props.activity_type} />
     <DetailField className='' Bold={""} label="Batch" value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />} />
     <DetailField className='' Bold={""} label="Start Date" value={moment(props.start_date).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
@@ -141,10 +141,9 @@ const Opsdatafeilds = (props) => {
     <DetailField className='' Bold={""} label="Topic" value={props.topic} />
     <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
     <DetailField className='' Bold={""} label="Program Name" value={props.program_name ? props.program_name : "Not found"} />
-    <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/>
+    {/* <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/> */}
   </div>
-</div>
-
+              </div>
               <div className="">
                 <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
                 <h4 className="section-header">Address Info</h4>

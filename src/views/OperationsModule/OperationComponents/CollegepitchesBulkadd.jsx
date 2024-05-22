@@ -270,8 +270,7 @@ const CollegepitchesBulkadd = (props) => {
 
     try {
 
-      // let isRequiredEmpty = false;
-
+      let isRequiredEmpty = false;
       onHide('collegepitches',data)
       setRows([
         {

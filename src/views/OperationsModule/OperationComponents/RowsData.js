@@ -103,7 +103,7 @@ export const RowsData = (props) => {
         return {
           ...program,
           label: program.name,
-          value:program.name,
+          value: program.name,
         }
       });
 
@@ -285,6 +285,24 @@ export const RowsData = (props) => {
             options={programOptions}
             filterData={filterProgram}
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => props.handleChange(e, "batch", row.id)}
+            onInputChange={inputValue=> {
+              props.filterBatch(inputValue).then(data=>{
+                props.setBatchOptions(data)
+              })
+            }}
           />
         </td>
         

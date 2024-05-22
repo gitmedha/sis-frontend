@@ -1,10 +1,11 @@
-import { Formik, Form} from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
+import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -14,9 +15,10 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
+import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getOpsPickList, updateOpsActivity ,searchBatches,searchInstitutions} from "./operationsActions";
+import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -39,19 +41,12 @@ const Section = styled.div`
   }
 `;
 
-const options = [
-  { value: "Yes", label: "Yes" },
-  { value: "No", label: "No" },
-];
-
-const studenTypeOption = [
-  { value: 'Medha Student', label: "Medha Student" },
-  { value: 'Non-Medha Student', label: "Non-Medha Student" },
-];
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 
 const hideBatchName = [
-  "new",
-  "New",
   "New Enrollments -- CAB",
   "New Enrollments -- Lab",
   "New Enrollments -- TAB",
@@ -65,6 +60,10 @@ const hideBatchName = [
   "New Enrollments -- In The Bank"
 ];
 
+const options = [
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: "No" },
+];
 const Activityoptions = [
   { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
   { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
@@ -105,46 +104,60 @@ const OperationDataupdateform = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    try {
-      const {data} = await searchInstitutions(filterValue);
+    return await meilisearchClient
+      .index("institutions")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((institution) => {
+          return {
+            ...institution,
+            label: institution.name,
+            value: Number(institution.id),
+          };
+        });
 
-      let filterData = data.institutionsConnection.values.map((institution) => {
-        return {
-          ...institution,
-          label: institution.name,
-          value: Number(institution.id),
-        };
+        return filterData;
       });
-
-      return filterData;
-
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const filterBatch = async (filterValue) => {
-    try {
-      const {data} = await searchBatches(filterValue);
-      let filterData = data.batchesConnection.values.map((batch) => {
-        if(hideBatchName.includes(batch.name)){
-          return {
+    return await meilisearchClient
+      .index("batches")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let batchInformtion = props ? props.batch : null;
+        let batchFoundInList = false;
 
-          };
-        }else{
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
+        let filterData = data.hits.map((batch) => {
+          if (props && batch.id === Number(batchInformtion?.id)) {
+            batchFoundInList = true;
+          }
+          if(hideBatchName.includes(batch.name)){
+            return {
+  
+            };
+          }else{
+            return {
+              ...batch,
+              label: batch.name,
+              value: Number(batch.id),
+            };
+          }
+        });
+        if (props && batchInformtion !== null && !batchFoundInList) {
+          filterData.unshift({
+            label: batchInformtion.name,
+            value: Number(batchInformtion.id),
+          });
         }
-        
+        return filterData;
       });
-      return filterData;
-
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   useEffect(() => {
@@ -225,7 +238,7 @@ const OperationDataupdateform = (props) => {
   };
   
   if (props) {
-    initialValues["batch"] = props.batch ? Number(props.batch.id) : null;
+    initialValues["batch"] = Number(props.batch.id);
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
@@ -242,7 +255,6 @@ const OperationDataupdateform = (props) => {
     initialValues["institute_name"] = Number(props?.institution?.id);
     initialValues["donor"] = props.donor ? "Yes" : "No";
     initialValues["area"] = props.area ? props.area : null;
-    initialValues["student_type"]=props.student_type ?props.student_type :null
   }
 
   useEffect(() => {
@@ -358,7 +370,7 @@ const OperationDataupdateform = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-
+                        {batchOptions.length && (
                           <Input
                             control="lookupAsync"
                             name="batch"
@@ -368,7 +380,7 @@ const OperationDataupdateform = (props) => {
                             className="form-control1"
                             placeholder="Batch"
                           />
-                        
+                        )}
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -410,17 +422,6 @@ const OperationDataupdateform = (props) => {
                        
                       </div>
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="student_type"
-                          label="Student Type"
-                          options={studenTypeOption}
-                          className="form-control"
-                          placeholder="New Entry"
-                        />
-                      </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           icon="down"
