@@ -171,7 +171,6 @@ const AlumniServices = (props) => {
      createAlumniService(dataToSave).then(data => {
       setAlert("Alumni Engagement created successfully.", "success");
     }).catch(err => {
-      
       setAlert("Unable to create Alumni Engagement.", "error");
     }).finally(() => {
       NP.done();

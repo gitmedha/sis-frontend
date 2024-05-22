@@ -75,7 +75,7 @@ const StudentupskilingBulk = (props) => {
           ...program,
           label: program.name,
           value: program.name,
-        };
+        }
       });
 
     } catch (error) {
@@ -210,8 +210,7 @@ const StudentupskilingBulk = (props) => {
             name="batch"
             options={props.batchbdata}
             onChange={(e) => {
-              props.handleChange(e, "batch", row.id);
-            }}
+              props.handleChange(e, "batch", row.id)}}
             onInputChange={(inputValue) => {
               props.filterBatch(inputValue).then((data) => {
                 props.setBatchOptions(data);

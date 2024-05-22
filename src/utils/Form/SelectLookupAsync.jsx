@@ -72,6 +72,7 @@ const SelectField = (props) => {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
 
+
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
       setOptions(data);

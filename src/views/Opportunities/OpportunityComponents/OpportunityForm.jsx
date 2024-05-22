@@ -50,6 +50,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -115,7 +116,7 @@ const OpportunityForm = (props) => {
       setCompensationTypeOptions(data.paid.map((item) => {
         return {
           key: item.value,
-          label: item.value == "Yes" ? "Paid" : "Unpaid" ,
+          label: item.value,
           value: item.value,
         };
       }));
@@ -247,6 +248,12 @@ const OpportunityForm = (props) => {
         label: area.key,
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      })))
     });
   };
 
@@ -440,30 +447,18 @@ const OpportunityForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
+                    {cityOptions.length ?(<Input
+                      control="lookup"
                       name="city"
                       label="City"
+                      icon='down'
                       className="form-control capitalize"
                       placeholder="City"
+                      options={cityOptions}
                       required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      options={areaOptions}
-                      placeholder="Medha Area"
-                      required
-                    />
-                    ) : (
+                    />):(
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -487,6 +482,26 @@ const OpportunityForm = (props) => {
                       </>
                     )}
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      options={areaOptions}
+                      placeholder="Medha Area"
+                      required
+                    />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  
                   
                   
                   <div className="col-md-6 col-sm-12 mb-2">

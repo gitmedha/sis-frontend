@@ -85,7 +85,7 @@ const AlumniService = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              Alumni Engagement Details
+            Alumni Engagement Details
             </h1>
           </Modal.Title>
         </Modal.Header>
@@ -100,6 +100,7 @@ const AlumniService = (props) => {
                 <DetailField label="Fee Submission Date" value={alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Receipt Number" value={alumniService.receipt_number} />
                 <DetailField label="Comments" value={alumniService.comments} />
+                <DetailField label="Status" value={alumniService.status ? alumniService.status :'' } />
               </div>
               <div className="col-md-6 col-sm-12">
                 <DetailField label="Assigned To" value={alumniService.assigned_to?.username} />
@@ -107,6 +108,7 @@ const AlumniService = (props) => {
                 <DetailField label="End Date" value={alumniService.end_date ? moment(alumniService.end_date).format("DD MMM YYYY") : ''} />
                 <DetailField label="Fee Amount" value={alumniService.fee_amount} />
                 <DetailField label="Category" value={alumniService.category}/>
+                
                 {props.alumniService.category &&  <DetailField label="Subcategory" value={alumniService.type}/>}
               </div>
             </div>
