@@ -29,6 +29,11 @@ const Section = styled.div`
   }
 `;
 
+const statusOption = [
+  { value: 'Paid', label: 'Paid' },
+  { value: 'Unpaid', label: 'Unpaid' }
+]
+
 const AlumniServiceForm = (props) => {
   let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -150,7 +155,7 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Service
+            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Engagement
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -169,7 +174,7 @@ const AlumniServiceForm = (props) => {
                       name="alumni_service_student"
                       control="input"
                       label="Student"
-                      className="form-control"
+                      className="form-control capitalize"
                       placeholder="Student"
                       disabled={true}
                     />
@@ -258,6 +263,19 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon='down'
+                      options={statusOption}
+                      required={feeFieldsRequired}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
                       name="fee_submission_date"
                       label="Contribution Submission Date"
                       placeholder="Contribution Submission Date"
@@ -294,6 +312,7 @@ const AlumniServiceForm = (props) => {
                       required={feeFieldsRequired}
                     />
                   </div>
+                  
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"

@@ -48,14 +48,7 @@ const Employers = (props) => {
 
   useEffect(() => {
     getEmployers(activeTab.key);
-  }, [activeTab]);
-
-
-  useEffect(()=>{
-    if(isSearchEnable){
-      getEmployers()
-    }
-  },[isSearchEnable])
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
@@ -169,6 +162,9 @@ const Employers = (props) => {
   else if(selectedSearchField === "industry"){
     Object.assign(variables, { industry_name: selectedSearchedValue.trim()});
   }
+  else if(selectedSearchField === "name"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
 
 
 const employerQuery = `query GET_EMPLOYERS(
@@ -180,7 +176,8 @@ const employerQuery = `query GET_EMPLOYERS(
   $state: String,
   $area: String,
   $username: String,
-  $industry_name:String
+  $industry_name:String,
+  $name:String
 ) {
   employersConnection(
     sort: $sort
@@ -195,6 +192,7 @@ const employerQuery = `query GET_EMPLOYERS(
       state: $state
       status: $status
       industry:$industry_name
+      name:$name
     }
   ) {
     values {
@@ -216,14 +214,14 @@ const employerQuery = `query GET_EMPLOYERS(
   
       setEmployers(data?.data?.data?.employersConnection.values);
       setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
+      setLoading(false);
+      nProgress.done();
     })
       .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
         setLoading(false);
         nProgress.done();
-      });
+        return Promise.reject(error);
+      })
   }
 
   const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {

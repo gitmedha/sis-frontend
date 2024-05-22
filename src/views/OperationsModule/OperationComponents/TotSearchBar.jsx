@@ -142,7 +142,7 @@ const TotSearchBar =({searchOperationTab,resetSearch})=> {
     
     
       } catch (error) {
-        console.error("error", error);
+        console.error(error);
       }
     }
   return (

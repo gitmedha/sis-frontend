@@ -3,6 +3,8 @@ import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
 import { getFieldValues } from './employerAction';
+import api from "../../../apis";
+
 
 
 const Section = styled.div`
@@ -58,18 +60,6 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         } catch (error) {
             console.error("error",error)
         }
-       
-
-        //   await searchOperationTab(baseUrl,values.search_by_field,)
-  
-        //   //stores the last searched result in the local storage as cache 
-        //   //we will use it to refresh the search results
-          
-        //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
-        //     baseUrl:baseUrl,
-        //     searchedProp:values.search_by_field,
-        //     searchValue:values.search_by_value
-        //   }));
   
       }
 
@@ -86,14 +76,75 @@ function EmployerSearchBar({selectedSearchField,setSelectedSearchField,setIsSear
         setIsSearchEnable(false);
       }
 
+      //search values in the table when it is not there in the default array
+
+      const searchNotFound = async(newValue)=>{
+
+        let searchField=selectedSearchField;
+        
+        const query = `
+    query GET_VALUE($query: String!) {
+      employersConnection(where: {
+        ${searchField === 'assigned_to' ? 'assigned_to: { username_contains: $query }' : `${searchField}_contains: $query`}
+      }) {
+        values {
+          ${searchField === 'assigned_to' ? 'assigned_to { username }' : searchField}
+        }
+      }
+    }
+  `;
+
+        try {
+          const {data} =  await api.post('/graphql', {
+            query:query,
+            variables:{query:newValue},
+          })
+
+          if(data?.data?.employersConnection?.values?.length){
+
+            let uniqueNames = new Set();
+            let matchedOptions = data?.data?.employersConnection?.values
+            .map(value => {
+              if (searchField === 'assigned_to') {
+                return value.assigned_to.username;
+              } else {
+                return value[searchField];
+              }
+            })
+            .filter(value => {
+              if (!uniqueNames.has(value)) {
+                uniqueNames.add(value);
+                return true;
+              }
+              return false;
+            })
+            .map(value => ({
+              label: value,
+              value: value
+            }));
+    
+            return matchedOptions;
+
+          }
+          
+        } catch (error) {
+          console.error(error);
+        }
+
+      }
+      
       //setting the value of the value drop down
 
     
       const filterSearchValue = async(newValue)=>{
-      
         const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
-          )
+      )
+      if(!matchedObjects.length){
+        return searchNotFound(newValue)
+      }
+      else {
         return matchedObjects;
+      }
       }
 
 const handleLoaderForSearch = async ()=>{
@@ -124,9 +175,7 @@ useEffect(()=>{
       handleLoaderForSearch();
      
       await setSearchValueOptions(data);
-      const shortedArray = await data.slice(0, 10)
-
-      await setDefaultSearchArray(shortedArray)
+      await setDefaultSearchArray(data)
       
 
     } catch (error) {
@@ -179,7 +228,6 @@ refreshOnTabChange()
                         control="lookupAsync"
                         defaultOptions ={defaultSearchArray}
                         filterData={filterSearchValue}
-                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={

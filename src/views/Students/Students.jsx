@@ -9,7 +9,7 @@ import {
 import moment from "moment";
 import { connect } from "react-redux";
 import Avatar from "../../components/content/Avatar";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback,useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { GET_STUDENTS } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -77,6 +77,9 @@ const Students = (props) => {
   const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
   const [ModalShowmassEdit,setModalShowmassEdit]=useState(false)
 
+  const prevIsSearchEnableRef = useRef();
+
+
   const columns = useMemo(
     () => [
       {
@@ -119,12 +122,20 @@ const Students = (props) => {
 
 
   useEffect(()=>{
-    if(isSearchEnable){
-      getStudents()
+  
+  if(isSearchEnable){
+    getStudents(activeTab.key);
+  }
+  if (prevIsSearchEnableRef.current !== undefined) {
+    if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+      getStudents(activeTab.key);
     }
-    
+  }
 
-  },[isSearchEnable])
+  prevIsSearchEnableRef.current = isSearchEnable;
+
+  },[isSearchEnable,activeTab.key,selectedSearchedValue])
+
 
   const getStudentsBySearchFilter = async(status="All",selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
     const studentFields = `
@@ -220,12 +231,25 @@ const Students = (props) => {
   else if(selectedSearchField === "medha_area"){
     Object.assign(variables, { area: selectedSearchedValue.trim()});
   }
+  else if(selectedSearchField === "full_name"){
+    Object.assign(variables, { full_name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "email"){
+    Object.assign(variables, { email: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "phone"){
+    Object.assign(variables, { phone: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "student_id"){
+    Object.assign(variables, { student_id: selectedSearchedValue.trim()});
+  }
   else if(selectedSearchField === "registration_date_latest"){
     Object.assign(variables, { 
       from_registration: selectedSearchedValue.start_date.trim(),
       to_registration:selectedSearchedValue.end_date.trim()
     });
   }
+  
 
   
 
@@ -239,12 +263,16 @@ const StudentQuery = `query GET_STUDENTS(
   $area:String,
   $username:String,
   $from_registration:String,
-  $to_registration:String
+  $to_registration:String,
+  $full_name:String,
+  $email:String,
+  $phone:String,
+  $student_id:String
   ) {
     studentsConnection (
       sort: $sort
       start: $start
-      limit: $limit,
+      limit: $limit
       where: {
         assigned_to: {
           id: $id
@@ -253,8 +281,12 @@ const StudentQuery = `query GET_STUDENTS(
         medha_area: $area
         state:$state
         status:$status
-        registration_date_latest_gte:from_registration
-        registration_date_latest_lte:to_registration
+        registration_date_latest_gte:$from_registration
+        registration_date_latest_lte:$to_registration
+        full_name_contains:$full_name
+        email_contains:$email
+        phone:$phone
+        student_id_contains:$student_id
       }
     ) {
       values {
@@ -277,14 +309,15 @@ const StudentQuery = `query GET_STUDENTS(
 
       setStudents(data?.data?.data?.studentsConnection.values);
       setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
       setLoading(false);
       nProgress.done();
-    });
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
+    
   }
  
   const getStudents = async (
@@ -337,14 +370,14 @@ else {
 
       setStudents(data?.data?.data?.studentsConnection.values);
       setStudentsAggregate(data?.data?.data?.studentsConnection?.aggregate);
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    })
-    .finally(() => {
       setLoading(false);
       nProgress.done();
-    });
+    })
+    .catch((error) => {
+      setLoading(false);
+      nProgress.done();
+      return Promise.reject(error);
+    })
 }
   };
 
@@ -391,6 +424,7 @@ else {
           getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
 
         }else {
+          console.log("this is working");
           getStudents(
             activeStatus,
             activeTab.key,

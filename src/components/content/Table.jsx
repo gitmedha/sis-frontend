@@ -4,6 +4,13 @@ import styled from 'styled-components';
 import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+const StickyPagination = styled.div`
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 10px;
+  border-top: 1px solid #D7D7E0;
+`;
 
 const Styles = styled.div`
   border: 1.5px solid #D7D7E0;
@@ -240,7 +247,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
           )}
         </div>
       </Styles>
-      {showPagination && <Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} />}
+      {showPagination && <StickyPagination><Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} /></StickyPagination>}
     </>
   )
 };

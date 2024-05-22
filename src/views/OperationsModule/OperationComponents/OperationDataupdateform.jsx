@@ -1,10 +1,11 @@
-import { Formik, Form} from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
+import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -14,9 +15,10 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
+import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getOpsPickList, updateOpsActivity ,searchBatches,searchInstitutions} from "./operationsActions";
+import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 
@@ -38,6 +40,25 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
+
+const hideBatchName = [
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
 
 const options = [
   { value: "Yes", label: "Yes" },
@@ -83,40 +104,51 @@ const OperationDataupdateform = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    try {
-      const {data} = await searchInstitutions(filterValue);
+    return await meilisearchClient
+      .index("institutions")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((institution) => {
+          return {
+            ...institution,
+            label: institution.name,
+            value: Number(institution.id),
+          };
+        });
 
-      let filterData = data.institutionsConnection.values.map((institution) => {
-        return {
-          ...institution,
-          label: institution.name,
-          value: Number(institution.id),
-        };
+        return filterData;
       });
-
-      return filterData;
-
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const filterBatch = async (filterValue) => {
-    try {
-      const {data} = await searchBatches(filterValue);
-
-      let batchInformtion = props ? props.batch : null;
+    return await meilisearchClient
+      .index("batches")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
 
-        let filterData = data.batchesConnection.values.map((batch) => {
+        let filterData = data.hits.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
+          if(hideBatchName.includes(batch.name)){
+            return {
+  
+            };
+          }else{
+            return {
+              ...batch,
+              label: batch.name,
+              value: Number(batch.id),
+            };
+          }
         });
         if (props && batchInformtion !== null && !batchFoundInList) {
           filterData.unshift({
@@ -125,11 +157,7 @@ const OperationDataupdateform = (props) => {
           });
         }
         return filterData;
-      
-
-    } catch (error) {
-      console.error(error);
-    }
+      });
   };
 
   useEffect(() => {

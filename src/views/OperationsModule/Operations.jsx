@@ -47,7 +47,7 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
-import UploadFile from "./OperationComponents/UploadFile";
+// import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload } from "react-icons/fa";
 
 const tabPickerOptionsMain = [
@@ -221,11 +221,6 @@ const Operations = ({
         accessor: "course_name",
       },
       {
-        Header: "Batch",
-        accessor: "program_name",
-      },
-
-      {
         Header: "Category",
         accessor: "category",
       },
@@ -238,8 +233,8 @@ const Operations = ({
         accessor: "end_date",
       },
       {
-        Header: "Project Name",
-        accessor: "project_name",
+        Header: "Program Name",
+        accessor: "program_name",
       },
     ],
     []
@@ -913,8 +908,7 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-  const uploadExcel = async (data, key) => {
-    if (key == "feild_activity") {
+  const uploadExcel = async (data) => {
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -924,7 +918,7 @@ const Operations = ({
         .catch((err) => {
           setAlert("Unable to create field data .", "error");
         });
-    }
+    
     setUploadModal(false);
     getoperations();
   };
@@ -938,6 +932,9 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
+  const closeUpload=()=>{
+    setUploadModal(false)
+  }
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1225,14 +1222,15 @@ const Operations = ({
             />
           )}
 
-          {uploadModal && (
+          {/* {uploadModal && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
               />
             </>
-          )}
+          )} */}
         </div>
       </Styled>
     </Collapse>

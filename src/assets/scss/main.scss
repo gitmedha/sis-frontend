@@ -31,6 +31,7 @@
 body {
   font-family: Latto-Regular !important;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
 .app {
@@ -335,6 +336,25 @@ color:black;
   color: #000 !important;
 }
 
-@import './media/md.scss';
+body::-webkit-scrollbar {
+	width: 4px;
+}
+
+div::-webkit-scrollbar {
+	background-color: transparent;
+	width: 4px;
+}
+
+div::-webkit-scrollbar-thumb {
+	width: 4px;
+	background-color: rgb(179, 174, 174);
+	border-radius: 4px;
+}
+
 @import './media/ml.scss';
 @import './media/ms.scss';
+@import './media/md.scss';
+
+
+
+

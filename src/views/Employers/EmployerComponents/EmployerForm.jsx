@@ -44,6 +44,7 @@ const EmployerForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate,setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem('user_id'))
@@ -106,6 +107,12 @@ const EmployerForm = (props) => {
         label: area.key,
         value: area.key,
       })));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      })))
     });
   };
 
@@ -328,40 +335,36 @@ const EmployerForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      placeholder="Pin Code"
-                      className="form-control"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      className="form-control capitalize"
-                      placeholder="City"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
+                  {stateOptions.length ? (
                     <Input
                       icon="down"
+                      name="state"
+                      label="State"
                       control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
+                      options={stateOptions}
+                      onChange={onStateChange}
+                      placeholder="State"
                       className="form-control"
-                      placeholder="Medha Area"
                       required
-                      options={areaOptions}
                     />
                     ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    {cityOptions.length ?(<Input
+                      control="lookup"
+                      name="city"
+                      label="City"
+                      icon='down'
+                      className="form-control capitalize"
+                      placeholder="City"
+                      options={cityOptions}
+                      required
+                    />):(
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -386,21 +389,35 @@ const EmployerForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                  {stateOptions.length ? (
+                  {areaOptions.length ? (
                     <Input
                       icon="down"
-                      name="state"
-                      label="State"
                       control="lookup"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                      placeholder="State"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      placeholder="Medha Area"
+                      required
+                      options={areaOptions}
+                    />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  
+                 
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      control="input"
+                      name="pin_code"
+                      label="Pin Code"
+                      placeholder="Pin Code"
                       className="form-control"
                       required
                     />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
                   </div>
                 </div>
               </Section>

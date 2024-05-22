@@ -263,7 +263,6 @@ const EnrollmentConnectionForm = (props) => {
   }, [])
   
   const handleStatusChange = async(value)=>{
-    
     setSelectedStatus(value);
 
     if(value === "Rejected by Employer"){

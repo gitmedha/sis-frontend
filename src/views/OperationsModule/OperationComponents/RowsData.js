@@ -103,7 +103,7 @@ export const RowsData = (props) => {
         return {
           ...program,
           label: program.name,
-          value:program.name,
+          value: program.name,
         }
       });
 
@@ -145,6 +145,7 @@ export const RowsData = (props) => {
       props.handleChange(e,"student_type",id)
     }else{
       setStudenttype(true)
+      props.handleChange(e,"student_type",id)
     }
   }
   
@@ -241,25 +242,14 @@ export const RowsData = (props) => {
             />
           
         </td>
+        
         <td>
           <Select
             className="basic-single table-input"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="batch"
-            options={programOptions}
-            filterData={filterProgram}
-            onChange={(e) => props.handleChange(e, "program_name", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
+            name="student"
             options={ studenTypeOption }
             onChange={(e) =>handleStudentType(e, row.id)}
           />
@@ -275,6 +265,36 @@ export const RowsData = (props) => {
             isClearable={true}
             isSearchable={true}
             isDisabled={studentType}
+            name="batch"
+            options={props.batchbdata}
+            onChange={(e) => props.handleChange(e, "batch", row.id)}
+            onInputChange={inputValue=> {
+              props.filterBatch(inputValue).then(data=>{
+                props.setBatchOptions(data)
+              })
+            }}
+          />
+        </td>
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programOptions}
+            filterData={filterProgram}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
             name="batch"
             options={props.batchbdata}
             onChange={(e) => props.handleChange(e, "batch", row.id)}

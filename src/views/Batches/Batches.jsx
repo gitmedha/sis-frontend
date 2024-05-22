@@ -47,9 +47,12 @@ const Batches = (props) => {
 
   useEffect(() => {
     getBatches(activeTab.key);
-  }, [activeTab]);
+  }, [activeTab,isSearchEnable,selectedSearchedValue]);
 
 
+  const resetSearchFilter = async()=>{
+    getBatches(activeTab.key);
+  }
   const getBatchesBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
     const batchFields = `
     id
@@ -137,10 +140,16 @@ const Batches = (props) => {
     Object.assign(variables, { username: selectedSearchedValue.trim()});
   }
   else if(selectedSearchField === "program"){
-    Object.assign(variables, { name: selectedSearchedValue.trim()});
+    Object.assign(variables, { program_name: selectedSearchedValue.trim()});
   }
   else if(selectedSearchField === "institution"){
     Object.assign(variables, { institution_name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "name"){
+    Object.assign(variables, { name: selectedSearchedValue.trim()});
+  }
+  else if(selectedSearchField === "grant"){
+    Object.assign(variables, { grant: selectedSearchedValue.trim()});
   }
   else if(selectedSearchField === "start_date"){
     Object.assign(variables, { 
@@ -172,7 +181,9 @@ const batchQuery = `query GET_BATCHES(
   $from_start_date: Date,
   $to_start_date: Date,
   $from_end_date: Date,
-  $to_end_date: Date
+  $to_end_date: Date,
+  $program_name:String,
+  $grant:String
 ) {
   batchesConnection(
     sort: $sort
@@ -184,10 +195,13 @@ const batchQuery = `query GET_BATCHES(
         username: $username
       }
       program: {
-        name: $name
+        name: $program_name
       }
       institution: {
         name: $institution_name
+      }
+      grant:{
+        name:$grant
       }
       medha_area: $area
       state: $state
@@ -195,7 +209,8 @@ const batchQuery = `query GET_BATCHES(
       start_date_gte: $from_start_date
       start_date_lte: $to_start_date
       end_date_gte: $from_end_date
-      end_date_lte: $to_end_date
+      end_date_lte: $to_end_date,
+      name:$name
     }
   ) {
     values {
@@ -227,15 +242,15 @@ const batchQuery = `query GET_BATCHES(
 
         setBatches(batches);
         setBatchesAggregate(batchesData?.data?.data?.batchesConnection?.aggregate);
+        NP.done();
+        setLoading(false);
       });
     })
     .catch((error) => {
+      NP.done();
+      setLoading(false);
       return Promise.reject(error);
     })
-    .finally(() => {
-      setLoading(false);
-      NP.done();
-    });
   }
 
 
@@ -243,6 +258,7 @@ const batchQuery = `query GET_BATCHES(
     NP.start();
     setLoading(true);
 
+    console.log("isSearchEnable:",isSearchEnable);
     if(isSearchEnable){
       await getBatchesBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
     }
@@ -315,12 +331,12 @@ const batchQuery = `query GET_BATCHES(
   }, [batches, pickList]);
 
   
-  useEffect(()=>{
-    if(isSearchEnable){
-      getBatches()
-    }
+  // useEffect(()=>{
+  //   if(isSearchEnable){
+  //     getBatches()
+  //   }
 
-  },[isSearchEnable])
+  // },[isSearchEnable])
 
 
   const columns = useMemo(
@@ -457,6 +473,7 @@ const batchQuery = `query GET_BATCHES(
         setSelectedSearchField={setSelectedSearchField} 
         setIsSearchEnable={setIsSearchEnable}
         setSelectedSearchedValue={setSelectedSearchedValue}
+        handleClear={resetSearchFilter}
         tab={activeTab.key}
         info={{
           id:userId,

@@ -20,6 +20,7 @@ import { getOpsPickList, updateStudetnsUpskills,searchStudents,searchBatches,sea
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
+import { MeiliSearch } from "meilisearch";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -40,6 +41,24 @@ const Section = styled.div`
   }
 `;
 
+const hideBatchName = [
+  "New Enrollments -- CAB",
+  "New Enrollments -- Lab",
+  "New Enrollments -- TAB",
+  "New Enrollments -- eCab",
+  "New Enrollments -- eTAB",
+  "New Enrollments -- CAB Plus Work from Home",
+  "New Enrollments -- Svapoorna",
+  "New Enrollments -- Swarambh",
+  "New Enrollments -- Workshop",
+  "New Enrollments -- BMC Design Lab",
+  "New Enrollments -- In The Bank"
+];
+
+const meilisearchClient = new MeiliSearch({
+  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
+  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
+});
 const categoryOptions = [
   { value: 'Career', label: "Career" },
   { value: 'Creative', label: "Creative" },
@@ -143,20 +162,30 @@ const UpskillUpdate = (props) => {
   };
 
   const filterBatch = async (filterValue) => {
-    try {
-      const {data} = await searchBatches(filterValue);
-
-      let batchInformtion = props ? props.batch : null;
+    return await meilisearchClient
+      .index("batches")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
-        let filterData = data.batchesConnection.values.map((batch) => {
+        let filterData = data.hits.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
-          return {
-            ...batch,
-            label: batch.name,
-            value: Number(batch.id),
-          };
+          if(hideBatchName.includes(batch.name)){
+            return {
+  
+            };
+          }else{
+            return {
+              ...batch,
+              label: batch.name,
+              value: Number(batch.id),
+            };
+          }
         });
         if (props && batchInformtion !== null && !batchFoundInList) {
           filterData.unshift({
@@ -165,11 +194,9 @@ const UpskillUpdate = (props) => {
           });
         }
         return filterData;
-
-    } catch (error) {
-      console.error(error);
+      });
     }
-  };
+  
 
   useEffect(() => {
     getAddressOptions().then((data) => {

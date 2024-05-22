@@ -3,6 +3,7 @@ import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
 import { getFieldValues } from './instituteActions';
+import api from "../../../apis";
 
 
 const Section = styled.div`
@@ -57,15 +58,6 @@ function InstitutionSearchBar({selectedSearchField,setSelectedSearchField,setIsS
             console.error("error",error)
         }
   
-        ///stores the last searched result in the local storage as cache 
-        ///we will use it to refresh the search results
-          
-        //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
-        //     baseUrl:baseUrl,
-        //     searchedProp:values.search_by_field,
-        //     searchValue:values.search_by_value
-        //   }));
-  
       }
 
       const handleStundentsOptions = async (value)=>{
@@ -90,11 +82,69 @@ function InstitutionSearchBar({selectedSearchField,setSelectedSearchField,setIsS
       //setting the value of the value drop down
 
     
+      const searchNotFound = async(newValue)=>{
+
+        let searchField=selectedSearchField;
+        
+        const query = `
+    query GET_VALUE($query: String!) {
+      institutionsConnection(where: {
+        ${searchField === 'assigned_to' ? 'assigned_to: { username_contains: $query }' : `${searchField}_contains: $query`}
+      }) {
+        values {
+          ${searchField === 'assigned_to' ? 'assigned_to { username }' : searchField}
+        }
+      }
+    }
+  `;
+
+        try {
+          const {data} =  await api.post('/graphql', {
+            query:query,
+            variables:{query:newValue},
+          })
+
+          if(data?.data?.institutionsConnection?.values?.length){
+
+            let uniqueNames = new Set();
+            let matchedOptions = data?.data?.institutionsConnection?.values
+            .map(value => {
+              if (searchField === 'assigned_to') {
+                return value.assigned_to.username;
+              } else {
+                return value[searchField];
+              }
+            })
+            .filter(value => {
+              if (!uniqueNames.has(value)) {
+                uniqueNames.add(value);
+                return true;
+              }
+              return false;
+            })
+            .map(value => ({
+              label: value,
+              value: value
+            }));
+    
+            return matchedOptions;
+
+          }
+          
+        } catch (error) {
+          console.error(error);
+        }
+
+      }
       const filterSearchValue = async(newValue)=>{
-      
-        const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
-          )
-        return matchedObjects;
+          const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
+        )
+        if(!matchedObjects.length){
+          return searchNotFound(newValue)
+        }
+        else {
+          return matchedObjects;
+        }
       }
 
 const handleLoaderForSearch = async ()=>{
@@ -168,9 +218,8 @@ refreshOnTabChange()
                         label="Search Value"
                         className="form-control"
                         control="lookupAsync"
-                        defaultOptions={searchValueOptions.slice(0, 100)}
+                        defaultOptions={searchValueOptions}
                         filterData={filterSearchValue}
-                        onChange={()=>setIsSearchEnable(false)}
                       />
                       <div
                           style={

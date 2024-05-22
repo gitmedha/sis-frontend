@@ -167,10 +167,10 @@ const initialValues = {};
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="alumni_service"
-                      label="Alumni Service"
+                      label="Alumni Engagement"
                       required
                       control="lookup"
-                      placeholder="Alumni Service"
+                      placeholder="Alumni Engagement"
                       className="form-control capitalize"
                       options={alumniServiceOptions}
                     />
@@ -216,7 +216,7 @@ const initialValues = {};
            
               <div className="row mt-3 py-3">
                 <div className="d-flex justify-content-start">
-                 <button className="btn btn-primary btn-regular mx-0" type="submit" onClick={()=>handleSubmit(values)}>{props.eventData ? "UPDATE":"SAVE"}</button>
+                 <button className="btn btn-primary btn-regular mx-0" type="submit">{props.eventData ? "UPDATE":"SAVE"}</button>
                     <button
                       type="button"
                       onClick={props.onHide}

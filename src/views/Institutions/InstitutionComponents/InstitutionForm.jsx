@@ -17,7 +17,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import api from '../../../apis';
+import api from "../../../apis";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,7 +39,7 @@ const Section = styled.div`
 `;
 
 const InstitutionForm = (props) => {
-  let { onHide, show} = props;
+  let { onHide, show } = props;
   const [institutionTypeOpts, setInstitutionTypeOpts] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -48,8 +48,9 @@ const InstitutionForm = (props) => {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
-  const [isDuplicate,setDuplicate] = useState(false);
+  const [isDuplicate, setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
@@ -121,6 +122,14 @@ const InstitutionForm = (props) => {
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
+      setCityOptions([]);
+      setCityOptions(
+        data?.data?.data?.geographiesConnection.groupBy.city.map((city) => ({
+          key: city.key,
+          value: city.key,
+          label: city.key,
+        }))
+      );
     });
   };
 
@@ -190,25 +199,23 @@ const InstitutionForm = (props) => {
     initialValues["mou"] = [];
   }
 
-  const FindDuplicate = async (setValue,name) =>{
-    setValue('name',name)
+  const FindDuplicate = async (setValue, name) => {
+    setValue("name", name);
 
     try {
-      const {data} = await api.post('/institutions/findDuplicate', {
-        "name": name
-      })
+      const { data } = await api.post("/institutions/findDuplicate", {
+        name: name,
+      });
 
-      if(data === 'Record Found'){
+      if (data === "Record Found") {
         return setDuplicate(true);
-      }
-      else if(data === 'Record Not Found') {
+      } else if (data === "Record Not Found") {
         return setDuplicate(false);
       }
-      
     } catch (error) {
-      console.error("error", error)
+      console.error("error", error);
     }
-  }
+  };
 
   return (
     <Modal
@@ -259,10 +266,18 @@ const InstitutionForm = (props) => {
                       required
                       control="input"
                       placeholder="Name"
-                      onChange={(e)=>FindDuplicate(setFieldValue,e.target.value)}
+                      onChange={(e) =>
+                        FindDuplicate(setFieldValue, e.target.value)
+                      }
                       className="form-control capitalize"
                     />
-                     {(isDuplicate && !props.id) ? <p style={{color:'red'}}>This instituition already exist on the system</p>: <p></p>}
+                    {isDuplicate && !props.id ? (
+                      <p style={{ color: "red" }}>
+                        This instituition already exist on the system
+                      </p>
+                    ) : (
+                      <p></p>
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     {assigneeOptions.length ? (
@@ -464,6 +479,30 @@ const InstitutionForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
+                    {cityOptions.length ? (
+                      <Input
+                        control="lookup"
+                        name="city"
+                        label="City"
+                        icon="down"
+                        options={cityOptions}
+                        required
+                        placeholder="City"
+                        className="form-control capitalize"
+                      />
+                    ) : (
+                      <>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Please select State to view City
+                        </label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
                     {districtOptions.length ? (
                       <Input
                         control="lookup"
@@ -511,16 +550,7 @@ const InstitutionForm = (props) => {
                       </>
                     )}
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="city"
-                      label="City"
-                      required
-                      placeholder="City"
-                      className="form-control capitalize"
-                    />
-                  </div>
+
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       control="input"
