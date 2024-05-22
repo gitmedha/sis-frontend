@@ -662,7 +662,7 @@ else {
               className="c-pointer"
             />
           </div>
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <Tabs
               options={studentStatusOptions}
@@ -673,26 +673,12 @@ else {
             {(isSRM() || isAdmin()) && (
               <>
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary add_button_sec"
                   onClick={() => setModalShow(true)}
                   style={{ marginLeft: "5px" }}
                 >
-                  Add New Student
+                  Add Student
                 </button>
-                {/* <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow1(true)}
-                >
-                  Mass Alumni Service
-                </button>
-
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow2(true)}
-                  
-                >
-                  Mass Employer
-                </button> */}
                 <button
                   className="btn btn-primary"
                   onClick={()=>setModalShowmassEdit(true)}

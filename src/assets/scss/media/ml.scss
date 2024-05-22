@@ -8,12 +8,29 @@
         align-items: center;
         justify-content: center;
         padding: 5px 10px !important;
-        padding:0;
     }
 
     .batch_session_form_buttons{
         font-size: 0.9rem;
         padding-left: 20px !important;
         padding-right: 20px !important;
+    }
+    .topnav {
+        display: flex !important;
+        font-size: 2px !important;
+    }
+
+    .navbar_sec {
+        flex-direction: column !important;
+    }
+
+    .navbar{       
+        display: flex !important;
+        justify-content: space-around !important;
+    }
+
+    .add_button_sec {
+        margin-top: 5px;
+        margin-bottom: 15px;
     }
   }
