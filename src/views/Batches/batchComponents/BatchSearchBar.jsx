@@ -3,6 +3,8 @@ import { Formik, Form ,useFormik} from 'formik';
 import styled from "styled-components";
 import { Input } from '../../../utils/Form';
 import { getFieldValues } from '../batchActions';
+import api from "../../../apis";
+
 
 
 const Section = styled.div`
@@ -82,9 +84,6 @@ function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchE
                 end_date:date2
               }
               await setSelectedSearchedValue(val)
-    
-              //stores the last searched result in the local storage as cache 
-              //we will use it to refresh the search results
                     
             }
             if(values.search_by_field === "end_date"){
@@ -107,15 +106,6 @@ function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchE
         } catch (error) {
             console.error("error",error)
         }
-  
-        ///stores the last searched result in the local storage as cache 
-        ///we will use it to refresh the search results
-          
-        //   await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({
-        //     baseUrl:baseUrl,
-        //     searchedProp:values.search_by_field,
-        //     searchValue:values.search_by_value
-        //   }));
   
       }
 
@@ -140,12 +130,112 @@ function BatchSearchBar({selectedSearchField,setSelectedSearchField,setIsSearchE
 
       //setting the value of the value drop down
 
-    
-      const filterSearchValue = async(newValue)=>{
+    //search values in the table when it is not there in the default array
+
+    const searchNotFound = async(newValue)=>{
+
+      let searchField=selectedSearchField;
+
+      let whereQuery=`${searchField}_contains:$query`;
+      let returnValue=`${searchField}`;
+
+      if(searchField ==="assigned_to"){
+        whereQuery = `assigned_to: {
+          username_contains:$query
+        }`
+
+        returnValue = `assigned_to {username}`
+      }
+      else if (searchField === "program"){
+        whereQuery = `program: {
+          name_contains:$query
+        }`
+
+        returnValue = `program {name}`
+      }
+
+      else if (searchField === "institution"){
+        whereQuery = `institution: {
+          name_contains:$query
+        }`
+
+        returnValue = `institution {name}`
+      }
+      else if (searchField === "grant"){
+        whereQuery = `grant: {
+          name_contains:$query
+        }`
+
+        returnValue = `grant {name}`
+      }
       
+      const query = `
+  query GET_VALUE($query: String!) {
+    batchesConnection(where: {
+      ${whereQuery}
+    }) {
+      values {
+        ${returnValue}
+      }
+    }
+  }
+`;
+
+      try {
+        const {data} =  await api.post('/graphql', {
+          query:query,
+          variables:{query:newValue},
+        })
+
+        if(data?.data?.batchesConnection?.values?.length){
+
+          let uniqueNames = new Set();
+          let matchedOptions = data?.data?.batchesConnection?.values
+          .map(value => {
+            if (searchField === 'assigned_to') {
+              return value.assigned_to.username;
+            }else if (searchField === "program"){
+             return value.program.name;
+            }
+            else if (searchField === "institution"){
+              return value.institution.name;
+            }
+            else if (searchField === "grant"){
+              return value.grant.name
+            } else {
+              return value[searchField];
+            }
+          })
+          .filter(value => {
+            if (!uniqueNames.has(value)) {
+              uniqueNames.add(value);
+              return true;
+            }
+            return false;
+          })
+          .map(value => ({
+            label: value,
+            value: value
+          }));
+  
+          return matchedOptions;
+
+        }
+        
+      } catch (error) {
+        console.error(error);
+      }
+
+    }
+      const filterSearchValue = async(newValue)=>{
         const matchedObjects = searchValueOptions.filter(obj =>obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
-          )
+      )
+      if(!matchedObjects.length){
+        return searchNotFound(newValue)
+      }
+      else {
         return matchedObjects;
+      }
       }
 
 const handleLoaderForSearch = async ()=>{
@@ -169,9 +259,7 @@ useEffect(()=>{
         handleLoaderForSearch();
        
         await setSearchValueOptions(data);
-        const shortedArray = await data.slice(0, 10)
-
-        await setDefaultSearchArray(shortedArray)
+        await setDefaultSearchArray(data)
         
 
       } catch (error) {
@@ -194,6 +282,7 @@ useEffect(()=>{
 
 refreshOnTabChange()
 },[tab])
+
 
   return (
     <Formik 

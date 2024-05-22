@@ -18,9 +18,7 @@ const Style = styled.div`
   td {
     width: 250px !important;
   }
-  .eYTrZb {
-    overflow: hidden !important;
-  }
+  overflow:hidden;
 `;
 
 const CheckValuesOpsUploadedData = (props) => {
@@ -34,7 +32,7 @@ const CheckValuesOpsUploadedData = (props) => {
         onHide={onHide}
         animation={false}
         aria-labelledby="contained-modal-title-vcenter"
-        className="form-modal"
+        className="form-modal "
         id="custom-modal"
         // dialogClassName="fullscreen-modal"
       >
@@ -49,7 +47,7 @@ const CheckValuesOpsUploadedData = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Style>
-          <Modal.Body className="bg-white">
+          <Modal.Body className="bg-white hide-scrollbar">
             <div style={{ width: "100%", height: "450px", overflow: "scroll" }}>
               {props.notUploadedData.length > 0 ? (
                <>
