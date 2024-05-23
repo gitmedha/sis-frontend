@@ -18,6 +18,7 @@
     .topnav {
         display: flex !important;
         font-size: 2px !important;
+        width: 110%;
     }
 
     .navbar_sec {
@@ -32,5 +33,15 @@
     .add_button_sec {
         margin-top: 5px;
         margin-bottom: 15px;
+    }
+  }
+
+  @media screen and (max-width:321px) {
+    .session_attendance_button {
+        font-size: 0.8rem;
+    }
+
+    .topnav {
+        width:100%;
     }
   }
