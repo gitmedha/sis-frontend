@@ -8,7 +8,6 @@ import { AlumniServiceValidations } from "../../../validations/Student";
 import {
   getStudentsPickList,
   getAlumniServicePickList,
-  createBulkAlumniService,
   searchStudents
 } from "./StudentActions";
 import Textarea from "../../../utils/Form/Textarea";
@@ -224,7 +223,7 @@ const MassEdit = (props) => {
 
       
     } catch (error) {
-      console.error(error);
+     return error
     }
   };
 
@@ -417,18 +416,7 @@ const MassEdit = (props) => {
                         required={feeFieldsRequired}
                       />
                     </div>
-                    {/* <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="receipt_number"
-                      label="Receipt Number"
-                      placeholder="Receipt Number"
-                      control="input"
-                      className="form-control"
-                      autoComplete="off"
-                      onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      required={feeFieldsRequired}
-                    />
-                  </div> */}
+                    
                     <div className="col-md-12 col-sm-12 mt-2">
                       <Textarea
                         name="comments"

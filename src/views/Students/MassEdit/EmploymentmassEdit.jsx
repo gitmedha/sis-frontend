@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { MeiliSearch } from "meilisearch";
+import { Formik, Form } from "formik";
 import Select from "react-select";
-import { getAlumniServicePickList, getEmployerOpportunities, getEmploymentConnectionsPickList, getStudentAlumniServices, getStudentEmploymentConnections, getStudentsPickList } from "../StudentComponents/StudentActions";
-import BulkMassEdit from "./BulkMassEdit";
+import { getEmployerOpportunities, getEmploymentConnectionsPickList, getStudentAlumniServices, getStudentEmploymentConnections, getStudentsPickList } from "../StudentComponents/StudentActions";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import BulkMassEmployerEdit from "./BulkMassEmployerEdit";
 import { GET_ALL_OPPORTUNITIES, GET_OPPORTUNITIES } from "../../../graphql";
 import api from "../../../apis";
+import { Input } from "../../../utils/Form";
+import { filterAssignedTo } from "../../../utils/function/lookupOptions";
+import Skeleton from "react-loading-skeleton";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -72,12 +74,32 @@ const Section1 = styled.table`
   
 `;
 
+
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #c4c4c4;
+  }
+
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
+
 const EmploymentmassEdit = (props) => {
 
 
     const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
-  const [studentinput, setstudentinput] = useState("");
+  const [studentInput, setStudentInput] = useState("");
   const [formStatus, setFormStatus] = useState(false);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
@@ -86,11 +108,27 @@ const EmploymentmassEdit = (props) => {
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-//   const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.employmentConnection?.opportunity?.type);
-//   const [selectedStatus, setSelectedStatus] = useState(props?.employmentConnection?.status);
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
   const [rejectionreason,setrejectionreason]=useState([])
+  const [isRejected,setRejected] = useState(false);
+  const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
+
+  let initialValues = {
+    employment_connection_student: "",
+    employer_id: "",
+    opportunity_id: "",
+    status: "",
+    start_date: "",
+    end_date: "",
+    source: "",
+    salary_offered: "",
+    reason_if_rejected: "",
+    reason_if_rejected_other:"",
+    assigned_to: '',
+  };
 
     const filterStudent = async (filterValue) => {
         return await meilisearchClient
@@ -112,11 +150,11 @@ const EmploymentmassEdit = (props) => {
           });
       };
       useEffect(() => {
-        filterStudent(studentinput).then((data) => {
+        filterStudent(studentInput).then((data) => {
           setStudentOptions(data);
         });
         
-      }, [studentinput]);
+      }, [studentInput]);
     
 
       
@@ -159,6 +197,12 @@ const EmploymentmassEdit = (props) => {
               label: item.value,
             }))
           );
+          console.log(data.status.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          })));
           setAllStatusOptions(
             data.status.map((item) => ({
               ...item,
@@ -175,7 +219,23 @@ const EmploymentmassEdit = (props) => {
             }))
           );
         });
-      }, [props]);
+        filterEmployer().then((data) => {
+          setEmployerOptions(data);
+        });
+        let filteredOptions = allStatusOptions;
+        console.log('filteredOptions',filteredOptions);
+        setStatusOptions(filteredOptions.map(item => {
+     
+          if (
+            localStorage.getItem('user_role').toLowerCase() === 'srm' &&
+            item.value.toLowerCase() === 'unknown'
+          ) {
+            return {isDisabled:true};
+          } else {
+            return { key: item.value, value: item.value, label: item.value };
+          }
+        }));
+      }, []);
 
 
       const filterEmployer = async (filterValue) => {
@@ -202,7 +262,8 @@ const EmploymentmassEdit = (props) => {
     
 
     
-      const handleSubmit = async () => {
+      const handleSubmit = async (values) => {
+        console.log(values);
         try {
             let alumData = await Promise.all(students.map(async (obj) => {
                 try {
@@ -293,6 +354,25 @@ const EmploymentmassEdit = (props) => {
     //     console.log("Unable to create field data .", "error");
     //   });
     }
+
+  const handleStatusChange = async(value)=>{
+    
+    setSelectedStatus(value);
+
+    if(value === "Rejected by Employer"){
+      setRejected(true)
+    }
+    else if (value === "Student Dropped Out"){
+      setRejected(true)
+    }
+    else if (value === "Offer Rejected by Student"){
+      setRejected(true)
+    }
+    else {
+      setRejected(false)
+    }
+
+  }
     
     const handelCancel=()=>{
       props.handelCancel()
@@ -302,86 +382,258 @@ const EmploymentmassEdit = (props) => {
     <>
       <Modal
         centered
-        size="xl"
+        size="lg"
         responsive
         show={true}
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal"
-        dialogClassName="fullscreen-modal"
+        // dialogClassName="fullscreen-modal"
       >
-        {!formStatus && (
-          <div className="col-md-6 col-sm-12 mt-2" style={{marginLeft:"2rem"}}>
-            <div>
-              <label className="leading-24">Student</label>
-              <Select
-                //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                isMulti
-                name="student_ids"
-                options={studentOptions}
-                filterData={filterStudent}
-                onInputChange={(e) => {
-                  console.log(e);
-                  return setstudentinput(e);
-                }}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                onChange={(choices) => setStudents(choices)}
-              />
-            </div>
-
-            <div>
-              <button className="btn btn-primary mt-3" onClick={() => handleSubmit()}>Submit</button>
-            </div>
+         {!formStatus && (
+        <div className="col-md-6 col-sm-12 px-3">
+          <div>
+            <label className="leading-24">Student</label>
+            <Select
+              isMulti
+              name="student_ids"
+              options={studentOptions}
+              filterData={filterStudent}
+              onInputChange={(e) => setStudentInput(e)}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(choices) => setStudents(choices)}
+            />
           </div>
-        )}
+          <div>
+            <button className="btn btn-primary mt-3" onClick={handleSubmit}>
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
         
         
         {formStatus && (students.length >0 ? 
-          <Section1>
-            <table className="create_data_table mt-5">
-              <thead className="border mt-5">
-                <tr>
-                  <th className="border">Assigned To</th>
-                  <th className="border">Employer *</th>
-                  <th className="border">Opportunity* *</th>
-                  <th className="border">Start Date *</th>
-                  <th className="border">End Date *</th>
-                  <th className="border">Status*</th>
-                  <th className="border">Salary Offered*</th>
-                  <th className="border" >Source *</th>
-                  <th className="border">Work Engagement *</th>
-                  <th className="border">Rejection Reason *</th>
-                  {/* Add other table headings here */}
-                </tr>
-              </thead>
-              <tbody className="mb-4">
-                {students.map((student, id) => (
-                  <tr key={id} className="mt-4">
-                    <BulkMassEmployerEdit
-                      statusOptions={allStatusOptions}
-                      sourceOptions={sourceOptions}
-                      dataPoints={student}
-                      handelChange={handelChange}
-                      workEngagementOptions={workEngagementOptions}
-                      rejectionreason={rejectionreason}
-                      employerOptions={employerOptions}
-                      filterEmployer={filterEmployer}
-                      employerOpportunityOptions={employerOpportunityOptions}
-                      updateEmployerOpportunityOptions={updateEmployerOpportunityOptions}
+          <>
+            <Formik
+          onSubmit={handleSubmit}
+          initialValues={initialValues}
+        >
+          {({ values, setFieldValue}) => (
+            <Form>
+              <Section>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="employment_connection_student"
+                      control="input"
+                      label="Student"
+                      className="form-control"
+                      placeholder="Student"
+                      disabled={true}
                     />
-                    {/* Add other table cells with input fields here */}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="d-flex ">
-            <button className="btn submitbtnclear btn-danger btn-regular my-5" onClick={()=>handelCancel()}>Cancel</button>
-              <button className="btn submitbtn btn-primary btn-regular my-5" onClick={()=>uploadData()}>Submit</button>
-            </div>
-            {/* Add a submit button here */}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+
+                      <Input
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
+                        required
+                        className="form-control"
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
+                      />
+                    
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    
+                    <Input
+                      control="lookupAsync"
+                      name="employer_id"
+                      label="Employer"
+                      filterData={filterEmployer}
+                      defaultOptions={employerOptions}
+                      className="form-control"
+                      placeholder="Employer"
+                      onChange={employer => {
+                        console.log(employer);
+                        setSelectedOpportunityType(null);
+                        updateEmployerOpportunityOptions(employer.value);
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {employerOpportunityOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="opportunity_id"
+                        label="Opportunity"
+                        options={employerOpportunityOptions}
+                        className="form-control"
+                        placeholder={"Opportunity"}
+                        onChange={(e) => setSelectedOpportunityType(e.type)}
+                      />
+                    ) : (
+                      <>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Opportunity (select an employer first)
+                        </label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="status"
+                      label="Status"
+                      required
+                      options={statusOptions}
+                      className="form-control"
+                      placeholder="Status"
+                      onChange={(e) =>handleStatusChange(e.value)}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="start_date"
+                      label="Start Date"
+                      required
+                      placeholder="Start Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      min={0}
+                      type="number"
+                      name="salary_offered"
+                      control="input"
+                      label="Salary Offered"
+                      required
+                      className="form-control"
+                      placeholder="Salary Offered"
+                    />
+                  </div>
+                  {showEndDate && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="end_date"
+                        label="End Date"
+                        placeholder="End Date"
+                        control="datepicker"
+                        className="form-control"
+                        autoComplete="off"
+                        required={endDateMandatory}
+                      />
+                    </div>
+                  )}
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="source"
+                      label="Source"
+                      required
+                      options={sourceOptions}
+                      className="form-control"
+                      placeholder="Source"
+                    />
+                  </div>
+               
+                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="reason_if_rejected"
+                      label="Reason if Rejected"
+                      required={selectedStatus === 'Offer Rejected by Student'}
+                      options={rejectionreason}
+                      className="form-control"
+                      onChange={(e)=>{
+                        setFieldValue("reason_if_rejected",e.value)
+                        if(e.value === "Others"){
+                          setIfSelectedOthers(true)
+                        }
+                        else {
+                          setIfSelectedOthers(false)
+                        }
+                      }}
+                      placeholder="Reason if Rejected"
+                    />
+                  </div>:<div></div>}
+                  {
+                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="reason_if_rejected_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    />
+                  </div>: <div></div>
+                  }
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="work_engagement"
+                      label="Work Engagement"
+                      options={workEngagementOptions}
+                      className="form-control"
+                      placeholder="Work Engagement"
+                      required
+                    />
+                  </div>
+                  
+                  {selectedOpportunityType === 'Internship' &&
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        min={0}
+                        type="number"
+                        control="input"
+                        name="number_of_internship_hours"
+                        className="form-control"
+                        label="Number of Internship hours"
+                        required
+                        placeholder="Number of Internship hours"
+                      />
+                    </div>
+                  }
+                </div>
+              </Section>
+              <div className="row mt-3 py-3">
+                <div className="d-flex justify-content-start">
+                  <button
+                    className="btn btn-primary btn-regular mx-0"
+                    type="submit"
+                  >
+                    SAVE
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handelCancel}
+                    className="btn btn-secondary btn-regular mr-2"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
             
-            {/* <button onClick={handleCancel}>Cancel</button> */}
-          </Section1>
+          </>
         :(<div className="">
         <button
           className="btn submitbtnclear btn-danger btn-regular my-5"

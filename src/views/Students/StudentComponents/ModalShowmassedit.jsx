@@ -1,16 +1,8 @@
 import React from "react";
-import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-
-import { Input } from "../../../utils/Form";
-import { AlumniServiceValidations } from "../../../validations/Student";
-import {
-  getStudentsPickList,
-  getAlumniServicePickList,
-  createBulkAlumniService,
-} from "./StudentActions";
+import { FaTimes } from "react-icons/fa";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import api from "../../../apis";
 import { connect } from "react-redux";
@@ -23,6 +15,10 @@ const Styled = styled.div`
     right: 0;
     bottom:5rem;
   }
+  .cross {
+    border:none;
+    background:none;  
+}
 `;
 
 const ModalShowmassedit = (props) => {
@@ -112,12 +108,12 @@ const ModalShowmassedit = (props) => {
               </div>
 
               <div className="cont ">
-                {/* <button
+              <button
                   onClick={onHide}
-                  className="btn btn-danger btn-regular close-btn"
-                >
-                  Close
-                </button> */}
+                  className=" mx-5 cross"
+            >
+              <FaTimes />
+            </button>
               </div>
             </Styled>
           </Modal.Title>
@@ -139,12 +135,7 @@ const ModalShowmassedit = (props) => {
               Mass Employer Edit
             </button>
 
-            <button
-                  onClick={onHide}
-                  className="btn btn-secondary btn-regular close-btn"
-            >
-              Cancel
-            </button>
+            
           </div>
         </Modal.Body>
       </Modal>
