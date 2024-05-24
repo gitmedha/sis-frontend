@@ -164,9 +164,9 @@ const Institute = (props) => {
       });
   };
 
-  useEffect(async () => {
+  useEffect(()=>{
     getThisInstitution();
-    await getProgramEnrollments();
+    getProgramEnrollments();
   }, [instituteID]);
 
   if (isLoading) {

@@ -558,16 +558,20 @@ const getModeOfPayment = (event) =>{
                    :null
                   }
                 </div>
-                <div className="d-flex justify-content-start">
-                    <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
-                    <button
-                      type="button"
-                      onClick={onHide}
-                      className="btn btn-secondary btn-regular mr-2"
-                    >
-                      CANCEL
-                    </button>
+                
+              <div className="row justify-content-center">
+                <div className="col-auto">
+                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
+                    SAVE
+                  </button>
                 </div>
+                <div className="col-auto">
+                   <button type="button"
+                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
+                    CANCEL                    
+                  </button>
+                </div>
+              </div>
               </div>
             </Form>
           )}

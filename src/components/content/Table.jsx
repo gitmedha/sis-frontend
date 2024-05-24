@@ -240,7 +240,9 @@ const Table = ({ selectedSearchedValue, selectedSearchField, isSearchEnable, fet
                 <div key={index} className={`row ${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`} onClick={() => { }}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
-                      <div key={cellIndex} className="cell">
+                      <div key={cellIndex} className={`cell ${
+                        cellIndex === row.cells.length - 1 ? 'd-flex justify-content-end' : ''
+                      }`}>
                         {cell.render('Cell')}
                       </div>
                     )

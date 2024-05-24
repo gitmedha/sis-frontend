@@ -251,18 +251,18 @@ const Batch = (props) => {
     });
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
     NP.start();
-    await getThisBatch();
-    await getProgramEnrollments();
+    getThisBatch();
+    getProgramEnrollments();
     NP.done();
     setLoading(false);
   }, [batchID]);
 
-  useEffect(async () => {
-    await getSessions();
-    await getStudents();
+  useEffect(() => {
+    getSessions();
+    getStudents();
   }, [batch]);
 
   const handleSessionDataUpdate = async () => {

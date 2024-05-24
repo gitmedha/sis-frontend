@@ -283,11 +283,11 @@ refreshOnTabChange()
                     )}
                   </div>
 
-                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-start align-items-center">
-                <button className="btn btn-primary btn-regular" type="submit" disabled={isDisabled?true:false}>
+                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center">
+                <button className="btn btn-primary action_button_sec search_bar_action_sec" type="submit" disabled={isDisabled?true:false}>
                 FIND
             </button>
-            <button  className="btn btn-secondary btn-regular mr-2" type='button' onClick={() => clear(formik)} disabled={isDisabled?true:false}>
+            <button  className="btn btn-secondary mr-2 action_button_sec search_bar_action_sec" type='button' onClick={() => clear(formik)} disabled={isDisabled?true:false}>
                 CLEAR
             </button>
         </div>   

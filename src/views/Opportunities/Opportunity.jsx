@@ -184,17 +184,17 @@ const Opportunity = (props) => {
       <Styled>
         <>
           <div className="row" style={{ margin: "30px 0 0" }}>
-            <div className="btn-box col-12">
+            <div className="col-12 button_container">
               <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
-                className="button btn--primary"
+                className="btn--primary action_button_sec"
               >
                 EDIT
               </button>
               <button
                 onClick={() => setShowDeleteAlert(true)}
-                className="button btn--primary"
+                className="btn--primary action_button_sec"
               >
                 DELETE
               </button>
