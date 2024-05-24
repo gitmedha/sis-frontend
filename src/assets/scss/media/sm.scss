@@ -10,7 +10,7 @@
         padding: 5px 10px !important;
     }
 
-    .batch_session_form_buttons{
+    .collapse_form_buttons{
         font-size: 0.9rem;
         padding-left: 20px !important;
         padding-right: 20px !important;
@@ -42,6 +42,9 @@
     }
 
     .topnav {
-        width:100%;
+        width:115%;
+    }
+    .active {
+        width: 75px;
     }
   }
