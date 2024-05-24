@@ -21,6 +21,13 @@
         width: 110%;
     }
 
+    
+    .institution_topnav_sec{
+        display: flex !important;
+        font-size: 2px !important;
+        width: 110%;
+    }
+
     .navbar_sec {
         flex-direction: column !important;
     }
@@ -46,5 +53,9 @@
     }
     .active {
         width: 75px;
+    }
+
+    .institution_topnav_sec{
+        width:130% !important;
     }
   }
