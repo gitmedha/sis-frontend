@@ -12,7 +12,7 @@ const TabPicker = ({ options, setActiveTab = () => {} }) => {
   };
 
   return (
-    <div className="topnav my-3 latto-regular">
+    <div className="topnav my-3 latto-regular institution_topnav_sec">
       {options.length == 1 ? ((
         options.map((tab) => (
           <div

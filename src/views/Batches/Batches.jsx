@@ -458,14 +458,14 @@ const batchQuery = `query GET_BATCHES(
   return (
     <Collapse title="Batches" type="plain" opened={true}>
       <div className="row m-3 ">
-        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <button
-              className="btn btn-primary"
+              className="btn btn-primary add_button_sec"
               onClick={() => setModalShow(true)}
               style={{marginLeft: '15px'}}
             >
-              Add New Batch
+              Add New
             </button>
         </div>
       <BatchSearchBar

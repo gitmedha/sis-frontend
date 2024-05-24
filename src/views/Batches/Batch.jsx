@@ -251,18 +251,18 @@ const Batch = (props) => {
     });
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
     NP.start();
-    await getThisBatch();
-    await getProgramEnrollments();
+    getThisBatch();
+    getProgramEnrollments();
     NP.done();
     setLoading(false);
   }, [batchID]);
 
-  useEffect(async () => {
-    await getSessions();
-    await getStudents();
+  useEffect(() => {
+    getSessions();
+    getStudents();
   }, [batch]);
 
   const handleSessionDataUpdate = async () => {
@@ -286,17 +286,17 @@ const Batch = (props) => {
       <Styled>
         <>
           <div className="row" style={{margin: '30px 0 0'}}>
-            <div className="col-12">
+            <div className="col-12 button_container">
               <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
-                className="button btn--primary"
+                className="btn--primary action_button_sec"
               >
                 EDIT
               </button>
               <button
                 onClick={() => setShowDeleteAlert(true)}
-                className="button btn--primary"
+                className="btn--primary action_button_sec"
                 disabled={!isAdmin() && (batch?.created_by_frontend?.id !== userId || (batch?.status === "In Progress" || batch?.status === "Complete" || batch?.status === "Certified"))}
               >
                 DELETE
@@ -306,7 +306,7 @@ const Batch = (props) => {
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
-                    className="button btn--primary"
+                    className="btn--primary action_button_sec"
                     disabled={batch?.status == "Enrollment Ongoing"}
                   >
                     ACTIONS

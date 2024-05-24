@@ -217,15 +217,15 @@ const Student = (props) => {
       <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12">
+          <div className="col-12 d-flex">
             <button
               onClick={() => setModalShow(true)}
               style={{ marginLeft: "0px" }}
-              className="btn--primary"
+              className="btn--primary action_button_sec"
             >
               EDIT
             </button>
-            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary">
+            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary action_button_sec">
               DELETE
             </button>}
           </div>

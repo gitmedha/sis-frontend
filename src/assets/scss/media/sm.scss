@@ -1,0 +1,61 @@
+@media screen and (max-width: 431px) {
+    .button_container {
+        display: flex;
+    }
+
+    .action_button_sec {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 10px !important;
+    }
+
+    .collapse_form_buttons{
+        font-size: 0.9rem;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    .topnav {
+        display: flex !important;
+        font-size: 2px !important;
+        width: 110%;
+    }
+
+    
+    .institution_topnav_sec{
+        display: flex !important;
+        font-size: 2px !important;
+        width: 110%;
+    }
+
+    .navbar_sec {
+        flex-direction: column !important;
+    }
+
+    .navbar{       
+        display: flex !important;
+        justify-content: space-around !important;
+    }
+
+    .add_button_sec {
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+  }
+
+  @media screen and (max-width:321px) {
+    .session_attendance_button {
+        font-size: 0.8rem;
+    }
+
+    .topnav {
+        width:115%;
+    }
+    .active {
+        width: 75px;
+    }
+
+    .institution_topnav_sec{
+        width:130% !important;
+    }
+  }
