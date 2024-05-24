@@ -974,7 +974,7 @@ const Operations = ({
                     Add New Data
                   </button>
 
-                  <button
+                  {/* <button
                     className="btn btn-primary"
                     onClick={() => setUploadModal(true)}
                     style={{ marginLeft: "15px" }}
@@ -1002,7 +1002,7 @@ const Operations = ({
                         }}
                       ></div>
                     </div>
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>

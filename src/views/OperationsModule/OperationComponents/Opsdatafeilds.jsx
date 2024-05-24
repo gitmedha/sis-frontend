@@ -141,7 +141,7 @@ const Opsdatafeilds = (props) => {
     <DetailField className='' Bold={""} label="Topic" value={props.topic} />
     <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
     <DetailField className='' Bold={""} label="Program Name" value={props.program_name ? props.program_name : "Not found"} />
-    {/* <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/> */}
+    <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/>
   </div>
               </div>
               <div className="">
