@@ -1222,7 +1222,7 @@ const Operations = ({
             />
           )}
 
-          {/* {uploadModal && (
+          {uploadModal && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
@@ -1230,7 +1230,7 @@ const Operations = ({
                 closeThepopus={closeUpload}
               />
             </>
-          )} */}
+          )}
         </div>
       </Styled>
     </Collapse>

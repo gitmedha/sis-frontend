@@ -104,6 +104,7 @@ const UploadFile = (props) => {
           const instituteId = institutionOption.find(
             (institute) => institute.name === newItem["Educational Institution"]
           )?.id;
+          console.log(instituteId);
           const userId = assigneOption.find(
             (user) => user.name === newItem["Assigned To"]
           )?.id;
@@ -116,7 +117,7 @@ const UploadFile = (props) => {
               : true;
           const currentUser = localStorage.getItem("user_id");
           if (
-            batchId === "" ||
+            batchId === (undefined || ' ') ||
             instituteId === undefined ||
             userId === undefined
           ) {
