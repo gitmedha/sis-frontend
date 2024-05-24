@@ -424,7 +424,6 @@ else {
           getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
 
         }else {
-          console.log("this is working");
           getStudents(
             activeStatus,
             activeTab.key,
@@ -671,13 +670,13 @@ else {
 
           
             {(isSRM() || isAdmin()) && (
-              <>
+              <div className="d-flex ">
                 <button
                   className="btn btn-primary"
                   onClick={() => setModalShow(true)}
-                  style={{ marginLeft: "5px" }}
+                  style={{ marginRight: "2rem" }}
                 >
-                  Add New Student
+                  Add  Student
                 </button>
                 {/* <button
                   className="btn btn-primary"
@@ -699,7 +698,7 @@ else {
                 >
                   Mass Edit 
                 </button>
-              </>
+              </div>
             )}
           </div>
           

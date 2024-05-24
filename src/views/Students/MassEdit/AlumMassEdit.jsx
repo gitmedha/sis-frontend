@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { MeiliSearch } from "meilisearch";
-import Select from "react-select";
+import Select , { components }from "react-select";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import {
-  getDefaultAssignee,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import {
@@ -12,8 +11,7 @@ import {
   getStudentAlumniServices,
   getStudentsPickList,
 } from "../StudentComponents/StudentActions";
-import BulkMassEdit from "./BulkMassEdit";
-import api from "../../../apis";
+import * as Yup from "yup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Textarea from "../../../utils/Form/Textarea";
@@ -114,6 +112,7 @@ const Section1 = styled.table`
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
+  const [alumniServiceData,setAlumniServiceData]=useState('')
   const [studentInput, setStudentInput] = useState("");
   const [formStatus, setFormStatus] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -126,6 +125,8 @@ const AlumMassEdit = (props) => {
     value: "",
     label: "",
   });
+
+
 
   useEffect((props) => {
     getAlumniServicePickList().then((data) => {
@@ -218,7 +219,6 @@ const AlumMassEdit = (props) => {
         students.map(async (obj) => {
           try {
             const data = await getStudentAlumniServices(obj.id);
-            console.log("data", data.data.data.alumniServicesConnection.values);
             return data.data.data.alumniServicesConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -237,16 +237,16 @@ const AlumMassEdit = (props) => {
               })
             );
           } catch (err) {
-            console.error(err);
-            return [];
+            
+            return err;
           }
         })
       );
 
-      setStudents(alumData.flat());
+      setAlumniServiceData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
-      console.error(error);
+      return error
     }
     // setFormStatus(true)
   };
@@ -272,7 +272,6 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
     let data =students.map((obj) => {
       return {
         assigned_to: values.assigned_to ?values.assigned_to: obj.assigned_to,
@@ -290,9 +289,7 @@ const AlumMassEdit = (props) => {
         id: Number(obj.id),
       };
     });
-    console.log("data",data);
     props.handelSubmit(data, "AlumniBuldEdit");
-    console.log("yessss.......");
   };
 
   useEffect(() => {
@@ -310,12 +307,40 @@ const AlumMassEdit = (props) => {
       );
     });
   }, []);
-  useEffect(() => {
-    console.log(students);
-  }, []);
+ 
+  const validations = Yup.object({
+    start_date: Yup.date().nullable().required("Start Date is ."),
+    end_date: Yup.date().nullable().required("End Date is .")
+      .when(
+        'start_date',
+        (start_date, schema) => start_date ? schema.min(start_date, "End date can't be before Start date") : schema
+      )
+  });
 
   const handelCancel = () => {
     props.handelCancel();
+  };
+  const MultiValue = ({ index, getValue, ...props }) => {
+    const maxToShow = 1; // Maximum number of values to show
+    const overflowCount = getValue().length - maxToShow;
+  
+    if (index < maxToShow) {
+      return <components.MultiValue {...props} />;
+    }
+  
+    if (index === maxToShow) {
+      return (
+        <components.MultiValue {...props}>
+          <span>+{overflowCount}</span>
+        </components.MultiValue>
+      );
+    }
+  
+    return null;
+  };
+  
+  const customComponents = {
+    MultiValue,
   };
   return (
     <Modal
@@ -328,11 +353,13 @@ const AlumMassEdit = (props) => {
       // dialogClassName="fullscreen-modal"
     >
       {!formStatus && (
-        <div className="col-md-6 col-sm-12 px-3">
+        <Modal.Body className="bg-white" height="">
+        <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
           <div>
             <label className="leading-24">Student</label>
             <Select
               isMulti
+              closeMenuOnSelect={false}
               name="student_ids"
               options={studentOptions}
               filterData={filterStudent}
@@ -342,12 +369,13 @@ const AlumMassEdit = (props) => {
               onChange={(choices) => setStudents(choices)}
             />
           </div>
-          <div>
-            <button className="btn btn-primary mt-3" onClick={handleSubmit}>
+          <div className="d-flex justify-content-end mx-5">
+            <button className="btn btn-primary mt-3 " onClick={handleSubmit}>
               Submit
             </button>
           </div>
         </div>
+        </Modal.Body>
       )}
 
       {formStatus &&
@@ -366,7 +394,7 @@ const AlumMassEdit = (props) => {
             <Formik
               onSubmit={onSubmit}
               initialValues={initialValues}
-              // validationSchema={{}}
+              validationSchema={validations}
             >
               {({ values }) => (
                 <Form>
@@ -378,6 +406,8 @@ const AlumMassEdit = (props) => {
                           isMulti
                           isDisabled={true}
                           name="student_ids"
+                          defaultValue={students}
+                          components={customComponents}
                           options={studentOptions}
                           className="basic-multi-select"
                           classNamePrefix="select"
@@ -388,7 +418,7 @@ const AlumMassEdit = (props) => {
                           control="lookupAsync"
                           name="assigned_to"
                           label="Assigned To"
-                          required
+                          
                           className="form-control"
                           placeholder="Assigned To"
                           defaultOptions={assigneeOptions}
@@ -404,7 +434,7 @@ const AlumMassEdit = (props) => {
                           className="form-control"
                           options={categoryOptions}
                           onChange={(e) => setSelectedCategory(e.value)}
-                          required
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -419,7 +449,7 @@ const AlumMassEdit = (props) => {
                             )}
                             className="form-control"
                             placeholder="Subcategory"
-                            required
+                            
                           />
                         )}
                       </div>
@@ -432,7 +462,7 @@ const AlumMassEdit = (props) => {
                           options={programOptions}
                           className="form-control"
                           placeholder="Program Mode"
-                          required
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -444,7 +474,7 @@ const AlumMassEdit = (props) => {
                           options={locationOptions}
                           className="form-control"
                           placeholder="Location"
-                          required
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -455,7 +485,7 @@ const AlumMassEdit = (props) => {
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
-                          required
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -477,7 +507,7 @@ const AlumMassEdit = (props) => {
                           className="form-control"
                           autoComplete="off"
                           // onInput={(value) => setFeeSubmissionDateValue(value)}
-                          // required={feeFieldsRequired}
+                          // ={feeFieldsRequired}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -491,7 +521,7 @@ const AlumMassEdit = (props) => {
                           className="form-control"
                           autoComplete="off"
                           // onInput={(e) => setFeeAmountValue(e.target.value)}
-                          // required={feeFieldsRequired}
+                          // ={feeFieldsRequired}
                         />
                       </div>
                       {/* <div className="col-md-6 col-sm-12 mt-2">
@@ -503,7 +533,7 @@ const AlumMassEdit = (props) => {
                       className="form-control"
                       autoComplete="off"
                       onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      required={feeFieldsRequired}
+                      ={feeFieldsRequired}
                     />
                   </div> */}
                       <div className="col-md-12 col-sm-12 mt-2">
@@ -518,7 +548,7 @@ const AlumMassEdit = (props) => {
                       </div>
                     </div>
                   </>
-                  <div className="row mt-3 py-3">
+                  <div className="row mt-3 py-3 mx-3">
                     <div className="d-flex justify-content-start">
                       <button
                         className="btn btn-primary btn-regular mx-0"
