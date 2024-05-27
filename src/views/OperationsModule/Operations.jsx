@@ -47,8 +47,9 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
-// import UploadFile from "./OperationComponents/UploadFile";
+import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload } from "react-icons/fa";
+import TotUpload from "./UploadFiles/TotUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -122,7 +123,10 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
-  const [uploadModal, setUploadModal] = useState(false);
+  const [uploadModal, setUploadModal] = useState({
+    myData:false,
+    tot:false
+  });
 
   const columns = useMemo(
     () => [
@@ -978,7 +982,21 @@ const Operations = ({
 
                   <button
                     className="btn btn-primary"
-                    onClick={() => setUploadModal(true)}
+                    onClick={() => 
+                      {
+                        if(activeTab.key =="myData"){
+                          setUploadModal({
+                            myData:true,
+                            tot:false
+                          })
+                        }else{
+                          setUploadModal({
+                            tot:true,
+                          myData:false
+                          })
+                        }
+                      }
+                    }
                     style={{ marginLeft: "15px" }}
                   >
                     Upload Data
@@ -1222,7 +1240,7 @@ const Operations = ({
             />
           )}
 
-          {uploadModal && (
+          {uploadModal.myData && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
@@ -1231,6 +1249,18 @@ const Operations = ({
               />
             </>
           )}
+          {uploadModal.tot  && (
+            <>
+               <TotUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
+                tot="yes"
+              />
+            </>
+          )
+
+          }
         </div>
       </Styled>
     </Collapse>
