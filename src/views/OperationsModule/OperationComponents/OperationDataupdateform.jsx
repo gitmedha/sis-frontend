@@ -56,7 +56,7 @@ const hideBatchName = [
   "New Enrollments -- Swarambh",
   "New Enrollments -- Workshop",
   "New Enrollments -- BMC Design Lab",
-  "New Enrollments -- In The Bank"
+  "New Enrollments -- In The Bank",
 ];
 
 const options = [
@@ -64,22 +64,28 @@ const options = [
   { value: "No", label: "No" },
 ];
 const Activityoptions = [
-  { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
-  { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
-  { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
-  { value: 'Alumni Engagement', label: 'Alumni Engagement' },
-  {value:'Placement Drive',label:'Placement Drive'}
+  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
+  {
+    value: "Industry visit/Exposure visit",
+    label: "Industry visit/Exposure visit",
+  },
+  {
+    value: "Workshop/Training Session/Activity (In/Off campus)",
+    label: "Workshop/Training Session/Activity (In/Off campus)",
+  },
+  { value: "Alumni Engagement", label: "Alumni Engagement" },
+  { value: "Placement Drive", label: "Placement Drive" },
 ];
 
 const OperationDataupdateform = (props) => {
-  let { onHide, show, closeopsedit ,refreshTableOnDataSaving} = props;
+  let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-  const [programeName,setProgramName]=useState([])
+  const [programeName, setProgramName] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -137,11 +143,9 @@ const OperationDataupdateform = (props) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
-          if(hideBatchName.includes(batch.name)){
-            return {
-  
-            };
-          }else{
+          if (hideBatchName.includes(batch.name)) {
+            return {};
+          } else {
             return {
               ...batch,
               label: batch.name,
@@ -210,7 +214,7 @@ const OperationDataupdateform = (props) => {
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
-    refreshTableOnDataSaving()
+    refreshTableOnDataSaving();
     setDisableSaveButton(true);
     onHide(value);
     closeopsedit();
@@ -235,14 +239,14 @@ const OperationDataupdateform = (props) => {
     students_attended: "",
     batch: "",
   };
-  
+
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
-    initialValues['program_name']=props.program_name
+    initialValues["program_name"] = props.program_name;
     initialValues["start_date"] = new Date(props.start_date);
     initialValues["end_date"] = new Date(props.end_date);
     initialValues["students_attended"] = props?.students_attended;
@@ -275,18 +279,17 @@ const OperationDataupdateform = (props) => {
         );
       }),
   });
-  useEffect(async() => {
-  let data=await getOpsPickList().then(data=>{
+  useEffect(async () => {
+    let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
-          key: value,
-          label: value,
-          value: value,
-        }))
-    }) 
+        key: value,
+        label: value,
+        value: value,
+      }));
+    });
 
     setProgramName(data);
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -341,7 +344,7 @@ const OperationDataupdateform = (props) => {
                           placeholder="Activity Type"
                         />
                       </div>
-                      
+
                       <div className="col-md-6 col-sm-12 mb-2">
                         {assigneeOptions.length && (
                           <Input
@@ -407,7 +410,6 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                      
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -418,7 +420,6 @@ const OperationDataupdateform = (props) => {
                           className="form-control"
                           autoComplete="off"
                         />
-                       
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -564,19 +565,21 @@ const OperationDataupdateform = (props) => {
                     </div>
                   </Section>
 
-                  <div className="row mt-3 py-3">
-                    <div className="d-flex justify-content-start">
+                  <div className="row justify-content-center">
+                    <div className="col-auto">
                       <button
-                        className="btn btn-primary btn-regular mx-0"
                         type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
                         disabled={disableSaveButton}
                       >
                         SAVE
                       </button>
+                    </div>
+                    <div className="col-auto">
                       <button
                         type="button"
                         onClick={onHide}
-                        className="btn btn-secondary btn-regular mr-2"
+                        className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
                       </button>

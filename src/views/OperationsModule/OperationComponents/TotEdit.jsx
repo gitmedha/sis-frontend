@@ -1,4 +1,4 @@
-import { Formik, Form} from "formik";
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -16,7 +16,13 @@ import {
 } from "../../../utils/function/lookupOptions";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getTotPickList,updateUserTot ,deactivate_user_ops,searchBatches,searchInstitutions} from "./operationsActions";
+import {
+  getTotPickList,
+  updateUserTot,
+  deactivate_user_ops,
+  searchBatches,
+  searchInstitutions,
+} from "./operationsActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import * as Yup from "yup";
@@ -60,7 +66,7 @@ const certificateoptions = [
 ];
 
 const TotEdit = (props) => {
-  let { onHide, show ,refreshTableOnDataSaving} = props;
+  let { onHide, show, refreshTableOnDataSaving } = props;
   const currentDate = new Date();
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
@@ -70,9 +76,9 @@ const TotEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
-  const [moduleName,setModuleName]=useState([])
-  const [partnerDept,setPartnerDept]=useState([])
-  const [projectName,setProjectName]=useState([])
+  const [moduleName, setModuleName] = useState([]);
+  const [partnerDept, setPartnerDept] = useState([]);
+  const [projectName, setProjectName] = useState([]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -99,7 +105,7 @@ const TotEdit = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutions(filterValue);
+      const { data } = await searchInstitutions(filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         return {
@@ -110,29 +116,26 @@ const TotEdit = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
   };
 
-
-
- useEffect(async() => {
-    let val=await getStateDistricts().then((data) => {
-      setAreaOptions(data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
-        key: item.key,
-        value: item.key,
-        label: item.key,
-      })))
-     });
-     
- }, [])
- 
+  useEffect(async () => {
+    let val = await getStateDistricts().then((data) => {
+      setAreaOptions(
+        data.data.data?.geographiesConnection.groupBy?.district.map((item) => ({
+          key: item.key,
+          value: item.key,
+          label: item.key,
+        }))
+      );
+    });
+  }, []);
 
   const filterBatch = async (filterValue) => {
     try {
-      const {data} = await searchBatches(filterValue);
+      const { data } = await searchBatches(filterValue);
 
       let filterData = data.batchesConnection.values.map((batch) => {
         return {
@@ -143,12 +146,10 @@ const TotEdit = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
   };
-
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -167,8 +168,7 @@ const TotEdit = (props) => {
     });
   }, []);
 
-  const onStateChange = async (value) => {
-  };
+  const onStateChange = async (value) => {};
 
   useEffect(() => {
     getStudentsPickList().then((data) => {
@@ -192,7 +192,7 @@ const TotEdit = (props) => {
     newObject.published_at = values?.published_at ? values.published_at : "";
     delete values["published_at"];
     const value = await updateUserTot(Number(props.id), newObject);
-    refreshTableOnDataSaving()
+    refreshTableOnDataSaving();
     setDisableSaveButton(true);
     onHide(value);
 
@@ -247,8 +247,7 @@ const TotEdit = (props) => {
         setInstitutionOptions(data);
       });
     }
-    getTotPickList().then(data=>{
-      
+    getTotPickList().then((data) => {
       // setModuleName(data.module_name.map(item))
       setModuleName(
         data.module_name.map((item) => ({
@@ -271,11 +270,8 @@ const TotEdit = (props) => {
           label: item,
         }))
       );
-
-    })
+    });
   }, []);
-
-
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
@@ -306,20 +302,17 @@ const TotEdit = (props) => {
       }),
   });
 
-
-  const deleteEntry=async()=>{
-    const data=await deactivate_user_ops(Number(props.id))
-    if(data.status==200){
-     setAlert("Entry Deleted Successfully.", "success");
-     onHide()
-    }else{
-     setAlert("Not Able to delete", "Danger");
-     onHide()
+  const deleteEntry = async () => {
+    const data = await deactivate_user_ops(Number(props.id));
+    if (data.status == 200) {
+      setAlert("Entry Deleted Successfully.", "success");
+      onHide();
+    } else {
+      setAlert("Not Able to delete", "Danger");
+      onHide();
     }
-    
-    
-   }
-  
+  };
+
   return (
     <>
       {initialValues && props && (
@@ -349,8 +342,7 @@ const TotEdit = (props) => {
                 </div>
               )}
               <h1 className="text--primary bebas-thick mb-0">
-                
-                {props.user_name ? props.user_name  : `Edit tot Detail ----`}
+                {props.user_name ? props.user_name : `Edit tot Detail ----`}
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -394,7 +386,6 @@ const TotEdit = (props) => {
                           placeholder="Project Name"
                         />
                       </div>
-                     
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -661,59 +652,64 @@ const TotEdit = (props) => {
                   <Section>
                     <h3 className="section-header">Other Information</h3>
                     <div className="row">
-                    <div className="col-md-6 col-sm-12">
-                    <DetailField
-                      Bold={""}
-                      label="Created By"
-                      value={
-                        props.createdby
-                          ? props.createdby.username
-                          : "not found"
-                      }
-                    />
-                    <DetailField
-                      Bold={""}
-                      label="Created At"
-                      value={moment(props.created_at).format(
-                        "DD MMM YYYY, h:mm a"
-                      )}
-                    />
-                  </div>
+                      <div className="col-md-6 col-sm-12">
+                        <DetailField
+                          Bold={""}
+                          label="Created By"
+                          value={
+                            props.createdby
+                              ? props.createdby.username
+                              : "not found"
+                          }
+                        />
+                        <DetailField
+                          Bold={""}
+                          label="Created At"
+                          value={moment(props.created_at).format(
+                            "DD MMM YYYY, h:mm a"
+                          )}
+                        />
+                      </div>
 
-                  <div className="col-md-6 col-sm-12">
-                    <DetailField
-                      Bold={""}
-                      label="Updated By"
-                      value={
-                        props.updatedby
-                          ? props.updatedby.username
-                          : "not found"
-                      }
-                    />
-                    <DetailField
-                      Bold={""}
-                      label="Updated At"
-                      value={props.updated_at ? moment(props.updated_at).format(
-                        "DD MMM YYYY, h:mm a"
-                      ): "not found"}
-                    />
-                  </div>
+                      <div className="col-md-6 col-sm-12">
+                        <DetailField
+                          Bold={""}
+                          label="Updated By"
+                          value={
+                            props.updatedby
+                              ? props.updatedby.username
+                              : "not found"
+                          }
+                        />
+                        <DetailField
+                          Bold={""}
+                          label="Updated At"
+                          value={
+                            props.updated_at
+                              ? moment(props.updated_at).format(
+                                  "DD MMM YYYY, h:mm a"
+                                )
+                              : "not found"
+                          }
+                        />
+                      </div>
                     </div>
                   </Section>
-
-                  <div className="row mt-3 py-3">
-                    <div className="d-flex justify-content-start">
+                  <div className="row justify-content-center">
+                    <div className="col-auto">
                       <button
-                        className="btn btn-primary btn-regular mx-0"
                         type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
                         disabled={disableSaveButton}
                       >
                         SAVE
                       </button>
+                    </div>
+                    <div className="col-auto">
                       <button
                         type="button"
                         onClick={onHide}
-                        className="btn btn-secondary btn-regular mr-2"
+                        className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
                       </button>

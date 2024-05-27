@@ -5,9 +5,7 @@ import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { urlPath } from "../../../constants";
-import {
-  getAddressOptions
-} from "../../Address/addressActions";
+import { getAddressOptions } from "../../Address/addressActions";
 import {
   getAllSrm,
   getDefaultAssigneeOptions,
@@ -15,9 +13,18 @@ import {
 
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
-import { getPitchingPickList, updateCollegePitch,searchPrograms,searchBatches,searchInstitutions} from "./operationsActions";
+import {
+  getPitchingPickList,
+  updateCollegePitch,
+  searchPrograms,
+  searchBatches,
+  searchInstitutions,
+} from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
-import { handleKeyPress, mobileNochecker} from "../../../utils/function/OpsModulechecker";
+import {
+  handleKeyPress,
+  mobileNochecker,
+} from "../../../utils/function/OpsModulechecker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,7 +46,7 @@ const Section = styled.div`
 `;
 
 const CollepitchesEdit = (props) => {
-  let { onHide, show,refreshTableOnDataSaving } = props;
+  let { onHide, show, refreshTableOnDataSaving } = props;
   const [srmOption, setsrmOption] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -48,7 +55,7 @@ const CollepitchesEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [course, setcourse] = useState([]);
-  const [colleges,setCollege]=useState([])
+  const [colleges, setCollege] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState(null);
 
@@ -73,7 +80,7 @@ const CollepitchesEdit = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutions(filterValue);
+      const { data } = await searchInstitutions(filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         return {
@@ -84,16 +91,14 @@ const CollepitchesEdit = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
   };
 
   const filterBatch = async (filterValue) => {
-
     try {
-      const {data} = await searchBatches(filterValue);
+      const { data } = await searchBatches(filterValue);
       let filterData = data.batchesConnection.values.map((batch) => {
         return {
           ...batch,
@@ -102,13 +107,12 @@ const CollepitchesEdit = (props) => {
         };
       });
       return filterData;
-      
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     getAddressOptions().then((data) => {
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
@@ -120,14 +124,13 @@ const CollepitchesEdit = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
 
-     
       if (props.program_name) {
-        filterProgram(props.program_name).then(data => {
+        filterProgram(props.program_name).then((data) => {
           setProgramOptions(data);
         });
       }
     });
-    let data = await getAllSrm(1);
+    let data = getAllSrm(1);
     setsrmOption(data);
     getProgramEnrollmentsPickList().then((data) => {
       setcourse(
@@ -141,7 +144,7 @@ const CollepitchesEdit = (props) => {
         }))
       );
     });
-    
+
     getPitchingPickList().then((data) => {
       setCollege(
         data.college_name.map((item) => ({
@@ -160,19 +163,20 @@ const CollepitchesEdit = (props) => {
     });
   }, []);
 
-
   const onSubmit = async (values) => {
-  
-    const newObj = {...values};
-    values.pitch_date ? newObj["pitch_date"] = moment(values["pitch_date"]).format("YYYY-MM-DD"): delete newObj['pitch_date'];
+    const newObj = { ...values };
+    values.pitch_date
+      ? (newObj["pitch_date"] = moment(values["pitch_date"]).format(
+          "YYYY-MM-DD"
+        ))
+      : delete newObj["pitch_date"];
     const value = await updateCollegePitch(Number(props.id), newObj);
-    refreshTableOnDataSaving()
+    refreshTableOnDataSaving();
     setDisableSaveButton(true);
     onHide(value);
     setDisableSaveButton(false);
   };
 
-  const userId = localStorage.getItem("user_id");
   let initialValues = {
     pitch_date: "",
     student_name: "",
@@ -185,43 +189,27 @@ const CollepitchesEdit = (props) => {
     remarks: "",
     srm_name: "",
     area: "",
-    program_name:""
+    program_name: "",
   };
 
   function formatDateStringToIndianStandardTime(dateString) {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
     const date = new Date(dateString);
     return date;
   }
   if (props) {
-    // initialValues ={...props.dtedata}
     initialValues["email"] = props.email;
     initialValues["phone"] = props.phone;
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name?.id.toString() ;
+    initialValues["srm_name"] = props.srm_name?.id.toString();
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
       : "";
     initialValues["remarks"] = props.remarks;
-    initialValues['area']=props.area;
-    initialValues['program_name']=props.program_name
+    initialValues["area"] = props.area;
+    initialValues["program_name"] = props.program_name;
   }
 
   useEffect(() => {
@@ -246,18 +234,18 @@ const CollepitchesEdit = (props) => {
 
   const filterProgram = async (filterValue) => {
     try {
-      const {data} = await searchPrograms(filterValue);
-      return data.programsConnection.values.map(program => {
+      const { data } = await searchPrograms(filterValue);
+      return data.programsConnection.values.map((program) => {
         return {
           ...program,
           label: program.name,
-          value:program.name,
-        }
+          value: program.name,
+        };
       });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <>
@@ -326,15 +314,6 @@ const CollepitchesEdit = (props) => {
                       {/*  */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
-                          name="course_year"
-                          label="Course Year"
-                          placeholder="Course Year"
-                          onKeyPress={numberChecker}
-                          control="input"
-                          className="form-control"
-                          autoComplete="off"
-                        /> */}
                         <Input
                           name="course_year"
                           label="Course Year"
@@ -401,14 +380,6 @@ const CollepitchesEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
-                          name="srm_name"
-                          label="SRM Name"
-                          placeholder="SRM Name"
-                          control="input"
-                          className="form-control"
-                          autoComplete="off"
-                        /> */}
                         <Input
                           name="srm_name"
                           label="SRM Name"
@@ -434,26 +405,24 @@ const CollepitchesEdit = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mt-2">
-                    
-                      <Input
-                        name="program_name"
-                        label="Program Name"
-                        required
-                        control="lookupAsync"
-                        filterData={filterProgram}
-                        defaultOptions={ programOptions }
-                        placeholder="Program"
-                        className="form-control"
-                      />
-                    
-                  </div>
+                        <Input
+                          name="program_name"
+                          label="Program Name"
+                          required
+                          control="lookupAsync"
+                          filterData={filterProgram}
+                          defaultOptions={programOptions}
+                          placeholder="Program"
+                          className="form-control"
+                        />
+                      </div>
                     </div>
                   </Section>
 
                   <Section>
                     <h3 className="section-header">Other Information</h3>
                     <div className="row">
-                    <div className="col-md-6">
+                      <div className="col-md-6">
                         <DetailField
                           label="Updated By"
                           value={
@@ -490,19 +459,21 @@ const CollepitchesEdit = (props) => {
                     </div>
                   </Section>
 
-                  <div className="row mt-3 py-3">
-                    <div className="d-flex justify-content-start">
+                  <div className="row justify-content-center">
+                    <div className="col-auto">
                       <button
-                        className="btn btn-primary btn-regular mx-0"
                         type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
                         disabled={disableSaveButton}
                       >
                         SAVE
                       </button>
+                    </div>
+                    <div className="col-auto">
                       <button
                         type="button"
                         onClick={onHide}
-                        className="btn btn-secondary btn-regular mr-2"
+                        className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
                       </button>
