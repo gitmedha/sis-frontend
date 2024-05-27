@@ -18,7 +18,6 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
-import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
@@ -909,16 +908,16 @@ const Operations = ({
   }, [activeTabMain.key]);
 
   const uploadExcel = async (data) => {
-      const value = await api
-        .post("/users-ops-activities/createBulkOperations", data)
-        .then((data) => {
-          setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
-        })
-        .catch((err) => {
-          setAlert("Unable to create field data .", "error");
-        });
-    
+    const value = await api
+      .post("/users-ops-activities/createBulkOperations", data)
+      .then((data) => {
+        setAlert("data created successfully.", "success");
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      })
+      .catch((err) => {
+        setAlert("Unable to create field data .", "error");
+      });
+
     setUploadModal(false);
     getoperations();
   };
@@ -932,9 +931,9 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
-  const closeUpload=()=>{
-    setUploadModal(false)
-  }
+  const closeUpload = () => {
+    setUploadModal(false);
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -945,17 +944,17 @@ const Operations = ({
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-            {activeTabMain.key == "coreProgramme" ? (
+            {activeTabMain.key === "coreProgramme" ? (
               <TabPicker
                 options={tabPickerOptions1}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "alum" ? (
+            ) : activeTabMain.key === "alum" ? (
               <TabPicker
                 options={tabPickerOptions2}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "systemAdoption" ? (
+            ) : activeTabMain.key === "systemAdoption" ? (
               <TabPicker
                 options={tabPickerOptions3}
                 setActiveTab={setActiveTab}
@@ -964,12 +963,10 @@ const Operations = ({
               ""
             )}
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-              {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-
               {(isSRM() || isAdmin()) && (
                 <>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
                     style={{ marginLeft: "15px" }}
                   >
@@ -977,7 +974,7 @@ const Operations = ({
                   </button>
 
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary ops_action_button"
                     onClick={() => setUploadModal(true)}
                     style={{ marginLeft: "15px" }}
                   >
@@ -991,7 +988,8 @@ const Operations = ({
                           "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
                         }
                         target="_blank"
-                        className="c-pointer mb-1 d-block text-light text-decoration-none "
+                        className="c-pointer d-block text-light text-decoration-none "
+                        rel="noreferrer"
                       >
                         <span className="mr-3">Sample File</span>
                         <FaDownload size="19" className="ml-2" color="#fff" />
@@ -1063,8 +1061,7 @@ const Operations = ({
                 />
               </>
             ) : activeTab.key == "dtesamarth" ? (
-              <>
-              </>
+              <></>
             ) : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />

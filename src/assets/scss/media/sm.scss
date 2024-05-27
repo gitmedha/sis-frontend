@@ -22,7 +22,7 @@
 
     .top_nav_for_other {
         display: flex !important;
-        width: 100%;
+        width: auto;
     }
 
     .topnav div {
@@ -67,6 +67,9 @@
         justify-content: center !important;
         width: 82% !important;
     }
+    .ops_action_button {
+        margin-bottom:5px;
+    }
   }
 
   @media screen and (max-width:321px) {
@@ -79,9 +82,13 @@
     }
 
     .top_nav_for_other {
-        width:115%;
+        width:auto;
     }
     .active {
         width: 75px;
+    }
+
+    .ops_action_button {
+        margin-bottom:5px;
     }
   }

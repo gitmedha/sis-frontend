@@ -2,7 +2,6 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 const TabPicker = ({ moduleName,options, setActiveTab = () => {} }) => {
-  // const [tabs, setTabs] = useState(options);
   const [activeTab, setActive] = useState(options[0].key);
   const tabClass = moduleName === "Students" ? "topnav":"top_nav_for_other"
 
