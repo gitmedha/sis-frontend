@@ -41,6 +41,22 @@
         margin-top: 5px;
         margin-bottom: 15px;
     }
+
+    .page-box {
+        margin:auto auto !important;
+        justify-content: center !important;
+        width:64% !important;
+    }
+
+    .pagination {
+        padding: 0 !important;
+        margin: 0 !important;
+        justify-content: center !important;
+        margin-bottom: 10px !important;
+    }
+    .count {
+        justify-content: center;
+    }
   }
 
   @media screen and (max-width:321px) {
