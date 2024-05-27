@@ -430,7 +430,7 @@ const MassEdit = (props) => {
                   </div>
                 </Section>
                 <div className="row mt-3 py-3">
-                  <div className="d-flex justify-content-start">
+                  <div className="d-flex justify-content-end">
                     <button
                       className="btn btn-primary btn-regular mx-0"
                       type="submit"

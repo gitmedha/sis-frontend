@@ -617,7 +617,15 @@ const MassEmployerUpload = (props) => {
               </div>
             </Section>
             <div className="row mt-3 py-3">
-              <div className="d-flex justify-content-start">
+              <div className="d-flex justify-content-end">
+              <button
+                  type="button"
+                  onClick={onModalClose}
+                  className="btn btn-secondary btn-regular mr-2"
+                >
+                  CANCEL
+                </button>
+                
                 <button
                   className="btn btn-primary btn-regular mx-0"
                   type="submit"
@@ -625,13 +633,7 @@ const MassEmployerUpload = (props) => {
                 >
                   SAVE
                 </button>
-                <button
-                  type="button"
-                  onClick={onModalClose}
-                  className="btn btn-secondary btn-regular mr-2"
-                >
-                  CANCEL
-                </button>
+                
               </div>
             </div>
           </Form>
