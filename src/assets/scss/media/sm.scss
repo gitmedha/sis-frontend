@@ -17,15 +17,20 @@
     }
     .topnav {
         display: flex !important;
-        font-size: 2px !important;
-        width: 110%;
+        width: 90%;
     }
 
-    
-    .institution_topnav_sec{
+    .top_nav_for_other {
         display: flex !important;
-        font-size: 2px !important;
-        width: 110%;
+        width: 100%;
+    }
+
+    .topnav div {
+        font-size: 10px !important;
+    }
+
+    .top_nav_for_other div {
+        font-size: 10px !important;
     }
 
     .navbar_sec {
@@ -67,11 +72,11 @@
     .topnav {
         width:115%;
     }
+
+    .top_nav_for_other {
+        width:115%;
+    }
     .active {
         width: 75px;
-    }
-
-    .institution_topnav_sec{
-        width:130% !important;
     }
   }

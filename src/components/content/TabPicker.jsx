@@ -1,9 +1,10 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-const TabPicker = ({ options, setActiveTab = () => {} }) => {
+const TabPicker = ({ moduleName,options, setActiveTab = () => {} }) => {
   // const [tabs, setTabs] = useState(options);
   const [activeTab, setActive] = useState(options[0].key);
+  const tabClass = moduleName === "Students" ? "topnav":"top_nav_for_other"
 
   const changeTab = (tab) => {
     
@@ -12,7 +13,7 @@ const TabPicker = ({ options, setActiveTab = () => {} }) => {
   };
 
   return (
-    <div className="topnav my-3 latto-regular institution_topnav_sec">
+    <div className={`${tabClass} my-3 latto-regular`}>
       {options.length == 1 ? ((
         options.map((tab) => (
           <div
