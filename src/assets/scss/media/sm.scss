@@ -62,6 +62,11 @@
     .count {
         justify-content: center;
     }
+
+    .bulk_add_actions {
+        justify-content: center !important;
+        width: 86% !important;
+    }
   }
 
   @media screen and (max-width:321px) {

@@ -1,11 +1,10 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,

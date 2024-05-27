@@ -259,7 +259,6 @@ const StudentForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -270,9 +269,6 @@ const StudentForm = (props) => {
                         className="form-control"
                         placeholder="Status"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
@@ -298,14 +294,12 @@ const StudentForm = (props) => {
                       type="email"
                       name="email"
                       label="Email"
-                      // required
                       control="input"
                       placeholder="Email"
                       className="form-control"
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {genderOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -316,9 +310,6 @@ const StudentForm = (props) => {
                         className="form-control"
                         placeholder="Gender"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
@@ -418,7 +409,7 @@ const StudentForm = (props) => {
                         label="Your plan after your current course"
                         options={yourPlanFfterYourCurrentCourse}
                         className="form-control"
-                        placeholder="Your plan after your current course" 
+                        placeholder="Current Course" 
                       />
                     
                   </div>
@@ -548,7 +539,6 @@ const StudentForm = (props) => {
                 <h3 className="section-header">Additional Info</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -558,12 +548,8 @@ const StudentForm = (props) => {
                         className="form-control"
                         placeholder="Medhavi Member"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    {/* {statusOptions.length ? ( */}
                       <Input
                         icon="down"
                         control="lookup"
@@ -571,11 +557,8 @@ const StudentForm = (props) => {
                         label="Interested in Employment Opportunities"
                         options={interestedInEmploymentOpportunitiesOptions}
                         className="form-control"
-                        placeholder="Interested in Employment Opportunities"
+                        placeholder="Opportunities"
                       />
-                    {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
-                    {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input

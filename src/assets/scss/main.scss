@@ -139,16 +139,12 @@ body {
 }
 
 #CreateOptsData, #CreateOptsData1{
-  // table {
-  //   border-collapse: collapse !important;
-  //   // width: 100%;
-  //   overflow-x:auto;
-  // }
   
   font-family: Latto-Regular !important;;
   .table-container {
     overflow-x: auto;
     height: 68vh;
+    scrollbar-width: none;
     
   }
   .between_class{

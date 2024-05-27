@@ -889,20 +889,20 @@ const Operations = ({
     [opsData]
   );
   useEffect(() => {
-    if (activeTabMain.key == "alum") {
+    if (activeTabMain.key === "alum") {
       setActiveTab(tabPickerOptions2[0]);
     }
 
-    if (activeTabMain.key == "systemAdoption") {
+    if (activeTabMain.key === "systemAdoption") {
       setActiveTab(tabPickerOptions3[0]);
     }
-    if (activeTabMain.key == "coreProgramme") {
+    if (activeTabMain.key === "coreProgramme") {
       setActiveTab(tabPickerOptions1[0]);
     }
     if (
-      activeTabMain.key != "alum" &&
-      activeTabMain.key != "systemAdoption" &&
-      activeTab.key != "my_data"
+      activeTabMain.key !== "alum" &&
+      activeTabMain.key !== "systemAdoption" &&
+      activeTab.key !== "my_data"
     ) {
       window.location.reload();
     }
@@ -973,7 +973,7 @@ const Operations = ({
                     onClick={() => setModalShow(true)}
                     style={{ marginLeft: "15px" }}
                   >
-                    Add New Data
+                    Add New
                   </button>
 
                   <button
@@ -981,7 +981,7 @@ const Operations = ({
                     onClick={() => setUploadModal(true)}
                     style={{ marginLeft: "15px" }}
                   >
-                    Upload Data
+                    Upload
                   </button>
                   <button className="btn btn-primary mx-3 ">
                     <div>
@@ -994,7 +994,7 @@ const Operations = ({
                         className="c-pointer mb-1 d-block text-light text-decoration-none "
                       >
                         <span className="mr-3">Sample File</span>
-                        <FaDownload size="20" className="ml-2" color="#fff" />
+                        <FaDownload size="19" className="ml-2" color="#fff" />
                       </a>
                       <div
                         style={{
@@ -1064,20 +1064,6 @@ const Operations = ({
               </>
             ) : activeTab.key == "dtesamarth" ? (
               <>
-                {/* <SamarthSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("sditdata", data)}
-                  columns={columnsPlacement}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                /> */}
               </>
             ) : activeTab.key == "alumniQueries" ? (
               <>

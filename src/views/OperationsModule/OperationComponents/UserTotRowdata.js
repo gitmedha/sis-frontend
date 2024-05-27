@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import {
   getAllSrm,
@@ -12,7 +10,7 @@ import {
   handleKeyPresscharandspecialchar,
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
-import { getStudentsPickList, getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
 import { getTotPickList } from "./operationsActions";
 
 
@@ -81,8 +79,8 @@ const UserTotRowdata = (props) => {
     setstate(false)
 
   };
-  useEffect(async () => {
-    let data = await getAllSrm(1);
+  useEffect(() => {
+    let data = getAllSrm(1);
     setsrmOption(data);
     getStateDistricts().then((data) => {
       setAreaOptions([]);
