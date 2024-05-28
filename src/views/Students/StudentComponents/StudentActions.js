@@ -25,7 +25,8 @@ import {
   SEARCH_INSTITUITIONS,
   SEARCH_BY_BATCHES,
   SEARCH_BY_EMPLOYERS,
-  SEARCH_BY_STUDENTS
+  SEARCH_BY_STUDENTS,
+  GET_COURSE
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -497,4 +498,14 @@ export const searchStudents = async function(searchValue){
   } catch (error) {
     console.error(error.message);
   }
+}
+
+export const getAllCourse = async () => {
+  return await api.post('/graphql', {
+    query: GET_COURSE,
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
 }

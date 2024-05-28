@@ -186,9 +186,9 @@ const Sessions = (props) => {
     <div className="py-2 px-3">
       <div className="row">
       {props.batch.status == 'In Progress' &&
-        <div className="col-md-6 col-sm-12 mb-4">
+        <div className="col-md-6 col-sm-12 mb-4 d-flex justify-content-center justify-content-sm-start">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary session_attendance_button"
             onClick={() => setCreateModalShow(true)}
           >
             Add Session & Attendance

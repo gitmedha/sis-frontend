@@ -287,24 +287,7 @@ export const RowsData = (props) => {
             onChange={(e) => props.handleChange(e, "program_name", row.id)}
           />
         </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={props.batchbdata}
-            onChange={(e) => props.handleChange(e, "batch", row.id)}
-            onInputChange={inputValue=> {
-              props.filterBatch(inputValue).then(data=>{
-                props.setBatchOptions(data)
-              })
-            }}
-          />
-        </td>
+        
         
        
         <td>

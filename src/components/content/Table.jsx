@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Pagination from './Pagination';
 import Skeleton from "react-loading-skeleton";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+
 const StickyPagination = styled.div`
   position: sticky;
   bottom: 0;
@@ -26,10 +27,14 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
+    table-layout: fixed; /* Ensure table takes up available space */
 
     thead {
       th {
         color: #787B96;
+        overflow: hidden; /* Prevent overflow in header cells */
+        text-overflow: ellipsis;
+        white-space: nowrap; /* Prevent wrapping in header cells */
       }
     }
     tr {
@@ -48,6 +53,10 @@ const Styles = styled.div`
       color: #787B96;
       border-bottom: 1px solid #BFBFBF;
       height: 60px;
+      overflow: hidden; /* Prevent overflow in cells */
+      text-overflow: ellipsis; /* Add ellipsis to overflowed content */
+      white-space: nowrap; /* Prevent wrapping in cells */
+      max-width: 150px; /* Set a maximum width for cells */
     }
   }
 
@@ -79,9 +88,9 @@ const Styles = styled.div`
     padding-left: 15px;
     padding-right: 15px;
   }
-`
+`;
 
-const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick=null, indexes=true, paginationPageSize = 10, onPageSizeChange = () => {}, paginationPageIndex = 0, onPageIndexChange = () => {} }) => {
+const Table = ({ selectedSearchedValue, selectedSearchField, isSearchEnable, fetchSearchedData, columns, data, fetchData, totalRecords, loading, showPagination = true, onRowClick = null, indexes = true, paginationPageSize = 10, onPageSizeChange = () => { }, paginationPageIndex = 0, onPageIndexChange = () => { } }) => {
   const tableInstance = useTable(
     {
       columns,
@@ -89,7 +98,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
       initialState: { pageIndex: 0, pageSize: paginationPageSize },
       manualSortBy: true,
       manualPagination: true,
-      pageCount: Math.ceil(totalRecords/paginationPageSize),
+      pageCount: Math.ceil(totalRecords / paginationPageSize),
     },
     useSortBy,
     usePagination
@@ -108,7 +117,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
     setPageSize,
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
- 
+
   const rowClickFunctionExists = typeof onRowClick === 'function';
 
   const handleRowClick = (row) => {
@@ -118,17 +127,17 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
   }
 
   React.useEffect(() => {
-    if(fetchSearchedData){
+    if (fetchSearchedData) {
       fetchSearchedData(pageIndex, pageSize, sortBy)
     }
     else {
-      fetchData(pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField);
+      fetchData(pageIndex, pageSize, sortBy, isSearchEnable, selectedSearchedValue, selectedSearchField);
     }
-    
-  }, [fetchData, pageIndex, pageSize, sortBy,fetchSearchedData]);
+
+  }, [fetchData, pageIndex, pageSize, sortBy, fetchSearchedData]);
 
   React.useEffect(() => {
-  
+
     onPageSizeChange(pageSize);
   }, [pageSize]);
 
@@ -179,44 +188,39 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
                 page.length ? (
                   page.map((row, index) => {
                     prepareRow(row)
-                    return (<>
+                    return (
                       <tr {...row.getRowProps()} onClick={() => handleRowClick(row)} className={`${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`}>
-                        
                         {indexes &&
-                        <>
-                          
-                          <td style={{ color: '#787B96', fontFamily: 'Latto-Bold'}}>
+                          <td style={{ color: '#787B96', fontFamily: 'Latto-Bold' }}>
                             {
                               row.original.href && !rowClickFunctionExists ? (
                                 <a className="table-row-link" href={row.original.href}>
-                                  { pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1 }.
+                                  {pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1}.
                                 </a>
                               ) : (
                                 <>{pageIndex && pageSize ? pageIndex * pageSize + index + 1 : index + 1}.</>
                               )
                             }
                           </td>
-                        </>
                         }
                         {row.cells.map(cell => {
                           return (
                             <td {...cell.getCellProps()}>
                               {
                                 row.original.href
-                                ? (<a className="table-row-link" href={row.original.href}>{cell.render('Cell')}</a>)
-                                : cell.render('Cell')
+                                  ? (<a className="table-row-link" href={row.original.href}>{cell.render('Cell')}</a>)
+                                  : cell.render('Cell')
                               }
                             </td>
                           )
                         })}
                       </tr>
-                      </>
                     )
                   })
                 ) : (
                   <tr>
-                    <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center'}}>
-                      <span style={{fontStyle: 'italic', fontFamily: 'Latto-Regular'}}>No entries found.</span>
+                    <td colSpan={indexes ? columns.length + 1 : columns.length} style={{ color: '#787B96', fontFamily: 'Latto-Bold', textAlign: 'center' }}>
+                      <span style={{ fontStyle: 'italic', fontFamily: 'Latto-Regular' }}>No entries found.</span>
                     </td>
                   </tr>
                 )
@@ -233,10 +237,12 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
             page.map((row, index) => {
               prepareRow(row)
               return (
-                <div key={index} className={`row ${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`} onClick={() => {}}>
+                <div key={index} className={`row ${row.original.href || rowClickFunctionExists ? 'clickable' : ''}`} onClick={() => { }}>
                   {row.cells.map((cell, cellIndex) => {
                     return (
-                      <div key={cellIndex} className="cell">
+                      <div key={cellIndex} className={`cell ${
+                        cellIndex === row.cells.length - 1 ? 'd-flex justify-content-end' : ''
+                      }`}>
                         {cell.render('Cell')}
                       </div>
                     )
@@ -247,7 +253,7 @@ const Table = ({selectedSearchedValue,selectedSearchField,isSearchEnable,fetchSe
           )}
         </div>
       </Styles>
-      {showPagination && <StickyPagination><Pagination totalRecords ={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} /></StickyPagination>}
+      {showPagination && <StickyPagination><Pagination totalRecords={totalRecords} totalPages={pageCount} pageNeighbours={2} gotoPage={gotoPage} nextPage={nextPage} previousPage={previousPage} pageIndex={pageIndex} pageLimit={pageSize} setPageLimit={setPageSize} /></StickyPagination>}
     </>
   )
 };

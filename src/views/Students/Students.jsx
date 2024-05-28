@@ -424,7 +424,6 @@ else {
           getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
 
         }else {
-          console.log("this is working");
           getStudents(
             activeStatus,
             activeTab.key,
@@ -662,7 +661,7 @@ else {
               className="c-pointer"
             />
           </div>
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
             <Tabs
               options={studentStatusOptions}
@@ -671,35 +670,21 @@ else {
 
           
             {(isSRM() || isAdmin()) && (
-              <>
+              <div className="d-flex  align-items-center">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary add_button_sec"
                   onClick={() => setModalShow(true)}
-                  style={{ marginLeft: "5px" }}
+                  style={{ marginRight: "20px" }}
                 >
-                  Add New Student
+                  Add New
                 </button>
-                {/* <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow1(true)}
-                >
-                  Mass Alumni Service
-                </button>
-
                 <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow2(true)}
-                  
-                >
-                  Mass Employer
-                </button> */}
-                <button
-                  className="btn btn-primary"
+                  className="btn btn-primary add_button_sec"
                   onClick={()=>setModalShowmassEdit(true)}
                 >
                   Mass Edit 
                 </button>
-              </>
+              </div>
             )}
           </div>
           
