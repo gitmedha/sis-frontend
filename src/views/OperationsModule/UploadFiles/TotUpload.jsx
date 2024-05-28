@@ -119,8 +119,6 @@ const TotUpload = (props) => {
             newItem[key] = item[key];
           });
 
-          console.log(newItem);
-
           const StateCheck = stateOptions.find(
             (state) => state === newItem["State"]
           )?.id;
@@ -183,9 +181,6 @@ const TotUpload = (props) => {
             });
           }
         });
-
-        console.log("formated",formattedData);
-        console.log("not format",notFoundData);
         setExcelData(formattedData);
         setNotuploadedData(notFoundData);
       },
@@ -266,11 +261,9 @@ const TotUpload = (props) => {
 
   const uploadDirect =()=>{
     if (notUploadedData.length == 1  && excelData.length > 0) {
-      console.log("notUploadedData is empty and excelData has some data ");
       props.uploadExcel(excelData,"tot");
 
     }else{
-      console.log("else block");
       setShowModalTOT(true)
     }
    

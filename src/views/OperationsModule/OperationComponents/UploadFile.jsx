@@ -60,7 +60,6 @@ const UploadFile = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [check, setCheck] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
-  console.log("showModal",showModal);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -79,7 +78,6 @@ const UploadFile = (props) => {
       setUploadSuccesFully("The file type should be .csv");
     }
   };
-  console.log(props);
 
   const convertCSV = (csvData) => {
     Papa.parse(csvData, {
@@ -205,14 +203,10 @@ const UploadFile = (props) => {
  
 
   const uploadDirect =()=>{
-    console.log(notUploadedData);
-    console.log("notUploadedData.length == 0 && excelData.length",notUploadedData.length, excelData.length > 0);
     if (notUploadedData.length == 1  && excelData.length > 0) {
-      console.log("notUploadedData is empty and excelData has some data ");
       props.uploadExcel(excelData,"my_data");
 
     }else{
-      console.log("else block");
       setShowModal(true)
     }
    
