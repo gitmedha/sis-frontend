@@ -75,7 +75,7 @@ const CheckValuesOpsUploadedData = (props) => {
                   <tbody>
                     {props.notUploadedData.map((obj, i) => (
                       <tr key={i}>
-                        <td>{i + 1}</td>
+                        <td>{obj.index}</td>
                         <td>{obj.assigned_to}</td>
                         <td>{obj.activity_type}</td>
                         <td>{obj.institution}</td>
@@ -124,13 +124,7 @@ const CheckValuesOpsUploadedData = (props) => {
                     ReUpload
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => onHide()}
-                  className="btn btn-danger px-4 mx-4"
-                >
-                  Close
-                </button>
+                
               </div>
             </div>
           )}

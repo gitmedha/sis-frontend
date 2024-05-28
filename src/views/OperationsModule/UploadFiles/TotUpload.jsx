@@ -66,7 +66,7 @@ const TotUpload = (props) => {
   const [projectName,setProjectName]=useState([])
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showModalTOT, setShowModalTOT] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -113,7 +113,7 @@ const TotUpload = (props) => {
         const formattedData = [];
         const notFoundData = [];
 
-        results.data.forEach((item) => {
+        results.data.forEach((item,index) => {
           const newItem = {};
           Object.keys(item).forEach((key) => {
             newItem[key] = item[key];
@@ -142,6 +142,7 @@ const TotUpload = (props) => {
            departMentCheck === undefined || projectCheck ===undefined || startDate || endDate 
           ) {
             notFoundData.push({
+              index:index+1,
                 user_name: newItem["Full Name"],
                 trainer_1: newItem["Trainer 1"],
                 project_name: newItem['Project Name'],
@@ -258,7 +259,7 @@ const TotUpload = (props) => {
   }, [notUploadedData]);
 
   const hideShowModal = () => {
-    setShowModal(false);
+    setShowModalTOT(false);
   };
 
  
@@ -266,11 +267,11 @@ const TotUpload = (props) => {
   const uploadDirect =()=>{
     if (notUploadedData.length == 1  && excelData.length > 0) {
       console.log("notUploadedData is empty and excelData has some data ");
-      props.uploadExcel(excelData);
+      props.uploadExcel(excelData,"tot");
 
     }else{
       console.log("else block");
-      setShowModal(true)
+      setShowModalTOT(true)
     }
    
   }
@@ -343,13 +344,14 @@ const TotUpload = (props) => {
           )}
         </Styled>
       </Modal>
-      <CheckTot
-        show={showModal}
+      {showModalTOT &&  <CheckTot
+        show={showModalTOT}
         onHide={hideShowModal}
         notUploadedData={!check ? notUploadedData : []}
         excelData={excelData}
         uploadExcel={props.uploadExcel}
-      />
+      /> }
+     
     </>
   );
 };

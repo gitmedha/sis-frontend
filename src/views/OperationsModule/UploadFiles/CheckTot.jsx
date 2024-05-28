@@ -77,29 +77,29 @@ const CheckTot = (props) => {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Participant Name *</th>
+                        <th>Participant Name </th>
                         <th>Age </th>
                         <th>Gender </th>
                         <th>Mobile no. </th>
-                        <th>State *</th>
-                        <th>City *</th>
+                        <th>State </th>
+                        <th>City </th>
                         <th>Designation </th>
                         <th>College Name</th>
-                        <th>Project Name *</th>
+                        <th>Project Name </th>
                         <th>Partner Department</th>
                         <th>Module Name</th>
-                        <th>Start Date *</th>
-                        <th>End Date *</th>
-                        <th>Trainer 1 *</th>
+                        <th>Start Date </th>
+                        <th>End Date </th>
+                        <th>Trainer 1 </th>
                         <th>Trainer 2 </th>
-                        <th>Certificate Given *</th>
-                        <th>Project Type *</th>
+                        <th>Certificate Given </th>
+                        <th>Project Type </th>
                       </tr>
                     </thead>
                     <tbody>
                       {props.notUploadedData.map((obj, i) => (
                         <tr key={i}>
-                          <td>{i + 1}</td>
+                          <td>{obj.index}</td>
                           <td>{obj.user_name}</td>
                           <td>{obj.age}</td>
                           <td>{obj.gender}</td>
@@ -153,13 +153,7 @@ const CheckTot = (props) => {
                     ReUpload
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => onHide()}
-                  className="btn btn-danger px-4 mx-4"
-                >
-                  Close
-                </button>
+                
               </div>
             </div>
           )}

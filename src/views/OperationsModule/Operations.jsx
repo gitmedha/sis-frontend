@@ -128,6 +128,8 @@ const Operations = ({
     tot:false
   });
 
+  console.log("uploadModal",uploadModal);
+
   const columns = useMemo(
     () => [
       {
@@ -912,21 +914,35 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-  const uploadExcel = async (data) => {
-      const value = await api
-        .post("/users-ops-activities/createBulkOperations", data)
-        .then((data) => {
-          setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
-        })
-        .catch((err) => {
-          setAlert("Unable to create field data .", "error");
-        });
-    
-    setUploadModal(false);
-    getoperations();
-  };
 
+
+  const uploadExcel = async (data, key) => {
+    try {
+      if (key === "my_data") {
+        await api.post("/users-ops-activities/createBulkOperations", data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      } else if (key === "tot") {
+        await bulkCreateUsersTots(data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      }
+    } catch (err) {
+      if (key === "my_data") {
+        setAlert("Unable to create field data.", "error");
+      } else if (key === "tot") {
+        setAlert("Unable to create upskilling data.", "error");
+      }
+    } finally {
+      setUploadModal(false);
+      getoperations();
+    }
+  };
+  
+
+  
   const alertForNotuploadedData = async (key) => {
     if (key == "feild_activity") {
       setUploadModal(false);
@@ -984,7 +1000,8 @@ const Operations = ({
                     className="btn btn-primary"
                     onClick={() => 
                       {
-                        if(activeTab.key =="myData"){
+                        console.log(activeTab.key);
+                        if(activeTab.key =="my_data"){
                           setUploadModal({
                             myData:true,
                             tot:false
@@ -992,7 +1009,7 @@ const Operations = ({
                         }else{
                           setUploadModal({
                             tot:true,
-                          myData:false
+                            myData:false
                           })
                         }
                       }

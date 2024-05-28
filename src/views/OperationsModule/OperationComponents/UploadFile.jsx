@@ -60,6 +60,7 @@ const UploadFile = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [check, setCheck] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
+  console.log("showModal",showModal);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -87,7 +88,7 @@ const UploadFile = (props) => {
         const formattedData = [];
         const notFoundData = [];
 
-        results.data.forEach((item) => {
+        results.data.forEach((item,index) => {
           const newItem = {};
           Object.keys(item).forEach((key) => {
             newItem[key] = item[key];
@@ -114,6 +115,7 @@ const UploadFile = (props) => {
             userId === undefined
           ) {
             notFoundData.push({
+              index:index+1,
               institution: newItem["Educational Institution"],
               batch: newItem["Batch Name"],
               state: newItem["State"] || "",
@@ -207,7 +209,7 @@ const UploadFile = (props) => {
     console.log("notUploadedData.length == 0 && excelData.length",notUploadedData.length, excelData.length > 0);
     if (notUploadedData.length == 1  && excelData.length > 0) {
       console.log("notUploadedData is empty and excelData has some data ");
-      props.uploadExcel(excelData);
+      props.uploadExcel(excelData,"my_data");
 
     }else{
       console.log("else block");
