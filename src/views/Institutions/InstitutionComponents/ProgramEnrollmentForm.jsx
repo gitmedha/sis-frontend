@@ -227,7 +227,6 @@ const ProgramEnrollmentForm = (props) => {
           label: obj.course_name
         }));
     
-        // Add the default "other" option
         courseOptions.push({ value: "Other", label: "Other", key: "Other" });
     
       setcourse(courseOptions)
