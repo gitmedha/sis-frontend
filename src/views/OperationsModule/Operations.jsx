@@ -47,8 +47,9 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
-// import UploadFile from "./OperationComponents/UploadFile";
+import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload } from "react-icons/fa";
+import TotUpload from "./UploadFiles/TotUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -122,7 +123,12 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
-  const [uploadModal, setUploadModal] = useState(false);
+  const [uploadModal, setUploadModal] = useState({
+    myData:false,
+    tot:false
+  });
+
+  console.log("uploadModal",uploadModal);
 
   const columns = useMemo(
     () => [
@@ -908,21 +914,35 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-  const uploadExcel = async (data) => {
-      const value = await api
-        .post("/users-ops-activities/createBulkOperations", data)
-        .then((data) => {
-          setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
-        })
-        .catch((err) => {
-          setAlert("Unable to create field data .", "error");
-        });
-    
-    setUploadModal(false);
-    getoperations();
-  };
 
+
+  const uploadExcel = async (data, key) => {
+    try {
+      if (key === "my_data") {
+        await api.post("/users-ops-activities/createBulkOperations", data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      } else if (key === "tot") {
+        await bulkCreateUsersTots(data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      }
+    } catch (err) {
+      if (key === "my_data") {
+        setAlert("Unable to create field data.", "error");
+      } else if (key === "tot") {
+        setAlert("Unable to create upskilling data.", "error");
+      }
+    } finally {
+      setUploadModal(false);
+      getoperations();
+    }
+  };
+  
+
+  
   const alertForNotuploadedData = async (key) => {
     if (key == "feild_activity") {
       setUploadModal(false);
@@ -978,7 +998,22 @@ const Operations = ({
 
                   <button
                     className="btn btn-primary"
-                    onClick={() => setUploadModal(true)}
+                    onClick={() => 
+                      {
+                        console.log(activeTab.key);
+                        if(activeTab.key =="my_data"){
+                          setUploadModal({
+                            myData:true,
+                            tot:false
+                          })
+                        }else{
+                          setUploadModal({
+                            tot:true,
+                            myData:false
+                          })
+                        }
+                      }
+                    }
                     style={{ marginLeft: "15px" }}
                   >
                     Upload Data
@@ -1222,7 +1257,7 @@ const Operations = ({
             />
           )}
 
-          {/* {uploadModal && (
+          {uploadModal.myData && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
@@ -1230,7 +1265,19 @@ const Operations = ({
                 closeThepopus={closeUpload}
               />
             </>
-          )} */}
+          )}
+          {uploadModal.tot  && (
+            <>
+               <TotUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
+                tot="yes"
+              />
+            </>
+          )
+
+          }
         </div>
       </Styled>
     </Collapse>

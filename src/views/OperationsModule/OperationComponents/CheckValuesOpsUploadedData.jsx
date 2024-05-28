@@ -23,6 +23,8 @@ const Style = styled.div`
 
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
+  
+  
   return (
     <>
       <Modal
@@ -42,7 +44,8 @@ const CheckValuesOpsUploadedData = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              Data Validation Failures
+              {props.notUploadedData.length <0 ? <p> Data Validation Failures</p>:"Everthing looks fine,you can upload the data"}
+             
             </h1>
           </Modal.Title>
         </Modal.Header>
@@ -72,7 +75,7 @@ const CheckValuesOpsUploadedData = (props) => {
                   <tbody>
                     {props.notUploadedData.map((obj, i) => (
                       <tr key={i}>
-                        <td>{i + 1}</td>
+                        <td>{obj.index}</td>
                         <td>{obj.assigned_to}</td>
                         <td>{obj.activity_type}</td>
                         <td>{obj.institution}</td>
@@ -95,7 +98,7 @@ const CheckValuesOpsUploadedData = (props) => {
               ) : (
                 <div className="d-flex justify-content-center align-content-center">
                   <h2 className="text--primary bebas-thick mb-0">
-                    Everthing looks fine,you can upload the data
+                    
                   </h2>
                 </div>
               )}
@@ -115,20 +118,13 @@ const CheckValuesOpsUploadedData = (props) => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => props.uploadExcel(props.excelData)}
                     className="btn btn-primary px-4 mx-4"
-                    disabled
+                    onClick={() => onHide()}
                   >
-                    Upload
+                    ReUpload
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => onHide()}
-                  className="btn btn-danger px-4 mx-4"
-                >
-                  Close
-                </button>
+                
               </div>
             </div>
           )}
