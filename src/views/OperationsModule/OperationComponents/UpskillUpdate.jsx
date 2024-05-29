@@ -370,7 +370,7 @@ const UpskillUpdate = (props) => {
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12">
                         {!lookUpLoading ? (
                           <Input
                             name="student_id"

@@ -23,7 +23,7 @@ const CollapsiblePanels = ({
   }
 
   return (
-    <section className="no-border p-2 mt-2" id={id}>
+    <section className="no-border p-2" id={id}>
       <div
         className="section-header d-flex justify-content-between px-2"
         onClick={clicked}
@@ -57,7 +57,7 @@ const CollapsiblePanels = ({
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1.5 }}
-            className="section-body p-2"
+            className="section-body"
           >
             {children}
           </motion.div>

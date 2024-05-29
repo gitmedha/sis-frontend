@@ -356,6 +356,12 @@ div::-webkit-scrollbar-thumb {
   right: 1;
 }
 
+.form_sec {
+  height: 375px;
+  overflow: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
 
 @import './media/lg.scss';
 @import './media/md.scss';
