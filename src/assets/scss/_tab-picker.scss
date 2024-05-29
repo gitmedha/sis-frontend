@@ -13,6 +13,9 @@
     border-radius: 23px;
     text-decoration: none;
     transition: ease-in 0.2s all;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     &:hover {
       color: black;
       background-color: #ddd;
@@ -20,6 +23,9 @@
     &.active {
       color: white;
       background-color: $custom-primary;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -32,7 +32,6 @@ import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
 import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
-import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
@@ -47,7 +46,7 @@ import {
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload ,FaFileUpload} from "react-icons/fa";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -962,27 +961,25 @@ const Operations = ({
             ) : (
               ""
             )}
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
+            <div className="d-flex flex-md-row justify-content-between align-items-center mb-2">
               {(isSRM() || isAdmin()) && (
                 <>
                   <button
                     className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
-                    style={{ marginLeft: "15px" }}
                   >
                     Add New
                   </button>
 
                   <button
-                    className="btn btn-primary ops_action_button"
+                    className="btn btn-primary ops_action_button mx-lg-1"
                     onClick={() => setUploadModal(true)}
-                    style={{ marginLeft: "15px" }}
                   >
-                    Upload
+                    Upload &nbsp;
+                    <FaFileUpload size="14" color="#fff"/>
                   </button>
-                  <button className="btn btn-primary mx-3 ">
+                  <button className="btn btn-primary ops_action_button" >
                     <div>
-                      {" "}
                       <a
                         href={
                           "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
@@ -991,8 +988,8 @@ const Operations = ({
                         className="c-pointer d-block text-light text-decoration-none "
                         rel="noreferrer"
                       >
-                        <span className="mr-3">Sample File</span>
-                        <FaDownload size="19" className="ml-2" color="#fff" />
+                        <span>Sample</span> &nbsp;
+                        <FaDownload size="14" color="#fff" />
                       </a>
                       <div
                         style={{

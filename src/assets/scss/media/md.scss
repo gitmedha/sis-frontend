@@ -18,10 +18,18 @@
 @media screen and (max-width:768px){
   
   .topnav {
-    width: 78%;
+    width: auto;
+  }
+
+  .topnav div {
+    width: 100%;
   }
 
   .top_nav_for_other  {
-    width: 68%;
+    width: auto;
+  }
+
+  .top_nav_for_other div {
+    width: 100%;
   }
 }

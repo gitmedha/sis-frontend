@@ -329,259 +329,261 @@ const OperationDataupdateform = (props) => {
             >
               {({ values, setFieldValue }) => (
                 <Form>
-                  <Section>
-                    <h3 className="section-header">Basic Info</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="activity_type"
-                          label="Activity Type"
-                          required
-                          options={Activityoptions}
-                          className="form-control"
-                          placeholder="Activity Type"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {assigneeOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="assigned_to"
-                            label="Assigned To"
-                            className="form-control"
-                            placeholder="Assigned To"
-                            filterData={filterAssignedTo}
-                            defaultOptions={assigneeOptions}
-                          />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="program_name"
-                          label="Program Name"
-                          required
-                          options={programeName}
-                          className="form-control"
-                          placeholder="Program Name"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {batchOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="batch"
-                            label="Batch Name"
-                            filterData={filterBatch}
-                            defaultOptions={batchOptions}
-                            className="form-control1"
-                            placeholder="Batch"
-                          />
-                        )}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {institutionOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="institution"
-                            label="Institution"
-                            filterData={filterInstitution}
-                            defaultOptions={institutionOptions}
-                            placeholder="Institution"
-                            className="form-control"
-                            isClearable
-                          />
-                        )}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="start_date"
-                          label="Start Date "
-                          //
-                          placeholder="Date of Birth"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="end_date"
-                          label="End Date"
-                          placeholder="Date of Birth"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="donor"
-                          label="Donor"
-                          required
-                          options={options}
-                          className="form-control"
-                          placeholder="New Entry"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="topic"
-                          label="Topic"
-                          className="form-control"
-                          placeholder="Topic"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="guest"
-                          label="Guest"
-                          className="form-control"
-                          placeholder="Guest"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="designation"
-                          label="Designation"
-                          className="form-control"
-                          placeholder="Designation"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="organization"
-                          label="Organization"
-                          className="form-control"
-                          placeholder="Organization"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="students_attended"
-                          label="Student Attended"
-                          placeholder="Student atended"
-                          control="input"
-                          className="form-control"
-                          autoComplete="off"
-                          onKeyPress={numberChecker}
-                        />
-                      </div>
-                    </div>
-                  </Section>
-                  <Section>
-                    <h3 className="section-header">Address</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {stateOptions.length ? (
+                  <div className="row form_sec">
+                    <Section>
+                      <h3 className="section-header">Basic Info</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
-                            name="state"
-                            label="State"
                             control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
+                            name="activity_type"
+                            label="Activity Type"
+                            required
+                            options={Activityoptions}
                             className="form-control"
+                            placeholder="Activity Type"
                           />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="area"
-                            label="Medha Area"
-                            control="lookup"
-                            options={areaOptions}
-                            placeholder="Area"
-                            className="form-control"
-                          />
-                        ) : (
-                          <>
-                            <Skeleton count={1} height={45} />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Section>
+                        </div>
 
-                  <Section>
-                    <h3 className="section-header">Other Information</h3>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Updated By"
-                          value={
-                            props.updatedby?.userName
-                              ? props.updatedby?.userName
-                              : props.createdby?.username
-                          }
-                        />
-                        <DetailField
-                          label="Updated At"
-                          value={moment(
-                            props.updated_at
-                              ? props.updated_at
-                              : props.created_at
-                          ).format("DD MMM YYYY, h:mm a")}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Created By"
-                          value={
-                            props.createdby?.username
-                              ? props.createdby?.username
-                              : ""
-                          }
-                        />
-                        <DetailField
-                          label="Created At"
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {assigneeOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="assigned_to"
+                              label="Assigned To"
+                              className="form-control"
+                              placeholder="Assigned To"
+                              filterData={filterAssignedTo}
+                              defaultOptions={assigneeOptions}
+                            />
                           )}
-                        />
-                      </div>
-                    </div>
-                  </Section>
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="program_name"
+                            label="Program Name"
+                            required
+                            options={programeName}
+                            className="form-control"
+                            placeholder="Program Name"
+                          />
+                        </div>
 
-                  <div className="row justify-content-center">
-                    <div className="col-auto">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-regular collapse_form_buttons"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
-                    </div>
-                    <div className="col-auto">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {batchOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="batch"
+                              label="Batch Name"
+                              filterData={filterBatch}
+                              defaultOptions={batchOptions}
+                              className="form-control1"
+                              placeholder="Batch"
+                            />
+                          )}
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {institutionOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="institution"
+                              label="Institution"
+                              filterData={filterInstitution}
+                              defaultOptions={institutionOptions}
+                              placeholder="Institution"
+                              className="form-control"
+                              isClearable
+                            />
+                          )}
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="start_date"
+                            label="Start Date "
+                            //
+                            placeholder="Date of Birth"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="end_date"
+                            label="End Date"
+                            placeholder="Date of Birth"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="donor"
+                            label="Donor"
+                            required
+                            options={options}
+                            className="form-control"
+                            placeholder="New Entry"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="topic"
+                            label="Topic"
+                            className="form-control"
+                            placeholder="Topic"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="guest"
+                            label="Guest"
+                            className="form-control"
+                            placeholder="Guest"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="designation"
+                            label="Designation"
+                            className="form-control"
+                            placeholder="Designation"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="organization"
+                            label="Organization"
+                            className="form-control"
+                            placeholder="Organization"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="students_attended"
+                            label="Student Attended"
+                            placeholder="Student atended"
+                            control="input"
+                            className="form-control"
+                            autoComplete="off"
+                            onKeyPress={numberChecker}
+                          />
+                        </div>
+                      </div>
+                    </Section>
+                    <Section>
+                      <h3 className="section-header">Address</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {stateOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="state"
+                              label="State"
+                              control="lookup"
+                              options={stateOptions}
+                              onChange={onStateChange}
+                              placeholder="State"
+                              className="form-control"
+                            />
+                          ) : (
+                            <Skeleton count={1} height={45} />
+                          )}
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {areaOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="area"
+                              label="Medha Area"
+                              control="lookup"
+                              options={areaOptions}
+                              placeholder="Area"
+                              className="form-control"
+                            />
+                          ) : (
+                            <>
+                              <Skeleton count={1} height={45} />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </Section>
+
+                    <Section>
+                      <h3 className="section-header">Other Information</h3>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Updated By"
+                            value={
+                              props.updatedby?.userName
+                                ? props.updatedby?.userName
+                                : props.createdby?.username
+                            }
+                          />
+                          <DetailField
+                            label="Updated At"
+                            value={moment(
+                              props.updated_at
+                                ? props.updated_at
+                                : props.created_at
+                            ).format("DD MMM YYYY, h:mm a")}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Created By"
+                            value={
+                              props.createdby?.username
+                                ? props.createdby?.username
+                                : ""
+                            }
+                          />
+                          <DetailField
+                            label="Created At"
+                            value={moment(props.created_at).format(
+                              "DD MMM YYYY, h:mm a"
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </Section>
+                  </div>
+
+                  <div className="row justify-content-end">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

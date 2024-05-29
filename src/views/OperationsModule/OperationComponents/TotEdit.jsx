@@ -354,6 +354,7 @@ const TotEdit = (props) => {
             >
               {({ values, setFieldValue }) => (
                 <Form>
+                  <div className="row form_sec">
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
@@ -367,14 +368,7 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
-                          control="input"
-                          name="project_name"
-                          label="Project Name"
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="Project Name"
-                        /> */}
+                       
                         <Input
                           icon="down"
                           control="lookup"
@@ -412,17 +406,7 @@ const TotEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
-                          control="input"
-                          name="module_name"
-                          label="Module Name"
-                          required
-                          className="form-control"
-                          placeholder="Module Name"
-                          onKeyPress={handleKeyPress}
-                          // filterData={filterAssignedTo}
-                          // defaultOptions={assigneeOptions}
-                        /> */}
+                        
                         <Input
                           icon="down"
                           control="lookup"
@@ -446,34 +430,6 @@ const TotEdit = (props) => {
                           placeholder="New Entry"
                         />
                       </div>
-
-                      {/* <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="lookupAsync"
-                          name="batch"
-                          label="Batch"
-                          required
-                          filterData={filterBatch}
-                          defaultOptions={batchOptions}
-                          className="form-control1"
-                          placeholder="Batch"
-                        />
-
-                        
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="lookupAsync"
-                          name="institution"
-                          label="Institution"
-                          filterData={filterInstitution}
-                          defaultOptions={institutionOptions}
-                          placeholder="Institution"
-                          className="form-control"
-                          isClearable
-                        />
-                      </div> */}
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -523,14 +479,7 @@ const TotEdit = (props) => {
                       </div>
 
                       <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
-                          control="input"
-                          name="partner_dept"
-                          label="Partner Department"
-                          onKeyPress={handleKeyPresscharandspecialchar}
-                          className="form-control"
-                          placeholder="Partner Department"
-                        /> */}
+                       
                         <Input
                           icon="down"
                           control="lookup"
@@ -597,17 +546,6 @@ const TotEdit = (props) => {
                           onKeyPress={handleKeyPress}
                         />
                       </div>
-                      {/* <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="published_at"
-                          label="Publish Date "
-                          // required
-                          placeholder="Publish Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div> */}
                     </div>
                   </Section>
                   <Section>
@@ -695,23 +633,25 @@ const TotEdit = (props) => {
                       </div>
                     </div>
                   </Section>
-                  <div className="row justify-content-center">
-                    <div className="col-auto">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-regular collapse_form_buttons"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
-                    </div>
-                    <div className="col-auto">
+                  </div>
+                 
+                  <div className="row justify-content-end">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

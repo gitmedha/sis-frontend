@@ -284,82 +284,83 @@ const AllumuniEdit = (props) => {
             >
               {({ values, setFieldValue }) => (
                 <Form>
-                  <Section>
-                    <h3 className="section-header">Basic Info</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="student_name"
-                          label="Student Name"
-                          required
-                          className="form-control"
-                          placeholder="Student Name"
-                          onKeyPress={handleKeyPresscharandspecialchar}
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="father_name"
-                          label=" Father Name"
-                          required
-                          className="form-control"
-                          placeholder="Father Name"
-                          onKeyPress={handleKeyPress}
-                        />
-                      </div>
+                  <div className="row form_sec">
+                    <Section>
+                      <h3 className="section-header">Basic Info</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="student_name"
+                            label="Student Name"
+                            required
+                            className="form-control"
+                            placeholder="Student Name"
+                            onKeyPress={handleKeyPresscharandspecialchar}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="father_name"
+                            label=" Father Name"
+                            required
+                            className="form-control"
+                            placeholder="Father Name"
+                            onKeyPress={handleKeyPress}
+                          />
+                        </div>
 
-                      {/*  */}
+                        {/*  */}
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="email"
-                          label="Email ID"
-                          // required
-                          placeholder="Email"
-                          control="input"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="email"
+                            label="Email ID"
+                            // required
+                            placeholder="Email"
+                            control="input"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="phone"
-                          label="Mobile No."
-                          onKeyPress={mobileNochecker}
-                          className="form-control"
-                          placeholder="Phone"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          name="status"
-                          label="Status"
-                          control="lookup"
-                          options={Statusoptions}
-                          // onChange={onStateChange}
-                          placeholder="Status"
-                          className="form-control"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          name="location"
-                          label="Medha Area"
-                          control="lookup"
-                          options={areaOptions}
-                          // onChange={onStateChange}
-                          placeholder="Medha Area"
-                          className="form-control"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {/* <Input
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="phone"
+                            label="Mobile No."
+                            onKeyPress={mobileNochecker}
+                            className="form-control"
+                            placeholder="Phone"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            name="status"
+                            label="Status"
+                            control="lookup"
+                            options={Statusoptions}
+                            // onChange={onStateChange}
+                            placeholder="Status"
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            name="location"
+                            label="Medha Area"
+                            control="lookup"
+                            options={areaOptions}
+                            // onChange={onStateChange}
+                            placeholder="Medha Area"
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {/* <Input
                           icon="down"
                           control="input"
                           name="query_type"
@@ -368,121 +369,122 @@ const AllumuniEdit = (props) => {
                           className="form-control"
                           placeholder="Query Type"
                         /> */}
-                        <Input
-                          icon="down"
-                          name="query_type"
-                          label="Query Type"
-                          control="lookup"
-                          options={queryTypes}
-                          // onChange={onStateChange}
-                          placeholder="Query Type"
-                          className="form-control"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="query_desc"
-                          label="Query Description"
-                          className="form-control"
-                          placeholder="Query Description"
-                        />
-                      </div>
-                      {/* query_start */}
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="query_start"
-                          label="Query Start Date"
-                          placeholder="Query Start"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="query_end"
-                          label="Query End Date"
-                          placeholder="Query End Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
+                          <Input
+                            icon="down"
+                            name="query_type"
+                            label="Query Type"
+                            control="lookup"
+                            options={queryTypes}
+                            // onChange={onStateChange}
+                            placeholder="Query Type"
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="query_desc"
+                            label="Query Description"
+                            className="form-control"
+                            placeholder="Query Description"
+                          />
+                        </div>
+                        {/* query_start */}
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="query_start"
+                            label="Query Start Date"
+                            placeholder="Query Start"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="query_end"
+                            label="Query End Date"
+                            placeholder="Query End Date"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
 
-                      {/* status */}
+                        {/* status */}
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="conclusion"
-                          label="Conclusion"
-                          className="form-control"
-                          placeholder="Conclusion"
-                        />
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="conclusion"
+                            label="Conclusion"
+                            className="form-control"
+                            placeholder="Conclusion"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </Section>
+                    </Section>
 
-                  <Section>
-                    <h3 className="section-header">Other Information</h3>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Updated By"
-                          value={
-                            props.updatedby?.userName
-                              ? props.updatedby?.userName
-                              : props.updatedby?.username
-                          }
-                        />
-                        <DetailField
-                          label="Updated At"
-                          value={moment(
-                            props.updated_at
-                              ? props.updated_at
-                              : props.created_at
-                          ).format("DD MMM YYYY, h:mm a")}
-                        />
+                    <Section>
+                      <h3 className="section-header">Other Information</h3>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Updated By"
+                            value={
+                              props.updatedby?.userName
+                                ? props.updatedby?.userName
+                                : props.updatedby?.username
+                            }
+                          />
+                          <DetailField
+                            label="Updated At"
+                            value={moment(
+                              props.updated_at
+                                ? props.updated_at
+                                : props.created_at
+                            ).format("DD MMM YYYY, h:mm a")}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Created By"
+                            value={
+                              props.createdby?.username
+                                ? props.createdby?.username
+                                : ""
+                            }
+                          />
+                          <DetailField
+                            label="Created At"
+                            value={moment(props.created_at).format(
+                              "DD MMM YYYY, h:mm a"
+                            )}
+                          />
+                        </div>
                       </div>
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Created By"
-                          value={
-                            props.createdby?.username
-                              ? props.createdby?.username
-                              : ""
-                          }
-                        />
-                        <DetailField
-                          label="Created At"
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </Section>
+                    </Section>
+                  </div>
 
-                  <div className="row justify-content-center">
-                    <div className="col-auto">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-regular collapse_form_buttons"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
-                    </div>
-                    <div className="col-auto">
+                  <div className="row justify-content-end">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

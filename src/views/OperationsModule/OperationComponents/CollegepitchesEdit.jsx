@@ -284,198 +284,199 @@ const CollepitchesEdit = (props) => {
             <Formik onSubmit={onSubmit} initialValues={initialValues}>
               {({ values, setFieldValue }) => (
                 <Form>
-                  <Section>
-                    <h3 className="section-header">Basic Info</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="student_name"
-                          label="Student Name"
-                          required
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="Student Name"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="course_name"
-                          control="lookup"
-                          icon="down"
-                          label="Course Name"
-                          options={course}
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="Course Name"
-                        />
-                      </div>
+                  <div className="row form_sec">
+                    <Section>
+                      <h3 className="section-header">Basic Info</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="student_name"
+                            label="Student Name"
+                            required
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Student Name"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="course_name"
+                            control="lookup"
+                            icon="down"
+                            label="Course Name"
+                            options={course}
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Course Name"
+                          />
+                        </div>
 
-                      {/*  */}
+                        {/*  */}
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="course_year"
-                          label="Course Year"
-                          control="lookup"
-                          icon="down"
-                          options={currentCourseYearOptions}
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="Course Year"
-                        />
-                      </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="course_year"
+                            label="Course Year"
+                            control="lookup"
+                            icon="down"
+                            options={currentCourseYearOptions}
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Course Year"
+                          />
+                        </div>
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="college_name"
-                          label="College Name"
-                          control="lookup"
-                          icon="down"
-                          options={colleges}
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="College Name"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="phone"
-                          label="Phone"
-                          onKeyPress={mobileNochecker}
-                          className="form-control"
-                          placeholder="Phone"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="whatsapp"
-                          label="Whatsapp Number"
-                          onKeyPress={mobileNochecker}
-                          className="form-control"
-                          placeholder="Whatsapp Number"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="email"
-                          label="Email ID"
-                          className="form-control"
-                          placeholder="Email ID"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="remarks"
-                          label="Remarks"
-                          className="form-control"
-                          placeholder="Remarks"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="srm_name"
-                          label="SRM Name"
-                          placeholder="SRM Name"
-                          control="lookup"
-                          icon="down"
-                          options={srmOption}
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="area"
-                          label="Medha Area"
-                          control="lookup"
-                          icon="down"
-                          options={areaOptions}
-                          onKeyPress={handleKeyPress}
-                          className="form-control"
-                          placeholder="Medha Area"
-                        />
-                      </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="college_name"
+                            label="College Name"
+                            control="lookup"
+                            icon="down"
+                            options={colleges}
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="College Name"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="phone"
+                            label="Phone"
+                            onKeyPress={mobileNochecker}
+                            className="form-control"
+                            placeholder="Phone"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="whatsapp"
+                            label="Whatsapp Number"
+                            onKeyPress={mobileNochecker}
+                            className="form-control"
+                            placeholder="Whatsapp Number"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="email"
+                            label="Email ID"
+                            className="form-control"
+                            placeholder="Email ID"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="remarks"
+                            label="Remarks"
+                            className="form-control"
+                            placeholder="Remarks"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="srm_name"
+                            label="SRM Name"
+                            placeholder="SRM Name"
+                            control="lookup"
+                            icon="down"
+                            options={srmOption}
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="area"
+                            label="Medha Area"
+                            control="lookup"
+                            icon="down"
+                            options={areaOptions}
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Medha Area"
+                          />
+                        </div>
 
-                      <div className="col-md-6 col-sm-12 mt-2">
-                        <Input
-                          name="program_name"
-                          label="Program Name"
-                          required
-                          control="lookupAsync"
-                          filterData={filterProgram}
-                          defaultOptions={programOptions}
-                          placeholder="Program"
-                          className="form-control"
-                        />
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            name="program_name"
+                            label="Program Name"
+                            required
+                            control="lookupAsync"
+                            filterData={filterProgram}
+                            defaultOptions={programOptions}
+                            placeholder="Program"
+                            className="form-control"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </Section>
+                    </Section>
 
-                  <Section>
-                    <h3 className="section-header">Other Information</h3>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Updated By"
-                          value={
-                            props.updatedby?.userName
-                              ? props.updatedby?.userName
-                              : props.createdby?.username
-                          }
-                        />
-                        <DetailField
-                          label="Updated At"
-                          value={moment(
-                            props.updated_at
-                              ? props.updated_at
-                              : props.created_at
-                          ).format("DD MMM YYYY, h:mm a")}
-                        />
+                    <Section>
+                      <h3 className="section-header">Other Information</h3>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Updated By"
+                            value={
+                              props.updatedby?.userName
+                                ? props.updatedby?.userName
+                                : props.createdby?.username
+                            }
+                          />
+                          <DetailField
+                            label="Updated At"
+                            value={moment(
+                              props.updated_at
+                                ? props.updated_at
+                                : props.created_at
+                            ).format("DD MMM YYYY, h:mm a")}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Created By"
+                            value={
+                              props.createdby?.username
+                                ? props.createdby?.username
+                                : ""
+                            }
+                          />
+                          <DetailField
+                            label="Created At"
+                            value={moment(props.created_at).format(
+                              "DD MMM YYYY, h:mm a"
+                            )}
+                          />
+                        </div>
                       </div>
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Created By"
-                          value={
-                            props.createdby?.username
-                              ? props.createdby?.username
-                              : ""
-                          }
-                        />
-                        <DetailField
-                          label="Created At"
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </Section>
-
-                  <div className="row justify-content-center">
-                    <div className="col-auto">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-regular collapse_form_buttons"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
-                    </div>
-                    <div className="col-auto">
+                    </Section>
+                  </div>
+                  <div className="row justify-content-end">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

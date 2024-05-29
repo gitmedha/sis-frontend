@@ -367,6 +367,7 @@ const UpskillUpdate = (props) => {
             <Formik onSubmit={onSubmit} initialValues={initialValues}>
               {({ values, setFieldValue }) => (
                 <Form>
+                  <div className="row form_sec">
                   <Section>
                     <h3 className="section-header">Basic Info</h3>
                     <div className="row">
@@ -567,23 +568,25 @@ const UpskillUpdate = (props) => {
                       </div>
                     </div>
                   </Section>
-                  <div className="row justify-content-center">
-                    <div className="col-auto">
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-regular collapse_form_buttons"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
-                    </div>
-                    <div className="col-auto">
+                  </div>
+                 
+                  <div className="row justify-content-end">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>
