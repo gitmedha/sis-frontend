@@ -51,15 +51,12 @@ body {
   &.open {
     width: 100%;
   }
-  overflow: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
 }
 
 /*----------------- search bar styles-----------------*/
 
 .search_bar_action_sec {
-  padding: 5px 20px !important;
+  padding: 5px 36px !important;
 }
 .content {
   flex: 1;
