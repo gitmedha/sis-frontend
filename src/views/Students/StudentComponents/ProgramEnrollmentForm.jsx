@@ -7,10 +7,7 @@ import { Input } from "../../../utils/Form";
 import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
-import {
-  searchInstitution,
-  searchBatch,
-} from "../StudentComponents/StudentActions";
+import {searchInstitution,searchBatch, getAllCourse} from "../StudentComponents/StudentActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -50,6 +47,8 @@ const ProgramEnrollmentForm = (props) => {
     course2: false,
   });
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const [courseLevel,setCourseLevel]=useState("")
+  const [courseType,setCourseType]=useState('')
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -135,53 +134,31 @@ const ProgramEnrollmentForm = (props) => {
   };
 
   useEffect(() => {
-    getProgramEnrollmentsPickList().then((data) => {
-      setcourse(
-        data?.course?.map((item) => ({ key: item, value: item, label: item }))
-      );
-      setStatusOptions(
-        data.status.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setFeeStatusOptions(
-        data.fee_status.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setYearOfCompletionOptions(
-        data.year_of_completion.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setCurrentCourseYearOptions(
-        data.current_course_year.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setCourseLevelOptions(
-        data.course_level.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setCourseTypeOptions(
-        data.course_type.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
+    getProgramEnrollmentsPickList().then(data => {
+      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
+      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
+    getAllCourse().then((data)=>{
+      const uniqueCourseLevels = new Set(data.data.data.coursesConnection.values.map(item => item.course_level));
+      const uniqueCourseType=new Set(data.data.data.coursesConnection.values.map(item => item.course_type));
+      const courseLevelOptions = Array.from(uniqueCourseLevels).map(course_level => ({
+        key: course_level,
+        value: course_level,
+        label: course_level
+      }));
+      setCourseLevelOptions(courseLevelOptions);
+      setCourseTypeOptions(Array.from(uniqueCourseType).map(course_type => ({
+        key: course_type,
+        value: course_type,
+        label: course_type
+      })));
+
+    })
   }, []);
 
   const filterInstitution = async (filterValue) => {
@@ -295,8 +272,29 @@ const ProgramEnrollmentForm = (props) => {
         setShowDuplicateWarning(false);
       }
     }
-  };
+  }
+  useEffect(()=>{
+    if (courseLevel && courseType) {
+      getAllCourse().then((data) => {
+        const filteredCourses = data.data.data.coursesConnection.values.filter(obj => {
+          return obj.course_level === courseLevel && obj.course_type === courseType;
+        });
+        
+        const courseOptions = filteredCourses.map(obj => ({
+          key: obj.course_name,
+          value: obj.course_name,
+          label: obj.course_name
+        }));
+    
+        // Add the default "other" option
+        courseOptions.push({ value: "Other", label: "Other", key: "Other" });
+    
+      setcourse(courseOptions)
 
+      });
+    } 
+  },[courseLevel,courseType])
+ 
   return (
     <Modal
       centered
@@ -371,192 +369,158 @@ const ProgramEnrollmentForm = (props) => {
                         <Skeleton count={1} height={60} />
                       )}
 
-                      {showDuplicateWarning && (
-                        <div style={{ color: "red", fontWeight: "lighter" }}>
-                          This batch is already assigned to the existing
-                          student. Select a new batch.
-                        </div>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="registration_date"
-                        label="Registration Date"
-                        required
-                        placeholder="Registration Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {!lookUpLoading ? (
-                        <Input
-                          control="lookupAsync"
-                          name="institution"
-                          label="Institution"
-                          required
-                          filterData={filterInstitution}
-                          defaultOptions={props.id ? institutionOptions : true}
-                          className="form-control"
-                          placeholder="Institution"
-                        />
-                      ) : (
-                        <Skeleton count={1} height={60} />
-                      )}
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="certification_date"
-                        label="Certification Date"
-                        placeholder="Certification Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                      />
-                    </div>
+                    {showDuplicateWarning && <div style={{color:'red',fontWeight:'lighter'}}>This batch is already assigned to the existing student. Select a new batch.</div>}
                   </div>
-                </Section>
-                <Section>
-                  <h3 className="section-header">Course Details</h3>
-                  <div className="row">
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="course_level"
-                        label="Course Level"
-                        required
-                        options={courseLevelOptions}
-                        className="form-control"
-                        placeholder="Course Level"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="year_of_course_completion"
-                        label="Year of Completion"
-                        required
-                        options={yearOfCompletionOptions}
-                        className="form-control"
-                        placeholder="Year of Completion"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="course_type"
-                        label="Course Type"
-                        required
-                        options={courseTypeOptions}
-                        className="form-control"
-                        placeholder="Course Type"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="program_enrollment_id"
-                        control="input"
-                        label="Program Enrollment ID"
-                        className="form-control"
-                        placeholder="To be decided"
-                        disabled={true}
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="course_year"
-                        label="Current Course Year"
-                        required
-                        options={currentCourseYearOptions}
-                        className="form-control"
-                        placeholder="Current Course Year"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {OthertargetValue.course1 ? (
-                        <Input
-                          name="course_name_in_current_sis"
-                          control="input"
-                          label="Course Name"
-                          options={course}
-                          className="form-control"
-                          placeholder="Course Name"
-                        />
-                      ) : (
-                        <Input
-                          name="course_name_in_current_sis"
-                          control="lookup"
-                          icon="down"
-                          label="Course Name"
-                          options={course}
-                          onChange={(e) => handlechange(e, "course1")}
-                          className="form-control"
-                          placeholder="Course Name"
-                        />
-                      )}
-                    </div>
-
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {OthertargetValue.course1 ||
-                      (initialValues.course_name_in_current_sis == "Other" &&
-                        initialValues.course_name_in_current_sis.length) ? (
-                        <Input
-                          name="course_name_other"
-                          control="input"
-                          label="If Other, Specify"
-                          required
-                          className="form-control"
-                          placeholder="If Other, Specify"
-                        />
-                      ) : (
-                        <div></div>
-                      )}
-                    </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="registration_date"
+                      label="Registration Date"
+                      required
+                      placeholder="Registration Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
                   </div>
-                </Section>
-                <Section>
-                  <h3 className="section-header">Higher Education</h3>
-                  <div className="row">
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {OthertargetValue.course2 ? (
-                        <Input
-                          name="higher_education_course_name"
-                          control="input"
-                          label="Course Name"
-                          options={course}
-                          className="form-control"
-                          placeholder="Course Name"
-                        />
-                      ) : (
-                        <Input
-                          icon="down"
-                          name="higher_education_course_name"
-                          control="lookup"
-                          label="Course Name"
-                          onChange={(e) => handlechange(e, "course2")}
-                          options={course}
-                          className="form-control"
-                          placeholder="Course Name"
-                        />
-                      )}
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="higher_education_year_of_course_completion"
-                        label="Year of Passing"
-                        options={yearOfCompletionOptions}
-                        className="form-control"
-                        placeholder="Year of Passing"
-                      />
-                    </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {!lookUpLoading ? (
+                    <Input
+                      control="lookupAsync"
+                      name="institution"
+                      label="Institution"
+                      required
+                      filterData={filterInstitution}
+                      defaultOptions={props.id ? institutionOptions : true}
+                      className="form-control"
+                      placeholder="Institution"
+                    />
+                    ) : (
+                      <Skeleton count={1} height={60} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="certification_date"
+                      label="Certification Date"
+                      placeholder="Certification Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Course Details</h3>
+                <div className="row">
+                <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_type"
+                      label="Course Type"
+                      required
+                      options={courseTypeOptions}
+                      className="form-control"
+                      placeholder="Course Type"
+                      onChange={(e)=>setCourseType(e.value)}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_level"
+                      label="Course Level"
+                      required
+                      options={courseLevelOptions}
+                      className="form-control"
+                      placeholder="Course Level"
+                      onChange={(e)=>setCourseLevel(e.value)}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {(courseLevel && courseType) 
+                  ?
+                    <Input
+                      name="course_name_in_current_sis"
+                      control="lookup"
+                      icon="down"
+                      label="Course Name"
+                      options={course}
+                      onChange={(e)=>handlechange(e,"course1")}
+                      className="form-control"
+                      placeholder="Course Name"
+                    />:
+                    <Skeleton count={1} height={60} />
+                    }
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                  {
+                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                   <Input
+                      name="course_name_other"
+                      control="input"
+                      label="If Other, Specify"
+                      required
+                      className="form-control"
+                      placeholder="If Other, Specify"
+                    /> :<div></div>
+                    
+                  }
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="course_year"
+                      label="Current Course Year"
+                      required
+                      options={currentCourseYearOptions}
+                      className="form-control"
+                      placeholder="Current Course Year"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="year_of_course_completion"
+                      label="Year of Completion"
+                      required
+                      options={yearOfCompletionOptions}
+                      className="form-control"
+                      placeholder="Year of Completion"
+                    />
+                  </div>
+                </div>
+              </Section>
+              <Section>
+                <h3 className="section-header">Higher Education</h3>
+                <div className="row">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {OthertargetValue.course2 ? 
+                    <Input
+                    name="higher_education_course_name"
+                    control="input"
+                    label="Course Name"
+                    options={course}
+                    className="form-control"
+                    placeholder="Course Name"
+                  />
+                    
+                    :<Input
+                      icon="down"
+                      name="higher_education_course_name"
+                      control="lookup"
+                      label="Course Name"
+                      onChange={(e)=>handlechange(e,"course2")}
+                      options={course}
+                      className="form-control"
+                      placeholder="Course Name"
+                      
+                    />}
+                  </div>
                   </div>
                 </Section>
                 <Section>
