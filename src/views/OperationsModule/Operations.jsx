@@ -124,11 +124,11 @@ const Operations = ({
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
   const [uploadModal, setUploadModal] = useState({
-    myData:false,
-    tot:false
+    myData: false,
+    tot: false,
   });
 
-  console.log("uploadModal",uploadModal);
+  console.log("uploadModal", uploadModal);
 
   const columns = useMemo(
     () => [
@@ -914,8 +914,6 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-
-
   const uploadExcel = async (data, key) => {
     try {
       if (key === "my_data") {
@@ -940,9 +938,7 @@ const Operations = ({
       getoperations();
     }
   };
-  
 
-  
   const alertForNotuploadedData = async (key) => {
     if (key == "feild_activity") {
       setUploadModal(false);
@@ -952,9 +948,9 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
-  const closeUpload=()=>{
-    setUploadModal(false)
-  }
+  const closeUpload = () => {
+    setUploadModal(false);
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -998,47 +994,68 @@ const Operations = ({
 
                   <button
                     className="btn btn-primary"
-                    onClick={() => 
-                      {
-                        console.log(activeTab.key);
-                        if(activeTab.key =="my_data"){
-                          setUploadModal({
-                            myData:true,
-                            tot:false
-                          })
-                        }else{
-                          setUploadModal({
-                            tot:true,
-                            myData:false
-                          })
-                        }
+                    onClick={() => {
+                      console.log(activeTab.key);
+                      if (activeTab.key == "my_data") {
+                        setUploadModal({
+                          myData: true,
+                          tot: false,
+                        });
+                      } else {
+                        setUploadModal({
+                          tot: true,
+                          myData: false,
+                        });
                       }
-                    }
+                    }}
                     style={{ marginLeft: "15px" }}
                   >
                     Upload Data
                   </button>
                   <button className="btn btn-primary mx-3 ">
-                    <div>
-                      {" "}
-                      <a
-                        href={
-                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
-                        }
-                        target="_blank"
-                        className="c-pointer mb-1 d-block text-light text-decoration-none "
-                      >
-                        <span className="mr-3">Sample File</span>
-                        <FaDownload size="20" className="ml-2" color="#fff" />
-                      </a>
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          fontFamily: "Latto-Italic",
-                          color: "#787B96",
-                        }}
-                      ></div>
-                    </div>
+                    {activeTab.key == "my_data" ? (
+                      <div>
+                        <a
+                          href={
+                            "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7Ba089b903-0e88-41be-a013-9b35ba407657%7D&action=edit&wdinitialsession=018b989b-ccca-c9f1-d1c7-bde77b9d466e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
+                          }
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                        >
+                          <span className="mr-3">Sample File</span>
+                          <FaDownload size="20" className="ml-2" color="#fff" />
+                        </a>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            fontFamily: "Latto-Italic",
+                            color: "#787B96",
+                          }}
+                        ></div>
+                      </div>
+                    ) : activeTab.key == "tot" ? (
+                      <div>
+                        <a
+                          href={
+                            "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
+                          }
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                        >
+                          <span className="mr-3">Sample File</span>
+                          <FaDownload size="20" className="ml-2" color="#fff" />
+                        </a>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            fontFamily: "Latto-Italic",
+                            color: "#787B96",
+                          }}
+                        ></div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </button>
                 </>
               )}
@@ -1266,18 +1283,16 @@ const Operations = ({
               />
             </>
           )}
-          {uploadModal.tot  && (
+          {uploadModal.tot && (
             <>
-               <TotUpload
+              <TotUpload
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}
                 tot="yes"
               />
             </>
-          )
-
-          }
+          )}
         </div>
       </Styled>
     </Collapse>
