@@ -196,7 +196,7 @@ const Sessions = (props) => {
         </div>
       }
         <div className="col-12 mt-3">
-          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={canEditSession ? handleRowClick : false} showPagination={false} />
+          <Table columns={columns} data={sessionTableData} paginationPageSize={sessionTableData.length} totalRecords={sessionTableData.length} fetchData={refetchSessions} onRowClick={canEditSession ? handleRowClick : false} showPagination={false} collapse_tab_name="Attandance"/>
         </div>
       </div>
       <CreateBatchSessionForm

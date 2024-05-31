@@ -247,7 +247,7 @@ const AlumniServiceForm = (props) => {
           {({ values }) => (
             <Form>
               <Section>
-                <div className="row">
+                <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="alumni_service_student"
@@ -410,22 +410,22 @@ const AlumniServiceForm = (props) => {
                 </div>
               </Section>
 
-              <div className="row justify-content-center">
-                <div className="col-auto">
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-regular collapse_form_buttons"
-                  >
-                    SAVE
-                  </button>
-                </div>
-                <div className="col-auto">
+              <div className="row justify-content-end">
+                <div className="col-auto p-0">
                   <button
                     type="button"
                     onClick={handleClose}
                     className="btn btn-secondary btn-regular collapse_form_buttons"
                   >
                     CANCEL
+                  </button>
+                </div>
+                <div className="col-auto p-0">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                  >
+                    SAVE
                   </button>
                 </div>
               </div>

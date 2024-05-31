@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -18,7 +18,6 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
-import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
@@ -33,7 +32,6 @@ import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
 import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
-import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
@@ -47,8 +45,9 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
+// import UploadFile from "./OperationComponents/UploadFile";
+import { FaDownload ,FaFileUpload} from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload } from "react-icons/fa";
 import TotUpload from "./UploadFiles/TotUpload";
 
 const tabPickerOptionsMain = [
@@ -895,20 +894,20 @@ const Operations = ({
     [opsData]
   );
   useEffect(() => {
-    if (activeTabMain.key == "alum") {
+    if (activeTabMain.key === "alum") {
       setActiveTab(tabPickerOptions2[0]);
     }
 
-    if (activeTabMain.key == "systemAdoption") {
+    if (activeTabMain.key === "systemAdoption") {
       setActiveTab(tabPickerOptions3[0]);
     }
-    if (activeTabMain.key == "coreProgramme") {
+    if (activeTabMain.key === "coreProgramme") {
       setActiveTab(tabPickerOptions1[0]);
     }
     if (
-      activeTabMain.key != "alum" &&
-      activeTabMain.key != "systemAdoption" &&
-      activeTab.key != "my_data"
+      activeTabMain.key !== "alum" &&
+      activeTabMain.key !== "systemAdoption" &&
+      activeTab.key !== "my_data"
     ) {
       window.location.reload();
     }
@@ -961,17 +960,17 @@ const Operations = ({
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-            {activeTabMain.key == "coreProgramme" ? (
+            {activeTabMain.key === "coreProgramme" ? (
               <TabPicker
                 options={tabPickerOptions1}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "alum" ? (
+            ) : activeTabMain.key === "alum" ? (
               <TabPicker
                 options={tabPickerOptions2}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "systemAdoption" ? (
+            ) : activeTabMain.key === "systemAdoption" ? (
               <TabPicker
                 options={tabPickerOptions3}
                 setActiveTab={setActiveTab}
@@ -979,19 +978,17 @@ const Operations = ({
             ) : (
               ""
             )}
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-              {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-
+            <div className="d-flex flex-md-row justify-content-between align-items-center mb-2">
               {(isSRM() || isAdmin()) && (
                 <>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
-                    style={{ marginLeft: "15px" }}
                   >
-                    Add New Data
+                    Add New
                   </button>
-                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ?
+
+                  {(activeTab.key === "my_data" || activeTab.key ==="useTot") ?
                   <button
                     className="btn btn-primary"
                     onClick={() => {
@@ -1010,32 +1007,33 @@ const Operations = ({
                     }}
                     style={{ marginLeft: "15px" }}
                   >
-                    Upload Data
+                    Upload &nbsp;
+                    <FaFileUpload size="14" color="#fff"/>
                   </button>:""}
-                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ? 
-                  <button className="btn btn-primary mx-3">
-                  <div>
-                        <a
-                          href={
-                            activeTab.key == "my_data"?
-                            "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
-                           :"https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"}
-                          target="_blank"
-                          className="c-pointer mb-1 d-block text-light text-decoration-none "
-                        >
-                          <span className="mr-3">Sample File</span>
-                          <FaDownload size="20" className="ml-2" color="#fff" />
-                        </a>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            fontFamily: "Latto-Italic",
-                            color: "#787B96",
-                          }}
-                        ></div>
-                        </div>
-                  </button> :""
-
+                  
+                   {(activeTab.key === "my_data" || activeTab.key ==="useTot") ? 
+                   <button className="btn btn-primary ops_action_button" >
+                    <div>
+                      <a
+                        href={
+                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
+                        }
+                        target="_blank"
+                        className="c-pointer d-block text-light text-decoration-none "
+                        rel="noreferrer"
+                      >
+                        <span>Sample</span> &nbsp;
+                        <FaDownload size="14" color="#fff" />
+                      </a>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          fontFamily: "Latto-Italic",
+                          color: "#787B96",
+                        }}
+                      ></div>
+                    </div>
+                  </button>:""
                   }
                 </>
               )}
@@ -1043,7 +1041,7 @@ const Operations = ({
           </div>
 
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
-            {activeTab.key == "my_data" ? (
+            {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />
                 <Table
@@ -1095,22 +1093,7 @@ const Operations = ({
                 />
               </>
             ) : activeTab.key == "dtesamarth" ? (
-              <>
-                {/* <SamarthSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("sditdata", data)}
-                  columns={columnsPlacement}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                /> */}
-              </>
+              <></>
             ) : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />

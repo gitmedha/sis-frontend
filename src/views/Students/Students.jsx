@@ -662,7 +662,7 @@ else {
             />
           </div>
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
-            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} moduleName="Students"/>
             <Tabs
               options={studentStatusOptions}
               onTabChange={handleStudentStatusTabChange}
