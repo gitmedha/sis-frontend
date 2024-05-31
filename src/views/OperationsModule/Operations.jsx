@@ -991,7 +991,7 @@ const Operations = ({
                   >
                     Add New Data
                   </button>
-
+                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ?
                   <button
                     className="btn btn-primary"
                     onClick={() => {
@@ -1011,34 +1011,15 @@ const Operations = ({
                     style={{ marginLeft: "15px" }}
                   >
                     Upload Data
-                  </button>
-                  <button className="btn btn-primary mx-3 ">
-                    {activeTab.key == "my_data" ? (
-                      <div>
+                  </button>:""}
+                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ? 
+                  <button className="btn btn-primary mx-3">
+                  <div>
                         <a
                           href={
-                            "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7Ba089b903-0e88-41be-a013-9b35ba407657%7D&action=edit&wdinitialsession=018b989b-ccca-c9f1-d1c7-bde77b9d466e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
-                          }
-                          target="_blank"
-                          className="c-pointer mb-1 d-block text-light text-decoration-none "
-                        >
-                          <span className="mr-3">Sample File</span>
-                          <FaDownload size="20" className="ml-2" color="#fff" />
-                        </a>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            fontFamily: "Latto-Italic",
-                            color: "#787B96",
-                          }}
-                        ></div>
-                      </div>
-                    ) : activeTab.key == "tot" ? (
-                      <div>
-                        <a
-                          href={
+                            activeTab.key == "my_data"?
                             "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
-                          }
+                           :"https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none "
                         >
@@ -1052,11 +1033,10 @@ const Operations = ({
                             color: "#787B96",
                           }}
                         ></div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </button>
+                        </div>
+                  </button> :""
+
+                  }
                 </>
               )}
             </div>
