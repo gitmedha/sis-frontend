@@ -123,11 +123,11 @@ const Operations = ({
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
   const [uploadModal, setUploadModal] = useState({
-    myData:false,
-    tot:false
+    myData: false,
+    tot: false,
   });
 
-  console.log("uploadModal",uploadModal);
+  console.log("uploadModal", uploadModal);
 
   const columns = useMemo(
     () => [
@@ -913,8 +913,6 @@ const Operations = ({
     }
   }, [activeTabMain.key]);
 
-
-
   const uploadExcel = async (data, key) => {
     try {
       if (key === "my_data") {
@@ -939,9 +937,7 @@ const Operations = ({
       getoperations();
     }
   };
-  
 
-  
   const alertForNotuploadedData = async (key) => {
     if (key == "feild_activity") {
       setUploadModal(false);
@@ -992,30 +988,31 @@ const Operations = ({
                     Add New
                   </button>
 
+                  {(activeTab.key === "my_data" || activeTab.key ==="useTot") ?
                   <button
-                    className="btn btn-primary ops_action_button mx-lg-1"
-                    onClick={() => 
-                      {
-                        console.log(activeTab.key);
-                        if(activeTab.key ==="my_data"){
-                          setUploadModal({
-                            myData:true,
-                            tot:false
-                          })
-                        }else{
-                          setUploadModal({
-                            tot:true,
-                            myData:false
-                          })
-                        }
+                    className="btn btn-primary"
+                    onClick={() => {
+                      console.log(activeTab.key);
+                      if (activeTab.key == "my_data") {
+                        setUploadModal({
+                          myData: true,
+                          tot: false,
+                        });
+                      } else {
+                        setUploadModal({
+                          tot: true,
+                          myData: false,
+                        });
                       }
-                    }
+                    }}
                     style={{ marginLeft: "15px" }}
                   >
                     Upload &nbsp;
                     <FaFileUpload size="14" color="#fff"/>
-                  </button>
-                  <button className="btn btn-primary ops_action_button" >
+                  </button>:""}
+                  
+                   {(activeTab.key === "my_data" || activeTab.key ==="useTot") ? 
+                   <button className="btn btn-primary ops_action_button" >
                     <div>
                       <a
                         href={
@@ -1036,14 +1033,15 @@ const Operations = ({
                         }}
                       ></div>
                     </div>
-                  </button>
+                  </button>:""
+                  }
                 </>
               )}
             </div>
           </div>
 
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
-            {activeTab.key == "my_data" ? (
+            {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />
                 <Table
@@ -1248,18 +1246,16 @@ const Operations = ({
               />
             </>
           )}
-          {uploadModal.tot  && (
+          {uploadModal.tot && (
             <>
-               <TotUpload
+              <TotUpload
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}
                 tot="yes"
               />
             </>
-          )
-
-          }
+          )}
         </div>
       </Styled>
     </Collapse>

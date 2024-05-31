@@ -60,8 +60,8 @@ const AlumniServiceForm = (props) => {
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
-
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (props.alumniService) {
@@ -113,12 +113,20 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string()
       .nullable()
       .required("Contribution submission date is required.");
-    let fee_amount = Yup.string().required("Contribution amount is required.");
-    let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired =
-      (feeSubmissionDateValue !== null && feeSubmissionDateValue !== "") ||
-      (feeAmountValue !== null && feeAmountValue !== "") ||
-      (receiptNumberValue !== null && receiptNumberValue !== "");
+    let fee_amount = Yup.string()
+      .nullable()
+      .required("Contribution amount is required.");
+    let receipt_number = Yup.string()
+      .nullable()
+      .required("Receipt number is required.");
+    let fieldsRequired = status === "Paid";
+
+    if (!fieldsRequired && props.alumniService) {
+      if (Object.keys(props.alumniService).length) {
+        fieldsRequired =
+          props.alumniService.status === "Paid" && status !== "Unpaid";
+      }
+    }
     setFeeFieldsRequired(fieldsRequired);
     if (fieldsRequired) {
       setValidationRules(
@@ -137,7 +145,7 @@ const AlumniServiceForm = (props) => {
         ])
       );
     }
-  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
+  }, [status, props.alumniService]);
 
   useEffect(() => {
     setFeeSubmissionDateValue(
@@ -347,6 +355,7 @@ const AlumniServiceForm = (props) => {
                       icon="down"
                       options={statusOption}
                       required={feeFieldsRequired}
+                      onChange={(e) => setStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
