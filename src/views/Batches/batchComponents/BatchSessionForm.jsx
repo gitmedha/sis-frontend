@@ -179,7 +179,7 @@ const BatchSessionForm = (props) => {
           {({ isSubmitting }) => (
             <Form>
               <Section>
-                <div className="row">
+                <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="date"
@@ -215,24 +215,24 @@ const BatchSessionForm = (props) => {
                   </div>
                 </div>
               </Section>
-              <div className="row justify-content-center">
-                <div className="col-auto">
-                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'disabled={isSubmitting}>
-                    SAVE
-                  </button>
-                </div>
-                <div className="col-auto">
-                   <button 
-                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
-                    CANCEL                    
-                  </button>
-                </div>
-                {batch.status === 'In Progress' && onDelete && <div className="col-auto">
+              <div className="row justify-content-end">
+                {batch.status === 'In Progress' && onDelete && <div className="col-auto p-0">
                   <button 
                     onClick={() => {setShowDeleteAlert(true)}} className='btn btn-danger btn-regular collapse_form_buttons'>
                     DELETE
                   </button>
                 </div>}
+                <div className="col-auto p-0">
+                   <button 
+                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
+                    CANCEL                    
+                  </button>
+                </div>
+                <div className="col-auto p-0">
+                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'disabled={isSubmitting}>
+                    SAVE
+                  </button>
+                </div>
               </div>
             </Form>
           )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal} from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
@@ -463,16 +463,16 @@ const CollegepitchesBulkadd = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-end between_class">
+          <div className="d-flex justify-content-end between_class bulk_add_actions">
           <button
               type="button"
               onClick={onHide}
-              className="btn btn-danger btn-regular mr-2"
+              className="btn btn-danger btn-regular mr-2 bulk_add_button"
             >
               CLOSE
             </button>
             <button
-              className="btn btn-primary btn-regular mx-0"
+              className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
               disabled={disableSaveButton}
@@ -484,7 +484,6 @@ const CollegepitchesBulkadd = (props) => {
         </div>
       </Modal.Body>
 
-      {/* {showLimit ? <SweetAlert title="You can't dd more than 10 items!" onConfirm={onConfirm} onCancel={()=>onCancel()} /> :""} */}
     </Modal>
   );
 };

@@ -1,13 +1,7 @@
-import { Formik, Form } from "formik";
-import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
+import { Modal} from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect, Fragment } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
+import { useState, useEffect} from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
@@ -18,80 +12,6 @@ import { connect } from "react-redux";
 import { MeiliSearch } from "meilisearch";
 
 import { RowsData } from "./RowsData";
-import { createOperation } from "./operationsActions";
-import api from "../../../apis";
-const Section = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
-
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
-  }
-
-  // .App {
-  //   margin: 2rem auto;
-  //   width: 80%;
-  // }
-
-  .create_data_table {
-    border-collapse: collapse !important;
-    width: 100%;
-    overflow: auto;
-  }
-
-  th,
-  td {
-    border: #6c757d;
-    padding: 8px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #f2f2f2;
-  }
-
-  .table-input {
-    // border: none;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-  }
-
-  button {
-    margin-top: 1rem;
-  }
-  // .table-input:focus {
-  //   outline: none;
-  // }
-  .adddeletebtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-`;
-const marginTop = {
-  marginTop: "2rem",
-};
-const modalStyle = {
-  position: "fixed",
-  top: "20px", // Gap from the top
-  right: "20px", // Gap from the right
-  bottom: "20px", // Gap from the bottom
-  left: "20px", // Gap from the left
-  width: "calc(100% - 40px)", // Adjust width to account for left and right gaps
-  height: "calc(100% - 40px)", // Adjust height to account for top and bottom gaps
-  overflow: "auto",
-};
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -121,18 +41,13 @@ const OperationCreateform = (props) => {
   const userId = localStorage.getItem("user_id");
 
   const [stateOptions, setStateOptions] = useState([]);
-  const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [show1, setShow1] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [showLimit, setshowLimit] = useState(false);
-  const handleClose = () => setShow1(false);
-  const handleShow = () => setShow1(true);
+  const [endDate,] = useState(new Date());
+  
   const [data, setData] = useState([
     {
       id: 1,
@@ -199,7 +114,7 @@ const OperationCreateform = (props) => {
 
       for(let key in row){
        
-        if(!(key =='designation') && !(key =='guest') && !(key =='donor') && !(key =='organization') ){
+        if(!(key ==='designation') && !(key ==='guest') && !(key ==='donor') && !(key ==='organization') ){
           if(isEmptyValue(row[key])){
             isEmptyValuFound=true
           }
@@ -287,11 +202,10 @@ const OperationCreateform = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
     }
-    // setclassValue({state:false,area:false,topic:false})
   };
 
   const handleChange = (options, key, rowid) => {
-    if (key == "state") {
+    if (key === "state") {
       getStateDistricts().then((data) => {
         setAreaOptions([]);
         setAreaOptions(
@@ -318,7 +232,7 @@ const OperationCreateform = (props) => {
   };
 
   const deleteRow = (id) => {
-    if (rows.length == 1) {
+    if (rows.length === 1) {
       return rows;
     }
     const updatedRows = rows.filter((row) => row.id !== id);
@@ -338,21 +252,6 @@ const OperationCreateform = (props) => {
       );
     });
   }, []);
-
-  const onStateChange = (value) => {
-    getStateDistricts(value).then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-  };
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
@@ -423,9 +322,6 @@ const OperationCreateform = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
 
   useEffect(() => {
     filterInstitution().then((data) => {
@@ -480,13 +376,6 @@ const OperationCreateform = (props) => {
         });
         return filterData;
       });
-  };
-
-  const onConfirm = () => {
-    setshowLimit(true);
-  };
-  const onCancel = () => {
-    setshowLimit(false);
   };
 
   return (
@@ -545,15 +434,11 @@ const OperationCreateform = (props) => {
                 />
               </button>
             )}
-            {/* <button onClick={handleSubmit}>Submit</button> */}
-
-            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
           </div>
           <div className="table-container">
             <table className="create_data_table">
               <thead>
                 <tr>
-                  {/* <th className='id'>ID</th> */}
                   <th>Assigned To *</th>
                   <th>Activity Type *</th>
                   <th>Institution *</th>
@@ -600,16 +485,16 @@ const OperationCreateform = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-end between_class">
+          <div className="d-flex justify-content-end between_class bulk_add_actions">
             <button
               type="button"
               onClick={onHide}
-              className="btn btn-danger btn-regular mr-5"
+              className="btn btn-danger btn-regular mr-5 bulk_add_button"
             >
               CLOSE
             </button>
             <button
-              className="btn btn-primary btn-regular mx-0 text-light"
+              className="btn btn-primary btn-regular mx-0 text-light bulk_add_button"
               type="submit"
               onClick={onSubmit}
               disabled={disableSaveButton}
@@ -619,8 +504,6 @@ const OperationCreateform = (props) => {
           </div>
         </div>
       </Modal.Body>
-
-      {/* {showLimit ? <SweetAlert title="You can't dd more than 10 items!" onConfirm={onConfirm} onCancel={()=>onCancel()} /> :""} */}
     </Modal>
   );
 };
