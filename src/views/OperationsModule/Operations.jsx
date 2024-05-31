@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -18,7 +18,6 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
-import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
@@ -33,7 +32,6 @@ import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
 import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
-import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
@@ -47,8 +45,9 @@ import {
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
+// import UploadFile from "./OperationComponents/UploadFile";
+import { FaDownload ,FaFileUpload} from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload } from "react-icons/fa";
 import TotUpload from "./UploadFiles/TotUpload";
 
 const tabPickerOptionsMain = [
@@ -124,11 +123,11 @@ const Operations = ({
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
   const [uploadModal, setUploadModal] = useState({
-    myData:false,
-    tot:false
+    myData: false,
+    tot: false,
   });
 
-  console.log("uploadModal",uploadModal);
+  console.log("uploadModal", uploadModal);
 
   const columns = useMemo(
     () => [
@@ -895,26 +894,24 @@ const Operations = ({
     [opsData]
   );
   useEffect(() => {
-    if (activeTabMain.key == "alum") {
+    if (activeTabMain.key === "alum") {
       setActiveTab(tabPickerOptions2[0]);
     }
 
-    if (activeTabMain.key == "systemAdoption") {
+    if (activeTabMain.key === "systemAdoption") {
       setActiveTab(tabPickerOptions3[0]);
     }
-    if (activeTabMain.key == "coreProgramme") {
+    if (activeTabMain.key === "coreProgramme") {
       setActiveTab(tabPickerOptions1[0]);
     }
     if (
-      activeTabMain.key != "alum" &&
-      activeTabMain.key != "systemAdoption" &&
-      activeTab.key != "my_data"
+      activeTabMain.key !== "alum" &&
+      activeTabMain.key !== "systemAdoption" &&
+      activeTab.key !== "my_data"
     ) {
       window.location.reload();
     }
   }, [activeTabMain.key]);
-
-
 
   const uploadExcel = async (data, key) => {
     try {
@@ -940,9 +937,7 @@ const Operations = ({
       getoperations();
     }
   };
-  
 
-  
   const alertForNotuploadedData = async (key) => {
     if (key == "feild_activity") {
       setUploadModal(false);
@@ -952,9 +947,9 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
-  const closeUpload=()=>{
-    setUploadModal(false)
-  }
+  const closeUpload = () => {
+    setUploadModal(false);
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -965,17 +960,17 @@ const Operations = ({
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-            {activeTabMain.key == "coreProgramme" ? (
+            {activeTabMain.key === "coreProgramme" ? (
               <TabPicker
                 options={tabPickerOptions1}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "alum" ? (
+            ) : activeTabMain.key === "alum" ? (
               <TabPicker
                 options={tabPickerOptions2}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "systemAdoption" ? (
+            ) : activeTabMain.key === "systemAdoption" ? (
               <TabPicker
                 options={tabPickerOptions3}
                 setActiveTab={setActiveTab}
@@ -983,53 +978,52 @@ const Operations = ({
             ) : (
               ""
             )}
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-              {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-
+            <div className="d-flex flex-md-row justify-content-between align-items-center mb-2">
               {(isSRM() || isAdmin()) && (
                 <>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
-                    style={{ marginLeft: "15px" }}
                   >
-                    Add New Data
+                    Add New
                   </button>
 
+                  {(activeTab.key === "my_data" || activeTab.key ==="useTot") ?
                   <button
                     className="btn btn-primary"
-                    onClick={() => 
-                      {
-                        console.log(activeTab.key);
-                        if(activeTab.key =="my_data"){
-                          setUploadModal({
-                            myData:true,
-                            tot:false
-                          })
-                        }else{
-                          setUploadModal({
-                            tot:true,
-                            myData:false
-                          })
-                        }
+                    onClick={() => {
+                      console.log(activeTab.key);
+                      if (activeTab.key == "my_data") {
+                        setUploadModal({
+                          myData: true,
+                          tot: false,
+                        });
+                      } else {
+                        setUploadModal({
+                          tot: true,
+                          myData: false,
+                        });
                       }
-                    }
+                    }}
                     style={{ marginLeft: "15px" }}
                   >
-                    Upload Data
-                  </button>
-                  <button className="btn btn-primary mx-3 ">
+                    Upload &nbsp;
+                    <FaFileUpload size="14" color="#fff"/>
+                  </button>:""}
+                  
+                   {(activeTab.key === "my_data" || activeTab.key ==="useTot") ? 
+                   <button className="btn btn-primary ops_action_button" >
                     <div>
-                      {" "}
                       <a
                         href={
                           "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
                         }
                         target="_blank"
-                        className="c-pointer mb-1 d-block text-light text-decoration-none "
+                        className="c-pointer d-block text-light text-decoration-none "
+                        rel="noreferrer"
                       >
-                        <span className="mr-3">Sample File</span>
-                        <FaDownload size="20" className="ml-2" color="#fff" />
+                        <span>Sample</span> &nbsp;
+                        <FaDownload size="14" color="#fff" />
                       </a>
                       <div
                         style={{
@@ -1039,14 +1033,15 @@ const Operations = ({
                         }}
                       ></div>
                     </div>
-                  </button>
+                  </button>:""
+                  }
                 </>
               )}
             </div>
           </div>
 
           <div className={`${layout !== "list" ? "d-none" : ""}`}>
-            {activeTab.key == "my_data" ? (
+            {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />
                 <Table
@@ -1098,22 +1093,7 @@ const Operations = ({
                 />
               </>
             ) : activeTab.key == "dtesamarth" ? (
-              <>
-                {/* <SamarthSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("sditdata", data)}
-                  columns={columnsPlacement}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                /> */}
-              </>
+              <></>
             ) : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
@@ -1266,18 +1246,16 @@ const Operations = ({
               />
             </>
           )}
-          {uploadModal.tot  && (
+          {uploadModal.tot && (
             <>
-               <TotUpload
+              <TotUpload
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}
                 tot="yes"
               />
             </>
-          )
-
-          }
+          )}
         </div>
       </Styled>
     </Collapse>

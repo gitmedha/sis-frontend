@@ -56,7 +56,7 @@ body {
 /*----------------- search bar styles-----------------*/
 
 .search_bar_action_sec {
-  padding: 5px 20px !important;
+  padding: 5px 36px !important;
 }
 .content {
   flex: 1;
@@ -139,16 +139,12 @@ body {
 }
 
 #CreateOptsData, #CreateOptsData1{
-  // table {
-  //   border-collapse: collapse !important;
-  //   // width: 100%;
-  //   overflow-x:auto;
-  // }
   
   font-family: Latto-Regular !important;;
   .table-container {
     overflow-x: auto;
     height: 68vh;
+    scrollbar-width: none;
     
   }
   .between_class{
@@ -360,6 +356,12 @@ div::-webkit-scrollbar-thumb {
   right: 1;
 }
 
+.form_sec {
+  height: 375px;
+  overflow: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
 
 @import './media/lg.scss';
 @import './media/md.scss';
