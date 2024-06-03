@@ -456,7 +456,6 @@ else {
         );
         return {
           ...student,
-          // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: (
             <Avatar
               name={student.full_name}
@@ -551,12 +550,12 @@ else {
 
 
   const HideMassEmployeCreateModal =async(data)=>{
-      if(data.length ==0){
+      if(data.length ===0){
         // return ;
         setAlert("Unable to create Employment Connection Data.", "error");
       }else{
         try {
-          const response = await api.post(
+           await api.post(
             "/employment-connections/createBulkEmploymentConnection",
             data
           );
@@ -568,12 +567,12 @@ else {
   }
 
   const hideMassCreateModal = async (data) => {
-    if(data.length ==0){
+    if(data.length ===0){
       setAlert("Unable to create Alumni Data.", "error");
     }
     else {
       try {
-        const response = await api.post(
+        await api.post(
           "/alumni-services/createBulkAlumniServices",
           data
         );
@@ -598,8 +597,8 @@ else {
   }
 
   const handelSubmitMassEdit=async(data,key)=>{
-    if(key =='AlumniBuldEdit'){
-      const value = await api
+    if(key ==='AlumniBuldEdit'){
+      await api
       .post("/alumni-services/bulk-update", data)
       .then((data) => {
         // Return data
@@ -617,8 +616,8 @@ else {
     }
 
 
-    if(key =='EmployerBulkdEdit'){
-      const value = await api
+    if(key ==='EmployerBulkdEdit'){
+      await api
       .post("/employment-connections/bulk-update", data)
       .then((data) => {
         // Return data
