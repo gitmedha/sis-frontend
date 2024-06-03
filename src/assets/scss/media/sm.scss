@@ -17,7 +17,7 @@
     }
     .topnav {
         display: flex !important;
-        width: 90%;
+        width: 100%;
     }
 
     .top_nav_for_other {
@@ -68,6 +68,11 @@
         justify-content: center !important;
         width: 82% !important;
     }
+
+    /* Styles for search buttons*/
+    .search_bar_action_sec {
+        padding:5px 40px !important;
+    } 
     .ops_action_button {
         margin-right:5px;
     }
@@ -83,6 +88,9 @@
   @media screen and (max-width:376px){
     .top_nav_for_other div {
         font-size: 13px !important;
+    }
+    .search_bar_action_sec {
+        padding:5px 36px !important;
     }
     .ops_action_button {
         margin-right:5px;
@@ -107,6 +115,9 @@
     .top_nav_for_other div {
         font-size: 10px !important;
         padding:5px 12px !important;
+    }
+    .search_bar_action_sec {
+        padding: 5px 30px !important;
     }
     .ops_action_button {
         margin-right:5px;
