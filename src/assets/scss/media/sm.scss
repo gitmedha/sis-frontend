@@ -22,7 +22,7 @@
 
     .top_nav_for_other {
         display: flex !important;
-        width: auto;
+        width: 100%;
     }
 
     .topnav div {
@@ -75,6 +75,9 @@
     } 
     .ops_action_button {
         margin-right:5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* styles for mass edit buttons*/
@@ -95,6 +98,9 @@
     .ops_action_button {
         margin-right:5px;
         font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
   }
@@ -105,11 +111,11 @@
     }
 
     .topnav {
-        width:auto;
+        width:100%;
     }
 
     .top_nav_for_other {
-        width:auto;
+        width:100%;
     }
 
     .top_nav_for_other div {
@@ -122,5 +128,8 @@
     .ops_action_button {
         margin-right:5px;
         font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
   }
