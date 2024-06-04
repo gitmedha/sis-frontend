@@ -119,7 +119,7 @@ const EmploymentmassEdit = (props) => {
   const [rejectionreason, setrejectionreason] = useState([]);
   const [isRejected, setRejected] = useState(false);
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
-  const [EmploymentData,setEmploymentData]=useState('')
+  const [EmploymentData, setEmploymentData] = useState("");
 
   let initialValues = {
     employment_connection_student: "",
@@ -241,7 +241,7 @@ const EmploymentmassEdit = (props) => {
         }
       })
     );
-    console.log("statusOptions",statusOptions);
+    console.log("statusOptions", statusOptions);
   }, []);
 
   const filterEmployer = async (filterValue) => {
@@ -356,7 +356,6 @@ const EmploymentmassEdit = (props) => {
     });
 
     props.handelSubmitMassEdit(modifiedStudents, "EmployerBulkdEdit");
-
   };
 
   const handleStatusChange = async (value) => {
@@ -412,44 +411,49 @@ const EmploymentmassEdit = (props) => {
         // dialogClassName="fullscreen-modal"
       >
         {!formStatus && (
-           <>
-           <Modal.Header>
-             <div className="d-flex justify-content-end align-items-center">
-               <button
-                 onClick={handelCancel}
-                 style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
-               >
-                 <FaTimes />
-               </button>
-             </div>
-           </Modal.Header>
-           <Modal.Body className="bg-white" height="">
-             <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-               <div>
-                 <label className="leading-24">Student</label>
-                 <Select
-                   isMulti
-                   closeMenuOnSelect={false}
-                   name="student_ids"
-                   options={studentOptions}
-                   filterData={filterStudent}
-                   onInputChange={(e) => setStudentInput(e)}
-                   className="basic-multi-select"
-                   classNamePrefix="select"
-                   onChange={(choices) => setStudents(choices)}
-                 />
-               </div>
-               <div className="d-flex justify-content-end mx-5">
-                 <button
-                   className="btn btn-primary mt-3 "
-                   onClick={handleSubmit}
-                 >
-                   Submit
-                 </button>
-               </div>
-             </div>
-           </Modal.Body>
-         </>
+          <>
+            <Modal.Header>
+              <div className="d-flex justify-content-end align-items-center">
+                <button
+                  onClick={handelCancel}
+                  style={{
+                    border: "none",
+                    background: "none",
+                    position: "absolute",
+                    right: "2rem",
+                  }}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            </Modal.Header>
+            <Modal.Body className="bg-white" height="">
+              <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
+                <div>
+                  <label className="leading-24">Student</label>
+                  <Select
+                    isMulti
+                    closeMenuOnSelect={false}
+                    name="student_ids"
+                    options={studentOptions}
+                    filterData={filterStudent}
+                    onInputChange={(e) => setStudentInput(e)}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={(choices) => setStudents(choices)}
+                  />
+                </div>
+                <div className="d-flex justify-content-end mx-5">
+                  <button
+                    className="btn btn-primary mt-3 "
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
         )}
 
         {formStatus &&
@@ -675,26 +679,26 @@ const EmploymentmassEdit = (props) => {
                         )}
                       </div>
                     </Section>
-                    
-                <div className="row justify-content-end mt-1">
-                  <div className="col-auto p-0">
-                    <button
-                      type="button"
-                      onClick={handelCancel}
-                      className="btn btn-secondary btn-regular collapse_form_buttons"
-                    >
-                      CANCEL
-                    </button>
-                  </div>
-                  <div className="col-auto p-0">
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-regular collapse_form_buttons"
-                    >
-                      SAVE
-                    </button>
-                  </div>
-                </div>
+
+                    <div className="row justify-content-end mt-1">
+                      <div className="col-auto p-0">
+                        <button
+                          type="button"
+                          onClick={handelCancel}
+                          className="btn btn-secondary btn-regular collapse_form_buttons"
+                        >
+                          CANCEL
+                        </button>
+                      </div>
+                      <div className="col-auto p-0">
+                        <button
+                          type="submit"
+                          className="btn btn-primary btn-regular collapse_form_buttons"
+                        >
+                          SAVE
+                        </button>
+                      </div>
+                    </div>
                   </Form>
                 )}
               </Formik>
