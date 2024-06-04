@@ -228,7 +228,7 @@ const UploadFile = (props) => {
             id="contained-modal-title-vcenter"
             className="d-flex align-items-center"
           >
-            <h1 className="text--primary bebas-thick mb-0">Upload Data Deild Activity</h1>
+            <h1 className="text--primary bebas-thick mb-0">Upload Data Feild Activity</h1>
           </Modal.Title>
         </Modal.Header>
         <Styled>
