@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { MeiliSearch } from "meilisearch";
 import { Formik, Form } from "formik";
 import Select from "react-select";
-import { getEmployerOpportunities, getEmploymentConnectionsPickList, getStudentAlumniServices, getStudentEmploymentConnections, getStudentsPickList } from "../StudentComponents/StudentActions";
+import {
+  getEmployerOpportunities,
+  getEmploymentConnectionsPickList,
+  getStudentAlumniServices,
+  getStudentEmploymentConnections,
+  getStudentsPickList,
+} from "../StudentComponents/StudentActions";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { GET_ALL_OPPORTUNITIES, GET_OPPORTUNITIES } from "../../../graphql";
@@ -28,15 +34,14 @@ const Section1 = styled.table`
   td {
     padding: 8px;
     text-align: left;
-    border:1px solid #bebfc0;
+    border: 1px solid #bebfc0;
   }
 
   th {
-    background-color: #257b69 ;
-    color:#fff;
+    background-color: #257b69;
+    color: #fff;
   }
 
-  
   .table-input {
     width: 8rem;
     padding: 2px;
@@ -44,36 +49,34 @@ const Section1 = styled.table`
     background-color: initial;
     border-radius: 5px;
     border: 1px solid #bebfc0;
-    transition: border-color 0.3s; 
+    transition: border-color 0.3s;
   }
   .table-input:active {
-    border: 1px solid #257b69 !important; 
+    border: 1px solid #257b69 !important;
   }
-  .table-input-select{
+  .table-input-select {
     width: 8rem;
     padding: 2px;
     margin: 0;
     background-color: initial;
     border-radius: 5px;
   }
-  tr{
-    border:1px solid #000;
+  tr {
+    border: 1px solid #000;
   }
   .adddeletebtn {
     display: flex;
     justify-content: flex-end;
   }
-  .submitbtn{
-    position:absolute;
-    right:0;
-  }
-  .submitbtnclear{
+  .submitbtn {
     position: absolute;
-    right:10%;
+    right: 0;
   }
-  
+  .submitbtnclear {
+    position: absolute;
+    right: 10%;
+  }
 `;
-
 
 const Section = styled.div`
   padding-top: 30px;
@@ -95,9 +98,7 @@ const Section = styled.div`
 `;
 
 const EmploymentmassEdit = (props) => {
-
-
-    const [studentOptions, setStudentOptions] = useState([]);
+  const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
   const [studentInput, setStudentInput] = useState("");
   const [formStatus, setFormStatus] = useState(false);
@@ -106,15 +107,17 @@ const EmploymentmassEdit = (props) => {
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
-  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState([]);
+  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
+    []
+  );
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
-  const [rejectionreason,setrejectionreason]=useState([])
-  const [isRejected,setRejected] = useState(false);
-  const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
+  const [rejectionreason, setrejectionreason] = useState([]);
+  const [isRejected, setRejected] = useState(false);
+  const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
 
   let initialValues = {
     employment_connection_student: "",
@@ -126,257 +129,260 @@ const EmploymentmassEdit = (props) => {
     source: "",
     salary_offered: "",
     reason_if_rejected: "",
-    reason_if_rejected_other:"",
-    assigned_to: '',
+    reason_if_rejected_other: "",
+    assigned_to: "",
   };
 
-    const filterStudent = async (filterValue) => {
-        return await meilisearchClient
-          .index("students")
-          .search(filterValue, {
-            limit: 100,
-            attributesToRetrieve: ["id", "full_name", "student_id"],
-          })
-          .then((data) => {
-            let filterData = data.hits.map((student) => {
-              return {
-                ...student,
-                label: `${student.full_name} (${student.student_id})`,
-                value: Number(student.id),
-              };
-            });
-    
-            return filterData;
-          });
-      };
-      useEffect(() => {
-        filterStudent(studentInput).then((data) => {
-          setStudentOptions(data);
+  const filterStudent = async (filterValue) => {
+    return await meilisearchClient
+      .index("students")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "full_name", "student_id"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((student) => {
+          return {
+            ...student,
+            label: `${student.full_name} (${student.student_id})`,
+            value: Number(student.id),
+          };
         });
-        
-      }, [studentInput]);
-    
 
-      
-    
-      const updateEmployerOpportunityOptions = (employer) => {
-        setEmployerOpportunityOptions([]);
-        console.log("opprtunityemployer",employer);
-        getEmployerOpportunities(Number(employer)).then((data) => {
-          console.log("opprtunityemployer12",data);
-          setEmployerOpportunityOptions(
-            data?.data?.data?.opportunities.map((opportunity) => ({
-              key: opportunity.role_or_designation,
-              label: `${opportunity.role_or_designation} | ${opportunity.type}`,
-              type: opportunity.type,
-              value: opportunity.id,
-            }))
-          );
-        });
-      };
-
-      useEffect(()=>{
-         const employers=async()=>{
-          let filterData =await  filterEmployer()
-          
-          console.log(filterData)
-         }
-         employers()
-      },[])
-
-
-    
-      useEffect(() => {
-        getEmploymentConnectionsPickList().then((data) => {
-          setrejectionreason(data.reason_if_rejected?.map(item=>({ key: item.value, value: item.value, label: item.value })))
-          setWorkEngagementOptions(
-            data.work_engagement.map((item) => ({
-              ...item,
-              key: item.value,
-              value: item.value,
-              label: item.value,
-            }))
-          );
-          console.log(data.status.map((item) => ({
-            ...item,
-            key: item.value,
-            value: item.value,
-            label: item.value,
-          })));
-          setAllStatusOptions(
-            data.status.map((item) => ({
-              ...item,
-              key: item.value,
-              value: item.value,
-              label: item.value,
-            }))
-          );
-          setSourceOptions(
-            data.source.map((item) => ({
-              key: item.value,
-              value: item.value,
-              label: item.value,
-            }))
-          );
-        });
-        filterEmployer().then((data) => {
-          setEmployerOptions(data);
-        });
-        let filteredOptions = allStatusOptions;
-        console.log('filteredOptions',filteredOptions);
-        setStatusOptions(filteredOptions.map(item => {
-     
-          if (
-            localStorage.getItem('user_role').toLowerCase() === 'srm' &&
-            item.value.toLowerCase() === 'unknown'
-          ) {
-            return {isDisabled:true};
-          } else {
-            return { key: item.value, value: item.value, label: item.value };
-          }
-        }));
-      }, []);
-
-
-      const filterEmployer = async (filterValue) => {
-        console.log("filter ",filterValue);
-        return await meilisearchClient
-          .index("employers")
-          .search(filterValue, {
-            limit: 100,
-            attributesToRetrieve: ["id", "name"],
-          })
-          .then((data) => {
-            console.log("data",data);
-            let filterData = data.hits.map((employer) => {
-              return {
-                ...employer,
-                label: employer.name,
-                value: Number(employer.id),
-              };
-            });
-            setEmployerOptions(filterData)
-            
-          });
-      };
-    
-
-    
-      const handleSubmit = async (values) => {
-        console.log(values);
-        try {
-            let alumData = await Promise.all(students.map(async (obj) => {
-                try {
-                    let data = await getStudentEmploymentConnections(obj.id);
-
-                    console.log("data.data.data.employmentConnectionsConnection.values",);
-                    return data.data.data.employmentConnectionsConnection.values.map(val => 
-                      
-                      ({
-                        assigned_to:val.assigned_to.id,
-                        experience_certificate: val.experience_certificate,
-                        number_of_internship_hours: val.number_of_internship_hours,
-                        end_date: val.end_date,
-                        opportunity: {value:val.opportunity.id,label:val.opportunity.type},
-                        employer: {value:val.opportunity.employer.id,label:val.opportunity.employer.name},
-                        reason_if_rejected: val.reason_if_rejected,
-                        reason_if_rejected_other: val.reason_if_rejected_other,
-                        salary_offered: val.salary_offered,
-                        start_date: val.start_date,
-                        source: val.source,
-                        status:val.status,
-                        student_id: obj.id,
-                        work_engagement:val.work_engagement,
-                        id:val.id
-                    })
-                    );
-                } catch (err) {    
-                    console.error(err);
-                    return []; 
-                }
-            }));
-            setStudents(alumData.flat())
-            setFormStatus(true);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    
-    
-    const handelChange=(id,newData)=>{
-      return setStudents(students.map(obj => {
-        if (obj.id === id) {
-        if(newData.hasOwnProperty("opportunity")){
-          console.log(newData);
-          let data ={opportunity :newData.opportunity}
-          return { ...obj, ...data }
-        }
-        else if(newData.hasOwnProperty("employer")){
-          console.log(newData);
-          let employerEntryChange ={employer :newData.employer}
-          console.log("employerEntryChange",employerEntryChange);
-          return { ...obj, ...employerEntryChange }
-        }else if(typeof obj.opportunity === "object"  && obj.opportunity !== null){
-          obj.opportunity=obj.opportunity.value
-        }else if( obj.employer === "object" && obj.employer !== null){
-          obj.employer=obj.employer.value
-        }
-        else{
-          return { ...obj, ...newData }; 
-        }
-            
-        }
-        
-        return obj; 
-    }))
-    }
-
-    const uploadData =async()=>{
-      const modifiedStudents = students.map(obj => {
-        if (typeof obj.opportunity === "object" && obj.opportunity !== null) {
-          obj.opportunity = obj.opportunity.value;
-        }
-        if (typeof obj.employer === "object" && obj.employer !== null) {
-          obj.employer = obj.employer.value;
-        }
-        return obj;
+        return filterData;
       });
-      // /employment-connections/bulk-update
+  };
+  useEffect(() => {
+    filterStudent(studentInput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentInput]);
 
-     props.handelSubmitMassEdit(modifiedStudents,"EmployerBulkdEdit")
+  const updateEmployerOpportunityOptions = (employer) => {
+    setEmployerOpportunityOptions([]);
+    console.log("opprtunityemployer", employer);
+    getEmployerOpportunities(Number(employer)).then((data) => {
+      console.log("opprtunityemployer12", data);
+      setEmployerOpportunityOptions(
+        data?.data?.data?.opportunities.map((opportunity) => ({
+          key: opportunity.role_or_designation,
+          label: `${opportunity.role_or_designation} | ${opportunity.type}`,
+          type: opportunity.type,
+          value: opportunity.id,
+        }))
+      );
+    });
+  };
+
+  useEffect(() => {
+    const employers = async () => {
+      let filterData = await filterEmployer();
+
+      console.log(filterData);
+    };
+    employers();
+  }, []);
+
+  useEffect(() => {
+    getEmploymentConnectionsPickList().then((data) => {
+      setrejectionreason(
+        data.reason_if_rejected?.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      setWorkEngagementOptions(
+        data.work_engagement.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      console.log(
+        data.status.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      setAllStatusOptions(
+        data.status.map((item) => ({
+          ...item,
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      setSourceOptions(
+        data.source.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+    filterEmployer().then((data) => {
+      setEmployerOptions(data);
+    });
+    let filteredOptions = allStatusOptions;
+    console.log("filteredOptions", filteredOptions);
+    setStatusOptions(
+      filteredOptions.map((item) => {
+        if (
+          localStorage.getItem("user_role").toLowerCase() === "srm" &&
+          item.value.toLowerCase() === "unknown"
+        ) {
+          return { isDisabled: true };
+        } else {
+          return { key: item.value, value: item.value, label: item.value };
+        }
+      })
+    );
+  }, []);
+
+  const filterEmployer = async (filterValue) => {
+    console.log("filter ", filterValue);
+    return await meilisearchClient
+      .index("employers")
+      .search(filterValue, {
+        limit: 100,
+        attributesToRetrieve: ["id", "name"],
+      })
+      .then((data) => {
+        let filterData = data.hits.map((employer) => {
+          return {
+            ...employer,
+            label: employer.name,
+            value: Number(employer.id),
+          };
+        });
+        setEmployerOptions(filterData);
+      });
+  };
+
+  const handleSubmit = async (values) => {
+    console.log(values);
+    try {
+      let alumData = await Promise.all(
+        students.map(async (obj) => {
+          try {
+            let data = await getStudentEmploymentConnections(obj.id);
+
+            console.log(
+              "data.data.data.employmentConnectionsConnection.values"
+            );
+            return data.data.data.employmentConnectionsConnection.values.map(
+              (val) => ({
+                assigned_to: val.assigned_to.id,
+                experience_certificate: val.experience_certificate,
+                number_of_internship_hours: val.number_of_internship_hours,
+                end_date: val.end_date,
+                opportunity: {
+                  value: val.opportunity.id,
+                  label: val.opportunity.type,
+                },
+                employer: {
+                  value: val.opportunity.employer.id,
+                  label: val.opportunity.employer.name,
+                },
+                reason_if_rejected: val.reason_if_rejected,
+                reason_if_rejected_other: val.reason_if_rejected_other,
+                salary_offered: val.salary_offered,
+                start_date: val.start_date,
+                source: val.source,
+                status: val.status,
+                student_id: obj.id,
+                work_engagement: val.work_engagement,
+                id: val.id,
+              })
+            );
+          } catch (err) {
+            console.error(err);
+            return [];
+          }
+        })
+      );
+      setStudents(alumData.flat());
+      setFormStatus(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handelChange = (id, newData) => {
+    return setStudents(
+      students.map((obj) => {
+        if (obj.id === id) {
+          if (newData.hasOwnProperty("opportunity")) {
+            console.log(newData);
+            let data = { opportunity: newData.opportunity };
+            return { ...obj, ...data };
+          } else if (newData.hasOwnProperty("employer")) {
+            console.log(newData);
+            let employerEntryChange = { employer: newData.employer };
+            console.log("employerEntryChange", employerEntryChange);
+            return { ...obj, ...employerEntryChange };
+          } else if (
+            typeof obj.opportunity === "object" &&
+            obj.opportunity !== null
+          ) {
+            obj.opportunity = obj.opportunity.value;
+          } else if (obj.employer === "object" && obj.employer !== null) {
+            obj.employer = obj.employer.value;
+          } else {
+            return { ...obj, ...newData };
+          }
+        }
+
+        return obj;
+      })
+    );
+  };
+
+  const uploadData = async () => {
+    const modifiedStudents = students.map((obj) => {
+      if (typeof obj.opportunity === "object" && obj.opportunity !== null) {
+        obj.opportunity = obj.opportunity.value;
+      }
+      if (typeof obj.employer === "object" && obj.employer !== null) {
+        obj.employer = obj.employer.value;
+      }
+      return obj;
+    });
+    // /employment-connections/bulk-update
+
+    props.handelSubmitMassEdit(modifiedStudents, "EmployerBulkdEdit");
     //   const value = await api
     //   .post("/employment-connections/bulk-update", modifiedStudents)
     //   .then((data) => {
-        
+
     //     console.log("yes");
     //   })
     //   .catch((err) => {
     //     console.log("Unable to create field data .", "error");
     //   });
-    }
+  };
 
-  const handleStatusChange = async(value)=>{
-    
+  const handleStatusChange = async (value) => {
     setSelectedStatus(value);
 
-    if(value === "Rejected by Employer"){
-      setRejected(true)
+    if (value === "Rejected by Employer") {
+      setRejected(true);
+    } else if (value === "Student Dropped Out") {
+      setRejected(true);
+    } else if (value === "Offer Rejected by Student") {
+      setRejected(true);
+    } else {
+      setRejected(false);
     }
-    else if (value === "Student Dropped Out"){
-      setRejected(true)
-    }
-    else if (value === "Offer Rejected by Student"){
-      setRejected(true)
-    }
-    else {
-      setRejected(false)
-    }
+  };
 
-  }
-    
-    const handelCancel=()=>{
-      props.handelCancel()
-    }
+  const handelCancel = () => {
+    props.handelCancel();
+  };
 
   return (
     <>
@@ -389,262 +395,273 @@ const EmploymentmassEdit = (props) => {
         className="form-modal"
         // dialogClassName="fullscreen-modal"
       >
-         {!formStatus && (
-        <div className="col-md-6 col-sm-12 px-3">
-          <div>
-            <label className="leading-24">Student</label>
-            <Select
-              isMulti
-              name="student_ids"
-              options={studentOptions}
-              filterData={filterStudent}
-              onInputChange={(e) => setStudentInput(e)}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(choices) => setStudents(choices)}
-            />
+        {!formStatus && (
+          <div className="col-md-6 col-sm-12 px-3">
+            <div>
+              <label className="leading-24">Student</label>
+              <Select
+                isMulti
+                name="student_ids"
+                options={studentOptions}
+                filterData={filterStudent}
+                onInputChange={(e) => setStudentInput(e)}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={(choices) => setStudents(choices)}
+              />
+            </div>
+            <div>
+              <button className="btn btn-primary mt-3" onClick={handleSubmit}>
+                Submit
+              </button>
+            </div>
           </div>
-          <div>
-            <button className="btn btn-primary mt-3" onClick={handleSubmit}>
-              Submit
-            </button>
-          </div>
-        </div>
-      )}
-        
-        
-        {formStatus && (students.length >0 ? 
-          <>
-            <Formik
-          onSubmit={handleSubmit}
-          initialValues={initialValues}
-        >
-          {({ values, setFieldValue}) => (
-            <Form>
-              <Section>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="employment_connection_student"
-                      control="input"
-                      label="Student"
-                      className="form-control"
-                      placeholder="Student"
-                      disabled={true}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
+        )}
 
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
-                    
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    
-                    <Input
-                      control="lookupAsync"
-                      name="employer_id"
-                      label="Employer"
-                      filterData={filterEmployer}
-                      defaultOptions={employerOptions}
-                      className="form-control"
-                      placeholder="Employer"
-                      onChange={employer => {
-                        console.log(employer);
-                        setSelectedOpportunityType(null);
-                        updateEmployerOpportunityOptions(employer.value);
-                      }}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {employerOpportunityOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="opportunity_id"
-                        label="Opportunity"
-                        options={employerOpportunityOptions}
-                        className="form-control"
-                        placeholder={"Opportunity"}
-                        onChange={(e) => setSelectedOpportunityType(e.type)}
-                      />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
+        {formStatus &&
+          (students.length > 0 ? (
+            <>
+              <Formik onSubmit={handleSubmit} initialValues={initialValues}>
+                {({ values, setFieldValue }) => (
+                  <Form>
+                    <Section>
+                      <div className="row form_sec">
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            name="employment_connection_student"
+                            control="input"
+                            label="Student"
+                            className="form-control"
+                            placeholder="Student"
+                            disabled={true}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            control="lookupAsync"
+                            name="assigned_to"
+                            label="Assigned To"
+                            required
+                            className="form-control"
+                            placeholder="Assigned To"
+                            filterData={filterAssignedTo}
+                            defaultOptions={assigneeOptions}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            control="lookupAsync"
+                            name="employer_id"
+                            label="Employer"
+                            filterData={filterEmployer}
+                            defaultOptions={employerOptions}
+                            className="form-control"
+                            placeholder="Employer"
+                            onChange={(employer) => {
+                              console.log(employer);
+                              setSelectedOpportunityType(null);
+                              updateEmployerOpportunityOptions(employer.value);
+                            }}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          {employerOpportunityOptions.length ? (
+                            <Input
+                              icon="down"
+                              control="lookup"
+                              name="opportunity_id"
+                              label="Opportunity"
+                              options={employerOpportunityOptions}
+                              className="form-control"
+                              placeholder={"Opportunity"}
+                              onChange={(e) =>
+                                setSelectedOpportunityType(e.type)
+                              }
+                            />
+                          ) : (
+                            <>
+                              <label
+                                className="text-heading"
+                                style={{ color: "#787B96" }}
+                              >
+                                Opportunity (select an employer first)
+                              </label>
+                              <Skeleton count={1} height={35} />
+                            </>
+                          )}
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="status"
+                            label="Status"
+                            required
+                            options={statusOptions}
+                            className="form-control"
+                            placeholder="Status"
+                            onChange={(e) => handleStatusChange(e.value)}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            name="start_date"
+                            label="Start Date"
+                            required
+                            placeholder="Start Date"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            min={0}
+                            type="number"
+                            name="salary_offered"
+                            control="input"
+                            label="Salary Offered"
+                            required
+                            className="form-control"
+                            placeholder="Salary Offered"
+                          />
+                        </div>
+                        {showEndDate && (
+                          <div className="col-md-6 col-sm-12 mt-2">
+                            <Input
+                              name="end_date"
+                              label="End Date"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              required={endDateMandatory}
+                            />
+                          </div>
+                        )}
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="source"
+                            label="Source"
+                            required
+                            options={sourceOptions}
+                            className="form-control"
+                            placeholder="Source"
+                          />
+                        </div>
+
+                        {isRejected ||
+                        (initialValues.reason_if_rejected &&
+                          initialValues.reason_if_rejected.length) ? (
+                          <div className="col-md-6 col-sm-12 mt-2">
+                            <Input
+                              icon="down"
+                              control="lookup"
+                              name="reason_if_rejected"
+                              label="Reason if Rejected"
+                              required={
+                                selectedStatus === "Offer Rejected by Student"
+                              }
+                              options={rejectionreason}
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("reason_if_rejected", e.value);
+                                if (e.value === "Others") {
+                                  setIfSelectedOthers(true);
+                                } else {
+                                  setIfSelectedOthers(false);
+                                }
+                              }}
+                              placeholder="Reason if Rejected"
+                            />
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                        {ifSelectedOthers ||
+                        (initialValues.reason_if_rejected_other &&
+                          initialValues.reason_if_rejected_other.length) ? (
+                          <div className="col-md-6 col-sm-12 mt-2">
+                            <Input
+                              name="reason_if_rejected_other"
+                              control="input"
+                              label="If Other, Specify"
+                              required
+                              className="form-control"
+                              placeholder="If Other, Specify"
+                            />
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                        <div className="col-md-6 col-sm-12 mt-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="work_engagement"
+                            label="Work Engagement"
+                            options={workEngagementOptions}
+                            className="form-control"
+                            placeholder="Work Engagement"
+                            required
+                          />
+                        </div>
+
+                        {selectedOpportunityType === "Internship" && (
+                          <div className="col-md-6 col-sm-12 mt-2">
+                            <Input
+                              min={0}
+                              type="number"
+                              control="input"
+                              name="number_of_internship_hours"
+                              className="form-control"
+                              label="Number of Internship hours"
+                              required
+                              placeholder="Number of Internship hours"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </Section>
+
+                    <div className="row justify-content-end mt-1">
+                      <div className="col-auto p-0">
+                        <button
+                          type="button"
+                          onClick={handelCancel}
+                          className="btn btn-secondary btn-regular collapse_form_buttons"
                         >
-                          Opportunity (select an employer first)
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="status"
-                      label="Status"
-                      required
-                      options={statusOptions}
-                      className="form-control"
-                      placeholder="Status"
-                      onChange={(e) =>handleStatusChange(e.value)}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="start_date"
-                      label="Start Date"
-                      required
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      min={0}
-                      type="number"
-                      name="salary_offered"
-                      control="input"
-                      label="Salary Offered"
-                      required
-                      className="form-control"
-                      placeholder="Salary Offered"
-                    />
-                  </div>
-                  {showEndDate && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="end_date"
-                        label="End Date"
-                        placeholder="End Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                        required={endDateMandatory}
-                      />
+                          CANCEL
+                        </button>
+                      </div>
+                      <div className="col-auto p-0">
+                        <button
+                          type="submit"
+                          className="btn btn-primary btn-regular collapse_form_buttons"
+                        >
+                          SAVE
+                        </button>
+                      </div>
                     </div>
-                  )}
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="source"
-                      label="Source"
-                      required
-                      options={sourceOptions}
-                      className="form-control"
-                      placeholder="Source"
-                    />
-                  </div>
-               
-                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="reason_if_rejected"
-                      label="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
-                      options={rejectionreason}
-                      className="form-control"
-                      onChange={(e)=>{
-                        setFieldValue("reason_if_rejected",e.value)
-                        if(e.value === "Others"){
-                          setIfSelectedOthers(true)
-                        }
-                        else {
-                          setIfSelectedOthers(false)
-                        }
-                      }}
-                      placeholder="Reason if Rejected"
-                    />
-                  </div>:<div></div>}
-                  {
-                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="reason_if_rejected_other"
-                      control="input"
-                      label="If Other, Specify"
-                      required
-                      className="form-control"
-                      placeholder="If Other, Specify"
-                    />
-                  </div>: <div></div>
-                  }
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="work_engagement"
-                      label="Work Engagement"
-                      options={workEngagementOptions}
-                      className="form-control"
-                      placeholder="Work Engagement"
-                      required
-                    />
-                  </div>
-                  
-                  {selectedOpportunityType === 'Internship' &&
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        min={0}
-                        type="number"
-                        control="input"
-                        name="number_of_internship_hours"
-                        className="form-control"
-                        label="Number of Internship hours"
-                        required
-                        placeholder="Number of Internship hours"
-                      />
-                    </div>
-                  }
-                </div>
-              </Section>
-              <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-start">
-                  <button
-                    className="btn btn-primary btn-regular mx-0"
-                    type="submit"
-                  >
-                    SAVE
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handelCancel}
-                    className="btn btn-secondary btn-regular mr-2"
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </div>
-            </Form>
-          )}
-        </Formik>
-            
-          </>
-        :(<div className="">
-        <button
-          className="btn submitbtnclear btn-danger btn-regular my-5"
-          onClick={() => handelCancel()}
-        >
-          Jump Back to previous page 
-        </button>
-      </div>))}
+                  </Form>
+                )}
+              </Formik>
+            </>
+          ) : (
+            <div className="">
+              <button
+                className="btn submitbtnclear btn-danger btn-regular my-5"
+                onClick={() => handelCancel()}
+              >
+                Jump Back to previous page
+              </button>
+            </div>
+          ))}
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default EmploymentmassEdit
+export default EmploymentmassEdit;

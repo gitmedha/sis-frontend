@@ -409,7 +409,7 @@ const MassEmployerUpload = (props) => {
         {({ values, setFieldValue }) => (
           <Form>
             <Section>
-              <div className="row">
+              <div className="row form_sec">
                 <div className="col-md-6 col-sm-12 mt-2">
                   <label className="leading-24">Student</label>
                   <Select
@@ -616,24 +616,27 @@ const MassEmployerUpload = (props) => {
                 )}
               </div>
             </Section>
-            <div className="row mt-3 py-3">
-              <div className="d-flex justify-content-start">
-                <button
-                  className="btn btn-primary btn-regular mx-0"
-                  type="submit"
-                  onClick={() => onSubmit(values)}
-                >
-                  SAVE
-                </button>
-                <button
-                  type="button"
-                  onClick={onModalClose}
-                  className="btn btn-secondary btn-regular mr-2"
-                >
-                  CANCEL
-                </button>
-              </div>
-            </div>
+            
+            <div className="row justify-content-end mt-1">
+                  <div className="col-auto p-0">
+                    <button
+                      type="button"
+                      onClick={onModalClose}
+                      className="btn btn-secondary btn-regular collapse_form_buttons"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                  <div className="col-auto p-0">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular collapse_form_buttons"
+                      onClick={() => onSubmit(values)}
+                    >
+                      SAVE
+                    </button>
+                  </div>
+                </div>
           </Form>
         )}
       </Formik>

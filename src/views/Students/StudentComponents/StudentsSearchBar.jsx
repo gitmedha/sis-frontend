@@ -232,7 +232,7 @@ function StudentsSearchBar({
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {(formik) => (
-        <Form>
+        <Form style={{padding:0}}>
           <Section>
             <div className="row align-items-center">
               <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
@@ -301,7 +301,7 @@ function StudentsSearchBar({
               )}
 
               {selectedSearchField === "registration_date_latest" && (
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                <div className="col-lg-2 col-md-4 col-sm-12 mb-2 p-0">
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="mr-3">
                       <Input

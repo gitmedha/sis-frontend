@@ -38,6 +38,10 @@
         flex-direction: column !important;
     }
 
+    .stundents_nav_tab {
+        flex-direction: column !important;
+    }
+
     .navbar{       
         display: flex !important;
         justify-content: space-around !important;
@@ -84,6 +88,11 @@
     .mass_edit_bottons{
         font-size: 14px;
     }
+
+    
+    .stundents_nav_tab {
+        padding: 0 !important;
+    }
   }
 
 
@@ -103,6 +112,10 @@
         justify-content: center;
     }
     
+    .stundents_nav_tab {
+        padding: 0 !important;
+    }
+    
   }
 
   @media screen and (max-width:321px) {
@@ -112,6 +125,10 @@
 
     .topnav {
         width:100%;
+    }
+
+    .topnav div {
+        padding:10px 12px !important;
     }
 
     .top_nav_for_other {
@@ -131,5 +148,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .stundents_nav_tab {
+        padding: 0 !important;
     }
   }

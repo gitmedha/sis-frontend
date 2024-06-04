@@ -936,7 +936,7 @@ const Operations = ({
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2 p-0">
             <TabPicker
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
@@ -1013,7 +1013,7 @@ const Operations = ({
             </div>
           </div>
 
-          <div className={`${layout !== "list" ? "d-none" : ""}`}>
+          <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />
