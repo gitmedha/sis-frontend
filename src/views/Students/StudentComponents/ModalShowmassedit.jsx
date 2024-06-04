@@ -13,12 +13,12 @@ const Styled = styled.div`
   .cont {
     position: absolute;
     right: 0;
-    bottom:5rem;
+    top:10px;
   }
   .cross {
-    border:none;
-    background:none;  
-}
+    border: none;
+    background: none;
+  }
 `;
 
 const ModalShowmassedit = (props) => {
@@ -77,9 +77,9 @@ const ModalShowmassedit = (props) => {
     props.uploadAlumniData(data);
   };
 
-  const handelSubmit=(data,key)=>{
-    props.handelSubmitMassEdit(data,key)
-  }
+  const handelSubmit = (data, key) => {
+    props.handelSubmitMassEdit(data, key);
+  };
 
   return (
     <div>
@@ -96,46 +96,40 @@ const ModalShowmassedit = (props) => {
           id="example-custom-modal-styling-title"
           className="bg-white"
         >
-          <Modal.Title
-            id="contained-modal-title-vcenter"
-            className="d-flex "
-          >
+          <Modal.Title id="contained-modal-title-vcenter" className="d-flex ">
             <Styled>
-              <div>
-                <h1 className="text--primary bebas-thick mb-0">
-                  Please select one option
-                </h1>
-              </div>
+              <div className="row justify-content-between align-items-center">
+                <div className="col-auto">
+                  <h1 className="text--primary bebas-thick mb-0">
+                    Please select one option
+                  </h1>
+                </div>
 
-              <div className="cont ">
-              <button
-                  onClick={onHide}
-                  className=" mx-5 cross"
-            >
-              <FaTimes />
-            </button>
+                <div className="col-auto cont">
+                  <button onClick={onHide} className="cross">
+                    <FaTimes />
+                  </button>
+                </div>
               </div>
             </Styled>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-white">
-          <div className="d-flex justify-content-center align-items-center ">
+          <div className="d-flex justify-content-around align-items-center ">
             <button
               type="button"
               onClick={handleMassAlumuni}
-              className="btn btn-primary btn-regular mr-2"
+              className="btn btn-primary mass_edit_bottons"
             >
-              Mass Alumni Edit
+              Alumni Edit
             </button>
             <button
               type="button"
               onClick={handleMassemployer}
-              className="btn btn-primary btn-regular mr-2"
+              className="btn btn-primary mass_edit_bottons"
             >
-              Mass Employer Edit
+              Employer Edit
             </button>
-
-            
           </div>
         </Modal.Body>
       </Modal>

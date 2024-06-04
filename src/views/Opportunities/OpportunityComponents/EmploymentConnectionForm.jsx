@@ -1,25 +1,27 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { OpportunityEmploymentConnectionValidations } from "../../../validations";
-import { getEmploymentConnectionsPickList } from '../../Students/StudentComponents/StudentActions';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import {searchStudents} from './opportunityAction';
-
+import { getEmploymentConnectionsPickList } from "../../Students/StudentComponents/StudentActions";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
+import { searchStudents } from "./opportunityAction";
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -29,7 +31,7 @@ const Section = styled.div`
 `;
 
 const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, opportunity,employmentConnection } = props;
+  let { onHide, show, opportunity, employmentConnection } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -37,56 +39,75 @@ const EnrollmentConnectionForm = (props) => {
   const [sourceOptions, setSourceOptions] = useState([]);
   const [showEndDate, setShowEndDate] = useState(false);
   const [endDateMandatory, setEndDateMandatory] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(props.employmentConnection ? props.employmentConnection.status : null);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(props.opportunity.type);
+  const [selectedStatus, setSelectedStatus] = useState(
+    props.employmentConnection ? props.employmentConnection.status : null
+  );
+  const [selectedOpportunityType, setSelectedOpportunityType] = useState(
+    props.opportunity.type
+  );
   const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-  const [rejectionreason,setrejectionreason]=useState([])
-  const [otherrejection,setotherrejection]=useState(false)
-  const [isRejected,setRejected] = useState(false);
-  const [ifSelectedOthers,setIfSelectedOthers] = useState(false);
+  const [rejectionreason, setrejectionreason] = useState([]);
+  const [otherrejection, setotherrejection] = useState(false);
+  const [isRejected, setRejected] = useState(false);
+  const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
 
-  const userId = localStorage.getItem('user_id');
+  const userId = localStorage.getItem("user_id");
   let initialValues = {
-    student: '',
+    student: "",
     employer_name: opportunity.employer.name,
     opportunity_name: opportunity.role_or_designation,
-    status: '',
-    start_date:'',
-    end_date:'',
-    source:'',
-    salary_offered:'',
-    reason_if_rejected_other:"",
+    status: "",
+    start_date: "",
+    end_date: "",
+    source: "",
+    salary_offered: "",
+    reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
   };
 
   if (props.employmentConnection) {
-    
-    initialValues = {...initialValues, ...props.employmentConnection};
-    initialValues['student_id'] = props.employmentConnection.student ? Number(props.employmentConnection.student.id) : null;
-    initialValues['assigned_to'] = props.employmentConnection?.assigned_to?.id;
-    initialValues['employer_name'] = props.employmentConnection.opportunity && props.employmentConnection.opportunity.employer ? props.employmentConnection.opportunity.employer.name : null;
-    initialValues['opportunity_name'] = props.employmentConnection.opportunity ? props.employmentConnection.opportunity.role_or_designation : null;
-    initialValues['start_date'] = props.employmentConnection?.start_date !='Invalid date' ? new Date(props.employmentConnection?.start_date) : null;
-    initialValues['end_date'] = props.employmentConnection?.end_date !='Invalid date' ? new Date(props.employmentConnection?.end_date) : null;
+    initialValues = { ...initialValues, ...props.employmentConnection };
+    initialValues["student_id"] = props.employmentConnection.student
+      ? Number(props.employmentConnection.student.id)
+      : null;
+    initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
+    initialValues["employer_name"] =
+      props.employmentConnection.opportunity &&
+      props.employmentConnection.opportunity.employer
+        ? props.employmentConnection.opportunity.employer.name
+        : null;
+    initialValues["opportunity_name"] = props.employmentConnection.opportunity
+      ? props.employmentConnection.opportunity.role_or_designation
+      : null;
+    initialValues["start_date"] =
+      props.employmentConnection?.start_date != "Invalid date"
+        ? new Date(props.employmentConnection?.start_date)
+        : null;
+    initialValues["end_date"] =
+      props.employmentConnection?.end_date != "Invalid date"
+        ? new Date(props.employmentConnection?.end_date)
+        : null;
   }
 
   useEffect(() => {
-    setShowEndDate(selectedStatus === 'Internship Complete' || selectedStatus === 'Offer Accepted by Student');
-    setEndDateMandatory(selectedStatus === 'Internship Complete');
+    setShowEndDate(
+      selectedStatus === "Internship Complete" ||
+        selectedStatus === "Offer Accepted by Student"
+    );
+    setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus]);
 
   const onModalClose = () => {
     onHide();
-  }
+  };
 
   const onSubmit = async (values) => {
     onHide(values);
   };
 
   useEffect(() => {
-    
-    getEmploymentConnectionsPickList().then(data => {
+    getEmploymentConnectionsPickList().then((data) => {
       setWorkEngagementOptions(
         data.work_engagement.map((item) => ({
           ...item,
@@ -103,98 +124,125 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
-      setrejectionreason(data.reason_if_rejected.map(item=>({ key: item.value, value: item.value, label: item.value })))
-      setSourceOptions(data.source.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setrejectionreason(
+        data.reason_if_rejected.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+      setSourceOptions(
+        data.source.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
     if (props.employmentConnection && props.employmentConnection.student) {
-      filterStudent(props.employmentConnection.student.name).then(data => {
+      filterStudent(props.employmentConnection.student.name).then((data) => {
         setStudentOptions(data);
       });
     }
   }, [props]);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
+    getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-   
   }, []);
-  useEffect(()=>{
-    setotherrejection(false)
-  },[employmentConnection])
+  useEffect(() => {
+    setotherrejection(false);
+  }, [employmentConnection]);
 
   useEffect(() => {
     setSelectedStatus(null);
     let filteredOptions = allStatusOptions;
-    if (selectedOpportunityType === 'Job' || selectedOpportunityType === 'Internship' || selectedOpportunityType === 'UnPaid GIG' || selectedOpportunityType === 'Paid GIG' || selectedOpportunityType === 'Apprenticeship') {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Both');
+    if (
+      selectedOpportunityType === "Job" ||
+      selectedOpportunityType === "Internship" ||
+      selectedOpportunityType === "UnPaid GIG" ||
+      selectedOpportunityType === "Paid GIG" ||
+      selectedOpportunityType === "Apprenticeship"
+    ) {
+      filteredOptions = allStatusOptions.filter(
+        (item) =>
+          item["applicable-to"].includes(selectedOpportunityType) ||
+          item["applicable-to"] === "Both"
+      );
     } else {
-      filteredOptions = allStatusOptions.filter(item => item['applicable-to'] === 'Both');
+      filteredOptions = allStatusOptions.filter(
+        (item) => item["applicable-to"] === "Both"
+      );
     }
-    setStatusOptions(filteredOptions.map(item => {
-     
-      if (
-        localStorage.getItem('user_role').toLowerCase() === 'srm' &&
-        item.value.toLowerCase() === 'unknown'
-      ) {
-        return {isDisabled: true};
-      } else {
-        return { key: item.value, value: item.value, label: item.value };
-      }
-    }));
+    setStatusOptions(
+      filteredOptions.map((item) => {
+        if (
+          localStorage.getItem("user_role").toLowerCase() === "srm" &&
+          item.value.toLowerCase() === "unknown"
+        ) {
+          return { isDisabled: true };
+        } else {
+          return { key: item.value, value: item.value, label: item.value };
+        }
+      })
+    );
   }, [selectedOpportunityType, allStatusOptions]);
 
   const filterStudent = async (filterValue) => {
     try {
-      const {data} = await searchStudents(filterValue);
-      let employmentConnectionStudent = props.employmentConnection ? props.employmentConnection.student : null;
+      const { data } = await searchStudents(filterValue);
+      let employmentConnectionStudent = props.employmentConnection
+        ? props.employmentConnection.student
+        : null;
       let studentFoundInEmploymentList = false;
-      let filterData = data.studentsConnection.values.map(student => {
-        if (props.employmentConnection && student.id === Number(employmentConnectionStudent?.id)) {
+      let filterData = data.studentsConnection.values.map((student) => {
+        if (
+          props.employmentConnection &&
+          student.id === Number(employmentConnectionStudent?.id)
+        ) {
           studentFoundInEmploymentList = true;
         }
         return {
           ...student,
           label: `${student.full_name} (${student.student_id})`,
           value: Number(student.id),
-        }
+        };
       });
-      if (props.employmentConnection && employmentConnectionStudent !== null && !studentFoundInEmploymentList) {
+      if (
+        props.employmentConnection &&
+        employmentConnectionStudent !== null &&
+        !studentFoundInEmploymentList
+      ) {
         filterData.unshift({
           label: employmentConnectionStudent.full_name,
           value: Number(employmentConnectionStudent.id),
         });
       }
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
   const handlechange = (e) => {
-    if(e.value == 'Others'){
-      setotherrejection(true)
+    if (e.value == "Others") {
+      setotherrejection(true);
     }
   };
 
-  const handleStatusChange = async(value)=>{
-  
+  const handleStatusChange = async (value) => {
     setSelectedStatus(value);
 
-    if(value === "Rejected by Employer"){
-      setRejected(true)
+    if (value === "Rejected by Employer") {
+      setRejected(true);
+    } else if (value === "Student Dropped Out") {
+      setRejected(true);
+    } else if (value === "Offer Rejected by Student") {
+      setRejected(true);
+    } else {
+      setRejected(false);
     }
-    else if (value === "Student Dropped Out"){
-      setRejected(true)
-    }
-    else if (value === "Offer Rejected by Student"){
-      setRejected(true)
-    }
-    else {
-      setRejected(false)
-    }
-
-  }
+  };
 
   return (
     <Modal
@@ -212,7 +260,10 @@ const EnrollmentConnectionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id ? 'Update' : 'Add New'} Employment Connection
+            {props.employmentConnection && props.employmentConnection.id
+              ? "Update"
+              : "Add New"}{" "}
+            Employment Connection
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -222,10 +273,10 @@ const EnrollmentConnectionForm = (props) => {
           initialValues={initialValues}
           validationSchema={OpportunityEmploymentConnectionValidations}
         >
-          {({ values,setFieldValue }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <Section>
-                <div className="row">
+                <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="student_id"
@@ -234,24 +285,26 @@ const EnrollmentConnectionForm = (props) => {
                       className="form-control"
                       placeholder="Student"
                       filterData={filterStudent}
-                      defaultOptions={props.employmentConnection ? studentOptions : true}
+                      defaultOptions={
+                        props.employmentConnection ? studentOptions : true
+                      }
                       required={true}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {/* {statusOptions.length ? ( */}
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                    />
                     {/* ) : ( */}
-                      {/* <Skeleton count={1} height={45} /> */}
+                    {/* <Skeleton count={1} height={45} /> */}
                     {/* )} */}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -270,7 +323,7 @@ const EnrollmentConnectionForm = (props) => {
                       name="opportunity_name"
                       label="Opportunity"
                       className="form-control"
-                      placeholder={'Opportunity'}
+                      placeholder={"Opportunity"}
                       disabled={true}
                     />
                   </div>
@@ -284,7 +337,7 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange={(e) =>handleStatusChange(e.value)}
+                      onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -335,39 +388,50 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Source"
                     />
                   </div>
-                  {(isRejected || (initialValues.reason_if_rejected && initialValues.reason_if_rejected.length)) ? <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="reason_if_rejected"
-                      label="Reason if Rejected"
-                      required={selectedStatus === 'Offer Rejected by Student'}
-                      options={rejectionreason}
-                      className="form-control"
-                      onChange={(e)=>{
-                        setFieldValue("reason_if_rejected",e.value)
-                        if(e.value === "Others"){
-                          setIfSelectedOthers(true)
+                  {isRejected ||
+                  (initialValues.reason_if_rejected &&
+                    initialValues.reason_if_rejected.length) ? (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="reason_if_rejected"
+                        label="Reason if Rejected"
+                        required={
+                          selectedStatus === "Offer Rejected by Student"
                         }
-                        else {
-                          setIfSelectedOthers(false)
-                        }
-                      }}
-                      placeholder="Reason if Rejected"
-                    />
-                  </div>:<div></div>}
-                  {
-                   (ifSelectedOthers || (initialValues.reason_if_rejected_other && initialValues.reason_if_rejected_other.length)) ?<div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="reason_if_rejected_other"
-                      control="input"
-                      label="If Other, Specify"
-                      required
-                      className="form-control"
-                      placeholder="If Other, Specify"
-                    />
-                  </div>: <div></div>
-                  }
+                        options={rejectionreason}
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("reason_if_rejected", e.value);
+                          if (e.value === "Others") {
+                            setIfSelectedOthers(true);
+                          } else {
+                            setIfSelectedOthers(false);
+                          }
+                        }}
+                        placeholder="Reason if Rejected"
+                      />
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                  {ifSelectedOthers ||
+                  (initialValues.reason_if_rejected_other &&
+                    initialValues.reason_if_rejected_other.length) ? (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        name="reason_if_rejected_other"
+                        control="input"
+                        label="If Other, Specify"
+                        required
+                        className="form-control"
+                        placeholder="If Other, Specify"
+                      />
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
@@ -380,8 +444,8 @@ const EnrollmentConnectionForm = (props) => {
                       required
                     />
                   </div>
-                 
-                  {selectedOpportunityType === 'Internship' &&
+
+                  {selectedOpportunityType === "Internship" && (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         min={0}
@@ -394,22 +458,27 @@ const EnrollmentConnectionForm = (props) => {
                         placeholder="Number of Internship hours"
                       />
                     </div>
-                  }
+                  )}
                 </div>
               </Section>
-              <div className="row mt-3 py-3">   
-                <div className="row justify-content-center">
-                  <div className="col-auto">
-                    <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons' onClick={()=>onSubmit(values)}>
-                      SAVE
-                    </button>
-                  </div>
-                  <div className="col-auto">
-                    <button type="button"
-                    onClick={onModalClose} className='btn btn-secondary btn-regular collapse_form_buttons'>
-                      CANCEL                    
-                    </button>
-                  </div>
+              <div className="row justify-content-end mt-1fo">
+                <div className="col-auto p-0">
+                  <button
+                    type="button"
+                    onClick={onModalClose}
+                    className="btn btn-secondary btn-regular collapse_form_buttons"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+                <div className="col-auto p-0">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                    onClick={() => onSubmit(values)}
+                  >
+                    SAVE
+                  </button>
                 </div>
               </div>
             </Form>

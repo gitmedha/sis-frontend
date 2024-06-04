@@ -285,7 +285,7 @@ const getModeOfPayment = (event) =>{
           {({ values, setFieldValue }) => (
             <Form>
               <Section>
-                <div className="row">
+                <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="name"
@@ -414,16 +414,6 @@ const getModeOfPayment = (event) =>{
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
-                  {/* <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="input"
-                      className="form-control"
-                      name="name_in_current_sis"
-                      label="Name in Current SIS"
-                      required
-                      placeholder="Name in Current SIS"
-                    />
-                  </div> */}
                   <div className="col-md-6 col-sm-12 mt-2">
                   {areaOptions.length ? (
                     <Input
@@ -544,34 +534,33 @@ const getModeOfPayment = (event) =>{
                   </div>
                 </div>
               </Section>
-              <div className="row mt-3 py-3">
-              <div className="col-12">
-                  {props.errors ? props.errors.length !== 0 &&
-                    <div className="alert alert-danger">
-                      <span>There are some errors. Please resolve them and save again:</span>
-                      <ul className="mb-0">
-                        {props.errors.map((error, index) => (
-                          <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
-                        ))}
-                      </ul>
-                    </div>
-                   :null
-                  }
-                </div>
-                
-              <div className="row justify-content-center">
-                <div className="col-auto">
-                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
-                    SAVE
-                  </button>
-                </div>
-                <div className="col-auto">
+              <div className="row">
+                  <div className="col-12">
+                    {props.errors ? props.errors.length !== 0 &&
+                      <div className="alert alert-danger">
+                        <span>There are some errors. Please resolve them and save again:</span>
+                        <ul className="mb-0">
+                          {props.errors.map((error, index) => (
+                            <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    :null
+                    }
+                  </div>
+              </div>
+              <div className="row justify-content-end mt-1">
+                <div className="col-auto p-0">
                    <button type="button"
                    onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
                     CANCEL                    
                   </button>
                 </div>
-              </div>
+                <div className="col-auto p-0">
+                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
+                    SAVE
+                  </button>
+                </div>
               </div>
             </Form>
           )}

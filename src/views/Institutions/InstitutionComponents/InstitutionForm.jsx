@@ -256,396 +256,398 @@ const InstitutionForm = (props) => {
         >
           {({ values, setFieldValue }) => (
             <Form>
-              <Section>
-                <h3 className="section-header">Details</h3>
-                <div className="row">
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="name"
-                      label="Name"
-                      required
-                      control="input"
-                      placeholder="Name"
-                      onChange={(e) =>
-                        FindDuplicate(setFieldValue, e.target.value)
-                      }
-                      className="form-control capitalize"
-                    />
-                    {isDuplicate && !props.id ? (
-                      <p style={{ color: "red" }}>
-                        This instituition already exist on the system
-                      </p>
-                    ) : (
-                      <p></p>
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {assigneeOptions.length ? (
+              <div className="row form_sec">
+                <Section>
+                  <h3 className="section-header">Details</h3>
+                  <div className="row">
+                    <div className="col-md-6 col-sm-12 mb-2">
                       <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
+                        name="name"
+                        label="Name"
                         required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {institutionTypeOpts.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="type"
-                        label="Type"
-                        required
-                        options={institutionTypeOpts}
-                        className="form-control"
-                        placeholder="Type"
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {statusOpts.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="status"
-                        label="Status"
-                        required
-                        options={statusOpts}
-                        className="form-control"
-                        placeholder="Status"
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="website"
-                      control="input"
-                      label="Website"
-                      placeholder="Website"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      name="phone"
-                      label="Phone"
-                      required
-                      control="input"
-                      placeholder="Phone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      type="email"
-                      name="email"
-                      label="Email"
-                      required
-                      control="input"
-                      placeholder="Email"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              </Section>
-              <Section>
-                <h3 className="section-header">MoU</h3>
-                <FieldArray name="mou">
-                  {({ remove, push }) => (
-                    <div>
-                      {values.mou &&
-                        values.mou.length > 0 &&
-                        values.mou.map((mou, index) => (
-                          <div
-                            key={index}
-                            className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
-                          >
-                            <div className="col-md-6 col-sm-12">
-                              <Input
-                                name={`mou.${index}.start_date`}
-                                label="Start Date of MoU"
-                                placeholder="Start Date"
-                                control="datepicker"
-                                className="form-control"
-                                autoComplete="off"
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                name={`mou.${index}.end_date`}
-                                label="End Date of MoU"
-                                placeholder="End Date"
-                                control="datepicker"
-                                className="form-control"
-                                autoComplete="off"
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              {mou && mou.mou_file && mou.mou_file.url ? (
-                                <div>
-                                  <label className="text-label leading-24">
-                                    MoU
-                                  </label>
-                                  <div>
-                                    {mou.mou_file.url.substring(
-                                      mou.mou_file.url.lastIndexOf("/") + 1
-                                    )}
-                                  </div>
-                                </div>
-                              ) : (
-                                <Input
-                                  control="file"
-                                  name={`mou.${index}.mou_file`}
-                                  label="MoU"
-                                  className="form-control"
-                                  placeholder="MoU"
-                                  accept=".pdf, .docx"
-                                  onChange={(event) => {
-                                    setFieldValue(
-                                      `mou.${index}.mou_file`,
-                                      event.currentTarget.files[0]
-                                    );
-                                  }}
-                                />
-                              )}
-                              <button
-                                className="btn btn-danger btn-sm mt-3"
-                                type="button"
-                                onClick={() => remove(index)}
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      <div className="mt-2">
-                        <button
-                          className="btn btn-primary btn-sm"
-                          type="button"
-                          onClick={() => {
-                            push({
-                              start_date: "",
-                              end_date: "",
-                              mou_file: "",
-                            });
-                          }}
-                        >
-                          Add MoU
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </FieldArray>
-              </Section>
-              <Section>
-                <h3 className="section-header">Address</h3>
-                <div className="row">
-                  <div className="col-md-12 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      label="Address"
-                      required
-                      name="address"
-                      placeholder="Address"
-                      className="form-control capitalize"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {stateOptions.length ? (
-                      <Input
-                        icon="down"
-                        name="state"
-                        label="State"
-                        required
-                        control="lookup"
-                        options={stateOptions}
-                        onChange={onStateChange}
-                        placeholder="State"
-                        className="form-control"
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {cityOptions.length ? (
-                      <Input
-                        control="lookup"
-                        name="city"
-                        label="City"
-                        icon="down"
-                        options={cityOptions}
-                        required
-                        placeholder="City"
+                        control="input"
+                        placeholder="Name"
+                        onChange={(e) =>
+                          FindDuplicate(setFieldValue, e.target.value)
+                        }
                         className="form-control capitalize"
                       />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
-                        >
-                          Please select State to view City
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {districtOptions.length ? (
-                      <Input
-                        control="lookup"
-                        icon="down"
-                        label="District"
-                        required
-                        name="district"
-                        options={districtOptions}
-                        placeholder="District"
-                        className="form-control"
-                      />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
-                        >
-                          Please select State to view Districts
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    {areaOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="medha_area"
-                        label="Medha Area"
-                        required
-                        options={areaOptions}
-                        className="form-control"
-                        placeholder="Medha Area"
-                      />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
-                        >
-                          Please select State to view Medha Areas
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-
-                  <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
-                      name="pin_code"
-                      label="Pin Code"
-                      required
-                      placeholder="Pin Code"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              </Section>
-              <Section>
-                <h3 className="section-header">Contacts</h3>
-                <FieldArray name="contacts">
-                  {({ insert, remove, push }) => (
-                    <div>
-                      {values.contacts &&
-                        values.contacts.length > 0 &&
-                        values.contacts.map((contact, index) => (
-                          <div
-                            key={index}
-                            className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
-                          >
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                control="input"
-                                name={`contacts.${index}.full_name`}
-                                label="Name"
-                                required
-                                placeholder="Name"
-                                className="form-control capitalize"
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                name={`contacts.${index}.email`}
-                                label="Email"
-                                required
-                                control="input"
-                                placeholder="Email"
-                                className="form-control "
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                name={`contacts.${index}.phone`}
-                                control="input"
-                                label="Phone Number"
-                                required
-                                className="form-control"
-                                placeholder="Phone Number"
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <Input
-                                name={`contacts.${index}.designation`}
-                                control="input"
-                                label="Designation"
-                                required
-                                className="form-control capitalize"
-                                placeholder="Designation"
-                              />
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <button
-                                className="btn btn-danger btn-sm"
-                                type="button"
-                                onClick={() => remove(index)}
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      <div className="mt-2">
-                        <button
-                          className="btn btn-primary btn-sm"
-                          type="button"
-                          onClick={() => {
-                            push({
-                              full_name: "",
-                              email: "",
-                              phone: "",
-                              designation: "",
-                            });
-                          }}
-                        >
-                          Add Contact
-                        </button>
-                      </div>
+                      {isDuplicate && !props.id ? (
+                        <p style={{ color: "red" }}>
+                          This instituition already exist on the system
+                        </p>
+                      ) : (
+                        <p></p>
+                      )}
                     </div>
-                  )}
-                </FieldArray>
-              </Section>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {assigneeOptions.length ? (
+                        <Input
+                          control="lookupAsync"
+                          name="assigned_to"
+                          label="Assigned To"
+                          required
+                          className="form-control"
+                          placeholder="Assigned To"
+                          filterData={filterAssignedTo}
+                          defaultOptions={assigneeOptions}
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {institutionTypeOpts.length ? (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="type"
+                          label="Type"
+                          required
+                          options={institutionTypeOpts}
+                          className="form-control"
+                          placeholder="Type"
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {statusOpts.length ? (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="status"
+                          label="Status"
+                          required
+                          options={statusOpts}
+                          className="form-control"
+                          placeholder="Status"
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        name="website"
+                        control="input"
+                        label="Website"
+                        placeholder="Website"
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        name="phone"
+                        label="Phone"
+                        required
+                        control="input"
+                        placeholder="Phone"
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        type="email"
+                        name="email"
+                        label="Email"
+                        required
+                        control="input"
+                        placeholder="Email"
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+                </Section>
+                <Section>
+                  <h3 className="section-header">MoU</h3>
+                  <FieldArray name="mou">
+                    {({ remove, push }) => (
+                      <div>
+                        {values.mou &&
+                          values.mou.length > 0 &&
+                          values.mou.map((mou, index) => (
+                            <div
+                              key={index}
+                              className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
+                            >
+                              <div className="col-md-6 col-sm-12">
+                                <Input
+                                  name={`mou.${index}.start_date`}
+                                  label="Start Date of MoU"
+                                  placeholder="Start Date"
+                                  control="datepicker"
+                                  className="form-control"
+                                  autoComplete="off"
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`mou.${index}.end_date`}
+                                  label="End Date of MoU"
+                                  placeholder="End Date"
+                                  control="datepicker"
+                                  className="form-control"
+                                  autoComplete="off"
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                {mou && mou.mou_file && mou.mou_file.url ? (
+                                  <div>
+                                    <label className="text-label leading-24">
+                                      MoU
+                                    </label>
+                                    <div>
+                                      {mou.mou_file.url.substring(
+                                        mou.mou_file.url.lastIndexOf("/") + 1
+                                      )}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <Input
+                                    control="file"
+                                    name={`mou.${index}.mou_file`}
+                                    label="MoU"
+                                    className="form-control"
+                                    placeholder="MoU"
+                                    accept=".pdf, .docx"
+                                    onChange={(event) => {
+                                      setFieldValue(
+                                        `mou.${index}.mou_file`,
+                                        event.currentTarget.files[0]
+                                      );
+                                    }}
+                                  />
+                                )}
+                                <button
+                                  className="btn btn-danger btn-sm mt-3"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        <div className="mt-2">
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={() => {
+                              push({
+                                start_date: "",
+                                end_date: "",
+                                mou_file: "",
+                              });
+                            }}
+                          >
+                            Add MoU
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </FieldArray>
+                </Section>
+                <Section>
+                  <h3 className="section-header">Address</h3>
+                  <div className="row">
+                    <div className="col-md-12 col-sm-12 mb-2">
+                      <Input
+                        control="input"
+                        label="Address"
+                        required
+                        name="address"
+                        placeholder="Address"
+                        className="form-control capitalize"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {stateOptions.length ? (
+                        <Input
+                          icon="down"
+                          name="state"
+                          label="State"
+                          required
+                          control="lookup"
+                          options={stateOptions}
+                          onChange={onStateChange}
+                          placeholder="State"
+                          className="form-control"
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {cityOptions.length ? (
+                        <Input
+                          control="lookup"
+                          name="city"
+                          label="City"
+                          icon="down"
+                          options={cityOptions}
+                          required
+                          placeholder="City"
+                          className="form-control capitalize"
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view City
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {districtOptions.length ? (
+                        <Input
+                          control="lookup"
+                          icon="down"
+                          label="District"
+                          required
+                          name="district"
+                          options={districtOptions}
+                          placeholder="District"
+                          className="form-control"
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view Districts
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {areaOptions.length ? (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="medha_area"
+                          label="Medha Area"
+                          required
+                          options={areaOptions}
+                          className="form-control"
+                          placeholder="Medha Area"
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view Medha Areas
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        control="input"
+                        name="pin_code"
+                        label="Pin Code"
+                        required
+                        placeholder="Pin Code"
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+                </Section>
+                <Section>
+                  <h3 className="section-header">Contacts</h3>
+                  <FieldArray name="contacts">
+                    {({ insert, remove, push }) => (
+                      <div>
+                        {values.contacts &&
+                          values.contacts.length > 0 &&
+                          values.contacts.map((contact, index) => (
+                            <div
+                              key={index}
+                              className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
+                            >
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  control="input"
+                                  name={`contacts.${index}.full_name`}
+                                  label="Name"
+                                  required
+                                  placeholder="Name"
+                                  className="form-control capitalize"
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.email`}
+                                  label="Email"
+                                  required
+                                  control="input"
+                                  placeholder="Email"
+                                  className="form-control "
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.phone`}
+                                  control="input"
+                                  label="Phone Number"
+                                  required
+                                  className="form-control"
+                                  placeholder="Phone Number"
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.designation`}
+                                  control="input"
+                                  label="Designation"
+                                  required
+                                  className="form-control capitalize"
+                                  placeholder="Designation"
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        <div className="mt-2">
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={() => {
+                              push({
+                                full_name: "",
+                                email: "",
+                                phone: "",
+                                designation: "",
+                              });
+                            }}
+                          >
+                            Add Contact
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </FieldArray>
+                </Section>
+              </div>
               <div className="row mt-3 py-3">
                 <div className="col-12">
                   {props.errors
@@ -669,21 +671,26 @@ const InstitutionForm = (props) => {
                       )
                     : null}
                 </div>
-                <div className="d-flex justify-content-start">
-                  <button
-                    className="btn btn-primary btn-regular mx-0"
-                    type="submit"
-                    disabled={disableSaveButton}
-                  >
-                    SAVE
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onHide}
-                    className="btn btn-secondary btn-regular mr-2"
-                  >
-                    CANCEL
-                  </button>
+
+                <div className="row justify-content-end mt-1">
+                  <div className="col-auto p-0">
+                    <button
+                      type="button"
+                      onClick={onHide}
+                      className="btn btn-secondary btn-regular collapse_form_buttons"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                  <div className="col-auto p-0">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular collapse_form_buttons"
+                      disabled={disableSaveButton}
+                    >
+                      SAVE
+                    </button>
+                  </div>
                 </div>
               </div>
             </Form>

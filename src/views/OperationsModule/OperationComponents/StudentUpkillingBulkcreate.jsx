@@ -519,16 +519,16 @@ const StudentUpkillingBulkcreate = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-end between_class">
+          <div className="d-flex justify-content-end between_class bulk_add_actions">
             <button
               type="button b"
               onClick={onHide}
-              className="btn-box btn btn-danger redbtn btn-regular mr-2"
+              className="btn-box btn btn-danger redbtn btn-regular mr-2 bulk_add_button"
             >
               CLOSE
             </button>
             <button
-              className="btn btn-primary btn-regular text-light mx-0"
+              className="btn btn-primary btn-regular text-light mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
               disabled={disableSaveButton}

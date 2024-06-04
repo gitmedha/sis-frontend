@@ -1,13 +1,19 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
-import { getStudentsPickList, getAlumniServicePickList  } from "./StudentActions";
-import Textarea from '../../../utils/Form/Textarea';
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import {
+  getStudentsPickList,
+  getAlumniServicePickList,
+} from "./StudentActions";
+import Textarea from "../../../utils/Form/Textarea";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
 
 const Section = styled.div`
@@ -15,12 +21,12 @@ const Section = styled.div`
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -30,113 +36,183 @@ const Section = styled.div`
 `;
 
 const statusOption = [
-  { value: 'Paid', label: 'Paid' },
-  { value: 'Unpaid', label: 'Unpaid' }
-]
+  { value: "Paid", label: "Paid" },
+  { value: "Unpaid", label: "Unpaid" },
+];
 
 const AlumniServiceForm = (props) => {
   let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
-  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(props.alumniService ? props.alumniService.fee_submission_date : null);
-  const [feeAmountValue, setFeeAmountValue] = useState(props.alumniService ? props.alumniService.fee_amount : '');
-  const [receiptNumberValue, setReceiptNumberValue] = useState(props.alumniService ? props.alumniService.receipt_number : '');
-  const [validationRules, setValidationRules] = useState(AlumniServiceValidations);
+  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(
+    props.alumniService ? props.alumniService.fee_submission_date : null
+  );
+  const [feeAmountValue, setFeeAmountValue] = useState(
+    props.alumniService ? props.alumniService.fee_amount : ""
+  );
+  const [receiptNumberValue, setReceiptNumberValue] = useState(
+    props.alumniService ? props.alumniService.receipt_number : ""
+  );
+  const [validationRules, setValidationRules] = useState(
+    AlumniServiceValidations
+  );
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
-
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (props.alumniService) {
-      setSelectedCategory(props.alumniService ? props.alumniService.category : "");
+      setSelectedCategory(
+        props.alumniService ? props.alumniService.category : ""
+      );
     }
-  },[props.alumniService,show]);
+  }, [props.alumniService, show]);
 
   useEffect(() => {
     getAlumniServicePickList().then((data) => {
-      setTypeOptions(data.subcategory.map((item) => ({ key: item.value, value: item.value, label: item.value, category: item.category })));
-      setCategoryOptions(data.category.map((item)=> ({value: item.value, label: item.value})));
-      setProgramOptions(data.program_mode.map((item)=> ({value: item.value, label: item.value})));
+      setTypeOptions(
+        data.subcategory.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+          category: item.category,
+        }))
+      );
+      setCategoryOptions(
+        data.category.map((item) => ({ value: item.value, label: item.value }))
+      );
+      setProgramOptions(
+        data.program_mode.map((item) => ({
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
+    getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
 
     getStudentsPickList().then((data) => {
-      setLocationOptions( data.alumni_service_location.map((item) => ({ key: item.value, value: item.value, label: item.value })));
+      setLocationOptions(
+        data.alumni_service_location.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
   }, []);
 
   useEffect(() => {
-    let fee_submission_date = Yup.string().nullable().required("Contribution submission date is required.");
-    let fee_amount = Yup.string().required("Contribution amount is required.");
-    let receipt_number = Yup.string().required("Receipt number is required.");
-    let fieldsRequired = (feeSubmissionDateValue !== null && feeSubmissionDateValue !== '') || (feeAmountValue !== null && feeAmountValue !== '') || (receiptNumberValue !== null && receiptNumberValue !== '');
+    let fee_submission_date = Yup.string()
+      .nullable()
+      .required("Contribution submission date is required.");
+    let fee_amount = Yup.string()
+      .nullable()
+      .required("Contribution amount is required.");
+    let receipt_number = Yup.string()
+      .nullable()
+      .required("Receipt number is required.");
+    let fieldsRequired = status === "Paid";
+
+    if (!fieldsRequired && props.alumniService) {
+      if (Object.keys(props.alumniService).length) {
+        fieldsRequired =
+          props.alumniService.status === "Paid" && status !== "Unpaid";
+      }
+    }
     setFeeFieldsRequired(fieldsRequired);
     if (fieldsRequired) {
-      setValidationRules(AlumniServiceValidations.shape({ fee_submission_date, fee_amount, receipt_number }));
+      setValidationRules(
+        AlumniServiceValidations.shape({
+          fee_submission_date,
+          fee_amount,
+          receipt_number,
+        })
+      );
     } else {
-      setValidationRules(AlumniServiceValidations.omit(['fee_submission_date', 'fee_amount', 'receipt_number']));
+      setValidationRules(
+        AlumniServiceValidations.omit([
+          "fee_submission_date",
+          "fee_amount",
+          "receipt_number",
+        ])
+      );
     }
-  }, [feeSubmissionDateValue, feeAmountValue, receiptNumberValue]);
+  }, [status, props.alumniService]);
 
   useEffect(() => {
-    setFeeSubmissionDateValue(props.alumniService ? props.alumniService.fee_submission_date : null);
-    setFeeAmountValue(props.alumniService ? props.alumniService.fee_amount : '');
-    setReceiptNumberValue(props.alumniService ? props.alumniService.receipt_number : '');
+    setFeeSubmissionDateValue(
+      props.alumniService ? props.alumniService.fee_submission_date : null
+    );
+    setFeeAmountValue(
+      props.alumniService ? props.alumniService.fee_amount : ""
+    );
+    setReceiptNumberValue(
+      props.alumniService ? props.alumniService.receipt_number : ""
+    );
   }, [props]);
 
   let initialValues = {
     alumni_service_student: props.student.full_name,
-    location:'',
-    program_mode:'',
-    receipt_number:'',
-    fee_amount:'',
-    comments:'',
+    location: "",
+    program_mode: "",
+    receipt_number: "",
+    fee_amount: "",
+    comments: "",
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem('user_id'),
+    assigned_to: localStorage.getItem("user_id"),
     category: null,
-    type:'',
+    type: "",
   };
 
   if (props.alumniService) {
-    initialValues = {...initialValues, ...props.alumniService};
-    initialValues['assigned_to'] = props.alumniService?.assigned_to?.id;
-    initialValues['start_date'] = props.alumniService.start_date ? new Date(props.alumniService.start_date) : null;
-    initialValues['end_date'] = props.alumniService.end_date ? new Date(props.alumniService.end_date) : null;
-    initialValues['fee_submission_date'] = props.alumniService.fee_submission_date ? new Date(props.alumniService.fee_submission_date) : null;
-    initialValues['category'] = props.alumniService.category ? props.alumniService.category : null;
+    initialValues = { ...initialValues, ...props.alumniService };
+    initialValues["assigned_to"] = props.alumniService?.assigned_to?.id;
+    initialValues["start_date"] = props.alumniService.start_date
+      ? new Date(props.alumniService.start_date)
+      : null;
+    initialValues["end_date"] = props.alumniService.end_date
+      ? new Date(props.alumniService.end_date)
+      : null;
+    initialValues["fee_submission_date"] = props.alumniService
+      .fee_submission_date
+      ? new Date(props.alumniService.fee_submission_date)
+      : null;
+    initialValues["category"] = props.alumniService.category
+      ? props.alumniService.category
+      : null;
   }
 
   const handleClose = () => {
-    setSelectedCategory('');
+    setSelectedCategory("");
     onHide();
-  }
+  };
 
   const onSubmit = async (values) => {
-    setSelectedCategory('');
+    setSelectedCategory("");
     onHide(values);
   };
 
   const colourOptions = [
-    { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-    { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
-    { value: 'purple', label: 'Purple', color: '#5243AA' },
-    { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-    { value: 'orange', label: 'Orange', color: '#FF8B00' },
-    { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-    { value: 'green', label: 'Green', color: '#36B37E' },
-    { value: 'forest', label: 'Forest', color: '#00875A' },
-    { value: 'slate', label: 'Slate', color: '#253858' },
-    { value: 'silver', label: 'Silver', color: '#666666' },
+    { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
+    { value: "blue", label: "Blue", color: "#0052CC", isDisabled: true },
+    { value: "purple", label: "Purple", color: "#5243AA" },
+    { value: "red", label: "Red", color: "#FF5630", isFixed: true },
+    { value: "orange", label: "Orange", color: "#FF8B00" },
+    { value: "yellow", label: "Yellow", color: "#FFC400" },
+    { value: "green", label: "Green", color: "#36B37E" },
+    { value: "forest", label: "Forest", color: "#00875A" },
+    { value: "slate", label: "Slate", color: "#253858" },
+    { value: "silver", label: "Silver", color: "#666666" },
   ];
 
   return (
@@ -155,7 +231,10 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id ? 'Update' : 'Add New'} Alumni Engagement
+            {props.alumniService && props.alumniService.id
+              ? "Update"
+              : "Add New"}{" "}
+            Alumni Engagement
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -168,7 +247,7 @@ const AlumniServiceForm = (props) => {
           {({ values }) => (
             <Form>
               <Section>
-                <div className="row">
+                <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="alumni_service_student"
@@ -205,16 +284,20 @@ const AlumniServiceForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedCategory && <Input
-                      icon="down"
-                      control="lookup"
-                      name="type"
-                      label="Subcategory"
-                      options={typeOptions.filter(option => option.category === selectedCategory)}
-                      className="form-control"
-                      placeholder="Subcategory"
-                      required
-                    />}
+                    {selectedCategory && (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="type"
+                        label="Subcategory"
+                        options={typeOptions.filter(
+                          (option) => option.category === selectedCategory
+                        )}
+                        className="form-control"
+                        placeholder="Subcategory"
+                        required
+                      />
+                    )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
@@ -269,9 +352,10 @@ const AlumniServiceForm = (props) => {
                       control="lookup"
                       className="form-control"
                       autoComplete="off"
-                      icon='down'
+                      icon="down"
                       options={statusOption}
                       required={feeFieldsRequired}
+                      onChange={(e) => setStatus(e.value)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -282,7 +366,7 @@ const AlumniServiceForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       autoComplete="off"
-                      onInput={value => setFeeSubmissionDateValue(value)}
+                      onInput={(value) => setFeeSubmissionDateValue(value)}
                       required={feeFieldsRequired}
                     />
                   </div>
@@ -296,7 +380,7 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={e => setFeeAmountValue(e.target.value)}
+                      onInput={(e) => setFeeAmountValue(e.target.value)}
                       required={feeFieldsRequired}
                     />
                   </div>
@@ -308,11 +392,11 @@ const AlumniServiceForm = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={e => setReceiptNumberValue(e.target.value)}
+                      onInput={(e) => setReceiptNumberValue(e.target.value)}
                       required={feeFieldsRequired}
                     />
                   </div>
-                  
+
                   <div className="col-md-12 col-sm-12 mt-2">
                     <Textarea
                       name="comments"
@@ -325,17 +409,23 @@ const AlumniServiceForm = (props) => {
                   </div>
                 </div>
               </Section>
-              
-              <div className="row justify-content-center">
-                <div className="col-auto">
-                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
-                    SAVE
+
+              <div className="row justify-content-end mt-1">
+                <div className="col-auto p-0">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="btn btn-secondary btn-regular collapse_form_buttons"
+                  >
+                    CANCEL
                   </button>
                 </div>
-                <div className="col-auto">
-                   <button type="button"
-                   onClick={handleClose} className='btn btn-secondary btn-regular collapse_form_buttons'>
-                    CANCEL                    
+                <div className="col-auto p-0">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                  >
+                    SAVE
                   </button>
                 </div>
               </div>

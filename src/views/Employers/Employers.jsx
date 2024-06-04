@@ -359,7 +359,7 @@ const employerQuery = `query GET_EMPLOYERS(
 
   return (
     <Collapse title="EMPLOYERS" type="plain" opened={true}>
-      <div className="row m-3">
+      <div className="row">
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
           <button

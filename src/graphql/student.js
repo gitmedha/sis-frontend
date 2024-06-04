@@ -136,6 +136,22 @@ const alumniServicesFields = `
   updated_at
 `;
 
+const courseFields = `
+createdby {
+  username
+  id
+}
+updatedby {
+  username
+  id
+}
+  course_type
+  course_level
+  course_name
+  created_at
+  updated_at
+`;
+
 const employmentConnectionFields = `
   id
   status
@@ -602,4 +618,17 @@ export const SEARCH_BY_STUDENTS = `
     }
   }
 `
+
+export const GET_COURSE = `
+  query GetCourse {
+    coursesConnection {
+      values {
+        ${courseFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
 

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { MeiliSearch } from "meilisearch";
-import Select , { components }from "react-select";
+import Select, { components } from "react-select";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import {
-  getDefaultAssigneeOptions,
-} from "../../../utils/function/lookupOptions";
+import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
@@ -17,6 +15,7 @@ import { connect } from "react-redux";
 import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
 import { Form, Formik } from "formik";
+import { FaTimes } from "react-icons/fa";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -112,7 +111,7 @@ const Section1 = styled.table`
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
-  const [alumniServiceData,setAlumniServiceData]=useState('')
+  const [alumniServiceData, setAlumniServiceData] = useState("");
   const [studentInput, setStudentInput] = useState("");
   const [formStatus, setFormStatus] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -125,8 +124,6 @@ const AlumMassEdit = (props) => {
     value: "",
     label: "",
   });
-
-
 
   useEffect((props) => {
     getAlumniServicePickList().then((data) => {
@@ -237,7 +234,6 @@ const AlumMassEdit = (props) => {
               })
             );
           } catch (err) {
-            
             return err;
           }
         })
@@ -246,7 +242,7 @@ const AlumMassEdit = (props) => {
       setAlumniServiceData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
-      return error
+      return error;
     }
     // setFormStatus(true)
   };
@@ -272,18 +268,24 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    let data =students.map((obj) => {
+    let data = students.map((obj) => {
       return {
-        assigned_to: values.assigned_to ?values.assigned_to: obj.assigned_to,
-        category: values.category? values.category :obj.category,
-        comments: values.comments ?values.comments:obj.comments,
-        end_date: values.end_date ?values.end_date :obj.end_date,
-        fee_amount: values.fee_amount? values.fee_amount :obj.fee_amount,
-        fee_submission_date: values.fee_submission_date ?values.fee_submission_date :obj.fee_submission_date,
-        location: values.location ?values.location :obj.location,
-        program_mode: values.program_mode ?values.program_mode :obj.program_mode,
-        receipt_number: values.receipt_number ?values.receipt_number :obj.receipt_number,
-        start_date: values.start_date ? values.start_date: obj.start_date,
+        assigned_to: values.assigned_to ? values.assigned_to : obj.assigned_to,
+        category: values.category ? values.category : obj.category,
+        comments: values.comments ? values.comments : obj.comments,
+        end_date: values.end_date ? values.end_date : obj.end_date,
+        fee_amount: values.fee_amount ? values.fee_amount : obj.fee_amount,
+        fee_submission_date: values.fee_submission_date
+          ? values.fee_submission_date
+          : obj.fee_submission_date,
+        location: values.location ? values.location : obj.location,
+        program_mode: values.program_mode
+          ? values.program_mode
+          : obj.program_mode,
+        receipt_number: values.receipt_number
+          ? values.receipt_number
+          : obj.receipt_number,
+        start_date: values.start_date ? values.start_date : obj.start_date,
         type: values.type,
         student_id: obj.id,
         id: Number(obj.id),
@@ -307,14 +309,17 @@ const AlumMassEdit = (props) => {
       );
     });
   }, []);
- 
+
   const validations = Yup.object({
     start_date: Yup.date().nullable().required("Start Date is ."),
-    end_date: Yup.date().nullable().required("End Date is .")
-      .when(
-        'start_date',
-        (start_date, schema) => start_date ? schema.min(start_date, "End date can't be before Start date") : schema
-      )
+    end_date: Yup.date()
+      .nullable()
+      .required("End Date is .")
+      .when("start_date", (start_date, schema) =>
+        start_date
+          ? schema.min(start_date, "End date can't be before Start date")
+          : schema
+      ),
   });
 
   const handelCancel = () => {
@@ -323,11 +328,11 @@ const AlumMassEdit = (props) => {
   const MultiValue = ({ index, getValue, ...props }) => {
     const maxToShow = 1; // Maximum number of values to show
     const overflowCount = getValue().length - maxToShow;
-  
+
     if (index < maxToShow) {
       return <components.MultiValue {...props} />;
     }
-  
+
     if (index === maxToShow) {
       return (
         <components.MultiValue {...props}>
@@ -335,10 +340,10 @@ const AlumMassEdit = (props) => {
         </components.MultiValue>
       );
     }
-  
+
     return null;
   };
-  
+
   const customComponents = {
     MultiValue,
   };
@@ -353,29 +358,44 @@ const AlumMassEdit = (props) => {
       // dialogClassName="fullscreen-modal"
     >
       {!formStatus && (
-        <Modal.Body className="bg-white" height="">
-        <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-          <div>
-            <label className="leading-24">Student</label>
-            <Select
-              isMulti
-              closeMenuOnSelect={false}
-              name="student_ids"
-              options={studentOptions}
-              filterData={filterStudent}
-              onInputChange={(e) => setStudentInput(e)}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(choices) => setStudents(choices)}
-            />
-          </div>
-          <div className="d-flex justify-content-end mx-5">
-            <button className="btn btn-primary mt-3 " onClick={handleSubmit}>
-              Submit
-            </button>
-          </div>
-        </div>
-        </Modal.Body>
+        <>
+          <Modal.Header>
+            <div className="d-flex justify-content-end align-items-center">
+              <button
+                onClick={handelCancel}
+                style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
+              >
+                <FaTimes />
+              </button>
+            </div>
+          </Modal.Header>
+          <Modal.Body className="bg-white" height="">
+            <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
+              <div>
+                <label className="leading-24">Student</label>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  name="student_ids"
+                  options={studentOptions}
+                  filterData={filterStudent}
+                  onInputChange={(e) => setStudentInput(e)}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={(choices) => setStudents(choices)}
+                />
+              </div>
+              <div className="d-flex justify-content-end mx-5">
+                <button
+                  className="btn btn-primary mt-3 "
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </>
       )}
 
       {formStatus &&
@@ -418,7 +438,6 @@ const AlumMassEdit = (props) => {
                           control="lookupAsync"
                           name="assigned_to"
                           label="Assigned To"
-                          
                           className="form-control"
                           placeholder="Assigned To"
                           defaultOptions={assigneeOptions}
@@ -434,7 +453,6 @@ const AlumMassEdit = (props) => {
                           className="form-control"
                           options={categoryOptions}
                           onChange={(e) => setSelectedCategory(e.value)}
-                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -449,7 +467,6 @@ const AlumMassEdit = (props) => {
                             )}
                             className="form-control"
                             placeholder="Subcategory"
-                            
                           />
                         )}
                       </div>
@@ -462,7 +479,6 @@ const AlumMassEdit = (props) => {
                           options={programOptions}
                           className="form-control"
                           placeholder="Program Mode"
-                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -474,7 +490,6 @@ const AlumMassEdit = (props) => {
                           options={locationOptions}
                           className="form-control"
                           placeholder="Location"
-                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -485,7 +500,6 @@ const AlumMassEdit = (props) => {
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
-                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -549,7 +563,7 @@ const AlumMassEdit = (props) => {
                     </div>
                   </>
                   <div className="row mt-3 py-3 mx-3">
-                    <div className="d-flex justify-content-start">
+                    <div className="d-flex justify-content-end">
                       <button
                         className="btn btn-primary btn-regular mx-0"
                         type="submit"
