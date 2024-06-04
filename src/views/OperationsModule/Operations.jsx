@@ -991,37 +991,52 @@ const Operations = ({
                   >
                     Add New Data
                   </button>
-                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ?
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      console.log(activeTab.key);
-                      if (activeTab.key == "my_data") {
-                        setUploadModal({
-                          myData: true,
-                          tot: false,
-                        });
-                      } else {
-                        setUploadModal({
-                          tot: true,
-                          myData: false,
-                        });
-                      }
-                    }}
-                    style={{ marginLeft: "15px" }}
-                  >
-                    Upload Data
-                  </button>:""}
-                  {(activeTab.key == "my_data" || activeTab.key =="useTot") ? 
-                  <button className="btn btn-primary mx-3">
-                  <div>
-                        <a
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        console.log(activeTab.key);
+                        if (activeTab.key == "my_data") {
+                          setUploadModal({
+                            myData: true,
+                            tot: false,
+                          });
+                        } else {
+                          setUploadModal({
+                            tot: true,
+                            myData: false,
+                          });
+                        }
+                      }}
+                      style={{ marginLeft: "15px" }}
+                    >
+                      Upload Data
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button className="btn btn-primary mx-3">
+                      <div>
+                        {/* <a
                           href={
                             activeTab.key == "my_data"?
                             "https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"
                            :"https://medhacorp-my.sharepoint.com/:x:/r/personal/rohit_sharma_medha_org_in/_layouts/15/Doc.aspx?sourcedoc=%7B0d2244ec-3e9c-47d7-b9d9-37f7f41e1102%7D&action=edit&wdinitialsession=4c0ab0af-2b4c-50a3-0415-332aeb23c87e&wdrldsc=2&wdrldc=1&wdrldr=ReloadInEditMode%2CTransitionNonMetro%2COnSaveAsWebMet"}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none "
+                        > */}
+                        <a
+                          href={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File.csv"}
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                          download={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File.csv"}
                         >
                           <span className="mr-3">Sample File</span>
                           <FaDownload size="20" className="ml-2" color="#fff" />
@@ -1033,10 +1048,11 @@ const Operations = ({
                             color: "#787B96",
                           }}
                         ></div>
-                        </div>
-                  </button> :""
-
-                  }
+                      </div>
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </>
               )}
             </div>
