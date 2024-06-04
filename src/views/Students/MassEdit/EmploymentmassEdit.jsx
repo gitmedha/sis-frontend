@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MeiliSearch } from "meilisearch";
 import { Formik, Form } from "formik";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
@@ -16,6 +16,7 @@ import api from "../../../apis";
 import { Input } from "../../../utils/Form";
 import { filterAssignedTo } from "../../../utils/function/lookupOptions";
 import Skeleton from "react-loading-skeleton";
+import { FaTimes } from "react-icons/fa";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -118,6 +119,7 @@ const EmploymentmassEdit = (props) => {
   const [rejectionreason, setrejectionreason] = useState([]);
   const [isRejected, setRejected] = useState(false);
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
+  const [EmploymentData,setEmploymentData]=useState('')
 
   let initialValues = {
     employment_connection_student: "",
@@ -227,10 +229,8 @@ const EmploymentmassEdit = (props) => {
     filterEmployer().then((data) => {
       setEmployerOptions(data);
     });
-    let filteredOptions = allStatusOptions;
-    console.log("filteredOptions", filteredOptions);
     setStatusOptions(
-      filteredOptions.map((item) => {
+      allStatusOptions.map((item) => {
         if (
           localStorage.getItem("user_role").toLowerCase() === "srm" &&
           item.value.toLowerCase() === "unknown"
@@ -241,6 +241,7 @@ const EmploymentmassEdit = (props) => {
         }
       })
     );
+    console.log("statusOptions",statusOptions);
   }, []);
 
   const filterEmployer = async (filterValue) => {
@@ -252,6 +253,7 @@ const EmploymentmassEdit = (props) => {
         attributesToRetrieve: ["id", "name"],
       })
       .then((data) => {
+        console.log("data", data);
         let filterData = data.hits.map((employer) => {
           return {
             ...employer,
@@ -305,7 +307,7 @@ const EmploymentmassEdit = (props) => {
           }
         })
       );
-      setStudents(alumData.flat());
+      setEmploymentData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
       console.error(error);
@@ -352,18 +354,9 @@ const EmploymentmassEdit = (props) => {
       }
       return obj;
     });
-    // /employment-connections/bulk-update
 
     props.handelSubmitMassEdit(modifiedStudents, "EmployerBulkdEdit");
-    //   const value = await api
-    //   .post("/employment-connections/bulk-update", modifiedStudents)
-    //   .then((data) => {
 
-    //     console.log("yes");
-    //   })
-    //   .catch((err) => {
-    //     console.log("Unable to create field data .", "error");
-    //   });
   };
 
   const handleStatusChange = async (value) => {
@@ -384,6 +377,29 @@ const EmploymentmassEdit = (props) => {
     props.handelCancel();
   };
 
+  const MultiValue = ({ index, getValue, ...props }) => {
+    const maxToShow = 1; // Maximum number of values to show
+    const overflowCount = getValue().length - maxToShow;
+
+    if (index < maxToShow) {
+      return <components.MultiValue {...props} />;
+    }
+
+    if (index === maxToShow) {
+      return (
+        <components.MultiValue {...props}>
+          <span>+{overflowCount}</span>
+        </components.MultiValue>
+      );
+    }
+
+    return null;
+  };
+
+  const customComponents = {
+    MultiValue,
+  };
+
   return (
     <>
       <Modal
@@ -396,44 +412,78 @@ const EmploymentmassEdit = (props) => {
         // dialogClassName="fullscreen-modal"
       >
         {!formStatus && (
-          <div className="col-md-6 col-sm-12 px-3">
-            <div>
-              <label className="leading-24">Student</label>
-              <Select
-                isMulti
-                name="student_ids"
-                options={studentOptions}
-                filterData={filterStudent}
-                onInputChange={(e) => setStudentInput(e)}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                onChange={(choices) => setStudents(choices)}
-              />
-            </div>
-            <div>
-              <button className="btn btn-primary mt-3" onClick={handleSubmit}>
-                Submit
-              </button>
-            </div>
-          </div>
+           <>
+           <Modal.Header>
+             <div className="d-flex justify-content-end align-items-center">
+               <button
+                 onClick={handelCancel}
+                 style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
+               >
+                 <FaTimes />
+               </button>
+             </div>
+           </Modal.Header>
+           <Modal.Body className="bg-white" height="">
+             <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
+               <div>
+                 <label className="leading-24">Student</label>
+                 <Select
+                   isMulti
+                   closeMenuOnSelect={false}
+                   name="student_ids"
+                   options={studentOptions}
+                   filterData={filterStudent}
+                   onInputChange={(e) => setStudentInput(e)}
+                   className="basic-multi-select"
+                   classNamePrefix="select"
+                   onChange={(choices) => setStudents(choices)}
+                 />
+               </div>
+               <div className="d-flex justify-content-end mx-5">
+                 <button
+                   className="btn btn-primary mt-3 "
+                   onClick={handleSubmit}
+                 >
+                   Submit
+                 </button>
+               </div>
+             </div>
+           </Modal.Body>
+         </>
         )}
 
         {formStatus &&
           (students.length > 0 ? (
             <>
-              <Formik onSubmit={handleSubmit} initialValues={initialValues}>
+              <Modal.Header className="bg-white">
+                <Modal.Title
+                  id="contained-modal-title-vcenter"
+                  className="d-flex align-items-center"
+                >
+                  <h1 className="text--primary bebas-thick mb-0">
+                    Mass Edit Employment Connection
+                  </h1>
+                </Modal.Title>
+              </Modal.Header>
+              <Formik
+                onSubmit={handleSubmit}
+                initialValues={initialValues}
+                // validationSchema={validations}
+              >
                 {({ values, setFieldValue }) => (
                   <Form>
                     <Section>
-                      <div className="row form_sec">
+                      <div className="row px-3 form_sec">
                         <div className="col-md-6 col-sm-12 mt-2">
-                          <Input
-                            name="employment_connection_student"
-                            control="input"
-                            label="Student"
-                            className="form-control"
-                            placeholder="Student"
-                            disabled={true}
+                          <Select
+                            isMulti
+                            isDisabled={true}
+                            name="student_ids"
+                            defaultValue={students}
+                            components={customComponents}
+                            options={studentOptions}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mt-2">
@@ -625,26 +675,26 @@ const EmploymentmassEdit = (props) => {
                         )}
                       </div>
                     </Section>
-
-                    <div className="row justify-content-end mt-1">
-                      <div className="col-auto p-0">
-                        <button
-                          type="button"
-                          onClick={handelCancel}
-                          className="btn btn-secondary btn-regular collapse_form_buttons"
-                        >
-                          CANCEL
-                        </button>
-                      </div>
-                      <div className="col-auto p-0">
-                        <button
-                          type="submit"
-                          className="btn btn-primary btn-regular collapse_form_buttons"
-                        >
-                          SAVE
-                        </button>
-                      </div>
-                    </div>
+                    
+                <div className="row justify-content-end mt-1">
+                  <div className="col-auto p-0">
+                    <button
+                      type="button"
+                      onClick={handelCancel}
+                      className="btn btn-secondary btn-regular collapse_form_buttons"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                  <div className="col-auto p-0">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular collapse_form_buttons"
+                    >
+                      SAVE
+                    </button>
+                  </div>
+                </div>
                   </Form>
                 )}
               </Formik>

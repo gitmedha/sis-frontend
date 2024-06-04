@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
 import { Form, Formik } from "formik";
+import { FaTimes } from "react-icons/fa";
 
 const meilisearchClient = new MeiliSearch({
   host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
@@ -357,29 +358,44 @@ const AlumMassEdit = (props) => {
       // dialogClassName="fullscreen-modal"
     >
       {!formStatus && (
-        <Modal.Body className="bg-white" height="">
-          <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-            <div>
-              <label className="leading-24">Student</label>
-              <Select
-                isMulti
-                closeMenuOnSelect={false}
-                name="student_ids"
-                options={studentOptions}
-                filterData={filterStudent}
-                onInputChange={(e) => setStudentInput(e)}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                onChange={(choices) => setStudents(choices)}
-              />
-            </div>
-            <div className="d-flex justify-content-end mx-5">
-              <button className="btn btn-primary mt-3 " onClick={handleSubmit}>
-                Submit
+        <>
+          <Modal.Header>
+            <div className="d-flex justify-content-end align-items-center">
+              <button
+                onClick={handelCancel}
+                style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
+              >
+                <FaTimes />
               </button>
             </div>
-          </div>
-        </Modal.Body>
+          </Modal.Header>
+          <Modal.Body className="bg-white" height="">
+            <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
+              <div>
+                <label className="leading-24">Student</label>
+                <Select
+                  isMulti
+                  closeMenuOnSelect={false}
+                  name="student_ids"
+                  options={studentOptions}
+                  filterData={filterStudent}
+                  onInputChange={(e) => setStudentInput(e)}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={(choices) => setStudents(choices)}
+                />
+              </div>
+              <div className="d-flex justify-content-end mx-5">
+                <button
+                  className="btn btn-primary mt-3 "
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </>
       )}
 
       {formStatus &&

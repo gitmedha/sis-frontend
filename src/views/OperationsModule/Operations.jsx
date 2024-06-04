@@ -968,46 +968,55 @@ const Operations = ({
                   >
                     Add <span><FaPlus size="12" color="#fff"/></span>
                   </button>
-
-                  {(activeTab.key === "my_data" || activeTab.key ==="useTot") ?
-                  <button
-                    className="btn btn-primary ops_action_button"
-                    onClick={() => {
-                      if (activeTab.key === "my_data") {
-                        setUploadModal({
-                          myData: true,
-                          tot: false,
-                        });
-                      } else {
-                        setUploadModal({
-                          tot: true,
-                          myData: false,
-                        });
-                      }
-                    }}
-                  
-                  >
+                
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button
+                      className="btn btn-primary ops_action_button"
+                      onClick={() => {
+                        if (activeTab.key == "my_data") {
+                          setUploadModal({
+                            myData: true,
+                            tot: false,
+                          });
+                        } else {
+                          setUploadModal({
+                            tot: true,
+                            myData: false,
+                          });
+                        }
+                      }}
+                    >
+                      
                     Upload &nbsp;
                     <span><FaFileUpload size="12" color="#fff"/></span>
-                  </button>:""}
-                  
-                   {(activeTab.key === "my_data" || activeTab.key ==="useTot") ? 
-                   <button className="btn btn-primary ops_action_button" >
-                    <div>
-                      <a
-                        href={
-                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
-                        }
-                        target="_blank"
-                        className="c-pointer d-block text-light text-decoration-none "
-                        rel="noreferrer"
-                      >
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button className="btn btn-primary ops_action_button">
+                      <div>
+                       
+                        <a
+                          href={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                          download={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                        >
                         <span>Sample</span> &nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
-                      </a>
-                    </div>
-                  </button>:""
-                  }
+                        </a>
+                      </div>
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </>
               )}
             </div>
