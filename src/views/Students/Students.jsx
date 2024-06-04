@@ -660,7 +660,7 @@ else {
               className="c-pointer"
             />
           </div>
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 stundents_nav_tab">
             <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} moduleName="Students"/>
             <Tabs
               options={studentStatusOptions}
@@ -700,7 +700,7 @@ else {
             }}
             isDisable={studentsAggregate.count ? false:true}
             />
-          <div className={`${layout !== "list" ? "d-none" : ""}`}>
+          <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             <Table
               columns={columns}
               data={studentsData}

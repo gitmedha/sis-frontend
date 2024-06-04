@@ -419,7 +419,7 @@ const AlumMassEdit = (props) => {
               {({ values }) => (
                 <Form>
                   <>
-                    <div className="row px-3">
+                    <div className="row px-3 form_sec">
                       <div className="col-md-6 col-sm-12 mt-2">
                         <label className="leading-24">Student</label>
                         <Select
@@ -562,20 +562,23 @@ const AlumMassEdit = (props) => {
                       </div>
                     </div>
                   </>
-                  <div className="row mt-3 py-3 mx-3">
-                    <div className="d-flex justify-content-end">
-                      <button
-                        className="btn btn-primary btn-regular mx-0"
-                        type="submit"
-                      >
-                        SAVE
-                      </button>
+
+                  <div className="row justify-content-end mt-1">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={handelCancel}
-                        className="btn btn-secondary btn-regular mr-2"
+                        className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

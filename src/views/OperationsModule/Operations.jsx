@@ -46,7 +46,7 @@ import {
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload ,FaFileUpload} from "react-icons/fa";
+import { FaDownload ,FaFileUpload,FaPlus} from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
 import TotUpload from "./UploadFiles/TotUpload";
 
@@ -59,7 +59,6 @@ const tabPickerOptionsMain = [
 const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
-  // { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Pitching", key: "collegePitches" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
@@ -127,7 +126,6 @@ const Operations = ({
     tot: false,
   });
 
-  console.log("uploadModal", uploadModal);
 
   const columns = useMemo(
     () => [
@@ -161,16 +159,6 @@ const Operations = ({
         Header: "Program Name",
         accessor: "program_name",
       },
-
-      // {
-      //   Header: "Guest",
-      //   accessor: "guest",
-      // },
-
-      // {
-      //   Header: "Organization",
-      //   accessor: "organization",
-      // },
     ],
     []
   );
@@ -369,7 +357,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
-    if (activeTab.key == "my_data") {
+    if (activeTab.key === "my_data") {
       await resetSearch();
       await api
         .post("/graphql", {
@@ -388,7 +376,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "useTot") {
+    if (activeTab.key === "useTot") {
       await resetSearch();
       await api
         .post("/graphql", {
@@ -408,7 +396,7 @@ const Operations = ({
         });
     }
 
-    if (activeTab.key == "upskilling") {
+    if (activeTab.key === "upskilling") {
       await resetSearch();
 
       await api
@@ -428,7 +416,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "dtesamarth") {
+    if (activeTab.key === "dtesamarth") {
       await resetSearch();
 
       await api
@@ -448,7 +436,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "alumniQueries") {
+    if (activeTab.key === "alumniQueries") {
       await resetSearch();
 
       await api
@@ -496,16 +484,9 @@ const Operations = ({
     }
   }, [isSearching]);
 
-  const onHide = async (data) => {
-    const value = await api.post(
-      "/users-ops-activities/createBulkOperations",
-      data
-    );
-  };
-
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      if (activeTab.key == "my_data") {
+      if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -539,7 +520,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "useTot") {
+      if (activeTab.key === "useTot") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -573,7 +554,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "upskilling") {
+      if (activeTab.key === "upskilling") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -639,7 +620,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "alumniQueries") {
+      if (activeTab.key === "alumniQueries") {
         if (sortBy.length) {
           let sortByField;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -670,7 +651,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "collegePitches") {
+      if (activeTab.key === "collegePitches") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -955,7 +936,7 @@ const Operations = ({
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2 p-0">
             <TabPicker
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
@@ -985,62 +966,63 @@ const Operations = ({
                     className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
                   >
-                    Add New
+                    Add <span><FaPlus size="12" color="#fff"/></span>
                   </button>
-
-                  {(activeTab.key === "my_data" || activeTab.key ==="useTot") ?
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      console.log(activeTab.key);
-                      if (activeTab.key == "my_data") {
-                        setUploadModal({
-                          myData: true,
-                          tot: false,
-                        });
-                      } else {
-                        setUploadModal({
-                          tot: true,
-                          myData: false,
-                        });
-                      }
-                    }}
-                    style={{ marginLeft: "15px" }}
-                  >
-                    Upload &nbsp;
-                    <FaFileUpload size="14" color="#fff"/>
-                  </button>:""}
-                  
-                   {(activeTab.key === "my_data" || activeTab.key ==="useTot") ? 
-                   <button className="btn btn-primary ops_action_button" >
-                    <div>
-                      <a
-                        href={
-                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
+                
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button
+                      className="btn btn-primary ops_action_button"
+                      onClick={() => {
+                        if (activeTab.key == "my_data") {
+                          setUploadModal({
+                            myData: true,
+                            tot: false,
+                          });
+                        } else {
+                          setUploadModal({
+                            tot: true,
+                            myData: false,
+                          });
                         }
-                        target="_blank"
-                        className="c-pointer d-block text-light text-decoration-none "
-                        rel="noreferrer"
-                      >
+                      }}
+                    >
+                      
+                    Upload &nbsp;
+                    <span><FaFileUpload size="12" color="#fff"/></span>
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button className="btn btn-primary ops_action_button">
+                      <div>
+                       
+                        <a
+                          href={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                          download={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                        >
                         <span>Sample</span> &nbsp;
-                        <FaDownload size="14" color="#fff" />
-                      </a>
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          fontFamily: "Latto-Italic",
-                          color: "#787B96",
-                        }}
-                      ></div>
-                    </div>
-                  </button>:""
-                  }
+                        <span><FaDownload size="12" color="#fff" /></span>
+                        </a>
+                      </div>
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </>
               )}
             </div>
           </div>
 
-          <div className={`${layout !== "list" ? "d-none" : ""}`}>
+          <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />

@@ -61,6 +61,7 @@ const Styles = styled.div`
   }
 
   .mobile {
+    border:1.5px solid #d7d7e0;
     .row {
       padding-top: 15px;
       padding-bottom: 15px;
