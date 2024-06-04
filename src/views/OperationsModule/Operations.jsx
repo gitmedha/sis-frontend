@@ -1019,13 +1019,13 @@ const Operations = ({
                           href={
                             activeTab.key == "my_data"?
                             "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File.csv"}
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none "
                           download={
                             activeTab.key == "my_data"?
                             "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File.csv"}
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
                         >
                           <span className="mr-3">Sample File</span>
                           <FaDownload size="20" className="ml-2" color="#fff" />
