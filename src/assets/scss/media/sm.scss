@@ -22,7 +22,7 @@
 
     .top_nav_for_other {
         display: flex !important;
-        width: auto;
+        width: 100%;
     }
 
     .topnav div {
@@ -35,6 +35,10 @@
     }
 
     .navbar_sec {
+        flex-direction: column !important;
+    }
+
+    .stundents_nav_tab {
         flex-direction: column !important;
     }
 
@@ -75,11 +79,19 @@
     } 
     .ops_action_button {
         margin-right:5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* styles for mass edit buttons*/
     .mass_edit_bottons{
         font-size: 14px;
+    }
+
+    
+    .stundents_nav_tab {
+        padding: 0 !important;
     }
   }
 
@@ -95,6 +107,13 @@
     .ops_action_button {
         margin-right:5px;
         font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .stundents_nav_tab {
+        padding: 0 !important;
     }
     
   }
@@ -105,11 +124,15 @@
     }
 
     .topnav {
-        width:auto;
+        width:100%;
+    }
+
+    .topnav div {
+        padding:10px 12px !important;
     }
 
     .top_nav_for_other {
-        width:auto;
+        width:100%;
     }
 
     .top_nav_for_other div {
@@ -122,5 +145,12 @@
     .ops_action_button {
         margin-right:5px;
         font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stundents_nav_tab {
+        padding: 0 !important;
     }
   }

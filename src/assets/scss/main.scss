@@ -39,6 +39,9 @@ body {
   min-height: 100vh;
   font-family: Latto-Regular !important;
 }
+.izyXuO {
+  overflow-x: hidden !important;
+}
 
 .sidebar-container {
   .sidebar {
@@ -51,6 +54,11 @@ body {
   &.open {
     width: 100%;
   }
+}
+
+.ops_action_button {
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 /*----------------- search bar styles-----------------*/

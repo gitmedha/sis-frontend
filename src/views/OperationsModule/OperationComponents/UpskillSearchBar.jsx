@@ -207,7 +207,7 @@ const UpSkillSearchBar = function UpSkillSearch({
         {(formik) => (
           <Form>
             <Section>
-              <div className="row align-items-center px-3">
+              <div className="row align-items-center">
                 <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
                   <Input
                     icon="down"
