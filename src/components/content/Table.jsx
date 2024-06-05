@@ -11,6 +11,9 @@ const StickyPagination = styled.div`
   background: white;
   padding: 10px;
   border-top: 1px solid #d7d7e0;
+  @media screen and (max-width:431px){
+    paddingBottom:10px;
+  }
 `;
 
 const Styles = styled.div`
