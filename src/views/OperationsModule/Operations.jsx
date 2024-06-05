@@ -996,20 +996,19 @@ const Operations = ({
                   {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
-                       
-                        <a
+
+                        <a 
                           href={
                             activeTab.key == "my_data"?
                             "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
                            :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
                           target="_blank"
-                          className="c-pointer mb-1 d-block text-light text-decoration-none "
+                          className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={
                             activeTab.key == "my_data"?
                             "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
                            :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
-                        >
-                        <span>Sample</span> &nbsp;
+                        >Sample&nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
                         </a>
                       </div>
