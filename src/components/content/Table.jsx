@@ -89,6 +89,10 @@ const Styles = styled.div`
     padding-left: 15px;
     padding-right: 15px;
   }
+
+  @media screen and (max-width:431px){
+    min-height:200px
+  }
 `;
 
 const Table = ({
