@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import Session from "./views/Batches/sessions";
 import { useToasts } from "react-toast-notifications";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
@@ -28,18 +28,16 @@ import updateSession from "./views/Batches/sessions/updateSession";
 import Employer from "./views/Employers/Employer";
 import Employers from "./views/Employers/Employers";
 import EventCalendar from "./views/Calendar/Calendar";
-import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
 import axios from "axios";
-import { apiPath, urlPath } from "./constants";
+import { apiPath} from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import operations from "./views/OperationsModule/Operations";
-import Operation from "./views/OperationsModule/Operation";
 import { isAdmin, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
@@ -84,7 +82,7 @@ const App = (props) => {
     }
   }, [props.alert]);
 
-  const getUserDetails = () => {
+  const getUserDetails = useCallback(() => {
     if (token) {
       // authenticate the token on the server and place set user object
       axios.get(apiPath('/users/me'), {
@@ -108,7 +106,7 @@ const App = (props) => {
         localStorage.setItem("user_area", res.data.area);
       });
     }
-  }
+  },[])
 
   useEffect(() => {
     const accessToken = new URL(window.location.href).searchParams.get('access_token');
@@ -127,11 +125,11 @@ const App = (props) => {
         history.push(nextUrl); // or redirect to next url
       })
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [getUserDetails]);
 
   return (
     <AuthContext.Provider

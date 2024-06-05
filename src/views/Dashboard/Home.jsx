@@ -55,44 +55,33 @@ const DashboardStyled = styled.div`
 
 const Home = () => {
   const [isLoading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
+  const activeTab = tabPickerOptions[0]
   const userId = Number(localStorage.getItem("user_id")) || 2;
   const state = localStorage.getItem('user_state');
   const area = localStorage.getItem('user_area');
   const [userState, setUserState] = useState({});
 
   useEffect(() => {
-    clearState();
-    switch(activeTab.key) {
-      case "my_state":
-        getMyStateMetrics();
-        break;
-      case "my_area":
-        getMyAreaMetrics();
-        break;
-      case "all_medha":
-        getMyAllMetrics();
-        break;
-      default:
-        updateMyDataMetrics();
-        break;
-    }
-  }, [activeTab]);
+    getMyStateMetrics();
+    getMyAreaMetrics();
+    getMyAllMetrics();
+    updateMyDataMetrics();
+  }, []);
 
   const updateMyDataMetrics = async () => {
     setLoading(true);
     const myDataMetrics = {};
     await getMyDataMetrics(userId, 'registrations').then(data => {
-      myDataMetrics['registrations'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+      myDataMetrics['registrations'] = Number(data.data.data.programEnrollmentsConnection.aggregate.count);
     });
     await getMyDataMetrics(userId, 'certifications').then(data => {
-      myDataMetrics['certifications'] = data.data.data.programEnrollmentsConnection.aggregate.count;
+      myDataMetrics['certifications'] = Number(data.data.data.programEnrollmentsConnection.aggregate.count);
     });
     await getMyDataMetrics(userId, 'internships').then(data => {
-      myDataMetrics['internships'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+      myDataMetrics['internships'] = Number(data.data.data.employmentConnectionsConnection.aggregate.count);
     });
     await getMyDataMetrics(userId, 'placements').then(data => {
-      myDataMetrics['placements'] = data.data.data.employmentConnectionsConnection.aggregate.count;
+      myDataMetrics['placements'] = Number(data.data.data.employmentConnectionsConnection.aggregate.count);
     });
 
     setUserState(myDataMetrics);
@@ -108,7 +97,17 @@ const Home = () => {
       },
     })
     .then(data => {
-      setUserState(data.data.data.metricsStates[0]);
+      const metrics = data?.data?.data?.metricsAlls !== null ?data?.data?.data?.metricsAlls[0]: null;
+      if(metrics){
+        setUserState({
+          registrations: Number(metrics.registrations),
+          certifications: Number(metrics.certifications),
+          internships: Number(metrics.internships),
+          placements: Number(metrics.placements),
+        });
+      }
+
+      return;
     })
     .catch(error => {
       return Promise.reject(error);
@@ -127,7 +126,17 @@ const Home = () => {
       },
     })
     .then(data => {
-      setUserState(data.data.data.metricsAreas[0]);
+      const metrics = data?.data?.data?.metricsAlls !== null ?data?.data?.data?.metricsAlls[0]: null;
+      if(metrics){
+        setUserState({
+          registrations: Number(metrics.registrations),
+          certifications: Number(metrics.certifications),
+          internships: Number(metrics.internships),
+          placements: Number(metrics.placements),
+        });
+      }
+
+      return;
     })
     .catch(error => {
       return Promise.reject(error);
@@ -143,7 +152,17 @@ const Home = () => {
       query: GET_ALL_METRICS,
     })
     .then(data => {
-      setUserState(data.data.data.metricsAlls[0]);
+      const metrics = data?.data?.data?.metricsAlls !== null ?data?.data?.data?.metricsAlls[0]: null;
+      if(metrics){
+        setUserState({
+          registrations: Number(metrics.registrations),
+          certifications: Number(metrics.certifications),
+          internships: Number(metrics.internships),
+          placements: Number(metrics.placements),
+        });
+      }
+
+      return;
     })
     .catch(error => {
       return Promise.reject(error);
@@ -153,17 +172,11 @@ const Home = () => {
     });
   };
 
-  const clearState = () => {
-    setUserState('');
-  }
+ 
 
   return (
     <DashboardStyled className="container-fluid">
       <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
-        <div className="d-flex justify-content-between">
-          {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-          {/* <WidgetUtilTab /> */}
-        </div>
         {isLoading ? (
           <div className="row mb-5">
             {[1, 2, 3, 4].map(i => (
@@ -177,7 +190,7 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="success"
-              value={userState.registrations? userState.registrations :"0" }
+              value={userState.registrations || 0}
               title="Registrations"
               icon={<FaClipboardCheck size={25} color={"white"} />}
             />
@@ -185,27 +198,27 @@ const Home = () => {
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="danger"
-              value={userState.certifications? userState.certifications :"0" }
+              value={userState.certifications || 0}
               title="Certifications"
-              caption={parseInt((userState.certifications / userState.registrations)* 100 || "0") + '% of Registrations'}
+              caption={`${parseInt((userState.certifications / userState.registrations) * 100 || 0)}% of Registrations`}
               icon={<FaGraduationCap size={25} color={"white"} />}
             />
           </div>
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="warning"
-              value={userState.internships? userState.internships :"0" }
+              value={userState.internships || 0}
               title="Internships"
-              caption={parseInt((userState.internships / userState.certifications) * 100 || "0") + "% of Certifications"}
+              caption={`${parseInt((userState.internships / userState.certifications) * 100 || 0)}% of Certifications`}
               icon={<FaBlackTie size={25} color={"white"} />}
             />
           </div>
           <div className="col-md-3 col-sm-12">
             <InfoCards
               type="info"
-              value={userState.placements? userState.placements :"0" }
+              value={userState.placements || 0}
               title="Placements"
-              caption={parseInt((userState.placements / userState.certifications) * 100 || "0") + "% of Certifications"}
+              caption={`${parseInt((userState.placements / userState.certifications) * 100 || 0)}% of Certifications`}
               icon={<FaBriefcase size={25} color={"white"} />}
             />
           </div>

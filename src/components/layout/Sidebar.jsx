@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog ,FaCalendarDay} from "react-icons/fa";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog, FaCalendarDay } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -66,9 +66,9 @@ const routes = [
     show: isAdmin(),
   },
   {
-    to:'/calender',
+    to:'/calendar',
     title:"Calendar",
-    aliases: ['calender'],
+    aliases: ['calendar'],
     icon:<FaCalendarDay {...iconProps}/>,
     show: isAdmin(),
   },
@@ -139,7 +139,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
           )}
         </AnimatePresence>
       </div>
-      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
+      <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`}>
         <img
           src={require('../../assets/images/logo.png').default}
           alt="Medha SIS"
