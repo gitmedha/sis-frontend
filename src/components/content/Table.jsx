@@ -94,7 +94,7 @@ const Styles = styled.div`
   }
 
   @media screen and (max-width:431px){
-    min-height:200px
+    min-height:180px
   }
 `;
 
