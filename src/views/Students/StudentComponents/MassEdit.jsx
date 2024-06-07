@@ -15,7 +15,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import Select from "react-select";
+import Select ,{ components } from "react-select";
 import moment from "moment";
 import CheckBoxForm from "./CheckBoxForm";
 import AlumMassEdit from "../MassEdit/AlumMassEdit";
@@ -229,6 +229,37 @@ const MassEdit = (props) => {
     setBulkAddCheck(!bulkAddCheck);
     setMassEditCheck(!massEditCheck);
   };
+  const MultiValue = ({ index, getValue, ...props }) => {
+    const maxToShow = 1; // Maximum number of values to show
+    const overflowCount = getValue().length - maxToShow;
+
+    if (index < maxToShow) {
+      return <components.MultiValue {...props} />;
+    }
+
+    if (index === maxToShow) {
+      return (
+        <components.MultiValue {...props}>
+          <span>+{overflowCount}</span>
+        </components.MultiValue>
+      );
+    }
+
+    return null;
+  };
+
+  const customComponents = {
+    MultiValue,
+  };
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
+  
+  
   return (
     <Modal
       centered
@@ -263,6 +294,7 @@ const MassEdit = (props) => {
             setMassEditCheck={setMassEditCheck}
           />
         }
+        
 
         {bulkAddCheck ? (
           <Formik
@@ -288,14 +320,17 @@ const MassEdit = (props) => {
                     /> */}
                       <label className="leading-24">Student</label>
                       <Select
-                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                        isMulti
-                        name="student_ids"
-                        options={studentOptions}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onInputChange={(e) => setStudentInput(e)}
-                        onChange={(choice) => setStudents(choice)}
+                         isMulti
+                         name="student_ids"
+                         options={studentOptions}
+                         closeMenuOnSelect={false}
+                         components={customComponents}
+                         isOptionDisabled={() => students.length >= 10}
+                         className="basic-multi-select"
+                         classNamePrefix="select"
+                         onInputChange={handleInputChange}
+                         onChange={handleChange}
+                         value={students}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">

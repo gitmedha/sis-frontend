@@ -310,14 +310,14 @@ const AlumMassEdit = (props) => {
     });
   }, []);
 
+
   const validations = Yup.object({
-    start_date: Yup.date().nullable().required("Start Date is ."),
+    start_date: Yup.date().nullable(),
     end_date: Yup.date()
       .nullable()
-      .required("End Date is .")
-      .when("start_date", (start_date, schema) =>
-        start_date
-          ? schema.min(start_date, "End date can't be before Start date")
+      .when("start_date", (start_date, schema) => 
+        start_date 
+          ? schema.min(start_date, "End date can't be before Start date") 
           : schema
       ),
   });
@@ -347,6 +347,13 @@ const AlumMassEdit = (props) => {
   const customComponents = {
     MultiValue,
   };
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleselectChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
   return (
     <Modal
       centered
@@ -374,15 +381,26 @@ const AlumMassEdit = (props) => {
               <div>
                 <label className="leading-24">Student</label>
                 <Select
+                  // isMulti
+                  // closeMenuOnSelect={false}
+                  // name="student_ids"
+                  // options={studentOptions}
+                  // filterData={filterStudent}
+                  // onInputChange={(e) => setStudentInput(e)}
+                  // className="basic-multi-select"
+                  // classNamePrefix="select"
+                  // onChange={(choices) => setStudents(choices)}
                   isMulti
-                  closeMenuOnSelect={false}
                   name="student_ids"
                   options={studentOptions}
-                  filterData={filterStudent}
-                  onInputChange={(e) => setStudentInput(e)}
+                  closeMenuOnSelect={false}
+                  components={customComponents}
+                  isOptionDisabled={() => students.length >= 10}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={(choices) => setStudents(choices)}
+                  onInputChange={handleInputChange}
+                  onChange={handleselectChange}
+                  value={students}
                 />
               </div>
               <div className="d-flex justify-content-end mx-5">

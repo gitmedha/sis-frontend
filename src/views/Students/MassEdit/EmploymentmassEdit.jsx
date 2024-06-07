@@ -229,20 +229,30 @@ const EmploymentmassEdit = (props) => {
     filterEmployer().then((data) => {
       setEmployerOptions(data);
     });
-    setStatusOptions(
-      allStatusOptions.map((item) => {
-        if (
-          localStorage.getItem("user_role").toLowerCase() === "srm" &&
-          item.value.toLowerCase() === "unknown"
-        ) {
-          return { isDisabled: true };
-        } else {
-          return { key: item.value, value: item.value, label: item.value };
-        }
-      })
-    );
-    console.log("statusOptions", statusOptions);
+    
   }, []);
+
+  useEffect(() => {
+    let filteredOptions = allStatusOptions;
+    if (
+      selectedOpportunityType === "Job" ||
+      selectedOpportunityType === "Internship" ||
+      selectedOpportunityType === "UnPaid GIG" ||
+      selectedOpportunityType === "Paid GIG" ||
+      selectedOpportunityType === "Apprenticeship"
+    ) {
+      filteredOptions = allStatusOptions.filter(
+        (item) =>
+          item["applicable-to"].includes(selectedOpportunityType) ||
+          item["applicable-to"] === "Both"
+      );
+    } else {
+      filteredOptions = allStatusOptions.filter(
+        (item) => item["applicable-to"] === "Both"
+      );
+    }
+    setStatusOptions(filteredOptions);
+  }, [selectedOpportunityType, allStatusOptions]);
 
   const filterEmployer = async (filterValue) => {
     console.log("filter ", filterValue);
@@ -399,6 +409,44 @@ const EmploymentmassEdit = (props) => {
     MultiValue,
   };
 
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleselectChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
+  const onSubmit = async (values) => {
+    console.log(values);
+    let data = students.map((val) => {
+      console.log(val);
+      return {
+        assigned_to: val.assigned_to.id,
+                experience_certificate: val.experience_certificate,
+                number_of_internship_hours: val.number_of_internship_hours,
+                end_date: val.end_date,
+                opportunity: {
+                  value: val.opportunity.id,
+                  label: val.opportunity.type,
+                },
+                employer: {
+                  value: val.opportunity.employer.id,
+                  label: val.opportunity.employer.name,
+                },
+                reason_if_rejected: val.reason_if_rejected,
+                reason_if_rejected_other: val.reason_if_rejected_other,
+                salary_offered: val.salary_offered,
+                start_date: val.start_date,
+                source: val.source,
+                status: val.status,
+                student_id: val.id,
+                work_engagement: val.work_engagement,
+                id: val.id,
+      };
+    });
+    props.handelSubmitMassEdit(data, "AlumniBuldEdit");
+  };
+
   return (
     <>
       <Modal
@@ -432,15 +480,17 @@ const EmploymentmassEdit = (props) => {
                 <div>
                   <label className="leading-24">Student</label>
                   <Select
-                    isMulti
-                    closeMenuOnSelect={false}
-                    name="student_ids"
-                    options={studentOptions}
-                    filterData={filterStudent}
-                    onInputChange={(e) => setStudentInput(e)}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    onChange={(choices) => setStudents(choices)}
+                     isMulti
+                  name="student_ids"
+                  options={studentOptions}
+                  closeMenuOnSelect={false}
+                  components={customComponents}
+                  isOptionDisabled={() => students.length >= 10}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onInputChange={handleInputChange}
+                  onChange={handleselectChange}
+                  value={students}
                   />
                 </div>
                 <div className="d-flex justify-content-end mx-5">
@@ -470,7 +520,7 @@ const EmploymentmassEdit = (props) => {
                 </Modal.Title>
               </Modal.Header>
               <Formik
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
                 initialValues={initialValues}
                 // validationSchema={validations}
               >
