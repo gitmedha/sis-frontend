@@ -421,27 +421,21 @@ const EmploymentmassEdit = (props) => {
     let data = students.map((val) => {
       console.log(val);
       return {
-        assigned_to: val.assigned_to.id,
-                experience_certificate: val.experience_certificate,
-                number_of_internship_hours: val.number_of_internship_hours,
-                end_date: val.end_date,
-                opportunity: {
-                  value: val.opportunity.id,
-                  label: val.opportunity.type,
-                },
-                employer: {
-                  value: val.opportunity.employer.id,
-                  label: val.opportunity.employer.name,
-                },
-                reason_if_rejected: val.reason_if_rejected,
-                reason_if_rejected_other: val.reason_if_rejected_other,
-                salary_offered: val.salary_offered,
-                start_date: val.start_date,
-                source: val.source,
-                status: val.status,
-                student_id: val.id,
-                work_engagement: val.work_engagement,
-                id: val.id,
+        assigned_to: values.assigned_to.id,
+                experience_certificate: values.experience_certificate,
+                number_of_internship_hours: values.number_of_internship_hours,
+                end_date: values.end_date,
+                opportunity: values.opportunity_id,
+                employer: values.employer_id,
+                reason_if_rejected: values.reason_if_rejected,
+                reason_if_rejected_other: values.reason_if_rejected_other,
+                salary_offered: values.salary_offered,
+                start_date: values.start_date,
+                source: values.source,
+                status: values.status,
+                student_id: obj.id,
+                work_engagement: values.work_engagement,
+                id: values.id,
       };
     });
     props.handelSubmitMassEdit(data, "AlumniBuldEdit");
