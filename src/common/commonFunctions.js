@@ -17,3 +17,9 @@ export const isPartnership = () => {
   const userRole = localStorage.getItem('user_role');
   return userRole && userRole.toLowerCase() === 'partnership';
 }
+
+export const isMedhavi = () => {
+  const userRole = localStorage.getItem('user_role');
+  console.log(userRole);
+  return userRole && userRole.toLowerCase() === 'medhavi';
+}

@@ -5,7 +5,7 @@ import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
-import { isAdmin, isPartnership, isSRM } from '../../common/commonFunctions';
+import { isAdmin, isPartnership, isSRM,isMedhavi } from '../../common/commonFunctions';
 
 const iconStyle = {
   marginRight: "5px",
@@ -21,7 +21,7 @@ const routes = [
     to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/students",
@@ -70,7 +70,7 @@ const routes = [
     title:"Calendar",
     aliases: ['calender'],
     icon:<FaCalendarDay {...iconProps}/>,
-    show: isAdmin(),
+    show: isAdmin() || isMedhavi(),
   },
   {
     to: "https://data.medha.org.in/",

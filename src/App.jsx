@@ -92,6 +92,7 @@ const App = (props) => {
           Authorization: `Bearer ${token}`,
         },
       }).then((res) => {
+        console.log("respary",res);
         // if res comes back not valid, token is not valid
         // delete the token and log the user out on client
         if (res.status !== 200) {
@@ -99,7 +100,9 @@ const App = (props) => {
           setUser(null);
           return null;
         }
+        console.log("hehehheheooooo");
         setUser(res.data);
+        console.log("response",res);
         localStorage.setItem("user_id", res.data.id);
         localStorage.setItem("user_name", res.data.username);
         localStorage.setItem("user_email", res.data.email);
@@ -118,6 +121,7 @@ const App = (props) => {
       // make api request to fetch JSON
       axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
+        console.log('data',data);
         setUser(data.data.user);
         let nextUrl = '/';
         if (localStorage.getItem("next_url")){
