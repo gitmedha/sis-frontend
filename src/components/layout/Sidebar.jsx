@@ -16,6 +16,7 @@ const iconProps = {
   style: { iconStyle },
 };
 
+
 const routes = [
   {
     to: "/",
@@ -35,35 +36,35 @@ const routes = [
     title: "Institutions",
     aliases: ['institution'],
     icon: <FaSchool {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/batches",
     title: "Batches",
     aliases: ['batch'],
     icon: <FaChalkboardTeacher {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/employers",
     title: "Employers",
     aliases: ['employer'],
     icon: <FaUserTie {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/opportunities",
     title: "Opportunities",
     aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/operation",
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,
-    show: isAdmin(),
+    show: isAdmin() || isSRM() || isMedhavi(),
   },
   {
     to:'/calender',

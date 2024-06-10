@@ -40,7 +40,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import operations from "./views/OperationsModule/Operations";
 import Operation from "./views/OperationsModule/Operation";
-import { isAdmin, isPartnership, isSRM } from "./common/commonFunctions";
+import { isAdmin, isMedhavi, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -56,7 +56,6 @@ const App = (props) => {
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
   const token = localStorage.getItem("token");
-
   const logout = (callback = () => {}) => {
     setUser(null);
     localStorage.removeItem('token');
@@ -83,6 +82,9 @@ const App = (props) => {
       removeAllToasts();
     }
   }, [props.alert]);
+  useEffect(() => {
+    getUserDetails();
+  }, []);
 
   const getUserDetails = () => {
     if (token) {
@@ -92,7 +94,6 @@ const App = (props) => {
           Authorization: `Bearer ${token}`,
         },
       }).then((res) => {
-        console.log("respary",res);
         // if res comes back not valid, token is not valid
         // delete the token and log the user out on client
         if (res.status !== 200) {
@@ -100,9 +101,7 @@ const App = (props) => {
           setUser(null);
           return null;
         }
-        console.log("hehehheheooooo");
         setUser(res.data);
-        console.log("response",res);
         localStorage.setItem("user_id", res.data.id);
         localStorage.setItem("user_name", res.data.username);
         localStorage.setItem("user_email", res.data.email);
@@ -121,7 +120,6 @@ const App = (props) => {
       // make api request to fetch JSON
       axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
-        console.log('data',data);
         setUser(data.data.user);
         let nextUrl = '/';
         if (localStorage.getItem("next_url")){
@@ -133,9 +131,7 @@ const App = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    getUserDetails();
-  }, []);
+ 
 
   return (
     <AuthContext.Provider
@@ -159,7 +155,7 @@ const App = (props) => {
                   <PrivateRoute path="/" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
-                  {(isSRM() || isPartnership() || isAdmin()) &&
+                  {(isSRM() || isPartnership() || isAdmin() || isMedhavi()) &&
                   <>
                     <PrivateRoute path="/institutions" exact component={Institutions} />
                     <PrivateRoute path="/institution/:id" exact component={Institution} />

@@ -1,3 +1,4 @@
+const data=JSON.parse(localStorage.getItem(`user_info`))
 export const isSRM = () => {
   const userRole = localStorage.getItem('user_role');
   return userRole && userRole.toLowerCase() === 'srm';
@@ -20,6 +21,5 @@ export const isPartnership = () => {
 
 export const isMedhavi = () => {
   const userRole = localStorage.getItem('user_role');
-  console.log(userRole);
   return userRole && userRole.toLowerCase() === 'medhavi';
 }
