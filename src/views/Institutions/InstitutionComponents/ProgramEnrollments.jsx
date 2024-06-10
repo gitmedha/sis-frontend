@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -20,33 +19,8 @@ import nProgress from "nprogress";
 import api from "../../../apis";
 import { deleteFile } from "../../../common/commonActions";
 
-const Styled = styled.div`
-.img-profile-container {
-  position: relative;
-  .status-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1px 5px 5px 5px;
-  }
-  .img-profile {
-    width: 160px;
-    margin-left: auto;
-    }
-}
-.separator {
-  background-color: #C4C4C4;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-hr {
-  height: 1px;
-}
-`;
-
 const ProgramEnrollments = (props) => {
-  let { id, institution, onDataUpdate } = props;
-  const [loading, setLoading] = useState(false);
+  let { id, institution } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -68,7 +42,6 @@ const ProgramEnrollments = (props) => {
 
   const getInstitutionProgramEnrollments = async (limit=paginationPageSize, offset=0, sortBy='student.full_name', sortOrder = 'asc') => {
     nProgress.start();
-    setLoading(true);
     await api.post("/graphql", {
       query: GET_INSTITUTION_PROGRAM_ENROLLMENTS,
       variables: {
@@ -85,7 +58,6 @@ const ProgramEnrollments = (props) => {
     .catch(err => {
     })
     .finally(() => {
-      setLoading(false);
       nProgress.done();
     });
   };

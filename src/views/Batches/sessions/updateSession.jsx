@@ -33,10 +33,8 @@ const UpdateSession = (props) => {
   const [gridIntialized, setInitialized] = useState(false);
 
   // Original Copy of attendance List
-  const [oriAttendanceList, setOriAttendanceList] = useState([]);
 
   // Update Flag
-  const [updated, setUpdated] = useState(false);
 
   const history = useHistory();
 

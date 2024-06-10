@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { MeiliSearch } from "meilisearch";
 import Select, { components } from "react-select";
 import { Modal } from "react-bootstrap";
-import styled from "styled-components";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
   getStudentsPickList,
+  searchStudents,
 } from "../StudentComponents/StudentActions";
 import * as Yup from "yup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -16,97 +15,6 @@ import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
 import { Form, Formik } from "formik";
 import { FaTimes } from "react-icons/fa";
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
-const Section = styled.div`
-  padding-top: 30px;
-  padding-bottom: 30px;
-
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
-  }
-`;
-
-const Section1 = styled.table`
-  .create_data_table {
-    border-collapse: collapse;
-    width: 100%;
-    overflow: auto;
-  }
-
-  th,
-  td {
-    padding: 8px;
-    text-align: left;
-    border: 1px solid #bebfc0;
-  }
-
-  th {
-    background-color: #257b69;
-    color: #fff;
-  }
-
-  .table-input,
-  .table-input-select {
-    width: 8rem;
-    padding: 2px;
-    margin: 0;
-    background-color: initial;
-    border-radius: 5px;
-    border: 1px solid #bebfc0;
-  }
-
-  tr {
-    border: 1px solid #000;
-  }
-
-  .submitbtn {
-    position: absolute;
-    right: 0;
-  }
-  .submitbtnclear {
-    position: absolute;
-    right: 10%;
-  }
-  .table-input-select-wrapper {
-    width: 8rem;
-    padding: 2px;
-    margin: 0;
-    background-color: initial;
-    border-radius: 5px;
-    border: 1px solid #bebfc0;
-  }
-
-  .select__control {
-    border: none; /* Remove the border from the control */
-  }
-
-  .select__control:hover {
-    border: none; /* Remove the border on hover */
-  }
-
-  .select__menu {
-    border: 1px solid #bebfc0; /* Add border to the dropdown menu */
-  }
-
-  .select__menu-list {
-    border: none; /* Remove border from menu items */
-  }
-`;
 
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
@@ -158,16 +66,16 @@ const AlumMassEdit = (props) => {
   }, []);
 
   const filterStudent = async (filterValue) => {
-    const data = await meilisearchClient.index("students").search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ["id", "full_name", "student_id"],
-    });
-
-    return data.hits.map((student) => ({
-      ...student,
-      label: `${student.full_name} (${student.student_id})`,
-      value: Number(student.id),
-    }));
+    try {
+      const { data } = await searchStudents(filterValue);
+      return data.studentsConnection.values.map((student) => ({
+        ...student,
+        label: `${student.full_name} (${student.student_id})`,
+        value: Number(student.id),
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -363,7 +271,12 @@ const AlumMassEdit = (props) => {
             <div className="d-flex justify-content-end align-items-center">
               <button
                 onClick={handelCancel}
-                style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
+                style={{
+                  border: "none",
+                  background: "none",
+                  position: "absolute",
+                  right: "2rem",
+                }}
               >
                 <FaTimes />
               </button>

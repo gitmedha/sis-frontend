@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
@@ -203,6 +202,7 @@ const ProgramEnrollments = (props) => {
     dataToSave['certification_date'] = data.certification_date ? moment(data.certification_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_payment_date'] = data.fee_payment_date ? moment(data.fee_payment_date).format("YYYY-MM-DD") : null;
     dataToSave['fee_refund_date'] = data.fee_refund_date ? moment(data.fee_refund_date).format("YYYY-MM-DD") : null;
+    dataToSave['course_name_other'] = data.course_name_in_current_sis === 'Other' ? data.course_name_other:null
 
      NP.start();
     updateProgramEnrollment(Number(id), dataToSave).then(data => {
