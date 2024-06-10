@@ -108,6 +108,11 @@ const Section1 = styled.table`
   }
 `;
 
+const statusOption = [
+  { value: "Paid", label: "Paid" },
+  { value: "Unpaid", label: "Unpaid" },
+];
+
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
@@ -265,6 +270,7 @@ const AlumMassEdit = (props) => {
     assigned_to: localStorage.getItem("user_id"),
     category: null,
     type: "",
+    status:""
   };
 
   const onSubmit = async (values) => {
@@ -343,6 +349,7 @@ const AlumMassEdit = (props) => {
 
     return null;
   };
+  
 
   const customComponents = {
     MultiValue,
@@ -530,6 +537,20 @@ const AlumMassEdit = (props) => {
                           autoComplete="off"
                         />
                       </div>
+                      <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon="down"
+                      options={statusOption}
+                      // required={feeFieldsRequired}
+                      // onChange={(e) => setStatus(e.value)}
+                    />
+                  </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="fee_submission_date"

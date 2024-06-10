@@ -229,7 +229,6 @@ const EmploymentmassEdit = (props) => {
     filterEmployer().then((data) => {
       setEmployerOptions(data);
     });
-    
   }, []);
 
   useEffect(() => {
@@ -422,20 +421,20 @@ const EmploymentmassEdit = (props) => {
       console.log(val);
       return {
         assigned_to: values.assigned_to.id,
-                experience_certificate: values.experience_certificate,
-                number_of_internship_hours: values.number_of_internship_hours,
-                end_date: values.end_date,
-                opportunity: values.opportunity_id,
-                employer: values.employer_id,
-                reason_if_rejected: values.reason_if_rejected,
-                reason_if_rejected_other: values.reason_if_rejected_other,
-                salary_offered: values.salary_offered,
-                start_date: values.start_date,
-                source: values.source,
-                status: values.status,
-                student_id: obj.id,
-                work_engagement: values.work_engagement,
-                id: values.id,
+        experience_certificate: values.experience_certificate,
+        number_of_internship_hours: values.number_of_internship_hours,
+        end_date: values.end_date,
+        opportunity: values.opportunity_id,
+        employer: values.employer_id,
+        reason_if_rejected: values.reason_if_rejected,
+        reason_if_rejected_other: values.reason_if_rejected_other,
+        salary_offered: values.salary_offered,
+        start_date: values.start_date,
+        source: values.source,
+        status: values.status,
+        student_id: val.id,
+        work_engagement: values.work_engagement,
+        id: values.id,
       };
     });
     props.handelSubmitMassEdit(data, "AlumniBuldEdit");
@@ -474,17 +473,17 @@ const EmploymentmassEdit = (props) => {
                 <div>
                   <label className="leading-24">Student</label>
                   <Select
-                     isMulti
-                  name="student_ids"
-                  options={studentOptions}
-                  closeMenuOnSelect={false}
-                  components={customComponents}
-                  isOptionDisabled={() => students.length >= 10}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  onInputChange={handleInputChange}
-                  onChange={handleselectChange}
-                  value={students}
+                    isMulti
+                    name="student_ids"
+                    options={studentOptions}
+                    closeMenuOnSelect={false}
+                    components={customComponents}
+                    isOptionDisabled={() => students.length >= 10}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onInputChange={handleInputChange}
+                    onChange={handleselectChange}
+                    value={students}
                   />
                 </div>
                 <div className="d-flex justify-content-end mx-5">
