@@ -1,29 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { MeiliSearch } from "meilisearch";
 import Select from "react-select";
 import { filterAssignedTo, getDefaultAssignee, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 
 
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 function BulkMassEmployerEdit(props) {
-
-  // const {dataPoints}=props;
-  // const [assigneeOptions, setAssigneeOptions] = useState([]);
-  // const [defaultAssignedTo, setDefaultAssignedTo] = useState({});
-  // const [startdate,setStartDate]=useState('');
-  // const [employerOptions, setEmployerOptions] = useState([]);
-  // let datavalues={
-  //   assigned_to:dataPoints.assigned_to,
-  //   end_date: dataPoints.end_date,
-  //   start_date: dataPoints.start_date,
-  //   student_id: dataPoints.student_id,
-  //   id:dataPoints.id
-  // }
 
   const { dataPoints } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
