@@ -63,7 +63,7 @@ const routes = [
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,
-    show: isAdmin(),
+    show: isSRM() ||isAdmin(),
   },
   {
     to:'/calender',

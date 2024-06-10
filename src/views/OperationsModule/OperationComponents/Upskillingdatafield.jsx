@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
 import { Anchor, } from "../../../components/content/Utils";
-import { urlPath } from "../../../constants";
 import {
   getEmploymentConnectionsPickList,
   getOpportunitiesPickList,

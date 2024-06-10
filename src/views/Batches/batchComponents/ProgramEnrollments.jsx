@@ -21,32 +21,9 @@ import {GET_BATCH_PROGRAM_ENROLLMENTS } from "../../../graphql";
 import { ProgressBarField } from "../../../components/content/Utils";
 import { deleteFile } from "../../../common/commonActions";
 
-const Styled = styled.div`
-  .img-profile-container {
-    position: relative;
-    .status-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1px 5px 5px 5px;
-    }
-    .img-profile {
-      width: 160px;
-      margin-left: auto;
-    }
-  }
-  .separator {
-    background-color: #C4C4C4;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  hr {
-    height: 1px;
-  }
-`;
 
 const ProgramEnrollments = (props) => {
-  let { id, batch, students, onDataUpdate } = props;
+  let { id, batch, students } = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
