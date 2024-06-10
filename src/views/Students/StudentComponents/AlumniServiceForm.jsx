@@ -34,10 +34,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-const statusOption = [
-  { value: 'Paid', label: 'Paid' },
-  { value: 'Unpaid', label: 'Unpaid' }
-]
 
 const statusOption = [
   { value: "Paid", label: "Paid" },
