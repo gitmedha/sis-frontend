@@ -14,12 +14,12 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
+import { searchBatches, searchInstitutions } from "./operationsActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -39,11 +39,6 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const hideBatchName = [
   "New Enrollments -- CAB",
@@ -109,37 +104,29 @@ const OperationDataupdateform = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const { data } = await searchInstitutions(filterValue);
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let batchInformtion = props ? props.batch : null;
+    try {
+      const { data } = await searchBatches(filterValue);
+      let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
-
-        let filterData = data.hits.map((batch) => {
+        let filterData = data.batchesConnection.values.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
@@ -160,7 +147,10 @@ const OperationDataupdateform = (props) => {
           });
         }
         return filterData;
-      });
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

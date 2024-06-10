@@ -7,16 +7,9 @@ import moment from "moment";
 import api from "../../apis";
 import ProgressBar from "../../components/content/ProgressBar";
 
-// import Details from "./StudentComponents/Details";
-// import Address from "./StudentComponents/Address";
-// import ProgramEnrollments from "./StudentComponents/ProgramEnrollments";
-// import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-// import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
-// import EmploymentConnections from "./StudentComponents/EmploymentConnections";
-// import StudentForm from "./StudentComponents/StudentForm";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import { TitleWithLogo } from "../../components/content/Avatar";
@@ -24,7 +17,7 @@ import { UPDATE_STUDENT, GET_STUDENT } from "../../graphql";
 import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
-import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../common/commonFunctions";
 import StudentForm from "../Students/StudentComponents/StudentForm";
 
 const Styled = styled.div`

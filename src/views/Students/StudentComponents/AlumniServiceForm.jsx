@@ -344,6 +344,19 @@ const AlumniServiceForm = (props) => {
                       autoComplete="off"
                     />
                   </div>
+                  
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon='down'
+                      options={statusOption}
+                    />
+                  </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="status"
