@@ -83,6 +83,7 @@ const ProgramEnrollmentForm = (props) => {
     );
   }, [props.programEnrollment]);
 
+  
   let initialValues = {
     program_enrollment_student: student.full_name,
     status: "",
@@ -324,7 +325,7 @@ const ProgramEnrollmentForm = (props) => {
           initialValues={initialValues}
           validationSchema={ProgramEnrollmentValidations}
         >
-          {({ values }) => (
+          {({ values,setFieldValue}) => (
             <Form>
               <div className="row form_sec">
                 <Section>
@@ -499,27 +500,16 @@ const ProgramEnrollmentForm = (props) => {
                 <h3 className="section-header">Higher Education</h3>
                 <div className="row">
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {OthertargetValue.course2 ? 
-                    <Input
-                    name="higher_education_course_name"
-                    control="input"
-                    label="Course Name"
-                    options={course}
-                    className="form-control"
-                    placeholder="Course Name"
-                  />
-                    
-                    :<Input
+                  <Input
                       icon="down"
                       name="higher_education_course_name"
                       control="lookup"
                       label="Course Name"
-                      onChange={(e)=>handlechange(e,"course2")}
                       options={course}
                       className="form-control"
                       placeholder="Course Name"
                       
-                    />}
+                    />
                   </div>
                   </div>
                 </Section>
