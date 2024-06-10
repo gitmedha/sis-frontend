@@ -14,3 +14,22 @@
     left: 0;
   }
 }
+
+@media screen and (max-width:768px){
+  
+  .topnav {
+    width: auto;
+  }
+
+  .topnav div {
+    width: 100%;
+  }
+
+  .top_nav_for_other  {
+    width: auto;
+  }
+
+  .top_nav_for_other div {
+    width: 100%;
+  }
+}

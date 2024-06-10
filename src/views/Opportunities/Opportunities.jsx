@@ -393,19 +393,16 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
 
   return (
     <Collapse title="OPPORTUNITIES" type="plain" opened={true}>
-      <div className="row m-3">
-        <div className="d-flex justify-content-between align-items-center mb-2 px-0">
+      <div className="row">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
           <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <div className="d-flex justify-content-center align-items-center">
-            {/* <WidgetUtilTab /> */}
-            <button
-              className="btn btn-primary"
+          <button
+              className="btn btn-primary add_button_sec"
               onClick={() => setModalShow(true)}
               style={{marginLeft: '15px'}}
             >
-              Add New Opportunity
+              Add New
             </button>
-          </div>
           
         </div>
 

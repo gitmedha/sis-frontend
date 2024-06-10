@@ -15,19 +15,15 @@ import {
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
 
-import {
-  searchBatches,
-  searchInstitutions
-} from "./operationsActions";
+import { searchBatches, searchInstitutions } from "./operationsActions";
 import AlumunniBulkrow from "./AlumunniBulkrow";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
-
 
 const AllumuniBulkAdd = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
-  const [classValue,setclassValue]=useState({})
+  const [classValue, setclassValue] = useState({});
   const [data, setData] = useState([
     {
       id: 1,
@@ -51,7 +47,7 @@ const AllumuniBulkAdd = (props) => {
       id: 1,
       query_start: "",
       student_name: "",
-      student_id:"",
+      student_id: "",
       father_name: "",
       email: "",
       phone: "",
@@ -68,7 +64,7 @@ const AllumuniBulkAdd = (props) => {
     id: 1,
     query_start: "",
     student_name: "",
-    student_id:"",
+    student_id: "",
     father_name: "",
     email: "",
     phone: "",
@@ -79,11 +75,11 @@ const AllumuniBulkAdd = (props) => {
     status: "",
     query_end: "",
   });
-  
+
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
-  
+
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
@@ -91,58 +87,61 @@ const AllumuniBulkAdd = (props) => {
         result[key] = isEmpty;
       }
     }
-  
+
     return result;
   }
-  
+
   function isEmptyValue(value) {
     if (value === null || value === undefined) {
       return true;
     }
-  
-    if (typeof value === 'string' && value.trim() === '') {
+
+    if (typeof value === "string" && value.trim() === "") {
       return true;
     }
-  
+
     if (Array.isArray(value) && value.length === 0) {
       return true;
     }
-  
-    if (typeof value === 'object' && Object.keys(value).length === 0) {
+
+    if (typeof value === "object" && Object.keys(value).length === 0) {
       return true;
     }
-  
+
     return false;
   }
   const addRow = () => {
-    let value =checkEmptyValues(rows[rows.length-1])
-    if(value.student_name || value.gender){
-      let obj={...classValue,[`class${[rows.length-1]}`]:value}
-     
-      setclassValue({})
-      if(value.query_start || value.student_name || value.query_desc || value.query_type ){
-        let obj={[`class${[rows.length-1]}`]:value}
-        setclassValue(obj)
-        return ;
+    let value = checkEmptyValues(rows[rows.length - 1]);
+    if (value.student_name || value.gender) {
+      let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
+
+      setclassValue({});
+      if (
+        value.query_start ||
+        value.student_name ||
+        value.query_desc ||
+        value.query_type
+      ) {
+        let obj = { [`class${[rows.length - 1]}`]: value };
+        setclassValue(obj);
+        return;
       }
-      
-  
+
       if (rows.length >= 10) {
         setAlert("You can't Add more than 10 items.", "error");
       } else {
         const newRowWithId = { ...newRow, id: rows.length + 1 };
         setRows([...rows, newRowWithId]);
       }
-      return setclassValue(obj)
+      return setclassValue(obj);
     }
-    
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      
     }
   };
 
@@ -251,30 +250,28 @@ const AllumuniBulkAdd = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
-
       delete row["id"];
       delete row["name"];
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      row.isActive=true;
+      row.isActive = true;
 
-      let value = checkEmptyValuesandplaceNA(row)
-      if(value.status =="Open"  ){
-        value.query_end =null 
+      let value = checkEmptyValuesandplaceNA(row);
+      if (value.status == "Open") {
+        value.query_end = null;
       }
       // value.published_at =null
       return value;
     });
-    
 
-    try {     
-      onHide('alum',data)
+    try {
+      onHide("alum", data);
       setRows([
         {
           id: 1,
           query_start: "",
           student_name: "",
-          student_id:"",
+          student_id: "",
           father_name: "",
           email: "",
           phone: "",
@@ -306,24 +303,25 @@ const AllumuniBulkAdd = (props) => {
     });
   }, []);
 
-  
   useEffect(() => {
-    
-    let isEmptyValuFound=false
+    let isEmptyValuFound = false;
 
     for (let row of rows) {
-
-      for(let key in row){
-        if(!(key =='father_name') && !(key =='email') && !(key =='phone') && !(key =='conclusion') && !(key =='query_end') ){
-          if(isEmptyValue(row[key])){
-            isEmptyValuFound=true
+      for (let key in row) {
+        if (
+          !(key == "father_name") &&
+          !(key == "email") &&
+          !(key == "phone") &&
+          !(key == "conclusion") &&
+          !(key == "query_end")
+        ) {
+          if (isEmptyValue(row[key])) {
+            isEmptyValuFound = true;
           }
-         
         }
       }
-     
     }
-    setDisableSaveButton(isEmptyValuFound)
+    setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
   useEffect(() => {
@@ -338,7 +336,7 @@ const AllumuniBulkAdd = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutions(filterValue);
+      const { data } = await searchInstitutions(filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         return {
@@ -348,7 +346,7 @@ const AllumuniBulkAdd = (props) => {
         };
       });
 
-      return filterData; 
+      return filterData;
     } catch (error) {
       console.error(error);
     }
@@ -356,7 +354,7 @@ const AllumuniBulkAdd = (props) => {
 
   const filterBatch = async (filterValue) => {
     try {
-      const {data} = await searchBatches(filterValue);
+      const { data } = await searchBatches(filterValue);
 
       let filterData = data.batchesConnection.values.map((batch) => {
         return {
@@ -399,7 +397,6 @@ const AllumuniBulkAdd = (props) => {
           <div className="d-flex justify-content-between">
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-              
               <h2 className="text--primary bebas-thick mb-0">
                 {props.id ? props.full_name : "Add New Alumni Query"}
               </h2>
@@ -410,15 +407,19 @@ const AllumuniBulkAdd = (props) => {
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
           <div className="adddeletebtn">
-          {rows.length > 1 ? <button className="unset" onClick={() => deleteRow(rows.length)}>
-              <FaMinusCircle
-                style={iconStyles}
-                width="15"
-                size={40}
-                color="#000"
-                className="ml-2 mr-3"
-              />
-            </button>:""}
+            {rows.length > 1 ? (
+              <button className="unset" onClick={() => deleteRow(rows.length)}>
+                <FaMinusCircle
+                  style={iconStyles}
+                  width="15"
+                  size={40}
+                  color="#000"
+                  className="ml-2 mr-3"
+                />
+              </button>
+            ) : (
+              ""
+            )}
             {rows.length == 10 ? (
               ""
             ) : (
@@ -471,31 +472,28 @@ const AllumuniBulkAdd = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-end between_class">
-          <button
+          <div className="d-flex justify-content-end between_class bulk_add_actions">
+            <button
               type="button"
               onClick={onHide}
-              className="btn btn-danger btn-regular mr-2"
+              className="btn btn-danger btn-regular mr-2 bulk_add_button"
             >
               CLOSE
             </button>
             <button
-              className="btn btn-primary btn-regular mx-0"
+              className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
               disabled={disableSaveButton}
             >
               SAVE
             </button>
-            
           </div>
         </div>
       </Modal.Body>
-
     </Modal>
   );
 };
-
 
 const mapStateToProps = (state) => ({});
 

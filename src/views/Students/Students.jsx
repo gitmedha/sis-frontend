@@ -424,7 +424,6 @@ else {
           getStudentsBySearchFilter(activeStatus,activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
 
         }else {
-          console.log("this is working");
           getStudents(
             activeStatus,
             activeTab.key,
@@ -457,7 +456,6 @@ else {
         );
         return {
           ...student,
-          // assignedTo: <Anchor text={student.assigned_to?.username} href={'/user/' + student.assigned_to?.id} />,
           avatar: (
             <Avatar
               name={student.full_name}
@@ -552,12 +550,12 @@ else {
 
 
   const HideMassEmployeCreateModal =async(data)=>{
-      if(data.length ==0){
+      if(data.length ===0){
         // return ;
         setAlert("Unable to create Employment Connection Data.", "error");
       }else{
         try {
-          const response = await api.post(
+           await api.post(
             "/employment-connections/createBulkEmploymentConnection",
             data
           );
@@ -569,12 +567,12 @@ else {
   }
 
   const hideMassCreateModal = async (data) => {
-    if(data.length ==0){
+    if(data.length ===0){
       setAlert("Unable to create Alumni Data.", "error");
     }
     else {
       try {
-        const response = await api.post(
+        await api.post(
           "/alumni-services/createBulkAlumniServices",
           data
         );
@@ -599,8 +597,8 @@ else {
   }
 
   const handelSubmitMassEdit=async(data,key)=>{
-    if(key =='AlumniBuldEdit'){
-      const value = await api
+    if(key ==='AlumniBuldEdit'){
+      await api
       .post("/alumni-services/bulk-update", data)
       .then((data) => {
         // Return data
@@ -618,8 +616,8 @@ else {
     }
 
 
-    if(key =='EmployerBulkdEdit'){
-      const value = await api
+    if(key ==='EmployerBulkdEdit'){
+      await api
       .post("/employment-connections/bulk-update", data)
       .then((data) => {
         // Return data
@@ -662,8 +660,8 @@ else {
               className="c-pointer"
             />
           </div>
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 stundents_nav_tab">
+            <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} moduleName="Students"/>
             <Tabs
               options={studentStatusOptions}
               onTabChange={handleStudentStatusTabChange}
@@ -671,35 +669,21 @@ else {
 
           
             {(isSRM() || isAdmin()) && (
-              <>
+              <div className="d-flex  align-items-center">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary add_button_sec"
                   onClick={() => setModalShow(true)}
-                  style={{ marginLeft: "5px" }}
+                  style={{ marginRight: "20px" }}
                 >
-                  Add New Student
+                  Add New
                 </button>
-                {/* <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow1(true)}
-                >
-                  Mass Alumni Service
-                </button>
-
                 <button
-                  className="btn btn-primary"
-                  onClick={() => setModalShow2(true)}
-                  
-                >
-                  Mass Employer
-                </button> */}
-                <button
-                  className="btn btn-primary"
+                  className="btn btn-primary add_button_sec"
                   onClick={()=>setModalShowmassEdit(true)}
                 >
                   Mass Edit 
                 </button>
-              </>
+              </div>
             )}
           </div>
           
@@ -716,7 +700,7 @@ else {
             }}
             isDisable={studentsAggregate.count ? false:true}
             />
-          <div className={`${layout !== "list" ? "d-none" : ""}`}>
+          <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             <Table
               columns={columns}
               data={studentsData}

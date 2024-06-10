@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
@@ -18,7 +18,6 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
-import OperationDataupdateform from "./OperationComponents/OperationDataupdateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
 import Dtesamarth from "./OperationComponents/Dtesamarth";
@@ -33,7 +32,6 @@ import CollegepitchesBulkadd from "./OperationComponents/CollegepitchesBulkadd";
 import OpsSearchDropdown from "./OperationComponents/OpsSearchBar";
 import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
-import SamarthSearchBar from "./OperationComponents/SamarthSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
 import {
@@ -48,7 +46,9 @@ import {
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload ,FaFileUpload,FaPlus} from "react-icons/fa";
+import UploadFile from "./OperationComponents/UploadFile";
+import TotUpload from "./UploadFiles/TotUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -59,7 +59,6 @@ const tabPickerOptionsMain = [
 const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
-  // { title: "Dte-Samarth-Sdit", key: "dtesamarth" },
   { title: "Pitching", key: "collegePitches" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
@@ -122,7 +121,11 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
-  const [uploadModal, setUploadModal] = useState(false);
+  const [uploadModal, setUploadModal] = useState({
+    myData: false,
+    tot: false,
+  });
+
 
   const columns = useMemo(
     () => [
@@ -156,16 +159,6 @@ const Operations = ({
         Header: "Program Name",
         accessor: "program_name",
       },
-
-      // {
-      //   Header: "Guest",
-      //   accessor: "guest",
-      // },
-
-      // {
-      //   Header: "Organization",
-      //   accessor: "organization",
-      // },
     ],
     []
   );
@@ -364,7 +357,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
-    if (activeTab.key == "my_data") {
+    if (activeTab.key === "my_data") {
       await resetSearch();
       await api
         .post("/graphql", {
@@ -383,7 +376,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "useTot") {
+    if (activeTab.key === "useTot") {
       await resetSearch();
       await api
         .post("/graphql", {
@@ -403,7 +396,7 @@ const Operations = ({
         });
     }
 
-    if (activeTab.key == "upskilling") {
+    if (activeTab.key === "upskilling") {
       await resetSearch();
 
       await api
@@ -423,7 +416,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "dtesamarth") {
+    if (activeTab.key === "dtesamarth") {
       await resetSearch();
 
       await api
@@ -443,7 +436,7 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key == "alumniQueries") {
+    if (activeTab.key === "alumniQueries") {
       await resetSearch();
 
       await api
@@ -491,16 +484,9 @@ const Operations = ({
     }
   }, [isSearching]);
 
-  const onHide = async (data) => {
-    const value = await api.post(
-      "/users-ops-activities/createBulkOperations",
-      data
-    );
-  };
-
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      if (activeTab.key == "my_data") {
+      if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -534,7 +520,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "useTot") {
+      if (activeTab.key === "useTot") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -568,7 +554,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "upskilling") {
+      if (activeTab.key === "upskilling") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -634,7 +620,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "alumniQueries") {
+      if (activeTab.key === "alumniQueries") {
         if (sortBy.length) {
           let sortByField;
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -665,7 +651,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "collegePitches") {
+      if (activeTab.key === "collegePitches") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -889,39 +875,48 @@ const Operations = ({
     [opsData]
   );
   useEffect(() => {
-    if (activeTabMain.key == "alum") {
+    if (activeTabMain.key === "alum") {
       setActiveTab(tabPickerOptions2[0]);
     }
 
-    if (activeTabMain.key == "systemAdoption") {
+    if (activeTabMain.key === "systemAdoption") {
       setActiveTab(tabPickerOptions3[0]);
     }
-    if (activeTabMain.key == "coreProgramme") {
+    if (activeTabMain.key === "coreProgramme") {
       setActiveTab(tabPickerOptions1[0]);
     }
     if (
-      activeTabMain.key != "alum" &&
-      activeTabMain.key != "systemAdoption" &&
-      activeTab.key != "my_data"
+      activeTabMain.key !== "alum" &&
+      activeTabMain.key !== "systemAdoption" &&
+      activeTab.key !== "my_data"
     ) {
       window.location.reload();
     }
   }, [activeTabMain.key]);
 
   const uploadExcel = async (data, key) => {
-    if (key == "feild_activity") {
-      const value = await api
-        .post("/users-ops-activities/createBulkOperations", data)
-        .then((data) => {
-          setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
-        })
-        .catch((err) => {
-          setAlert("Unable to create field data .", "error");
-        });
+    try {
+      if (key === "my_data") {
+        await api.post("/users-ops-activities/createBulkOperations", data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      } else if (key === "tot") {
+        await bulkCreateUsersTots(data);
+        setAlert("Data created successfully.", "success");
+        // Uncomment the line below if you need to redirect
+        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+      }
+    } catch (err) {
+      if (key === "my_data") {
+        setAlert("Unable to create field data.", "error");
+      } else if (key === "tot") {
+        setAlert("Unable to create upskilling data.", "error");
+      }
+    } finally {
+      setUploadModal(false);
+      getoperations();
     }
-    setUploadModal(false);
-    getoperations();
   };
 
   const alertForNotuploadedData = async (key) => {
@@ -933,27 +928,30 @@ const Operations = ({
       // setAlert("There are some issue in your file please check", "error");
     }
   };
+  const closeUpload = () => {
+    setUploadModal(false);
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2">
+          <div className="d-flex flex-column flex-md-row justify-content-between  align-items-center mb-2 p-0">
             <TabPicker
               options={tabPickerOptionsMain}
               setActiveTab={setActiveTabMain}
             />
-            {activeTabMain.key == "coreProgramme" ? (
+            {activeTabMain.key === "coreProgramme" ? (
               <TabPicker
                 options={tabPickerOptions1}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "alum" ? (
+            ) : activeTabMain.key === "alum" ? (
               <TabPicker
                 options={tabPickerOptions2}
                 setActiveTab={setActiveTab}
               />
-            ) : activeTabMain.key == "systemAdoption" ? (
+            ) : activeTabMain.key === "systemAdoption" ? (
               <TabPicker
                 options={tabPickerOptions3}
                 setActiveTab={setActiveTab}
@@ -961,55 +959,70 @@ const Operations = ({
             ) : (
               ""
             )}
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2">
-              {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-
+            <div className="d-flex flex-md-row justify-content-between align-items-center mb-2">
               {(isSRM() || isAdmin()) && (
                 <>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
-                    style={{ marginLeft: "15px" }}
                   >
-                    Add New Data
+                    Add <span><FaPlus size="12" color="#fff"/></span>
                   </button>
-
-                  {/* <button
-                    className="btn btn-primary"
-                    onClick={() => setUploadModal(true)}
-                    style={{ marginLeft: "15px" }}
-                  >
-                    Upload Data
-                  </button>
-                  <button className="btn btn-primary mx-3 ">
-                    <div>
-                      {" "}
-                      <a
-                        href={
-                          "https://medhacorp-my.sharepoint.com/:x:/g/personal/rohit_sharma_medha_org_in/EWTdGS0KOMRNhHr_27H1R-4Bn9Xn0wP4TBLvmM9c2Po-VA?wdOrigin=TEAMS-WEB.p2p_ns.bim&wdExp=TEAMS-CONTROL&wdhostclicktime=1710921758990&web=1"
+                
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button
+                      className="btn btn-primary ops_action_button"
+                      onClick={() => {
+                        if (activeTab.key == "my_data") {
+                          setUploadModal({
+                            myData: true,
+                            tot: false,
+                          });
+                        } else {
+                          setUploadModal({
+                            tot: true,
+                            myData: false,
+                          });
                         }
-                        target="_blank"
-                        className="c-pointer mb-1 d-block text-light text-decoration-none "
-                      >
-                        <span className="mr-3">Sample File</span>
-                        <FaDownload size="20" className="ml-2" color="#fff" />
-                      </a>
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          fontFamily: "Latto-Italic",
-                          color: "#787B96",
-                        }}
-                      ></div>
-                    </div>
-                  </button> */}
+                      }}
+                    >
+                      
+                    Upload &nbsp;
+                    <span><FaFileUpload size="12" color="#fff"/></span>
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                    <button className="btn btn-primary ops_action_button">
+                      <div>
+
+                        <a 
+                          href={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                          target="_blank"
+                          className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
+                          download={
+                            activeTab.key == "my_data"?
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                        >Sample&nbsp;
+                        <span><FaDownload size="12" color="#fff" /></span>
+                        </a>
+                      </div>
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </>
               )}
             </div>
           </div>
 
-          <div className={`${layout !== "list" ? "d-none" : ""}`}>
-            {activeTab.key == "my_data" ? (
+          <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
+            {activeTab.key === "my_data" ? (
               <>
                 <OpsSearchDropdown />
                 <Table
@@ -1061,22 +1074,7 @@ const Operations = ({
                 />
               </>
             ) : activeTab.key == "dtesamarth" ? (
-              <>
-                {/* <SamarthSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("sditdata", data)}
-                  columns={columnsPlacement}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                /> */}
-              </>
+              <></>
             ) : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
@@ -1220,14 +1218,25 @@ const Operations = ({
             />
           )}
 
-          {/* {uploadModal && (
+          {uploadModal.myData && (
             <>
               <UploadFile
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
               />
             </>
-          )} */}
+          )}
+          {uploadModal.tot && (
+            <>
+              <TotUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={closeUpload}
+                tot="yes"
+              />
+            </>
+          )}
         </div>
       </Styled>
     </Collapse>

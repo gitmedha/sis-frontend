@@ -5,6 +5,7 @@ import Select from 'react-select'
 const Styled = styled.div`
   display: flex;
   align-items: center;
+  justify-content:center;
 
   select {
     border: none;
@@ -34,7 +35,6 @@ const Styled = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
     .pagination-link-wrapper {
       margin: auto 3px;
 
@@ -100,9 +100,6 @@ const Styled = styled.div`
       }
     }
   }
-  .page-box{
-    margin:15px;
-  }
 `
 
 /**
@@ -148,17 +145,9 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
 
   return (
     <Styled>
-      <div className="row d-flex align-items-center w-100">
-        <div className="page-box col-md-2">
-          <Select
-            value = {pageSizeOptions.filter(option => option.value === pageLimit)}
-            options={pageSizeOptions}
-            isSearchable={false}
-            onChange={e => {
-              localStorage.setItem('tablePageSize', Number(e.value));
-              setPageLimit(Number(e.value))
-            }}
-          />
+      <div className="row d-flex align-items-center justify-content-center w-100">
+      <div className="col-md-2" >
+          <span className="count" >Total Records: &nbsp; {totalRecords} </span>
         </div>
         <div className="col-md-7">
           <nav>
@@ -194,9 +183,18 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
           </nav>
 
         </div>
-        <div className="col-md-2" >
-          <span className="count" >Total Records: &nbsp; {totalRecords} </span>
+        <div className="page-box col-md-2">
+          <Select
+            value = {pageSizeOptions.filter(option => option.value === pageLimit)}
+            options={pageSizeOptions}
+            isSearchable={false}
+            onChange={e => {
+              localStorage.setItem('tablePageSize', Number(e.value));
+              setPageLimit(Number(e.value))
+            }}
+          />
         </div>
+        
       </div>
     </Styled>
   );

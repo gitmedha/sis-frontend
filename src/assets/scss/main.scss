@@ -31,12 +31,16 @@
 body {
   font-family: Latto-Regular !important;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
 .app {
   display: flex;
   min-height: 100vh;
   font-family: Latto-Regular !important;
+}
+.izyXuO {
+  overflow-x: hidden !important;
 }
 
 .sidebar-container {
@@ -52,7 +56,16 @@ body {
   }
 }
 
+.ops_action_button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
 
+/*----------------- search bar styles-----------------*/
+
+.search_bar_action_sec {
+  padding: 5px 36px !important;
+}
 .content {
   flex: 1;
   padding: 1rem;
@@ -134,16 +147,12 @@ body {
 }
 
 #CreateOptsData, #CreateOptsData1{
-  // table {
-  //   border-collapse: collapse !important;
-  //   // width: 100%;
-  //   overflow-x:auto;
-  // }
   
   font-family: Latto-Regular !important;;
   .table-container {
     overflow-x: auto;
     height: 68vh;
+    scrollbar-width: none;
     
   }
   .between_class{
@@ -334,4 +343,42 @@ color:black;
   font-weight: 700;
   color: #000 !important;
 }
+
+body::-webkit-scrollbar {
+	width: 4px;
+}
+
+div::-webkit-scrollbar {
+	background-color: transparent;
+	width: 4px;
+}
+
+div::-webkit-scrollbar-thumb {
+	width: 4px;
+	background-color: rgb(179, 174, 174);
+	border-radius: 4px;
+}
+
+.bottom_right{
+  position: absolute;
+  right: 1;
+}
+
+.form_sec {
+  height: 375px;
+  overflow: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.downloadLink {
+  margin-bottom: 0 !important;
+}
+
+@import './media/lg.scss';
 @import './media/md.scss';
+@import './media/sm.scss';
+
+
+
+

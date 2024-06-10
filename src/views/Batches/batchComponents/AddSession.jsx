@@ -36,7 +36,6 @@ const AddSession = (props) => {
       await markAttendance(Number(data.data.createSession.session.id));
       props.setAlert("Session added successfully.", "success");
     } catch (err) {
-     
       props.setAlert("Unable to add session.", "error");
     } finally {
       setLoading(false);
@@ -60,9 +59,7 @@ const AddSession = (props) => {
         variables: params,
         query: MARK_ATTENDANCE,
       });
-    } catch (err) {
-     
-    }
+    } catch (err) {}
   };
 
   const getStudents = async () => {
@@ -76,7 +73,6 @@ const AddSession = (props) => {
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
     } catch (err) {
-     
     } finally {
       setLoading(false);
     }
@@ -93,7 +89,6 @@ const AddSession = (props) => {
 
   useEffect(() => {
     getStudents();
-    // eslint-disable-next-line
   }, []);
 
   return (
@@ -139,21 +134,25 @@ const AddSession = (props) => {
             updateAttendance={setAttendanceRecords}
           />
         )}
-        <div className="col-12 mt-3 d-flex">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn btn-primary btn-regular"
-          >
-            SAVE
-          </button>
-          <div style={{ width: "10px" }} />
-          <Link
-            to={`/batch/${batchID}`}
-            className="btn btn-primary btn-regular"
-          >
-            Cancel
-          </Link>
+
+        <div className="row justify-content-end">
+          <div className="col-auto p-0">
+            <Link
+              to={`/batch/${batchID}`}
+              className="btn btn-primary btn-regular"
+            >
+              Cancel
+            </Link>
+          </div>
+          <div className="col-auto p-0">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary btn-regular"
+            >
+              SAVE
+            </button>
+          </div>
         </div>
       </Form>
     </div>

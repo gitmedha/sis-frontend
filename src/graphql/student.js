@@ -26,6 +26,7 @@ export const studentFields = `
   state
   how_did_you_hear_about_us
   how_did_you_hear_about_us_other
+  your_plan_after_your_current_course
   created_at
   updated_at
   created_by_frontend{
@@ -131,6 +132,22 @@ const alumniServicesFields = `
   fee_amount
   comments
   status
+  created_at
+  updated_at
+`;
+
+const courseFields = `
+createdby {
+  username
+  id
+}
+updatedby {
+  username
+  id
+}
+  course_type
+  course_level
+  course_name
   created_at
   updated_at
 `;
@@ -601,4 +618,17 @@ export const SEARCH_BY_STUDENTS = `
     }
   }
 `
+
+export const GET_COURSE = `
+  query GetCourse {
+    coursesConnection {
+      values {
+        ${courseFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
 

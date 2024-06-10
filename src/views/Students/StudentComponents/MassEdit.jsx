@@ -8,8 +8,7 @@ import { AlumniServiceValidations } from "../../../validations/Student";
 import {
   getStudentsPickList,
   getAlumniServicePickList,
-  createBulkAlumniService,
-  searchStudents
+  searchStudents,
 } from "./StudentActions";
 import Textarea from "../../../utils/Form/Textarea";
 import {
@@ -41,7 +40,6 @@ const Section = styled.div`
   }
 `;
 
-
 const MassEdit = (props) => {
   let { onHide, show } = props;
   const [studentOptions, setStudentOptions] = useState([]);
@@ -66,8 +64,8 @@ const MassEdit = (props) => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [students, setStudents] = useState([]);
-  const [bulkAddCheck,setBulkAddCheck]=useState(true)
-  const [massEditCheck,setMassEditCheck]=useState(false)
+  const [bulkAddCheck, setBulkAddCheck] = useState(true);
+  const [massEditCheck, setMassEditCheck] = useState(false);
   const [studentInput, setStudentInput] = useState("");
 
   useEffect(() => {
@@ -147,8 +145,6 @@ const MassEdit = (props) => {
     assigned_to: "",
   };
 
-
-
   const handleClose = () => {
     setSelectedCategory("");
     onHide([], "Alumn");
@@ -190,55 +186,49 @@ const MassEdit = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-
-      const {data} = await searchStudents(filterValue);
+      const { data } = await searchStudents(filterValue);
 
       let employmentConnectionStudent = props.employmentConnection
-          ? props.employmentConnection.student
-          : null;
-        let studentFoundInEmploymentList = false;
-        let filterData = data.studentsConnection.values.map((student) => {
-          if (
-            props.employmentConnection &&
-            student.id === Number(employmentConnectionStudent?.id)
-          ) {
-            studentFoundInEmploymentList = true;
-          }
-          return {
-            ...student,
-            label: `${student.full_name} (${student.student_id})`,
-            value: Number(student.id),
-          };
-        });
+        ? props.employmentConnection.student
+        : null;
+      let studentFoundInEmploymentList = false;
+      let filterData = data.studentsConnection.values.map((student) => {
         if (
           props.employmentConnection &&
-          employmentConnectionStudent !== null &&
-          !studentFoundInEmploymentList
+          student.id === Number(employmentConnectionStudent?.id)
         ) {
-          filterData.unshift({
-            label: employmentConnectionStudent.full_name,
-            value: Number(employmentConnectionStudent.id),
-          });
+          studentFoundInEmploymentList = true;
         }
-        return filterData;
-
-      
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        };
+      });
+      if (
+        props.employmentConnection &&
+        employmentConnectionStudent !== null &&
+        !studentFoundInEmploymentList
+      ) {
+        filterData.unshift({
+          label: employmentConnectionStudent.full_name,
+          value: Number(employmentConnectionStudent.id),
+        });
+      }
+      return filterData;
     } catch (error) {
-      console.error(error);
+      return error;
     }
   };
 
+  const handelSubmit = (data, key) => {
+    props.handelSubmit(data, key);
+  };
 
-
-
-  const handelSubmit=(data,key)=>{
-    props.handelSubmit(data,key)
-  }
-
-  const handelCancel=()=>{
-    setBulkAddCheck(!bulkAddCheck)
-    setMassEditCheck(!massEditCheck)
-  }
+  const handelCancel = () => {
+    setBulkAddCheck(!bulkAddCheck);
+    setMassEditCheck(!massEditCheck);
+  };
   return (
     <Modal
       centered
@@ -264,7 +254,14 @@ const MassEdit = (props) => {
       </Modal.Header>
       <Modal.Body className="bg-white">
         {
-          <CheckBoxForm bulkAdd="Bulk Add" bulkcheck={bulkAddCheck} masscheck={massEditCheck} massEdit="Mass Edit"  setBulkAddCheck={setBulkAddCheck} setMassEditCheck={setMassEditCheck} />
+          <CheckBoxForm
+            bulkAdd="Bulk Add"
+            bulkcheck={bulkAddCheck}
+            masscheck={massEditCheck}
+            massEdit="Mass Edit"
+            setBulkAddCheck={setBulkAddCheck}
+            setMassEditCheck={setMassEditCheck}
+          />
         }
 
         {bulkAddCheck ? (
@@ -276,7 +273,7 @@ const MassEdit = (props) => {
             {({ values }) => (
               <Form>
                 <Section>
-                  <div className="row">
+                  <div className="row form_sec">
                     <div className="col-md-6 col-sm-12 mt-2">
                       {/* <Input
                       name="student_ids"
@@ -302,20 +299,20 @@ const MassEdit = (props) => {
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
-                    {assigneeOptions.length ? (
-                    <Input
-                      control="lookupAsync"
-                      name="assigned_to"
-                      label="Assigned To"
-                      required
-                      className="form-control"
-                      placeholder="Assigned To"
-                      filterData={filterAssignedTo}
-                      defaultOptions={assigneeOptions}
-                    />
-                  ) : (
-                    <Skeleton count={1} height={45} />
-                  )}
+                      {assigneeOptions.length ? (
+                        <Input
+                          control="lookupAsync"
+                          name="assigned_to"
+                          label="Assigned To"
+                          required
+                          className="form-control"
+                          placeholder="Assigned To"
+                          filterData={filterAssignedTo}
+                          defaultOptions={assigneeOptions}
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
@@ -417,18 +414,7 @@ const MassEdit = (props) => {
                         required={feeFieldsRequired}
                       />
                     </div>
-                    {/* <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="receipt_number"
-                      label="Receipt Number"
-                      placeholder="Receipt Number"
-                      control="input"
-                      className="form-control"
-                      autoComplete="off"
-                      onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      required={feeFieldsRequired}
-                    />
-                  </div> */}
+
                     <div className="col-md-12 col-sm-12 mt-2">
                       <Textarea
                         name="comments"
@@ -441,20 +427,23 @@ const MassEdit = (props) => {
                     </div>
                   </div>
                 </Section>
-                <div className="row mt-3 py-3">
-                  <div className="d-flex justify-content-start">
-                    <button
-                      className="btn btn-primary btn-regular mx-0"
-                      type="submit"
-                    >
-                      SAVE
-                    </button>
+
+                <div className="row justify-content-end mt-1">
+                  <div className="col-auto p-0">
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="btn btn-secondary btn-regular mr-2"
+                      className="btn btn-secondary btn-regular collapse_form_buttons"
                     >
                       CANCEL
+                    </button>
+                  </div>
+                  <div className="col-auto p-0">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular collapse_form_buttons"
+                    >
+                      SAVE
                     </button>
                   </div>
                 </div>
@@ -462,13 +451,13 @@ const MassEdit = (props) => {
             )}
           </Formik>
         ) : (
-          <AlumMassEdit  
-          setBulkAddCheck={setBulkAddCheck}
-          setMassEditCheck={setMassEditCheck}
-          handelSubmit={handelSubmit}
-          handelCancel={handelCancel}
+          <AlumMassEdit
+            setBulkAddCheck={setBulkAddCheck}
+            setMassEditCheck={setMassEditCheck}
+            handelSubmit={handelSubmit}
+            handelCancel={handelCancel}
           />
-        )} 
+        )}
       </Modal.Body>
     </Modal>
   );

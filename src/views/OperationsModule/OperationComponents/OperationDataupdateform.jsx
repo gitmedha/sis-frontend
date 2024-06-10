@@ -1,11 +1,10 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { StudentValidations } from "../../../validations";
 import { urlPath } from "../../../constants";
 import {
   getAddressOptions,
@@ -15,12 +14,12 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { MeiliSearch } from "meilisearch";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
+import { searchBatches, searchInstitutions } from "./operationsActions";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -41,11 +40,6 @@ const Section = styled.div`
   }
 `;
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
 const hideBatchName = [
   "New Enrollments -- CAB",
   "New Enrollments -- Lab",
@@ -57,7 +51,7 @@ const hideBatchName = [
   "New Enrollments -- Swarambh",
   "New Enrollments -- Workshop",
   "New Enrollments -- BMC Design Lab",
-  "New Enrollments -- In The Bank"
+  "New Enrollments -- In The Bank",
 ];
 
 const options = [
@@ -65,22 +59,28 @@ const options = [
   { value: "No", label: "No" },
 ];
 const Activityoptions = [
-  { value: 'Industry talk/Expert talk', label: 'Industry talk/Expert talk' },
-  { value: 'Industry visit/Exposure visit', label: 'Industry visit/Exposure visit' },
-  { value: 'Workshop/Training Session/Activity (In/Off campus)', label: 'Workshop/Training Session/Activity (In/Off campus)' },
-  { value: 'Alumni Engagement', label: 'Alumni Engagement' },
-  {value:'Placement Drive',label:'Placement Drive'}
+  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
+  {
+    value: "Industry visit/Exposure visit",
+    label: "Industry visit/Exposure visit",
+  },
+  {
+    value: "Workshop/Training Session/Activity (In/Off campus)",
+    label: "Workshop/Training Session/Activity (In/Off campus)",
+  },
+  { value: "Alumni Engagement", label: "Alumni Engagement" },
+  { value: "Placement Drive", label: "Placement Drive" },
 ];
 
 const OperationDataupdateform = (props) => {
-  let { onHide, show, closeopsedit ,refreshTableOnDataSaving} = props;
+  let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
-  const [programeName,setProgramName]=useState([])
+  const [programeName, setProgramName] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -104,45 +104,35 @@ const OperationDataupdateform = (props) => {
   }, [props]);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const { data } = await searchInstitutions(filterValue);
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let batchInformtion = props ? props.batch : null;
+    try {
+      const { data } = await searchBatches(filterValue);
+      let batchInformtion = props ? props.batch : null;
         let batchFoundInList = false;
-
-        let filterData = data.hits.map((batch) => {
+        let filterData = data.batchesConnection.values.map((batch) => {
           if (props && batch.id === Number(batchInformtion?.id)) {
             batchFoundInList = true;
           }
-          if(hideBatchName.includes(batch.name)){
-            return {
-  
-            };
-          }else{
+          if (hideBatchName.includes(batch.name)) {
+            return {};
+          } else {
             return {
               ...batch,
               label: batch.name,
@@ -157,7 +147,10 @@ const OperationDataupdateform = (props) => {
           });
         }
         return filterData;
-      });
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -211,7 +204,7 @@ const OperationDataupdateform = (props) => {
     delete newValueObject["institute_name"];
 
     const value = await updateOpsActivity(Number(props.id), newValueObject);
-    refreshTableOnDataSaving()
+    refreshTableOnDataSaving();
     setDisableSaveButton(true);
     onHide(value);
     closeopsedit();
@@ -236,14 +229,14 @@ const OperationDataupdateform = (props) => {
     students_attended: "",
     batch: "",
   };
-  
+
   if (props) {
     initialValues["batch"] = Number(props.batch.id);
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
-    initialValues['program_name']=props.program_name
+    initialValues["program_name"] = props.program_name;
     initialValues["start_date"] = new Date(props.start_date);
     initialValues["end_date"] = new Date(props.end_date);
     initialValues["students_attended"] = props?.students_attended;
@@ -276,18 +269,17 @@ const OperationDataupdateform = (props) => {
         );
       }),
   });
-  useEffect(async() => {
-  let data=await getOpsPickList().then(data=>{
+  useEffect(async () => {
+    let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
-          key: value,
-          label: value,
-          value: value,
-        }))
-    }) 
+        key: value,
+        label: value,
+        value: value,
+      }));
+    });
 
     setProgramName(data);
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -327,259 +319,261 @@ const OperationDataupdateform = (props) => {
             >
               {({ values, setFieldValue }) => (
                 <Form>
-                  <Section>
-                    <h3 className="section-header">Basic Info</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="activity_type"
-                          label="Activity Type"
-                          required
-                          options={Activityoptions}
-                          className="form-control"
-                          placeholder="Activity Type"
-                        />
-                      </div>
-                      
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {assigneeOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="assigned_to"
-                            label="Assigned To"
-                            className="form-control"
-                            placeholder="Assigned To"
-                            filterData={filterAssignedTo}
-                            defaultOptions={assigneeOptions}
-                          />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="program_name"
-                          label="Program Name"
-                          required
-                          options={programeName}
-                          className="form-control"
-                          placeholder="Program Name"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {batchOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="batch"
-                            label="Batch Name"
-                            filterData={filterBatch}
-                            defaultOptions={batchOptions}
-                            className="form-control1"
-                            placeholder="Batch"
-                          />
-                        )}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {institutionOptions.length && (
-                          <Input
-                            control="lookupAsync"
-                            name="institution"
-                            label="Institution"
-                            filterData={filterInstitution}
-                            defaultOptions={institutionOptions}
-                            placeholder="Institution"
-                            className="form-control"
-                            isClearable
-                          />
-                        )}
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="start_date"
-                          label="Start Date "
-                          //
-                          placeholder="Date of Birth"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="end_date"
-                          label="End Date"
-                          placeholder="Date of Birth"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                       
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="donor"
-                          label="Donor"
-                          required
-                          options={options}
-                          className="form-control"
-                          placeholder="New Entry"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="topic"
-                          label="Topic"
-                          className="form-control"
-                          placeholder="Topic"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="guest"
-                          label="Guest"
-                          className="form-control"
-                          placeholder="Guest"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="designation"
-                          label="Designation"
-                          className="form-control"
-                          placeholder="Designation"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="organization"
-                          label="Organization"
-                          className="form-control"
-                          placeholder="Organization"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="students_attended"
-                          label="Student Attended"
-                          placeholder="Student atended"
-                          control="input"
-                          className="form-control"
-                          autoComplete="off"
-                          onKeyPress={numberChecker}
-                        />
-                      </div>
-                    </div>
-                  </Section>
-                  <Section>
-                    <h3 className="section-header">Address</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {stateOptions.length ? (
+                  <div className="row form_sec">
+                    <Section>
+                      <h3 className="section-header">Basic Info</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
-                            name="state"
-                            label="State"
                             control="lookup"
-                            options={stateOptions}
-                            onChange={onStateChange}
-                            placeholder="State"
+                            name="activity_type"
+                            label="Activity Type"
+                            required
+                            options={Activityoptions}
                             className="form-control"
+                            placeholder="Activity Type"
                           />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {areaOptions.length ? (
-                          <Input
-                            icon="down"
-                            name="area"
-                            label="Medha Area"
-                            control="lookup"
-                            options={areaOptions}
-                            placeholder="Area"
-                            className="form-control"
-                          />
-                        ) : (
-                          <>
-                            <Skeleton count={1} height={45} />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Section>
+                        </div>
 
-                  <Section>
-                    <h3 className="section-header">Other Information</h3>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Updated By"
-                          value={
-                            props.updatedby?.userName
-                              ? props.updatedby?.userName
-                              : props.createdby?.username
-                          }
-                        />
-                        <DetailField
-                          label="Updated At"
-                          value={moment(
-                            props.updated_at
-                              ? props.updated_at
-                              : props.created_at
-                          ).format("DD MMM YYYY, h:mm a")}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <DetailField
-                          label="Created By"
-                          value={
-                            props.createdby?.username
-                              ? props.createdby?.username
-                              : ""
-                          }
-                        />
-                        <DetailField
-                          label="Created At"
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {assigneeOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="assigned_to"
+                              label="Assigned To"
+                              className="form-control"
+                              placeholder="Assigned To"
+                              filterData={filterAssignedTo}
+                              defaultOptions={assigneeOptions}
+                            />
                           )}
-                        />
-                      </div>
-                    </div>
-                  </Section>
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="program_name"
+                            label="Program Name"
+                            required
+                            options={programeName}
+                            className="form-control"
+                            placeholder="Program Name"
+                          />
+                        </div>
 
-                  <div className="row mt-3 py-3">
-                    <div className="d-flex justify-content-start">
-                      <button
-                        className="btn btn-primary btn-regular mx-0"
-                        type="submit"
-                        disabled={disableSaveButton}
-                      >
-                        SAVE
-                      </button>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {batchOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="batch"
+                              label="Batch Name"
+                              filterData={filterBatch}
+                              defaultOptions={batchOptions}
+                              className="form-control1"
+                              placeholder="Batch"
+                            />
+                          )}
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {institutionOptions.length && (
+                            <Input
+                              control="lookupAsync"
+                              name="institution"
+                              label="Institution"
+                              filterData={filterInstitution}
+                              defaultOptions={institutionOptions}
+                              placeholder="Institution"
+                              className="form-control"
+                              isClearable
+                            />
+                          )}
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="start_date"
+                            label="Start Date "
+                            //
+                            placeholder="Date of Birth"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="end_date"
+                            label="End Date"
+                            placeholder="Date of Birth"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="donor"
+                            label="Donor"
+                            required
+                            options={options}
+                            className="form-control"
+                            placeholder="New Entry"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="topic"
+                            label="Topic"
+                            className="form-control"
+                            placeholder="Topic"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="guest"
+                            label="Guest"
+                            className="form-control"
+                            placeholder="Guest"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="designation"
+                            label="Designation"
+                            className="form-control"
+                            placeholder="Designation"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="organization"
+                            label="Organization"
+                            className="form-control"
+                            placeholder="Organization"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="students_attended"
+                            label="Student Attended"
+                            placeholder="Student atended"
+                            control="input"
+                            className="form-control"
+                            autoComplete="off"
+                            onKeyPress={numberChecker}
+                          />
+                        </div>
+                      </div>
+                    </Section>
+                    <Section>
+                      <h3 className="section-header">Address</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {stateOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="state"
+                              label="State"
+                              control="lookup"
+                              options={stateOptions}
+                              onChange={onStateChange}
+                              placeholder="State"
+                              className="form-control"
+                            />
+                          ) : (
+                            <Skeleton count={1} height={45} />
+                          )}
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {areaOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="area"
+                              label="Medha Area"
+                              control="lookup"
+                              options={areaOptions}
+                              placeholder="Area"
+                              className="form-control"
+                            />
+                          ) : (
+                            <>
+                              <Skeleton count={1} height={45} />
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </Section>
+
+                    <Section>
+                      <h3 className="section-header">Other Information</h3>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Updated By"
+                            value={
+                              props.updatedby?.userName
+                                ? props.updatedby?.userName
+                                : props.createdby?.username
+                            }
+                          />
+                          <DetailField
+                            label="Updated At"
+                            value={moment(
+                              props.updated_at
+                                ? props.updated_at
+                                : props.created_at
+                            ).format("DD MMM YYYY, h:mm a")}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <DetailField
+                            label="Created By"
+                            value={
+                              props.createdby?.username
+                                ? props.createdby?.username
+                                : ""
+                            }
+                          />
+                          <DetailField
+                            label="Created At"
+                            value={moment(props.created_at).format(
+                              "DD MMM YYYY, h:mm a"
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </Section>
+                  </div>
+
+                  <div className="row justify-content-end mt-1">
+                    <div className="col-auto p-0">
                       <button
                         type="button"
                         onClick={onHide}
-                        className="btn btn-secondary btn-regular mr-2"
+                        className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
+                      </button>
+                    </div>
+                    <div className="col-auto p-0">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-regular collapse_form_buttons"
+                        disabled={disableSaveButton}
+                      >
+                        SAVE
                       </button>
                     </div>
                   </div>

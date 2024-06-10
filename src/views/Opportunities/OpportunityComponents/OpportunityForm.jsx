@@ -50,6 +50,7 @@ const OpportunityForm = (props) => {
   const [stateOptions, setStateOptions] = useState([]);
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -247,6 +248,12 @@ const OpportunityForm = (props) => {
         label: area.key,
         value: area.key,
       })).sort((a, b) => a.label.localeCompare(b.label)));
+      setCityOptions([])
+      setCityOptions(data?.data?.data?.geographiesConnection.groupBy.city.map((city)=>({
+        key:city.key,
+        value:city.key,
+        label:city.key
+      })))
     });
   };
 
@@ -440,30 +447,18 @@ const OpportunityForm = (props) => {
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mb-2">
-                    <Input
-                      control="input"
+                    {cityOptions.length ?(<Input
+                      control="lookup"
                       name="city"
                       label="City"
+                      icon='down'
                       className="form-control capitalize"
                       placeholder="City"
+                      options={cityOptions}
                       required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      options={areaOptions}
-                      placeholder="Medha Area"
-                      required
-                    />
-                    ) : (
+                    />):(
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view City</label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
@@ -487,6 +482,26 @@ const OpportunityForm = (props) => {
                       </>
                     )}
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                  {areaOptions.length ? (
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="medha_area"
+                      label="Medha Area"
+                      className="form-control"
+                      options={areaOptions}
+                      placeholder="Medha Area"
+                      required
+                    />
+                    ) : (
+                      <>
+                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <Skeleton count={1} height={35} />
+                      </>
+                    )}
+                  </div>
+                  
                   
                   
                   <div className="col-md-6 col-sm-12 mb-2">
@@ -501,15 +516,17 @@ const OpportunityForm = (props) => {
                   </div>
                 </div>
               </Section>
-              <div className="row mt-3 py-3">
-                <div className="d-flex justify-content-start">
-                <button className="btn btn-primary btn-regular mx-0" type="submit">SAVE</button>
-                  <button
-                    type="button"
-                    onClick={onHide}
-                    className="btn btn-secondary btn-regular mr-2"
-                  >
-                    CANCEL
+              
+              <div className="row justify-content-center">
+                <div className="col-auto">
+                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
+                    SAVE
+                  </button>
+                </div>
+                <div className="col-auto">
+                   <button type="button"
+                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
+                    CANCEL                    
                   </button>
                 </div>
               </div>

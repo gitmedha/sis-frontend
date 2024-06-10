@@ -1,36 +1,19 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
-import Skeleton from "react-loading-skeleton";
-import styled from "styled-components";
+import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
-
-import { MeiliSearch } from "meilisearch";
-
-import { RowsData } from "./RowsData";
-import {
-  bulkCreateStudentsUpskillings,
-  createOperation,
-} from "./operationsActions";
-import api from "../../../apis";
+import { searchInstitutions, searchBatches } from "./operationsActions";
 import StudentupskilingBulk from "./StudentupskilingBulk";
-import { checkEmptyValuesandplaceNA, isEmptyValue } from "../../../utils/function/OpsModulechecker";
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
+import {
+  checkEmptyValuesandplaceNA,
+  isEmptyValue,
+} from "../../../utils/function/OpsModulechecker";
 
 const hideBatchName = [
   "New Enrollments -- CAB",
@@ -43,7 +26,7 @@ const hideBatchName = [
   "New Enrollments -- Swarambh",
   "New Enrollments -- Workshop",
   "New Enrollments -- BMC Design Lab",
-  "New Enrollments -- In The Bank"
+  "New Enrollments -- In The Bank",
 ];
 const StudentUpkillingBulkcreate = (props) => {
   let { onHide, show } = props;
@@ -63,7 +46,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
-      program_name:""
+      program_name: "",
     },
     // Add more initial rows as needed
   ]);
@@ -81,7 +64,7 @@ const StudentUpkillingBulkcreate = (props) => {
       category: "",
       sub_category: "",
       issued_org: "",
-      program_name:""
+      program_name: "",
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -97,47 +80,14 @@ const StudentUpkillingBulkcreate = (props) => {
     category: "",
     sub_category: "",
     issued_org: "",
-    program_name:""
+    program_name: "",
   });
   const [showLimit, setshowLimit] = useState(false);
   const [classValue, setclassValue] = useState({});
 
-  // const addRow = () => {
-  //   let value = checkEmptyValuesandplaceNA(rows[rows.length - 1]);
-
-  //   if (value.student_name || value.gender) {
-  //     let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
-
-  //     setclassValue({});
-  //     if (
-  //       value.student_id
-  //     ) {
-  //       let obj = { [`class${[rows.length - 1]}`]: value };
-  //       setclassValue(obj);
-  //       return;
-  //     }
-
-  //     if (rows.length >= 10) {
-  //       setAlert("You can't Add more than 10 items.", "error");
-  //     } else {
-  //       const newRowWithId = { ...newRow, id: rows.length + 1 };
-  //       setRows([...rows, newRowWithId]);     
-  //     }
-  //     return setclassValue(obj);
-  //   }
-
-  //   if (rows.length >= 10) {
-  //     setAlert("You can't Add more than 10 items.", "error");
-  //   } else {
-  //     const newRowWithId = { ...newRow, id: rows.length + 1 };
-  //     setRows([...rows, newRowWithId]);
-  //     // setNewRow({ id: '', name: '', age: '' });   
-  //   }
-  // };
-
   function checkEmptyValues(obj) {
     const result = {};
-  
+
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
@@ -145,20 +95,27 @@ const StudentUpkillingBulkcreate = (props) => {
         result[key] = isEmpty;
       }
     }
-  
+
     return result;
   }
 
   const addRow = () => {
-    
-    let value =checkEmptyValues(rows[rows.length-1])
-    setclassValue({})
-    if(value.student_id || value.institution || value.batch || value.start_date || value.category || value.sub_category || value.course_name || value.program_name ){
-      let obj={[`class${[rows.length-1]}`]:value}
-      setclassValue(obj)
-      return ;
+    let value = checkEmptyValues(rows[rows.length - 1]);
+    setclassValue({});
+    if (
+      value.student_id ||
+      value.institution ||
+      value.batch ||
+      value.start_date ||
+      value.category ||
+      value.sub_category ||
+      value.course_name ||
+      value.program_name
+    ) {
+      let obj = { [`class${[rows.length - 1]}`]: value };
+      setclassValue(obj);
+      return;
     }
-    
 
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
@@ -166,7 +123,6 @@ const StudentUpkillingBulkcreate = (props) => {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
       // setNewRow({ id: '', name: '', age: '' });
-      
     }
   };
   const handleChange = (options, key, rowid) => {
@@ -272,23 +228,19 @@ const StudentUpkillingBulkcreate = (props) => {
   };
 
   useEffect(() => {
-    
-    let isEmptyValuFound=false
+    let isEmptyValuFound = false;
 
     for (let row of rows) {
-
-      for(let key in row){
-         // end_date,certificate_received,issued_org,assigned_to
-        if(!(key =='certificate_received') && !(key =='issued_org')  ){
-          if(isEmptyValue(row[key])){
-            isEmptyValuFound=true
+      for (let key in row) {
+        // end_date,certificate_received,issued_org,assigned_to
+        if (!(key == "certificate_received") && !(key == "issued_org")) {
+          if (isEmptyValue(row[key])) {
+            isEmptyValuFound = true;
           }
-         
         }
       }
-     
     }
-    setDisableSaveButton(isEmptyValuFound)
+    setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
   const onSubmit = async () => {
@@ -303,15 +255,14 @@ const StudentUpkillingBulkcreate = (props) => {
       row.student_id = Number(row.student_id);
       row.isActive = true;
       let value = checkEmptyValuesandplaceNA(row);
-      if(value.certificate_received == 'N/A'){
-
-        value.certificate_received=false
+      if (value.certificate_received == "N/A") {
+        value.certificate_received = false;
       }
       return value;
     });
 
-    try {      
-      onHide('upskill',data)
+    try {
+      onHide("upskill", data);
       setRows([
         {
           id: 1,
@@ -326,7 +277,7 @@ const StudentUpkillingBulkcreate = (props) => {
           category: "",
           sub_category: "",
           issued_org: "",
-          program_name:""
+          program_name: "",
         },
       ]);
     } catch (error) {
@@ -348,10 +299,6 @@ const StudentUpkillingBulkcreate = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
-
   useEffect(() => {
     filterInstitution().then((data) => {
       setInstitutionOptions(data);
@@ -363,50 +310,41 @@ const StudentUpkillingBulkcreate = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const { data } = await searchInstitutions(filterValue);
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        // let programEnrollmentBatch = props.programEnrollment ? props.programEnrollment.batch : null;
+    try {
+      const { data } = await searchBatches(filterValue);
 
-        let filterData = data.hits.map((batch) => {
-          if(hideBatchName.includes(batch.name)){
-            return {
-  
-            };
-          }else{
-            return {
-              ...batch,
-              label: batch.name,
-              value: Number(batch.id),
-            };
-          }
-        });
-        return filterData;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if (hideBatchName.includes(batch.name)) {
+          return {};
+        } else {
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
       });
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onConfirm = () => {
@@ -518,16 +456,16 @@ const StudentUpkillingBulkcreate = (props) => {
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-end between_class">
+          <div className="d-flex justify-content-end between_class bulk_add_actions">
             <button
               type="button b"
               onClick={onHide}
-              className="btn-box btn btn-danger redbtn btn-regular mr-2"
+              className="btn-box btn btn-danger redbtn btn-regular mr-2 bulk_add_button"
             >
               CLOSE
             </button>
             <button
-              className="btn btn-primary btn-regular text-light mx-0"
+              className="btn btn-primary btn-regular text-light mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
               disabled={disableSaveButton}
