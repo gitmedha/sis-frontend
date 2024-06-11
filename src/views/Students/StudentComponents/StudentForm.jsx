@@ -81,7 +81,7 @@ const StudentForm = (props) => {
       setStatusOptions(
         data.status.map((item) => {
           if (
-            localStorage.getItem("user_role").toLowerCase() === "srm" &&
+            localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
             item.value.toLowerCase() === "unknown"
           ) {
             return { isDisabled: true };

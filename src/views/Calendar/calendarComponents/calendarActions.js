@@ -19,10 +19,9 @@ export const getAlumniServicePickList = async () => {
     }
 
 
-export const createEvent = async (reportingData)=>{
+export const createEvent = async (data)=>{
   try {
-    await api.post('/alumni-events/create-events', reportingData);
-
+    await api.post('/alumni-events/create-events', data);
   } catch (error) {
     console.error(error);
   }
