@@ -969,7 +969,7 @@ const Operations = ({
                     Add <span><FaPlus size="12" color="#fff"/></span>
                   </button>
                 
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -992,8 +992,8 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )}
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  )} */}
+                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
 
@@ -1015,7 +1015,7 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </>
               )}
             </div>
