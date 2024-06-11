@@ -5,7 +5,7 @@ import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
-import { isAdmin, isPartnership, isSRM } from '../../common/commonFunctions';
+import { isAdmin, isMedhavi, isPartnership, isSRM } from '../../common/commonFunctions';
 
 const iconStyle = {
   marginRight: "5px",
@@ -21,7 +21,7 @@ const routes = [
     to: "/",
     title: "Dashboard",
     icon: <MdDashboard {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/students",
@@ -35,42 +35,42 @@ const routes = [
     title: "Institutions",
     aliases: ['institution'],
     icon: <FaSchool {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/batches",
     title: "Batches",
     aliases: ['batch'],
     icon: <FaChalkboardTeacher {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/employers",
     title: "Employers",
     aliases: ['employer'],
     icon: <FaUserTie {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/opportunities",
     title: "Opportunities",
     aliases: ['opportunity'],
     icon: <FaBriefcase {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "/operation",
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,
-    show: isSRM() ||isAdmin(),
+    show: isAdmin() || isSRM() || isMedhavi(),
   },
   {
     to:'/calender',
     title:"Calendar",
     aliases: ['calender'],
     icon:<FaCalendarDay {...iconProps}/>,
-    show: isAdmin(),
+    show: isAdmin() || isMedhavi(),
   },
   {
     to: "https://data.medha.org.in/",
@@ -83,7 +83,7 @@ const routes = [
       style={{}}
     />,
     newTab: true,
-    show: isSRM() || isPartnership() || isAdmin(),
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   // {
   //   to: "/admin",
