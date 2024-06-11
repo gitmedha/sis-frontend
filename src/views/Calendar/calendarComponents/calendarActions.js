@@ -1,5 +1,5 @@
-import api from "../../../apis";
-import {GET_PICKLIST} from '../../../graphql/calendar';
+import api from 'src/apis';
+import { GET_PICKLIST } from 'src/graphql';
 
 export const getAlumniServicePickList = async () => {
     return await api.post("/graphql", {
