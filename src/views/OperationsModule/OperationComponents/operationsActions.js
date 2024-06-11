@@ -568,9 +568,6 @@ export const getStudent = async (id) => {
     
       let values=data.data.student;
       
-    //   values.name_of_parent_or_guardian = values.name_of_parent_or_guardian.toLowerCase()
-    //   values.full_name=values.full_name.toLowerCase()
-    //   setStudent(values);
     return values
     } catch (err) {
     } finally {
