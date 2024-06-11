@@ -276,7 +276,7 @@ const UploadFile = (props) => {
                   <FaFileUpload size={30} color={"#257b69"} />
                 </div>
                 <input
-                  accept=".xls"
+                  accept=".xlsx"
                   type="file"
                   multiple={false}
                   name="file-uploader"
