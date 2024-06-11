@@ -1,22 +1,14 @@
-import { Modal} from "react-bootstrap";
-import styled from "styled-components";
-import { useState, useEffect} from "react";
+import { Modal } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
+import { searchBatches, searchInstitutions } from "./operationsActions";
 import { connect } from "react-redux";
-
-import { MeiliSearch } from "meilisearch";
-
 import { RowsData } from "./RowsData";
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const hideBatchName = [
   "New Enrollments -- CAB",
@@ -29,7 +21,7 @@ const hideBatchName = [
   "New Enrollments -- Swarambh",
   "New Enrollments -- Workshop",
   "New Enrollments -- BMC Design Lab",
-  "New Enrollments -- In The Bank"
+  "New Enrollments -- In The Bank",
 ];
 
 const OperationCreateform = (props) => {
@@ -46,8 +38,8 @@ const OperationCreateform = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate,] = useState(new Date());
-  
+  const [endDate] = useState(new Date());
+
   const [data, setData] = useState([
     {
       id: 1,
@@ -107,23 +99,23 @@ const OperationCreateform = (props) => {
   });
 
   useEffect(() => {
-    
-    let isEmptyValuFound=false
+    let isEmptyValuFound = false;
 
     for (let row of rows) {
-
-      for(let key in row){
-       
-        if(!(key ==='designation') && !(key ==='guest') && !(key ==='donor') && !(key ==='organization') ){
-          if(isEmptyValue(row[key])){
-            isEmptyValuFound=true
+      for (let key in row) {
+        if (
+          !(key === "designation") &&
+          !(key === "guest") &&
+          !(key === "donor") &&
+          !(key === "organization")
+        ) {
+          if (isEmptyValue(row[key])) {
+            isEmptyValuFound = true;
           }
-         
         }
       }
-     
     }
-    setDisableSaveButton(isEmptyValuFound)
+    setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
   function checkEmptyValuesandplaceNA(obj) {
@@ -281,9 +273,7 @@ const OperationCreateform = (props) => {
       return value;
     });
     try {
-     
-
-      onHide('feilddata',data)
+      onHide("feilddata", data);
       setRows([
         {
           id: 1,
@@ -302,7 +292,8 @@ const OperationCreateform = (props) => {
           assigned_to: "",
           area: "",
           students_attended: "",
-        }]);
+        },
+      ]);
     } catch (error) {
       setAlert("Data is not created yet", "danger");
     }
@@ -322,7 +313,6 @@ const OperationCreateform = (props) => {
     });
   }, []);
 
-
   useEffect(() => {
     filterInstitution().then((data) => {
       setInstitutionOptions(data);
@@ -334,48 +324,40 @@ const OperationCreateform = (props) => {
   }, []);
 
   const filterInstitution = async (filterValue) => {
-    return await meilisearchClient
-      .index("institutions")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((institution) => {
-          return {
-            ...institution,
-            label: institution.name,
-            value: Number(institution.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const { data } = await searchInstitutions(filterValue);
+      let filterData = data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
       });
+
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filterBatch = async (filterValue) => {
-    return await meilisearchClient
-      .index("batches")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((batch) => {
-          if(hideBatchName.includes(batch.name)){
-            return {
-  
-            };
-          }else{
-            return {
-              ...batch,
-              label: batch.name,
-              value: Number(batch.id),
-            };
-          }
-        });
-        return filterData;
+    try {
+      const { data } = await searchBatches(filterValue);
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if (hideBatchName.includes(batch.name)) {
+          return {};
+        } else {
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
       });
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
