@@ -142,7 +142,7 @@ const initialValues = {};
           initialValues={initialValues}
           validationSchema={calendarValidations}
         >
-          {({ values, setFieldValue }) => (
+          {({ setFieldValue }) => (
             <Form>
               <Section>
                 <div className="row">

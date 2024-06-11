@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import api from "../../../apis";
