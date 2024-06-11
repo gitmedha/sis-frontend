@@ -24,7 +24,6 @@ const tabPickerOptions = [
 
   const Opportunities = (props) => {
     const history = useHistory();
-    const [loading, setLoading] = useState(false);
     const [opportunities, setOpportunities] = useState([]);
     const [pickList, setPickList] = useState([]);
     const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
@@ -252,11 +251,9 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
   
       setOpportunities(data?.data?.data?.opportunitiesConnection.values);
       setOpportunitiesAggregate(data?.data?.data?.opportunitiesConnection?.aggregate);
-      setLoading(false);
       nProgress.done();
     })
       .catch((error) => {
-        setLoading(false);
         nProgress.done();
         return Promise.reject(error);
       })
@@ -265,7 +262,6 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
 
   const getOpportunities = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'type', sortOrder = 'desc') => {
     nProgress.start();
-    setLoading(true);
 
     if(isSearchEnable){
       await getOpportunitiesBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
@@ -277,11 +273,11 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
       }
-      if(selectedTab == "my_data"){
+      if(selectedTab === "my_data"){
         Object.assign(variables, {id: userId})
-      } else if(selectedTab == "my_area"){
+      } else if(selectedTab === "my_area"){
         Object.assign(variables, {area: area})
-      }else if(selectedTab == "my_state"){
+      }else if(selectedTab === "my_state"){
         Object.assign(variables, {state: state})
       }
   
@@ -297,7 +293,6 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
         return Promise.reject(error);
       })
       .finally(() => {
-        setLoading(false);
         nProgress.done();
       });
 

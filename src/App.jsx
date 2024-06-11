@@ -40,7 +40,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import operations from "./views/OperationsModule/Operations";
 import Operation from "./views/OperationsModule/Operation";
-import { isAdmin, isPartnership, isSRM } from "./common/commonFunctions";
+import { isAdmin, isMedhavi, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -155,7 +155,7 @@ const App = (props) => {
                   <PrivateRoute path="/" exact component={Home} />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
-                  {(isSRM() || isPartnership() || isAdmin()) &&
+                  {(isSRM() || isPartnership() || isAdmin() || isMedhavi()) &&
                   <>
                     <PrivateRoute path="/institutions" exact component={Institutions} />
                     <PrivateRoute path="/institution/:id" exact component={Institution} />

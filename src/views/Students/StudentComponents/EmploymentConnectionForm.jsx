@@ -3,8 +3,6 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import { MeiliSearch } from "meilisearch";
-
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
 import {
@@ -129,10 +127,6 @@ const EnrollmentConnectionForm = (props) => {
     setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus, selectedOpportunityType]);
 
-  // useEffect(()=>{
-  //   setShowEndDate( selectedOpportunityType ==='Apprenticeship') ;
-  // },[selectedOpportunityType])
-
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -219,7 +213,7 @@ const EnrollmentConnectionForm = (props) => {
     setStatusOptions(
       filteredOptions.map((item) => {
         if (
-          localStorage.getItem("user_role").toLowerCase() === "srm" &&
+          localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
           item.value.toLowerCase() === "unknown"
         ) {
           return { isDisabled: true };
