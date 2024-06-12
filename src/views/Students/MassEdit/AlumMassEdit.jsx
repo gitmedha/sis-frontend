@@ -401,7 +401,7 @@ const AlumMassEdit = (props) => {
                   name="student_ids"
                   options={studentOptions}
                   closeMenuOnSelect={false}
-                  components={customComponents}
+                  // components={customComponents}
                   isOptionDisabled={() => students.length >= 10}
                   className="basic-multi-select"
                   classNamePrefix="select"
