@@ -65,10 +65,9 @@ const initialValues = {};
     });
 
       if(props.eventData){
-
         initialValues.assgined_to = props.eventData.assgined_to.id.toString()
-        initialValues.start_date = props.eventData.start_date;
-        initialValues.end_date =props.eventData.end_date;
+        initialValues.start_date = new Date(props.eventData.start_date);
+        initialValues.end_date =new Date(props.eventData.end_date);
         initialValues.status = props.eventData.status
         initialValues.alumni_service = props.eventData.alumni_service;
         initialValues.id = props.eventData.id;
