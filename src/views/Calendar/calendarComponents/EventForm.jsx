@@ -65,7 +65,6 @@ const initialValues = {};
     });
 
       if(props.eventData){
-        console.log("props.eventData.start_date",new Date(props.eventData.start_date));
         initialValues.assgined_to = props.eventData.assgined_to.id.toString()
         initialValues.start_date = new Date(props.eventData.start_date);
         initialValues.end_date =new Date(props.eventData.end_date);
