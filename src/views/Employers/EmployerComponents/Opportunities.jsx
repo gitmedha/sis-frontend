@@ -1,12 +1,7 @@
-import nProgress from "nprogress";
-import api from "../../../apis";
 import moment from "moment";
-import styled from "styled-components";
 import Avatar from "../../../components/content/Avatar";
-import { useHistory } from "react-router-dom";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo} from "react";
 import Table from '../../../components/content/Table';
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import OpportunityForm from "./OpportunityForm";
 import { createOpportunity } from "../../Opportunities/OpportunityComponents/opportunityAction";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -15,18 +10,9 @@ import { Badge } from "../../../components/content/Utils";
 import NP from "nprogress";
 import { connect } from "react-redux";
 
-const StyledOpportunityIcon = styled.div`
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const Opportunities = (props) => {
   let { employer, opportunities, onDataUpdate } = props;
-  const history = useHistory();
   const {setAlert} = props;
   const [opportunitiesTableData, setOpportunitiesTableData] = useState([]);
   const [createOpportunityModalShow, setCreateOpportunityModalShow] = useState(false);

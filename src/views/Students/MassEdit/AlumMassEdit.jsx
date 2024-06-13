@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { MeiliSearch } from "meilisearch";
 import Select, { components } from "react-select";
 import { Modal } from "react-bootstrap";
-import styled from "styled-components";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
   getStudentsPickList,
+  searchStudents,
 } from "../StudentComponents/StudentActions";
 import * as Yup from "yup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
@@ -16,11 +15,8 @@ import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
 import { Form, Formik } from "formik";
 import { FaTimes } from "react-icons/fa";
+import styled from "styled-components";
 
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
 
 const Section = styled.div`
   padding-top: 30px;
@@ -163,16 +159,16 @@ const AlumMassEdit = (props) => {
   }, []);
 
   const filterStudent = async (filterValue) => {
-    const data = await meilisearchClient.index("students").search(filterValue, {
-      limit: 100,
-      attributesToRetrieve: ["id", "full_name", "student_id"],
-    });
-
-    return data.hits.map((student) => ({
-      ...student,
-      label: `${student.full_name} (${student.student_id})`,
-      value: Number(student.id),
-    }));
+    try {
+      const { data } = await searchStudents(filterValue);
+      return data.studentsConnection.values.map((student) => ({
+        ...student,
+        label: `${student.full_name} (${student.student_id})`,
+        value: Number(student.id),
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -377,7 +373,12 @@ const AlumMassEdit = (props) => {
             <div className="d-flex justify-content-end align-items-center">
               <button
                 onClick={handelCancel}
-                style={{ border: "none", background: "none",position:'absolute',right:'2rem' }}
+                style={{
+                  border: "none",
+                  background: "none",
+                  position: "absolute",
+                  right: "2rem",
+                }}
               >
                 <FaTimes />
               </button>
@@ -602,7 +603,7 @@ const AlumMassEdit = (props) => {
                     </div>
                   </>
 
-                  <div className="row justify-content-end mt-1">
+                  <div className="row justify-content-end mt-3 mb-2 mx-5 ">
                     <div className="col-auto p-0">
                       <button
                         type="button"

@@ -40,6 +40,11 @@ const Section = styled.div`
   }
 `;
 
+const statusOption = [
+  { value: "Paid", label: "Paid" },
+  { value: "Unpaid", label: "Unpaid" },
+];
+
 const MassEdit = (props) => {
   let { onHide, show } = props;
   const [studentOptions, setStudentOptions] = useState([]);
@@ -422,6 +427,20 @@ const MassEdit = (props) => {
                         className="form-control"
                         autoComplete="off"
                       />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon="down"
+                      options={statusOption}
+                      // required={feeFieldsRequired}
+                      // onChange={(e) => setStatus(e.value)}
+                    />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input

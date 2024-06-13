@@ -138,13 +138,13 @@ function ViewEvent(props) {
               onClick={() => setDeleteAlert(false)}
               className="btn btn-secondary mx-2 px-4"
             >
-              Not Now
+              No
             </button>
             <button
               onClick={() => handleDelete()}
               className="btn btn-danger mx-2 px-4"
             >
-              Cancel
+              Yes
             </button>
           </>
         }

@@ -1,83 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { MeiliSearch } from "meilisearch";
 import { Formik, Form } from "formik";
 import Select, { components } from "react-select";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
-  getStudentAlumniServices,
   getStudentEmploymentConnections,
-  getStudentsPickList,
+  searchStudents,
+  searchEmployers
 } from "../StudentComponents/StudentActions";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { GET_ALL_OPPORTUNITIES, GET_OPPORTUNITIES } from "../../../graphql";
-import api from "../../../apis";
 import { Input } from "../../../utils/Form";
 import { filterAssignedTo } from "../../../utils/function/lookupOptions";
 import Skeleton from "react-loading-skeleton";
 import { FaTimes } from "react-icons/fa";
-
-const meilisearchClient = new MeiliSearch({
-  host: process.env.REACT_APP_MEILISEARCH_HOST_URL,
-  apiKey: process.env.REACT_APP_MEILISEARCH_API_KEY,
-});
-
-const Section1 = styled.table`
-  .create_data_table {
-    border: 1px solid #000;
-    border-collapse: collapse !important;
-    width: 100%;
-    overflow: auto;
-  }
-
-  th,
-  td {
-    padding: 8px;
-    text-align: left;
-    border: 1px solid #bebfc0;
-  }
-
-  th {
-    background-color: #257b69;
-    color: #fff;
-  }
-
-  .table-input {
-    width: 8rem;
-    padding: 2px;
-    margin: 0;
-    background-color: initial;
-    border-radius: 5px;
-    border: 1px solid #bebfc0;
-    transition: border-color 0.3s;
-  }
-  .table-input:active {
-    border: 1px solid #257b69 !important;
-  }
-  .table-input-select {
-    width: 8rem;
-    padding: 2px;
-    margin: 0;
-    background-color: initial;
-    border-radius: 5px;
-  }
-  tr {
-    border: 1px solid #000;
-  }
-  .adddeletebtn {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .submitbtn {
-    position: absolute;
-    right: 0;
-  }
-  .submitbtnclear {
-    position: absolute;
-    right: 10%;
-  }
-`;
 
 const Section = styled.div`
   padding-top: 30px;
@@ -136,23 +72,22 @@ const EmploymentmassEdit = (props) => {
   };
 
   const filterStudent = async (filterValue) => {
-    return await meilisearchClient
-      .index("students")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "full_name", "student_id"],
-      })
-      .then((data) => {
-        let filterData = data.hits.map((student) => {
-          return {
-            ...student,
-            label: `${student.full_name} (${student.student_id})`,
-            value: Number(student.id),
-          };
-        });
-
-        return filterData;
+    try {
+      const {data} = await searchStudents(filterValue);
+      
+      let filterData = data.studentsConnection.values.map((student) => {
+        return {
+          ...student,
+          label: `${student.full_name} (${student.student_id})`,
+          value: Number(student.id),
+        };
       });
+
+      return filterData;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     filterStudent(studentInput).then((data) => {
@@ -229,6 +164,18 @@ const EmploymentmassEdit = (props) => {
     filterEmployer().then((data) => {
       setEmployerOptions(data);
     });
+    setStatusOptions(
+      allStatusOptions.map((item) => {
+        if (
+          localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
+          item.value.toLowerCase() === "unknown"
+        ) {
+          return { isDisabled: true };
+        } else {
+          return { key: item.value, value: item.value, label: item.value };
+        }
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -254,24 +201,20 @@ const EmploymentmassEdit = (props) => {
   }, [selectedOpportunityType, allStatusOptions]);
 
   const filterEmployer = async (filterValue) => {
-    console.log("filter ", filterValue);
-    return await meilisearchClient
-      .index("employers")
-      .search(filterValue, {
-        limit: 100,
-        attributesToRetrieve: ["id", "name"],
-      })
-      .then((data) => {
-        console.log("data", data);
-        let filterData = data.hits.map((employer) => {
-          return {
-            ...employer,
-            label: employer.name,
-            value: Number(employer.id),
-          };
-        });
-        setEmployerOptions(filterData);
+    try {
+      const {data} = await searchEmployers(filterValue);
+      let filterData = data.employersConnection.values.map((employer) => {
+        return {
+          ...employer,
+          label: employer.name,
+          value: Number(employer.id),
+        };
       });
+      setEmployerOptions(filterData);
+
+    } catch (error) {
+     console.error(error); 
+    }
   };
 
   const handleSubmit = async (values) => {
