@@ -111,8 +111,8 @@ const StudentForm = (props) => {
           label: item.value,
         }))
       );
-      // setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setyourPlanFfterYourCurrentCourse(data.your_plan_after_your_current_course.map(item => ({ key: item,value: item, label: item })));
+      setHowDidYouHearAboutUsOptions(data.how_did_you_hear_about_us.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setyourPlanFfterYourCurrentCourse(data.your_plan_after_your_current_course.map(item => ({ key: item,value: item, label: item })));
     });
 
     getAddressOptions().then((data) => {
