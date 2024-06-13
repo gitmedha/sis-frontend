@@ -166,7 +166,7 @@ const Details = (props) => {
             &nbsp;
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
-            <DetailField label="Your plan after your current course" value={your_plan_after_your_current_course?your_plan_after_your_current_course:''} />
+            <DetailField label="Your plan after your current course d-none" value={your_plan_after_your_current_course?your_plan_after_your_current_course:''} />
 
             {/*  */}
           </div>
