@@ -599,7 +599,7 @@ else {
   const handelSubmitMassEdit=async(data,key)=>{
     if(key ==='AlumniBuldEdit'){
       await api
-      .post("/alumni-services/bulk-update", data)
+      .post("/alumni-services/bulkupdate", data)
       .then((data) => {
         // Return data
         setAlert("Data Edited Successfully.", "success");

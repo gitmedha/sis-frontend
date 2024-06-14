@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import Select from "react-select";
+import Select ,{components} from "react-select";
 
 import { Input } from "../../../utils/Form";
 import { EmploymentConnectionValidations } from "../../../validations";
@@ -69,6 +69,7 @@ const MassEmployerUpload = (props) => {
   const [students, setStudents] = useState([]);
   const [bulkAddCheck, setBulkAddCheck] = useState(true);
   const [massEditCheck, setMassEditCheck] = useState(false);
+  const [studentInput, setStudentInput] = useState("");
 
   const userId = localStorage.getItem("user_id");
   let initialValues = {
@@ -369,6 +370,37 @@ const MassEmployerUpload = (props) => {
     setMassEditCheck(!massEditCheck);
   };
 
+  const MultiValue = ({ index, getValue, ...props }) => {
+    const maxToShow = 1; // Maximum number of values to show
+    const overflowCount = getValue().length - maxToShow;
+
+    if (index < maxToShow) {
+      return <components.MultiValue {...props} />;
+    }
+
+    if (index === maxToShow) {
+      return (
+        <components.MultiValue {...props}>
+          <span>+{overflowCount}</span>
+        </components.MultiValue>
+      );
+    }
+
+    return null;
+  };
+
+  const customComponents = {
+    MultiValue,
+  };
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
+  
+
   return (
     <Modal
       centered
@@ -392,7 +424,7 @@ const MassEmployerUpload = (props) => {
       <Modal.Body className="bg-white">
         {
           <CheckBoxForm
-            bulkAdd=" Add"
+            bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
             masscheck={massEditCheck}
             massEdit="Mass Edit"
@@ -415,12 +447,23 @@ const MassEmployerUpload = (props) => {
                       <label className="leading-24">Student</label>
                       <Select
                         //   defaultValue={[colourOptions[2], colourOptions[3]]}
+                        // isMulti
+                        // name="student_ids"
+                        // options={studentOptions}
+                        // className="basic-multi-select"
+                        // classNamePrefix="select"
+                        // onChange={(choice) => setStudents(choice)}
                         isMulti
-                        name="student_ids"
-                        options={studentOptions}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={(choice) => setStudents(choice)}
+                         name="student_ids"
+                         options={studentOptions}
+                         closeMenuOnSelect={false}
+                         components={customComponents}
+                         isOptionDisabled={() => students.length >= 10}
+                         className="basic-multi-select"
+                         classNamePrefix="select"
+                         onInputChange={handleInputChange}
+                         onChange={handleChange}
+                         value={students}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
