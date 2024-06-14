@@ -15,6 +15,99 @@ import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
 import { Form, Formik } from "formik";
 import { FaTimes } from "react-icons/fa";
+import styled from "styled-components";
+
+
+const Section = styled.div`
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &:not(:first-child) {
+    border-top: 1px solid #c4c4c4;
+  }
+
+  .section-header {
+    color: #207b69;
+    font-family: "Latto-Regular";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 15px;
+  }
+`;
+
+const Section1 = styled.table`
+  .create_data_table {
+    border-collapse: collapse;
+    width: 100%;
+    overflow: auto;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #bebfc0;
+  }
+
+  th {
+    background-color: #257b69;
+    color: #fff;
+  }
+
+  .table-input,
+  .table-input-select {
+    width: 8rem;
+    padding: 2px;
+    margin: 0;
+    background-color: initial;
+    border-radius: 5px;
+    border: 1px solid #bebfc0;
+  }
+
+  tr {
+    border: 1px solid #000;
+  }
+
+  .submitbtn {
+    position: absolute;
+    right: 0;
+  }
+  .submitbtnclear {
+    position: absolute;
+    right: 10%;
+  }
+  .table-input-select-wrapper {
+    width: 8rem;
+    padding: 2px;
+    margin: 0;
+    background-color: initial;
+    border-radius: 5px;
+    border: 1px solid #bebfc0;
+  }
+
+  .select__control {
+    border: none; /* Remove the border from the control */
+  }
+
+  .select__control:hover {
+    border: none; /* Remove the border on hover */
+  }
+
+  .select__menu {
+    border: 1px solid #bebfc0; /* Add border to the dropdown menu */
+  }
+
+  .select__menu-list {
+    border: none; /* Remove border from menu items */
+  }
+`;
+
+const statusOption = [
+  { value: "Paid", label: "Paid" },
+  { value: "Unpaid", label: "Unpaid" },
+];
 
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
@@ -173,6 +266,7 @@ const AlumMassEdit = (props) => {
     assigned_to: localStorage.getItem("user_id"),
     category: null,
     type: "",
+    status:""
   };
 
   const onSubmit = async (values) => {
@@ -218,14 +312,14 @@ const AlumMassEdit = (props) => {
     });
   }, []);
 
+
   const validations = Yup.object({
-    start_date: Yup.date().nullable().required("Start Date is ."),
+    start_date: Yup.date().nullable(),
     end_date: Yup.date()
       .nullable()
-      .required("End Date is .")
-      .when("start_date", (start_date, schema) =>
-        start_date
-          ? schema.min(start_date, "End date can't be before Start date")
+      .when("start_date", (start_date, schema) => 
+        start_date 
+          ? schema.min(start_date, "End date can't be before Start date") 
           : schema
       ),
   });
@@ -251,9 +345,17 @@ const AlumMassEdit = (props) => {
 
     return null;
   };
+  
 
   const customComponents = {
     MultiValue,
+  };
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleselectChange = (selectedOptions) => {
+    setStudents(selectedOptions);
   };
   return (
     <Modal
@@ -287,15 +389,26 @@ const AlumMassEdit = (props) => {
               <div>
                 <label className="leading-24">Student</label>
                 <Select
+                  // isMulti
+                  // closeMenuOnSelect={false}
+                  // name="student_ids"
+                  // options={studentOptions}
+                  // filterData={filterStudent}
+                  // onInputChange={(e) => setStudentInput(e)}
+                  // className="basic-multi-select"
+                  // classNamePrefix="select"
+                  // onChange={(choices) => setStudents(choices)}
                   isMulti
-                  closeMenuOnSelect={false}
                   name="student_ids"
                   options={studentOptions}
-                  filterData={filterStudent}
-                  onInputChange={(e) => setStudentInput(e)}
+                  closeMenuOnSelect={false}
+                  // components={customComponents}
+                  isOptionDisabled={() => students.length >= 10}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={(choices) => setStudents(choices)}
+                  onInputChange={handleInputChange}
+                  onChange={handleselectChange}
+                  value={students}
                 />
               </div>
               <div className="d-flex justify-content-end mx-5">
@@ -426,6 +539,20 @@ const AlumMassEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon="down"
+                      options={statusOption}
+                      // required={feeFieldsRequired}
+                      // onChange={(e) => setStatus(e.value)}
+                    />
+                  </div>
+                      <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="fee_submission_date"
                           label="Contribution Submission Date"
@@ -476,7 +603,7 @@ const AlumMassEdit = (props) => {
                     </div>
                   </>
 
-                  <div className="row justify-content-end mt-1">
+                  <div className="row justify-content-end mt-3 mb-2 mx-5 ">
                     <div className="col-auto p-0">
                       <button
                         type="button"

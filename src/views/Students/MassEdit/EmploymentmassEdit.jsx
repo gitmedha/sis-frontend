@@ -178,6 +178,28 @@ const EmploymentmassEdit = (props) => {
     );
   }, []);
 
+  useEffect(() => {
+    let filteredOptions = allStatusOptions;
+    if (
+      selectedOpportunityType === "Job" ||
+      selectedOpportunityType === "Internship" ||
+      selectedOpportunityType === "UnPaid GIG" ||
+      selectedOpportunityType === "Paid GIG" ||
+      selectedOpportunityType === "Apprenticeship"
+    ) {
+      filteredOptions = allStatusOptions.filter(
+        (item) =>
+          item["applicable-to"].includes(selectedOpportunityType) ||
+          item["applicable-to"] === "Both"
+      );
+    } else {
+      filteredOptions = allStatusOptions.filter(
+        (item) => item["applicable-to"] === "Both"
+      );
+    }
+    setStatusOptions(filteredOptions);
+  }, [selectedOpportunityType, allStatusOptions]);
+
   const filterEmployer = async (filterValue) => {
     try {
       const {data} = await searchEmployers(filterValue);
@@ -329,6 +351,38 @@ const EmploymentmassEdit = (props) => {
     MultiValue,
   };
 
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleselectChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
+  const onSubmit = async (values) => {
+    console.log(values);
+    let data = students.map((val) => {
+      console.log(val);
+      return {
+        assigned_to: values.assigned_to.id,
+        experience_certificate: values.experience_certificate,
+        number_of_internship_hours: values.number_of_internship_hours,
+        end_date: values.end_date,
+        opportunity: values.opportunity_id,
+        employer: values.employer_id,
+        reason_if_rejected: values.reason_if_rejected,
+        reason_if_rejected_other: values.reason_if_rejected_other,
+        salary_offered: values.salary_offered,
+        start_date: values.start_date,
+        source: values.source,
+        status: values.status,
+        student_id: val.id,
+        work_engagement: values.work_engagement,
+        id: values.id,
+      };
+    });
+    props.handelSubmitMassEdit(data, "AlumniBuldEdit");
+  };
+
   return (
     <>
       <Modal
@@ -363,14 +417,16 @@ const EmploymentmassEdit = (props) => {
                   <label className="leading-24">Student</label>
                   <Select
                     isMulti
-                    closeMenuOnSelect={false}
                     name="student_ids"
                     options={studentOptions}
-                    filterData={filterStudent}
-                    onInputChange={(e) => setStudentInput(e)}
+                    closeMenuOnSelect={false}
+                    components={customComponents}
+                    isOptionDisabled={() => students.length >= 10}
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    onChange={(choices) => setStudents(choices)}
+                    onInputChange={handleInputChange}
+                    onChange={handleselectChange}
+                    value={students}
                   />
                 </div>
                 <div className="d-flex justify-content-end mx-5">
@@ -400,7 +456,7 @@ const EmploymentmassEdit = (props) => {
                 </Modal.Title>
               </Modal.Header>
               <Formik
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
                 initialValues={initialValues}
                 // validationSchema={validations}
               >
