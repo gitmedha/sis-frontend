@@ -8,6 +8,7 @@ import {
   GET_ALUMNI_QUERIES,
   GET_COLLEGE_PITCHES,
   GET_DTE_SAMARTH_SDITS,
+  GET_MENTORSHIP,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
@@ -60,6 +61,7 @@ const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Pitching", key: "collegePitches" },
+  { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
@@ -191,6 +193,42 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+    ],
+    []
+  );
+
+  const columnsMentor = useMemo(
+    () => [
+      {
+        Header: "Mentor Name",
+        accessor: "user_name",
+      },
+      {
+        Header: "Assigned To",
+        accessor: "end_date",
+      },
+      {
+        Header: "Mentor's Domain",
+        accessor: "city",
+      },
+
+      {
+        Header: "Mentor's Area",
+        accessor: "project_name",
+      },
+
+      {
+        Header: "Mentor's State",
+        accessor: "partner_dept",
+      },
+      {
+        Header: "Program Name",
+        accessor: "start_date",
+      },{
+        Header:"Mentor's Area",
+        accessor:"start_date1"
+      }
+     
     ],
     []
   );
@@ -476,6 +514,27 @@ const Operations = ({
           nProgress.done();
         });
     }
+    if (activeTab.key === "mentorship") {
+      // await resetSearch();
+
+      await api
+        .post("/graphql", {
+          query: GET_MENTORSHIP,
+          variables,
+        })
+        .then((data) => {
+          console.log("data",data);
+          // setOpts(data.data.data.activeCollegePitches.values);
+          // setoptsAggregate(data.data.data.allCollegePitches.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {
@@ -652,6 +711,39 @@ const Operations = ({
         }
       }
       if (activeTab.key === "collegePitches") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "student_name":
+            case "area":
+            case "college_name":
+            case "course_name":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "student_name";
+              break;
+          }
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "mentorship") {
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -1109,9 +1201,25 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) : (
-              ""
-            )}
+            ) : 
+              activeTab.key == "mentorship" ? (
+                <>
+                  <CollegePitchSearch />
+                  <Table
+                    onRowClick={(data) => showRowData("collegePitches", data)}
+                    columns={columnsMentor}
+                    data={isSearching ? (isFound ? searchedData : []) : opts}
+                    totalRecords={
+                      isSearching ? opsData.length : optsAggregate.count
+                    }
+                    fetchData={isSearching ? fetchSearchedData : fetchData}
+                    paginationPageSize={paginationPageSize}
+                    onPageSizeChange={setPaginationPageSize}
+                    paginationPageIndex={paginationPageIndex}
+                    onPageIndexChange={setPaginationPageIndex}
+                  />
+                </>
+            ):""}
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">

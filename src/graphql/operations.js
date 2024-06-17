@@ -209,6 +209,40 @@ const collegePitchesFields = `
     area
 `;
 
+const mentoshipfeild=`
+id
+created_at
+updated_at
+assigned_to {
+    id
+    username
+}
+mentor_name
+email
+mentor_domain
+mentor_company_name
+deisgnation
+mentor_area
+mentor_state
+outreach
+onboarding_date
+social_media_profile_link
+medha_area
+status
+isactive
+program_name
+createdby {
+    id
+    username
+}
+updatedby {
+    id
+    username
+}
+published_at
+
+`
+
 
 
 
@@ -333,6 +367,26 @@ export const GET_COLLEGE_PITCHES = `
         ) {
             values {
                 ${collegePitchesFields}
+            }
+        }
+    }
+`;
+
+export const GET_MENTORSHIP = `
+    query GET_MENTORSHIP($limit: Int, $start: Int, $sort: String) {
+        allMentoshipData: mentorshipsConnection {
+            aggregate {
+                count
+            }
+        }
+        activeMentoshipData: mentorshipsConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${mentoshipfeild}
             }
         }
     }
