@@ -50,6 +50,7 @@ import {
 import { FaDownload ,FaFileUpload,FaPlus} from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
 import TotUpload from "./UploadFiles/TotUpload";
+import MentorshipdataField from "./OperationComponents/MentorshipdataField";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -101,6 +102,7 @@ const Operations = ({
     sditdata: false,
     alumniQueriesdata: false,
     collegePitches: false,
+    mentorship:false
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -112,6 +114,7 @@ const Operations = ({
     sditdata: {},
     alumniQueriesdata: {},
     collegePitches: {},
+    mentorship:{}
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -201,32 +204,32 @@ const Operations = ({
     () => [
       {
         Header: "Mentor Name",
-        accessor: "user_name",
+        accessor: "mentor_name",
       },
       {
         Header: "Assigned To",
-        accessor: "end_date",
+        accessor: "assigned_to.username",
       },
       {
         Header: "Mentor's Domain",
-        accessor: "city",
+        accessor: "mentor_domain",
       },
 
       {
         Header: "Mentor's Area",
-        accessor: "project_name",
+        accessor: "mentor_area",
       },
 
       {
         Header: "Mentor's State",
-        accessor: "partner_dept",
+        accessor: "mentor_state",
       },
       {
         Header: "Program Name",
-        accessor: "start_date",
+        accessor: "program_name",
       },{
-        Header:"Mentor's Area",
-        accessor:"start_date1"
+        Header:"Mentor's Company",
+        accessor:"mentor_company_name"
       }
      
     ],
@@ -524,8 +527,8 @@ const Operations = ({
         })
         .then((data) => {
           console.log("data",data);
-          // setOpts(data.data.data.activeCollegePitches.values);
-          // setoptsAggregate(data.data.data.allCollegePitches.aggregate);
+          setOpts(data.data.data.activeMentoshipData.values);
+          setoptsAggregate(data.data.data.allMentoshipData.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -1206,7 +1209,7 @@ const Operations = ({
                 <>
                   <CollegePitchSearch />
                   <Table
-                    onRowClick={(data) => showRowData("collegePitches", data)}
+                    onRowClick={(data) => showRowData("mentorship", data)}
                     columns={columnsMentor}
                     data={isSearching ? (isFound ? searchedData : []) : opts}
                     totalRecords={
@@ -1321,6 +1324,15 @@ const Operations = ({
               {...optsdata.collegePitches}
               show={showModal.opsdata}
               onHide={() => hideShowModal("collegePitches", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
+            />
+          )}
+          {showModal.collegePitches && (isSRM() || isAdmin() || isMedhavi()) && (
+            <MentorshipdataField
+              {...optsdata.mentorship}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("mentorship", false)}
               refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
