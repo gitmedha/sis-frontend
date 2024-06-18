@@ -1,16 +1,18 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import DetailField from "../../../components/content/DetailField";
-import { setAlert } from "../../../store/reducers/Notifications/actions";
+// import DetailField from "../../../../components/DetailField";
+import { setAlert } from "../../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import OperationDataupdateform from "./OperationDataupdateform";
-import {deactivate_user_ops} from "./operationsActions";
-import Deletepopup from "./Deletepopup";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
+import OperationDataupdateform from "../OperationDataupdateform";
+import {deactivate_user_ops} from "../operationsActions";
+import Deletepopup from "../Deletepopup";
 import { Link } from "react-router-dom";
-import { Anchor } from "../../../components/content/Utils";
+import { Anchor } from "../../../../components/content/Utils";
+import UpdateMentorship from "./UpdateMentorship";
+import DetailField from "src/components/content/DetailField";
 
 const Styled = styled.div`
   .icon-box {
@@ -125,7 +127,7 @@ const MentorshipdataField = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
               <div className="col-md-6 col-sm-12">
-    <DetailField className='' Bold={""} label="Activity Type" value={props.activity_type} />
+    <DetailField className='' Bold={""} label="Mentor Name" value={props.activity_type} />
     <DetailField className='' Bold={""} label="Batch" value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />} />
     <DetailField className='' Bold={""} label="Start Date" value={moment(props.start_date).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
     <DetailField className='' Bold={""} label="Donor" value={props.donor ? "Yes" : "No"} />
@@ -232,7 +234,7 @@ const MentorshipdataField = (props) => {
       {
         showModal.dataAndEdit &&
         (
-          <OperationDataupdateform
+          <UpdateMentorship
             {...operationdata}
             show={showModal}
             onHide={hideShowModal1}
