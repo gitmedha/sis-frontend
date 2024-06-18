@@ -344,20 +344,20 @@ const EmploymentmassEdit = (props) => {
     console.log(EmploymentData.flat());
     let data = EmploymentData.map((val) => {
       return {
-        assigned_to: values.assigned_to.id,
-        experience_certificate: values.experience_certificate,
-        number_of_internship_hours: values.number_of_internship_hours,
-        end_date: values.end_date,
-        opportunity: values.opportunity_id,
-        employer: values.employer_id,
-        reason_if_rejected: values.reason_if_rejected,
-        reason_if_rejected_other: values.reason_if_rejected_other,
-        salary_offered: values.salary_offered,
-        start_date: values.start_date,
-        source: values.source,
-        status: values.status,
+        assigned_to: values.assigned_to.id ?values.assigned_to.id:"",
+        experience_certificate: values.experience_certificate?values.experience_certificate:"",
+        number_of_internship_hours: values.number_of_internship_hours?values.number_of_internship_hours:"",
+        end_date: values.end_date ?values.end_date:"",
+        opportunity: values.opportunity_id ?values.opportunity_id:"",
+        employer: values.employer_id ?values.employer_id:"",
+        reason_if_rejected: values.reason_if_rejected?values.reason_if_rejected:"",
+        reason_if_rejected_other: values.reason_if_rejected_other ?values.reason_if_rejected_other:"",
+        salary_offered: values.salary_offered?values.salary_offered:"",
+        start_date: values.start_date ?values.start_date:"",
+        source: values.source?values.source:"",
+        status: values.status ?values.status:"",
         student_id: val.student_id,
-        work_engagement: values.work_engagement,
+        work_engagement: values.work_engagement?values.work_engagement:"",
         id: val.id,
       };
     });
