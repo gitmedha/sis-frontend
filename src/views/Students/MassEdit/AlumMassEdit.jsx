@@ -234,12 +234,13 @@ const AlumMassEdit = (props) => {
                 id: Number(val.id),
               })
             );
+            
           } catch (err) {
             return err;
           }
+          
         })
       );
-
       setAlumniServiceData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
@@ -270,7 +271,7 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    let data = students.map((obj) => {
+    let data = alumniServiceData.map((obj) => {
       return {
         assigned_to: values.assigned_to ? values.assigned_to : obj.assigned_to,
         category: values.category ? values.category : obj.category,
@@ -289,7 +290,7 @@ const AlumMassEdit = (props) => {
           : obj.receipt_number,
         start_date: values.start_date ? values.start_date : obj.start_date,
         type: values.type,
-        student_id: obj.id,
+        student_id: obj.student_id,
         id: Number(obj.id),
       };
     });
@@ -394,7 +395,7 @@ const AlumMassEdit = (props) => {
                   // name="student_ids"
                   // options={studentOptions}
                   // filterData={filterStudent}
-                  // onInputChange={(e) => setStudentInput(e)}
+                  
                   // className="basic-multi-select"
                   // classNamePrefix="select"
                   // onChange={(choices) => setStudents(choices)}
@@ -406,7 +407,8 @@ const AlumMassEdit = (props) => {
                   isOptionDisabled={() => students.length >= 10}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onInputChange={handleInputChange}
+                  // onInputChange={handleInputChange}
+                  onInputChange={(e) => setStudentInput(e)}
                   onChange={handleselectChange}
                   value={students}
                 />
