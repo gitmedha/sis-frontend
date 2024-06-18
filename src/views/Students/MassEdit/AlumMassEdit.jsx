@@ -264,7 +264,7 @@ const AlumMassEdit = (props) => {
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem("user_id"),
+    assigned_to: "",
     category: null,
     type: "",
     status:""
@@ -580,7 +580,7 @@ const AlumMassEdit = (props) => {
                           // ={feeFieldsRequired}
                         />
                       </div>
-                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
@@ -588,10 +588,8 @@ const AlumMassEdit = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      ={feeFieldsRequired}
                     />
-                  </div> */}
+                  </div>
                       <div className="col-md-12 col-sm-12 mt-2">
                         <Textarea
                           name="comments"
