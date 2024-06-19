@@ -138,7 +138,7 @@ export const StudentValidations = Yup.object({
     'Please remove extra space.',
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
   ),
-  alternate_phone :Yup.string().required('Alternate phone is required.') // Check for required input
+  alternate_phone :Yup.string() // Check for required input
   .test(
     'no-trailing-space',
     'Please remove extra space.',
