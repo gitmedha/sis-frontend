@@ -137,7 +137,6 @@ const MassEmployerUpload = (props) => {
       let endDate = data.end_date
         ? moment(data.end_date).format("YYYY-MM-DD")
         : null;
-        console.log(data);
       return {
         assigned_to: data.assigned_to,
         end_date: endDate,
