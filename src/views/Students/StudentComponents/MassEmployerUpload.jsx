@@ -137,6 +137,7 @@ const MassEmployerUpload = (props) => {
       let endDate = data.end_date
         ? moment(data.end_date).format("YYYY-MM-DD")
         : null;
+        console.log(data);
       return {
         assigned_to: data.assigned_to,
         end_date: endDate,
@@ -149,6 +150,7 @@ const MassEmployerUpload = (props) => {
         start_date: startDate,
         status: data.status,
         student: obj.id,
+        employer_id:data.employer_id,
         work_engagement: data.work_engagement,
       };
     });
@@ -677,7 +679,7 @@ const MassEmployerUpload = (props) => {
                     <button
                       type="submit"
                       className="btn btn-primary btn-regular collapse_form_buttons"
-                      onClick={() => onSubmit(values)}
+                      // onClick={() => onSubmit(values)}
                     >
                       SAVE
                     </button>
