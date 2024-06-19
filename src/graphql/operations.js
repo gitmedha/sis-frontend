@@ -239,7 +239,6 @@ updatedby {
     id
     username
 }
-published_at
 
 `
 
@@ -503,6 +502,25 @@ export const UPDATE_OPERATION = `
         ){
             usersOpsActivity{
                 ${operationFields}
+            }
+        }
+    }
+
+`;
+
+export const UPDATE_MENTORSHIP = `
+    mutation UPDATE_MENTORSHIP (
+        $data:editMentorshipInput!
+        $id:ID!
+    ){
+        updateMentorship(
+            input: {
+                data:$data,
+                where: {id: $id}
+            }
+        ){
+            mentorship{
+                ${mentoshipfeild}
             }
         }
     }

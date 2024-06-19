@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { searchBatches, searchInstitutions } from "../operationsActions";
 // import AlumunniBulkrow from "./AlumunniBulkrow";
 import { checkEmptyValuesandplaceNA } from "../../../../utils/function/OpsModulechecker";
+import MentorBulkrow from "./MentorBulkrow";
 
 const MentorBulkAdd = (props) => {
   let { onHide, show } = props;
@@ -269,19 +270,20 @@ const MentorBulkAdd = (props) => {
       setRows([
         {
           id: 1,
-          query_start: "",
-          student_name: "",
-          student_id: "",
-          father_name: "",
-          email: "",
-          phone: "",
-          location: "",
-          query_type: "",
-          query_desc: "",
-          conclusion: "",
-          status: "",
-          query_end: "",
-          // published_at: "",
+          assigned_to: "",
+    mentor_name: "",
+    email: "",
+    mentor_domain: "",
+    mentor_company_name: "",
+    deisgnation: "",
+    mentor_area: "",
+    mentor_state: "",
+    outreach: "",
+    onboarding_date: "",
+    social_media_profile_link: "",
+    medha_area: "",
+    status: "",
+    program_name: "",
         },
       ]);
     } catch (error) {
@@ -439,36 +441,38 @@ const MentorBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Student ID</th>
-                  <th>Query Start Date *</th>
-                  <th>Full Name *</th>
-                  <th>Father's Name </th>
-                  <th>Email ID</th>
-                  <th>Mobile No.</th>
-                  <th>Medha Area *</th>
-                  <th>Query Type *</th>
-                  <th>Query Description *</th>
-                  <th>Conclusion</th>
-                  <th>Status *</th>
-                  <th>Query End Date</th>
+                  <th>Mentor Name</th>
+                  <th>Assigned To</th>
+                  <th>Program Name</th>
+                  <th>Status </th>
+                  <th>Outreach (Offline/Online)</th>
+                  <th>Onboarding Date</th>
+                  <th>Email</th>
+                  <th>Mentor's Domain</th>
+                  <th>Mentor's Company Name *</th>
+                  <th>Deisgnation/Title</th>
+                  <th>State</th>
+                  <th>Mentor's Area *</th>
+                  
+                  {/* <th>Area</th> */}
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
-                //   <AlumunniBulkrow
-                //     handleInputChange={handleInputChange}
-                //     handleChange={handleChange}
-                //     row={row}
-                //     endDate={endDate}
-                //     startDate={startDate}
-                //     institutiondata={institutionOptions}
-                //     batchbdata={batchOptions}
-                //     updateRow={updateRow}
-                //     statedata={stateOptions}
-                //     areaOptions={areaOptions}
-                //     classValue={classValue}
-                //   />""
-                ""
+                  <MentorBulkrow
+                    handleInputChange={handleInputChange}
+                    handleChange={handleChange}
+                    row={row}
+                    endDate={endDate}
+                    startDate={startDate}
+                    institutiondata={institutionOptions}
+                    batchbdata={batchOptions}
+                    updateRow={updateRow}
+                    statedata={stateOptions}
+                    areaOptions={areaOptions}
+                    classValue={classValue}
+                  />
+                
                 ))}
               </tbody>
             </table>

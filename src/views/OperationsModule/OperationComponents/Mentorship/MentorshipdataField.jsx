@@ -127,23 +127,21 @@ const MentorshipdataField = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
               <div className="col-md-6 col-sm-12">
-    <DetailField className='' Bold={""} label="Mentor Name" value={props.activity_type} />
-    <DetailField className='' Bold={""} label="Batch" value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />} />
-    <DetailField className='' Bold={""} label="Start Date" value={moment(props.start_date).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
-    <DetailField className='' Bold={""} label="Donor" value={props.donor ? "Yes" : "No"} />
-    <DetailField className='' Bold={""} label="Guest" value={props.guest} />
-    <DetailField className='' Bold={""} label="Organization" value={props.organization} />
-    <DetailField className='' Bold={""} label="Student Attended" value={props.students_attended} />
+    <DetailField className='' Bold={""} label="Mentor Name" value={props.mentor_name} />
+    <DetailField className='' Bold={""} label="Program Name" value={props.program_name} />
+    <DetailField className='' Bold={""} label="Outreach (Offline/Online)" value={moment(props.outreach).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
+    <DetailField className='' Bold={""} label="Email" value={props.email} />
+    <DetailField className='' Bold={""} label="Mentor's Company Name" value={props.mentor_company_name} />
+    {/* <DetailField className='' Bold={""} label="Organization" value={props.organization} />
+    <DetailField className='' Bold={""} label="Student Attended" value={props.students_attended} /> */}
     
   </div>
   <div className="col-md-6 col-sm-12">
     <DetailField className='' label="Assigned to" value={props.assigned_to?.username ? props.assigned_to?.username : ""} Bold={""} />
-    <DetailField className='' Bold={""} label="Institution" value={<Anchor text={props.institution?.name} target="_blank" rel="noopener noreferrer" href={`/institution/${props.institution?.id}`} />} />
-    <DetailField className='' Bold={""} label="End Date" value={moment(props.end_date).format("DD MMM YYYY") ? moment(props.end_date).format("DD MMM YYYY") : ""} />
-    <DetailField className='' Bold={""} label="Topic" value={props.topic} />
+    <DetailField className='' Bold={""} label="Status" value={props.status}  />
+    <DetailField className='' Bold={""} label="Onboarding Date" value={moment(props.onboarding_date).format("DD MMM YYYY") ? moment(props.end_date).format("DD MMM YYYY") : ""} />
+    <DetailField className='' Bold={""} label="Mentor's Domain" value={props.mentor_domain} />
     <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
-    <DetailField className='' Bold={""} label="Program Name" value={props.program_name ? props.program_name : "Not found"} />
-    <DetailField className='' Bold={""} label="Student Type" value={props.student_type}/>
   </div>
               </div>
               <div className="">
@@ -152,14 +150,14 @@ const MentorshipdataField = (props) => {
 
                 <div className="row  ">
                   <div className="col-md-6 col-sm-12">
-                    <DetailField Bold={""} label="State" value={props.state} />
+                    <DetailField Bold={""} label="Mentor State" value={props.mentor_state} />
                   </div>
 
                   <div className="col-md-6 col-sm-12">
                     <DetailField
                       Bold={""}
-                      label="Medha Area"
-                      value={props.area}
+                      label="Mentor Area"
+                      value={props.mentor_area}
                     />
                   </div>
                 </div>
@@ -218,13 +216,13 @@ const MentorshipdataField = (props) => {
                   >
                     EDIT
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => closeThepopup()}
                     className="btn btn-danger px-4 mx-4"
                   >
                     DELETE
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )}

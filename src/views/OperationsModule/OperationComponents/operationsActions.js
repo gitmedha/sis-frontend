@@ -26,7 +26,8 @@ import {
     SEARCH_INSTITUITIONS,
     SEARCH_BY_BATCHES,
     SEARCH_BY_STUDENTS,
-    SEARCH_BY_PROGRAMS  
+    SEARCH_BY_PROGRAMS,  
+    UPDATE_MENTORSHIP
 } from "../../../graphql/operations";
 
 
@@ -327,6 +328,21 @@ export const updateOpsActivity = async(id,data)=>{
    
     return await api.post('/graphql', {
         query:UPDATE_OPERATION,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        return Promise.reject(error);
+    })
+}
+
+export const updateMentorshipData = async(id,data)=>{
+   
+    return await api.post('/graphql', {
+        query:UPDATE_MENTORSHIP,
         variables: {
             id,
             data
