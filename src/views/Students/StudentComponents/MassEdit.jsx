@@ -169,7 +169,7 @@ const MassEdit = (props) => {
         ? moment(values.fee_submission_date).format("YYYY-MM-DD")
         : null;
       let feeAmount = values.fee_amount;
-      //  let receiptNumber=values.receipt_number ?values.receipt_number:""
+       let receiptNumber=values.receipt_number ?values.receipt_number:""
       let comments = values.comments ? values.comments : "";
       return {
         student: obj.id,
@@ -181,7 +181,7 @@ const MassEdit = (props) => {
         fee_submission_date: feeSubmission,
         location: values.location,
         program_mode: values.program_mode,
-        // receipt_number: receiptNumber,
+        receipt_number: receiptNumber,
         start_date: startDate,
         type: values.type,
       };
@@ -468,6 +468,16 @@ const MassEdit = (props) => {
                         required={feeFieldsRequired}
                       />
                     </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="receipt_number"
+                      label="Receipt Number"
+                      placeholder="Receipt Number"
+                      control="input"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
 
                     <div className="col-md-12 col-sm-12 mt-2">
                       <Textarea
