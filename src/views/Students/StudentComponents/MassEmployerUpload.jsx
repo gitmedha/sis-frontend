@@ -400,6 +400,11 @@ const MassEmployerUpload = (props) => {
   const handleChange = (selectedOptions) => {
     setStudents(selectedOptions);
   };
+  useEffect(() => {
+    filterStudent(studentInput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentInput]);
   
 
   return (
@@ -462,7 +467,7 @@ const MassEmployerUpload = (props) => {
                          isOptionDisabled={() => students.length >= 10}
                          className="basic-multi-select"
                          classNamePrefix="select"
-                         onInputChange={handleInputChange}
+                         onInputChange={(e)=>setStudentInput(e)}
                          onChange={handleChange}
                          value={students}
                       />
