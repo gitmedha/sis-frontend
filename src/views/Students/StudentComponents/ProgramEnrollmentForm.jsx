@@ -449,6 +449,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       label="Course Name"
                       options={course}
+                      required
                       onChange={(e)=>handlechange(e,"course1")}
                       className="form-control"
                       placeholder="Course Name"
