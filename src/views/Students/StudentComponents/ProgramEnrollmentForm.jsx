@@ -304,27 +304,6 @@ const ProgramEnrollmentForm = (props) => {
   },[courseLevel,courseType])
   
 
-  useEffect(() => {
-      if(props.course_type && props.course_level){
-        getAllCourse().then((data) => {
-          const filteredCourses = data.data.data.coursesConnection.values.filter(obj => {
-            return obj.course_level === courseLevel && obj.course_type === courseType;
-          });
-          
-          const courseOptions = filteredCourses.map(obj => ({
-            key: obj.course_name,
-            value: obj.course_name,
-            label: obj.course_name
-          }));
-      
-          // Add the default "other" option
-          courseOptions.push({ value: "Other", label: "Other", key: "Other" });
-      
-        setcourse(courseOptions)
-  
-        });
-      }
-  }, [props.course_type , props.course_level])
   
  
   return (
