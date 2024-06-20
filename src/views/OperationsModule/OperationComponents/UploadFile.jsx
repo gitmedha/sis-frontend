@@ -150,7 +150,7 @@ const UploadFile = (props) => {
       ) {
         notFoundData.push({
           index: index + 1,
-          institution: newItem["Educational Institution"],
+          institution: newItem["Institution"],
           batch: newItem["Batch Name"],
           state: newItem["State"] || "",
           start_date: startDate,
@@ -239,9 +239,8 @@ const UploadFile = (props) => {
  
 
   const uploadDirect =()=>{
-    if (notUploadedData.length == 0  && excelData.length > 0) {
+    if (notUploadedData.length === 0  && excelData.length > 0) {
       props.uploadExcel(excelData,"my_data");
-
     }else{
       setShowModal(true)
     }
