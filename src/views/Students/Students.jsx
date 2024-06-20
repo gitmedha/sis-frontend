@@ -550,20 +550,17 @@ else {
 
 
   const HideMassEmployeCreateModal =async(data)=>{
-      if(data.length ===0){
-        // return ;
-        setAlert("Unable to create Employment Connection Data.", "error");
-      }else{
+     
         try {
            await api.post(
-            "/employment-connections/createBulkEmploymentConnection",
+            "/employment-connections/createBulkEmploymentConnections",
             data
           );
-          setAlert("Employment Connection data created successfully.", "error");
+          setAlert("Employment Connection data created successfully.", "success");
         } catch (error) {
           setAlert("Unable to create Employment Connection Data.", "error");
         }
-      }
+      
   }
 
   const hideMassCreateModal = async (data) => {
