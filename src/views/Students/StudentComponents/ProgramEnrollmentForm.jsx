@@ -483,7 +483,7 @@ console.log(initialValues);
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 && (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
                    <Input
                       name="course_name_other"
                       control="input"
