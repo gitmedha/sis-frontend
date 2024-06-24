@@ -104,7 +104,7 @@ const TotUpload = (props) => {
       return newItem;
     });
 
-    processParsedData(data);
+    processFileData(data);
   };
 
   const convertExcelDate = (excelDate) => {
@@ -144,6 +144,20 @@ const TotUpload = (props) => {
     return null;
   };
 
+  const processFileData = (jsonData) => {
+    const validRecords = [];
+    const invalidRecords = [];
+
+    jsonData.forEach((row, index) => {
+      if (Object.values(row).some((value) => value === null || value === '')) {
+        return ;
+      } else {
+        validRecords.push(row);
+      }
+    });
+    processParsedData(validRecords)
+  };
+
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
@@ -166,7 +180,7 @@ const TotUpload = (props) => {
       );
       console.log(partnerDept.map(obj=>obj.value));
       const departMentCheck = partnerDept.find(
-        (department) => "Higher Education" === newItem["Partner Dept"]
+        (department) => "Higher Education" === newItem["Partner Department"]
       );
       
       const projectCheck = ["Internal", "External"].find(
@@ -309,7 +323,7 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-    if (notUploadedData.length == 1 && excelData.length > 0) {
+    if (notUploadedData.length == 0 && excelData.length > 0) {
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
