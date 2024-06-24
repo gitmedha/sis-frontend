@@ -120,102 +120,128 @@ const TotUpload = (props) => {
     return !isNaN(date.getTime());
   };
 
+  const excelSerialDateToJSDate = (serial) => {
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+    const date = new Date(excelEpoch.getTime() + serial * 86400000);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  };
+  const isValidDateFormat = (dateStr) => {
+    
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/; // Regex for yyyy/mm/dd format
+    console.log(dateStr);
+    if (datePattern.test(dateStr)) {
+      
+      const [year, month, day] = dateStr.split('/');
+      console.log("`${year}/${month}/${day}`",`${year}/${month}/${day}`);
+      return `${year}-${month}-${day}`;
+    }
+    
+   
+    
+    return null;
+  };
+
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
-
+  
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-
+  
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
       const areaCheck = areaOptions.find(
         (area) => area === newItem["City"]
       )?.id;
+      console.log("module name",newItem["Module Name"]);
       const moduleCheck = moduleName.find(
-        (module) => module === newItem["Module Name"]
+        (module) => module.value === newItem["Module Name"]
       );
-
+      console.log(partnerDept.map(obj=>obj.value));
       const departMentCheck = partnerDept.find(
-        (department) => department === newItem["Partner Dept"]
+        (department) => "Higher Education" === newItem["Partner Dept"]
       );
+      
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
-
+  
       const userId = assigneOption.find(
         (user) => user.name === newItem["Assigned To"]
       )?.id;
-      const startDate = isValidDate(newItem["Start Date"]);
-      const endDate = isValidDate(newItem["End Date"]);
-      const currentUser = localStorage.getItem("user_id");
+      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
+      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
+  
+      const isStartDateValid = isValidDateFormat(startDate);
+      const isEndDateValid = isValidDateFormat(endDate);
+        console.log("project_name: ", newItem["Project Name"]);
       if (
-        departMentCheck === undefined ||
-        projectCheck === undefined ||
-        startDate ||
-        endDate
-      )
-        if (
-          !departMentCheck ||
-          !projectCheck ||
-          !moduleCheck ||
-          (startDate && !isValidDate(startDate)) ||
-          (endDate && !isValidDate(endDate))
-        ) {
-          notFoundData.push({
-            index: index + 1,
-            user_name: newItem["Full Name"],
-            trainer_1: newItem["Trainer 1"],
-            project_name: newItem["Project Name"],
-            certificate_given: newItem["Certificate Given"],
-            module_name: newItem["Module Name"],
-            project_type: newItem["Project Type"],
-            trainer_2: newItem["Trainer 2"],
-            partner_dept: newItem["Partner Dept"],
-            college: newItem["College"],
-            city: newItem["City"],
-            state: newItem["State"],
-            age: newItem["Age"],
-            gender: newItem["Gender"],
-            contact: newItem["Contact"],
-            designation: newItem["Designation"],
-            start_date: newItem["Start Date"],
-            end_date: newItem["End Date"],
-          });
-        } else {
-          formattedData.push({
-            user_name: newItem["Full Name"],
-            trainer_1: newItem["Trainer 1"],
-            project_name: newItem["Project Name"],
-            certificate_given: newItem["Certificate Given"],
-            module_name: newItem["Module Name"],
-            project_type: newItem["Project Type"],
-            trainer_2: newItem["Trainer 2"],
-            partner_dept: newItem["Partner Dept"],
-            college: newItem["College"],
-            city: newItem["City"],
-            state: newItem["State"],
-            age: newItem["Age"],
-            gender: newItem["Gender"],
-            contact: newItem["Contact"],
-            designation: newItem["Designation"],
-            start_date: newItem["Start Date"],
-            end_date: newItem["End Date"],
-          });
-        }
+        !departMentCheck ||
+        !projectCheck ||
+        !moduleCheck ||
+        !isStartDateValid ||
+        !isEndDateValid
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          user_name: newItem["Full Name"],
+          trainer_1: newItem["Trainer 1"],
+          project_name: newItem["Project Name"],
+          certificate_given: newItem["Certificate Given"],
+          module_name: moduleCheck ? newItem["Module Name"] : { value: newItem["Module Name"], notFound: true },
+          project_type: projectCheck ? newItem["Project Type"] : { value: newItem["Project Type"], notFound: true },
+          trainer_2: newItem["Trainer 2"],
+          partner_dept: departMentCheck ? newItem["Partner Department"] : { value: newItem["Partner Department"], notFound: true },
+          college: newItem["College"],
+          city: newItem["City"],
+          state: newItem["State"],
+          age: newItem["Age"],
+          gender: newItem["Gender"],
+          contact: newItem["Contact"],
+          designation: newItem["Designation"],
+          start_date: isStartDateValid ? startDate : { value: newItem["Start Date"], notFound: true },
+          end_date: isEndDateValid ? endDate : { value: newItem["End Date"], notFound: true },
+        });
+      } else {
+        formattedData.push({
+          user_name: newItem["Full Name"],
+          trainer_1: newItem["Trainer 1"],
+          project_name: newItem["Project Name"],
+          certificate_given: newItem["Certificate Given"],
+          module_name: newItem["Module Name"],
+          project_type: newItem["Project Type"],
+          trainer_2: newItem["Trainer 2"],
+          partner_dept: newItem["Partner Department"],
+          college: newItem["College"],
+          city: newItem["City"],
+          state: newItem["State"],
+          age: newItem["Age"],
+          gender: newItem["Gender"],
+          contact: newItem["Contact"],
+          designation: newItem["Designation"],
+          start_date: startDate,
+          end_date: endDate,
+        });
+      }
     });
-
+    console.log('notFoundData',notFoundData);
+    console.log("formattedData",formattedData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
+  
 
   useEffect(() => {
     getTotPickList().then((data) => {
       // setModuleName(data.module_name.map(item))
+      console.log(data.module_name);
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
