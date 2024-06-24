@@ -291,41 +291,17 @@ const ProgramEnrollmentForm = (props) => {
           value: obj.course_name,
           label: obj.course_name
         }));
-    
-        // Add the default "other" option
         courseOptions.push({ value: "Other", label: "Other", key: "Other" });
     
       setcourse(courseOptions)
-
+        
       });
-    } 
-    
+    }
+      
     
   },[courseLevel,courseType])
-  
 
-  useEffect(() => {
-      if(props.course_type && props.course_level){
-        getAllCourse().then((data) => {
-          const filteredCourses = data.data.data.coursesConnection.values.filter(obj => {
-            return obj.course_level === courseLevel && obj.course_type === courseType;
-          });
-          
-          const courseOptions = filteredCourses.map(obj => ({
-            key: obj.course_name,
-            value: obj.course_name,
-            label: obj.course_name
-          }));
-      
-          // Add the default "other" option
-          courseOptions.push({ value: "Other", label: "Other", key: "Other" });
-      
-        setcourse(courseOptions)
-  
-        });
-      }
-  }, [props.course_type , props.course_level])
-  
+
  
   return (
     <Modal
@@ -455,7 +431,13 @@ const ProgramEnrollmentForm = (props) => {
                       options={courseTypeOptions}
                       className="form-control"
                       placeholder="Course Type"
-                      onChange={(e)=>setCourseType(e.value)}
+                      onChange={(e)=>{
+                        // setCourseLevelOptions([])
+                        // initialValues.course_level=''
+                        setFieldValue('course_level','')
+                        setFieldValue('course_name_in_current_sis','')
+                        setFieldValue('course_name_other','')
+                        setCourseType(e.value)}}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -468,7 +450,11 @@ const ProgramEnrollmentForm = (props) => {
                       options={courseLevelOptions}
                       className="form-control"
                       placeholder="Course Level"
-                      onChange={(e)=>setCourseLevel(e.value)}
+                      // onChange={setcourse([])}
+                      onChange={(e)=>{
+                        setFieldValue('course_name_in_current_sis','')
+                        setFieldValue('course_name_other','')
+                        setCourseLevel(e.value)}}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -481,7 +467,9 @@ const ProgramEnrollmentForm = (props) => {
                       label="Course Name"
                       options={course}
                       required
-                      onChange={(e)=>handlechange(e,"course1")}
+                      onChange={(e)=>{
+                        setOthertargetValue({course1:false})
+                        handlechange(e,"course1")}}
                       className="form-control"
                       placeholder="Course Name"
                     />:
