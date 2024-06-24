@@ -55,9 +55,7 @@ const ProgramEnrollmentForm = (props) => {
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
-  useEffect(()=>{
 
-  },[props.courseLevel,props.course_name_in_current_sis])
 
   useEffect(() => {
     if (props.institution) {
@@ -301,7 +299,7 @@ const ProgramEnrollmentForm = (props) => {
     
   },[courseLevel,courseType])
 
-
+console.log(initialValues);
  
   return (
     <Modal
@@ -432,14 +430,15 @@ const ProgramEnrollmentForm = (props) => {
                       className="form-control"
                       placeholder="Course Type"
                       onChange={(e)=>{
-                        // setCourseLevelOptions([])
-                        // initialValues.course_level=''
                         setFieldValue('course_level','')
                         setFieldValue('course_name_in_current_sis','')
                         setFieldValue('course_name_other','')
                         setFieldValue('course_year','')
                         setFieldValue('year_of_course_completion','')
-                        setCourseType(e.value)}}
+                        
+                        setCourseType(e.value)
+                        setOthertargetValue({course1:false})
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -457,7 +456,10 @@ const ProgramEnrollmentForm = (props) => {
                         setFieldValue('course_name_in_current_sis','')
                         
                         setFieldValue('course_name_other','')
-                        setCourseLevel(e.value)}}
+                        setCourseLevel(e.value)
+                        setOthertargetValue({course1:false})
+
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -481,7 +483,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                  ( OthertargetValue.course1 && (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
                    <Input
                       name="course_name_other"
                       control="input"
