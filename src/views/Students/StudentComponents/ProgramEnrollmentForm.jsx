@@ -452,6 +452,7 @@ const ProgramEnrollmentForm = (props) => {
                       placeholder="Course Level"
                       // onChange={setcourse([])}
                       onChange={(e)=>{
+                        setFieldValue('course_type','')
                         setFieldValue('course_name_in_current_sis','')
                         setFieldValue('course_name_other','')
                         setCourseLevel(e.value)}}
@@ -468,6 +469,8 @@ const ProgramEnrollmentForm = (props) => {
                       options={course}
                       required
                       onChange={(e)=>{
+                        setFieldValue('course_type','')
+                        setFieldValue('course_level','')
                         setOthertargetValue({course1:false})
                         handlechange(e,"course1")}}
                       className="form-control"
