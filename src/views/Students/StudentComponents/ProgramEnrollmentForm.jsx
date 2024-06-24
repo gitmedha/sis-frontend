@@ -48,13 +48,16 @@ const ProgramEnrollmentForm = (props) => {
   });
   const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const [courseLevel,setCourseLevel]=useState("")
-  const [courseType,setCourseType]=useState('')
+  const [courseType,setCourseType]=useState("")
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
+  useEffect(()=>{
+
+  },[props.courseLevel,props.course_name_in_current_sis])
 
   useEffect(() => {
     if (props.institution) {
@@ -69,6 +72,8 @@ const ProgramEnrollmentForm = (props) => {
         setBatchOptions(data);
       });
     }
+    setCourseLevel(props.programEnrollment?.course_level)
+    setCourseType(props.programEnrollment?.course_type)
   }, [props]);
 
   useEffect(() => {
@@ -295,7 +300,12 @@ const ProgramEnrollmentForm = (props) => {
 
       });
     } 
+    
+    
   },[courseLevel,courseType])
+  
+
+  
  
   return (
     <Modal
@@ -450,6 +460,7 @@ const ProgramEnrollmentForm = (props) => {
                       icon="down"
                       label="Course Name"
                       options={course}
+                      required
                       onChange={(e)=>handlechange(e,"course1")}
                       className="form-control"
                       placeholder="Course Name"
