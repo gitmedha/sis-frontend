@@ -55,7 +55,14 @@ const ProgramEnrollmentForm = (props) => {
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
+  const [courseName,setCourseName] = useState("");
 
+
+  useEffect(()=>{
+    if(props.programEnrollment){
+      setCourseName(programEnrollment.course_name_in_current_sis)
+    }
+  },[props.programEnrollment])
 
   useEffect(() => {
     if (props.institution) {
@@ -435,9 +442,9 @@ console.log(initialValues);
                         setFieldValue('course_name_other','')
                         setFieldValue('course_year','')
                         setFieldValue('year_of_course_completion','')
-                        
+                        setCourseName("")
                         setCourseType(e.value)
-                        setOthertargetValue({course1:false})
+                        // setOthertargetValue({course1:false})
                       }}
                     />
                   </div>
@@ -454,7 +461,7 @@ console.log(initialValues);
                       // onChange={setcourse([])}
                       onChange={(e)=>{
                         setFieldValue('course_name_in_current_sis','')
-                        
+                        setCourseName("")
                         setFieldValue('course_name_other','')
                         setCourseLevel(e.value)
                         setOthertargetValue({course1:false})
@@ -473,6 +480,7 @@ console.log(initialValues);
                       options={course}
                       required
                       onChange={(e)=>{
+                        setCourseName(e.value)
                         setOthertargetValue({course1:false})
                         handlechange(e,"course1")}}
                       className="form-control"
@@ -483,7 +491,7 @@ console.log(initialValues);
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                   courseName === "Other" ?
                    <Input
                       name="course_name_other"
                       control="input"
