@@ -21,3 +21,8 @@ export const isMedhavi = () => {
   const userRole = localStorage.getItem('user_role');
   return userRole && userRole.toLowerCase() === 'medhavi';
 }
+
+export const getUser = () =>{
+  const fullName = localStorage.getItem('user_name');
+  return fullName;
+}
