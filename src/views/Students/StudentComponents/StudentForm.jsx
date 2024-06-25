@@ -448,7 +448,7 @@ const StudentForm = (props) => {
                         />
                       </div>
                     )}
-                    <div className="col-md-6 col-sm-12 mb-2 d-none">
+                    <div className="col-md-6 col-sm-12 mb-2">
                       <Input
                         icon="down"
                         control="lookup"
