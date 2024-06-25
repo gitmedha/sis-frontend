@@ -674,12 +674,12 @@ else {
                 >
                   Add New
                 </button>
-                {/* <button
+                <button
                   className="btn btn-primary add_button_sec"
                   onClick={()=>setModalShowmassEdit(true)}
                 >
                   Mass Edit 
-                </button> */}
+                </button>
               </div>
             )}
           </div>
