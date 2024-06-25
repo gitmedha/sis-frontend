@@ -55,9 +55,15 @@ const ProgramEnrollmentForm = (props) => {
     setOptions(lookUpOpts);
     setLookUpLoading(false);
   };
-  useEffect(()=>{
+  const [courseName,setCourseName] = useState("");
 
-  },[props.courseLevel,props.course_name_in_current_sis])
+
+  useEffect(()=>{
+    if(props.programEnrollment){
+      setCourseName(programEnrollment.course_name_in_current_sis)
+    }
+  },[props.programEnrollment])
+
 
   useEffect(() => {
     if (props.institution) {
@@ -302,7 +308,6 @@ const ProgramEnrollmentForm = (props) => {
     
   },[courseLevel,courseType])
 
-
  
   return (
     <Modal
@@ -433,12 +438,15 @@ const ProgramEnrollmentForm = (props) => {
                       className="form-control"
                       placeholder="Course Type"
                       onChange={(e)=>{
-                        // setCourseLevelOptions([])
-                        // initialValues.course_level=''
                         setFieldValue('course_level','')
                         setFieldValue('course_name_in_current_sis','')
                         setFieldValue('course_name_other','')
-                        setCourseType(e.value)}}
+                        setFieldValue('course_year','')
+                        setFieldValue('year_of_course_completion','')
+                        setCourseName("")
+                        setCourseType(e.value)
+                        // setOthertargetValue({course1:false})
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -454,8 +462,12 @@ const ProgramEnrollmentForm = (props) => {
                       // onChange={setcourse([])}
                       onChange={(e)=>{
                         setFieldValue('course_name_in_current_sis','')
+                        setCourseName("")
                         setFieldValue('course_name_other','')
-                        setCourseLevel(e.value)}}
+                        setCourseLevel(e.value)
+                        setOthertargetValue({course1:false})
+
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -469,6 +481,7 @@ const ProgramEnrollmentForm = (props) => {
                       options={course}
                       required
                       onChange={(e)=>{
+                        setCourseName(e.value)
                         setOthertargetValue({course1:false})
                         handlechange(e,"course1")}}
                       className="form-control"
@@ -479,7 +492,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                   {
-                  ( OthertargetValue.course1 || (initialValues.course_name_in_current_sis =="Other" && initialValues.course_name_in_current_sis.length))?
+                   courseName === "Other" ?
                    <Input
                       name="course_name_other"
                       control="input"
