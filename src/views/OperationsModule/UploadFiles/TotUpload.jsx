@@ -70,6 +70,18 @@ const TotUpload = (props) => {
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
+  
+
+
+  useEffect(() => {
+    const getdata = async () => {
+      const data = await getAllMedhaUsers();
+      setAssigneeOption(data);
+    };
+
+    getdata();
+  }, [props]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNextDisabled(false);
@@ -103,17 +115,10 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
-
-    processFileData(data);
+    processParsedData(data);
   };
 
-  const convertExcelDate = (excelDate) => {
-    const jsDate = new Date((excelDate - 25569) * 86400 * 1000);
-    const yyyy = jsDate.getFullYear();
-    const mm = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const dd = String(jsDate.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  };
+
 
   const isValidDate = (dateString) => {
     const date = new Date(dateString);
@@ -144,19 +149,7 @@ const TotUpload = (props) => {
     return null;
   };
 
-  const processFileData = (jsonData) => {
-    const validRecords = [];
-    const invalidRecords = [];
-
-    jsonData.forEach((row, index) => {
-      if (Object.values(row).some((value) => value === null || value === '')) {
-        return ;
-      } else {
-        validRecords.push(row);
-      }
-    });
-    processParsedData(validRecords)
-  };
+  
 
   const processParsedData = (data) => {
     const formattedData = [];
@@ -174,11 +167,10 @@ const TotUpload = (props) => {
       const areaCheck = areaOptions.find(
         (area) => area === newItem["City"]
       )?.id;
-      console.log("module name",newItem["Module Name"]);
       const moduleCheck = moduleName.find(
         (module) => module.value === newItem["Module Name"]
       );
-      console.log(partnerDept.map(obj=>obj.value));
+    
       const departMentCheck = partnerDept.find(
         (department) => "Higher Education" === newItem["Partner Department"]
       );
@@ -187,8 +179,11 @@ const TotUpload = (props) => {
         (project) => project === newItem["Project Type"]
       );
   
-      const userId = assigneOption.find(
-        (user) => user.name === newItem["Assigned To"]
+      const trainer_1 = assigneOption.find(
+        (user) => user.name === newItem["Trainer 1"]
+      )?.id;
+      const trainer_2 = assigneOption.find(
+        (user) => user.name === newItem["Trainer 2"]
       )?.id;
       const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
       const endDate = excelSerialDateToJSDate(newItem["End Date"]);
@@ -226,12 +221,12 @@ const TotUpload = (props) => {
       } else {
         formattedData.push({
           user_name: newItem["Full Name"],
-          trainer_1: newItem["Trainer 1"],
+          trainer_1: trainer_1,
           project_name: newItem["Project Name"],
           certificate_given: newItem["Certificate Given"],
           module_name: newItem["Module Name"],
           project_type: newItem["Project Type"],
-          trainer_2: newItem["Trainer 2"],
+          trainer_2: trainer_2,
           partner_dept: newItem["Partner Department"],
           college: newItem["College"],
           city: newItem["City"],
@@ -324,8 +319,10 @@ const TotUpload = (props) => {
 
   const uploadDirect = () => {
     if (notUploadedData.length == 0 && excelData.length > 0) {
+      console.log("excelData",excelData);
       props.uploadExcel(excelData, "tot");
     } else {
+      console.log("hello");
       setShowModalTOT(true);
     }
   };
@@ -398,15 +395,15 @@ const TotUpload = (props) => {
           )}
         </Styled>
       </Modal>
-      {showModalTOT && (
+      
         <CheckTot
           show={showModalTOT}
-          onHide={hideShowModal}
-          notUploadedData={!check ? notUploadedData : []}
+          onHide={()=>hideShowModal()}
+          notUploadedData={  notUploadedData }
           excelData={excelData}
           uploadExcel={props.uploadExcel}
         />
-      )}
+      
     </>
   );
 };
