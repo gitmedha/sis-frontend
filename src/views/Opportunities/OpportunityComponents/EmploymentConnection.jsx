@@ -10,6 +10,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import Tooltip from "../../../components/content/Tooltip";
 import { urlPath } from "../../../constants";
 import styled from "styled-components";
+import { isAdmin,getUser } from "../../../common/commonFunctions";
 
 const Styled = styled.div`
 .icon-box{
@@ -43,6 +44,13 @@ const EmploymentConnection = (props) => {
       setOpportunitiesPickList(data);
     });
   }, []);
+
+  const isValidUser = () =>{
+    console.log(employmentConnection)
+    if(Object.keys(employmentConnection).length > 0 && employmentConnection.assigned_to) {
+      return employmentConnection.assigned_to.username.toLowerCase() === getUser().toLowerCase();
+    }
+  }
 
   return (
     <Modal
@@ -148,12 +156,12 @@ const EmploymentConnection = (props) => {
               </div>
             </div>
           </div>
-          <div className="row mt-4">
+          {(isValidUser() || isAdmin()) && <div className="row mt-4">
             <div className="col-md-12 d-flex justify-content-center">
               <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button>
               <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button>
             </div>
-          </div>
+          </div>}
         </Modal.Body>
       </Styled>
     </Modal>

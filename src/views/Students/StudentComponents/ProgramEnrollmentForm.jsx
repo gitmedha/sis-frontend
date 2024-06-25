@@ -150,7 +150,8 @@ const ProgramEnrollmentForm = (props) => {
       // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllCourse().then((data)=>{
-      const uniqueCourseLevels = new Set(data.data.data.coursesConnection.values.map(item => item.course_level));
+      console.log(data.data?.data);
+      const uniqueCourseLevels = new Set(data.data?.data?.coursesConnection?.values.map(item => item.course_level));
       const uniqueCourseType=new Set(data.data.data.coursesConnection.values.map(item => item.course_type));
       const courseLevelOptions = Array.from(uniqueCourseLevels).map(course_level => ({
         key: course_level,
