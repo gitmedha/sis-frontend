@@ -1,7 +1,7 @@
 import NP from "nprogress";
 import moment from "moment";
 import api from "../../apis";
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useState, useEffect, useMemo,useRef } from "react";
 import { GET_BATCHES } from "../../graphql";
 import Collapse from "../../components/content/CollapsiblePanels";
 import Table from '../../components/content/Table';
@@ -44,10 +44,22 @@ const Batches = (props) => {
   const [isSearchEnable,setIsSearchEnable] = useState(false);
   const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
+  const prevIsSearchEnableRef = useRef();
+
 
   useEffect(() => {
-    getBatches(activeTab.key);
-  }, [activeTab,isSearchEnable,selectedSearchedValue]);
+    if(isSearchEnable){
+      getBatches(activeTab.key);
+    }
+    
+  if (prevIsSearchEnableRef.current !== undefined) {
+    if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+      getBatches(activeTab.key);
+    }
+  }
+
+  prevIsSearchEnableRef.current = isSearchEnable;  
+  }, [isSearchEnable,activeTab.key,selectedSearchedValue]);
 
 
   const resetSearchFilter = async()=>{
