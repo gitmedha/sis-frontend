@@ -9,6 +9,7 @@ import Tooltip from "../../../components/content/Tooltip";
 import { FaTrashAlt, FaEye } from "react-icons/fa";
 import { getEmploymentConnectionsPickList, getOpportunitiesPickList } from "../../Students/StudentComponents/StudentActions";
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
+import { isAdmin,getUser } from "../../../common/commonFunctions";
 import styled from "styled-components";
 
 const Styled = styled.div`
@@ -44,6 +45,11 @@ const EmploymentConnection = (props) => {
     });
   }, []);
 
+  const isValidUser = () =>{
+    if(Object.keys(employmentConnection).length > 0 && employmentConnection.assigned_to) {
+      return employmentConnection.assigned_to.username.toLowerCase() === getUser().toLowerCase();
+    }
+  }
   return (
     <Modal
       centered
@@ -148,12 +154,12 @@ const EmploymentConnection = (props) => {
               </div>
             </div>
           </div>
-          <div className="row mt-4">
+          {(isValidUser() || isAdmin()) &&<div className="row mt-4">
             <div className="col-md-12 d-flex justify-content-center">
               <button type="button" className="btn btn-primary px-4 mx-4" onClick={handleEdit}>EDIT</button>
               <button type="button" className="btn btn-danger px-4 mx-4" onClick={handleDelete}>DELETE</button>
             </div>
-          </div>
+          </div>}
         </Modal.Body>
     </Styled>
   </Modal>
