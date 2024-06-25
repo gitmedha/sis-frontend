@@ -16,7 +16,7 @@ import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { isAdmin, isSRM } from "../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
@@ -960,7 +960,7 @@ const Operations = ({
               ""
             )}
             <div className="d-flex flex-md-row justify-content-between align-items-center mb-2">
-              {(isSRM() || isAdmin()) && (
+              {(isSRM() || isAdmin() || isMedhavi()) && (
                 <>
                   <button
                     className="btn btn-primary ops_action_button"
@@ -1000,14 +1000,14 @@ const Operations = ({
                         <a 
                           href={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.xlsx"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.csv"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/TOT_Sapmple_File_Data.csv"}
+                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Feild-Activity-Sample.xlsx"
+                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
                         >Sample&nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
                         </a>
@@ -1116,7 +1116,7 @@ const Operations = ({
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <OperationCreateform
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1125,7 +1125,7 @@ const Operations = ({
               )
             : // useTot  ---upskilling ---dtesamarth
             activeTab.key == "useTot"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <UserTot
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1133,7 +1133,7 @@ const Operations = ({
                 />
               )
             : activeTab.key == "upskilling"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <StudentUpkillingBulkcreate
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1141,7 +1141,7 @@ const Operations = ({
                 />
               )
             : activeTab.key == "dtesamarth"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <Dtesamarth
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1149,7 +1149,7 @@ const Operations = ({
                 />
               )
             : activeTab.key == "alumniQueries"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <AllumuniBulkAdd
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1157,7 +1157,7 @@ const Operations = ({
                 />
               )
             : activeTab.key == "collegePitches"
-            ? (isSRM() || isAdmin()) && (
+            ? (isSRM() || isAdmin() || isMedhavi()) && (
                 <CollegepitchesBulkadd
                   show={modalShow}
                   onHide={hideCreateModal}
@@ -1165,7 +1165,7 @@ const Operations = ({
                 />
               )
             : ""}
-          {showModal.opsdata && (isSRM() || isAdmin()) && (
+          {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Opsdatafeilds
               {...optsdata.opsdata}
               show={showModal.opsdata}
@@ -1174,7 +1174,7 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.totdata && (isSRM() || isAdmin()) && (
+          {showModal.totdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Totdatafield
               {...optsdata.totdata}
               show={showModal.opsdata}
@@ -1183,7 +1183,7 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.upskilldata && (isSRM() || isAdmin()) && (
+          {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}
               show={showModal.opsdata}
@@ -1192,14 +1192,14 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.sditdata && (isSRM() || isAdmin()) && (
+          {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("sditdata", false)}
             />
           )}
-          {showModal.alumniQueriesdata && (isSRM() || isAdmin()) && (
+          {showModal.alumniQueriesdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Alumuniqueriesdata
               {...optsdata.alumniQueriesdata}
               show={showModal.opsdata}
@@ -1208,7 +1208,7 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.collegePitches && (isSRM() || isAdmin()) && (
+          {showModal.collegePitches && (isSRM() || isAdmin() || isMedhavi()) && (
             <CollegePitchdata
               {...optsdata.collegePitches}
               show={showModal.opsdata}

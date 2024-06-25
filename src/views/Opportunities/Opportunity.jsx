@@ -19,7 +19,8 @@ import {
 import EmploymentConnections from "./OpportunityComponents/EmploymentConnections";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
-import { deleteFile } from "../../common/commonActions";
+import { deleteFile} from "../../common/commonActions";
+import {isAdmin,getUser } from "../../common/commonFunctions";
 
 const Styled = styled.div`
   .button {
@@ -177,13 +178,19 @@ const Opportunity = (props) => {
       });
   };
 
+  const isValidUser = () =>{
+    if(Object.keys(opportunityData).length > 0 && opportunityData.assigned_to) {
+      return opportunityData.assigned_to.username.toLowerCase() === getUser().toLowerCase();
+    }
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
     return (
       <Styled>
         <>
-          <div className="row" style={{ margin: "30px 0 0" }}>
+         { (isValidUser() || isAdmin()) && <div className="row" style={{ margin: "30px 0 0" }}>
             <div className="col-12 button_container">
               <button
                 onClick={() => setModalShow(true)}
@@ -199,7 +206,7 @@ const Opportunity = (props) => {
                 DELETE
               </button>
             </div>
-          </div>
+          </div>}
           <Collapsible
             opened={true}
             titleContent={

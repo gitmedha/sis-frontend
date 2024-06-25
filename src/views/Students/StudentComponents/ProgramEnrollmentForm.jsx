@@ -64,6 +64,7 @@ const ProgramEnrollmentForm = (props) => {
     }
   },[props.programEnrollment])
 
+
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(
@@ -307,7 +308,6 @@ const ProgramEnrollmentForm = (props) => {
     
   },[courseLevel,courseType])
 
-console.log(initialValues);
  
   return (
     <Modal
