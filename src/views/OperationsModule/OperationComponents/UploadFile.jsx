@@ -113,7 +113,7 @@ const UploadFile = (props) => {
 
   const isValidDateFormat = (dateStr) => {
     
-    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/; // Regex for yyyy/mm/dd format
+    const datePattern =/^\d{4}-\d{2}-\d{2}$/; // Regex for yyyy/mm/dd format
     console.log(dateStr);
     if (datePattern.test(dateStr)) {
       

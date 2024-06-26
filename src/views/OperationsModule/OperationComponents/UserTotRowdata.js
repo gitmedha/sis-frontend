@@ -80,7 +80,8 @@ const UserTotRowdata = (props) => {
 
   };
   useEffect(() => {
-    let data = getAllSrm();
+    let srmData=async()=>{
+      let data = await getAllSrm();
     setsrmOption(data);
     getStateDistricts().then((data) => {
       setAreaOptions([]);
@@ -94,6 +95,8 @@ const UserTotRowdata = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
+    }
+    srmData()
   }, []);
   useEffect(() => {
     getStudentsPickList().then((data) => {
