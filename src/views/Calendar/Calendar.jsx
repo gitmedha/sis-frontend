@@ -50,8 +50,8 @@ const EventCalendar = (props) => {
     const formattedEvents = response?.map((event) => ({
       id: event?.id,
       title: event?.name,
-      start: new Date(event?.start_date)?.setHours(5),
-      end: new Date(event?.end_date)?.setHours(5),
+      start: new Date(new Date(event?.start_date)?.setHours(5)),
+      end: new Date(new Date(event?.end_date)?.setHours(5)),
       assigned_to: {
         username: event?.assgined_to.username,
         email: event?.assgined_to.email,
