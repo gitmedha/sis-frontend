@@ -133,24 +133,16 @@ const TotUpload = (props) => {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const day = String(date.getUTCDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
+    return `${year}-${month}-${day}`;
   };
   const isValidDateFormat = (dateStr) => {
-    
-    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/; // Regex for yyyy/mm/dd format
-    // console.log(dateStr);
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/; // Regex for yyyy-mm-dd format
     if (datePattern.test(dateStr)) {
-      
-      const [year, month, day] = dateStr.split('/');
-      console.log("`${year}/${month}/${day}`",`${year}/${month}/${day}`);
-      return `${year}-${month}-${day}`;
+        const [year, month, day] = dateStr.split('-');
+        return `${year}-${month}-${day}`;
     }
-    
-   
-    
     return null;
-  };
-
+};
   
 
   const processParsedData = (data) => {
@@ -209,7 +201,7 @@ const TotUpload = (props) => {
       ) {
         notFoundData.push({
           index: index + 1,
-          user_name: newItem["Full Name"],
+          user_name: newItem["Participant Name"],
           trainer_1: newItem["Trainer 1"],
           project_name: newItem["Project Name"],
           certificate_given: newItem["Certificate Given"],
@@ -229,13 +221,13 @@ const TotUpload = (props) => {
         });
       } else {
         formattedData.push({
-          user_name: newItem["Full Name"],
-          trainer_1: trainer_1,
+          user_name: newItem["Participant Name"],
+          trainer_1: Number(trainer_1),
           project_name: newItem["Project Name"],
           certificate_given: newItem["Certificate Given"] ,
           module_name: newItem["Module Name"],
           project_type: newItem["Project Type"],
-          trainer_2: trainer_2,
+          trainer_2: Number(trainer_2),
           partner_dept: newItem["Partner Department"],
           college: newItem["College"],
           city: newItem["City"],
