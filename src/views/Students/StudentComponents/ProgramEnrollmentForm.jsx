@@ -147,16 +147,15 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
-      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
       setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
       setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllCourse().then((data)=>{
-      console.log(data.data?.data);
       const uniqueCourseLevels = new Set(data.data?.data?.coursesConnection?.values.map(item => item.course_level));
       const uniqueCourseType=new Set(data.data.data.coursesConnection.values.map(item => item.course_type));
       const courseLevelOptions = Array.from(uniqueCourseLevels).map(course_level => ({

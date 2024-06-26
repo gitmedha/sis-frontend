@@ -53,7 +53,8 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_INSTITUTES,
   });
-  let instituteOptions = data.data.institutions.map((institution) => ({
+
+  let instituteOptions = data.data.institutionsConnection.values.map((institution) => ({
     label: institution.name,
     value: Number(institution.id),
   }));
@@ -69,7 +70,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_BATCHES,
   });
-  let batchOptions = data.data.batches.map((batches) => ({
+  let batchOptions = data.data.batchesConnection.values.map((batches) => ({
     label: batches.name,
     value: Number(batches.id),
   }));
