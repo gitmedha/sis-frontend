@@ -80,7 +80,7 @@ const UserTotRowdata = (props) => {
 
   };
   useEffect(() => {
-    let data = getAllSrm(1);
+    let data = getAllSrm();
     setsrmOption(data);
     getStateDistricts().then((data) => {
       setAreaOptions([]);

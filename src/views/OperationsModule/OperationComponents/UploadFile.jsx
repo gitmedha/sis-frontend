@@ -328,6 +328,7 @@ const processParsedData = (data) => {
 
   const hideShowModal = () => {
     setShowModal(false);
+    setUploadSuccesFully('')
   };
 
  
@@ -397,8 +398,10 @@ const processParsedData = (data) => {
                 >
                   Close
                 </button>
+                
                 <button
                   type="button"
+                  disabled={!uploadSuccesFully}
                   onClick={() => uploadDirect()}
                   className="btn btn-primary px-4 mx-4"
                 >

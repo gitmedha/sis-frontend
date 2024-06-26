@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
 import { queryBuilder } from "../../../apis";
-import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
+import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
 import { FaFileUpload } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
@@ -75,7 +75,8 @@ const TotUpload = (props) => {
 
   useEffect(() => {
     const getdata = async () => {
-      const data = await getAllMedhaUsers();
+      const data = await getAllSrmbyname();
+      console.log(data);
       setAssigneeOption(data);
     };
 
@@ -115,6 +116,7 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
+    
     processParsedData(data);
   };
 
@@ -136,7 +138,7 @@ const TotUpload = (props) => {
   const isValidDateFormat = (dateStr) => {
     
     const datePattern = /^\d{4}\/\d{2}\/\d{2}$/; // Regex for yyyy/mm/dd format
-    console.log(dateStr);
+    // console.log(dateStr);
     if (datePattern.test(dateStr)) {
       
       const [year, month, day] = dateStr.split('/');
@@ -154,8 +156,11 @@ const TotUpload = (props) => {
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
-  
-    data.forEach((item, index) => {
+    const filteredArray = data.filter(obj => 
+      Object.values(obj).some(value => value !== undefined)
+    );
+    console.log(filteredArray);
+    filteredArray.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
@@ -180,17 +185,21 @@ const TotUpload = (props) => {
       );
   
       const trainer_1 = assigneOption.find(
-        (user) => user.name === newItem["Trainer 1"]
-      )?.id;
+        (user) => user.label === newItem["Trainer 1"]
+      )?.value;
+      console.log("Trainer 1 ID:", trainer_1);
+      
       const trainer_2 = assigneOption.find(
-        (user) => user.name === newItem["Trainer 2"]
-      )?.id;
+        (user) => user.label === newItem["Trainer 2"]
+      )?.value;
+      console.log("Trainer 2 ID:", trainer_2);
+      // console.log(trainer_2);
       const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
       const endDate = excelSerialDateToJSDate(newItem["End Date"]);
   
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
-        console.log("project_name: ", newItem["Project Name"]);
+        // console.log("project_name: ", newItem["Project Name"]);
       if (
         !departMentCheck ||
         !projectCheck ||
@@ -223,7 +232,7 @@ const TotUpload = (props) => {
           user_name: newItem["Full Name"],
           trainer_1: trainer_1,
           project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Given"],
+          certificate_given: newItem["Certificate Given"] ,
           module_name: newItem["Module Name"],
           project_type: newItem["Project Type"],
           trainer_2: trainer_2,
