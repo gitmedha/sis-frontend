@@ -598,6 +598,7 @@ const StudentForm = (props) => {
                         label="Pin Code"
                         placeholder="Pin Code"
                         className="form-control"
+                        required
                       />
                     </div>
                   </div>
