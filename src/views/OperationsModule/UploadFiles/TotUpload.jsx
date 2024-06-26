@@ -324,6 +324,7 @@ const TotUpload = (props) => {
 
   const hideShowModal = () => {
     setShowModalTOT(false);
+    setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
@@ -394,6 +395,7 @@ const TotUpload = (props) => {
                 </button>
                 <button
                   type="button"
+                  disabled={!uploadSuccesFully}
                   onClick={() => uploadDirect()}
                   className="btn btn-primary px-4 mx-4"
                 >
