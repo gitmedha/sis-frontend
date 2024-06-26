@@ -56,7 +56,6 @@ const ProgramEnrollmentForm = (props) => {
   });
   const [courseLevel, setCourseLevel] = useState("");
   const [courseType, setCourseType] = useState("");
-
   const prepareLookUpFields = async () => {
     setLookUpLoading(true);
     let lookUpOpts = await batchLookUpOptions();
@@ -146,7 +145,7 @@ const ProgramEnrollmentForm = (props) => {
   useEffect(() => {
     getAllBatches().then((data) => {
       setBatchOptions(
-        data?.data?.data?.batches.map((batches) => ({
+        data?.data?.data?.batchesConnection.values.map((batches) => ({
           key: batches.name,
           label: batches.name,
           value: batches.id,
