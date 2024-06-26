@@ -60,11 +60,7 @@ const CheckTot = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              {props.notUploadedData.length < 0 ? (
-                <p> Data Validation Failures</p>
-              ) : (
-                "Everthing looks fine,you can upload the data"
-              )}
+              <p> Data Validation Failures</p>
             </h1>
           </Modal.Title>
         </Modal.Header>
@@ -108,11 +104,11 @@ const CheckTot = (props) => {
                           <td>{obj.city}</td>
                           <td>{obj.designation}</td>
                           <td>{obj.college}</td>
-                          <td>{obj.project_name}</td>
-                          <td>{obj.partner_dept}</td>
-                          <td>{obj.module_name}</td>
-                          <td>{obj.start_date}</td>
-                          <td>{obj.end_date}</td>
+                          <td>{obj.value?.project_name}</td>
+                          <td>{obj.value?.partner_dept}</td>
+                          <td>{obj.value?.module_name}</td>
+                          <td>{obj.value?.start_date}</td>
+                          <td>{obj.value?.end_date}</td>
                           <td>{obj.trainer_1}</td>
                           <td>{obj.trainer_2}</td>
                           <td>{obj.certificate_given}</td>

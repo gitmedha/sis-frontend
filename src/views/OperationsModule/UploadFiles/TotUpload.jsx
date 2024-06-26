@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
 import { queryBuilder } from "../../../apis";
-import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
+import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
 import { FaFileUpload } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
@@ -70,6 +70,19 @@ const TotUpload = (props) => {
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
+  
+
+
+  useEffect(() => {
+    const getdata = async () => {
+      const data = await getAllSrmbyname();
+      console.log(data);
+      setAssigneeOption(data);
+    };
+
+    getdata();
+  }, [props]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNextDisabled(false);
@@ -103,33 +116,56 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
-
+    
     processParsedData(data);
   };
 
-  const convertExcelDate = (excelDate) => {
-    const jsDate = new Date((excelDate - 25569) * 86400 * 1000);
-    const yyyy = jsDate.getFullYear();
-    const mm = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const dd = String(jsDate.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  };
+
 
   const isValidDate = (dateString) => {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
   };
 
+  const excelSerialDateToJSDate = (serial) => {
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+    const date = new Date(excelEpoch.getTime() + serial * 86400000);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  };
+  const isValidDateFormat = (dateStr) => {
+    
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/; // Regex for yyyy/mm/dd format
+    // console.log(dateStr);
+    if (datePattern.test(dateStr)) {
+      
+      const [year, month, day] = dateStr.split('/');
+      console.log("`${year}/${month}/${day}`",`${year}/${month}/${day}`);
+      return `${year}-${month}-${day}`;
+    }
+    
+   
+    
+    return null;
+  };
+
+  
+
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
-
-    data.forEach((item, index) => {
+    const filteredArray = data.filter(obj => 
+      Object.values(obj).some(value => value !== undefined)
+    );
+    console.log(filteredArray);
+    filteredArray.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-
+  
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
@@ -137,85 +173,93 @@ const TotUpload = (props) => {
         (area) => area === newItem["City"]
       )?.id;
       const moduleCheck = moduleName.find(
-        (module) => module === newItem["Module Name"]
+        (module) => module.value === newItem["Module Name"]
       );
-
+    
       const departMentCheck = partnerDept.find(
-        (department) => department === newItem["Partner Dept"]
+        (department) => "Higher Education" === newItem["Partner Department"]
       );
+      
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
-
-      const userId = assigneOption.find(
-        (user) => user.name === newItem["Assigned To"]
-      )?.id;
-      const startDate = isValidDate(newItem["Start Date"]);
-      const endDate = isValidDate(newItem["End Date"]);
-      const currentUser = localStorage.getItem("user_id");
+  
+      const trainer_1 = assigneOption.find(
+        (user) => user.label === newItem["Trainer 1"]
+      )?.value;
+      console.log("Trainer 1 ID:", trainer_1);
+      
+      const trainer_2 = assigneOption.find(
+        (user) => user.label === newItem["Trainer 2"]
+      )?.value;
+      console.log("Trainer 2 ID:", trainer_2);
+      // console.log(trainer_2);
+      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
+      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
+  
+      const isStartDateValid = isValidDateFormat(startDate);
+      const isEndDateValid = isValidDateFormat(endDate);
+        // console.log("project_name: ", newItem["Project Name"]);
       if (
-        departMentCheck === undefined ||
-        projectCheck === undefined ||
-        startDate ||
-        endDate
-      )
-        if (
-          !departMentCheck ||
-          !projectCheck ||
-          !moduleCheck ||
-          (startDate && !isValidDate(startDate)) ||
-          (endDate && !isValidDate(endDate))
-        ) {
-          notFoundData.push({
-            index: index + 1,
-            user_name: newItem["Full Name"],
-            trainer_1: newItem["Trainer 1"],
-            project_name: newItem["Project Name"],
-            certificate_given: newItem["Certificate Given"],
-            module_name: newItem["Module Name"],
-            project_type: newItem["Project Type"],
-            trainer_2: newItem["Trainer 2"],
-            partner_dept: newItem["Partner Dept"],
-            college: newItem["College"],
-            city: newItem["City"],
-            state: newItem["State"],
-            age: newItem["Age"],
-            gender: newItem["Gender"],
-            contact: newItem["Contact"],
-            designation: newItem["Designation"],
-            start_date: newItem["Start Date"],
-            end_date: newItem["End Date"],
-          });
-        } else {
-          formattedData.push({
-            user_name: newItem["Full Name"],
-            trainer_1: newItem["Trainer 1"],
-            project_name: newItem["Project Name"],
-            certificate_given: newItem["Certificate Given"],
-            module_name: newItem["Module Name"],
-            project_type: newItem["Project Type"],
-            trainer_2: newItem["Trainer 2"],
-            partner_dept: newItem["Partner Dept"],
-            college: newItem["College"],
-            city: newItem["City"],
-            state: newItem["State"],
-            age: newItem["Age"],
-            gender: newItem["Gender"],
-            contact: newItem["Contact"],
-            designation: newItem["Designation"],
-            start_date: newItem["Start Date"],
-            end_date: newItem["End Date"],
-          });
-        }
+        !departMentCheck ||
+        !projectCheck ||
+        !moduleCheck ||
+        !isStartDateValid ||
+        !isEndDateValid
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          user_name: newItem["Full Name"],
+          trainer_1: newItem["Trainer 1"],
+          project_name: newItem["Project Name"],
+          certificate_given: newItem["Certificate Given"],
+          module_name: moduleCheck ? newItem["Module Name"] : { value: newItem["Module Name"], notFound: true },
+          project_type: projectCheck ? newItem["Project Type"] : { value: newItem["Project Type"], notFound: true },
+          trainer_2: newItem["Trainer 2"],
+          partner_dept: departMentCheck ? newItem["Partner Department"] : { value: newItem["Partner Department"], notFound: true },
+          college: newItem["College"],
+          city: newItem["City"],
+          state: newItem["State"],
+          age: newItem["Age"],
+          gender: newItem["Gender"],
+          contact: newItem["Contact"],
+          designation: newItem["Designation"],
+          start_date: isStartDateValid ? startDate : { value: newItem["Start Date"], notFound: true },
+          end_date: isEndDateValid ? endDate : { value: newItem["End Date"], notFound: true },
+        });
+      } else {
+        formattedData.push({
+          user_name: newItem["Full Name"],
+          trainer_1: trainer_1,
+          project_name: newItem["Project Name"],
+          certificate_given: newItem["Certificate Given"] ,
+          module_name: newItem["Module Name"],
+          project_type: newItem["Project Type"],
+          trainer_2: trainer_2,
+          partner_dept: newItem["Partner Department"],
+          college: newItem["College"],
+          city: newItem["City"],
+          state: newItem["State"],
+          age: newItem["Age"],
+          gender: newItem["Gender"],
+          contact: newItem["Contact"],
+          designation: newItem["Designation"],
+          start_date: startDate,
+          end_date: endDate,
+        });
+      }
     });
-
+    console.log('notFoundData',notFoundData);
+    console.log("formattedData",formattedData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
+  
 
   useEffect(() => {
     getTotPickList().then((data) => {
       // setModuleName(data.module_name.map(item))
+      console.log(data.module_name);
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
@@ -280,12 +324,15 @@ const TotUpload = (props) => {
 
   const hideShowModal = () => {
     setShowModalTOT(false);
+    setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
-    if (notUploadedData.length == 1 && excelData.length > 0) {
+    if (notUploadedData.length == 0 && excelData.length > 0) {
+      console.log("excelData",excelData);
       props.uploadExcel(excelData, "tot");
     } else {
+      console.log("hello");
       setShowModalTOT(true);
     }
   };
@@ -348,6 +395,7 @@ const TotUpload = (props) => {
                 </button>
                 <button
                   type="button"
+                  disabled={!uploadSuccesFully}
                   onClick={() => uploadDirect()}
                   className="btn btn-primary px-4 mx-4"
                 >
@@ -358,15 +406,15 @@ const TotUpload = (props) => {
           )}
         </Styled>
       </Modal>
-      {showModalTOT && (
+      
         <CheckTot
           show={showModalTOT}
-          onHide={hideShowModal}
-          notUploadedData={!check ? notUploadedData : []}
+          onHide={()=>hideShowModal()}
+          notUploadedData={  notUploadedData }
           excelData={excelData}
           uploadExcel={props.uploadExcel}
         />
-      )}
+      
     </>
   );
 };
