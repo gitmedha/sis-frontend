@@ -901,12 +901,17 @@ const Operations = ({
         setAlert("Data created successfully.", "success");
         // Uncomment the line below if you need to redirect
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      } else if (key === "tot") {
-        await bulkCreateUsersTots(data);
-        setAlert("Data created successfully.", "success");
-        // Uncomment the line below if you need to redirect
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
-      }
+      } 
+      if (key === "tot") {
+        await bulkCreateUsersTots(data)
+        .then(() => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        })
+      } 
     } catch (err) {
       if (key === "my_data") {
         setAlert("Unable to create field data.", "error");
@@ -969,7 +974,7 @@ const Operations = ({
                     Add <span><FaPlus size="12" color="#fff"/></span>
                   </button>
                 
-                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -992,8 +997,8 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )} */}
-                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  )}
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
 
@@ -1015,7 +1020,7 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )} */}
+                  )}
                 </>
               )}
             </div>

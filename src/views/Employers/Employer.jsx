@@ -21,6 +21,7 @@ import Tooltip from "../../components/content/Tooltip";
 import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 import { deleteFile } from "../../common/commonActions";
+import {isAdmin,getUser} from "../../common/commonFunctions";
 
 const Styled = styled.div`
 .button {
@@ -154,13 +155,20 @@ const Employer = (props) => {
     });
   };
 
+
+  const isValidUser = () =>{
+    if(Object.keys(employerData).length > 0) {
+      return employerData.assigned_to.username.toLowerCase() === getUser().toLowerCase();
+    }
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
     return (
       <Styled>
         <>
-        <div className="row" style={{margin: '30px 0 0'}}>
+        {(isValidUser() || isAdmin()) && <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12 d-flex">
             <button
               onClick={() => setModalShow(true)}
@@ -173,7 +181,7 @@ const Employer = (props) => {
               DELETE
             </button>
           </div>
-        </div>
+        </div>}
         <Collapsible
           opened={true}
           titleContent={
