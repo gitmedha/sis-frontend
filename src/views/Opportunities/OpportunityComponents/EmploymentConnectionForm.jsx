@@ -64,6 +64,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
+    work_engagement:''
   };
 
   if (props.employmentConnection) {
@@ -107,43 +108,48 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then((data) => {
-      setWorkEngagementOptions(
-        data.work_engagement.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setAllStatusOptions(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setrejectionreason(
-        data.reason_if_rejected.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setSourceOptions(
-        data.source.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-    if (props.employmentConnection && props.employmentConnection.student) {
-      filterStudent(props.employmentConnection.student.name).then((data) => {
-        setStudentOptions(data);
+    let fetchdata=async()=>{
+      getEmploymentConnectionsPickList().then((data) => {
+        setWorkEngagementOptions(
+          data.work_engagement.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setAllStatusOptions(
+          data.status.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setrejectionreason(
+          data.reason_if_rejected.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setSourceOptions(
+          data.source.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
       });
+
+      if (props.employmentConnection && props.employmentConnection.student) {
+        filterStudent(props.employmentConnection.student.name).then((data) => {
+          setStudentOptions(data);
+        });
+      }
     }
+   fetchdata()
+    
   }, [props]);
 
   useEffect(() => {

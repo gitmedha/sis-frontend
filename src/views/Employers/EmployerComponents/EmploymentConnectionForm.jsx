@@ -73,6 +73,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
+    work_engagement:""
   };
 
   if (props.employmentConnection) {
