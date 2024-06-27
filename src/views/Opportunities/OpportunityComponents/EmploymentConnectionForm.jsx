@@ -481,7 +481,7 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     type="submit"
                     className="btn btn-primary btn-regular collapse_form_buttons"
-                    // onClick={() => onSubmit(values)}
+                    onClick={() => onSubmit(values)}
                   >
                     SAVE
                   </button>
