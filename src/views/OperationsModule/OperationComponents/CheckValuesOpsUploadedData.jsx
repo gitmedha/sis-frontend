@@ -99,6 +99,7 @@ const CheckValuesOpsUploadedData = (props) => {
                   <h2 className="text--primary bebas-thick mb-0"></h2>
                 </div>
               )}
+              
             </div>
             <h6 className="text-danger">
               Please check Activity type, Institution, batch ,Start Date and End
