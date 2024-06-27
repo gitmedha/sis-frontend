@@ -82,20 +82,6 @@ const EventCalendar = (props) => {
   };
 
   const showCreateEventForm = async (info) => {
-    const currentDate = new Date();
-
-    // Set the time of both dates to midnight for only dates comparison
-    const selectedDate = new Date(info.start);
-    currentDate.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate < currentDate) {
-      setAlert(
-        "You cannot select a date earlier than the current date.",
-        "error"
-      );
-      return;
-    }
     await setSelectedSlotInfo(info);
     setCreateEventForm(true);
   };
