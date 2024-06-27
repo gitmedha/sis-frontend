@@ -318,7 +318,7 @@ export const SEARCH_BY_STUDENTS = `
 
 export const SEARCH_BY_EMPLOYER = `
   query SEARCH_BY_EMPLOYER($query:String,$limit:Int,$sort:String){
-    employerConnection(
+    employersConnection(
       limit:$limit,
       sort:$sort,
       where:{

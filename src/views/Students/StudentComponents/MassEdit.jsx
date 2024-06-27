@@ -15,7 +15,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import Select from "react-select";
+import Select ,{ components } from "react-select";
 import moment from "moment";
 import CheckBoxForm from "./CheckBoxForm";
 import AlumMassEdit from "../MassEdit/AlumMassEdit";
@@ -39,6 +39,11 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const statusOption = [
+  { value: "Paid", label: "Paid" },
+  { value: "Unpaid", label: "Unpaid" },
+];
 
 const MassEdit = (props) => {
   let { onHide, show } = props;
@@ -164,7 +169,7 @@ const MassEdit = (props) => {
         ? moment(values.fee_submission_date).format("YYYY-MM-DD")
         : null;
       let feeAmount = values.fee_amount;
-      //  let receiptNumber=values.receipt_number ?values.receipt_number:""
+       let receiptNumber=values.receipt_number ?values.receipt_number:""
       let comments = values.comments ? values.comments : "";
       return {
         student: obj.id,
@@ -176,7 +181,7 @@ const MassEdit = (props) => {
         fee_submission_date: feeSubmission,
         location: values.location,
         program_mode: values.program_mode,
-        // receipt_number: receiptNumber,
+        receipt_number: receiptNumber,
         start_date: startDate,
         type: values.type,
       };
@@ -229,6 +234,37 @@ const MassEdit = (props) => {
     setBulkAddCheck(!bulkAddCheck);
     setMassEditCheck(!massEditCheck);
   };
+  const MultiValue = ({ index, getValue, ...props }) => {
+    const maxToShow = 1; // Maximum number of values to show
+    const overflowCount = getValue().length - maxToShow;
+
+    if (index < maxToShow) {
+      return <components.MultiValue {...props} />;
+    }
+
+    if (index === maxToShow) {
+      return (
+        <components.MultiValue {...props}>
+          <span>+{overflowCount}</span>
+        </components.MultiValue>
+      );
+    }
+
+    return null;
+  };
+
+  const customComponents = {
+    MultiValue,
+  };
+  const handleInputChange = (inputValue) => {
+    setStudentInput(inputValue);
+  };
+
+  const handleChange = (selectedOptions) => {
+    setStudents(selectedOptions);
+  };
+  
+  
   return (
     <Modal
       centered
@@ -263,6 +299,7 @@ const MassEdit = (props) => {
             setMassEditCheck={setMassEditCheck}
           />
         }
+        
 
         {bulkAddCheck ? (
           <Formik
@@ -288,14 +325,17 @@ const MassEdit = (props) => {
                     /> */}
                       <label className="leading-24">Student</label>
                       <Select
-                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                        isMulti
-                        name="student_ids"
-                        options={studentOptions}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onInputChange={(e) => setStudentInput(e)}
-                        onChange={(choice) => setStudents(choice)}
+                         isMulti
+                         name="student_ids"
+                         options={studentOptions}
+                         closeMenuOnSelect={false}
+                         components={customComponents}
+                         isOptionDisabled={() => students.length >= 10}
+                         className="basic-multi-select"
+                         classNamePrefix="select"
+                         onInputChange={handleInputChange}
+                         onChange={handleChange}
+                         value={students}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
@@ -389,6 +429,20 @@ const MassEdit = (props) => {
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="status"
+                      label="Status"
+                      placeholder="Status"
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      icon="down"
+                      options={statusOption}
+                      // required={feeFieldsRequired}
+                      // onChange={(e) => setStatus(e.value)}
+                    />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         name="fee_submission_date"
                         label="Contribution Submission Date"
@@ -414,6 +468,16 @@ const MassEdit = (props) => {
                         required={feeFieldsRequired}
                       />
                     </div>
+                    <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="receipt_number"
+                      label="Receipt Number"
+                      placeholder="Receipt Number"
+                      control="input"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
 
                     <div className="col-md-12 col-sm-12 mt-2">
                       <Textarea

@@ -8,6 +8,7 @@ import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
 import { FaFileUpload } from "react-icons/fa";
 import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
+import * as XLSX from 'xlsx';
 
 const Styled = styled.div`
   .icon-box {
@@ -64,96 +65,131 @@ const UploadFile = (props) => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNextDisabled(false);
-    if (file.type === "text/csv") {
+  
+    if (file) {
       setUploadSuccesFully(`${file.name} Uploaded`);
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          convertCSV(reader.result);
-        };
-        reader.readAsText(file);
-        setNextDisabled(true);
-      }
+      const reader = new FileReader();
+      
+      reader.onload = () => {
+        const fileData = reader.result;
+        convertExcel(fileData);
+      };
+      
+      reader.readAsBinaryString(file);
+      setNextDisabled(true);
     } else {
-      setUploadSuccesFully("The file type should be .csv");
+      setUploadSuccesFully("The file type should be .xlsx");
     }
   };
-
-  const convertCSV = (csvData) => {
-    Papa.parse(csvData, {
-      header: true,
-      complete: (results) => {
-        const formattedData = [];
-        const notFoundData = [];
-
-        results.data.forEach((item,index) => {
-          const newItem = {};
-          Object.keys(item).forEach((key) => {
-            newItem[key] = item[key];
-          });
-
-          const batchId = batchOption.find(
-            (batch) => batch.name === newItem["Batch Name"]
-          )?.id;
-          const instituteId = institutionOption.find(
-            (institute) => institute.name === newItem["Educational Institution"]
-          )?.id;
-          const userId = assigneOption.find(
-            (user) => user.name === newItem["Assigned To"]
-          )?.id;
-          const donor =
-            newItem["Project / Funder"] &&
-            newItem["Project / Funder"].toLowerCase() === "no"
-              ? false
-              : true;
-          const currentUser = localStorage.getItem("user_id");
-          if (
-            batchId === (undefined || ' ') ||
-            instituteId === undefined ||
-            userId === undefined
-          ) {
-            notFoundData.push({
-              index:index+1,
-              institution: newItem["Educational Institution"],
-              batch: newItem["Batch Name"],
-              state: newItem["State"] || "",
-              start_date: newItem["Start Date"],
-              end_date: newItem["End Date"],
-              topic: newItem["Session Topic"] || "",
-              donor: newItem["Project / Funder"] || "",
-              guest: newItem["Guest Name "] || "",
-              designation: newItem["Guest Designation"] || "",
-              organization: newItem["Organization"] || "",
-              activity_type: newItem["Activity Type"] || "",
-              assigned_to: newItem["Assigned To"] || "",
-              area: newItem["Medha Area"] || "",
-            });
-          } else {
-            formattedData.push({
-              institution: instituteId,
-              batch: batchId,
-              state: newItem["State"] || "",
-              start_date: newItem["Start Date"],
-              end_date: newItem["End Date"],
-              topic: newItem["Session Topic"] || "",
-              donor: donor,
-              guest: newItem["Guest Name "] || "",
-              designation: newItem["Guest Designation"] || "",
-              organization: newItem["Organization"] || "",
-              activity_type: newItem["Activity Type"] || "",
-              assigned_to: userId || "",
-              area: newItem["Medha Area"] || "",
-              isactive: true,
-              createdby: userId,
-              updatedby: currentUser,
-            });
-          }
-        });
-        setExcelData(formattedData);
-        setNotuploadedData(notFoundData);
-      },
+  
+  const convertExcel = (excelData) => {
+    const workbook = XLSX.read(excelData, { type: 'binary' });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+    const headers = results[0];
+    const data = results.slice(1).map(row => {
+      const newItem = {};
+      headers.forEach((header, i) => {
+        newItem[header] = row[i];
+      });
+      return newItem;
     });
+    
+    processParsedData(data);
   };
+  
+  const convertExcelDate = (excelDate) => {
+    const jsDate = new Date((excelDate - 25569) * 86400 * 1000);
+    const yyyy = jsDate.getFullYear();
+    const mm = String(jsDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(jsDate.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+  
+  const isValidDate = (dateString) => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  };
+  
+  const processParsedData = (data) => {
+    const formattedData = [];
+    const notFoundData = [];
+  
+    data.forEach((item, index) => {
+      const newItem = {};
+      Object.keys(item).forEach((key) => {
+        newItem[key] = item[key];
+      });
+  
+      const batchId = batchOption.find(
+        (batch) => batch.name === newItem["Batch Name"]
+      )?.id;
+      const instituteId = institutionOption.find(
+        (institute) => institute.name === newItem["Educational Institution"]
+      )?.id;
+      const userId = assigneOption.find(
+        (user) => user.name === newItem["Assigned To"]
+      )?.id;
+      const donor =
+        newItem["Project / Funder"] &&
+        newItem["Project / Funder"].toLowerCase() === "no"
+          ? false
+          : true;
+      const currentUser = localStorage.getItem("user_id");
+  
+      const startDate = newItem["Start Date"] ? convertExcelDate(newItem["Start Date"]) : null;
+      const endDate = newItem["End Date"] ? convertExcelDate(newItem["End Date"]) : null;
+  
+      if (
+        !batchId ||
+        !instituteId ||
+        !userId ||
+        (startDate && !isValidDate(startDate)) ||
+        (endDate && !isValidDate(endDate))
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          institution: newItem["Institution"],
+          batch: newItem["Batch Name"],
+          state: newItem["State"] || "",
+          start_date: startDate,
+          end_date: endDate,
+          topic: newItem["Session Topic"] || "",
+          donor: newItem["Project / Funder"] || "",
+          guest: newItem["Guest Name "] || "",
+          designation: newItem["Guest Designation"] || "",
+          organization: newItem["Organization"] || "",
+          activity_type: newItem["Activity Type"] || "",
+          assigned_to: newItem["Assigned To"] || "",
+          area: newItem["Medha Area"] || "",
+        });
+      } else {
+        formattedData.push({
+          institution: instituteId,
+          batch: batchId,
+          state: newItem["State"] || "",
+          start_date: startDate,
+          end_date: endDate,
+          topic: newItem["Session Topic"] || "",
+          donor: donor,
+          guest: newItem["Guest Name "] || "",
+          designation: newItem["Guest Designation"] || "",
+          organization: newItem["Organization"] || "",
+          activity_type: newItem["Activity Type"] || "",
+          assigned_to: userId || "",
+          area: newItem["Medha Area"] || "",
+          isactive: true,
+          createdby: userId,
+          updatedby: currentUser,
+        });
+      }
+    });
+  
+    setExcelData(formattedData);
+    setNotuploadedData(notFoundData);
+  };
+  
 
   useEffect(() => {
     const getbatch = async () => {
@@ -203,9 +239,8 @@ const UploadFile = (props) => {
  
 
   const uploadDirect =()=>{
-    if (notUploadedData.length == 1  && excelData.length > 0) {
+    if (notUploadedData.length === 0  && excelData.length > 0) {
       props.uploadExcel(excelData,"my_data");
-
     }else{
       setShowModal(true)
     }
@@ -240,7 +275,7 @@ const UploadFile = (props) => {
                   <FaFileUpload size={30} color={"#257b69"} />
                 </div>
                 <input
-                  accept=".csv"
+                  accept=".xlsx"
                   type="file"
                   multiple={false}
                   name="file-uploader"
