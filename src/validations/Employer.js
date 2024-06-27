@@ -34,6 +34,7 @@ const end_date = Yup.date().nullable().required("End Date is required.")
                       (start_date, schema) => start_date && schema.min(start_date, "End date can't be before Start date")
                     );
 const employment_connection_status = Yup.string().nullable().required("Employment Connection status is required.");
+// const status = Yup.string().nullable().required("Employment Connection status is required.");
 const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
 const student_id = Yup.string().required("Student is required.");
@@ -53,7 +54,7 @@ const contacts = Yup.array().of(
 );
 
 export const EmploymentConnectionValidations = Yup.object({
-  status: employment_connection_status,
+  status,
   employer_id,
   opportunity_id,
   start_date,

@@ -72,30 +72,47 @@ const UpskillUpdate = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [lookUpLoading] = useState(false);
-  const [course, setcourse] = useState([]);
+  const [course, setCourse] = useState([]);
   const [studentOptions, setStudentOptions] = useState([]);
   const [studentinput] = useState("");
   const [subcategory, setSubcategory] = useState([]);
   const [programeName, setProgramName] = useState([]);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then((data) => {
-      setAssigneeOptions(data);
-    });
-    getUpskillingPicklist().then((data) => {
-      setSubcategory(
-        data.subCategory.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-    });
+    let isMounted = true; // Add a flag to indicate if the component is mounted
+
+    const fetchData = async () => {
+        try {
+            const assigneeData = await getDefaultAssigneeOptions();
+            if (isMounted) {
+                setAssigneeOptions(assigneeData);
+            }
+
+            const upskillingData = await getUpskillingPicklist();
+            if (isMounted) {
+                setSubcategory(
+                    upskillingData.subCategory.map((item) => ({
+                        key: item,
+                        value: item,
+                        label: item,
+                    }))
+                );
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    fetchData();
+
+    return () => {
+        isMounted = false; // Cleanup function to set isMounted to false when the component is unmounted
+    };
   }, []);
 
   useEffect(() => {
     if (props.student_id.id) {
-      filterStudent(props.student_id.full_name).then((data) => {
+      filterStudent(props.student_id.name).then((data) => {
         setStudentOptions(data);
       });
     }
@@ -107,7 +124,7 @@ const UpskillUpdate = (props) => {
 
       let studentFoundInList = false;
       let filterData = data.studentsConnection.values.map((student) => {
-        if (student.id === Number(props?.id)) {
+        if (student.id === Number(props?.student_id.id)) {
           studentFoundInList = true;
         }
         return {
@@ -298,22 +315,43 @@ const UpskillUpdate = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    getProgramEnrollmentsPickList().then((data) => {
-      setcourse(
-        data?.course?.map((item) => ({ key: item, value: item, label: item }))
-      );
-    });
-    let data = getOpsPickList().then((data) => {
-      return data.program_name.map((value) => ({
-        key: value,
-        label: value,
-        value: value,
-      }));
-    });
+useEffect(() => {
+    let isMounted = true; // Add a flag to indicate if the component is mounted
 
-    setProgramName(data);
-  }, []);
+    const fetchData = async () => {
+        try {
+            const programEnrollmentsData = await getProgramEnrollmentsPickList();
+            if (isMounted) {
+                setCourse(
+                    programEnrollmentsData?.course?.map((item) => ({
+                        key: item,
+                        value: item,
+                        label: item,
+                    }))
+                );
+            }
+
+            const opsPickListData = await getOpsPickList();
+            if (isMounted) {
+                const programNameData = opsPickListData.program_name.map((value) => ({
+                    key: value,
+                    label: value,
+                    value: value,
+                }));
+                setProgramName(programNameData);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    fetchData();
+
+    return () => {
+        isMounted = false; // Cleanup function to set isMounted to false when the component is unmounted
+    };
+}, []);
+
 
   const options = [
     { value: true, label: "Yes" },
@@ -388,7 +426,7 @@ const UpskillUpdate = (props) => {
                             required
                             className="form-control"
                             placeholder="Certificate Received"
-                            options={options}
+                            defaultOptions={options}
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
