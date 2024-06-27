@@ -68,6 +68,7 @@ function ViewEvent(props) {
     }
   };
 
+
   return (
     <>
       {!openDeleteAlert ? (
@@ -88,8 +89,8 @@ function ViewEvent(props) {
               <h1 className="text--primary bebas-thick mb-0">Event Info</h1>
             </Modal.Title>
             <div style={{ display: "flex", justifyContent: "space-around" }}>
-              {event.status !== "Cancelled" ||
-              event.assgined_to.email !== userEmail ? (
+              {event.status !== "Cancelled" &&
+              event.assgined_to.email === userEmail ? (
                 <div
                   style={{ cursor: "pointer", marginRight: "10px" }}
                   onClick={() => openEditForm()}
@@ -99,8 +100,8 @@ function ViewEvent(props) {
               ) : (
                 <div></div>
               )}
-              {event.status !== "Cancelled" ||
-              event.assgined_to.email !== userEmail ? (
+              {event.status !== "Cancelled" &&
+              event.assgined_to.email === userEmail ? (
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => setDeleteAlert(true)}
