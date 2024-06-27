@@ -166,7 +166,7 @@ export const filterAssignedTo = async (newValue) => {
     },
   });
   return data.data.users.map(user => ({
-    label: `${user.username} (${user.email})`,
+    label:`${user.username} (${user.email})`,
     value: user.id,
   }));
 }

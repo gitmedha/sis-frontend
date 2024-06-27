@@ -603,7 +603,7 @@ const StudentForm = (props) => {
                     </div>
                   </div>
                 </Section>
-                <Section>
+                {/* <Section>
                   <h3 className="section-header">Additional Info</h3>
                   <div className="row">
                     <div className="col-md-6 col-sm-12 mb-2">
@@ -638,7 +638,7 @@ const StudentForm = (props) => {
                       />
                     </div>
                   </div>
-                </Section>
+                </Section> */}
               </div>
               <div className="row justify-content-end mt-1">
                 <div className="col-auto p-0">
