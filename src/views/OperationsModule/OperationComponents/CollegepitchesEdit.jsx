@@ -113,54 +113,58 @@ const CollepitchesEdit = (props) => {
   };
 
   useEffect(() => {
-    getAddressOptions().then((data) => {
-      setStateOptions(
-        data?.data?.data?.geographiesConnection.groupBy.state
-          .map((state) => ({
-            key: state.id,
-            label: state.key,
-            value: state.key,
+    let fetchData=async()=>{
+      getAddressOptions().then((data) => {
+        setStateOptions(
+          data?.data?.data?.geographiesConnection.groupBy.state
+            .map((state) => ({
+              key: state.id,
+              label: state.key,
+              value: state.key,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        );
+  
+        if (props.program_name) {
+          filterProgram(props.program_name).then((data) => {
+            setProgramOptions(data);
+          });
+        }
+      });
+      let data = await getAllSrm();
+      setsrmOption(data);
+      getProgramEnrollmentsPickList().then((data) => {
+        setcourse(
+          data?.course?.map((item) => ({ key: item, value: item, label: item }))
+        );
+        setCurrentCourseYearOptions(
+          data.current_course_year.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
           }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-
-      if (props.program_name) {
-        filterProgram(props.program_name).then((data) => {
-          setProgramOptions(data);
-        });
-      }
-    });
-    let data = getAllSrm(1);
-    setsrmOption(data);
-    getProgramEnrollmentsPickList().then((data) => {
-      setcourse(
-        data?.course?.map((item) => ({ key: item, value: item, label: item }))
-      );
-      setCurrentCourseYearOptions(
-        data.current_course_year.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-
-    getPitchingPickList().then((data) => {
-      setCollege(
-        data.college_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setAreaOptions(
-        data.medha_area.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-    });
+        );
+      });
+  
+      getPitchingPickList().then((data) => {
+        setCollege(
+          data.college_name.map((item) => ({
+            key: item,
+            value: item,
+            label: item,
+          }))
+        );
+        setAreaOptions(
+          data.medha_area.map((item) => ({
+            key: item,
+            value: item,
+            label: item,
+          }))
+        );
+      });
+    }
+    fetchData()
+    
   }, []);
 
   const onSubmit = async (values) => {
@@ -222,11 +226,7 @@ const CollepitchesEdit = (props) => {
 
   const [selectedOption, setSelectedOption] = useState(null); // State to hold the selected option
 
-  const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-  ];
+ 
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -387,7 +387,7 @@ const CollepitchesEdit = (props) => {
                             placeholder="SRM Name"
                             control="lookup"
                             icon="down"
-                            options={srmOption}
+                            defaultOptions={srmOption}
                             onKeyPress={handleKeyPress}
                             className="form-control"
                           />
