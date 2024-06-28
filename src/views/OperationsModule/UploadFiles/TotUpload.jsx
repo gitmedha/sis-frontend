@@ -251,7 +251,6 @@ const TotUpload = (props) => {
   useEffect(() => {
     getTotPickList().then((data) => {
       // setModuleName(data.module_name.map(item))
-      console.log(data.module_name);
       setModuleName(
         data.module_name.map((item) => ({
           key: item,

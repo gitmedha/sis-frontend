@@ -246,9 +246,7 @@ export const AlumniServiceValidations = Yup.object({
   start_date,
   program_mode,
   category,
-  end_date:Yup.date().nullable()
-  .when(
-    "start_date",
-    (start_date, schema) => start_date && schema.min(start_date, "End date can't be before Start date")
-  )
+  end_date:Yup.date().nullable().when("start_date", (start,schema)=>{
+    return schema.min(new Date(start), "End date can't be before Start date")
+  })
 });
