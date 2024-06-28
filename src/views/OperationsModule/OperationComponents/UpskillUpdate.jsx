@@ -353,7 +353,7 @@ useEffect(() => {
 }, []);
 
 
-  const options = [
+  const certificateoptions = [
     { value: true, label: "Yes" },
     { value: false, label: "No" },
   ];
@@ -426,7 +426,7 @@ useEffect(() => {
                             required
                             className="form-control"
                             placeholder="Certificate Received"
-                            defaultOptions={options}
+                            options={certificateoptions}
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
