@@ -50,8 +50,8 @@ const EventCalendar = (props) => {
     const formattedEvents = response?.map((event) => ({
       id: event?.id,
       title: event?.name,
-      start: new Date(event?.start_date)?.setHours(5),
-      end: new Date(event?.end_date)?.setHours(5),
+      start: new Date(new Date(event?.start_date)?.setHours(5)),
+      end: new Date(new Date(event?.end_date)?.setHours(5)),
       assigned_to: {
         username: event?.assgined_to.username,
         email: event?.assgined_to.email,
@@ -82,20 +82,6 @@ const EventCalendar = (props) => {
   };
 
   const showCreateEventForm = async (info) => {
-    const currentDate = new Date();
-
-    // Set the time of both dates to midnight for only dates comparison
-    const selectedDate = new Date(info.start);
-    currentDate.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate < currentDate) {
-      setAlert(
-        "You cannot select a date earlier than the current date.",
-        "error"
-      );
-      return;
-    }
     await setSelectedSlotInfo(info);
     setCreateEventForm(true);
   };

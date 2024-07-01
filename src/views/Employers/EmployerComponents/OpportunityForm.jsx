@@ -164,7 +164,7 @@ const OpportunityForm = (props) => {
     type: "",
     compensation_type: "",
     number_of_opportunities: "",
-    status: "active",
+    status: "",
     department_or_team: "",
     salary: "",
     role_description: "",

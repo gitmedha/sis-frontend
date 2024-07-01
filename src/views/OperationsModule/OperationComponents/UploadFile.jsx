@@ -138,6 +138,7 @@ const UploadFile = (props) => {
     });
     processParsedData(validRecords)
   };
+  
 
 const processParsedData = (data) => {
   const formattedData = [];
