@@ -76,7 +76,6 @@ const TotUpload = (props) => {
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
-      console.log(data);
       setAssigneeOption(data);
     };
 
@@ -138,20 +137,21 @@ const TotUpload = (props) => {
   const isValidDateFormat = (dateStr) => {
     const datePattern = /^\d{4}-\d{2}-\d{2}$/; // Regex for yyyy-mm-dd format
     if (datePattern.test(dateStr)) {
-        const [year, month, day] = dateStr.split('-');
-        return `${year}-${month}-${day}`;
+      
+      const [year, month, day] = dateStr.split('-');
+      return `${year}-${month}-${day}`;
     }
     return null;
-};
+  };
   
 
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
+    const userId = localStorage.getItem("user_id");
     const filteredArray = data.filter(obj => 
       Object.values(obj).some(value => value !== undefined)
     );
-    console.log(filteredArray);
     filteredArray.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
@@ -179,19 +179,18 @@ const TotUpload = (props) => {
       const trainer_1 = assigneOption.find(
         (user) => user.label === newItem["Trainer 1"]
       )?.value;
-      console.log("Trainer 1 ID:", trainer_1);
       
       const trainer_2 = assigneOption.find(
         (user) => user.label === newItem["Trainer 2"]
       )?.value;
-      console.log("Trainer 2 ID:", trainer_2);
-      // console.log(trainer_2);
+
       const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
       const endDate = excelSerialDateToJSDate(newItem["End Date"]);
   
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
-        // console.log("project_name: ", newItem["Project Name"]);
+      const createdby = Number(userId);
+      const updatedby = Number(userId);
       if (
         !departMentCheck ||
         !projectCheck ||
@@ -238,11 +237,11 @@ const TotUpload = (props) => {
           designation: newItem["Designation"],
           start_date: startDate,
           end_date: endDate,
+          createdby:createdby,
+          updatedby:updatedby
         });
       }
     });
-    console.log('notFoundData',notFoundData);
-    console.log("formattedData",formattedData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
@@ -251,7 +250,7 @@ const TotUpload = (props) => {
   useEffect(() => {
     getTotPickList().then((data) => {
       // setModuleName(data.module_name.map(item))
-      console.log(data.module_name);
+
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
@@ -321,10 +320,8 @@ const TotUpload = (props) => {
 
   const uploadDirect = () => {
     if (notUploadedData.length == 0 && excelData.length > 0) {
-      console.log("excelData",excelData);
       props.uploadExcel(excelData, "tot");
     } else {
-      console.log("hello");
       setShowModalTOT(true);
     }
   };

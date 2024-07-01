@@ -113,12 +113,10 @@ const UploadFile = (props) => {
 
   const isValidDateFormat = (dateStr) => {
     
-    const datePattern =/^\d{4}-\d{2}-\d{2}$/; // Regex for yyyy/mm/dd format
-    console.log(dateStr);
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
     if (datePattern.test(dateStr)) {
       
       const [year, month, day] = dateStr.split('/');
-      console.log("`${year}/${month}/${day}`",`${year}/${month}/${day}`);
       return `${year}-${month}-${day}`;
     }
     
@@ -223,8 +221,6 @@ const processParsedData = (data) => {
       });
     }
   });
-  console.log(notFoundData);
-  console.log("formattedData",formattedData);
   setExcelData(formattedData);
   setNotuploadedData(notFoundData);
 };
@@ -287,7 +283,6 @@ const processParsedData = (data) => {
       const countResponse = await api.post("/graphql", {
         query: GET_INSTITUTES_COUNT,
       });
-      console.log("countResponse",countResponse.data.data.institutionsConnection.aggregate.count);
       count = countResponse.data.data.institutionsConnection.aggregate.count;
   
       // Loop to fetch all batches in increments of 500
@@ -304,7 +299,6 @@ const processParsedData = (data) => {
   
         instituteData = [...instituteData, ...batchResponse.data.data.institutionsConnection.values];
       }
-      console.log("instituteData",instituteData);
       setInstituteOption(instituteData); 
     } catch (err) {
       console.error(err); 
