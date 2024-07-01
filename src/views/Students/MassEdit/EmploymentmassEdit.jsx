@@ -14,6 +14,7 @@ import { Input } from "../../../utils/Form";
 import { filterAssignedTo } from "../../../utils/function/lookupOptions";
 import Skeleton from "react-loading-skeleton";
 import { FaTimes } from "react-icons/fa";
+import moment from "moment";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -62,8 +63,8 @@ const EmploymentmassEdit = (props) => {
     employer_id: "",
     opportunity_id: "",
     status: "",
-    start_date: "",
-    end_date: "",
+    start_date: null,
+    end_date: null,
     source: "",
     salary_offered: "",
     reason_if_rejected: "",
@@ -97,9 +98,7 @@ const EmploymentmassEdit = (props) => {
 
   const updateEmployerOpportunityOptions = (employer) => {
     setEmployerOpportunityOptions([]);
-    console.log("opprtunityemployer", employer);
     getEmployerOpportunities(Number(employer)).then((data) => {
-      console.log("opprtunityemployer12", data);
       setEmployerOpportunityOptions(
         data?.data?.data?.opportunities.map((opportunity) => ({
           key: opportunity.role_or_designation,
@@ -112,11 +111,7 @@ const EmploymentmassEdit = (props) => {
   };
 
   useEffect(() => {
-    const employers = async () => {
-      let filterData = await filterEmployer();
-
-      console.log(filterData);
-    };
+    const employers = async () => await filterEmployer();
     employers();
   }, []);
 
@@ -137,14 +132,7 @@ const EmploymentmassEdit = (props) => {
           label: item.value,
         }))
       );
-      console.log(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
+      
       setAllStatusOptions(
         data.status.map((item) => ({
           ...item,
@@ -218,16 +206,12 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
     try {
       let alumData = await Promise.all(
         students.map(async (obj) => {
           try {
             let data = await getStudentEmploymentConnections(obj.id);
 
-            console.log(
-              "data.data.data.employmentConnectionsConnection.values"
-            );
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -271,13 +255,12 @@ const EmploymentmassEdit = (props) => {
       students.map((obj) => {
         if (obj.id === id) {
           if (newData.hasOwnProperty("opportunity")) {
-            console.log(newData);
+            
             let data = { opportunity: newData.opportunity };
             return { ...obj, ...data };
           } else if (newData.hasOwnProperty("employer")) {
-            console.log(newData);
+            
             let employerEntryChange = { employer: newData.employer };
-            console.log("employerEntryChange", employerEntryChange);
             return { ...obj, ...employerEntryChange };
           } else if (
             typeof obj.opportunity === "object" &&
@@ -359,29 +342,42 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
-    console.log(values);
-    let data = students.map((val) => {
-      console.log(val);
-      return {
-        assigned_to: values.assigned_to.id,
-        experience_certificate: values.experience_certificate,
-        number_of_internship_hours: values.number_of_internship_hours,
-        end_date: values.end_date,
-        opportunity: values.opportunity_id,
-        employer: values.employer_id,
-        reason_if_rejected: values.reason_if_rejected,
-        reason_if_rejected_other: values.reason_if_rejected_other,
-        salary_offered: values.salary_offered,
-        start_date: values.start_date,
-        source: values.source,
-        status: values.status,
-        student_id: val.id,
-        work_engagement: values.work_engagement,
-        id: values.id,
-      };
+    let data = EmploymentData.map((val) => {
+        // Build the object with only non-empty values
+        let obj = {
+            assigned_to: values.assigned_to?.id,
+            experience_certificate: values.experience_certificate,
+            number_of_internship_hours: values.number_of_internship_hours,
+            end_date: values.end_date,
+            opportunity: values.opportunity_id,
+            employer: values.employer_id,
+            reason_if_rejected: values.reason_if_rejected,
+            reason_if_rejected_other: values.reason_if_rejected_other,
+            salary_offered: values.salary_offered,
+            start_date: values.start_date,
+            source: values.source,
+            status: values.status,
+            work_engagement: values.work_engagement,
+        };
+
+        // Filter out keys with undefined or empty string values
+        let filteredObj = Object.keys(obj).reduce((acc, key) => {
+            if (obj[key] !== undefined && obj[key] !== "") {
+                acc[key] = obj[key];
+            }
+            return acc;
+        }, {});
+
+        // Add student_id and id since they should always be present
+        filteredObj.student_id = val.student_id;
+        filteredObj.id = val.id;
+
+        return filteredObj;
     });
-    props.handelSubmitMassEdit(data, "AlumniBuldEdit");
-  };
+
+    props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
+};
+
 
   return (
     <>
@@ -424,7 +420,7 @@ const EmploymentmassEdit = (props) => {
                     isOptionDisabled={() => students.length >= 10}
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    onInputChange={handleInputChange}
+                    onInputChange={(e) => setStudentInput(e)}
                     onChange={handleselectChange}
                     value={students}
                   />
@@ -481,7 +477,6 @@ const EmploymentmassEdit = (props) => {
                             control="lookupAsync"
                             name="assigned_to"
                             label="Assigned To"
-                            required
                             className="form-control"
                             placeholder="Assigned To"
                             filterData={filterAssignedTo}
@@ -498,7 +493,6 @@ const EmploymentmassEdit = (props) => {
                             className="form-control"
                             placeholder="Employer"
                             onChange={(employer) => {
-                              console.log(employer);
                               setSelectedOpportunityType(null);
                               updateEmployerOpportunityOptions(employer.value);
                             }}
@@ -536,7 +530,6 @@ const EmploymentmassEdit = (props) => {
                             control="lookup"
                             name="status"
                             label="Status"
-                            required
                             options={statusOptions}
                             className="form-control"
                             placeholder="Status"
@@ -547,7 +540,6 @@ const EmploymentmassEdit = (props) => {
                           <Input
                             name="start_date"
                             label="Start Date"
-                            required
                             placeholder="Start Date"
                             control="datepicker"
                             className="form-control"
@@ -561,7 +553,7 @@ const EmploymentmassEdit = (props) => {
                             name="salary_offered"
                             control="input"
                             label="Salary Offered"
-                            required
+                            // required
                             className="form-control"
                             placeholder="Salary Offered"
                           />
@@ -575,7 +567,7 @@ const EmploymentmassEdit = (props) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
-                              required={endDateMandatory}
+                              // required={endDateMandatory}
                             />
                           </div>
                         )}
@@ -585,7 +577,6 @@ const EmploymentmassEdit = (props) => {
                             control="lookup"
                             name="source"
                             label="Source"
-                            required
                             options={sourceOptions}
                             className="form-control"
                             placeholder="Source"
@@ -601,9 +592,9 @@ const EmploymentmassEdit = (props) => {
                               control="lookup"
                               name="reason_if_rejected"
                               label="Reason if Rejected"
-                              required={
-                                selectedStatus === "Offer Rejected by Student"
-                              }
+                              // required={
+                              //   selectedStatus === "Offer Rejected by Student"
+                              // }
                               options={rejectionreason}
                               className="form-control"
                               onChange={(e) => {
@@ -628,7 +619,6 @@ const EmploymentmassEdit = (props) => {
                               name="reason_if_rejected_other"
                               control="input"
                               label="If Other, Specify"
-                              required
                               className="form-control"
                               placeholder="If Other, Specify"
                             />
@@ -645,7 +635,6 @@ const EmploymentmassEdit = (props) => {
                             options={workEngagementOptions}
                             className="form-control"
                             placeholder="Work Engagement"
-                            required
                           />
                         </div>
 
@@ -658,7 +647,6 @@ const EmploymentmassEdit = (props) => {
                               name="number_of_internship_hours"
                               className="form-control"
                               label="Number of Internship hours"
-                              required
                               placeholder="Number of Internship hours"
                             />
                           </div>
@@ -666,7 +654,7 @@ const EmploymentmassEdit = (props) => {
                       </div>
                     </Section>
 
-                    <div className="row justify-content-end mt-1">
+                    <div className="row justify-content-end mt-3 mb-2 mx-5 ">
                       <div className="col-auto p-0">
                         <button
                           type="button"

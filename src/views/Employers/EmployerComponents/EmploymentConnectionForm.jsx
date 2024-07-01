@@ -73,6 +73,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
+    work_engagement:""
   };
 
   if (props.employmentConnection) {
@@ -577,7 +578,6 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     className="btn btn-primary btn-regular collapse_form_buttons"
                     type="submit"
-                    onClick={() => onSubmit(values)}
                   >
                     SAVE
                   </button>

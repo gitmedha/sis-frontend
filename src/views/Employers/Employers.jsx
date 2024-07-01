@@ -1,12 +1,15 @@
 import nProgress from "nprogress";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Table from "../../components/content/Table";
 import { useHistory } from "react-router-dom";
 import TabPicker from "../../components/content/TabPicker";
 import api from "../../apis";
 import { GET_USER_EMPLOYERS } from "../../graphql";
 import Avatar from "../../components/content/Avatar";
-import { createEmployer, getEmployersPickList } from "./EmployerComponents/employerAction";
+import {
+  createEmployer,
+  getEmployersPickList,
+} from "./EmployerComponents/employerAction";
 import {
   TableRowDetailLink,
   Badge,
@@ -33,22 +36,32 @@ const Employers = (props) => {
   const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [employersTableData, setEmployersTableData] = useState([]);
-  const pageSize = parseInt(localStorage.getItem('tablePageSize')) || 25;
+  const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
-  const {setAlert} = props;
+  const { setAlert } = props;
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const userId = parseInt(localStorage.getItem('user_id'))
-  const state = localStorage.getItem('user_state');
-  const area = localStorage.getItem('user_area')
+  const userId = parseInt(localStorage.getItem("user_id"));
+  const state = localStorage.getItem("user_state");
+  const area = localStorage.getItem("user_area");
   const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [isSearchEnable,setIsSearchEnable] = useState(false);
-  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
+  const [isSearchEnable, setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-
+  const prevIsSearchEnableRef = useRef(isSearchEnable);
 
   useEffect(() => {
-    getEmployers(activeTab.key);
-  }, [activeTab,isSearchEnable,selectedSearchedValue]);
+    if (isSearchEnable) {
+      getEmployers(activeTab.key);
+    }
+  }, [isSearchEnable, selectedSearchedValue]);
+
+  useEffect(() => {
+    const prevIsSearchEnable = prevIsSearchEnableRef.current;
+    if (prevIsSearchEnable && !isSearchEnable) {
+      getEmployers(activeTab.key);
+    }
+    prevIsSearchEnableRef.current = isSearchEnable;
+  }, [isSearchEnable, activeTab.key]);
 
   const columns = useMemo(
     () => [
@@ -76,7 +89,15 @@ const Employers = (props) => {
     []
   );
 
-  const getEmployerBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+  const getEmployerBySearchFilter = async (
+    selectedTab,
+    limit = paginationPageSize,
+    offset = 0,
+    selectedSearchedValue,
+    selectedSearchField,
+    sortBy,
+    sortOrder
+  ) => {
     const employerFields = `
     id
     name
@@ -132,42 +153,37 @@ const Employers = (props) => {
       full_name
       designation
     }
-  `
+  `;
 
-  let variables = {
-    limit,
-    start:offset,
-    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
-  }
+    let variables = {
+      limit,
+      start: offset,
+      sort: `${sortBy ? sortBy : selectedSearchField}:${
+        sortOrder ? sortOrder : "asc"
+      }`,
+    };
 
-  if (selectedTab === "my_data") {
-    Object.assign(variables, { id: userId });
-  } else if (selectedTab === "my_state") {
-    Object.assign(variables, { state: state });
-  } else if (selectedTab === "my_area") {
-    Object.assign(variables, { area: area });
-  }
-  else if(selectedSearchField === "medha_area"){
-    Object.assign(variables, { area: selectedSearchedValue.trim()});
-  }
-  else if (selectedSearchField === "state"){
-    Object.assign(variables, { state: selectedSearchedValue.trim()});
-  }
-  else if (selectedSearchField === "status"){
-    Object.assign(variables, { status: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "assigned_to"){
-    Object.assign(variables, { username: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "industry"){
-    Object.assign(variables, { industry_name: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "name"){
-    Object.assign(variables, { name: selectedSearchedValue.trim()});
-  }
+    if (selectedTab === "my_data") {
+      Object.assign(variables, { id: userId });
+    } else if (selectedTab === "my_state") {
+      Object.assign(variables, { state: state });
+    } else if (selectedTab === "my_area") {
+      Object.assign(variables, { area: area });
+    } else if (selectedSearchField === "medha_area") {
+      Object.assign(variables, { area: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "state") {
+      Object.assign(variables, { state: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "status") {
+      Object.assign(variables, { status: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "assigned_to") {
+      Object.assign(variables, { username: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "industry") {
+      Object.assign(variables, { industry_name: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "name") {
+      Object.assign(variables, { name: selectedSearchedValue.trim() });
+    }
 
-
-const employerQuery = `query GET_EMPLOYERS(
+    const employerQuery = `query GET_EMPLOYERS(
   $id: Int,
   $limit: Int,
   $start: Int,
@@ -203,55 +219,67 @@ const employerQuery = `query GET_EMPLOYERS(
     }
   }
 }
-`
-   
-  await api
-    .post("/graphql", {
-      query: employerQuery,
-      variables,
-    })
-    .then(data => {
-  
-      setEmployers(data?.data?.data?.employersConnection.values);
-      setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
-      setLoading(false);
-      nProgress.done();
-    })
+`;
+
+    await api
+      .post("/graphql", {
+        query: employerQuery,
+        variables,
+      })
+      .then((data) => {
+        setEmployers(data?.data?.data?.employersConnection.values);
+        setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
+        setLoading(false);
+        nProgress.done();
+      })
       .catch((error) => {
         setLoading(false);
         nProgress.done();
         return Promise.reject(error);
-      })
-  }
+      });
+  };
 
-  const getEmployers = async (selectedTab, limit = paginationPageSize, offset = 0, sortBy = 'created_at', sortOrder = 'desc') => {
+  const getEmployers = async (
+    selectedTab,
+    limit = paginationPageSize,
+    offset = 0,
+    sortBy = "created_at",
+    sortOrder = "desc"
+  ) => {
     nProgress.start();
     setLoading(true);
-    if(isSearchEnable){
-      await getEmployerBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField)
-    }
-    else {
-      let variables ={
+    if (isSearchEnable) {
+      await getEmployerBySearchFilter(
+        selectedTab,
+        limit,
+        offset,
+        selectedSearchedValue,
+        selectedSearchField
+      );
+    } else {
+      let variables = {
         limit: limit,
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
+      };
+      if (selectedTab == "my_data") {
+        Object.assign(variables, { id: userId });
+      } else if (selectedTab == "my_state") {
+        Object.assign(variables, { state: state });
+      } else if (selectedTab == "my_area") {
+        Object.assign(variables, { area: area });
       }
-      if(selectedTab == "my_data"){
-        Object.assign(variables, {id: userId})
-      } else if(selectedTab == "my_state"){
-        Object.assign(variables, {state: state})
-      } else if(selectedTab == "my_area"){
-        Object.assign(variables, {area: area})
-      }
-      await api.post("/graphql", {
-        query: GET_USER_EMPLOYERS,
-        variables,
-      })
-      .then(data => {
-  
-        setEmployers(data?.data?.data?.employersConnection.values);
-        setEmployersAggregate(data?.data?.data?.employersConnection?.aggregate);
-      })
+      await api
+        .post("/graphql", {
+          query: GET_USER_EMPLOYERS,
+          variables,
+        })
+        .then((data) => {
+          setEmployers(data?.data?.data?.employersConnection.values);
+          setEmployersAggregate(
+            data?.data?.data?.employersConnection?.aggregate
+          );
+        })
         .catch((error) => {
           return Promise.reject(error);
         })
@@ -260,72 +288,108 @@ const employerQuery = `query GET_EMPLOYERS(
           nProgress.done();
         });
     }
-    
   };
   useEffect(() => {
-  getEmployersPickList().then(data => setPickList(data));
-}, [])
+    getEmployersPickList().then((data) => setPickList(data));
+  }, []);
 
   useEffect(() => {
     let data = employers;
     data = data.map((employer, index) => {
       return {
         ...employer,
-        assignedTo: <Anchor text={employer.assigned_to.username} href={'/user/' + employer.assigned_to.id} />,
-        avatar: <Avatar name={employer.name} logo={employer.logo} style={{width: '35px', height: '35px'}} icon="employer" />,
-        industry: <Badge value={employer.industry} pickList={pickList.industry || []} />,
+        assignedTo: (
+          <Anchor
+            text={employer.assigned_to.username}
+            href={"/user/" + employer.assigned_to.id}
+          />
+        ),
+        avatar: (
+          <Avatar
+            name={employer.name}
+            logo={employer.logo}
+            style={{ width: "35px", height: "35px" }}
+            icon="employer"
+          />
+        ),
+        industry: (
+          <Badge value={employer.industry} pickList={pickList.industry || []} />
+        ),
         link: <TableRowDetailLink value={employer.id} to={"employer"} />,
         href: `/employer/${employer.id}`,
-      }
+      };
     });
     setEmployersTableData(data);
   }, [employers, pickList]);
 
-  const fetchData = useCallback((pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
-    if (sortBy.length) {
-      let sortByField = 'name';
-      let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
-      switch (sortBy[0].id) {
-        case 'employer':
-        case 'industry':
-        case 'assigned_to.username':
-        case "district":
-          sortByField = sortBy[0].id;
-          break;
+  const fetchData = useCallback(
+    (
+      pageIndex,
+      pageSize,
+      sortBy,
+      isSearchEnable,
+      selectedSearchedValue,
+      selectedSearchField
+    ) => {
+      if (sortBy.length) {
+        let sortByField = "name";
+        let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+        switch (sortBy[0].id) {
+          case "employer":
+          case "industry":
+          case "assigned_to.username":
+          case "district":
+            sortByField = sortBy[0].id;
+            break;
 
-        case 'city':
-          sortByField = 'city'
-          break;
+          case "city":
+            sortByField = "city";
+            break;
 
-        case 'state':
-          sortByField = 'state'
-          break;
+          case "state":
+            sortByField = "state";
+            break;
 
-        case 'avatar':
-        default:
-          sortByField = 'name';
-          break;
+          case "avatar":
+          default:
+            sortByField = "name";
+            break;
+        }
+        if (isSearchEnable) {
+          getEmployerBySearchFilter(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            selectedSearchedValue,
+            selectedSearchField,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getEmployers(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        }
+      } else {
+        if (isSearchEnable) {
+          getEmployerBySearchFilter(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            selectedSearchedValue,
+            selectedSearchField
+          );
+        } else {
+          getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
+        }
       }
-      if(isSearchEnable){
-        getEmployerBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
-
-      }
-      else {
-        getEmployers(activeTab.key, pageSize, pageSize * pageIndex, sortByField, sortOrder);
-
-      }
-    } else {
-      if(isSearchEnable){
-        getEmployerBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
-
-      }
-      else {
-        getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
-
-      }
-
-    }
-  }, [activeTab.key]);
+    },
+    [activeTab.key]
+  );
 
   const hideCreateModal = async (data) => {
     setFormErrors([]);
@@ -335,27 +399,31 @@ const employerQuery = `query GET_EMPLOYERS(
     }
 
     // need to remove `show` from the payload
-    let {show, ...dataToSave} = data;
+    let { show, ...dataToSave } = data;
 
     nProgress.start();
-    createEmployer(dataToSave).then(data => {
-      if (data.data.errors) {
-        setFormErrors(data.data.errors);
-      } else {
-      setAlert("Employer created successfully.", "success");
-      getEmployers();
-      setModalShow(false);
-      history.push(`/employer/${data.data.data.createEmployer.employer.id}`);
-      }
-    }).catch(err => {
-      setAlert("Unable to create employer.", "error");
-      getEmployers();
-      setModalShow(false);
-    }).finally(() => {
-      nProgress.done();
-    });
+    createEmployer(dataToSave)
+      .then((data) => {
+        if (data.data.errors) {
+          setFormErrors(data.data.errors);
+        } else {
+          setAlert("Employer created successfully.", "success");
+          getEmployers();
+          setModalShow(false);
+          history.push(
+            `/employer/${data.data.data.createEmployer.employer.id}`
+          );
+        }
+      })
+      .catch((err) => {
+        setAlert("Unable to create employer.", "error");
+        getEmployers();
+        setModalShow(false);
+      })
+      .finally(() => {
+        nProgress.done();
+      });
   };
-
 
   return (
     <Collapse title="EMPLOYERS" type="plain" opened={true}>
@@ -365,23 +433,23 @@ const employerQuery = `query GET_EMPLOYERS(
           <button
             className="btn btn-primary add_button_sec"
             onClick={() => setModalShow(true)}
-            style={{marginLeft: '15px'}}
+            style={{ marginLeft: "15px" }}
           >
             Add New
           </button>
         </div>
         <EmployerSearchBar
-        selectedSearchField={selectedSearchField} 
-        setSelectedSearchField={setSelectedSearchField} 
-        setIsSearchEnable={setIsSearchEnable}
-        setSelectedSearchedValue={setSelectedSearchedValue}
-        tab={activeTab.key}
-        info={{
-          id:userId,
-          area:area,
-          state:state,
-        }}
-        isDisable={employersAggregate.count ? false:true}
+          selectedSearchField={selectedSearchField}
+          setSelectedSearchField={setSelectedSearchField}
+          setIsSearchEnable={setIsSearchEnable}
+          setSelectedSearchedValue={setSelectedSearchedValue}
+          tab={activeTab.key}
+          info={{
+            id: userId,
+            area: area,
+            state: state,
+          }}
+          isDisable={employersAggregate.count ? false : true}
         />
         <Table
           columns={columns}

@@ -149,6 +149,7 @@ const MassEmployerUpload = (props) => {
         start_date: startDate,
         status: data.status,
         student: obj.id,
+        employer_id:data.employer_id,
         work_engagement: data.work_engagement,
       };
     });
@@ -399,6 +400,11 @@ const MassEmployerUpload = (props) => {
   const handleChange = (selectedOptions) => {
     setStudents(selectedOptions);
   };
+  useEffect(() => {
+    filterStudent(studentInput).then((data) => {
+      setStudentOptions(data);
+    });
+  }, [studentInput]);
   
 
   return (
@@ -461,7 +467,7 @@ const MassEmployerUpload = (props) => {
                          isOptionDisabled={() => students.length >= 10}
                          className="basic-multi-select"
                          classNamePrefix="select"
-                         onInputChange={handleInputChange}
+                         onInputChange={(e)=>setStudentInput(e)}
                          onChange={handleChange}
                          value={students}
                       />
@@ -677,7 +683,7 @@ const MassEmployerUpload = (props) => {
                     <button
                       type="submit"
                       className="btn btn-primary btn-regular collapse_form_buttons"
-                      onClick={() => onSubmit(values)}
+                      // onClick={() => onSubmit(values)}
                     >
                       SAVE
                     </button>

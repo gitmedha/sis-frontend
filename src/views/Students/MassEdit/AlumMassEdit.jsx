@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select, { components } from "react-select";
 import { Modal } from "react-bootstrap";
-import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
@@ -234,12 +234,13 @@ const AlumMassEdit = (props) => {
                 id: Number(val.id),
               })
             );
+            
           } catch (err) {
             return err;
           }
+          
         })
       );
-
       setAlumniServiceData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
@@ -263,38 +264,48 @@ const AlumMassEdit = (props) => {
     start_date: null,
     end_date: null,
     fee_submission_date: null,
-    assigned_to: localStorage.getItem("user_id"),
+    assigned_to: "",
     category: null,
     type: "",
     status:""
   };
 
   const onSubmit = async (values) => {
-    let data = students.map((obj) => {
-      return {
-        assigned_to: values.assigned_to ? values.assigned_to : obj.assigned_to,
-        category: values.category ? values.category : obj.category,
-        comments: values.comments ? values.comments : obj.comments,
-        end_date: values.end_date ? values.end_date : obj.end_date,
-        fee_amount: values.fee_amount ? values.fee_amount : obj.fee_amount,
-        fee_submission_date: values.fee_submission_date
-          ? values.fee_submission_date
-          : obj.fee_submission_date,
-        location: values.location ? values.location : obj.location,
-        program_mode: values.program_mode
-          ? values.program_mode
-          : obj.program_mode,
-        receipt_number: values.receipt_number
-          ? values.receipt_number
-          : obj.receipt_number,
-        start_date: values.start_date ? values.start_date : obj.start_date,
-        type: values.type,
-        student_id: obj.id,
+    let data = alumniServiceData.map((obj) => {
+      let initialData = {
+        student_id: obj.student_id,
         id: Number(obj.id),
+        type: values.type,
       };
+  
+      let filteredData = Object.keys(values).reduce((acc, key) => {
+        if (values[key] !== undefined && values[key] !== "") {
+          acc[key] = values[key];
+        }
+        return acc;
+      }, initialData);
+  
+      // Add fields from obj if they are not provided in values
+      filteredData = {
+        ...filteredData,
+        assigned_to: filteredData.assigned_to || obj.assigned_to,
+        category: filteredData.category || obj.category,
+        comments: filteredData.comments || obj.comments,
+        end_date: filteredData.end_date || obj.end_date,
+        fee_amount: filteredData.fee_amount || obj.fee_amount,
+        fee_submission_date: filteredData.fee_submission_date || obj.fee_submission_date,
+        location: filteredData.location || obj.location,
+        program_mode: filteredData.program_mode || obj.program_mode,
+        receipt_number: filteredData.receipt_number || obj.receipt_number,
+        start_date: filteredData.start_date || obj.start_date,
+      };
+  
+      return filteredData;
     });
+  
     props.handelSubmit(data, "AlumniBuldEdit");
   };
+  
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -394,7 +405,7 @@ const AlumMassEdit = (props) => {
                   // name="student_ids"
                   // options={studentOptions}
                   // filterData={filterStudent}
-                  // onInputChange={(e) => setStudentInput(e)}
+                  
                   // className="basic-multi-select"
                   // classNamePrefix="select"
                   // onChange={(choices) => setStudents(choices)}
@@ -406,7 +417,8 @@ const AlumMassEdit = (props) => {
                   isOptionDisabled={() => students.length >= 10}
                   className="basic-multi-select"
                   classNamePrefix="select"
-                  onInputChange={handleInputChange}
+                  // onInputChange={handleInputChange}
+                  onInputChange={(e) => setStudentInput(e)}
                   onChange={handleselectChange}
                   value={students}
                 />
@@ -466,6 +478,7 @@ const AlumMassEdit = (props) => {
                           label="Assigned To"
                           className="form-control"
                           placeholder="Assigned To"
+                          filterData={filterAssignedTo}
                           defaultOptions={assigneeOptions}
                         />
                       </div>
@@ -578,7 +591,7 @@ const AlumMassEdit = (props) => {
                           // ={feeFieldsRequired}
                         />
                       </div>
-                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
@@ -586,10 +599,8 @@ const AlumMassEdit = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
-                      onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      ={feeFieldsRequired}
                     />
-                  </div> */}
+                  </div>
                       <div className="col-md-12 col-sm-12 mt-2">
                         <Textarea
                           name="comments"
