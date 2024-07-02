@@ -350,7 +350,14 @@ const OpsSearchDropdown = function OpsSearchBar({
                     </div>
                   )}
                 </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center">
+                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
+                  <button
+                    className="btn btn-primary action_button_sec search_bar_action_sec"
+                    type="submit"
+                    disabled={disabled ? true : false}
+                  >
+                    FIND
+                  </button>
                   <button
                     className="btn btn-secondary action_button_sec search_bar_action_sec"
                     type="button"
@@ -358,13 +365,6 @@ const OpsSearchDropdown = function OpsSearchBar({
                     disabled={disabled ? true : false}
                   >
                     CLEAR
-                  </button>
-                  <button
-                    className="btn btn-primary action_button_sec search_bar_action_sec"
-                    type="submit"
-                    disabled={disabled ? true : false}
-                  >
-                    FIND
                   </button>
                 </div>
               </div>
