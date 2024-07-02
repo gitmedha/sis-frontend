@@ -31,7 +31,6 @@
 body {
   font-family: Latto-Regular !important;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
 }
 
 .app {
@@ -152,8 +151,6 @@ body {
   .table-container {
     overflow-x: auto;
     height: 68vh;
-    scrollbar-width: none;
-    
   }
   .between_class{
     position: absolute;
@@ -365,7 +362,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .form_sec {
-  height: 375px;
+  height: 500px;
   overflow: scroll;
   scrollbar-width: none;
   scroll-behavior: smooth;

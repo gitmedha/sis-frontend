@@ -64,6 +64,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
+    work_engagement:''
   };
 
   if (props.employmentConnection) {
@@ -107,43 +108,48 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then((data) => {
-      setWorkEngagementOptions(
-        data.work_engagement.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setAllStatusOptions(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setrejectionreason(
-        data.reason_if_rejected.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setSourceOptions(
-        data.source.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-    if (props.employmentConnection && props.employmentConnection.student) {
-      filterStudent(props.employmentConnection.student.name).then((data) => {
-        setStudentOptions(data);
+    let fetchdata=async()=>{
+      getEmploymentConnectionsPickList().then((data) => {
+        setWorkEngagementOptions(
+          data.work_engagement.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setAllStatusOptions(
+          data.status.map((item) => ({
+            ...item,
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setrejectionreason(
+          data.reason_if_rejected.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+        setSourceOptions(
+          data.source.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
       });
+
+      if (props.employmentConnection && props.employmentConnection.student) {
+        filterStudent(props.employmentConnection.student.name).then((data) => {
+          setStudentOptions(data);
+        });
+      }
     }
+   fetchdata()
+    
   }, [props]);
 
   useEffect(() => {
@@ -178,7 +184,7 @@ const EnrollmentConnectionForm = (props) => {
     setStatusOptions(
       filteredOptions.map((item) => {
         if (
-          localStorage.getItem("user_role").toLowerCase() === "srm" &&
+          localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
           item.value.toLowerCase() === "unknown"
         ) {
           return { isDisabled: true };
@@ -475,7 +481,7 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     type="submit"
                     className="btn btn-primary btn-regular collapse_form_buttons"
-                    onClick={() => onSubmit(values)}
+                    // onClick={() => onSubmit(values)}
                   >
                     SAVE
                   </button>

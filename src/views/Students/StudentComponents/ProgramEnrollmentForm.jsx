@@ -307,7 +307,6 @@ const ProgramEnrollmentForm = (props) => {
     
   },[courseLevel,courseType])
 
-console.log(initialValues);
  
   return (
     <Modal
