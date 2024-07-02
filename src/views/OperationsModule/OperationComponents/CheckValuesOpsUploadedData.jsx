@@ -44,7 +44,7 @@ const CheckValuesOpsUploadedData = (props) => {
             className="d-flex align-items-center"
           >
             <h1 className="text--primary bebas-thick mb-0">
-              {props.notUploadedData.length <0 ? <p> Data Validation Failures</p>:"Everthing looks fine,you can upload the data"}
+           <p> Data Validation Failures</p>
              
             </h1>
           </Modal.Title>
@@ -93,7 +93,6 @@ const CheckValuesOpsUploadedData = (props) => {
                   </tbody>
                 </Table>
 
-                <h6 className="text-danger">Please check Activity type, Institution, batch ,Start Date and End Date ,Assigned To Data</h6>
                 </>
               ) : (
                 <div className="d-flex justify-content-center align-content-center">
@@ -102,7 +101,10 @@ const CheckValuesOpsUploadedData = (props) => {
                   </h2>
                 </div>
               )}
+              
             </div>
+            <h6 className="text-danger">Please check Activity type, Institution, batch ,Start Date and End Date ,Assigned To Data</h6>
+                
           </Modal.Body>
           {(isSRM() || isAdmin()) && (
             <div className="row mt-4 mb-4">

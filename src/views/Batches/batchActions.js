@@ -340,7 +340,7 @@ export const searchStudents = async(searchValue)=>{
       variables:{
         limit:20,
         query:searchValue,
-        sort:`name:asc`
+        sort:`full_name:asc`
       }
     })
 

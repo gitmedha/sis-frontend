@@ -81,7 +81,7 @@ const StudentForm = (props) => {
       setStatusOptions(
         data.status.map((item) => {
           if (
-            localStorage.getItem("user_role").toLowerCase() === "srm" &&
+            localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
             item.value.toLowerCase() === "unknown"
           ) {
             return { isDisabled: true };
@@ -598,11 +598,12 @@ const StudentForm = (props) => {
                         label="Pin Code"
                         placeholder="Pin Code"
                         className="form-control"
+                        required
                       />
                     </div>
                   </div>
                 </Section>
-                <Section>
+                {/* <Section>
                   <h3 className="section-header">Additional Info</h3>
                   <div className="row">
                     <div className="col-md-6 col-sm-12 mb-2">
@@ -637,7 +638,7 @@ const StudentForm = (props) => {
                       />
                     </div>
                   </div>
-                </Section>
+                </Section> */}
               </div>
               <div className="row justify-content-end mt-1">
                 <div className="col-auto p-0">

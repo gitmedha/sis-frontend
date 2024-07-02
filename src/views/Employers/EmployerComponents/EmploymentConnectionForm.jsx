@@ -73,6 +73,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected_other: "",
     reason_if_rejected: "",
     assigned_to: userId,
+    work_engagement:""
   };
 
   if (props.employmentConnection) {
@@ -284,7 +285,7 @@ const EnrollmentConnectionForm = (props) => {
     setStatusOptions(
       filteredOptions.map((item) => {
         if (
-          localStorage.getItem("user_role").toLowerCase() === "srm" &&
+          localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
           item.value.toLowerCase() === "unknown"
         ) {
           return { isDisabled: true };
@@ -577,7 +578,6 @@ const EnrollmentConnectionForm = (props) => {
                   <button
                     className="btn btn-primary btn-regular collapse_form_buttons"
                     type="submit"
-                    onClick={() => onSubmit(values)}
                   >
                     SAVE
                   </button>
