@@ -141,7 +141,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
       </div>
       <div className={`sidebar ${isOpen ? "" : "d-none d-md-block"}`} isOpen={isOpen}>
         <img
-          src={require('../../assets/images/logo.png').default}
+          src={require('../../assets/images/Medha-logo.svg').default}
           alt="Medha SIS"
           className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
           style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
