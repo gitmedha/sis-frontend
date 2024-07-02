@@ -174,11 +174,62 @@ const tabPickerOptions = [
   }
 
   if (selectedTab === "my_data") {
-    Object.assign(variables, { id: userId });
+    if(selectedSearchField === "medha_area"){
+      Object.assign(variables, { id: userId,area: selectedSearchedValue.trim()});
+    }
+    else if (selectedSearchField === "status"){
+      Object.assign(variables, { id: userId,status: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "assigned_to"){
+      Object.assign(variables, { id: userId,username: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "type"){
+      Object.assign(variables, { id: userId,type: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "employer"){
+      Object.assign(variables, { id: userId,employer_name: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "role_or_designation"){
+      Object.assign(variables, {id: userId, role_or_designation: selectedSearchedValue.trim()});
+    }
   } else if (selectedTab === "my_state") {
-    Object.assign(variables, { state: state });
+    if(selectedSearchField === "medha_area"){
+      Object.assign(variables, { state: state ,area: selectedSearchedValue.trim()});
+    }
+    else if (selectedSearchField === "status"){
+      Object.assign(variables, { state: state ,status: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "assigned_to"){
+      Object.assign(variables, { state: state ,username: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "type"){
+      Object.assign(variables, { state: state ,type: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "employer"){
+      Object.assign(variables, { state: state ,employer_name: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "role_or_designation"){
+      Object.assign(variables, { state: state ,role_or_designation: selectedSearchedValue.trim()});
+    }
   } else if (selectedTab === "my_area") {
-    Object.assign(variables, { area: area });
+    if (selectedSearchField === "status"){
+      Object.assign(variables, { area: area, status: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "assigned_to"){
+      Object.assign(variables, {area: area,  username: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "type"){
+      Object.assign(variables, { area: area, type: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "employer"){
+      Object.assign(variables, { area: area, employer_name: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "role_or_designation"){
+      Object.assign(variables, { area: area, role_or_designation: selectedSearchedValue.trim()});
+    }
+    else if(selectedSearchField === "medha_area"){
+      Object.assign(variables, { area: selectedSearchedValue.trim()});
+    }
   }
   else if(selectedSearchField === "medha_area"){
     Object.assign(variables, { area: selectedSearchedValue.trim()});
