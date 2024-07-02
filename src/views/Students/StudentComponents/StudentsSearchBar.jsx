@@ -55,7 +55,6 @@ function StudentsSearchBar({
   ]);
 
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
-
   const [isDisabled, setDisbaled] = useState(true);
 
   const formatdate = (dateval) => {
@@ -98,12 +97,13 @@ function StudentsSearchBar({
 
   const formik = useFormik({
     // Create a Formik reference using useFormik
+
     initialValues,
     onSubmit: handleSubmit,
   });
 
   const clear = async (formik) => {
-    formik.setValues(initialValues);
+    formik.resetForm();
     setSelectedSearchField(null);
     setIsSearchEnable(false);
     setDisbaled(true);
@@ -221,18 +221,15 @@ function StudentsSearchBar({
     }
   }, [selectedSearchField]);
 
-  useEffect(() => {
-    async function refreshOnTabChange() {
-      await clear(formik);
-    }
-
-    refreshOnTabChange();
-  }, [tab]);
+  const filteredStudentsOptions =
+    tab === "my_area"
+      ? studentsOptions.filter((option) => option.value !== "medha_area")
+      : studentsOptions;
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {(formik) => (
-        <Form style={{padding:0}}>
+        <Form style={{ padding: 0 }}>
           <Section>
             <div className="row align-items-center">
               <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
@@ -241,7 +238,7 @@ function StudentsSearchBar({
                   name="search_by_field"
                   label="Search Field"
                   control="lookup"
-                  options={studentsOptions}
+                  options={filteredStudentsOptions}
                   className="form-control"
                   onChange={(e) => handleStudentsOptions(e.value)}
                   isDisabled={isDisable}
@@ -262,7 +259,6 @@ function StudentsSearchBar({
                         defaultOptions={defaultSearchArray}
                         filterData={filterSearchValue}
                         onChange={(e) => {
-                          console.log("e", e);
                           formik.setFieldValue(
                             "search_by_value",
                             e ? e.value : ""
@@ -329,7 +325,14 @@ function StudentsSearchBar({
                 </div>
               )}
 
-              <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center">
+              <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
+                <button
+                  className="btn btn-primary action_button_sec search_bar_action_sec"
+                  type="submit"
+                  disabled={isDisabled ? true : false}
+                >
+                  FIND
+                </button>
                 <button
                   className="btn btn-secondary action_button_sec search_bar_action_sec"
                   type="button"
@@ -337,13 +340,6 @@ function StudentsSearchBar({
                   disabled={isDisabled ? true : false}
                 >
                   CLEAR
-                </button>
-                <button
-                  className="btn btn-primary action_button_sec search_bar_action_sec"
-                  type="submit"
-                  disabled={isDisabled ? true : false}
-                >
-                  FIND
                 </button>
               </div>
             </div>

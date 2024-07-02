@@ -164,11 +164,100 @@ const Employers = (props) => {
     };
 
     if (selectedTab === "my_data") {
-      Object.assign(variables, { id: userId });
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          id: userId,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          id: userId,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          id: userId,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          id: userId,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "industry") {
+        Object.assign(variables, {
+          id: userId,
+          industry_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          id: userId,
+          name: selectedSearchedValue.trim(),
+        });
+      }
     } else if (selectedTab === "my_state") {
-      Object.assign(variables, { state: state });
+      if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          state: selectedSearchedValue.trim(),
+        });
+      }
+      else if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          state: state,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          state: state,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          state: state,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "industry") {
+        Object.assign(variables, {
+          state: state,
+          industry_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          state: state,
+          name: selectedSearchedValue.trim(),
+        });
+      }
     } else if (selectedTab === "my_area") {
-      Object.assign(variables, { area: area });
+      if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          area: area,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          area: selectedSearchedValue.trim(),
+        });
+      }else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          area: area,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          area: area,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "industry") {
+        Object.assign(variables, {
+          area: area,
+          industry_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          area: area,
+          name: selectedSearchedValue.trim(),
+        });
+      }
     } else if (selectedSearchField === "medha_area") {
       Object.assign(variables, { area: selectedSearchedValue.trim() });
     } else if (selectedSearchField === "state") {
