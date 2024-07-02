@@ -28,53 +28,59 @@ const MentorBulkAdd = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      query_start: "",
-      student_name: "",
-      father_name: "",
+      assigned_to: "",
+      mentor_name: "",
       email: "",
-      phone: "",
-      location: "",
-      query_type: "",
-      query_desc: "",
-      conclusion: "",
+      mentor_domain: "",
+      mentor_company_name: "",
+      deisgnation: "",
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
       status: "",
-      query_end: "",
-      // published_at: "",
+      program_name: "",
     },
     // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([
     {
       id: 1,
-      query_start: "",
-      student_name: "",
-      student_id: "",
-      father_name: "",
+      assigned_to: "",
+      mentor_name: "",
       email: "",
-      phone: "",
-      location: "",
-      query_type: "",
-      query_desc: "",
-      conclusion: "",
+      mentor_domain: "",
+      mentor_company_name: "",
+      deisgnation: "",
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
       status: "",
-      query_end: "",
+      program_name: "",
       // published_at: "",
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
-    query_start: "",
-    student_name: "",
-    student_id: "",
-    father_name: "",
-    email: "",
-    phone: "",
-    location: "",
-    query_type: "",
-    query_desc: "",
-    conclusion: "",
-    status: "",
-    query_end: "",
+    assigned_to: "",
+      mentor_name: "",
+      email: "",
+      mentor_domain: "",
+      mentor_company_name: "",
+      deisgnation: "",
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
+      status: "",
+      program_name: "",
   });
 
   const [showLimit, setshowLimit] = useState(false);
@@ -271,19 +277,19 @@ const MentorBulkAdd = (props) => {
         {
           id: 1,
           assigned_to: "",
-    mentor_name: "",
-    email: "",
-    mentor_domain: "",
-    mentor_company_name: "",
-    deisgnation: "",
-    mentor_area: "",
-    mentor_state: "",
-    outreach: "",
-    onboarding_date: "",
-    social_media_profile_link: "",
-    medha_area: "",
-    status: "",
-    program_name: "",
+          mentor_name: "",
+          email: "",
+          mentor_domain: "",
+          mentor_company_name: "",
+          deisgnation: "",
+          mentor_area: "",
+          mentor_state: "",
+          outreach: "",
+          onboarding_date: "",
+          social_media_profile_link: "",
+          medha_area: "",
+          status: "",
+          program_name: "",
         },
       ]);
     } catch (error) {
@@ -310,12 +316,25 @@ const MentorBulkAdd = (props) => {
 
     for (let row of rows) {
       for (let key in row) {
+     
+
+        /**
+        |--------------------------------------------------
+        |    !(key == "deisgnation") &&
+        !(key == "mentor_area") &&
+        !(key == "mentor_state") &&
+        !(key == "outreach") &&
+        !(key == "onboarding_date") &&
+        !(key == "medha_area") &&
+        !(key == "program_name")
+        |--------------------------------------------------
+        */
         if (
-          !(key == "father_name") &&
-          !(key == "email") &&
-          !(key == "phone") &&
-          !(key == "conclusion") &&
-          !(key == "query_end")
+          !(key == "assigned_to") &&
+          !(key == "mentor_name") &&
+          !(key == "mentor_domain") &&
+          !(key == "mentor_company_name") 
+         
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
@@ -323,6 +342,7 @@ const MentorBulkAdd = (props) => {
         }
       }
     }
+    console.log(isEmptyValuFound);
     setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
@@ -453,7 +473,7 @@ const MentorBulkAdd = (props) => {
                   <th>Deisgnation/Title</th>
                   <th>State</th>
                   <th>Mentor's Area *</th>
-                  
+
                   {/* <th>Area</th> */}
                 </tr>
               </thead>
@@ -472,7 +492,6 @@ const MentorBulkAdd = (props) => {
                     areaOptions={areaOptions}
                     classValue={classValue}
                   />
-                
                 ))}
               </tbody>
             </table>
@@ -489,7 +508,7 @@ const MentorBulkAdd = (props) => {
               className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
-              disabled={disableSaveButton}
+              disabled={!disableSaveButton}
             >
               SAVE
             </button>

@@ -290,17 +290,12 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.location
-                ? `border-red`
-                : "table-input h-2"
-            }`}
+            className={`table-input h-2`}
             classNamePrefix="select"
             isSearchable={true}
             options={areaOptions}
-            value={area}
             // isDisabled={!isEmptyValue(area)? true :false}
-            onChange={(e) => props.handleChange(e, "area", row.id)}
+            onChange={(e) => props.handleChange(e, "mentor_area", row.id)}
           />
         </td>
       </tr>

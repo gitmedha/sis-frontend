@@ -52,6 +52,7 @@ import UploadFile from "./OperationComponents/UploadFile";
 import TotUpload from "./UploadFiles/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
+import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1219,7 +1220,7 @@ const Operations = ({
               </>
             ) : activeTab.key == "mentorship" ? (
               <>
-                <CollegePitchSearch />
+                <MentorshipSearchbar />
                 <Table
                   onRowClick={(data) => showRowData("mentorship", data)}
                   columns={columnsMentor}
