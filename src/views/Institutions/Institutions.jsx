@@ -45,12 +45,12 @@ const Institutions = (props) => {
   const state = localStorage.getItem("user_state");
   const area = localStorage.getItem("user_area");
   const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [isSearchEnable,setIsSearchEnable] = useState(false);
-  const [selectedSearchedValue,setSelectedSearchedValue] = useState(null);
+  const [isSearchEnable, setIsSearchEnable] = useState(false);
+  const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
 
   useEffect(() => {
     getInstitutions(activeTab.key);
-  }, [activeTab,isSearchEnable,selectedSearchedValue]);
+  }, [activeTab, isSearchEnable, selectedSearchedValue]);
 
   const columns = useMemo(
     () => [
@@ -82,7 +82,15 @@ const Institutions = (props) => {
     []
   );
 
-  const getInstitutionsBySearchFilter = async(selectedTab,limit=paginationPageSize,offset=0,selectedSearchedValue,selectedSearchField,sortBy,sortOrder)=>{
+  const getInstitutionsBySearchFilter = async (
+    selectedTab,
+    limit = paginationPageSize,
+    offset = 0,
+    selectedSearchedValue,
+    selectedSearchField,
+    sortBy,
+    sortOrder
+  ) => {
     const InstitutionFields = `
       id
       name
@@ -109,39 +117,123 @@ const Institutions = (props) => {
       created_at
   `;
 
-  let variables = {
-    limit,
-    start:offset,
-    sort: `${sortBy ? sortBy:selectedSearchField}:${sortOrder?sortOrder:"asc"}`
-  }
+    let variables = {
+      limit,
+      start: offset,
+      sort: `${sortBy ? sortBy : selectedSearchField}:${
+        sortOrder ? sortOrder : "asc"
+      }`,
+    };
 
-  if (selectedTab === "my_data") {
-    Object.assign(variables, { id: userId });
-  } else if (selectedTab === "my_state") {
-    Object.assign(variables, { state: state });
-  } else if (selectedTab === "my_area") {
-    Object.assign(variables, { area: area });
-  }
-  else if(selectedSearchField === "medha_area"){
-    Object.assign(variables, { area: selectedSearchedValue.trim()});
-  }
-  else if (selectedSearchField === "state"){
-    Object.assign(variables, { state: selectedSearchedValue.trim()});
-  }
-  else if (selectedSearchField === "status"){
-    Object.assign(variables, { status: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "type"){
-    Object.assign(variables, { type: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "assigned_to"){
-    Object.assign(variables, { username: selectedSearchedValue.trim()});
-  }
-  else if(selectedSearchField === "name"){
-    Object.assign(variables, { name: selectedSearchedValue.trim()});
-  }
+    if (selectedTab === "my_data") {
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          id: userId,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          id: userId,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          id: userId,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "type") {
+        Object.assign(variables, {
+          id: userId,
+          type: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          id: userId,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          id: userId,
+          name: selectedSearchedValue.trim(),
+        });
+      }
+    } else if (selectedTab === "my_state") {
+      if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          state: state,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          state: state,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "type") {
+        Object.assign(variables, {
+          state: state,
+          type: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          state: state,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          state: state,
+          name: selectedSearchedValue.trim(),
+        });
+      }
+    } else if (selectedTab === "my_area") {
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          area: area,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          area: area,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "type") {
+        Object.assign(variables, {
+          area: area,
+          type: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          area: area,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          area: area,
+          name: selectedSearchedValue.trim(),
+        });
+      }
+    } else if (selectedSearchField === "medha_area") {
+      Object.assign(variables, { area: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "state") {
+      Object.assign(variables, { state: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "status") {
+      Object.assign(variables, { status: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "type") {
+      Object.assign(variables, { type: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "assigned_to") {
+      Object.assign(variables, { username: selectedSearchedValue.trim() });
+    } else if (selectedSearchField === "name") {
+      Object.assign(variables, { name: selectedSearchedValue.trim() });
+    }
 
-const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
+    const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
   institutionsConnection (
       sort: $sort
       start: $start
@@ -165,26 +257,27 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
         count
       }
     }
-  }`
-   
-  await api
-    .post("/graphql", {
-      query: InstitutionQuery,
-      variables,
-    })
-    .then((data) => {
+  }`;
 
-      setInstitutions(data?.data?.data?.institutionsConnection.values);
-      setInstitutionsAggregate(data?.data?.data?.institutionsConnection?.aggregate);
-      setLoading(false);
-      nProgress.done();
-    })
-    .catch((error) => {
-      setLoading(false);
-      nProgress.done();
-      return Promise.reject(error);
-    })
-  }
+    await api
+      .post("/graphql", {
+        query: InstitutionQuery,
+        variables,
+      })
+      .then((data) => {
+        setInstitutions(data?.data?.data?.institutionsConnection.values);
+        setInstitutionsAggregate(
+          data?.data?.data?.institutionsConnection?.aggregate
+        );
+        setLoading(false);
+        nProgress.done();
+      })
+      .catch((error) => {
+        setLoading(false);
+        nProgress.done();
+        return Promise.reject(error);
+      });
+  };
 
   const getInstitutions = async (
     selectedTab,
@@ -196,51 +289,58 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
     nProgress.start();
     setLoading(true);
 
-    if(isSearchEnable){
-      await getInstitutionsBySearchFilter(selectedTab,limit,offset,selectedSearchedValue,selectedSearchField);
+    if (isSearchEnable) {
+      await getInstitutionsBySearchFilter(
+        selectedTab,
+        limit,
+        offset,
+        selectedSearchedValue,
+        selectedSearchField
+      );
+    } else {
+      let variables = {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+      };
 
+      if (selectedTab == "my_data") {
+        Object.assign(variables, { id: userId });
+      } else if (selectedTab == "my_state") {
+        Object.assign(variables, { state: state });
+      } else if (selectedTab == "my_area") {
+        Object.assign(variables, { area: area });
+      }
+      await api
+        .post("/graphql", {
+          query: GET_USER_INSTITUTES,
+          variables,
+        })
+        .then((data) => {
+          setInstitutions(data?.data?.data?.institutionsConnection.values);
+          setInstitutionsAggregate(
+            data?.data?.data?.institutionsConnection?.aggregate
+          );
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
     }
-    else {
-      
-    let variables = {
-      limit: limit,
-      start: offset,
-      sort: `${sortBy}:${sortOrder}`,
-    };
-
-    if (selectedTab == "my_data") {
-      Object.assign(variables, { id: userId });
-    } else if (selectedTab == "my_state") {
-      Object.assign(variables, { state: state });
-    } else if (selectedTab == "my_area") {
-      Object.assign(variables, { area: area });
-    }
-    await api
-      .post("/graphql", {
-        query: GET_USER_INSTITUTES,
-        variables,
-      })
-      .then((data) => {
-        
-        setInstitutions(data?.data?.data?.institutionsConnection.values);
-        setInstitutionsAggregate(
-          data?.data?.data?.institutionsConnection?.aggregate
-        );
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        nProgress.done();
-      });
-    }
-
-
   };
 
   const fetchData = useCallback(
-    (pageIndex, pageSize, sortBy,isSearchEnable,selectedSearchedValue,selectedSearchField) => {
+    (
+      pageIndex,
+      pageSize,
+      sortBy,
+      isSearchEnable,
+      selectedSearchedValue,
+      selectedSearchField
+    ) => {
       if (sortBy.length) {
         let sortByField = "name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -248,7 +348,7 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
         switch (sortBy[0].id) {
           case "status":
           case "type":
-          case 'medba_area':
+          case "medba_area":
             sortByField = sortBy[0].id;
             break;
 
@@ -258,20 +358,27 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
 
           case "state":
             sortByField = sortBy[0].id;
-            break
+            break;
           case "avatar":
           default:
             sortByField = "name";
             break;
         }
 
-        if(sortBy[0].id == "medha_area"){
+        if (sortBy[0].id == "medha_area") {
           sortByField = sortBy[0].id;
         }
-        if(isSearchEnable){
-          getInstitutionsBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField,sortByField,sortOrder)
-        }
-        else {
+        if (isSearchEnable) {
+          getInstitutionsBySearchFilter(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            selectedSearchedValue,
+            selectedSearchField,
+            sortByField,
+            sortOrder
+          );
+        } else {
           getInstitutions(
             activeTab.key,
             pageSize,
@@ -281,13 +388,17 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
           );
         }
       } else {
-        if(isSearchEnable){
-          getInstitutionsBySearchFilter(activeTab.key,pageSize,pageSize * pageIndex,selectedSearchedValue,selectedSearchField)
-        }
-        else {
+        if (isSearchEnable) {
+          getInstitutionsBySearchFilter(
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            selectedSearchedValue,
+            selectedSearchField
+          );
+        } else {
           getInstitutions(activeTab.key, pageSize, pageSize * pageIndex);
         }
-       
       }
     },
     [activeTab.key]
@@ -387,19 +498,18 @@ const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: In
             Add New
           </button>
         </div>
-        <InstitutionSearchBar 
-        selectedSearchField={selectedSearchField} 
-        setSelectedSearchField={setSelectedSearchField} 
-        setIsSearchEnable={setIsSearchEnable}
-        setSelectedSearchedValue={setSelectedSearchedValue}
-        tab={activeTab.key}
-        info={{
-          id:userId,
-          area:area,
-          state:state,
-        }}
-        isDisable={institutionsAggregate.count ? false:true}
-
+        <InstitutionSearchBar
+          selectedSearchField={selectedSearchField}
+          setSelectedSearchField={setSelectedSearchField}
+          setIsSearchEnable={setIsSearchEnable}
+          setSelectedSearchedValue={setSelectedSearchedValue}
+          tab={activeTab.key}
+          info={{
+            id: userId,
+            area: area,
+            state: state,
+          }}
+          isDisable={institutionsAggregate.count ? false : true}
         />
         <Table
           columns={columns}
