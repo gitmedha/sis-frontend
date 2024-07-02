@@ -57,7 +57,6 @@ const EmploymentConnections = (props) => {
   const {setAlert} = props;
   const [opportunitypickList, setopportunityPickList] = useState([]);
   const [employmentConnectionsTableData, setEmploymentConnectionsTableData] = useState(employmentConnections);
-  const history = useHistory();
   const [selectedEmploymentConnection, setSelectedEmploymentConnection] = useState({
     employer: {},
   });
