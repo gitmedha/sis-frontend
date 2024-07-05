@@ -197,6 +197,7 @@ const processParsedData = (data) => {
         guest: newItem["Guest Name "] || "",
         designation: newItem["Guest Designation"] || "",
         organization: newItem["Organization"] || "",
+        students_attended:newItem['No. Of Participants'],
         activity_type: newItem["Activity Type"] || "",
         assigned_to: user ? user.name : { value: newItem["Assigned To"], notFound: true },
         area: newItem["Medha Area"] || "",
@@ -219,6 +220,7 @@ const processParsedData = (data) => {
         isactive: true,
         createdby: userId,
         updatedby: currentUser,
+        students_attended:newItem['No. Of Participants'],
       });
     }
   });
