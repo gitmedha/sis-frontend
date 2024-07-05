@@ -60,10 +60,6 @@ const Batches = (props) => {
     prevIsSearchEnableRef.current = isSearchEnable;
   }, [isSearchEnable, activeTab.key]);
 
-  const resetSearchFilter = async () => {
-    console.log("thiss");
-    getBatches(activeTab.key);
-  };
   const getBatchesBySearchFilter = async (
     selectedTab,
     limit = paginationPageSize,

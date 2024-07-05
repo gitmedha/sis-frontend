@@ -8,6 +8,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { deleteEvent } from "./calendarActions";
 import NP from "nprogress";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { isAdmin } from "../../../common/commonFunctions";
 import { connect } from "react-redux";
 
 const Styled = styled.div`
@@ -52,12 +53,7 @@ function ViewEvent(props) {
   const handleDelete = async () => {
     try {
       NP.start();
-      await deleteEvent(
-        {
-          status: "Cancelled",
-        },
-        event.id
-      );
+      await deleteEvent(event.id);
       NP.done();
       setAlert("Event cancelled successfully.", "success");
       props.onRefresh();
@@ -67,7 +63,6 @@ function ViewEvent(props) {
       console.error(error.message);
     }
   };
-
 
   return (
     <>
@@ -89,8 +84,7 @@ function ViewEvent(props) {
               <h1 className="text--primary bebas-thick mb-0">Event Info</h1>
             </Modal.Title>
             <div style={{ display: "flex", justifyContent: "space-around" }}>
-              {event.status !== "Cancelled" &&
-              event.assgined_to.email === userEmail ? (
+              {isAdmin() || event.assgined_to.email === userEmail ? (
                 <div
                   style={{ cursor: "pointer", marginRight: "10px" }}
                   onClick={() => openEditForm()}
@@ -100,8 +94,7 @@ function ViewEvent(props) {
               ) : (
                 <div></div>
               )}
-              {event.status !== "Cancelled" &&
-              event.assgined_to.email === userEmail ? (
+              {isAdmin() || event.assgined_to.email === userEmail ? (
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => setDeleteAlert(true)}
@@ -168,7 +161,7 @@ function ViewEvent(props) {
           onCancel={() => setDeleteAlert(false)}
           title={
             <span className="text--primary latto-bold">
-              Cancel {event.alumni_service}?
+              Delete {event.alumni_service}?
             </span>
           }
           customButtons={
@@ -188,7 +181,7 @@ function ViewEvent(props) {
             </>
           }
         >
-          <p>Are you sure, you want to delete this event?</p>
+          <p>Are you sure you want to delete this event?</p>
         </SweetAlert>
       )}
     </>

@@ -670,17 +670,20 @@ const Students = (props) => {
     );
   };
 
-  const HideMassEmployeCreateModal = async (data) => {
-    try {
-      await api.post(
-        "/employment-connections/createBulkEmploymentConnections",
-        data
-      );
-      setAlert("Employment Connection data created successfully.", "success");
-    } catch (error) {
-      setAlert("Unable to create Employment Connection Data.", "error");
-    }
-  };
+
+  const HideMassEmployeCreateModal =async(data)=>{
+     
+        try {
+           await api.post(
+            "/employment-connections/createBulkEmploymentConnections",
+            data
+          );
+          setAlert("Employment Connection data created successfully.", "success");
+        } catch (error) {
+          setAlert("Unable to create Employment Connection Data.", "error");
+        }
+      
+  }
 
   const hideMassCreateModal = async (data) => {
     if (data.length === 0) {
