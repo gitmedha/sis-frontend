@@ -80,14 +80,14 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const initialValues = {
     search_by_field: "",
     search_by_value: "",
-    search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date_end_from: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
-    search_by_value_date_end_to: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
+    // search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
+    // search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+    // search_by_value_date_end_from: new Date(
+    //   new Date(today).setDate(today.getDate())
+    // ),
+    // search_by_value_date_end_to: new Date(
+    //   new Date(today).setDate(today.getDate())
+    // ),
   };
   const validate = Yup.object().shape({
     search_by_value_date: Yup.date().required("Start date is required"),
@@ -123,72 +123,73 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const handleSubmit = async (values) => {
-    if (
-      values.search_by_field === "query_start" ||
-      values.search_by_field === "query_end"
-    ) {
-      let baseUrl = "alumni-queries";
-      if (values.search_by_field == "query_start") {
-        const date1 = formatdate(values.search_by_value_date);
-        const date2 = formatdate(values.search_by_value_date_to);
-        let val = {
-          query_start: date1,
-          query_end: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
+    // if (
+    //   values.search_by_field === "query_start" ||
+    //   values.search_by_field === "query_end"
+    // ) {
+    //   let baseUrl = "alumni-queries";
+    //   if (values.search_by_field == "query_start") {
+    //     const date1 = formatdate(values.search_by_value_date);
+    //     const date2 = formatdate(values.search_by_value_date_to);
+    //     let val = {
+    //       query_start: date1,
+    //       query_end: date2,
+    //     };
+    //     await searchOperationTab(baseUrl, values.search_by_field, val);
+    //     //stores the last searched result in the local storage as cache
+    //     //we will use it to refresh the search results
 
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
-      }
-      if (values.search_by_field == "query_end") {
-        const date1 = formatdate(values.search_by_value_date_end_from);
-        const date2 = formatdate(values.search_by_value_date_end_to);
-        let val = {
-          query_start: date1,
-          query_end: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
+    //     await localStorage.setItem(
+    //       "prevSearchedPropsAndValues",
+    //       JSON.stringify({
+    //         baseUrl: baseUrl,
+    //         searchedProp: values.search_by_field,
+    //         searchValue: val,
+    //       })
+    //     );
+    //   }
+    //   if (values.search_by_field == "query_end") {
+    //     const date1 = formatdate(values.search_by_value_date_end_from);
+    //     const date2 = formatdate(values.search_by_value_date_end_to);
+    //     let val = {
+    //       query_start: date1,
+    //       query_end: date2,
+    //     };
+    //     await searchOperationTab(baseUrl, values.search_by_field, val);
 
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
+    //     //stores the last searched result in the local storage as cache
+    //     //we will use it to refresh the search results
 
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
-      }
-    } else {
-      let baseUrl = "alumni-queries";
-      await searchOperationTab(
-        baseUrl,
-        values.search_by_field,
-        values.search_by_value
-      );
+    //     await localStorage.setItem(
+    //       "prevSearchedPropsAndValues",
+    //       JSON.stringify({
+    //         baseUrl: baseUrl,
+    //         searchedProp: values.search_by_field,
+    //         searchValue: val,
+    //       })
+    //     );
+    //   }
+    // } else {
+    //   let baseUrl = "alumni-queries";
+    //   await searchOperationTab(
+    //     baseUrl,
+    //     values.search_by_field,
+    //     values.search_by_value
+    //   );
 
-      //stores the last searched result in the local storage as cache
-      //we will use it to refresh the search results
+    //   //stores the last searched result in the local storage as cache
+    //   //we will use it to refresh the search results
 
-      await localStorage.setItem(
-        "prevSearchedPropsAndValues",
-        JSON.stringify({
-          baseUrl: baseUrl,
-          searchedProp: values.search_by_field,
-          searchValue: values.search_by_value,
-        })
-      );
-    }
+    //   await localStorage.setItem(
+    //     "prevSearchedPropsAndValues",
+    //     JSON.stringify({
+    //       baseUrl: baseUrl,
+    //       searchedProp: values.search_by_field,
+    //       searchValue: values.search_by_value,
+    //     })
+    //   );
+    // }
+    console.log(values);
   };
   const formik = useFormik({
     initialValues,
@@ -207,7 +208,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        validationSchema={validate}
+        // validationSchema={validate}
       >
         {(formik) => (
           <Form>
@@ -225,125 +226,129 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                   />
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-                  {selectedSearchField === null && (
-                    <Input
-                      name="search_by_value"
-                      control="input"
-                      label="Search Value"
-                      className="form-control"
-                      disabled={true}
-                    />
-                  )}
-                  {selectedSearchField === "mentor_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="input"
-                      options={studentNameOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "medha_area" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={areaOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "student_id.student_id" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={studentIdOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "email" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={emailOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "status" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={statusOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
+  {selectedSearchField === null && (
+    <Input
+      name="search_by_value"
+      control="input"
+      label="Search Value"
+      className="form-control"
+      disabled={true}
+    />
+  )}
+  {selectedSearchField === "mentor_name" && (
+    <Input
+      icon="down"
+      name="search_by_value"
+      label="Search Value"
+      control="input"
+      className="form-control"
+      disabled={disabled ? true : false}
+    />
+  )}
+  {selectedSearchField === "medha_area" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "status" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "mentor_domain" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "mentor_company_name" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "designation" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "mentor_area" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "mentor_state" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "outreach" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "program_name" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+  {selectedSearchField === "onboarding_date" && (
+    <Input
+    icon="down"
+    name="search_by_value"
+    label="Search Value"
+    control="input"
+    className="form-control"
+    disabled={disabled ? true : false}
+  />
+  )}
+ 
+ 
+</div>
 
-                  {selectedSearchField === "query_start" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
-                        <Input
-                          name="search_by_value_date"
-                          label="From"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_to"
-                          label="To"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedSearchField === "query_end" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
-                        <Input
-                          name="search_by_value_date_end_from"
-                          label="From"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_end_to"
-                          label="To"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center">
                   <button
                     className="btn btn-secondary action_button_sec search_bar_action_sec"
