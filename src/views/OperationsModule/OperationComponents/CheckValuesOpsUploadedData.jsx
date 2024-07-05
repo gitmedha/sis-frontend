@@ -27,6 +27,7 @@ const Style = styled.div`
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
 
+  console.log(props.notUploadedData);
   return (
     <>
       <Modal
@@ -71,24 +72,28 @@ const CheckValuesOpsUploadedData = (props) => {
                         <th>Project Funder</th>
                         <th>Guest Name</th>
                         <th>Guest Designation</th>
+                        <th>Organization</th>
+                        <th>No. of Participant</th>
                       </tr>
                     </thead>
                     <tbody>
                       {props.notUploadedData.map((obj, i) => (
                         <tr key={i}>
                           <td>{obj.index}</td>
-                          <td className={obj.assigned_to.notFound ?"text-danger":""}>{obj.assigned_to.value ?obj.assigned_to.value:'N/A'}</td>
+                          <td className={obj.assigned_to.notFound ?"text-danger":""}>{obj.assigned_to.notFound ? obj.assigned_to.value:obj.assigned_to}</td>
                           <td>{obj.activity_type}</td>
-                          <td className={obj.institution.notFound ?"text-danger":""}>{obj.institution.value ?obj.institution.value:'N/A'}</td>
+                          <td className={obj.institution.notFound ?"text-danger":""}>{obj.institution.notFound ?obj.institution.value :obj.institution}</td>
                           <td>{obj.state}</td>
                           <td>{obj.area}</td>
-                          <td className={obj.batch.notFound ?"text-danger":""}>{obj.batch.value ?obj.batch.value :'N/A'}</td>
-                          <td className={obj.start_date.notFound ?"text-danger":""}>{obj.start_date.value ? obj.start_date.value :'N/A'}</td>
-                          <td className={obj.end_date.notFound ?"text-danger":""}>{obj.end_date.value ?obj.end_date.value:'N/A'}</td>
+                          <td className={obj.batch.notFound ?"text-danger":""}>{obj.batch.notFound ? obj.batch.value :obj.batch}</td>
+                          <td className={obj.start_date.notFound ?"text-danger":""}>{obj.start_date.notFound ? obj.start_date.value:obj.start_date}</td>
+                          <td className={obj.end_date.notFound ?"text-danger":""}>{obj.end_date.notFound ?obj.end_date.value:obj.end_date}</td>
                           <td>{obj.topic}</td>
                           <td>{obj.donor}</td>
                           <td>{obj.guest}</td>
                           <td>{obj.designation}</td>
+                          <td>{obj.organization}</td>
+                          <td>{obj.students_attended}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -102,8 +107,7 @@ const CheckValuesOpsUploadedData = (props) => {
               
             </div>
             <h6 className="text-danger">
-              Please check Activity type, Institution, batch ,Start Date and End
-              Date ,Assigned To Data
+              Please check the error found 
             </h6>
           </Modal.Body>
           {(isSRM() || isAdmin()) && (

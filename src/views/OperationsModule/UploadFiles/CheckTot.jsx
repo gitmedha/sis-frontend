@@ -118,9 +118,7 @@ const CheckTot = (props) => {
                     </tbody>
                   </Table>
 
-                  <h6 className="text-danger">
-                    Please check Department,Project Type,Partner Departmanet ,Start Date End Date ,State, and Area
-                  </h6>
+                  
                 </>
               ) : (
                 <div className="d-flex justify-content-center align-content-center">
@@ -128,6 +126,9 @@ const CheckTot = (props) => {
                 </div>
               )}
             </div>
+            <h6 className="text-danger">
+              Please check the error found 
+            </h6>
           </Modal.Body>
           {(isSRM() || isAdmin()) && (
             <div className="row mt-4 mb-4">
