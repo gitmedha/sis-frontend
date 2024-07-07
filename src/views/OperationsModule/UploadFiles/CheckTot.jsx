@@ -160,7 +160,7 @@ const CheckTot = (props) => {
                 </div>
               )}
             </div>
-            <h6 className="text-danger">Please check the error found</h6>
+            <h6 className="text-danger">Error found !</h6>
           </Modal.Body>
           {(isSRM() || isAdmin()) && (
             <div className="row mt-4 mb-4">
