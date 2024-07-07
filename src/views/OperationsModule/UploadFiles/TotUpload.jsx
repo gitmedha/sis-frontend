@@ -15,6 +15,7 @@ import {
 } from "../../Address/addressActions";
 import { getTotPickList } from "../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
+import { isNumber } from "lodash";
 
 const Styled = styled.div`
   .icon-box {
@@ -144,6 +145,56 @@ const TotUpload = (props) => {
     return null;
   };
   
+  useEffect(() => {
+    getTotPickList().then((data) => {
+      // setModuleName(data.module_name.map(item))
+      setModuleName(
+        data.module_name.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setPartnerDept(
+        data.partner_dept.map((item) => ({
+          key: item,
+          value: item,
+          label: item,
+        }))
+      );
+      setProjectName(
+        data.project_name.map((item) => item)
+      );
+    });
+    getAddressOptions().then((data) => {
+      setStateOptions(
+        data?.data?.data?.geographiesConnection.groupBy.state
+          .map((state) => ({
+            key: state?.id,
+            label: state?.key,
+            value: state?.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+    getStateDistricts().then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.district
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+  }, [props]);
+
+  const  capitalize=(s)=>
+  {
+      return s[0].toUpperCase() + s.slice(1);
+  }
 
   const processParsedData = (data) => {
     const formattedData = [];
@@ -175,6 +226,12 @@ const TotUpload = (props) => {
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
+      // console.log(projectName);
+      const projectNameCheck = projectName.find(
+        (project) => project === newItem["Project Name"]
+      );
+
+      // projectName
   
       const trainer_1 = assigneOption.find(
         (user) => user.label === newItem["Trainer 1"]
@@ -191,36 +248,53 @@ const TotUpload = (props) => {
       const isEndDateValid = isValidDateFormat(endDate);
       const createdby = Number(userId);
       const updatedby = Number(userId);
-      if (
-        !departMentCheck ||
-        !projectCheck ||
-        !moduleCheck ||
-        !isStartDateValid ||
-        !isEndDateValid
-      ) {
+      const pattern = /^[0-9]{10}$/
+      
+      /**
+      |--------------------------------------------------
+      | 
+      console.log(pattern.test(newItem["Mobile no."]));
+      console.log(  !departMentCheck ,
+        !projectCheck ,
+        !moduleCheck ,
+        !isStartDateValid ,
+        !isEndDateValid  , !projectNameCheck , !isNumber(newItem["Age"]));
+      |--------------------------------------------------
+      */
+     if (
+    !pattern.test(newItem["Mobile no."]) || 
+    !departMentCheck || 
+    !projectCheck || 
+    !moduleCheck || 
+    !isStartDateValid || 
+    !isEndDateValid || 
+    !projectNameCheck || 
+    !isNumber(newItem["Age"])
+){
+
         notFoundData.push({
           index: index + 1,
-          user_name: newItem["Participant Name"],
+          user_name: newItem["Participant Name"]? capitalize(newItem["Participant Name"]):"",
           trainer_1: newItem["Trainer 1"],
-          project_name: newItem["Project Name"],
+          project_name: projectCheck ?  newItem["Project Name"] : { value: newItem["Project Name"], notFound: true },
           certificate_given: newItem["Certificate Given"],
           module_name: moduleCheck ? newItem["Module Name"] : { value: newItem["Module Name"], notFound: true },
           project_type: projectCheck ? newItem["Project Type"] : { value: newItem["Project Type"], notFound: true },
           trainer_2: newItem["Trainer 2"],
           partner_dept: departMentCheck ? newItem["Partner Department"] : { value: newItem["Partner Department"], notFound: true },
-          college: newItem["College"],
-          city: newItem["City"],
-          state: newItem["State"],
-          age: newItem["Age"],
-          gender: newItem["Gender"],
-          contact: newItem["Contact"],
+          college: newItem["College Name"] ? capitalize(newItem["College Name"]):"",
+          city:newItem["City"]?capitalize( newItem["City"]):"",
+          state: newItem["State"]?capitalize(newItem["State"]):"",
+          age:  newItem["Age"] ,
+          gender: newItem["Gender"]?capitalize(newItem["Gender"]):"",
+          contact: newItem["Mobile no."],
           designation: newItem["Designation"],
-          start_date: isStartDateValid ? startDate : { value: newItem["Start Date"], notFound: true },
+          start_date: isStartDateValid ? startDate : { value: startDate, notFound: true },
           end_date: isEndDateValid ? endDate : { value: newItem["End Date"], notFound: true },
         });
       } else {
         formattedData.push({
-          user_name: newItem["Participant Name"],
+          user_name: newItem["Participant Name"]? capitalize(newItem["Participant Name"]):"",
           trainer_1: Number(trainer_1),
           project_name: newItem["Project Name"],
           certificate_given: newItem["Certificate Given"] ,
@@ -228,74 +302,28 @@ const TotUpload = (props) => {
           project_type: newItem["Project Type"],
           trainer_2: Number(trainer_2),
           partner_dept: newItem["Partner Department"],
-          college: newItem["College"],
-          city: newItem["City"],
-          state: newItem["State"],
+          college: newItem["College Name"] ? capitalize(newItem["College Name"]):"",
+          city:newItem["City"]?capitalize( newItem["City"]):"",
+          state: newItem["State"]?capitalize(newItem["State"]):"",
           age: newItem["Age"],
-          gender: newItem["Gender"],
-          contact: newItem["Contact"],
+          gender: newItem["Gender"]?capitalize(newItem["Gender"]):"",
+          contact: newItem["Mobile no."],
           designation: newItem["Designation"],
           start_date: startDate,
           end_date: endDate,
           createdby:createdby,
-          updatedby:updatedby
+          updatedby:createdby
         });
       }
     });
+    // console.log(formattedData);
+    // console.log(notFoundData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
   
 
-  useEffect(() => {
-    getTotPickList().then((data) => {
-      // setModuleName(data.module_name.map(item))
-      setModuleName(
-        data.module_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setPartnerDept(
-        data.partner_dept.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setProjectName(
-        data.project_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-    });
-    getAddressOptions().then((data) => {
-      setStateOptions(
-        data?.data?.data?.geographiesConnection.groupBy.state
-          .map((state) => ({
-            key: state?.id,
-            label: state?.key,
-            value: state?.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-    getStateDistricts().then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-  }, [props]);
+ 
 
   function hasNullValue(arr) {
     for (let i = 0; i < arr.length; i++) {
@@ -318,7 +346,9 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-    if (notUploadedData.length == 0 && excelData.length > 0) {
+    // console.log(notUploadedData);
+    // console.log(excelData);
+    if (notUploadedData.length === 0  && excelData.length > 0) {
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
