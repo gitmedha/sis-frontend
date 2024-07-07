@@ -93,6 +93,7 @@ const UploadFile = (props) => {
   
     if (extraColumns.length > 0) {
       console.error(`Extra columns: ${extraColumns.join(', ')}`);
+      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
       return false;
     }
   
@@ -169,7 +170,6 @@ const UploadFile = (props) => {
   const processFileData = (jsonData) => {
     const validRecords = [];
     const invalidRecords = [];
-
     jsonData.forEach((row) => {
       if (Object.values(row).some((value) => value === null || value === '')) {
         return ;
@@ -177,7 +177,8 @@ const UploadFile = (props) => {
         validRecords.push(row);
       }
     });
-    if(validRecords.length !=0 || validateColumns(validRecords,excelData) ){
+    
+    if((validRecords.length !=0 && validRecords.length <=200)|| validateColumns(validRecords,expectedColumns) ){
       setNextDisabled(true)
       processParsedData(validRecords)
     }
