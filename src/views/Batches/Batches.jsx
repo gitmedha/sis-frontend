@@ -50,7 +50,7 @@ const Batches = (props) => {
     if (isSearchEnable) {
       getBatches(activeTab.key);
     }
-  }, [isSearchEnable,selectedSearchedValue]);
+  }, [isSearchEnable, selectedSearchedValue]);
 
   useEffect(() => {
     const prevIsSearchEnable = prevIsSearchEnableRef.current;
@@ -58,14 +58,8 @@ const Batches = (props) => {
       getBatches(activeTab.key);
     }
     prevIsSearchEnableRef.current = isSearchEnable;
-    
+  }, [isSearchEnable, activeTab.key]);
 
-  },[isSearchEnable, activeTab.key]);
-
-  const resetSearchFilter = async () => {
-    console.log("thiss")
-    getBatches(activeTab.key);
-  };
   const getBatchesBySearchFilter = async (
     selectedTab,
     limit = paginationPageSize,
@@ -144,11 +138,161 @@ const Batches = (props) => {
     };
 
     if (selectedTab === "my_data") {
-      Object.assign(variables, { id: userId });
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          id: userId,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          id: userId,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          id: userId,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          id: userId,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "program") {
+        Object.assign(variables, {
+          id: userId,
+          program_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "institution") {
+        Object.assign(variables, {
+          id: userId,
+          institution_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          id: userId,
+          name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "grant") {
+        Object.assign(variables, {
+          id: userId,
+          grant: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "start_date") {
+        Object.assign(variables, {
+          id: userId,
+          from_start_date: selectedSearchedValue.start_date.trim(),
+          to_start_date: selectedSearchedValue.end_date.trim(),
+        });
+      } else if (selectedSearchField === "end_date") {
+        Object.assign(variables, {
+          id: userId,
+          from_end_date: selectedSearchedValue.start_date.trim(),
+          to_end_date: selectedSearchedValue.end_date.trim(),
+        });
+      }
     } else if (selectedTab === "my_state") {
-      Object.assign(variables, { state: state });
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, {
+          state: state,
+          area: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, { state: selectedSearchedValue.trim() });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          state: state,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          state: state,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "program") {
+        Object.assign(variables, {
+          state: state,
+          program_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "institution") {
+        Object.assign(variables, {
+          state: state,
+          institution_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          state: state,
+          name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "grant") {
+        Object.assign(variables, {
+          state: state,
+          grant: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "start_date") {
+        Object.assign(variables, {
+          state: state,
+          from_start_date: selectedSearchedValue.start_date.trim(),
+          to_start_date: selectedSearchedValue.end_date.trim(),
+        });
+      } else if (selectedSearchField === "end_date") {
+        Object.assign(variables, {
+          state: state,
+          from_end_date: selectedSearchedValue.start_date.trim(),
+          to_end_date: selectedSearchedValue.end_date.trim(),
+        });
+      }
     } else if (selectedTab === "my_area") {
-      Object.assign(variables, { area: area });
+      if (selectedSearchField === "medha_area") {
+        Object.assign(variables, { area: selectedSearchedValue.trim() });
+      } else if (selectedSearchField === "state") {
+        Object.assign(variables, {
+          area: area,
+          state: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "status") {
+        Object.assign(variables, {
+          area: area,
+          status: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "assigned_to") {
+        Object.assign(variables, {
+          area: area,
+          username: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "program") {
+        Object.assign(variables, {
+          area: area,
+          program_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "institution") {
+        Object.assign(variables, {
+          area: area,
+          institution_name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "name") {
+        Object.assign(variables, {
+          area: area,
+          name: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "grant") {
+        Object.assign(variables, {
+          area: area,
+          grant: selectedSearchedValue.trim(),
+        });
+      } else if (selectedSearchField === "start_date") {
+        Object.assign(variables, {
+          area: area,
+          from_start_date: selectedSearchedValue.start_date.trim(),
+          to_start_date: selectedSearchedValue.end_date.trim(),
+        });
+      } else if (selectedSearchField === "end_date") {
+        Object.assign(variables, {
+          area: area,
+          from_end_date: selectedSearchedValue.start_date.trim(),
+          to_end_date: selectedSearchedValue.end_date.trim(),
+        });
+      }
     } else if (selectedSearchField === "medha_area") {
       Object.assign(variables, { area: selectedSearchedValue.trim() });
     } else if (selectedSearchField === "state") {
@@ -369,7 +513,6 @@ const Batches = (props) => {
     });
     setBatchesTableData(data);
   }, [batches, pickList]);
-
 
   const columns = useMemo(
     () => [

@@ -60,17 +60,27 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchField(value);
     setDisbaled(false);
 
-    if (value === "medha_area") {
-      setAreaOptions(value);
+    if (value === "mentor_state") {
+
+      setDropdownValues(value);
+    } 
+    if (value === "mentor_area") {
+
+      setDropdownValues(value);
     } 
   };
   const setDropdownValues = async (fieldName) => {
     try {
-      const { data } = await getFieldValues(fieldName, "users-ops-activities");
+      console.log(fieldName);
+      const { data } = await getFieldValues(fieldName, "mentorship");
 
-      if (fieldName === "medha_area") {
-        setAreaOptions(data);
+      if (fieldName === "mentor_state") {
+        console.log(data);
       }
+      if (fieldName === "mentor_area") {
+        console.log(data);
+      }
+      
     } catch (error) {
       console.error("error", error);
     }
@@ -123,73 +133,27 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const handleSubmit = async (values) => {
-    // if (
-    //   values.search_by_field === "query_start" ||
-    //   values.search_by_field === "query_end"
-    // ) {
-    //   let baseUrl = "alumni-queries";
-    //   if (values.search_by_field == "query_start") {
-    //     const date1 = formatdate(values.search_by_value_date);
-    //     const date2 = formatdate(values.search_by_value_date_to);
-    //     let val = {
-    //       query_start: date1,
-    //       query_end: date2,
-    //     };
-    //     await searchOperationTab(baseUrl, values.search_by_field, val);
-    //     //stores the last searched result in the local storage as cache
-    //     //we will use it to refresh the search results
+     
+      let baseUrl = "alumni-queries";
+      await searchOperationTab(
+        baseUrl,
+        values.search_by_field,
+        values.search_by_value
+      );
 
-    //     await localStorage.setItem(
-    //       "prevSearchedPropsAndValues",
-    //       JSON.stringify({
-    //         baseUrl: baseUrl,
-    //         searchedProp: values.search_by_field,
-    //         searchValue: val,
-    //       })
-    //     );
-    //   }
-    //   if (values.search_by_field == "query_end") {
-    //     const date1 = formatdate(values.search_by_value_date_end_from);
-    //     const date2 = formatdate(values.search_by_value_date_end_to);
-    //     let val = {
-    //       query_start: date1,
-    //       query_end: date2,
-    //     };
-    //     await searchOperationTab(baseUrl, values.search_by_field, val);
+      //stores the last searched result in the local storage as cache
+      //we will use it to refresh the search results
 
-    //     //stores the last searched result in the local storage as cache
-    //     //we will use it to refresh the search results
-
-    //     await localStorage.setItem(
-    //       "prevSearchedPropsAndValues",
-    //       JSON.stringify({
-    //         baseUrl: baseUrl,
-    //         searchedProp: values.search_by_field,
-    //         searchValue: val,
-    //       })
-    //     );
-    //   }
-    // } else {
-    //   let baseUrl = "alumni-queries";
-    //   await searchOperationTab(
-    //     baseUrl,
-    //     values.search_by_field,
-    //     values.search_by_value
-    //   );
-
-    //   //stores the last searched result in the local storage as cache
-    //   //we will use it to refresh the search results
-
-    //   await localStorage.setItem(
-    //     "prevSearchedPropsAndValues",
-    //     JSON.stringify({
-    //       baseUrl: baseUrl,
-    //       searchedProp: values.search_by_field,
-    //       searchValue: values.search_by_value,
-    //     })
-    //   );
-    // }
-    console.log(values);
+      let value=await localStorage.setItem(
+        "prevSearchedPropsAndValues",
+        JSON.stringify({
+          baseUrl: baseUrl,
+          searchedProp: values.search_by_field,
+          searchValue: values.search_by_value,
+        })
+      );
+    
+    console.log(value);
   };
   const formik = useFormik({
     initialValues,
@@ -302,6 +266,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     label="Search Value"
     control="input"
     className="form-control"
+    onChange={(e) => setSearchItem(e.value)}
     disabled={disabled ? true : false}
   />
   )}
@@ -312,6 +277,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     label="Search Value"
     control="input"
     className="form-control"
+    onChange={(e) => setSearchItem(e.value)}
     disabled={disabled ? true : false}
   />
   )}

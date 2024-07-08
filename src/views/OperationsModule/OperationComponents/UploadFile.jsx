@@ -9,6 +9,7 @@ import { FaFileUpload } from "react-icons/fa";
 import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from 'xlsx';
+import { isNumber } from "lodash";
 
 const Styled = styled.div`
   .icon-box {
@@ -47,6 +48,25 @@ const options = [
   { value: "feild_activity", label: "Field Activity" },
   { value: "collegePitch", label: "Pitching" },
 ];
+const expectedColumns = [
+  'Assigned To',
+  'Activity Type',
+  'Institution',
+  'Medha Area',
+  'State',
+  'Student Type',
+  'Program Name',
+  'Batch Name',
+  'Start Date',
+  'End Date',
+  'Session Topic',
+  'Project / Funder',
+  'Guest Name',
+  'Guest Designation',
+  'Organization',
+  'No. Of Participants'
+];
+
 
 const UploadFile = (props) => {
   const { onHide } = props;
@@ -60,8 +80,27 @@ const UploadFile = (props) => {
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [check, setCheck] = useState(false);
-  const [nextDisabled, setNextDisabled] = useState(true);
-
+  const [nextDisabled, setNextDisabled] = useState(false);
+  const validateColumns = (data, expectedColumns) => {
+    const fileColumns = Object.keys(data[0]);
+    const missingColumns = expectedColumns.filter(col => !fileColumns.includes(col));
+    const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col));
+    
+    if (missingColumns.length > 0) {
+      console.error(`Missing columns: ${missingColumns.join(', ')}`);
+      return false;
+    }
+  
+    if (extraColumns.length > 0) {
+      console.error(`Extra columns: ${extraColumns.join(', ')}`);
+      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      return false;
+    }
+  
+    // console.log('Column validation passed');
+    return true;
+  };
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setNextDisabled(false);
@@ -76,11 +115,14 @@ const UploadFile = (props) => {
       };
       
       reader.readAsBinaryString(file);
-      setNextDisabled(true);
+      // setNextDisabled(true);
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
   };
+
+  
+
   
   const convertExcel = (excelData) => {
     const workbook = XLSX.read(excelData, { type: 'binary' ,});
@@ -95,7 +137,7 @@ const UploadFile = (props) => {
       });
       return newItem;
     });
-    
+
     processFileData(data);
   };
   
@@ -128,17 +170,26 @@ const UploadFile = (props) => {
   const processFileData = (jsonData) => {
     const validRecords = [];
     const invalidRecords = [];
-
-    jsonData.forEach((row, index) => {
+    jsonData.forEach((row) => {
       if (Object.values(row).some((value) => value === null || value === '')) {
         return ;
       } else {
         validRecords.push(row);
       }
     });
-    processParsedData(validRecords)
+    
+    if((validRecords.length !=0 && validRecords.length <=200)|| validateColumns(validRecords,expectedColumns) ){
+      setNextDisabled(true)
+      processParsedData(validRecords)
+    }
+
+    
   };
   
+  const  capitalize=(s)=>
+{
+    return s[0].toUpperCase() + s.slice(1);
+}
 
 const processParsedData = (data) => {
   const formattedData = [];
@@ -178,12 +229,18 @@ const processParsedData = (data) => {
     const isStartDateValid =  isValidDateFormat(startDate) 
     const isEndDateValid =  isValidDateFormat(endDate) 
 
+    // console.log(`Index: ${index + 1}`);
+    // console.log(`Batch ID: ${batchId}`);
+    // console.log(`Institute ID: ${instituteId}`);
+    // console.log(`User ID: ${userId}`);
+    // console.log(`Start Date Valid: ${isStartDateValid}`);
+    // console.log(`End Date Valid: ${isEndDateValid}`);
     if (
       !batchId ||
       !instituteId ||
       !userId ||
       !isStartDateValid ||
-      !isEndDateValid
+      !isEndDateValid ||  !isNumber(newItem['No. Of Participants'])
     ) {
       notFoundData.push({
         index: index + 1,
@@ -197,6 +254,7 @@ const processParsedData = (data) => {
         guest: newItem["Guest Name "] || "",
         designation: newItem["Guest Designation"] || "",
         organization: newItem["Organization"] || "",
+        students_attended:newItem['No. Of Participants'],
         activity_type: newItem["Activity Type"] || "",
         assigned_to: user ? user.name : { value: newItem["Assigned To"], notFound: true },
         area: newItem["Medha Area"] || "",
@@ -205,20 +263,21 @@ const processParsedData = (data) => {
       formattedData.push({
         institution: instituteId,
         batch: batchId,
-        state: newItem["State"] || "",
+        state: newItem["State"] ?capitalize(newItem["State"]):"" || "",
         start_date: isStartDateValid,
         end_date: isEndDateValid,
-        topic: newItem["Session Topic"] || "",
+        topic:newItem["Session Topic"] ?capitalize(newItem["Session Topic"]):"" || "",
         donor: donor,
-        guest: newItem["Guest Name "] || "",
-        designation: newItem["Guest Designation"] || "",
-        organization: newItem["Organization"] || "",
-        activity_type: newItem["Activity Type"] || "",
+        guest:newItem["Guest Name "] ?capitalize(newItem["Guest Name "]):"" || "",
+        designation: newItem["Guest Designation"]? capitalize(newItem["Guest Designation"]):"" || "",
+        organization:newItem["Organization"]? capitalize(newItem["Organization"]):"" || "",
+        activity_type: newItem["Activity Type"] ?capitalize(newItem["Activity Type"]):"" || "",
         assigned_to: userId || "",
-        area: newItem["Medha Area"] || "",
+        area: newItem["Medha Area"] ? capitalize(newItem["Medha Area"]):"" || "",
         isactive: true,
         createdby: userId,
         updatedby: currentUser,
+        students_attended:newItem['No. Of Participants'],
       });
     }
   });
@@ -396,7 +455,7 @@ const processParsedData = (data) => {
                 
                 <button
                   type="button"
-                  disabled={!uploadSuccesFully}
+                  disabled={!nextDisabled}
                   onClick={() => uploadDirect()}
                   className="btn btn-primary px-4 mx-4"
                 >
