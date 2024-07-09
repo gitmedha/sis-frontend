@@ -46,7 +46,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const [studentNameOptions, setStudentNameOptions] = useState([]);
   const [phoneOptions, setPhoneOptions] = useState([]);
   const [studentIdOptions, setStudentIdOptions] = useState([]);
-  const [emailOptions, setEmailOptions] = useState([]);
+  const [stateOption, setStateOption] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [disabled, setDisbaled] = useState(true);
@@ -75,7 +75,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       const { data } = await getFieldValues(fieldName, "mentorship");
 
       if (fieldName === "mentor_state") {
-        console.log(data);
+        setStateOption(data);
       }
       if (fieldName === "mentor_area") {
         console.log(data);
@@ -275,10 +275,11 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     icon="down"
     name="search_by_value"
     label="Search Value"
-    control="input"
+    control="lookup"
+    options={stateOption}
     className="form-control"
     onChange={(e) => setSearchItem(e.value)}
-    disabled={disabled ? true : false}
+    // disabled={disabled ? true : false}
   />
   )}
   {selectedSearchField === "outreach" && (
