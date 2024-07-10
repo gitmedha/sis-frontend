@@ -455,6 +455,36 @@ query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: St
 }
 `;
 
+
+export const GET_STUDENT_ALUMNI_SERVICES_RANGE = `
+query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $startDate: String, $endDate: String, $limit: Int, $start: Int, $sort: String ){
+  alumniServicesConnection (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      student: {
+        id: $id
+      },
+      start_date: {
+        _gte: $startDate
+      },
+      end_date: {
+        _lte: $endDate
+      }
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+
 export const CREATE_ALUMNI_SERVICE = `
   mutation CREATE_ALUMNI_SERVICE (
     $data: AlumniServiceInput!

@@ -26,7 +26,8 @@ import {
   SEARCH_BY_BATCHES,
   SEARCH_BY_EMPLOYERS,
   SEARCH_BY_STUDENTS,
-  GET_COURSE
+  GET_COURSE,
+  GET_STUDENT_ALUMNI_SERVICES_RANGE
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -323,7 +324,7 @@ export const getAllStudents = async () => {
 
 export const getStudentAlumniServices = async (studentId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
-    query: GET_STUDENT_ALUMNI_SERVICES,
+    query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
     variables: {
       id: Number(studentId),
       limit: limit,

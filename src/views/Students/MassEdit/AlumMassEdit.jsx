@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Select, { components } from "react-select";
 import { Modal } from "react-bootstrap";
-import { filterAssignedTo, getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
   getStudentAlumniServices,
@@ -13,10 +16,10 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
-import { Form, Formik } from "formik";
+import {  Formik, Form, Field} from "formik";
 import { FaTimes } from "react-icons/fa";
 import styled from "styled-components";
-
+import DatePicker from "src/utils/Form/DatePicker";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -211,12 +214,19 @@ const AlumMassEdit = (props) => {
     });
   }, [studentInput]);
 
-  const handleSubmit = async () => {
+
+
+  const handleSubmit = async (values) => {
+    console.log(values);
     try {
       const alumData = await Promise.all(
         students.map(async (obj) => {
           try {
-            const data = await getStudentAlumniServices(obj.id);
+            // let startDate = values.start_date;
+            // let endDate = values.end_date;
+            const data = await getStudentAlumniServices(
+              obj.id
+            );
             return data.data.data.alumniServicesConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -234,20 +244,38 @@ const AlumMassEdit = (props) => {
                 id: Number(val.id),
               })
             );
-            
           } catch (err) {
             return err;
           }
-          
         })
       );
-      setAlumniServiceData(alumData.flat());
+      const startDate = values.start_date
+      const endDate = values.end_date;
+      // let data=alumData.flat()
+      // console.log(data);
+      // console.log(alumData.flat(),startDate,endDate);
+      let data =filterEventsByDateRange(alumData.flat(),startDate,endDate)
+      console.log("ff",data);
+      setAlumniServiceData(data);
       setFormStatus(true);
     } catch (error) {
       return error;
     }
     // setFormStatus(true)
   };
+
+  function filterEventsByDateRange(events, start, end) {
+    return events.filter(event => {
+      // Convert start_date and end_date to Date objects for comparison
+      const eventStartDate = new Date(event.start_date);
+      const eventEndDate = new Date(event.end_date);
+      const rangeStartDate = new Date(start);
+      const rangeEndDate = new Date(end);
+      
+      // Check if event falls within the specified range
+      return eventStartDate >= rangeStartDate && eventEndDate <= rangeEndDate;
+    });
+  }
 
   const handleChange = (id, newData) => {
     setStudents(
@@ -267,24 +295,25 @@ const AlumMassEdit = (props) => {
     assigned_to: "",
     category: null,
     type: "",
-    status:""
+    status: "",
   };
 
   const onSubmit = async (values) => {
+    console.log(alumniServiceData);
     let data = alumniServiceData.map((obj) => {
       let initialData = {
         student_id: obj.student_id,
         id: Number(obj.id),
         type: values.type,
       };
-  
+
       let filteredData = Object.keys(values).reduce((acc, key) => {
         if (values[key] !== undefined && values[key] !== "") {
           acc[key] = values[key];
         }
         return acc;
       }, initialData);
-  
+
       // Add fields from obj if they are not provided in values
       filteredData = {
         ...filteredData,
@@ -293,19 +322,20 @@ const AlumMassEdit = (props) => {
         comments: filteredData.comments || obj.comments,
         end_date: filteredData.end_date || obj.end_date,
         fee_amount: filteredData.fee_amount || obj.fee_amount,
-        fee_submission_date: filteredData.fee_submission_date || obj.fee_submission_date,
+        fee_submission_date:
+          filteredData.fee_submission_date || obj.fee_submission_date,
         location: filteredData.location || obj.location,
         program_mode: filteredData.program_mode || obj.program_mode,
         receipt_number: filteredData.receipt_number || obj.receipt_number,
         start_date: filteredData.start_date || obj.start_date,
       };
-  
+
       return filteredData;
     });
-  
+
+    console.log("data filtered",data);
     props.handelSubmit(data, "AlumniBuldEdit");
   };
-  
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -323,14 +353,13 @@ const AlumMassEdit = (props) => {
     });
   }, []);
 
-
   const validations = Yup.object({
     start_date: Yup.date().nullable(),
     end_date: Yup.date()
       .nullable()
-      .when("start_date", (start_date, schema) => 
-        start_date 
-          ? schema.min(start_date, "End date can't be before Start date") 
+      .when("start_date", (start_date, schema) =>
+        start_date
+          ? schema.min(start_date, "End date can't be before Start date")
           : schema
       ),
   });
@@ -356,7 +385,6 @@ const AlumMassEdit = (props) => {
 
     return null;
   };
-  
 
   const customComponents = {
     MultiValue,
@@ -367,6 +395,11 @@ const AlumMassEdit = (props) => {
 
   const handleselectChange = (selectedOptions) => {
     setStudents(selectedOptions);
+  };
+  const initialValuesstudent = {
+    start_date: '',
+    end_date:"",
+    student_ids: [],
   };
   return (
     <Modal
@@ -396,42 +429,58 @@ const AlumMassEdit = (props) => {
             </div>
           </Modal.Header>
           <Modal.Body className="bg-white" height="">
-            <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-              <div>
-                <label className="leading-24">Student</label>
-                <Select
-                  // isMulti
-                  // closeMenuOnSelect={false}
-                  // name="student_ids"
-                  // options={studentOptions}
-                  // filterData={filterStudent}
-                  
-                  // className="basic-multi-select"
-                  // classNamePrefix="select"
-                  // onChange={(choices) => setStudents(choices)}
-                  isMulti
-                  name="student_ids"
-                  options={studentOptions}
-                  closeMenuOnSelect={false}
-                  // components={customComponents}
-                  isOptionDisabled={() => students.length >= 10}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  // onInputChange={handleInputChange}
-                  onInputChange={(e) => setStudentInput(e)}
-                  onChange={handleselectChange}
-                  value={students}
-                />
-              </div>
-              <div className="d-flex justify-content-end mx-5">
-                <button
-                  className="btn btn-primary mt-3 "
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
+            <Formik
+              initialValues={initialValuesstudent}
+              // validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ values, setFieldValue }) => (
+                <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
+                  <div className="col-12 d-flex justify-content-between ">
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>Start Date</label>
+                      <Field
+                        type="date"
+                        name="start_date"
+                        placeholder="Start Date"
+                        className="form-control "
+                        required
+                      />
+                    </div>
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>End Date</label>
+                      <Field
+                        type="date"
+                        name="end_date"
+                        placeholder="End Date"
+                        className="form-control ml-2"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="leading-24">Student</label>
+                    <Select
+                      isMulti
+                      name="student_ids"
+                      options={studentOptions}
+                      closeMenuOnSelect={false}
+                      isOptionDisabled={() => students.length >= 10}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onInputChange={(e) => setStudentInput(e)}
+                      onChange={handleselectChange}
+                      value={students}
+                    />
+                  </div>
+                  <div className="d-flex justify-content-end mx-5">
+                    <button type="submit" className="btn btn-primary mt-3">
+                      Submit
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </Modal.Body>
         </>
       )}
@@ -552,19 +601,19 @@ const AlumMassEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="status"
-                      label="Status"
-                      placeholder="Status"
-                      control="lookup"
-                      className="form-control"
-                      autoComplete="off"
-                      icon="down"
-                      options={statusOption}
-                      // required={feeFieldsRequired}
-                      // onChange={(e) => setStatus(e.value)}
-                    />
-                  </div>
+                        <Input
+                          name="status"
+                          label="Status"
+                          placeholder="Status"
+                          control="lookup"
+                          className="form-control"
+                          autoComplete="off"
+                          icon="down"
+                          options={statusOption}
+                          // required={feeFieldsRequired}
+                          // onChange={(e) => setStatus(e.value)}
+                        />
+                      </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="fee_submission_date"
@@ -592,15 +641,15 @@ const AlumMassEdit = (props) => {
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="receipt_number"
-                      label="Receipt Number"
-                      placeholder="Receipt Number"
-                      control="input"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
+                        <Input
+                          name="receipt_number"
+                          label="Receipt Number"
+                          placeholder="Receipt Number"
+                          control="input"
+                          className="form-control"
+                          autoComplete="off"
+                        />
+                      </div>
                       <div className="col-md-12 col-sm-12 mt-2">
                         <Textarea
                           name="comments"
