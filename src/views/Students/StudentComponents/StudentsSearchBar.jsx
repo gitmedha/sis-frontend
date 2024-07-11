@@ -163,7 +163,6 @@ function StudentsSearchBar({
             value: value,
           }));
 
-        console.log("matchedOptions", matchedOptions);
         return matchedOptions;
       }
     } catch (error) {
