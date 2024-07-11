@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import styled from "styled-components";
+import { isNumber } from "lodash";
 
 const Style = styled.div`
   overflow-x: auto;
@@ -26,8 +27,6 @@ const Style = styled.div`
 
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
-
-  console.log(props.notUploadedData);
   return (
     <>
       <Modal
@@ -93,7 +92,7 @@ const CheckValuesOpsUploadedData = (props) => {
                           <td>{obj.guest}</td>
                           <td>{obj.designation}</td>
                           <td>{obj.organization}</td>
-                          <td>{obj.students_attended}</td>
+                          <td className={isNumber(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -107,7 +106,7 @@ const CheckValuesOpsUploadedData = (props) => {
               
             </div>
             <h6 className="text-danger">
-              Please check the error found 
+              Error found ! 
             </h6>
           </Modal.Body>
           {(isSRM() || isAdmin()) && (

@@ -15,6 +15,27 @@ import {
 } from "../../Address/addressActions";
 import { getTotPickList } from "../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
+import { isNumber } from "lodash";
+
+const expectedColumns = [
+  "Participant Name",
+  "Trainer 1",
+  "Project Name",
+  "Certificate Given",
+  "Module Name",
+  "Project Type",
+  "Trainer 2",
+  "Partner Department",
+  "College Name",
+  "City",
+  "State",
+  "Age",
+  "Gender",
+  "Mobile no.",
+  "Designation",
+  "Start Date",
+  "End Date",
+];
 
 const Styled = styled.div`
   .icon-box {
@@ -70,8 +91,6 @@ const TotUpload = (props) => {
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(true);
-  
-
 
   useEffect(() => {
     const getdata = async () => {
@@ -96,7 +115,7 @@ const TotUpload = (props) => {
       };
 
       reader.readAsBinaryString(file);
-      setNextDisabled(true);
+      // setNextDisabled(true);
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
@@ -115,11 +134,9 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
-    
-    processParsedData(data);
+
+    processFileData(data);
   };
-
-
 
   const isValidDate = (dateString) => {
     const date = new Date(dateString);
@@ -130,122 +147,18 @@ const TotUpload = (props) => {
     const excelEpoch = new Date(Date.UTC(1899, 11, 30));
     const date = new Date(excelEpoch.getTime() + serial * 86400000);
     const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
   const isValidDateFormat = (dateStr) => {
     const datePattern = /^\d{4}-\d{2}-\d{2}$/; // Regex for yyyy-mm-dd format
     if (datePattern.test(dateStr)) {
-      
-      const [year, month, day] = dateStr.split('-');
+      const [year, month, day] = dateStr.split("-");
       return `${year}-${month}-${day}`;
     }
     return null;
   };
-  
-
-  const processParsedData = (data) => {
-    const formattedData = [];
-    const notFoundData = [];
-    const userId = localStorage.getItem("user_id");
-    const filteredArray = data.filter(obj => 
-      Object.values(obj).some(value => value !== undefined)
-    );
-    filteredArray.forEach((item, index) => {
-      const newItem = {};
-      Object.keys(item).forEach((key) => {
-        newItem[key] = item[key];
-      });
-  
-      const StateCheck = stateOptions.find(
-        (state) => state === newItem["State"]
-      )?.id;
-      const areaCheck = areaOptions.find(
-        (area) => area === newItem["City"]
-      )?.id;
-      const moduleCheck = moduleName.find(
-        (module) => module.value === newItem["Module Name"]
-      );
-    
-      const departMentCheck = partnerDept.find(
-        (department) => "Higher Education" === newItem["Partner Department"]
-      );
-      
-      const projectCheck = ["Internal", "External"].find(
-        (project) => project === newItem["Project Type"]
-      );
-  
-      const trainer_1 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 1"]
-      )?.value;
-      
-      const trainer_2 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 2"]
-      )?.value;
-
-      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
-      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
-  
-      const isStartDateValid = isValidDateFormat(startDate);
-      const isEndDateValid = isValidDateFormat(endDate);
-      const createdby = Number(userId);
-      const updatedby = Number(userId);
-      if (
-        !departMentCheck ||
-        !projectCheck ||
-        !moduleCheck ||
-        !isStartDateValid ||
-        !isEndDateValid
-      ) {
-        notFoundData.push({
-          index: index + 1,
-          user_name: newItem["Participant Name"],
-          trainer_1: newItem["Trainer 1"],
-          project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Given"],
-          module_name: moduleCheck ? newItem["Module Name"] : { value: newItem["Module Name"], notFound: true },
-          project_type: projectCheck ? newItem["Project Type"] : { value: newItem["Project Type"], notFound: true },
-          trainer_2: newItem["Trainer 2"],
-          partner_dept: departMentCheck ? newItem["Partner Department"] : { value: newItem["Partner Department"], notFound: true },
-          college: newItem["College"],
-          city: newItem["City"],
-          state: newItem["State"],
-          age: newItem["Age"],
-          gender: newItem["Gender"],
-          contact: newItem["Contact"],
-          designation: newItem["Designation"],
-          start_date: isStartDateValid ? startDate : { value: newItem["Start Date"], notFound: true },
-          end_date: isEndDateValid ? endDate : { value: newItem["End Date"], notFound: true },
-        });
-      } else {
-        formattedData.push({
-          user_name: newItem["Participant Name"],
-          trainer_1: Number(trainer_1),
-          project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Given"] ,
-          module_name: newItem["Module Name"],
-          project_type: newItem["Project Type"],
-          trainer_2: Number(trainer_2),
-          partner_dept: newItem["Partner Department"],
-          college: newItem["College"],
-          city: newItem["City"],
-          state: newItem["State"],
-          age: newItem["Age"],
-          gender: newItem["Gender"],
-          contact: newItem["Contact"],
-          designation: newItem["Designation"],
-          start_date: startDate,
-          end_date: endDate,
-          createdby:createdby,
-          updatedby:updatedby
-        });
-      }
-    });
-    setExcelData(formattedData);
-    setNotuploadedData(notFoundData);
-  };
-  
 
   useEffect(() => {
     getTotPickList().then((data) => {
@@ -264,13 +177,7 @@ const TotUpload = (props) => {
           label: item,
         }))
       );
-      setProjectName(
-        data.project_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
+      setProjectName(data.project_name.map((item) => item));
     });
     getAddressOptions().then((data) => {
       setStateOptions(
@@ -297,6 +204,195 @@ const TotUpload = (props) => {
     });
   }, [props]);
 
+  const capitalize = (s) => {
+    return s[0].toUpperCase() + s.slice(1);
+  };
+
+  const validateColumns = (data, expectedColumns) => {
+    const fileColumns = Object.keys(data[0]);
+    const missingColumns = expectedColumns.filter(
+      (col) => !fileColumns.includes(col)
+    );
+    const extraColumns = fileColumns.filter(
+      (col) => !expectedColumns.includes(col)
+    );
+
+    if (missingColumns.length > 0) {
+      console.error(`Missing columns: ${missingColumns.join(", ")}`);
+      return false;
+    }
+
+    if (extraColumns.length > 0) {
+      console.error(`Extra columns: ${extraColumns.join(", ")}`);
+      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      return false;
+    }
+    // console.log('Column validation passed');
+    return true;
+  };
+
+  const processFileData = (jsonData) => {
+    const validRecords = [];
+    const invalidRecords = [];
+    jsonData.forEach((row) => {
+      if (Object.values(row).some((value) => value === null || value === "")) {
+        return;
+      } else {
+        validRecords.push(row);
+      }
+    });
+
+    if (
+      (validRecords.length != 0 && validRecords.length <= 200) ||
+      validateColumns(validRecords, expectedColumns)
+    ) {
+      setNextDisabled(true);
+      processParsedData(validRecords);
+    }
+  };
+
+  const processParsedData = (data) => {
+    const formattedData = [];
+    const notFoundData = [];
+    const userId = localStorage.getItem("user_id");
+    const filteredArray = data.filter((obj) =>
+      Object.values(obj).some((value) => value !== undefined)
+    );
+    filteredArray.forEach((item, index) => {
+      const newItem = {};
+      Object.keys(item).forEach((key) => {
+        newItem[key] = item[key];
+      });
+
+      const StateCheck = stateOptions.find(
+        (state) => state === newItem["State"]
+      )?.id;
+      const areaCheck = areaOptions.find(
+        (area) => area === newItem["City"]
+      )?.id;
+      const moduleCheck = moduleName.find(
+        (module) => module.value === newItem["Module Name"]
+      );
+
+      const departMentCheck = partnerDept.find(
+        (department) => "Higher Education" === newItem["Partner Department"]
+      );
+
+      const projectCheck = ["Internal", "External"].find(
+        (project) => project === newItem["Project Type"]
+      );
+      // console.log(projectName);
+      const projectNameCheck = projectName.find(
+        (project) => project === newItem["Project Name"]
+      );
+
+      // projectName
+
+      const trainer_1 = assigneOption.find(
+        (user) => user.label === newItem["Trainer 1"]
+      )?.value;
+
+      const trainer_2 = assigneOption.find(
+        (user) => user.label === newItem["Trainer 2"]
+      )?.value;
+
+      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
+      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
+
+      const isStartDateValid = isValidDateFormat(startDate);
+      const isEndDateValid = isValidDateFormat(endDate);
+      const createdby = Number(userId);
+      const updatedby = Number(userId);
+      const pattern = /^[0-9]{10}$/;
+
+      console.log(pattern.test(newItem["Mobile no."]));
+      console.log(  !departMentCheck ,
+        !projectCheck ,
+        !moduleCheck ,
+        !isStartDateValid ,
+        !isEndDateValid  , !projectNameCheck , !isNumber(newItem["Age"]));
+      // |--------------------------------------------------
+      // */
+      if (
+        !pattern.test(newItem["Mobile no."]) ||
+        !departMentCheck ||
+        !projectCheck ||
+        !moduleCheck ||
+        !isStartDateValid ||
+        !isEndDateValid ||
+        !projectNameCheck ||
+        !isNumber(newItem["Age"])
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          user_name: newItem["Participant Name"]
+            ? capitalize(newItem["Participant Name"])
+            : "",
+          trainer_1: newItem["Trainer 1"],
+          project_name: projectCheck
+            ? newItem["Project Name"]
+            : { value: newItem["Project Name"], notFound: true },
+          certificate_given: newItem["Certificate Given"],
+          module_name: moduleCheck
+            ? newItem["Module Name"]
+            : { value: newItem["Module Name"], notFound: true },
+          project_type: projectCheck
+            ? newItem["Project Type"]
+            : { value: newItem["Project Type"], notFound: true },
+          trainer_2: newItem["Trainer 2"],
+          partner_dept: departMentCheck
+            ? newItem["Partner Department"]
+            : { value: newItem["Partner Department"], notFound: true },
+          college: newItem["College Name"]
+            ? capitalize(newItem["College Name"])
+            : "",
+          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          state: newItem["State"] ? capitalize(newItem["State"]) : "",
+          age: newItem["Age"],
+          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
+          contact: newItem["Mobile no."],
+          designation: newItem["Designation"],
+          start_date: isStartDateValid
+            ? startDate
+            : { value: startDate, notFound: true },
+          end_date: isEndDateValid
+            ? endDate
+            : { value: newItem["End Date"], notFound: true },
+        });
+      } else {
+        formattedData.push({
+          user_name: newItem["Participant Name"]
+            ? capitalize(newItem["Participant Name"])
+            : "",
+          trainer_1: Number(trainer_1),
+          project_name: newItem["Project Name"],
+          certificate_given: newItem["Certificate Given"],
+          module_name: newItem["Module Name"],
+          project_type: newItem["Project Type"],
+          trainer_2: Number(trainer_2),
+          partner_dept: newItem["Partner Department"],
+          college: newItem["College Name"]
+            ? capitalize(newItem["College Name"])
+            : "",
+          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          state: newItem["State"] ? capitalize(newItem["State"]) : "",
+          age: newItem["Age"],
+          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
+          contact: newItem["Mobile no."],
+          designation: newItem["Designation"],
+          start_date: startDate,
+          end_date: endDate,
+          createdby: createdby,
+          updatedby: createdby,
+        });
+      }
+    });
+    console.log(formattedData);
+    console.log(notFoundData);
+    setExcelData(formattedData);
+    setNotuploadedData(notFoundData);
+  };
+
   function hasNullValue(arr) {
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].activity_type === "" || arr[i].activity_type === undefined) {
@@ -314,11 +410,13 @@ const TotUpload = (props) => {
 
   const hideShowModal = () => {
     setShowModalTOT(false);
-    setUploadSuccesFully('');
+    setUploadSuccesFully("");
   };
 
   const uploadDirect = () => {
-    if (notUploadedData.length == 0 && excelData.length > 0) {
+    // console.log(notUploadedData);
+    // console.log(excelData);
+    if (notUploadedData.length === 0 && excelData.length > 0) {
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
@@ -394,15 +492,14 @@ const TotUpload = (props) => {
           )}
         </Styled>
       </Modal>
-      
-        <CheckTot
-          show={showModalTOT}
-          onHide={()=>hideShowModal()}
-          notUploadedData={  notUploadedData }
-          excelData={excelData}
-          uploadExcel={props.uploadExcel}
-        />
-      
+
+      <CheckTot
+        show={showModalTOT}
+        onHide={() => hideShowModal()}
+        notUploadedData={notUploadedData}
+        excelData={excelData}
+        uploadExcel={props.uploadExcel}
+      />
     </>
   );
 };
