@@ -214,7 +214,7 @@ export const getEmploymentConnectionsPickList = async () => {
   });
 };
 
-export const getStudentEmploymentConnections = async (studentId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentEmploymentConnections = async (studentId,startDate,endDate, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_STUDENT_EMPLOYMENT_CONNECTIONS,
     variables: {
@@ -222,6 +222,8 @@ export const getStudentEmploymentConnections = async (studentId, limit=10, offse
       limit: limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
+      startDate:startDate,
+      endDate:endDate
     },
   }).then(data => {
     return data;
@@ -322,7 +324,7 @@ export const getAllStudents = async () => {
   });
 }
 
-export const getStudentAlumniServices = async (studentId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentAlumniServices = async (studentId, startDate,endDate,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
     variables: {
@@ -330,6 +332,8 @@ export const getStudentAlumniServices = async (studentId, limit=100, offset=0, s
       limit: limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
+      startDate:startDate,
+      endDate:endDate
     },
   }).then(data => {
     return Promise.resolve(data);

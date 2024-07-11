@@ -16,7 +16,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Textarea from "../../../utils/Form/Textarea";
 import { Input } from "../../../utils/Form";
-import {  Formik, Form, Field} from "formik";
+import { Formik, Form, Field } from "formik";
 import { FaTimes } from "react-icons/fa";
 import styled from "styled-components";
 import DatePicker from "src/utils/Form/DatePicker";
@@ -170,7 +170,7 @@ const AlumMassEdit = (props) => {
         value: Number(student.id),
       }));
     } catch (error) {
-      console.error(error);
+      return error;
     }
   };
 
@@ -214,19 +214,29 @@ const AlumMassEdit = (props) => {
     });
   }, [studentInput]);
 
-
-
   const handleSubmit = async (values) => {
-    console.log(values);
     try {
       const alumData = await Promise.all(
         students.map(async (obj) => {
           try {
-            // let startDate = values.start_date;
-            // let endDate = values.end_date;
             const data = await getStudentAlumniServices(
-              obj.id
+              obj.value,
+              values.start_date,
+              values.end_date
             );
+
+            if (
+              !data.data ||
+              !data.data.data.alumniServicesConnection ||
+              !data.data.data.alumniServicesConnection.values
+            ) {
+              throw new Error(
+                `Unexpected data structure for student ID ${
+                  obj.id
+                }: ${JSON.stringify(data)}`
+              );
+            }
+
             return data.data.data.alumniServicesConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -240,23 +250,17 @@ const AlumMassEdit = (props) => {
                 receipt_number: val.receipt_number,
                 start_date: val.start_date,
                 type: val.type,
-                student_id: obj.id,
+                student_id: obj.value,
                 id: Number(val.id),
               })
             );
           } catch (err) {
-            return err;
+            return err.message;
           }
         })
       );
-      const startDate = values.start_date
-      const endDate = values.end_date;
-      // let data=alumData.flat()
-      // console.log(data);
-      // console.log(alumData.flat(),startDate,endDate);
-      let data =filterEventsByDateRange(alumData.flat(),startDate,endDate)
-      console.log("ff",data);
-      setAlumniServiceData(data);
+
+      setAlumniServiceData(alumData.flat());
       setFormStatus(true);
     } catch (error) {
       return error;
@@ -265,13 +269,13 @@ const AlumMassEdit = (props) => {
   };
 
   function filterEventsByDateRange(events, start, end) {
-    return events.filter(event => {
+    return events.filter((event) => {
       // Convert start_date and end_date to Date objects for comparison
       const eventStartDate = new Date(event.start_date);
       const eventEndDate = new Date(event.end_date);
       const rangeStartDate = new Date(start);
       const rangeEndDate = new Date(end);
-      
+
       // Check if event falls within the specified range
       return eventStartDate >= rangeStartDate && eventEndDate <= rangeEndDate;
     });
@@ -299,7 +303,6 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(alumniServiceData);
     let data = alumniServiceData.map((obj) => {
       let initialData = {
         student_id: obj.student_id,
@@ -333,7 +336,6 @@ const AlumMassEdit = (props) => {
       return filteredData;
     });
 
-    console.log("data filtered",data);
     props.handelSubmit(data, "AlumniBuldEdit");
   };
 
@@ -396,9 +398,9 @@ const AlumMassEdit = (props) => {
   const handleselectChange = (selectedOptions) => {
     setStudents(selectedOptions);
   };
-  const initialValuesstudent = {
-    start_date: '',
-    end_date:"",
+  const initialValuesStudent = {
+    start_date: "",
+    end_date: "",
     student_ids: [],
   };
   return (
@@ -430,7 +432,7 @@ const AlumMassEdit = (props) => {
           </Modal.Header>
           <Modal.Body className="bg-white" height="">
             <Formik
-              initialValues={initialValuesstudent}
+              initialValues={initialValuesStudent}
               // validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
@@ -465,9 +467,11 @@ const AlumMassEdit = (props) => {
                       name="student_ids"
                       options={studentOptions}
                       closeMenuOnSelect={false}
+                      // components={customComponents}
                       isOptionDisabled={() => students.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
+                      // onInputChange={handleInputChange}
                       onInputChange={(e) => setStudentInput(e)}
                       onChange={handleselectChange}
                       value={students}

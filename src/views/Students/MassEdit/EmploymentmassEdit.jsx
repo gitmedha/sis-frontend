@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import Select, { components } from "react-select";
 import {
   getEmployerOpportunities,
@@ -377,6 +377,11 @@ const EmploymentmassEdit = (props) => {
 
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
 };
+const initialValuesStudent = {
+  start_date: '',
+  end_date:"",
+  student_ids: [],
+};
 
 
   return (
@@ -408,32 +413,60 @@ const EmploymentmassEdit = (props) => {
               </div>
             </Modal.Header>
             <Modal.Body className="bg-white" height="">
-              <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-                <div>
-                  <label className="leading-24">Student</label>
-                  <Select
-                    isMulti
-                    name="student_ids"
-                    options={studentOptions}
-                    closeMenuOnSelect={false}
-                    components={customComponents}
-                    isOptionDisabled={() => students.length >= 10}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    onInputChange={(e) => setStudentInput(e)}
-                    onChange={handleselectChange}
-                    value={students}
-                  />
-                </div>
-                <div className="d-flex justify-content-end mx-5">
-                  <button
-                    className="btn btn-primary mt-3 "
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
+            <Formik
+              initialValues={initialValuesStudent}
+              // validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ values, setFieldValue }) => (
+                <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
+                  <div className="col-12 d-flex justify-content-between ">
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>Start Date</label>
+                      <Field
+                        type="date"
+                        name="start_date"
+                        placeholder="Start Date"
+                        className="form-control "
+                        required
+                      />
+                    </div>
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>End Date</label>
+                      <Field
+                        type="date"
+                        name="end_date"
+                        placeholder="End Date"
+                        className="form-control ml-2"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="leading-24">Student</label>
+                    <Select
+                      isMulti
+                      name="student_ids"
+                      options={studentOptions}
+                      closeMenuOnSelect={false}
+                      // components={customComponents}
+                      isOptionDisabled={() => students.length >= 10}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      // onInputChange={handleInputChange}
+                      onInputChange={(e) => setStudentInput(e)}
+                      onChange={handleselectChange}
+                      value={students}
+                    />
+                  </div>
+                  <div className="d-flex justify-content-end mx-5">
+                    <button type="submit" className="btn btn-primary mt-3">
+                      Submit
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
             </Modal.Body>
           </>
         )}
