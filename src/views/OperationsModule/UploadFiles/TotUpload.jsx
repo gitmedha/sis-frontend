@@ -383,7 +383,7 @@ const TotUpload = (props) => {
           start_date: startDate,
           end_date: endDate,
           createdby: createdby,
-          updatedby: createdby,
+          updatedby: updatedby,
         });
       }
     });
