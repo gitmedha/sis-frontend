@@ -5,7 +5,7 @@ import DetailField from "../../../components/content/DetailField";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import OperationDataupdateform from "./OperationDataupdateform";
 import {deactivate_user_ops} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
@@ -206,7 +206,7 @@ const Opsdatafeilds = (props) => {
                 {/* <DetailField label="Assigned to" value={props.institute.name} /> */}
               </div>
             </Modal.Body>
-            {(isSRM() || isAdmin()) && (
+            {(isSRM() || isAdmin() || isMedhavi()) && (
               <div className="row mt-2 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button

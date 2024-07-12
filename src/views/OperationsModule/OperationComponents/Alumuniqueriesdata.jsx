@@ -14,7 +14,7 @@ import {
 } from "./StudentActions";
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import AllumuniEdit from './AllumuniEdit';
 import { deactivate_user_alumni_query } from './operationsActions';
 import Deletepopup from "./Deletepopup";
@@ -208,7 +208,7 @@ const Alumuniqueriesdata = (props) => {
                       </div>
                     </div>
             </Modal.Body>
-            {(isSRM() || isAdmin()) && (
+            {(isSRM() || isAdmin() || isMedhavi()) && (
               <div className="row mt-4 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button
