@@ -24,25 +24,6 @@ const Style = styled.div`
 
 const CheckTot = (props) => {
   let { onHide } = props;
-
-  //   user_name: newItem["Full Name"],
-  //                 trainer_1: newItem["Trainer 1"],
-  //                 project_name: newItem['Project Name'],
-  //                 certificate_given: newItem['Certificate Given'],
-  //                 module_name: newItem['Module Name'],
-  //                 project_type: newItem['Project Type'],
-  //                 trainer_2: newItem["Trainer 2"],
-  //                 partner_dept: newItem['Partner Dept'],
-  //                 college: newItem['College'],
-  //                 city: newItem['City'],
-  //                 state: newItem['State'],
-  //                 age: newItem['Age'],
-  //                 gender: newItem['Gender'],
-  //                 contact: newItem['Contact'],
-  //                 designation: newItem['Designation'],
-  //                 start_date:newItem['Start Date'],
-  //                 end_date:newItem['End Date']
-
   return (
     <>
       <Modal
@@ -105,9 +86,14 @@ const CheckTot = (props) => {
                           <td>{obj.state}</td>
                           <td>{obj.city}</td>
                           <td>{obj.designation}</td>
-                          <td>{obj.college}</td>
+                          <td className={!obj.college ? "text-danger" : ""}>{
+                            obj.college
+                              ? obj.college
+                              : "Please select from dropdown"
+                          
+                          }</td>
                           <td
-                            className={!obj.project_name ? "text-danger" : ""}
+                            className={obj.project_name?.notFound || !obj.project_name ? "text-danger" : ""}
                           >
                             {obj.project_name?.value
                               ? obj.project_name?.value
@@ -116,7 +102,7 @@ const CheckTot = (props) => {
                               : "Please select from dropdown"}
                           </td>
                           <td
-                            className={!obj.partner_dept ? "text-danger" : ""}
+                            className={obj.partner_dept.notFound ? "text-danger" : ""}
                           >
                             {obj.partner_dept?.value
                               ? obj.partner_dept?.value
@@ -142,13 +128,24 @@ const CheckTot = (props) => {
                               ? obj.trainer_1
                               : "Please select from dropdown"}
                           </td>
-                          <td className={!obj.trainer_1 ? "text-danger" : ""}>
+                          <td className={!obj.trainer_2 ? "text-danger" : ""}>
                             {obj.trainer_2
                               ? obj.trainer_2
                               : "Please select from dropdown"}
                           </td>
                           <td>{obj.certificate_given}</td>
-                          <td>{obj.project_type}</td>
+                          <td
+                            className={
+                              obj.project_type.notFound ? "text-danger" : ""
+                            }
+                          >
+                            {obj.project_type?.value
+                              ? obj.project_type?.value
+                              : obj.project_type
+                              ? obj.project_type
+                              : "Please select from dropdown"}
+                          </td>
+                          {/* <td>{obj.project_type}</td> */}
                         </tr>
                       ))}
                     </tbody>
@@ -160,23 +157,23 @@ const CheckTot = (props) => {
                 </div>
               )}
             </div>
+            <div className="d-flex align-content-center justify-content-between">
             <h6 className="text-danger">Error found !</h6>
-          </Modal.Body>
-          {(isSRM() || isAdmin()) && (
-            <div className="row mt-4 mb-4">
+            {(isSRM() || isAdmin()) && (
+            <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">
                 {props.notUploadedData.length === 0 ? (
                   <button
                     type="button"
                     onClick={() => props.uploadExcel(props.excelData)}
-                    className="btn btn-primary px-4 mx-4"
+                    className="btn btn-primary px-4 "
                   >
                     Upload
                   </button>
                 ) : (
                   <button
                     type="button"
-                    className="btn btn-primary px-4 mx-4"
+                    className="btn btn-primary px-4 "
                     onClick={() => onHide()}
                   >
                     ReUpload
@@ -184,7 +181,13 @@ const CheckTot = (props) => {
                 )}
               </div>
             </div>
+
           )}
+          <div/>
+          </div>
+          
+          </Modal.Body>
+          
         </Style>
       </Modal>
     </>

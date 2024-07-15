@@ -89,8 +89,10 @@ const TotUpload = (props) => {
   const [projectName, setProjectName] = useState([]);
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
+  const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
-  const [nextDisabled, setNextDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(false);
+  const [fileName,setFileName]=useState("")
 
   useEffect(() => {
     const getdata = async () => {
@@ -106,7 +108,7 @@ const TotUpload = (props) => {
     setNextDisabled(false);
 
     if (file) {
-      setUploadSuccesFully(`${file.name} Uploaded`);
+      setFileName(`${file.name} Uploaded`);
       const reader = new FileReader();
 
       reader.onload = () => {
@@ -216,15 +218,19 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col)
     );
-
+    if(data.length > 0 && data.length > 200 ){
+      setNotUploadSuccesFully(`columns length should be less than 200`)
+    }
+    
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(", ")}`);
+      console.error(`Missing columns: ${missingColumns.join(', ')}`);
+      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(', ')}`)
       return false;
     }
-
+  
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(", ")}`);
-      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      console.error(`Extra columns: ${extraColumns.join(', ')}`);
+      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
       return false;
     }
     // console.log('Column validation passed');
@@ -241,29 +247,31 @@ const TotUpload = (props) => {
         validRecords.push(row);
       }
     });
-
-    if (
-      (validRecords.length != 0 && validRecords.length <= 200) ||
-      validateColumns(validRecords, expectedColumns)
-    ) {
+    const filteredArray = validRecords.filter((obj) =>
+      Object.values(obj).some((value) => value !== undefined)
+    );
+    if (validateColumns(filteredArray, expectedColumns) && (filteredArray.length <=200 && filteredArray.length >0 ) ) {
+      setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
-      processParsedData(validRecords);
+      processParsedData(filteredArray);
     }
+
+    
   };
 
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-    const filteredArray = data.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    );
-    filteredArray.forEach((item, index) => {
+    
+    
+    data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
 
+      const currentUser = localStorage.getItem("user_id");
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
@@ -281,7 +289,6 @@ const TotUpload = (props) => {
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
-      // console.log(projectName);
       const projectNameCheck = projectName.find(
         (project) => project === newItem["Project Name"]
       );
@@ -305,14 +312,7 @@ const TotUpload = (props) => {
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
 
-      console.log(pattern.test(newItem["Mobile no."]));
-      console.log(  !departMentCheck ,
-        !projectCheck ,
-        !moduleCheck ,
-        !isStartDateValid ,
-        !isEndDateValid  , !projectNameCheck , !isNumber(newItem["Age"]));
-      // |--------------------------------------------------
-      // */
+      
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -331,18 +331,38 @@ const TotUpload = (props) => {
           trainer_1: newItem["Trainer 1"],
           project_name: projectCheck
             ? newItem["Project Name"]
-            : { value: newItem["Project Name"], notFound: true },
+            : {
+                value: newItem["Project Name"]
+                  ? newItem["Project Name"]
+                  : "please select one value",
+                notFound: true,
+              },
           certificate_given: newItem["Certificate Given"],
           module_name: moduleCheck
             ? newItem["Module Name"]
-            : { value: newItem["Module Name"], notFound: true },
+            : {
+                value: newItem["Module Name"]
+                  ? newItem["Module Name"]
+                  : "please select one value",
+                notFound: true,
+              },
           project_type: projectCheck
             ? newItem["Project Type"]
-            : { value: newItem["Project Type"], notFound: true },
+            : {
+                value: newItem["Project Type"]
+                  ? newItem["Project Type"]
+                  : "please select one value",
+                notFound: true,
+              },
           trainer_2: newItem["Trainer 2"],
           partner_dept: departMentCheck
             ? newItem["Partner Department"]
-            : { value: newItem["Partner Department"], notFound: true },
+            : {
+                value: newItem["Partner Department"]
+                  ? newItem["Partner Department"]
+                  : "please select one value",
+                notFound: true,
+              },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "",
@@ -379,16 +399,15 @@ const TotUpload = (props) => {
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
-          designation: newItem["Designation"],
+          designation: newItem["Designation"] ? capitalize(newItem["Designation"]):"",
           start_date: startDate,
           end_date: endDate,
           createdby: createdby,
-          updatedby: updatedby,
+          updatedby: currentUser,
         });
       }
     });
-    console.log(formattedData);
-    console.log(notFoundData);
+
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
@@ -414,8 +433,7 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-    // console.log(notUploadedData);
-    // console.log(excelData);
+
     if (notUploadedData.length === 0 && excelData.length > 0) {
       props.uploadExcel(excelData, "tot");
     } else {
@@ -463,33 +481,44 @@ const TotUpload = (props) => {
                 Upload File
               </label>
             </div>
+            <div className="d-flex flex-column">
             {uploadSuccesFully ? (
-              <div className="text-success"> {uploadSuccesFully} </div>
+              <div className={` text-success d-flex justify-content-center`}> { fileName} </div>
             ) : (
-              ""
+              <div className={`text-danger d-flex justify-content-center`}> { notuploadSuccesFully} </div>
+              
             )}
-          </Modal.Body>
-          {(isSRM() || isAdmin()) && (
-            <div className="row mt-4 mb-4">
+            {(isSRM() || isAdmin()) && (
+            <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
                   onClick={() => props.closeThepopus()}
                   className="btn btn-danger px-4 mx-4"
+                  style={{height:'3rem'}}
                 >
                   Close
                 </button>
+                
                 <button
                   type="button"
-                  disabled={!uploadSuccesFully}
+                  disabled={!nextDisabled}
                   onClick={() => uploadDirect()}
                   className="btn btn-primary px-4 mx-4"
+                  style={{height:'3rem'}}
                 >
                   Next
                 </button>
               </div>
+              <div className="d-flex justify-content-center ">
+                <p className="text-gradient-warning" style={{color:'#B06B00'}}>Note : Maximum recomended number of records is 100 per excel</p>
+              </div>
             </div>
           )}
+          
+            </div>
+          </Modal.Body>
+         
         </Styled>
       </Modal>
 
