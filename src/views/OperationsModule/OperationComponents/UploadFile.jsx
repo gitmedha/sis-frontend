@@ -78,26 +78,29 @@ const UploadFile = (props) => {
   const [excelData, setExcelData] = useState([]);
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
+  const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [check, setCheck] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(false);
+  const [fileName,setFileName]=useState("")
   const validateColumns = (data, expectedColumns) => {
+
     const fileColumns = Object.keys(data[0]);
     const missingColumns = expectedColumns.filter(col => !fileColumns.includes(col));
     const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col));
-    
+    if(data.length > 0 && data.length > 200 ){
+      setNotUploadSuccesFully(`columns length should be less than 200`)
+    }
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(', ')}`);
+      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(', ')}`)
       return false;
     }
   
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(', ')}`);
-      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
       return false;
     }
-  
-    // console.log('Column validation passed');
+
     return true;
   };
   
@@ -106,7 +109,8 @@ const UploadFile = (props) => {
     setNextDisabled(false);
   
     if (file) {
-      setUploadSuccesFully(`${file.name} Uploaded`);
+      setFileName(`${file.name} Uploaded`);
+      
       const reader = new FileReader();
       
       reader.onload = () => {
@@ -116,10 +120,28 @@ const UploadFile = (props) => {
       
       reader.readAsBinaryString(file);
       // setNextDisabled(true);
-    } else {
+    } 
+
+    else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
+
   };
+
+
+  
+
+
+  useEffect(() => {
+    const getbatch = async () => {
+       getAllBatchs();
+      getAllInstitute();
+      const data = await getAllMedhaUsers();
+      setAssigneeOption(data);
+    };
+
+    getbatch();
+  }, [props]);
 
   
 
@@ -128,7 +150,7 @@ const UploadFile = (props) => {
     const workbook = XLSX.read(excelData, { type: 'binary' ,});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 ,defval: '', blankRows: false,});
-    
+    // 
     const headers = results[0];
     const data = results.slice(1).map(row => {
       const newItem = {};
@@ -178,7 +200,8 @@ const UploadFile = (props) => {
       }
     });
     
-    if((validRecords.length !=0 && validRecords.length <=200)|| validateColumns(validRecords,expectedColumns) ){
+    if( validateColumns(validRecords,expectedColumns) ){
+      setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true)
       processParsedData(validRecords)
     }
@@ -229,12 +252,7 @@ const processParsedData = (data) => {
     const isStartDateValid =  isValidDateFormat(startDate) 
     const isEndDateValid =  isValidDateFormat(endDate) 
 
-    // console.log(`Index: ${index + 1}`);
-    // console.log(`Batch ID: ${batchId}`);
-    // console.log(`Institute ID: ${instituteId}`);
-    // console.log(`User ID: ${userId}`);
-    // console.log(`Start Date Valid: ${isStartDateValid}`);
-    // console.log(`End Date Valid: ${isEndDateValid}`);
+
     if (
       !batchId ||
       !instituteId ||
@@ -275,7 +293,7 @@ const processParsedData = (data) => {
         assigned_to: userId || "",
         area: newItem["Medha Area"] ? capitalize(newItem["Medha Area"]):"" || "",
         isactive: true,
-        createdby: userId,
+        createdby: currentUser,
         updatedby: currentUser,
         students_attended:newItem['No. Of Participants'],
       });
@@ -289,16 +307,6 @@ const processParsedData = (data) => {
   
   
 
-  useEffect(() => {
-    const getbatch = async () => {
-       getAllBatchs();
-      getAllInstitute();
-      const data = await getAllMedhaUsers();
-      setAssigneeOption(data);
-    };
-
-    getbatch();
-  }, [props]);
 
   const getAllBatchs = async () => {
     try {
@@ -312,8 +320,7 @@ const processParsedData = (data) => {
   
       count = countResponse.data.data.batchesConnection.aggregate.count;
   
-      // Loop to fetch all batches in increments of 500
-      for (let i = 0; i < count/500; i += 500) {
+      for (let i = 0; i < count; i += 500) {
         const variables = {
           limit: 500,
           start: i,
@@ -325,8 +332,9 @@ const processParsedData = (data) => {
         });
   
         batchData = [...batchData, ...batchResponse.data.data.batchesConnection.values];
+        
+        setBatchOption(batchData);
       }
-      setBatchOption(batchData); // Set the accumulated batches
   
     } catch (err) {
       console.error(err); // Add error handling as needed
@@ -346,7 +354,7 @@ const processParsedData = (data) => {
       count = countResponse.data.data.institutionsConnection.aggregate.count;
   
       // Loop to fetch all batches in increments of 500
-      for (let i = 0; i < count/500; i+= 500) {
+      for (let i = 0; i < count ; i+= 500) {
         const variables = {
           limit: 500,
           start: i,
@@ -358,8 +366,9 @@ const processParsedData = (data) => {
         });
   
         instituteData = [...instituteData, ...batchResponse.data.data.institutionsConnection.values];
+        setInstituteOption(instituteData); 
       }
-      setInstituteOption(instituteData); 
+     
     } catch (err) {
       console.error(err); 
     }
@@ -389,6 +398,7 @@ const processParsedData = (data) => {
 
   const uploadDirect =()=>{
     if (notUploadedData.length === 0  && excelData.length > 0) {
+      setNextDisabled(!nextDisabled)
       props.uploadExcel(excelData,"my_data");
     }else{
       setShowModal(true)
@@ -436,19 +446,21 @@ const processParsedData = (data) => {
                 Upload File
               </label>
             </div>
+            <div className="d-flex  flex-column  ">
             {uploadSuccesFully ? (
-              <div className="text-success"> {uploadSuccesFully} </div>
+              <div className={` text-success d-flex justify-content-center `}> { fileName} </div>
             ) : (
-              ""
+              <div className={`text-danger d-flex justify-content-center `}> { notuploadSuccesFully} </div>
+              
             )}
-          </Modal.Body>
-          {(isSRM() || isAdmin()) && (
-            <div className="row mt-4 mb-4">
+            {(isSRM() || isAdmin()) && (
+            <div className="row mb-4 mt-2">
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
                   onClick={() => props.closeThepopus()}
-                  className="btn btn-danger px-4 mx-4"
+                  className="btn btn-danger px-4 mx-4 mt-2"
+                  style={{height:'2.5rem'}}
                 >
                   Close
                 </button>
@@ -457,13 +469,22 @@ const processParsedData = (data) => {
                   type="button"
                   disabled={!nextDisabled}
                   onClick={() => uploadDirect()}
-                  className="btn btn-primary px-4 mx-4"
+                  className="btn btn-primary px-4 mx-4 mt-2"
+                  style={{height:'2.5rem'}}
                 >
                   Next
                 </button>
               </div>
+              <div className="d-flex justify-content-center ">
+                <p className="text-gradient-warning" style={{color:'#B06B00'}}>Note : Maximum recomended number of records is 100 per excel</p>
+              </div>
             </div>
           )}
+          
+            </div>
+            
+          </Modal.Body>
+          
         </Styled>
       </Modal>
       <CheckValuesOpsUploadedData

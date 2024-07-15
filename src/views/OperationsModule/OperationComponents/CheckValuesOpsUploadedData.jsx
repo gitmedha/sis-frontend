@@ -105,25 +105,23 @@ const CheckValuesOpsUploadedData = (props) => {
               )}
               
             </div>
-            <h6 className="text-danger">
-              Error found ! 
-            </h6>
-          </Modal.Body>
-          {(isSRM() || isAdmin()) && (
-            <div className="row mt-4 mb-4">
+            <div className="d-flex align-content-center justify-content-between">
+            <h6 className="text-danger">Error found !</h6>
+            {(isSRM() || isAdmin()) && (
+            <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">
                 {props.notUploadedData.length === 0 ? (
                   <button
                     type="button"
                     onClick={() => props.uploadExcel(props.excelData)}
-                    className="btn btn-primary px-4 mx-4"
+                    className="btn btn-primary px-4 "
                   >
                     Upload
                   </button>
                 ) : (
                   <button
                     type="button"
-                    className="btn btn-primary px-4 mx-4"
+                    className="btn btn-primary px-4 "
                     onClick={() => onHide()}
                   >
                     ReUpload
@@ -131,7 +129,12 @@ const CheckValuesOpsUploadedData = (props) => {
                 )}
               </div>
             </div>
+
           )}
+          <div/>
+          </div>
+          </Modal.Body>
+         
         </Style>
       </Modal>
     </>
