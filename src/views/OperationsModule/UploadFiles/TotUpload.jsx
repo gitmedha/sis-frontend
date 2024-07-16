@@ -511,7 +511,7 @@ const TotUpload = (props) => {
                 </button>
               </div>
               <div className="d-flex justify-content-center ">
-                <p className="text-gradient-warning" style={{color:'#B06B00'}}>Note : Maximum recomended number of records is 100 per excel</p>
+                <p className="text-gradient-warning" style={{color:'#B06B00'}}>Note : Maximum recommended number of records is 100 per excel</p>
               </div>
             </div>
           )}
