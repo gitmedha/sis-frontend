@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
@@ -68,7 +68,6 @@ const Styled = styled.div`
     align-items: center;
     justify-content: center;
   }
-
 
   .loader {
     display: flex;
@@ -233,7 +232,7 @@ const TotUpload = (props) => {
   const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(false);
-  const [fileName,setFileName]=useState("")
+  const [fileName, setFileName] = useState("");
   const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
@@ -360,19 +359,19 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col)
     );
-    if(data.length > 0 && data.length > 200 ){
-      setNotUploadSuccesFully(`Number of rows should be less than 200`)
+    if (data.length > 0 && data.length > 200) {
+      setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
-    
+
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(', ')}`);
-      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(', ')}`)
+      console.error(`Missing columns: ${missingColumns.join(", ")}`);
+      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
-  
+
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(', ')}`);
-      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      console.error(`Extra columns: ${extraColumns.join(", ")}`);
+      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
     // console.log('Column validation passed');
@@ -392,21 +391,22 @@ const TotUpload = (props) => {
     const filteredArray = validRecords.filter((obj) =>
       Object.values(obj).some((value) => value !== undefined)
     );
-    if (validateColumns(filteredArray, expectedColumns) && (filteredArray.length <=200 && filteredArray.length >0 ) ) {
+    if (
+      validateColumns(filteredArray, expectedColumns) &&
+      filteredArray.length <= 200 &&
+      filteredArray.length > 0
+    ) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
     }
-
-    
   };
 
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-    
-    
+
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
@@ -454,7 +454,6 @@ const TotUpload = (props) => {
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
 
-      
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -541,7 +540,9 @@ const TotUpload = (props) => {
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
-          designation: newItem["Designation"] ? capitalize(newItem["Designation"]):"",
+          designation: newItem["Designation"]
+            ? capitalize(newItem["Designation"])
+            : "",
           start_date: startDate,
           end_date: endDate,
           createdby: createdby,
@@ -575,9 +576,8 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      setNextDisabled(!nextDisabled)
+      setNextDisabled(!nextDisabled);
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
@@ -611,29 +611,14 @@ const TotUpload = (props) => {
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
-          {showSpinner ? (
+            {showSpinner ? (
               <div
                 className="bg-white d-flex align-items-center justify-content-center "
                 style={{ height: "40vh" }}
               >
-                <div class="loader">
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                </div>
+                <Spinner animation="border" variant="success" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
               </div>
             ) : (
               <>
@@ -709,7 +694,6 @@ const TotUpload = (props) => {
               </>
             )}
           </Modal.Body>
-         
         </Styled>
       </Modal>
 
