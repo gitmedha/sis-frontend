@@ -593,24 +593,9 @@ const UploadFile = (props) => {
                 className="bg-white d-flex align-items-center justify-content-center "
                 style={{ height: "40vh" }}
               >
-                <div class="loader">
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                  <div class="circle">
-                    <div class="dot"></div>
-                    <div class="outline"></div>
-                  </div>
-                </div>
+                <Spinner animation="border" variant="success" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
               </div>
             ) : (
               <>
