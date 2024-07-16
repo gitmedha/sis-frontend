@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
@@ -68,6 +68,146 @@ const Styled = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --color: #257b69;
+    --animation: 2s ease-in-out infinite;
+  }
+
+  .loader .circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: solid 2px var(--color);
+    border-radius: 50%;
+    margin: 0 10px;
+    background-color: transparent;
+    animation: circle-keys var(--animation);
+  }
+
+  .loader .circle .dot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--color);
+    animation: dot-keys var(--animation);
+  }
+
+  .loader .circle .outline {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    animation: outline-keys var(--animation);
+  }
+
+  .circle:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  .circle:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  .circle:nth-child(4) {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(5) {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(2) .dot {
+    animation-delay: 0.3s;
+  }
+
+  .circle:nth-child(3) .dot {
+    animation-delay: 0.6s;
+  }
+
+  .circle:nth-child(4) .dot {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(5) .dot {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(1) .outline {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(2) .outline {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(3) .outline {
+    animation-delay: 1.5s;
+  }
+
+  .circle:nth-child(4) .outline {
+    animation-delay: 1.8s;
+  }
+
+  .circle:nth-child(5) .outline {
+    animation-delay: 2.1s;
+  }
+
+  @keyframes circle-keys {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    50% {
+      transform: scale(1.5);
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes dot-keys {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(0);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes outline-keys {
+    0% {
+      transform: scale(0);
+      outline: solid 20px var(--color);
+      outline-offset: 0;
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+      outline: solid 0 transparent;
+      outline-offset: 20px;
+      opacity: 0;
+    }
+  }
 `;
 
 const options = [
@@ -92,7 +232,8 @@ const TotUpload = (props) => {
   const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
   const [nextDisabled, setNextDisabled] = useState(false);
-  const [fileName,setFileName]=useState("")
+  const [fileName, setFileName] = useState("");
+  const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
     const getdata = async () => {
@@ -218,19 +359,19 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col)
     );
-    if(data.length > 0 && data.length > 200 ){
-      setNotUploadSuccesFully(`columns length should be less than 200`)
+    if (data.length > 0 && data.length > 200) {
+      setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
-    
+
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(', ')}`);
-      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(', ')}`)
+      console.error(`Missing columns: ${missingColumns.join(", ")}`);
+      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
-  
+
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(', ')}`);
-      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      console.error(`Extra columns: ${extraColumns.join(", ")}`);
+      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
     // console.log('Column validation passed');
@@ -250,21 +391,22 @@ const TotUpload = (props) => {
     const filteredArray = validRecords.filter((obj) =>
       Object.values(obj).some((value) => value !== undefined)
     );
-    if (validateColumns(filteredArray, expectedColumns) && (filteredArray.length <=200 && filteredArray.length >0 ) ) {
+    if (
+      validateColumns(filteredArray, expectedColumns) &&
+      filteredArray.length <= 200 &&
+      filteredArray.length > 0
+    ) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
     }
-
-    
   };
 
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-    
-    
+
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
@@ -283,7 +425,7 @@ const TotUpload = (props) => {
       );
 
       const departMentCheck = partnerDept.find(
-        (department) => department.value, "==" ,newItem["Partner Department"]
+        (department) => department.value === newItem["Partner Department"]
       );
 
       const projectCheck = ["Internal", "External"].find(
@@ -312,7 +454,6 @@ const TotUpload = (props) => {
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
 
-      
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -399,7 +540,9 @@ const TotUpload = (props) => {
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
-          designation: newItem["Designation"] ? capitalize(newItem["Designation"]):"",
+          designation: newItem["Designation"]
+            ? capitalize(newItem["Designation"])
+            : "",
           start_date: startDate,
           end_date: endDate,
           createdby: createdby,
@@ -433,13 +576,19 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-
     if (notUploadedData.length === 0 && excelData.length > 0) {
+      setNextDisabled(!nextDisabled);
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
     }
   };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -462,63 +611,89 @@ const TotUpload = (props) => {
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
-            <div className="uploader-container">
-              <div className="imageUploader">
-                <p className="upload-helper-text">Click Here To Upload </p>
-                <div className="upload-helper-icon">
-                  <FaFileUpload size={30} color={"#257b69"} />
-                </div>
-                <input
-                  accept=".xlsx"
-                  type="file"
-                  multiple={false}
-                  name="file-uploader"
-                  onChange={handleFileChange}
-                  className="uploaderInput"
-                />
+            {showSpinner ? (
+              <div
+                className="bg-white d-flex align-items-center justify-content-center "
+                style={{ height: "40vh" }}
+              >
+                <Spinner animation="border" variant="success" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
               </div>
-              <label className="text--primary latto-bold text-center">
-                Upload File
-              </label>
-            </div>
-            <div className="d-flex flex-column">
-            {uploadSuccesFully ? (
-              <div className={` text-success d-flex justify-content-center`}> { fileName} </div>
             ) : (
-              <div className={`text-danger d-flex justify-content-center`}> { notuploadSuccesFully} </div>
-              
+              <>
+                <div className="uploader-container">
+                  <div className="imageUploader">
+                    <p className="upload-helper-text">Click Here To Upload </p>
+                    <div className="upload-helper-icon">
+                      <FaFileUpload size={30} color={"#257b69"} />
+                    </div>
+                    <input
+                      accept=".xlsx"
+                      type="file"
+                      multiple={false}
+                      name="file-uploader"
+                      onChange={handleFileChange}
+                      className="uploaderInput"
+                    />
+                  </div>
+                  <label className="text--primary latto-bold text-center">
+                    Upload File
+                  </label>
+                </div>
+                <div className="d-flex  flex-column  ">
+                  {uploadSuccesFully ? (
+                    <div
+                      className={` text-success d-flex justify-content-center `}
+                    >
+                      {" "}
+                      {fileName}{" "}
+                    </div>
+                  ) : (
+                    <div
+                      className={`text-danger d-flex justify-content-center `}
+                    >
+                      {" "}
+                      {notuploadSuccesFully}{" "}
+                    </div>
+                  )}
+                  {(isSRM() || isAdmin()) && (
+                    <div className="row mb-4 mt-2">
+                      <div className="col-md-12 d-flex justify-content-center">
+                        <button
+                          type="button"
+                          onClick={() => props.closeThepopus()}
+                          className="btn btn-danger px-4 mx-4 mt-2"
+                          style={{ height: "2.5rem" }}
+                        >
+                          Close
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={!nextDisabled}
+                          onClick={() => uploadDirect()}
+                          className="btn btn-primary px-4 mx-4 mt-2"
+                          style={{ height: "2.5rem" }}
+                        >
+                          Next
+                        </button>
+                      </div>
+                      <div className="d-flex justify-content-center ">
+                        <p
+                          className="text-gradient-warning"
+                          style={{ color: "#B06B00" }}
+                        >
+                          Note : Maximum recomended number of records is 100 per
+                          excel
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
-            {(isSRM() || isAdmin()) && (
-            <div className="row mb-4">
-              <div className="col-md-12 d-flex justify-content-center">
-                <button
-                  type="button"
-                  onClick={() => props.closeThepopus()}
-                  className="btn btn-danger px-4 mx-4"
-                  style={{height:'3rem'}}
-                >
-                  Close
-                </button>
-                
-                <button
-                  type="button"
-                  disabled={!nextDisabled}
-                  onClick={() => uploadDirect()}
-                  className="btn btn-primary px-4 mx-4"
-                  style={{height:'3rem'}}
-                >
-                  Next
-                </button>
-              </div>
-              <div className="d-flex justify-content-center ">
-                <p className="text-gradient-warning" style={{color:'#B06B00'}}>Note : Maximum recommended number of records is 100 per excel</p>
-              </div>
-            </div>
-          )}
-          
-            </div>
           </Modal.Body>
-         
         </Styled>
       </Modal>
 
