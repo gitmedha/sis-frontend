@@ -140,7 +140,7 @@ const Totdatafield = (props) => {
                   />
                   <DetailField
                     label="Trainer 1"
-                    value={props.trainer_1.username}
+                    value={props.trainer_1?.username}
                   />
                   <DetailField
                     label="Project Name"
@@ -185,7 +185,7 @@ const Totdatafield = (props) => {
                   <DetailField label="Module Name" value={props.module_name} />
                   <DetailField
                     label="Trainer 2"
-                    value={props.trainer_2.username}
+                    value={props.trainer_2?.username}
                   />
                   {/* <DetailField label="New Entry" value={props.new_entry} /> */}
                   <DetailField
