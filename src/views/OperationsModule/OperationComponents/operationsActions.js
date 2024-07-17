@@ -26,7 +26,8 @@ import {
     SEARCH_INSTITUITIONS,
     SEARCH_BY_BATCHES,
     SEARCH_BY_STUDENTS,
-    SEARCH_BY_PROGRAMS  
+    SEARCH_BY_PROGRAMS,  
+    UPDATE_MENTORSHIP
 } from "../../../graphql/operations";
 
 
@@ -338,6 +339,21 @@ export const updateOpsActivity = async(id,data)=>{
     })
 }
 
+export const updateMentorshipData = async(id,data)=>{
+   
+    return await api.post('/graphql', {
+        query:UPDATE_MENTORSHIP,
+        variables: {
+            id,
+            data
+        },
+    }).then(data=>{
+        return data;
+    }).catch(error=>{
+        return Promise.reject(error);
+    })
+}
+
 export const updateUserTot = async(id,data)=>{
     return await api.post('/graphql', {
         query:UPDATE_USER_TOT,
@@ -408,6 +424,15 @@ export const bulkCreateOpsActivities = async (data) =>{
 export const bulkCreateUsersTots = async (data) =>{
     try {
         const response = await api.post('/users-tots/createBulkTots', data);
+        return response;
+    } catch (error) {
+        return console.error(error)
+    }
+
+};
+export const bulkCreateMentorship = async (data) =>{
+    try {
+        const response = await api.post('/mentorships/createBulkmentorship', data);
         return response;
     } catch (error) {
         return console.error(error)
