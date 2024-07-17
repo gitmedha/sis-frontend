@@ -43,6 +43,7 @@ import {
 import {
   bulkCreateAlumniQueries,
   bulkCreateCollegePitch,
+  bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
@@ -751,18 +752,7 @@ const Operations = ({
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "student_name":
-            case "area":
-            case "college_name":
-            case "course_name":
-              sortByField = sortBy[0].id;
-              break;
-
-            default:
-              sortByField = "student_name";
-              break;
-          }
+          
           getoperations(
             activeStatus,
             activeTab.key,
@@ -872,6 +862,17 @@ const Operations = ({
 
     if (key == "tot") {
       const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
+
+    if (key == "mentorship") {
+      const value = await bulkCreateMentorship(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
           // history.push(`/student/${data.data.data.createStudent.student.id}`);

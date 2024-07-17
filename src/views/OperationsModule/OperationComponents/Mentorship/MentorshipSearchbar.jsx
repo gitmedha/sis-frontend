@@ -28,46 +28,75 @@ const Section = styled.div`
   }
 `;
 const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
- let options = [
+  let options = [
     { key: 0, value: "mentor_name", label: "Mentor Name" },
     { key: 1, value: "mentor_domain", label: "Mentor Domain" },
     { key: 2, value: "mentor_company_name", label: "Mentor Company Name" },
     { key: 3, value: "designation", label: "Designation" },
     { key: 4, value: "mentor_area", label: "Mentor Area" },
     { key: 5, value: "mentor_state", label: "Mentor State" },
-    { key: 6, value: "outreach", label: "Outreach" },
-    { key: 7, value: "onboarding_date", label: "Onboarding Date" },
+    // { key: 6, value: "outreach", label: "Outreach" },
+    // { key: 7, value: "onboarding_date", label: "Onboarding Date" },
     { key: 8, value: "medha_area", label: "Medha Area" },
     { key: 9, value: "program_name", label: "Program Name" },
-     { key: 10, value: "status", label: "Status" }
-];
+    { key: 10, value: "status", label: "Status" },
+  ];
 
 
-  const [studentNameOptions, setStudentNameOptions] = useState([]);
-  const [phoneOptions, setPhoneOptions] = useState([]);
-  const [studentIdOptions, setStudentIdOptions] = useState([]);
+  const [mentorNameOption, setMentorNameOption] = useState([]);
+  const [areaOption, setAreaOption] = useState([]);
   const [stateOption, setStateOption] = useState([]);
-  const [areaOptions, setAreaOptions] = useState([]);
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [disabled, setDisbaled] = useState(true);
-  const [statusOptions] = useState([
-    { key: 2, value: "Closed", label: "Closed" },
-    { key: 1, value: "Open", label: "Open" },
-    { key: 0, value: "Resolved", label: "Resolved" },
-  ]);
+  const [mentorDomain, setMentorDomain] = useState([]);
+  const [mentorCompanyName, setMentorCompanyName] = useState([]);
+  const [designationOption, setDesignation] = useState([]);
+  const [medhaArea, setMedhaArea] = useState([]);
+  const [programName, setProgramName] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [outreach, setOutreach] = useState(null);
+  const [onboardingDate, setOnboardingDate] = useState(null);
+
+ 
 
   const setSearchItem = (value) => {
     setSelectedSearchField(value);
     setDisbaled(false);
 
-    if (value === "mentor_state") {
-
+    if (value === "mentor_name") {
       setDropdownValues(value);
-    } 
+    }
+    if (value === "mentor_domain") {
+      setDropdownValues(value);
+    }
+    if (value === "mentor_company_name") {
+      setDropdownValues(value);
+    }
+    if (value === "designation") {
+      setDropdownValues(value);
+    }
     if (value === "mentor_area") {
-
       setDropdownValues(value);
-    } 
+    }
+    if (value === "mentor_state") {
+      setDropdownValues(value);
+    }
+    if (value === "outreach") {
+      setDropdownValues(value);
+    }
+    if (value === "onboarding_date") {
+      setDropdownValues(value);
+    }
+    if (value === "medha_area") {
+      setDropdownValues(value);
+    }
+    if (value === "program_name") {
+      setDropdownValues(value);
+    }
+    if (value === "status") {
+      setDropdownValues(value);
+    }
+
   };
   const setDropdownValues = async (fieldName) => {
     try {
@@ -78,8 +107,32 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
         setStateOption(data);
       }
       if (fieldName === "mentor_area") {
-        console.log(data);
+        console.log("data",data);
+        setAreaOption(data);
+        console.log(areaOption);
       }
+      if (fieldName === "mentor_name") {
+        setMentorNameOption(data);
+      }
+      if (fieldName === "mentor_domain") {
+        setMentorDomain(data);
+      }
+      if (fieldName === "designation") {
+        setDesignation(data);
+      }
+      if (fieldName === "program_name") {
+        setProgramName(data);
+      }
+      if (fieldName === "medha_area") {
+        setMedhaArea(data);
+      }
+      if (fieldName === "status") {
+        setStatus(data);
+      }
+      if (fieldName === "mentor_company_name") {
+        setMentorCompanyName(data);
+      }
+      
       
     } catch (error) {
       console.error("error", error);
@@ -90,69 +143,30 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const initialValues = {
     search_by_field: "",
     search_by_value: "",
-    // search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-    // search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-    // search_by_value_date_end_from: new Date(
-    //   new Date(today).setDate(today.getDate())
-    // ),
-    // search_by_value_date_end_to: new Date(
-    //   new Date(today).setDate(today.getDate())
-    // ),
   };
-  const validate = Yup.object().shape({
-    search_by_value_date: Yup.date().required("Start date is required"),
-    search_by_value_date_to: Yup.date()
-      .required("End date is required")
-      .when("search_by_value_date", (start, schema) => {
-        return schema.min(
-          start,
-          "End date must be greater than or equal to start date"
-        );
-      }),
-    search_by_value_date_end_from: Yup.date().required(
-      "Start date is required"
-    ),
-    search_by_value_date_end_to: Yup.date()
-      .required("End date is required")
-      .when("search_by_value_date_end_from", (start, schema) => {
-        return schema.min(
-          start,
-          "End date must be greater than or equal to start date"
-        );
-      }),
-  });
-  const formatdate = (dateval) => {
-    const date = new Date(dateval);
-
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
-    const dd = String(date.getDate()).padStart(2, "0");
-
-    const formattedDate = `${yyyy}-${mm}-${dd}`;
-    return formattedDate;
-  };
+ 
+ 
 
   const handleSubmit = async (values) => {
-     
-      let baseUrl = "alumni-queries";
-      await searchOperationTab(
-        baseUrl,
-        values.search_by_field,
-        values.search_by_value
-      );
+    let baseUrl = "mentorship";
+    await searchOperationTab(
+      baseUrl,
+      values.search_by_field,
+      values.search_by_value
+    );
 
-      //stores the last searched result in the local storage as cache
-      //we will use it to refresh the search results
+    //stores the last searched result in the local storage as cache
+    //we will use it to refresh the search results
 
-      let value=await localStorage.setItem(
-        "prevSearchedPropsAndValues",
-        JSON.stringify({
-          baseUrl: baseUrl,
-          searchedProp: values.search_by_field,
-          searchValue: values.search_by_value,
-        })
-      );
-    
+    let value = await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({
+        baseUrl: baseUrl,
+        searchedProp: values.search_by_field,
+        searchValue: values.search_by_value,
+      })
+    );
+
     console.log(value);
   };
   const formik = useFormik({
@@ -190,131 +204,137 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                   />
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-  {selectedSearchField === null && (
-    <Input
-      name="search_by_value"
-      control="input"
-      label="Search Value"
-      className="form-control"
-      disabled={true}
-    />
-  )}
-  {selectedSearchField === "mentor_name" && (
-    <Input
-      icon="down"
-      name="search_by_value"
-      label="Search Value"
-      control="input"
-      className="form-control"
-      disabled={disabled ? true : false}
-    />
-  )}
-  {selectedSearchField === "medha_area" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "status" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "mentor_domain" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "mentor_company_name" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "designation" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "mentor_area" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    onChange={(e) => setSearchItem(e.value)}
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "mentor_state" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="lookup"
-    options={stateOption}
-    className="form-control"
-    onChange={(e) => setSearchItem(e.value)}
-    // disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "outreach" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "program_name" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
-  {selectedSearchField === "onboarding_date" && (
-    <Input
-    icon="down"
-    name="search_by_value"
-    label="Search Value"
-    control="input"
-    className="form-control"
-    disabled={disabled ? true : false}
-  />
-  )}
- 
- 
-</div>
+                  {selectedSearchField === null && (
+                    <Input
+                      name="search_by_value"
+                      control="input"
+                      label="Search Value"
+                      className="form-control"
+                      disabled={true}
+                    />
+                  )}
+                  {selectedSearchField === "mentor_name" && (
+                    <Input
+                    icon="down"
+                    name="search_by_value"
+                    label="Search Value"
+                    control="lookup"
+                    options={mentorNameOption}
+                    className="form-control"
+                    disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "medha_area" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={medhaArea}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "status" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={status}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "mentor_domain" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={mentorDomain}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "mentor_company_name" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={mentorCompanyName}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "designation" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={designationOption}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "mentor_area" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      className="form-control"
+                      options={areaOption}
+                      // onChange={(e) => setSearchItem(e.value)}
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField == "mentor_state" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={stateOption}
+                      className="form-control"
+                      // onChange={(e) => setSearchItem(e.value)}
+                      // disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "outreach" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="input"
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "program_name" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={programName}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                  {selectedSearchField === "onboarding_date" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="input"
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                </div>
 
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center">
                   <button
@@ -345,5 +365,3 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 export default connect(null, { searchOperationTab, resetSearch })(
   MentorshipSearchbar
 );
-
-

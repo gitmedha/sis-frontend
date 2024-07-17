@@ -272,7 +272,7 @@ const MentorBulkAdd = (props) => {
     });
 
     try {
-      onHide("alum", data);
+      onHide("mentorship", data);
       setRows([
         {
           id: 1,
