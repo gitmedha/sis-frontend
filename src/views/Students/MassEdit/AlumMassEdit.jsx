@@ -7,6 +7,7 @@ import {
 } from "../../../utils/function/lookupOptions";
 import {
   getAlumniServicePickList,
+  getStudentAlumniRange,
   getStudentAlumniServices,
   getStudentsPickList,
   searchStudents,
@@ -124,10 +125,9 @@ const AlumMassEdit = (props) => {
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [defaultAssigne, setDefaultAssignee] = useState({
-    value: "",
-    label: "",
-  });
+  const [disabled, setDisabled] = useState(true);
+  const [startDate,setStartDate]=useState(null)
+  const [endDate,setEndDate]=useState(null)
 
   useEffect((props) => {
     getAlumniServicePickList().then((data) => {
@@ -221,10 +221,9 @@ const AlumMassEdit = (props) => {
           try {
             const data = await getStudentAlumniServices(
               obj.value,
-              values.start_date,
-              values.end_date
+              startDate,
+              endDate
             );
-
             if (
               !data.data ||
               !data.data.data.alumniServicesConnection ||
@@ -232,7 +231,7 @@ const AlumMassEdit = (props) => {
             ) {
               throw new Error(
                 `Unexpected data structure for student ID ${
-                  obj.id
+                  obj.value
                 }: ${JSON.stringify(data)}`
               );
             }
@@ -335,7 +334,6 @@ const AlumMassEdit = (props) => {
 
       return filteredData;
     });
-
     props.handelSubmit(data, "AlumniBuldEdit");
   };
 
@@ -399,10 +397,30 @@ const AlumMassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const initialValuesStudent = {
-    start_date: "",
-    end_date: "",
+    start_date: null,
+    end_date: null,
     student_ids: [],
   };
+
+  useEffect(async()=>{
+    if(startDate && endDate){
+      setDisabled(false)
+      let data = await getStudentAlumniRange(startDate,endDate)
+      let uniqueStudentsMap = new Map();
+data.forEach((obj) => {
+  if (!uniqueStudentsMap.has(obj.student.id)) {
+    uniqueStudentsMap.set(obj.student.id, obj);
+  }
+});
+
+let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
+  label: `${obj.student.full_name} (${obj.student.student_id})`,
+  value: Number(obj.student.id),
+}));  
+    
+      setStudentOptions(values);
+    }
+  },[startDate,endDate])
   return (
     <Modal
       centered
@@ -447,6 +465,7 @@ const AlumMassEdit = (props) => {
                         placeholder="Start Date"
                         className="form-control "
                         required
+                        onChange={(e)=>setStartDate(e.target.value)}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -457,6 +476,7 @@ const AlumMassEdit = (props) => {
                         placeholder="End Date"
                         className="form-control ml-2"
                         required
+                        onChange={(e)=>setEndDate(e.target.value)}
                       />
                     </div>
                   </div>
@@ -467,12 +487,12 @@ const AlumMassEdit = (props) => {
                       name="student_ids"
                       options={studentOptions}
                       closeMenuOnSelect={false}
-                      // components={customComponents}
+                      components={customComponents}
                       isOptionDisabled={() => students.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      // onInputChange={handleInputChange}
-                      onInputChange={(e) => setStudentInput(e)}
+                      isDisabled={disabled}
+                      // onInputChange={(e) => setStudentInput(e)}
                       onChange={handleselectChange}
                       value={students}
                     />

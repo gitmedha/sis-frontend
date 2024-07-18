@@ -275,7 +275,7 @@ const TotUpload = (props) => {
       );
 
       const departMentCheck = partnerDept.find(
-        (department) => "Higher Education" === newItem["Partner Department"]
+        (department) => department.value === newItem["Partner Department"]
       );
 
       const projectCheck = ["Internal", "External"].find(

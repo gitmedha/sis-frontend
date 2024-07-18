@@ -27,7 +27,9 @@ import {
   SEARCH_BY_EMPLOYERS,
   SEARCH_BY_STUDENTS,
   GET_COURSE,
-  GET_STUDENT_ALUMNI_SERVICES_RANGE
+  GET_STUDENT_ALUMNI_SERVICES_RANGE,
+  GET_UNIQUE_STUDENT_ALUMNI,
+  GET_UNIQUE_STUDENT_EMPLOYMENT
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -341,6 +343,77 @@ export const getStudentAlumniServices = async (studentId, startDate,endDate,limi
     return Promise.reject(error);
   });
 }
+
+export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+  let allData = [];
+  let offset = 0;
+  let hasMoreData = true;
+
+  while (hasMoreData) {
+    const result = await api.post('/graphql', {
+      query: GET_UNIQUE_STUDENT_ALUMNI,
+      variables: {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+        startDate: startDate,
+        endDate: endDate
+      },
+    }).then(data => data)
+    .catch(error => {
+      return Promise.reject(error);
+    });
+
+    const fetchedData = result.data.data.alumniServicesConnection.values;
+    allData = allData.concat(fetchedData);
+
+    // Check if the fetched data is less than the limit
+    if (fetchedData.length < limit) {
+      hasMoreData = false;
+    } else {
+      offset += limit;
+    }
+  }
+
+  return allData;
+};
+
+
+export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+  let allData = [];
+  let offset = 0;
+  let hasMoreData = true;
+
+  while (hasMoreData) {
+    const result = await api.post('/graphql', {
+      query: GET_UNIQUE_STUDENT_EMPLOYMENT,
+      variables: {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+        startDate: startDate,
+        endDate: endDate
+      },
+    }).then(data => data)
+    .catch(error => {
+      return Promise.reject(error);
+    });
+    console.log(result);
+    const fetchedData = result.data.data.employmentConnectionsConnection.values;
+    
+    allData = allData.concat(fetchedData);
+
+    // Check if the fetched data is less than the limit
+    if (fetchedData.length < limit) {
+      hasMoreData = false;
+    } else {
+      offset += limit;
+    }
+  }
+
+  return allData;
+};
+// 
 
 export const createAlumniService = async (data) => {
   return await api.post('/graphql', {
