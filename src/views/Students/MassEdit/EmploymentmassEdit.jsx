@@ -315,7 +315,8 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    props.handelCancel();
+    // props.handelCancel();
+    setFormStatus(!formStatus)
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -491,8 +492,11 @@ value: Number(obj.student.id),
                     />
                   </div>
                   <div className="d-flex justify-content-end mx-5">
-                    <button type="submit" className="btn btn-primary mt-3">
-                      Submit
+                  <button type="submit" onClick={()=>props.handelCancel()} className="btn btn-secondary mt-3 mr-3">
+                      Cancel
+                    </button>
+                    <button type="submit" disabled={disabled} className="btn btn-primary mt-3">
+                      Next
                     </button>
                   </div>
                 </Form>
@@ -524,7 +528,7 @@ value: Number(obj.student.id),
                   <Form>
                     <Section>
                       <div className="row px-3 form_sec">
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 mt-4">
                           <Select
                             isMulti
                             isDisabled={true}

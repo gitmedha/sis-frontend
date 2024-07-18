@@ -365,7 +365,8 @@ const AlumMassEdit = (props) => {
   });
 
   const handelCancel = () => {
-    props.handelCancel();
+    // props.handelCancel();
+    setFormStatus(!formStatus)
   };
   const MultiValue = ({ index, getValue, ...props }) => {
     const maxToShow = 1; // Maximum number of values to show
@@ -498,8 +499,11 @@ let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
                     />
                   </div>
                   <div className="d-flex justify-content-end mx-5">
-                    <button type="submit" className="btn btn-primary mt-3">
-                      Submit
+                  <button type="submit" onClick={()=>props.handelCancel()} className="btn btn-secondary mt-3 mr-3">
+                      Cancel
+                    </button>
+                    <button type="submit" disabled={disabled} className="btn btn-primary mt-3">
+                      Next
                     </button>
                   </div>
                 </Form>
