@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
@@ -68,6 +68,146 @@ const Styled = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --color: #257b69;
+    --animation: 2s ease-in-out infinite;
+  }
+
+  .loader .circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: solid 2px var(--color);
+    border-radius: 50%;
+    margin: 0 10px;
+    background-color: transparent;
+    animation: circle-keys var(--animation);
+  }
+
+  .loader .circle .dot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--color);
+    animation: dot-keys var(--animation);
+  }
+
+  .loader .circle .outline {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    animation: outline-keys var(--animation);
+  }
+
+  .circle:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  .circle:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  .circle:nth-child(4) {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(5) {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(2) .dot {
+    animation-delay: 0.3s;
+  }
+
+  .circle:nth-child(3) .dot {
+    animation-delay: 0.6s;
+  }
+
+  .circle:nth-child(4) .dot {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(5) .dot {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(1) .outline {
+    animation-delay: 0.9s;
+  }
+
+  .circle:nth-child(2) .outline {
+    animation-delay: 1.2s;
+  }
+
+  .circle:nth-child(3) .outline {
+    animation-delay: 1.5s;
+  }
+
+  .circle:nth-child(4) .outline {
+    animation-delay: 1.8s;
+  }
+
+  .circle:nth-child(5) .outline {
+    animation-delay: 2.1s;
+  }
+
+  @keyframes circle-keys {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    50% {
+      transform: scale(1.5);
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes dot-keys {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(0);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes outline-keys {
+    0% {
+      transform: scale(0);
+      outline: solid 20px var(--color);
+      outline-offset: 0;
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+      outline: solid 0 transparent;
+      outline-offset: 20px;
+      opacity: 0;
+    }
+  }
 `;
 
 const options = [
@@ -89,8 +229,11 @@ const TotUpload = (props) => {
   const [projectName, setProjectName] = useState([]);
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [uploadSuccesFully, setUploadSuccesFully] = useState("");
+  const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [showModalTOT, setShowModalTOT] = useState(false);
-  const [nextDisabled, setNextDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(false);
+  const [fileName, setFileName] = useState("");
+  const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
     const getdata = async () => {
@@ -106,7 +249,7 @@ const TotUpload = (props) => {
     setNextDisabled(false);
 
     if (file) {
-      setUploadSuccesFully(`${file.name} Uploaded`);
+      setFileName(`${file.name} Uploaded`);
       const reader = new FileReader();
 
       reader.onload = () => {
@@ -216,15 +359,19 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col)
     );
+    if (data.length > 0 && data.length > 200) {
+      setNotUploadSuccesFully(`Number of rows should be less than 200`);
+    }
 
     if (missingColumns.length > 0) {
       console.error(`Missing columns: ${missingColumns.join(", ")}`);
+      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
 
     if (extraColumns.length > 0) {
       console.error(`Extra columns: ${extraColumns.join(", ")}`);
-      setUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`)
+      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
     // console.log('Column validation passed');
@@ -241,13 +388,17 @@ const TotUpload = (props) => {
         validRecords.push(row);
       }
     });
-
+    const filteredArray = validRecords.filter((obj) =>
+      Object.values(obj).some((value) => value !== undefined)
+    );
     if (
-      (validRecords.length != 0 && validRecords.length <= 200) ||
-      validateColumns(validRecords, expectedColumns)
+      validateColumns(filteredArray, expectedColumns) &&
+      filteredArray.length <= 200 &&
+      filteredArray.length > 0
     ) {
+      setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
-      processParsedData(validRecords);
+      processParsedData(filteredArray);
     }
   };
 
@@ -255,15 +406,14 @@ const TotUpload = (props) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-    const filteredArray = data.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    );
-    filteredArray.forEach((item, index) => {
+
+    data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
 
+      const currentUser = localStorage.getItem("user_id");
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
@@ -275,13 +425,12 @@ const TotUpload = (props) => {
       );
 
       const departMentCheck = partnerDept.find(
-        (department) => "Higher Education" === newItem["Partner Department"]
+        (department) => department.value === newItem["Partner Department"]
       );
 
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
-      // console.log(projectName);
       const projectNameCheck = projectName.find(
         (project) => project === newItem["Project Name"]
       );
@@ -305,14 +454,6 @@ const TotUpload = (props) => {
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
 
-      console.log(pattern.test(newItem["Mobile no."]));
-      console.log(  !departMentCheck ,
-        !projectCheck ,
-        !moduleCheck ,
-        !isStartDateValid ,
-        !isEndDateValid  , !projectNameCheck , !isNumber(newItem["Age"]));
-      // |--------------------------------------------------
-      // */
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -331,18 +472,38 @@ const TotUpload = (props) => {
           trainer_1: newItem["Trainer 1"],
           project_name: projectCheck
             ? newItem["Project Name"]
-            : { value: newItem["Project Name"], notFound: true },
+            : {
+                value: newItem["Project Name"]
+                  ? newItem["Project Name"]
+                  : "please select one value",
+                notFound: true,
+              },
           certificate_given: newItem["Certificate Given"],
           module_name: moduleCheck
             ? newItem["Module Name"]
-            : { value: newItem["Module Name"], notFound: true },
+            : {
+                value: newItem["Module Name"]
+                  ? newItem["Module Name"]
+                  : "please select one value",
+                notFound: true,
+              },
           project_type: projectCheck
             ? newItem["Project Type"]
-            : { value: newItem["Project Type"], notFound: true },
+            : {
+                value: newItem["Project Type"]
+                  ? newItem["Project Type"]
+                  : "please select one value",
+                notFound: true,
+              },
           trainer_2: newItem["Trainer 2"],
           partner_dept: departMentCheck
             ? newItem["Partner Department"]
-            : { value: newItem["Partner Department"], notFound: true },
+            : {
+                value: newItem["Partner Department"]
+                  ? newItem["Partner Department"]
+                  : "please select one value",
+                notFound: true,
+              },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "",
@@ -379,16 +540,17 @@ const TotUpload = (props) => {
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
-          designation: newItem["Designation"],
+          designation: newItem["Designation"]
+            ? capitalize(newItem["Designation"])
+            : "",
           start_date: startDate,
           end_date: endDate,
           createdby: createdby,
-          updatedby: createdby,
+          updatedby: currentUser,
         });
       }
     });
-    console.log(formattedData);
-    console.log(notFoundData);
+
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
@@ -414,14 +576,19 @@ const TotUpload = (props) => {
   };
 
   const uploadDirect = () => {
-    // console.log(notUploadedData);
-    // console.log(excelData);
     if (notUploadedData.length === 0 && excelData.length > 0) {
+      setNextDisabled(!nextDisabled);
       props.uploadExcel(excelData, "tot");
     } else {
       setShowModalTOT(true);
     }
   };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSpinner(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -444,52 +611,89 @@ const TotUpload = (props) => {
         </Modal.Header>
         <Styled>
           <Modal.Body className="bg-white">
-            <div className="uploader-container">
-              <div className="imageUploader">
-                <p className="upload-helper-text">Click Here To Upload </p>
-                <div className="upload-helper-icon">
-                  <FaFileUpload size={30} color={"#257b69"} />
-                </div>
-                <input
-                  accept=".xlsx"
-                  type="file"
-                  multiple={false}
-                  name="file-uploader"
-                  onChange={handleFileChange}
-                  className="uploaderInput"
-                />
+            {showSpinner ? (
+              <div
+                className="bg-white d-flex align-items-center justify-content-center "
+                style={{ height: "40vh" }}
+              >
+                <Spinner animation="border" variant="success" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
               </div>
-              <label className="text--primary latto-bold text-center">
-                Upload File
-              </label>
-            </div>
-            {uploadSuccesFully ? (
-              <div className="text-success"> {uploadSuccesFully} </div>
             ) : (
-              ""
+              <>
+                <div className="uploader-container">
+                  <div className="imageUploader">
+                    <p className="upload-helper-text">Click Here To Upload </p>
+                    <div className="upload-helper-icon">
+                      <FaFileUpload size={30} color={"#257b69"} />
+                    </div>
+                    <input
+                      accept=".xlsx"
+                      type="file"
+                      multiple={false}
+                      name="file-uploader"
+                      onChange={handleFileChange}
+                      className="uploaderInput"
+                    />
+                  </div>
+                  <label className="text--primary latto-bold text-center">
+                    Upload File
+                  </label>
+                </div>
+                <div className="d-flex  flex-column  ">
+                  {uploadSuccesFully ? (
+                    <div
+                      className={` text-success d-flex justify-content-center `}
+                    >
+                      {" "}
+                      {fileName}{" "}
+                    </div>
+                  ) : (
+                    <div
+                      className={`text-danger d-flex justify-content-center `}
+                    >
+                      {" "}
+                      {notuploadSuccesFully}{" "}
+                    </div>
+                  )}
+                  {(isSRM() || isAdmin()) && (
+                    <div className="row mb-4 mt-2">
+                      <div className="col-md-12 d-flex justify-content-center">
+                        <button
+                          type="button"
+                          onClick={() => props.closeThepopus()}
+                          className="btn btn-danger px-4 mx-4 mt-2"
+                          style={{ height: "2.5rem" }}
+                        >
+                          Close
+                        </button>
+
+                        <button
+                          type="button"
+                          disabled={!nextDisabled}
+                          onClick={() => uploadDirect()}
+                          className="btn btn-primary px-4 mx-4 mt-2"
+                          style={{ height: "2.5rem" }}
+                        >
+                          Next
+                        </button>
+                      </div>
+                      <div className="d-flex justify-content-center ">
+                        <p
+                          className="text-gradient-warning"
+                          style={{ color: "#B06B00" }}
+                        >
+                          Note : Maximum recomended number of records is 100 per
+                          excel
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </Modal.Body>
-          {(isSRM() || isAdmin()) && (
-            <div className="row mt-4 mb-4">
-              <div className="col-md-12 d-flex justify-content-center">
-                <button
-                  type="button"
-                  onClick={() => props.closeThepopus()}
-                  className="btn btn-danger px-4 mx-4"
-                >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  disabled={!uploadSuccesFully}
-                  onClick={() => uploadDirect()}
-                  className="btn btn-primary px-4 mx-4"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
         </Styled>
       </Modal>
 

@@ -8,6 +8,7 @@ import {
   GET_ALUMNI_QUERIES,
   GET_COLLEGE_PITCHES,
   GET_DTE_SAMARTH_SDITS,
+  GET_MENTORSHIP,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
@@ -42,13 +43,17 @@ import {
 import {
   bulkCreateAlumniQueries,
   bulkCreateCollegePitch,
+  bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
-import { FaDownload ,FaFileUpload,FaPlus} from "react-icons/fa";
+import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
 import TotUpload from "./UploadFiles/TotUpload";
+import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
+import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
+import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -60,6 +65,7 @@ const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Pitching", key: "collegePitches" },
+  { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
@@ -99,6 +105,7 @@ const Operations = ({
     sditdata: false,
     alumniQueriesdata: false,
     collegePitches: false,
+    mentorship: false,
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -110,6 +117,7 @@ const Operations = ({
     sditdata: {},
     alumniQueriesdata: {},
     collegePitches: {},
+    mentorship: {},
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -125,7 +133,6 @@ const Operations = ({
     myData: false,
     tot: false,
   });
-
 
   const columns = useMemo(
     () => [
@@ -190,6 +197,42 @@ const Operations = ({
       {
         Header: "End Date",
         accessor: "end_date",
+      },
+    ],
+    []
+  );
+
+  const columnsMentor = useMemo(
+    () => [
+      {
+        Header: "Mentor Name",
+        accessor: "mentor_name",
+      },
+      {
+        Header: "Assigned To",
+        accessor: "assigned_to.username",
+      },
+      {
+        Header: "Mentor's Domain",
+        accessor: "mentor_domain",
+      },
+
+      {
+        Header: "Mentor's Area",
+        accessor: "mentor_area",
+      },
+
+      {
+        Header: "Mentor's State",
+        accessor: "mentor_state",
+      },
+      {
+        Header: "Program Name",
+        accessor: "program_name",
+      },
+      {
+        Header: "Mentor's Company",
+        accessor: "mentor_company_name",
       },
     ],
     []
@@ -476,6 +519,27 @@ const Operations = ({
           nProgress.done();
         });
     }
+    if (activeTab.key === "mentorship") {
+      // await resetSearch();
+
+      await api
+        .post("/graphql", {
+          query: GET_MENTORSHIP,
+          variables,
+        })
+        .then((data) => {
+          console.log("data", data);
+          setOpts(data.data.data.activeMentoshipData.values);
+          setoptsAggregate(data.data.data.allMentoshipData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {
@@ -684,6 +748,28 @@ const Operations = ({
           );
         }
       }
+      if (activeTab.key === "mentorship") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
     },
     [activeTab, activeStatus]
   );
@@ -776,6 +862,17 @@ const Operations = ({
 
     if (key == "tot") {
       const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
+
+    if (key == "mentorship") {
+      const value = await bulkCreateMentorship(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
           // history.push(`/student/${data.data.data.createStudent.student.id}`);
@@ -971,9 +1068,12 @@ const Operations = ({
                     className="btn btn-primary ops_action_button"
                     onClick={() => setModalShow(true)}
                   >
-                    Add <span><FaPlus size="12" color="#fff"/></span>
+                    Add{" "}
+                    <span>
+                      <FaPlus size="12" color="#fff" />
+                    </span>
                   </button>
-                
+
                   {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -991,9 +1091,10 @@ const Operations = ({
                         }
                       }}
                     >
-                      
-                    Upload &nbsp;
-                    <span><FaFileUpload size="12" color="#fff"/></span>
+                      Upload &nbsp;
+                      <span>
+                        <FaFileUpload size="12" color="#fff" />
+                      </span>
                     </button>
                   ) : (
                     ""
@@ -1001,8 +1102,7 @@ const Operations = ({
                   {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
-
-                        <a 
+                        <a
                           href={
                             activeTab.key == "my_data"?
                             "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activity-Sample-File.xlsx"
@@ -1114,62 +1214,87 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ) : activeTab.key == "mentorship" ? (
+              <>
+                <MentorshipSearchbar />
+                <Table
+                  onRowClick={(data) => showRowData("mentorship", data)}
+                  columns={columnsMentor}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
             ) : (
               ""
             )}
           </div>
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          {activeTab.key == "my_data"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <OperationCreateform
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : // useTot  ---upskilling ---dtesamarth
-            activeTab.key == "useTot"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <UserTot
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : activeTab.key == "upskilling"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <StudentUpkillingBulkcreate
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : activeTab.key == "dtesamarth"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <Dtesamarth
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : activeTab.key == "alumniQueries"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <AllumuniBulkAdd
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : activeTab.key == "collegePitches"
-            ? (isSRM() || isAdmin() || isMedhavi()) && (
-                <CollegepitchesBulkadd
-                  show={modalShow}
-                  onHide={hideCreateModal}
-                  ModalShow={() => setModalShow(false)}
-                />
-              )
-            : ""}
+          {activeTab.key == "my_data" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <OperationCreateform
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : // useTot  ---upskilling ---dtesamarth
+          activeTab.key == "useTot" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <UserTot
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "upskilling" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <StudentUpkillingBulkcreate
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "dtesamarth" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <Dtesamarth
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "alumniQueries" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AllumuniBulkAdd
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "collegePitches" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <CollegepitchesBulkadd
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "mentorship" ? (
+            <MentorBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ) : (
+            ""
+          )}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Opsdatafeilds
               {...optsdata.opsdata}
@@ -1204,20 +1329,31 @@ const Operations = ({
               onHide={() => hideShowModal("sditdata", false)}
             />
           )}
-          {showModal.alumniQueriesdata && (isSRM() || isAdmin() || isMedhavi()) && (
-            <Alumuniqueriesdata
-              {...optsdata.alumniQueriesdata}
+          {showModal.alumniQueriesdata &&
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <Alumuniqueriesdata
+                {...optsdata.alumniQueriesdata}
+                show={showModal.opsdata}
+                onHide={() => hideShowModal("alumniQueriesdata", false)}
+                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+                refreshTableOnDeleting={() => refreshTableOnDeleting()}
+              />
+            )}
+          {showModal.collegePitches &&
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <CollegePitchdata
+                {...optsdata.collegePitches}
+                show={showModal.opsdata}
+                onHide={() => hideShowModal("collegePitches", false)}
+                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+                refreshTableOnDeleting={() => refreshTableOnDeleting()}
+              />
+            )}
+          {showModal.mentorship && (isSRM() || isAdmin() || isMedhavi()) && (
+            <MentorshipdataField
+              {...optsdata.mentorship}
               show={showModal.opsdata}
-              onHide={() => hideShowModal("alumniQueriesdata", false)}
-              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
-              refreshTableOnDeleting={() => refreshTableOnDeleting()}
-            />
-          )}
-          {showModal.collegePitches && (isSRM() || isAdmin() || isMedhavi()) && (
-            <CollegePitchdata
-              {...optsdata.collegePitches}
-              show={showModal.opsdata}
-              onHide={() => hideShowModal("collegePitches", false)}
+              onHide={() => hideShowModal("mentorship", false)}
               refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
