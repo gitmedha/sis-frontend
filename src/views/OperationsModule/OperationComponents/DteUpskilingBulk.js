@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import Skeleton from "react-loading-skeleton";
 import { getStateDistricts } from "../../Address/addressActions";
 import { getDefaultAssigneeOptions } from "../../../utils/function/lookupOptions";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
@@ -14,43 +12,8 @@ const options = [
 
 
 const DteUpskilingBulk = (props) => {
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      student_name: "",
-      course_name: "",
-      institution_name: "",
-      district: "",
-      state: "",
-      dob: "",
-      gender: "",
-      father_guardian: "",
-      mobile: "",
-      email: "",
-      annual_income: "",
-      full_address: "",
-      self_employed: "",
-      higher_studies: "",
-      placed: "",
-      apprenticeship: "",
-      doj: "",
-      company_placed: "",
-      father_guardian: "",
-      monthly_salary: "",
-      data_flag: "",
-      position: "",
-      trade: "",
-      company_apprenticed: "",
-      company_self: "",
-      institute_admitted: "",
-      acad_year: "",
-      result: "",
-    },
-    // Add more initial rows as needed
-  ]);
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);

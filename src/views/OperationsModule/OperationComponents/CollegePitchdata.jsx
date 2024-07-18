@@ -3,19 +3,8 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { Anchor, Badge } from "../../../components/content/Utils";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
-import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
-import {
-  getEmploymentConnectionsPickList,
-  getOpportunitiesPickList,
-} from "./StudentActions";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import AllumuniEdit from "./AllumuniEdit";
 import CollepitchesEdit from "./CollegepitchesEdit";
 import { deactivate_user_college_pitch } from "./operationsActions";
 import Deletepopup from "./Deletepopup";
