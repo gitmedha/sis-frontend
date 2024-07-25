@@ -39,7 +39,7 @@ const MentorBulkrow = (props) => {
       email: "",
       mentor_domain: "",
       mentor_company_name: "",
-      deisgnation: "",
+      designation: "",
       mentor_area: "",
       mentor_state: "",
       outreach: "",
@@ -156,7 +156,12 @@ const MentorBulkrow = (props) => {
       <tr key={row.id}>
         <td>
           <input
-            className="table-input h-2"
+            // className="table-input h-2 mentor_name"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.mentor_name
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             // disabled={Father ? true : false}
             // value={Father}
@@ -186,7 +191,12 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            // className="basic-single table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.program_name
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -198,7 +208,11 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.status
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -210,7 +224,11 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <Select
-            className="basic-single table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.outreach
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -224,7 +242,7 @@ const MentorBulkrow = (props) => {
           <input
             type="date"
             className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.start_date
+              props.classValue[`class${row.id - 1}`]?.onboarding_date
                 ? `border-red`
                 : ""
             }`}
@@ -246,7 +264,11 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input h-2"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.mentor_domain
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             // disabled={email ? true :false}
             defaultValue={email}
@@ -258,18 +280,26 @@ const MentorBulkrow = (props) => {
 
         <td>
           <input
-            className="table-input h-2"
+             className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.mentor_company_name
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             // disabled={email ? true :false}
             defaultValue={email}
             onChange={(e) =>
-              props.updateRow(row.id, "mentor_company", e.target.value)
+              props.updateRow(row.id, "mentor_company_name", e.target.value)
             }
           />
         </td>
         <td>
           <input
-            className="table-input h-2"
+             className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.designation
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             // ref={conclusion}
             onChange={(e) =>
@@ -279,18 +309,25 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <Select
-            className={`basic-single table-input`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.mentor_state
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
-            // isClearable={() => updatestate()}
             isSearchable={true}
             name="state"
             options={stateOptions}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            onChange={(e) => onStateChange(e, row.id, "mentor_state")}
           />
         </td>
         <td>
           <Select
-            className={`table-input h-2`}
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.mentor_area
+                ? `border-red`
+                : ""
+            }`}
             classNamePrefix="select"
             isSearchable={true}
             options={areaOptions}
