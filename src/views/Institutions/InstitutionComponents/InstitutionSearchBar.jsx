@@ -201,7 +201,6 @@ function InstitutionSearchBar({
                   options={institutionsOptions}
                   className="form-control"
                   onChange={(e) => handleStundentsOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               <div
