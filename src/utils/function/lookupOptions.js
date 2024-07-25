@@ -182,6 +182,18 @@ export const getAllSrm =async(role)=>{
     value: user.id,
   }));
 }
+export const getAllSrmbyname =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE,
+    variables:{
+      role:1
+    },
+  });
+  return data.data.users.map(user => ({
+    label: `${user.username}`,
+    value: user.id,
+  }));
+}
 
 export const getAllStudents =async()=>{
   let data=await queryBuilder({

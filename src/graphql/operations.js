@@ -209,6 +209,39 @@ const collegePitchesFields = `
     area
 `;
 
+const mentoshipfeild=`
+id
+created_at
+updated_at
+assigned_to {
+    id
+    username
+}
+mentor_name
+email
+mentor_domain
+mentor_company_name
+designation
+mentor_area
+mentor_state
+outreach
+onboarding_date
+social_media_profile_link
+medha_area
+status
+isactive
+program_name
+createdby {
+    id
+    username
+}
+updatedby {
+    id
+    username
+}
+
+`
+
 
 
 
@@ -338,6 +371,26 @@ export const GET_COLLEGE_PITCHES = `
     }
 `;
 
+export const GET_MENTORSHIP = `
+    query GET_MENTORSHIP($limit: Int, $start: Int, $sort: String) {
+        allMentoshipData: mentorshipsConnection {
+            aggregate {
+                count
+            }
+        }
+        activeMentoshipData: mentorshipsConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${mentoshipfeild}
+            }
+        }
+    }
+`;
+
 export const CREATE_OPERATION = `
     mutation CREATE_OPERATION (
         $data:OperationInput!
@@ -449,6 +502,25 @@ export const UPDATE_OPERATION = `
         ){
             usersOpsActivity{
                 ${operationFields}
+            }
+        }
+    }
+
+`;
+
+export const UPDATE_MENTORSHIP = `
+    mutation UPDATE_MENTORSHIP (
+        $data:editMentorshipInput!
+        $id:ID!
+    ){
+        updateMentorship(
+            input: {
+                data:$data,
+                where: {id: $id}
+            }
+        ){
+            mentorship{
+                ${mentoshipfeild}
             }
         }
     }

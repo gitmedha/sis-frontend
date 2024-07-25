@@ -125,7 +125,7 @@ const Totdatafield = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                UserTOt Details
+                User TOt Details
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -140,7 +140,7 @@ const Totdatafield = (props) => {
                   />
                   <DetailField
                     label="Trainer 1"
-                    value={props.trainer_1.username}
+                    value={props.trainer_1?.username}
                   />
                   <DetailField
                     label="Project Name"
@@ -185,9 +185,9 @@ const Totdatafield = (props) => {
                   <DetailField label="Module Name" value={props.module_name} />
                   <DetailField
                     label="Trainer 2"
-                    value={props.trainer_2.username}
+                    value={props.trainer_2?.username}
                   />
-                  <DetailField label="New Entry" value={props.new_entry} />
+                  <DetailField label="New Entry" value={props.new_entry ? "Yes":"No"} />
                   <DetailField
                     Bold={""}
                     label="End Date"
@@ -228,8 +228,8 @@ const Totdatafield = (props) => {
                   <DetailField
                     label="Updated By"
                     value={
-                      props.updatedby?.userName
-                        ? props.updatedby?.userName
+                      props.updatedby?.username
+                        ? props.updatedby?.username
                         : ""
                     }
                   />
