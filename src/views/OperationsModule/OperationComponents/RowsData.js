@@ -119,11 +119,7 @@ export const RowsData = (props) => {
       setAssigneeOptions(data);
     });
     let data=await getOpsPickList().then(data=>{
-      return data.activity_type.map((value) => ({
-          key: value,
-          label: value,
-          value: value,
-        }))
+      return data.activity_type.map((value) => value)
     }) 
 
     setActivityOption(data);
