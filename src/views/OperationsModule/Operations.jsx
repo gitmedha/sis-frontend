@@ -421,6 +421,8 @@ const Operations = ({
     }
     if (activeTab.key === "useTot") {
       await resetSearch();
+      variables.isactive = true
+      delete variables.isActive
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
