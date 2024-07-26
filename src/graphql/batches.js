@@ -645,7 +645,7 @@ export const SEARCH_BY_PROGRAMS = `
 
 `
 
-export const GET_ALL_BATCHES = `
+export const GET_ALL_BATCH = `
 query GET_ALL_BATCHES($start:Int ,$limit:Int) {
   batchesConnection(start:$start,limit:$limit){
     values {
@@ -681,3 +681,13 @@ export const SEARCH_BY_STUDENTS = `
   }
 
 `
+
+export const GET_ALL_BATCHES = `
+query GET_ALL_BATCHES {
+  batches {
+    id
+    name
+    status
+  }
+}
+`;

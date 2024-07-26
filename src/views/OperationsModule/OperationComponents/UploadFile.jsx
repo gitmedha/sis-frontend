@@ -4,6 +4,7 @@ import Spinner from "react-bootstrap/Spinner";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import {
+  GET_ALL_BATCH,
   GET_ALL_BATCHES,
   GET_ALL_INSTITUTES,
   GET_BATCHES,
@@ -480,7 +481,7 @@ const UploadFile = (props) => {
         };
 
         const batchResponse = await api.post("/graphql", {
-          query: GET_ALL_BATCHES,
+          query: GET_ALL_BATCH,
           variables,
         });
 
@@ -488,7 +489,6 @@ const UploadFile = (props) => {
           ...batchData,
           ...batchResponse.data.data.batchesConnection.values,
         ];
-
         setBatchOption(batchData);
       }
     } catch (err) {
