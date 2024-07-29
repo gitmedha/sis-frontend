@@ -600,8 +600,8 @@ const UploadFile = (props) => {
       // setNextDisabled(!nextDisabled);
       setUploadNew(true);
       props.uploadExcel(excelData, "my_data");
-      await api.post("/users-ops-activities/createBulkOperations", excelData);
-      setAlert("Data created successfully.", "success");
+      // await api.post("/users-ops-activities/createBulkOperations", excelData);
+      // setAlert("Data created successfully.", "success");
     }
   };
   // 
