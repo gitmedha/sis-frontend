@@ -13,11 +13,13 @@ import {
 } from "../../../graphql";
 import api, { queryBuilder } from "../../../apis";
 import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
-import { FaFileUpload } from "react-icons/fa";
+import { FaEdit, FaFileUpload } from "react-icons/fa";
 import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { isNumber } from "lodash";
+import moment from "moment";
+import { setAlert } from "src/store/reducers/Notifications/actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -233,7 +235,15 @@ const UploadFile = (props) => {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [fileName, setFileName] = useState("");
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showForm, setShowForm] = useState(true);
+  const [uploadNew, setUploadNew] = useState(false);
   const validateColumns = (data, expectedColumns) => {
+    if (!data || data.length === 0) {
+      setNotUploadSuccesFully(
+        "Some data fields are empty or not properly initialized"
+      );
+      return false;
+    }
     const fileColumns = Object.keys(data[0]);
     const missingColumns = expectedColumns.filter(
       (col) => !fileColumns.includes(col)
@@ -388,6 +398,14 @@ const UploadFile = (props) => {
 
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
+      let parseDate;
+      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+        const parsedDate1 = moment(new Date(startDate)).unix();
+        const parsedDate2 = moment(new Date(endDate)).unix();
+        if (parsedDate2 < parsedDate1) {
+          parseDate = true;
+        }
+      }
 
       if (
         !batchId ||
@@ -395,7 +413,8 @@ const UploadFile = (props) => {
         !userId ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !isNumber(newItem["No. Of Participants"])
+        !isNumber(newItem["No. Of Participants"]) ||
+        parseDate
       ) {
         notFoundData.push({
           index: index + 1,
@@ -406,10 +425,14 @@ const UploadFile = (props) => {
             ? batch.name
             : { value: newItem["Batch Name"], notFound: true },
           state: newItem["State"] || "",
-          start_date: isStartDateValid
+          start_date: parseDate
+            ? { value: startDate, notFound: true }
+            : isStartDateValid
             ? startDate
             : { value: newItem["Start Date"], notFound: true },
-          end_date: isEndDateValid
+          end_date: parseDate
+            ? { value: endDate, notFound: true }
+            : isEndDateValid
             ? endDate
             : { value: newItem["End Date"], notFound: true },
           topic: newItem["Session Topic"] || "",
@@ -419,6 +442,9 @@ const UploadFile = (props) => {
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
           activity_type: newItem["Activity Type"] || "",
+          guest: newItem["Guest Name"],
+          student_type: newItem["Student Type"],
+          program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
             : { value: newItem["Assigned To"], notFound: true },
@@ -452,6 +478,9 @@ const UploadFile = (props) => {
             ? capitalize(newItem["Medha Area"])
             : "" || "",
           isactive: true,
+          guest: newItem["Guest Name"],
+          program_name: newItem["Program Name"],
+          student_type: newItem["Student Type"],
           createdby: currentUser,
           updatedby: currentUser,
           students_attended: newItem["No. Of Participants"],
@@ -518,7 +547,7 @@ const UploadFile = (props) => {
           query: GET_ALL_INSTITUTES,
           variables,
         });
-        
+
         instituteData = [
           ...instituteData,
           ...batchResponse.data.data.institutionsConnection.values,
@@ -552,8 +581,9 @@ const UploadFile = (props) => {
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      setNextDisabled(!nextDisabled);
-      props.uploadExcel(excelData, "my_data");
+      // setNextDisabled(!nextDisabled);
+      setShowForm(false);
+      // props.uploadExcel(excelData, "my_data");
     } else {
       setShowModal(true);
     }
@@ -564,6 +594,24 @@ const UploadFile = (props) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const proceedData = async () => {
+    if (notUploadedData.length === 0 && excelData.length > 0) {
+      // setNextDisabled(!nextDisabled);
+      setUploadNew(true);
+      props.uploadExcel(excelData, "my_data");
+      await api.post("/users-ops-activities/createBulkOperations", excelData);
+      setAlert("Data created successfully.", "success");
+    }
+  };
+  // 
+  const uploadNewData =()=>{
+    setShowForm(true);
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
+  setUploadSuccesFully(''); 
+
+  }
 
   return (
     <>
@@ -587,90 +635,136 @@ const UploadFile = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Styled>
-          <Modal.Body className="bg-white">
-            {showSpinner ? (
-              <div
-                className="bg-white d-flex align-items-center justify-content-center "
-                style={{ height: "40vh" }}
-              >
-                <Spinner animation="border" variant="success" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
-              </div>
-            ) : (
-              <>
-                <div className="uploader-container">
-                  <div className="imageUploader">
-                    <p className="upload-helper-text">Click Here To Upload </p>
-                    <div className="upload-helper-icon">
-                      <FaFileUpload size={30} color={"#257b69"} />
+          {showForm ? (
+            <Modal.Body className="bg-white">
+              {showSpinner ? (
+                <div
+                  className="bg-white d-flex align-items-center justify-content-center "
+                  style={{ height: "40vh" }}
+                >
+                  <Spinner animation="border" variant="success" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              ) : (
+                <>
+                  <div className="uploader-container">
+                    <div className="imageUploader">
+                      <p className="upload-helper-text">
+                        Click Here To Upload{" "}
+                      </p>
+                      <div className="upload-helper-icon">
+                        <FaFileUpload size={30} color={"#257b69"} />
+                      </div>
+                      <input
+                        accept=".xlsx"
+                        type="file"
+                        multiple={false}
+                        name="file-uploader"
+                        onChange={handleFileChange}
+                        className="uploaderInput"
+                      />
                     </div>
-                    <input
-                      accept=".xlsx"
-                      type="file"
-                      multiple={false}
-                      name="file-uploader"
-                      onChange={handleFileChange}
-                      className="uploaderInput"
-                    />
+                    <label className="text--primary latto-bold text-center">
+                      Upload File
+                    </label>
                   </div>
-                  <label className="text--primary latto-bold text-center">
-                    Upload File
-                  </label>
-                </div>
-                <div className="d-flex  flex-column  ">
-                  {uploadSuccesFully ? (
-                    <div
-                      className={` text-success d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {fileName}{" "}
-                    </div>
-                  ) : (
-                    <div
-                      className={`text-danger d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {notuploadSuccesFully}{" "}
-                    </div>
-                  )}
-                  {(isSRM() || isAdmin()) && (
-                    <div className="row mb-4 mt-2">
-                      <div className="col-md-12 d-flex justify-content-center">
-                        <button
-                          type="button"
-                          onClick={() => props.closeThepopus()}
-                          className="btn btn-danger px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Close
-                        </button>
+                  <div className="d-flex  flex-column  ">
+                    {notuploadSuccesFully ? (
+                      <div
+                        className={`text-danger  d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {notuploadSuccesFully}{" "}
+                      </div>
+                    ) : (
+                      <div
+                        className={`text-success d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {fileName}{" "}
+                      </div>
+                    )}
+                    {(isSRM() || isAdmin()) && (
+                      <div className="row mb-4 mt-2">
+                        <div className="col-md-12 d-flex justify-content-center">
+                          <button
+                            type="button"
+                            onClick={() => props.closeThepopus()}
+                            className="btn btn-danger px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Close
+                          </button>
 
-                        <button
-                          type="button"
-                          disabled={!nextDisabled}
-                          onClick={() => uploadDirect()}
-                          className="btn btn-primary px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Next
-                        </button>
+                          <button
+                            type="button"
+                            disabled={!nextDisabled}
+                            onClick={() => uploadDirect()}
+                            className="btn btn-primary px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Next
+                          </button>
+                        </div>
+                        <div className="d-flex justify-content-center ">
+                          <p
+                            className="text-gradient-warning"
+                            style={{ color: "#B06B00" }}
+                          >
+                            Note : Maximum recomended number of records is 100
+                            per excel
+                          </p>
+                        </div>
                       </div>
-                      <div className="d-flex justify-content-center ">
-                        <p
-                          className="text-gradient-warning"
-                          style={{ color: "#B06B00" }}
-                        >
-                          Note : Maximum recomended number of records is 100 per
-                          excel
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </Modal.Body>
+                    )}
+                  </div>
+                </>
+              )}
+            </Modal.Body>
+          ) : (
+            <Modal.Body style={{height:'15rem'}}>
+              <div className='mb-5'>
+                <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
+                <FaEdit size={20} color="#31B89D"  />{" "}
+                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                  
+                </p>
+              </div>
+              <div className="col-md-12 d-flex justify-content-center">
+                <button
+                  type="button"
+                  onClick={() => props.closeThepopus()}
+                  className="btn btn-danger px-4 mx-4 mt-2"
+                  style={{ height: "2.5rem" }}
+                >
+                  Close
+                </button>
+
+                {uploadNew ? (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() =>uploadNewData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Upload New
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
+                )}
+              </div>
+            </Modal.Body>
+          )}
         </Styled>
       </Modal>
       <CheckValuesOpsUploadedData
