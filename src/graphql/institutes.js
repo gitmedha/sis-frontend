@@ -331,6 +331,16 @@ query INSTITUTION(
   "id": 8
 }
 */
+export const GET_INSTITUTES_COUNT = `
+query GET_INSTITUTES_COUNT {
+  institutionsConnection {
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
 
 export const GET_ALL_INSTITUTES = `
 query GET_ALL_INSTITUTES($start:Int ,$limit:Int) {
@@ -352,6 +362,7 @@ query GET_INSTITUTES_COUNT {
       count
     }
   }
+  
 }
 `;
 

@@ -163,7 +163,6 @@ function StudentsSearchBar({
             value: value,
           }));
 
-        console.log("matchedOptions", matchedOptions);
         return matchedOptions;
       }
     } catch (error) {
@@ -241,7 +240,7 @@ function StudentsSearchBar({
                   options={filteredStudentsOptions}
                   className="form-control"
                   onChange={(e) => handleStudentsOptions(e.value)}
-                  isDisabled={isDisable}
+                  // isDisabled={!isSearching && isDisable}
                 />
               </div>
               {selectedSearchField !== "registration_date_latest" && (

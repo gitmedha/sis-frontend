@@ -8,6 +8,7 @@ import SelectLookup from "./SelectLookup";
 import SelectLookupAsync from "./SelectLookupAsync";
 import CheckboxGroup from "./CheckboxGroup";
 import FileUploadInput from "./FileUploadInput";
+import SelectSearchLookUp from "./SelectSearchLookUp";
 
 const FormController = (props) => {
   const { control, ...rest } = props;
@@ -31,6 +32,8 @@ const FormController = (props) => {
       return <SelectLookupAsync {...rest} />;
     case "file":
       return <FileUploadInput {...rest} />;
+    case "searchLookup":
+      <SelectSearchLookUp {...rest}/>
     default:
       return null;
   }

@@ -65,7 +65,7 @@ const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Pitching", key: "collegePitches" },
-  // { title: "Mentorship", key: "mentorship" },
+  { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
@@ -521,27 +521,27 @@ const Operations = ({
           nProgress.done();
         });
     }
-    // if (activeTab.key === "mentorship") {
-    //   // await resetSearch();
+    if (activeTab.key === "mentorship") {
+      // await resetSearch();
 
-    //   await api
-    //     .post("/graphql", {
-    //       query: GET_MENTORSHIP,
-    //       variables,
-    //     })
-    //     .then((data) => {
-    //       console.log("data", data);
-    //       setOpts(data.data.data.activeMentoshipData.values);
-    //       setoptsAggregate(data.data.data.allMentoshipData.aggregate);
-    //     })
-    //     .catch((error) => {
-    //       return Promise.reject(error);
-    //     })
-    //     .finally(() => {
-    //       setLoading(false);
-    //       nProgress.done();
-    //     });
-    // }
+      await api
+        .post("/graphql", {
+          query: GET_MENTORSHIP,
+          variables,
+        })
+        .then((data) => {
+          console.log("data", data);
+          setOpts(data.data.data.activeMentoshipData.values);
+          setoptsAggregate(data.data.data.allMentoshipData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {

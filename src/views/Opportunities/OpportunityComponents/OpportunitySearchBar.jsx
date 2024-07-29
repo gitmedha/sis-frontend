@@ -217,7 +217,6 @@ function OpportunitySearchBar({
                   options={opportunityOptions}
                   className="form-control"
                   onChange={(e) => handleOpportunityOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               <div

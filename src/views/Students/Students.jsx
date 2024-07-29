@@ -389,10 +389,10 @@ const Students = (props) => {
         status:$status
         registration_date_latest_gte:$from_registration
         registration_date_latest_lte:$to_registration
-        full_name_contains:$full_name
-        email_contains:$email
+        full_name:$full_name
+        email:$email
         phone:$phone
-        student_id_contains:$student_id
+        student_id:$student_id
       }
     ) {
       values {
@@ -792,12 +792,12 @@ const Students = (props) => {
                 >
                   Add New
                 </button>
-                {/* <button
+                <button
                   className="btn btn-primary add_button_sec"
                   onClick={()=>setModalShowmassEdit(true)}
                 >
                   Mass Edit 
-                </button> */}
+                </button>
               </div>
             )}
           </div>
