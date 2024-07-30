@@ -8,7 +8,7 @@ import {
 import {
   getAlumniServicePickList,
   getStudentAlumniRange,
-  getStudentAlumniServices,
+  getStudentMassAlumniService,
   getStudentsPickList,
   searchStudents,
 } from "../StudentComponents/StudentActions";
@@ -219,7 +219,7 @@ const AlumMassEdit = (props) => {
       const alumData = await Promise.all(
         students.map(async (obj) => {
           try {
-            const data = await getStudentAlumniServices(
+            const data = await getStudentMassAlumniService(
               obj.value,
               startDate,
               endDate
