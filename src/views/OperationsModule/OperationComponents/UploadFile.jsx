@@ -576,7 +576,11 @@ const UploadFile = (props) => {
 
   const hideShowModal = () => {
     setShowModal(false);
-    setUploadSuccesFully("");
+    // setUploadSuccesFully("");
+    setShowForm(true);
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
+  setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
