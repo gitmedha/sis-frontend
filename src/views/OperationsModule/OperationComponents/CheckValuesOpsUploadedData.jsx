@@ -105,8 +105,8 @@ const CheckValuesOpsUploadedData = (props) => {
               )}
               
             </div>
-            <div className="d-flex align-content-center justify-content-between">
-            <h6 className="text-danger">Error found !</h6>
+            <div className="">
+            <h6 className="text-danger text-center">There are 1 or more incorrect data in the excel. Please correct the ones shown in red and reupload the file</h6>
             {(isSRM() || isAdmin()) && (
             <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">

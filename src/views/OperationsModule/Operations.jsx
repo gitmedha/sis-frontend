@@ -997,7 +997,7 @@ const Operations = ({
     try {
       if (key === "my_data") {
         await api.post("/users-ops-activities/createBulkOperations", data);
-        setAlert("Data created successfully.", "success");
+        // setAlert("Data created successfully.", "success");
         // Uncomment the line below if you need to redirect
         // history.push(`/student/${data.data.data.createStudent.student.id}`);
       } 
@@ -1018,7 +1018,7 @@ const Operations = ({
         setAlert("Unable to create upskilling data.", "error");
       }
     } finally {
-      setUploadModal(false);
+      // setUploadModal(false);
       getoperations();
     }
   };

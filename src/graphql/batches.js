@@ -463,18 +463,18 @@ query GET_STUDENT_COUNT_BY_BATCH {
 }
 `;
 
-export const GET_ALL_BATCHES = `
-query GET_ALL_BATCHES($start:Int ,$limit:Int) {
-  batchesConnection(start:$start,limit:$limit){
-    values {
-      id
-      name
-      status
-    }
-  }
+// export const GET_ALL_BATCHES = `
+// query GET_ALL_BATCHES($start:Int ,$limit:Int) {
+//   batchesConnection(start:$start,limit:$limit){
+//     values {
+//       id
+//       name
+//       status
+//     }
+//   }
   
-}
-`;
+// }
+// `;
 
 export const GET_BATCH_STUDENTS_ATTENDANCE = `
   query GET_BATCH_STUDENTS_ATTENDANCE ($id: ID!) {
@@ -657,6 +657,19 @@ export const SEARCH_BY_PROGRAMS = `
 
 `
 
+export const GET_ALL_BATCH = `
+query GET_ALL_BATCHES($start:Int ,$limit:Int) {
+  batchesConnection(start:$start,limit:$limit){
+    values {
+      id
+      name
+      status
+    }
+  }
+  
+}
+`;
+
 export const SEARCH_BY_STUDENTS = `
   query SEARCH_BY_STUDENTS($query:String,$limit:Int, $sort:String){
     studentsConnection(
@@ -680,3 +693,13 @@ export const SEARCH_BY_STUDENTS = `
   }
 
 `
+
+export const GET_ALL_BATCHES = `
+query GET_ALL_BATCHES {
+  batches {
+    id
+    name
+    status
+  }
+}
+`;
