@@ -1076,7 +1076,7 @@ const Operations = ({
                     </span>
                   </button>
 
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -1122,7 +1122,7 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </>
               )}
             </div>
