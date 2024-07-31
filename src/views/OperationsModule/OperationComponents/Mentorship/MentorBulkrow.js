@@ -198,7 +198,11 @@ const MentorBulkrow = (props) => {
         </td>
         <td>
           <input
-            className="table-input h-2"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.contact
+                ? `border-red`
+                : ""
+            }`}
             type="text"
             onKeyPress={mobileNochecker}
             defaultValue={email}
