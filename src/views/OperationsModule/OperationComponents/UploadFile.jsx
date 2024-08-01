@@ -238,7 +238,13 @@ const UploadFile = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const validateColumns = (data, expectedColumns) => {
-    if (!data || data.length === 0) {
+    if(data.length === 0){
+      setNotUploadSuccesFully(
+        "File is empty please select file which have data in it"
+      );
+      return false
+    }
+    if (!data ) {
       setNotUploadSuccesFully(
         "Some data fields are empty or not properly initialized"
       );
@@ -269,7 +275,12 @@ const UploadFile = (props) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setNextDisabled(false);
+    setShowForm(true);
+    setFileName('');  // Reset the file name display
+    setNextDisabled(false);  // Optionally disable the next button
+    setUploadSuccesFully(''); 
+    setNotUploadSuccesFully('')
+    // setNextDisabled(false);
 
     if (file) {
       setFileName(`${file.name} Uploaded`);
@@ -603,9 +614,9 @@ const UploadFile = (props) => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       // setNextDisabled(!nextDisabled);
       setUploadNew(true);
-      props.uploadExcel(excelData, "my_data");
+      // props.uploadExcel(excelData, "my_data");
       await api.post("/users-ops-activities/createBulkOperations", excelData);
-      setAlert("Data created successfully.", "success");
+      // setAlert("Data created successfully.", "success");
     }
   };
   // 
