@@ -11,6 +11,7 @@ import {
   createBatch,
   getBatchesPickList,
   getStudentCountByBatch,
+  sendEmailOnCreateBatch
 } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -644,6 +645,7 @@ const Batches = (props) => {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Batch created successfully.", "success");
+          sendEmailOnCreateBatch(data.data.data.createBatch.batch.name)
           getBatches();
           setModalShow(false);
           history.push(`/batch/${data.data.data.createBatch.batch.id}`);

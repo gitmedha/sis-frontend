@@ -174,6 +174,7 @@ const OperationDataupdateform = (props) => {
     await getStateDistricts(value).then((data) => {
       setAreaOptions([]);
       setAreaOptions(
+        
         data?.data?.data?.geographiesConnection?.groupBy?.area
           .map((area) => ({
             key: area.id,

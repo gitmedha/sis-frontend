@@ -8,7 +8,7 @@ import {
   getOpportunitiesPickList,
 } from "./StudentActions";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import Opsdatafeilds from "./Opsdatafeilds";
 import UpskillUpdate from "./UpskillUpdate";
 import { deactivate_user_students_upskills } from "./operationsActions";
@@ -246,7 +246,7 @@ const Upskillingdatafield = (props) => {
                     </div>
             
             </Modal.Body>
-            {(isSRM() || isAdmin()) && (
+            {(isSRM() ||isMedhavi() || isAdmin()) && (
               <div className="row mt-4 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button

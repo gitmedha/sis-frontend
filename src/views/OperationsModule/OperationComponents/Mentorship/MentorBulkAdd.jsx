@@ -33,7 +33,7 @@ const MentorBulkAdd = (props) => {
       email: "",
       mentor_domain: "",
       mentor_company_name: "",
-      deisgnation: "",
+      designation: "",
       mentor_area: "",
       mentor_state: "",
       outreach: "",
@@ -53,7 +53,7 @@ const MentorBulkAdd = (props) => {
       email: "",
       mentor_domain: "",
       mentor_company_name: "",
-      deisgnation: "",
+      designation: "",
       mentor_area: "",
       mentor_state: "",
       outreach: "",
@@ -72,7 +72,7 @@ const MentorBulkAdd = (props) => {
       email: "",
       mentor_domain: "",
       mentor_company_name: "",
-      deisgnation: "",
+      designation: "",
       mentor_area: "",
       mentor_state: "",
       outreach: "",
@@ -119,15 +119,15 @@ const MentorBulkAdd = (props) => {
   }
   const addRow = () => {
     let value = checkEmptyValues(rows[rows.length - 1]);
-    if (value.student_name || value.gender) {
+    if (value ) {
       let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
 
       setclassValue({});
       if (
-        value.query_start ||
-        value.student_name ||
-        value.query_desc ||
-        value.query_type
+        value.assigned_to ||
+        value.mentor_name ||
+        value.mentor_domain ||
+        value.mentor_company_name || value.contact
       ) {
         let obj = { [`class${[rows.length - 1]}`]: value };
         setclassValue(obj);
@@ -281,7 +281,7 @@ const MentorBulkAdd = (props) => {
           email: "",
           mentor_domain: "",
           mentor_company_name: "",
-          deisgnation: "",
+          designation: "",
           mentor_area: "",
           mentor_state: "",
           outreach: "",
@@ -320,7 +320,7 @@ const MentorBulkAdd = (props) => {
 
         /**
         |--------------------------------------------------
-        |    !(key == "deisgnation") &&
+        |    !(key == "designation") &&
         !(key == "mentor_area") &&
         !(key == "mentor_state") &&
         !(key == "outreach") &&
@@ -343,7 +343,7 @@ const MentorBulkAdd = (props) => {
       }
     }
     console.log(isEmptyValuFound);
-    setDisableSaveButton(isEmptyValuFound);
+    setDisableSaveButton(!isEmptyValuFound);
   }, [rows]);
 
   useEffect(() => {
@@ -470,7 +470,7 @@ const MentorBulkAdd = (props) => {
                   <th>Email</th>
                   <th>Mentor's Domain</th>
                   <th>Mentor's Company Name *</th>
-                  <th>Deisgnation/Title</th>
+                  <th>designation/Title</th>
                   <th>State</th>
                   <th>Mentor's Area *</th>
 
@@ -508,7 +508,7 @@ const MentorBulkAdd = (props) => {
               className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
-              disabled={!disableSaveButton}
+              disabled={disableSaveButton}
             >
               SAVE
             </button>

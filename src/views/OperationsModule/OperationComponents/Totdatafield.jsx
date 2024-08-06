@@ -13,7 +13,7 @@ import {
 } from "./StudentActions";
 import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
@@ -188,6 +188,7 @@ const Totdatafield = (props) => {
                     value={props.trainer_2?.username}
                   />
                   {/* <DetailField label="New Entry" value={props.new_entry} /> */}
+                  <DetailField label="New Entry" value={props.new_entry ? "Yes":"No"} />
                   <DetailField
                     Bold={""}
                     label="End Date"
@@ -256,7 +257,7 @@ const Totdatafield = (props) => {
                 </div>
               </div>
             </Modal.Body>
-            {(isSRM() || isAdmin()) && (
+            {(isSRM() ||isMedhavi() || isAdmin()) && (
               <div className="row mt-4 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button

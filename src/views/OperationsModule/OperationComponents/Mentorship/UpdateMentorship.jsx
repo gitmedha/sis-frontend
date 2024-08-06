@@ -150,7 +150,7 @@ const UpdateMentorship = (props) => {
     email: "",
     mentor_domain: "",
     mentor_company_name: "",
-    deisgnation: "",
+    designation: "",
     mentor_area: "",
     mentor_state: "",
     outreach: "",
@@ -170,7 +170,7 @@ const UpdateMentorship = (props) => {
     initialValues["assigned_to"] = props.assigned_to.id.toString();
     initialValues["program_name"] = props.program_name;
     initialValues["onboarding_date"] = new Date(props.onboarding_date);
-    initialValues["deisgnation"] = props.deisgnation
+    initialValues["designation"] = props.designation
     initialValues["mentor_area"] = props?.mentor_area;
     initialValues["mentor_state"] = props.mentor_state;
     initialValues["medha_area"] = props.medha_area;
@@ -363,9 +363,9 @@ const UpdateMentorship = (props) => {
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            name="deisgnation"
-                            label="Deisgnation/Title"
-                            placeholder="Deisgnation/Title"
+                            name="designation"
+                            label="designation/Title"
+                            placeholder="designation/Title"
                             control="input"
                             className="form-control"
                           />

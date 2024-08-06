@@ -221,7 +221,7 @@ mentor_name
 email
 mentor_domain
 mentor_company_name
-deisgnation
+designation
 mentor_area
 mentor_state
 outreach
