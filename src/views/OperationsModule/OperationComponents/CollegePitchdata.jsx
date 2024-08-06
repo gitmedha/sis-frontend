@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import CollepitchesEdit from "./CollegepitchesEdit";
 import { deactivate_user_college_pitch } from "./operationsActions";
 import Deletepopup from "./Deletepopup";
@@ -183,7 +183,7 @@ const CollegePitchdata = (props) => {
                       </div>
                     </div>
           </Modal.Body>
-          {(isSRM() || isAdmin())  && (
+          {(isSRM() ||isMedhavi() || isAdmin())  && (
             <div className="row mt-4 mb-4">
               <div className="col-md-12 d-flex justify-content-center">
                 <button
