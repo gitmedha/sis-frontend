@@ -326,7 +326,23 @@ export const getAllStudents = async () => {
   });
 }
 
-export const getStudentAlumniServices = async (studentId, startDate,endDate,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentAlumniServices = async (studentId,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
+    variables: {
+      id: Number(studentId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return Promise.resolve(data);
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getStudentMassAlumniService = async (studentId, startDate,endDate,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
     variables: {
@@ -374,7 +390,6 @@ export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sor
       offset += limit;
     }
   }
-
   return allData;
 };
 
@@ -398,7 +413,6 @@ export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, 
     .catch(error => {
       return Promise.reject(error);
     });
-    console.log(result);
     const fetchedData = result.data.data.employmentConnectionsConnection.values;
     
     allData = allData.concat(fetchedData);

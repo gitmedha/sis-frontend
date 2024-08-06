@@ -129,7 +129,11 @@ const MentorshipdataField = (props) => {
               <div className="col-md-6 col-sm-12">
     <DetailField className='' Bold={""} label="Mentor Name" value={props.mentor_name} />
     <DetailField className='' Bold={""} label="Program Name" value={props.program_name} />
-    <DetailField className='' Bold={""} label="Outreach (Offline/Online)" value={moment(props.outreach).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
+    <DetailField className='' Bold={""} label="Contact" value={props.contact}  />
+    {/*  */}
+    <DetailField className='' Bold={""} label="Outreach (Offline/Online)" value={props.outreach} />
+    {/*  */}
+    <DetailField className='' Bold={""} label="Onboarding Date" value={moment(props.outreach).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
     <DetailField className='' Bold={""} label="Email" value={props.email} />
     <DetailField className='' Bold={""} label="Mentor's Company Name" value={props.mentor_company_name} />
     {/* <DetailField className='' Bold={""} label="Organization" value={props.organization} />
@@ -139,9 +143,14 @@ const MentorshipdataField = (props) => {
   <div className="col-md-6 col-sm-12">
     <DetailField className='' label="Assigned to" value={props.assigned_to?.username ? props.assigned_to?.username : ""} Bold={""} />
     <DetailField className='' Bold={""} label="Status" value={props.status}  />
+
+    {/* contact */}
     <DetailField className='' Bold={""} label="Onboarding Date" value={moment(props.onboarding_date).format("DD MMM YYYY") ? moment(props.end_date).format("DD MMM YYYY") : ""} />
     <DetailField className='' Bold={""} label="Mentor's Domain" value={props.mentor_domain} />
     <DetailField className='' Bold={""} label="Designation" value={props.designation ? props.designation : "Not found"} />
+    <DetailField className='' Bold={""} label="Social Media Profile Link" value={props.social_media_profile_link ? props.social_media_profile_link : "Not found"} />
+
+    {/*  */}
   </div>
               </div>
               <div className="">

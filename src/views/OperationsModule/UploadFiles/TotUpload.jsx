@@ -5,7 +5,7 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
 import { queryBuilder } from "../../../apis";
 import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
-import { FaFileUpload } from "react-icons/fa";
+import {FaEdit, FaFileUpload } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
@@ -13,9 +13,10 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
-import { getTotPickList } from "../OperationComponents/operationsActions";
+import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
+import { setAlert } from "src/store/reducers/Notifications/actions";
 
 const expectedColumns = [
   "Participant Name",
@@ -234,6 +235,8 @@ const TotUpload = (props) => {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [fileName, setFileName] = useState("");
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showForm, setShowForm] = useState(true);
+  const [uploadNew, setUploadNew] = useState(false);
 
   useEffect(() => {
     const getdata = async () => {
@@ -246,8 +249,11 @@ const TotUpload = (props) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    setNextDisabled(false);
-
+    setShowForm(true);
+    setFileName('');  
+    setNextDisabled(false); 
+    setUploadSuccesFully(''); 
+    setNotUploadSuccesFully('')
     if (file) {
       setFileName(`${file.name} Uploaded`);
       const reader = new FileReader();
@@ -353,6 +359,18 @@ const TotUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
+    if(data.length === 0){
+      setNotUploadSuccesFully(
+        "File is empty please select file which have data in it"
+      );
+      return false
+    }
+    if (!data ) {
+      setNotUploadSuccesFully(
+        "Some data fields are empty or not properly initialized"
+      );
+      return false;
+    }
     const missingColumns = expectedColumns.filter(
       (col) => !fileColumns.includes(col)
     );
@@ -577,8 +595,9 @@ const TotUpload = (props) => {
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      setNextDisabled(!nextDisabled);
-      props.uploadExcel(excelData, "tot");
+      // setNextDisabled(!nextDisabled);
+      setShowForm(false);
+      // props.uploadExcel(excelData, "my_data");
     } else {
       setShowModalTOT(true);
     }
@@ -589,6 +608,25 @@ const TotUpload = (props) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const uploadNewData =()=>{
+    setShowForm(true);
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
+  setUploadSuccesFully(''); 
+
+  }
+
+  const proceedData = async () => {
+    if (notUploadedData.length === 0 && excelData.length > 0) {
+      // setNextDisabled(!nextDisabled);
+      setUploadNew(true);
+      // props.uploadExcel(excelData, "my_data");
+      bulkCreateUsersTots(excelData)
+      // await api.post("/users-ops-activities/createBulkOperations", excelData);
+      // setAlert("Data created successfully.", "success");
+    }
+  };
 
   return (
     <>
@@ -610,90 +648,136 @@ const TotUpload = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Styled>
-          <Modal.Body className="bg-white">
-            {showSpinner ? (
-              <div
-                className="bg-white d-flex align-items-center justify-content-center "
-                style={{ height: "40vh" }}
-              >
-                <Spinner animation="border" variant="success" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              </div>
-            ) : (
-              <>
-                <div className="uploader-container">
-                  <div className="imageUploader">
-                    <p className="upload-helper-text">Click Here To Upload </p>
-                    <div className="upload-helper-icon">
-                      <FaFileUpload size={30} color={"#257b69"} />
+        {showForm ? (
+            <Modal.Body className="bg-white">
+              {showSpinner ? (
+                <div
+                  className="bg-white d-flex align-items-center justify-content-center "
+                  style={{ height: "40vh" }}
+                >
+                  <Spinner animation="border" variant="success" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              ) : (
+                <>
+                  <div className="uploader-container">
+                    <div className="imageUploader">
+                      <p className="upload-helper-text">
+                        Click Here To Upload{" "}
+                      </p>
+                      <div className="upload-helper-icon">
+                        <FaFileUpload size={30} color={"#257b69"} />
+                      </div>
+                      <input
+                        accept=".xlsx"
+                        type="file"
+                        multiple={false}
+                        name="file-uploader"
+                        onChange={handleFileChange}
+                        className="uploaderInput"
+                      />
                     </div>
-                    <input
-                      accept=".xlsx"
-                      type="file"
-                      multiple={false}
-                      name="file-uploader"
-                      onChange={handleFileChange}
-                      className="uploaderInput"
-                    />
+                    <label className="text--primary latto-bold text-center">
+                      Upload File
+                    </label>
                   </div>
-                  <label className="text--primary latto-bold text-center">
-                    Upload File
-                  </label>
-                </div>
-                <div className="d-flex  flex-column  ">
-                  {uploadSuccesFully ? (
-                    <div
-                      className={` text-success d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {fileName}{" "}
-                    </div>
-                  ) : (
-                    <div
-                      className={`text-danger d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {notuploadSuccesFully}{" "}
-                    </div>
-                  )}
-                  {(isSRM() || isAdmin()) && (
-                    <div className="row mb-4 mt-2">
-                      <div className="col-md-12 d-flex justify-content-center">
-                        <button
-                          type="button"
-                          onClick={() => props.closeThepopus()}
-                          className="btn btn-danger px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Close
-                        </button>
+                  <div className="d-flex  flex-column  ">
+                    {notuploadSuccesFully ? (
+                      <div
+                        className={`text-danger  d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {notuploadSuccesFully}{" "}
+                      </div>
+                    ) : (
+                      <div
+                        className={`text-success d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {fileName}{" "}
+                      </div>
+                    )}
+                    {(isSRM() || isAdmin()) && (
+                      <div className="row mb-4 mt-2">
+                        <div className="col-md-12 d-flex justify-content-center">
+                          <button
+                            type="button"
+                            onClick={() => props.closeThepopus()}
+                            className="btn btn-danger px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Close
+                          </button>
 
-                        <button
-                          type="button"
-                          disabled={!nextDisabled}
-                          onClick={() => uploadDirect()}
-                          className="btn btn-primary px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Next
-                        </button>
+                          <button
+                            type="button"
+                            disabled={!nextDisabled}
+                            onClick={() => uploadDirect()}
+                            className="btn btn-primary px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Next
+                          </button>
+                        </div>
+                        <div className="d-flex justify-content-center ">
+                          <p
+                            className="text-gradient-warning"
+                            style={{ color: "#B06B00" }}
+                          >
+                            Note : Maximum recomended number of records is 100
+                            per excel
+                          </p>
+                        </div>
                       </div>
-                      <div className="d-flex justify-content-center ">
-                        <p
-                          className="text-gradient-warning"
-                          style={{ color: "#B06B00" }}
-                        >
-                          Note : Maximum recomended number of records is 100 per
-                          excel
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </Modal.Body>
+                    )}
+                  </div>
+                </>
+              )}
+            </Modal.Body>
+          ) : (
+            <Modal.Body style={{height:'15rem'}}>
+              <div className='mb-5'>
+                <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
+                <FaEdit size={20} color="#31B89D"  />{" "}
+                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                  
+                </p>
+              </div>
+              <div className="col-md-12 d-flex justify-content-center">
+                <button
+                  type="button"
+                  onClick={() => props.closeThepopus()}
+                  className="btn btn-danger px-4 mx-4 mt-2"
+                  style={{ height: "2.5rem" }}
+                >
+                  Close
+                </button>
+
+                {uploadNew ? (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() =>uploadNewData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Upload New
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
+                )}
+              </div>
+            </Modal.Body>
+          )}
         </Styled>
       </Modal>
 

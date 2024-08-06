@@ -42,8 +42,9 @@ const MentorBulkAdd = (props) => {
       medha_area: "",
       status: "",
       program_name: "",
+      contact:"",
+      medha_area:""
     },
-    // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([
     {
@@ -62,7 +63,8 @@ const MentorBulkAdd = (props) => {
       medha_area: "",
       status: "",
       program_name: "",
-      // published_at: "",
+      contact: "",
+      medha_area:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -81,6 +83,8 @@ const MentorBulkAdd = (props) => {
       medha_area: "",
       status: "",
       program_name: "",
+      contact:"",
+      medha_area:""
   });
 
   const [showLimit, setshowLimit] = useState(false);
@@ -330,10 +334,15 @@ const MentorBulkAdd = (props) => {
         |--------------------------------------------------
         */
         if (
-          !(key == "assigned_to") &&
+          !(key == "email") &&
           !(key == "mentor_name") &&
-          !(key == "mentor_domain") &&
-          !(key == "mentor_company_name") 
+          !(key == "designation") &&
+          !(key == "mentor_area") &&
+          !(key == "mentor_state") &&
+          !(key == "outreach") &&
+          !(key == "onboarding_date") &&
+          !(key == "medha_area") &&
+          !(key == "program_name")
          
         ) {
           if (isEmptyValue(row[key])) {
@@ -461,18 +470,26 @@ const MentorBulkAdd = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Mentor Name</th>
-                  <th>Assigned To</th>
-                  <th>Program Name</th>
-                  <th>Status </th>
-                  <th>Outreach (Offline/Online)</th>
-                  <th>Onboarding Date</th>
-                  <th>Email</th>
-                  <th>Mentor's Domain</th>
-                  <th>Mentor's Company Name *</th>
-                  <th>designation/Title</th>
-                  <th>State</th>
-                  <th>Mentor's Area *</th>
+                  <th>Mentor Name *</th>
+                  <th>Contact *</th>
+                  <th>Email </th>
+                  <th>Mentor's Domain *</th>
+                  <th>Mentor's Company Name * </th>
+                  <th>Designation/Title *</th>
+                  <th>Mentor's State *</th>
+                  <th>Mentor's City * </th>
+                  <th>Outreach (Offline/Online) *</th>
+                  <th>Onboarding Date *</th> 
+                  <th>Social Media Link </th>
+                  <th>Assigned To *</th>
+                  <th>Medha Area *</th>
+                  <th>Medha Program Name *</th>
+                  <th>Status *</th>
+                  
+                  
+                  
+                  
+                  
 
                   {/* <th>Area</th> */}
                 </tr>

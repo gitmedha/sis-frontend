@@ -405,6 +405,15 @@ const MassEmployerUpload = (props) => {
       setStudentOptions(data);
     });
   }, [studentInput]);
+
+  const handleKeyPress = (event) => {
+    const charCode = event.which || event.keyCode;
+    if (charCode >= 49 && charCode <= 57) {
+      return true;
+    }
+    event.preventDefault();
+    return false;
+  };
   
 
   return (
@@ -543,7 +552,11 @@ const MassEmployerUpload = (props) => {
                         options={statusOptions}
                         className="form-control"
                         placeholder="Status"
-                        onChange={(e) => handleStatusChange(e.value)}
+                        onChange={(e) => {
+                          if(e.value === "Student Dropped Out"){
+                            setFieldValue('number_of_internship_hours',0)
+                          } 
+                          handleStatusChange(e.value)}}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
@@ -613,7 +626,8 @@ const MassEmployerUpload = (props) => {
                             setFieldValue("reason_if_rejected", e.value);
                             if (e.value === "Others") {
                               setIfSelectedOthers(true);
-                            } else {
+                            }
+                            else {
                               setIfSelectedOthers(false);
                             }
                           }}
@@ -659,6 +673,7 @@ const MassEmployerUpload = (props) => {
                           type="number"
                           control="input"
                           name="number_of_internship_hours"
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           label="Number of Internship hours"
                           required

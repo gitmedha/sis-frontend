@@ -128,7 +128,7 @@ const ModalShowmassedit = (props) => {
               onClick={handleMassemployer}
               className="btn btn-primary mass_edit_bottons"
             >
-              Employer Edit
+              Employment Edit
             </button>
           </div>
         </Modal.Body>

@@ -58,15 +58,15 @@ const options = [
   { value: "Yes", label: "Yes" },
   { value: "No", label: "No" },
 ];
-const ActivityList = [
+const Activityoptions = [
   { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
   {
-    value: "Industry Visit/Exposure Visit",
-    label: "Industry Visit/Exposure Visit",
+    value: "Industry visit/Exposure visit",
+    label: "Industry visit/Exposure visit",
   },
   {
-    value: "Workshop/Training Session/Activity (In/Off Campus)",
-    label: "Workshop/Training Session/Activity (In/Off Campus)",
+    value: "Workshop/Training Session/Activity (In/Off campus)",
+    label: "Workshop/Training Session/Activity (In/Off campus)",
   },
   { value: "Alumni Engagement", label: "Alumni Engagement" },
   { value: "Placement Drive", label: "Placement Drive" },
@@ -81,7 +81,6 @@ const OperationDataupdateform = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [programeName, setProgramName] = useState([]);
-  const [Activityoption,setActivityoption]=useState(ActivityList)
   const [disablevalue, setdisablevalue] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -114,6 +113,7 @@ const OperationDataupdateform = (props) => {
           value: Number(institution.id),
         };
       });
+
       return filterData;
 
     } catch (error) {
@@ -251,7 +251,13 @@ const OperationDataupdateform = (props) => {
     initialValues["area"] = props.area ? props.area : null;
   }
 
-
+  useEffect(() => {
+    if (props.institution) {
+      filterInstitution(props.institution.name).then((data) => {
+        setInstitutionOptions(data);
+      });
+    }
+  }, []);
 
   const operationvalidation = Yup.object().shape({
     start_date: Yup.date().required("Start date is required"),
@@ -325,7 +331,7 @@ const OperationDataupdateform = (props) => {
                             name="activity_type"
                             label="Activity Type"
                             required
-                            options={Activityoption}
+                            options={Activityoptions}
                             className="form-control"
                             placeholder="Activity Type"
                           />
@@ -378,7 +384,6 @@ const OperationDataupdateform = (props) => {
                               name="institution"
                               label="Institution"
                               filterData={filterInstitution}
-                              onChange={(e)=>filterInstitution(e.value)}
                               defaultOptions={institutionOptions}
                               placeholder="Institution"
                               className="form-control"
@@ -435,7 +440,7 @@ const OperationDataupdateform = (props) => {
                             icon="down"
                             control="input"
                             name="guest"
-                            label="Guest"
+                            label="Guest Name"
                             className="form-control"
                             placeholder="Guest"
                           />
