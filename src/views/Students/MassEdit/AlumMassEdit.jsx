@@ -125,41 +125,13 @@ const AlumMassEdit = (props) => {
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [disabled, setDisabled] = useState(true);
-  const [startDate,setStartDate]=useState(null)
-  const [endDate,setEndDate]=useState(null)
-
-  useEffect((props) => {
-    getAlumniServicePickList().then((data) => {
-      setTypeOptions(
-        data.subcategory.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-          category: item.category,
-        }))
-      );
-      setCategoryOptions(
-        data.category.map((item) => ({ value: item.value, label: item.value }))
-      );
-      setProgramOptions(
-        data.program_mode.map((item) => ({
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-
-    getStudentsPickList().then((data) => {
-      setLocationOptions(
-        data.alumni_service_location.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-  }, []);
+  const [isdisabledStudentlist, setisdisabledStudentlist] = useState(true);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [alumniDisable, setAlumniDisable] = useState(true);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [alumData, setAlumData] = useState([]);
+  const [searchNextBool, setSearchNextBool] = useState(true);
 
   const filterStudent = async (filterValue) => {
     try {
@@ -174,45 +146,11 @@ const AlumMassEdit = (props) => {
     }
   };
 
-  useEffect(() => {
-    getDefaultAssigneeOptions().then((data) => {
-      setAssigneeOptions(data);
-    });
-    getAlumniServicePickList().then((data) => {
-      setTypeOptions(
-        data.subcategory.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-          category: item.category,
-        }))
-      );
-      setCategoryOptions(
-        data.category.map((item) => ({ value: item.value, label: item.value }))
-      );
-      setProgramOptions(
-        data.program_mode.map((item) => ({
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-    getStudentsPickList().then((data) => {
-      setLocationOptions(
-        data.alumni_service_location.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
-  }, []);
-
-  useEffect(() => {
-    filterStudent(studentInput).then((data) => {
-      setStudentOptions(data);
-    });
-  }, [studentInput]);
+  // useEffect(() => {
+  //   filterStudent(studentInput).then((data) => {
+  //     setStudentOptions(data);
+  //   });
+  // }, [studentInput]);
 
   const handleSubmit = async (values) => {
     try {
@@ -261,6 +199,36 @@ const AlumMassEdit = (props) => {
 
       setAlumniServiceData(alumData.flat());
       setFormStatus(true);
+
+      getAlumniServicePickList().then((data) => {
+        setTypeOptions(
+          data.subcategory.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+            category: item.category,
+          }))
+        );
+        setCategoryOptions(
+          data.category.map((item) => ({ value: item.value, label: item.value }))
+        );
+        setProgramOptions(
+          data.program_mode.map((item) => ({
+            value: item.value,
+            label: item.value,
+          }))
+        );
+      });
+  
+      getStudentsPickList().then((data) => {
+        setLocationOptions(
+          data.alumni_service_location.map((item) => ({
+            key: item.value,
+            value: item.value,
+            label: item.value,
+          }))
+        );
+      });
     } catch (error) {
       return error;
     }
@@ -306,7 +274,7 @@ const AlumMassEdit = (props) => {
       let initialData = {
         student_id: obj.student_id,
         id: Number(obj.id),
-        type: values.type,
+        type: values.type ? values.type :obj.type,
       };
 
       let filteredData = Object.keys(values).reduce((acc, key) => {
@@ -366,7 +334,13 @@ const AlumMassEdit = (props) => {
 
   const handelCancel = () => {
     // props.handelCancel();
-    setFormStatus(!formStatus)
+    setFormStatus(!formStatus);
+    setStudentOptions([])
+    setisdisabledStudentlist(true)
+    setAlumniDisable(true)
+    setTypeOptions([])
+    setStudents([])
+    setSearchNextBool(true)
   };
   const MultiValue = ({ index, getValue, ...props }) => {
     const maxToShow = 1; // Maximum number of values to show
@@ -386,9 +360,31 @@ const AlumMassEdit = (props) => {
 
     return null;
   };
+  const CustomMenu = (props) => {
+    const { options, children, getValue, selectOption } = props;
+  
+    const handleValue = () => {
+      const selectedValues = getValue();
+      // console.log('Selected values:', selectedValues);
+      // Perform your submit action here
+    };
+  
+    return (
+      <components.Menu {...props}>
+        {children}
+        <div style={{ padding: '10px', textAlign: 'center' }}>
+          <button onClick={handleValue} style={{ width: '100%' }}>
+            Submit
+          </button>
+        </div>
+      </components.Menu>
+    );
+  };
+  
 
   const customComponents = {
     MultiValue,
+    // Menu: CustomMenu,
   };
   const handleInputChange = (inputValue) => {
     setStudentInput(inputValue);
@@ -403,25 +399,63 @@ const AlumMassEdit = (props) => {
     student_ids: [],
   };
 
-  useEffect(async()=>{
-    if(startDate && endDate){
-      setDisabled(false)
-      let data = await getStudentAlumniRange(startDate,endDate)
+  useEffect(async () => {
+    if (startDate && endDate) {
+      setAlumniDisable(false);
+      let data = await getStudentAlumniRange(startDate, endDate);
+      setAlumData(data);
       let uniqueStudentsMap = new Map();
-data.forEach((obj) => {
-  if (!uniqueStudentsMap.has(obj.student.id)) {
-    uniqueStudentsMap.set(obj.student.id, obj);
-  }
-});
-
-let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
-  label: `${obj.student.full_name} (${obj.student.student_id})`,
-  value: Number(obj.student.id),
-}));  
-    
-      setStudentOptions(values);
+      data.forEach((obj) => {
+        if (!uniqueStudentsMap.has(obj.student.id)) {
+          uniqueStudentsMap.set(obj.student.id, obj);
+        }
+      });
+      const uniqueTypes = [
+        ...new Set(
+          Array.from(uniqueStudentsMap.values()).map((student) => student.type)
+        ),
+      ].map((type) => ({
+        label: type,
+        value: type,
+        type: type,
+      }));
+      setTypeOptions(uniqueTypes);
     }
-  },[startDate,endDate])
+  }, [startDate, endDate]);
+
+  const handleTypeChange = (selected) => {
+    // console.log(selected);
+    setSelectedOptions(selected);
+
+    const matchingData = findMatchingData(alumData, selected, "type");
+    // console.log(matchingData);
+
+    let values = matchingData.map((obj) => ({
+      label: `${obj.student.full_name} (${obj.student.student_id})`,
+      value: Number(obj.student.id),
+    }));
+    const uniqueData = values.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.value === item.value)
+    );
+    setStudentOptions(uniqueData);
+    // console.log("Mapped values:", uniqueData);
+  };
+
+  const findMatchingData = (array1, array2, key) => {
+    return array1.filter((item1) =>
+      array2.some((item2) => item1[key] === item2[key])
+    );
+  };
+  const handelSearch = () => {
+    setisdisabledStudentlist(false);
+    setSearchNextBool(false)
+  };
+
+  const handleSearchStudent = () => {
+
+    setisdisabledStudentlist(false);
+  };
   return (
     <Modal
       centered
@@ -466,7 +500,7 @@ let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
                         placeholder="Start Date"
                         className="form-control "
                         required
-                        onChange={(e)=>setStartDate(e.target.value)}
+                        onChange={(e) => setStartDate(e.target.value)}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -477,9 +511,23 @@ let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
                         placeholder="End Date"
                         className="form-control ml-2"
                         required
-                        onChange={(e)=>setEndDate(e.target.value)}
+                        min={startDate}
+                        onChange={(e) => setEndDate(e.target.value)}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <label className="leading-24">Alumni Service</label>
+                    <Select
+                      isMulti
+                      isDisabled={alumniDisable}
+                      onChange={handleTypeChange}
+                      // defaultValue={students}
+                      components={customComponents}
+                      options={typeOptions}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
                   </div>
                   <div>
                     <label className="leading-24">Student</label>
@@ -492,19 +540,37 @@ let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
                       isOptionDisabled={() => students.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      isDisabled={disabled}
+                      isDisabled={isdisabledStudentlist}
                       // onInputChange={(e) => setStudentInput(e)}
                       onChange={handleselectChange}
                       value={students}
                     />
                   </div>
                   <div className="d-flex justify-content-end mx-5">
-                  <button type="submit" onClick={()=>props.handelCancel()} className="btn btn-secondary mt-3 mr-3">
+                    <button
+                      type="submit"
+                      onClick={() => props.handelCancel()}
+                      className="btn btn-secondary mt-3 mr-3"
+                    >
                       Cancel
                     </button>
-                    <button type="submit" disabled={disabled} className="btn btn-primary mt-3">
-                      Next
-                    </button>
+                    {searchNextBool ? (
+                      <button
+                        type="button"
+                        onClick={handelSearch}
+                        className="btn btn-primary mt-3"
+                      >
+                        Search
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="btn btn-primary mt-3"
+                      >
+                        Next
+                      </button>
+                    )}
                   </div>
                 </Form>
               )}
