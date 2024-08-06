@@ -345,16 +345,16 @@ query GET_ALL_INSTITUTES($start:Int ,$limit:Int) {
 }
 `;
 
-// export const GET_INSTITUTES_COUNT = `
-// query GET_INSTITUTES_COUNT {
-//   institutionsConnection {
-//     aggregate {
-//       count
-//     }
-//   }
+export const GET_INSTITUTES_COUNT = `
+query GET_INSTITUTES_COUNT {
+  institutionsConnection {
+    aggregate {
+      count
+    }
+  }
   
-// }
-// `;
+}
+`;
 
 export const GET_INSTITUTION_STUDENTS = `
 query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: String){
