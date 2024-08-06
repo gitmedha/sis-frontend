@@ -390,7 +390,6 @@ export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sor
       offset += limit;
     }
   }
-
   return allData;
 };
 
@@ -414,7 +413,6 @@ export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, 
     .catch(error => {
       return Promise.reject(error);
     });
-    console.log(result);
     const fetchedData = result.data.data.employmentConnectionsConnection.values;
     
     allData = allData.concat(fetchedData);
