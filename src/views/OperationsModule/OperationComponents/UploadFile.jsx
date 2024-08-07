@@ -756,7 +756,18 @@ const UploadFile = (props) => {
                   Close
                 </button>
 
-                {uploadNew ? (
+                {!uploadNew ? (
+                  <button
+                  type="button"
+                  // disabled={!nextDisabled}
+                  onClick={() => proceedData()}
+                  className="btn btn-primary px-4 mx-4 mt-2"
+                  style={{ height: "2.5rem" }}
+                >
+                  Proceed
+                </button>
+                  
+                ) : (
                   <button
                     type="button"
                     // disabled={!nextDisabled}
@@ -765,16 +776,6 @@ const UploadFile = (props) => {
                     style={{ height: "2.5rem" }}
                   >
                     Upload New
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => proceedData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Proceed
                   </button>
                 )}
               </div>

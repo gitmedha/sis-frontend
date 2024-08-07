@@ -132,6 +132,8 @@ const AlumMassEdit = (props) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alumData, setAlumData] = useState([]);
   const [searchNextBool, setSearchNextBool] = useState(true);
+  const [searchDisabled,setSearchDisabled]=useState(true)
+  const [nextDisabled,setNextDisabled]=useState(true)
 
   const filterStudent = async (filterValue) => {
     try {
@@ -196,7 +198,6 @@ const AlumMassEdit = (props) => {
           }
         })
       );
-
       setAlumniServiceData(alumData.flat());
       setFormStatus(true);
 
@@ -508,6 +509,7 @@ const AlumMassEdit = (props) => {
                         required
                         onChange={(e) => {
                           setAlumniDisable(true);
+
                           setTypeOptions([]);
                           setStartDate(e.target.value);
                           setStudentOptions([]);
@@ -528,6 +530,7 @@ const AlumMassEdit = (props) => {
                         onChange={(e) => {
                           setAlumniDisable(true);
                           setTypeOptions([]);
+                          // setSelectedOptions([])
                           setEndDate(e.target.value);
                           setStudentOptions([]);
                           setStudents([])
@@ -540,7 +543,7 @@ const AlumMassEdit = (props) => {
                     <label className="leading-24">Alumni Service</label>
                     <Select
                       isMulti
-                      isDisabled={alumniDisable}
+                      isDisabled={alumniDisable || typeOptions.length ==0}
                       onChange={(selectedOptions) => {
                         handleTypeChange(selectedOptions);
                         if (!selectedOptions || selectedOptions.length === 0) {
@@ -548,7 +551,12 @@ const AlumMassEdit = (props) => {
                           setisdisabledStudentlist(true);
                           setStudents([]);
                           setSearchNextBool(true);
+                          setSearchDisabled(true)
                         }
+                        if(selectedOptions.length > 0){
+                          setSearchDisabled(false)
+                        }
+                       
                       }}
                       components={customComponents}
                       options={typeOptions}
@@ -569,7 +577,17 @@ const AlumMassEdit = (props) => {
                       classNamePrefix="select"
                       isDisabled={isdisabledStudentlist}
                       // onInputChange={(e) => setStudentInput(e)}
-                      onChange={handleselectChange}
+                      onChange={(value)=>{
+                        handleselectChange(value)
+                        if(value.length == 0){
+                          setSearchDisabled(true)
+                          setNextDisabled(true)
+                        }
+                        if(value.length > 0){
+                          setNextDisabled(false)
+                        }
+                      }}
+                      // onChange={handleselectChange}
                       value={students}
                     />
                   </div>
@@ -585,6 +603,7 @@ const AlumMassEdit = (props) => {
                       <button
                         type="button"
                         onClick={handelSearch}
+                        disabled={searchDisabled}
                         className="btn btn-primary mt-3"
                       >
                         Search
@@ -592,7 +611,8 @@ const AlumMassEdit = (props) => {
                     ) : (
                       <button
                         type="button"
-                        onClick={handleSubmit}
+                        onClick={()=>handleSubmit()}
+                        disabled={nextDisabled}
                         className="btn btn-primary mt-3"
                       >
                         Next
