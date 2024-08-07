@@ -268,8 +268,8 @@ const MentorBulkAdd = (props) => {
       row.isActive = true;
 
       let value = checkEmptyValuesandplaceNA(row);
-      if (value.status == "Open") {
-        value.query_end = null;
+      if (value.contact.length > 10 || value.contact.length <10) {
+        value.conatct = null;
       }
       // value.published_at =null
       return value;
@@ -333,16 +333,10 @@ const MentorBulkAdd = (props) => {
         !(key == "program_name")
         |--------------------------------------------------
         */
+       console.log(key =="contact" , row[key]);
         if (
-          !(key == "email") &&
-          !(key == "mentor_name") &&
-          !(key == "designation") &&
-          !(key == "mentor_area") &&
-          !(key == "mentor_state") &&
-          !(key == "outreach") &&
-          !(key == "onboarding_date") &&
-          !(key == "medha_area") &&
-          !(key == "program_name")
+          !(key == "social_media_profile_link") && (key =="contact" && row[key].length ==10)
+          
          
         ) {
           if (isEmptyValue(row[key])) {
@@ -352,7 +346,7 @@ const MentorBulkAdd = (props) => {
       }
     }
     console.log(isEmptyValuFound);
-    setDisableSaveButton(!isEmptyValuFound);
+    setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
   useEffect(() => {

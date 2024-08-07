@@ -60,7 +60,7 @@ const MentorBulkrow = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [area, setArea] = useState({});
+  const [areaCheck, setAreaCheck] = useState(true);
   const [stateOptions, setStateOptions] = useState([]);
   const [fieldvalue, setfieldvalue] = useState({
     student_name: "",
@@ -85,9 +85,10 @@ const MentorBulkrow = (props) => {
   }, [name]);
 
   const onStateChange = (value, rowid, field) => {
+    console.log(value);
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
-      console.log(data?.data?.data?.geographiesConnection.groupBy.area);
+      console.log(data?.data?.data?.geographiesConnection);
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
@@ -203,10 +204,17 @@ const MentorBulkrow = (props) => {
                 ? `border-red`
                 : ""
             }`}
+            minLength={10}
+            maxLength={10}
             type="text"
             onKeyPress={mobileNochecker}
             defaultValue={email}
-            onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
+            onChange={(e) =>{
+              if(/^[0-9]*$/.test(e.target?.value)) {
+                props.updateRow(row.id, "contact", e.target.value)
+              // handleChangeInput('mobileno', e.target.value);
+            }}}
+            // onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
         <td>
@@ -274,7 +282,9 @@ const MentorBulkrow = (props) => {
             isSearchable={true}
             name="state"
             options={stateOptions}
-            onChange={(e) => onStateChange(e, row.id, "mentor_state")}
+            onChange={(e) => {
+              setAreaCheck(false)
+              onStateChange(e, row.id, "mentor_state")}}
           />
         </td>
         <td>
@@ -286,8 +296,8 @@ const MentorBulkrow = (props) => {
             }`}
             classNamePrefix="select"
             isSearchable={true}
-            options={mentorAreaOptions}
-            // isDisabled={!isEmptyValue(area)? true :false}
+            options={areaOptions}
+            isDisabled={areaCheck}
             onChange={(e) => props.handleChange(e, "mentor_area", row.id)}
           />
         </td>
@@ -366,7 +376,7 @@ const MentorBulkrow = (props) => {
             }`}
             classNamePrefix="select"
             isSearchable={true}
-            options={areaOptions}
+            options={mentorAreaOptions}
             // isDisabled={!isEmptyValue(area)? true :false}
             onChange={(e) => props.handleChange(e, "medha_area", row.id)}
           />

@@ -6,6 +6,7 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import {
   GET_ALL_BATCH,
   GET_ALL_BATCHES,
+  GET_ALL_BATCHES_UPLOAD_FILE,
   GET_ALL_INSTITUTES,
   GET_BATCHES,
   GET_INSTITUTES_COUNT,
@@ -240,7 +241,7 @@ const UploadFile = (props) => {
   const validateColumns = (data, expectedColumns) => {
     if(data.length === 0){
       setNotUploadSuccesFully(
-        "File is empty please select file which have data in it"
+        "File is empty please select file which has data in it"
       );
       return false
     }
@@ -521,7 +522,7 @@ const UploadFile = (props) => {
         };
 
         const batchResponse = await api.post("/graphql", {
-          query: GET_ALL_BATCH,
+          query: GET_ALL_BATCHES_UPLOAD_FILE,
           variables,
         });
 
