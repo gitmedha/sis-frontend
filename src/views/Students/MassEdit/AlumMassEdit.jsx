@@ -210,7 +210,10 @@ const AlumMassEdit = (props) => {
           }))
         );
         setCategoryOptions(
-          data.category.map((item) => ({ value: item.value, label: item.value }))
+          data.category.map((item) => ({
+            value: item.value,
+            label: item.value,
+          }))
         );
         setProgramOptions(
           data.program_mode.map((item) => ({
@@ -219,7 +222,7 @@ const AlumMassEdit = (props) => {
           }))
         );
       });
-  
+
       getStudentsPickList().then((data) => {
         setLocationOptions(
           data.alumni_service_location.map((item) => ({
@@ -274,7 +277,7 @@ const AlumMassEdit = (props) => {
       let initialData = {
         student_id: obj.student_id,
         id: Number(obj.id),
-        type: values.type ? values.type :obj.type,
+        type: values.type ? values.type : obj.type,
       };
 
       let filteredData = Object.keys(values).reduce((acc, key) => {
@@ -322,25 +325,30 @@ const AlumMassEdit = (props) => {
   }, []);
 
   const validations = Yup.object({
-    start_date: Yup.date().nullable(),
+    start_date: Yup.date()
+      .nullable()
+      .test('start-end', 'Both start date and end date are required', function (value) {
+        const { end_date } = this.parent;
+        return (!value && !end_date) || (value && end_date);
+      }),
     end_date: Yup.date()
       .nullable()
-      .when("start_date", (start_date, schema) =>
-        start_date
-          ? schema.min(start_date, "End date can't be before Start date")
-          : schema
-      ),
-  });
+      .min(Yup.ref('start_date'), "End date can't be before Start date")
+      .test('start-end', 'Both start date and end date are required', function (value) {
+        const { start_date } = this.parent;
+        return (!value && !start_date) || (value && start_date);
+      }),
+  });  
 
   const handelCancel = () => {
     // props.handelCancel();
     setFormStatus(!formStatus);
-    setStudentOptions([])
-    setisdisabledStudentlist(true)
-    setAlumniDisable(true)
-    setTypeOptions([])
-    setStudents([])
-    setSearchNextBool(true)
+    setStudentOptions([]);
+    setisdisabledStudentlist(true);
+    setAlumniDisable(true);
+    setTypeOptions([]);
+    setStudents([]);
+    setSearchNextBool(true);
   };
   const MultiValue = ({ index, getValue, ...props }) => {
     const maxToShow = 1; // Maximum number of values to show
@@ -362,25 +370,24 @@ const AlumMassEdit = (props) => {
   };
   const CustomMenu = (props) => {
     const { options, children, getValue, selectOption } = props;
-  
+
     const handleValue = () => {
       const selectedValues = getValue();
       // console.log('Selected values:', selectedValues);
       // Perform your submit action here
     };
-  
+
     return (
       <components.Menu {...props}>
         {children}
-        <div style={{ padding: '10px', textAlign: 'center' }}>
-          <button onClick={handleValue} style={{ width: '100%' }}>
+        <div style={{ padding: "10px", textAlign: "center" }}>
+          <button onClick={handleValue} style={{ width: "100%" }}>
             Submit
           </button>
         </div>
       </components.Menu>
     );
   };
-  
 
   const customComponents = {
     MultiValue,
@@ -449,11 +456,10 @@ const AlumMassEdit = (props) => {
   };
   const handelSearch = () => {
     setisdisabledStudentlist(false);
-    setSearchNextBool(false)
+    setSearchNextBool(false);
   };
 
   const handleSearchStudent = () => {
-
     setisdisabledStudentlist(false);
   };
   return (
@@ -500,7 +506,14 @@ const AlumMassEdit = (props) => {
                         placeholder="Start Date"
                         className="form-control "
                         required
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e) => {
+                          setAlumniDisable(true);
+                          setTypeOptions([]);
+                          setStartDate(e.target.value);
+                          setStudentOptions([]);
+                          setStudents([])
+                          setisdisabledStudentlist(true)
+                        }}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -512,7 +525,14 @@ const AlumMassEdit = (props) => {
                         className="form-control ml-2"
                         required
                         min={startDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e) => {
+                          setAlumniDisable(true);
+                          setTypeOptions([]);
+                          setEndDate(e.target.value);
+                          setStudentOptions([]);
+                          setStudents([])
+                          setisdisabledStudentlist(true)
+                        }}
                       />
                     </div>
                   </div>
@@ -521,8 +541,15 @@ const AlumMassEdit = (props) => {
                     <Select
                       isMulti
                       isDisabled={alumniDisable}
-                      onChange={handleTypeChange}
-                      // defaultValue={students}
+                      onChange={(selectedOptions) => {
+                        handleTypeChange(selectedOptions);
+                        if (!selectedOptions || selectedOptions.length === 0) {
+                          setStudentOptions([]);
+                          setisdisabledStudentlist(true);
+                          setStudents([]);
+                          setSearchNextBool(true);
+                        }
+                      }}
                       components={customComponents}
                       options={typeOptions}
                       className="basic-multi-select"
