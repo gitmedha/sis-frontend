@@ -361,7 +361,7 @@ const TotUpload = (props) => {
     const fileColumns = Object.keys(data[0]);
     if(data.length === 0){
       setNotUploadSuccesFully(
-        "File is empty please select file which have data in it"
+        "File is empty please select file which has data in it"
       );
       return false
     }

@@ -132,8 +132,9 @@ const AlumMassEdit = (props) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alumData, setAlumData] = useState([]);
   const [searchNextBool, setSearchNextBool] = useState(true);
-  const [searchDisabled,setSearchDisabled]=useState(true)
-  const [nextDisabled,setNextDisabled]=useState(true)
+  const [searchDisabled, setSearchDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(true);
+  // const [selectedTypes, setSelectedTypes] = useState([]);
 
   const filterStudent = async (filterValue) => {
     try {
@@ -328,18 +329,26 @@ const AlumMassEdit = (props) => {
   const validations = Yup.object({
     start_date: Yup.date()
       .nullable()
-      .test('start-end', 'Both start date and end date are required', function (value) {
-        const { end_date } = this.parent;
-        return (!value && !end_date) || (value && end_date);
-      }),
+      .test(
+        "start-end",
+        "Both start date and end date are required",
+        function (value) {
+          const { end_date } = this.parent;
+          return (!value && !end_date) || (value && end_date);
+        }
+      ),
     end_date: Yup.date()
       .nullable()
-      .min(Yup.ref('start_date'), "End date can't be before Start date")
-      .test('start-end', 'Both start date and end date are required', function (value) {
-        const { start_date } = this.parent;
-        return (!value && !start_date) || (value && start_date);
-      }),
-  });  
+      .min(Yup.ref("start_date"), "End date can't be before Start date")
+      .test(
+        "start-end",
+        "Both start date and end date are required",
+        function (value) {
+          const { start_date } = this.parent;
+          return (!value && !start_date) || (value && start_date);
+        }
+      ),
+  });
 
   const handelCancel = () => {
     // props.handelCancel();
@@ -409,7 +418,8 @@ const AlumMassEdit = (props) => {
 
   useEffect(async () => {
     if (startDate && endDate) {
-      setAlumniDisable(false);
+      
+      setTypeOptions([])
       let data = await getStudentAlumniRange(startDate, endDate);
       setAlumData(data);
       let uniqueStudentsMap = new Map();
@@ -427,12 +437,23 @@ const AlumMassEdit = (props) => {
         value: type,
         type: type,
       }));
+      
       setTypeOptions(uniqueTypes);
+      setAlumniDisable(false);
     }
   }, [startDate, endDate]);
 
   const handleTypeChange = (selected) => {
-    // console.log(selected);
+    if (!selectedOptions || selectedOptions.length === 0) {
+      setStudentOptions([]);
+      setisdisabledStudentlist(true);
+      setStudents([]);
+      setSearchNextBool(true);
+      setSearchDisabled(true);
+    }
+    if (selectedOptions.length > 0) {
+      setSearchDisabled(false);
+    }
     setSelectedOptions(selected);
 
     const matchingData = findMatchingData(alumData, selected, "type");
@@ -463,6 +484,20 @@ const AlumMassEdit = (props) => {
   const handleSearchStudent = () => {
     setisdisabledStudentlist(false);
   };
+  const handleDatechange = (event,key) => {
+    if(key ==="endDate"){
+      setEndDate(event.target.value)
+    }else{
+      setStartDate(event.target.value)
+    }
+    setAlumniDisable(true);
+    setSearchNextBool(true)
+    setSelectedOptions([]);
+    setStudentOptions([]);
+    setStudents([]);
+    setisdisabledStudentlist(true);
+  };
+ 
   return (
     <Modal
       centered
@@ -476,6 +511,16 @@ const AlumMassEdit = (props) => {
       {!formStatus && (
         <>
           <Modal.Header>
+
+          <Modal.Title
+          id="contained-modal-title-vcenter"
+          className="d-flex align-items-center"
+        >
+          <h4 className="text--primary bebas-thick mb-0">
+            
+            Mass Alumni Engagement Edit
+          </h4>
+        </Modal.Title>
             <div className="d-flex justify-content-end align-items-center">
               <button
                 onClick={handelCancel}
@@ -505,17 +550,9 @@ const AlumMassEdit = (props) => {
                         type="date"
                         name="start_date"
                         placeholder="Start Date"
-                        className="form-control "
+                        className="form-control text-uppercase "
                         required
-                        onChange={(e) => {
-                          setAlumniDisable(true);
-
-                          setTypeOptions([]);
-                          setStartDate(e.target.value);
-                          setStudentOptions([]);
-                          setStudents([])
-                          setisdisabledStudentlist(true)
-                        }}
+                        onChange={(e)=>handleDatechange(e,"startDate")}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -524,18 +561,10 @@ const AlumMassEdit = (props) => {
                         type="date"
                         name="end_date"
                         placeholder="End Date"
-                        className="form-control ml-2"
+                        className="form-control ml-2 text-uppercase"
                         required
                         min={startDate}
-                        onChange={(e) => {
-                          setAlumniDisable(true);
-                          setTypeOptions([]);
-                          // setSelectedOptions([])
-                          setEndDate(e.target.value);
-                          setStudentOptions([]);
-                          setStudents([])
-                          setisdisabledStudentlist(true)
-                        }}
+                        onChange={(e)=>handleDatechange(e,"endDate")}
                       />
                     </div>
                   </div>
@@ -543,25 +572,23 @@ const AlumMassEdit = (props) => {
                     <label className="leading-24">Alumni Service</label>
                     <Select
                       isMulti
-                      isDisabled={alumniDisable || typeOptions.length ==0}
+                      isDisabled={alumniDisable || typeOptions.length == 0}
                       onChange={(selectedOptions) => {
-                        handleTypeChange(selectedOptions);
-                        if (!selectedOptions || selectedOptions.length === 0) {
+                        handleTypeChange(selectedOptions)
+                        if(selectedOptions.length ===0 ){
+                          setStudents([]);
                           setStudentOptions([]);
                           setisdisabledStudentlist(true);
-                          setStudents([]);
                           setSearchNextBool(true);
-                          setSearchDisabled(true)
+                          setSearchDisabled(true);
                         }
-                        if(selectedOptions.length > 0){
-                          setSearchDisabled(false)
-                        }
-                       
+                      
                       }}
                       components={customComponents}
                       options={typeOptions}
                       className="basic-multi-select"
                       classNamePrefix="select"
+                      value={selectedOptions}
                     />
                   </div>
                   <div>
@@ -577,14 +604,14 @@ const AlumMassEdit = (props) => {
                       classNamePrefix="select"
                       isDisabled={isdisabledStudentlist}
                       // onInputChange={(e) => setStudentInput(e)}
-                      onChange={(value)=>{
-                        handleselectChange(value)
-                        if(value.length == 0){
-                          setSearchDisabled(true)
-                          setNextDisabled(true)
+                      onChange={(value) => {
+                        handleselectChange(value);
+                        if (value.length == 0) {
+                          setSearchDisabled(true);
+                          setNextDisabled(true);
                         }
-                        if(value.length > 0){
-                          setNextDisabled(false)
+                        if (value.length > 0) {
+                          setNextDisabled(false);
                         }
                       }}
                       // onChange={handleselectChange}
@@ -603,7 +630,7 @@ const AlumMassEdit = (props) => {
                       <button
                         type="button"
                         onClick={handelSearch}
-                        disabled={searchDisabled}
+                        disabled={selectedOptions?.length === 0 }
                         className="btn btn-primary mt-3"
                       >
                         Search
@@ -611,8 +638,8 @@ const AlumMassEdit = (props) => {
                     ) : (
                       <button
                         type="button"
-                        onClick={()=>handleSubmit()}
-                        disabled={nextDisabled}
+                        onClick={() => handleSubmit()}
+                        disabled={students?.length === 0}
                         className="btn btn-primary mt-3"
                       >
                         Next

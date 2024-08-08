@@ -114,8 +114,8 @@ const ModalShowmassedit = (props) => {
             </Styled>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-white">
-          <div className="d-flex justify-content-around align-items-center ">
+        <Modal.Body className="bg-white" >
+          <div className="d-flex justify-content-around align-items-center " style={{minHeight:"150px"}}>
             <button
               type="button"
               onClick={handleMassAlumuni}
