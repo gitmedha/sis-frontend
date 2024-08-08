@@ -12,7 +12,7 @@ import SelectSearchLookUp from "./SelectSearchLookUp";
 
 const FormController = (props) => {
   const { control, ...rest } = props;
-
+  // console.log(rest)
   switch (control) {
     case "input":
       return <Input {...rest} />;

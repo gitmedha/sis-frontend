@@ -320,8 +320,8 @@ const MassEdit = (props) => {
           </h1>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-white">
-        {
+      <Modal.Body className="bg-white" >
+        
           <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
@@ -330,7 +330,7 @@ const MassEdit = (props) => {
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
           />
-        }
+        
         
 
         {bulkAddCheck ? (

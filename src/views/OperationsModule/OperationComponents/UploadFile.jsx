@@ -240,7 +240,7 @@ const UploadFile = (props) => {
   const validateColumns = (data, expectedColumns) => {
     if(data.length === 0){
       setNotUploadSuccesFully(
-        "File is empty please select file which have data in it"
+        "File is empty please select file which has data in it"
       );
       return false
     }
@@ -622,6 +622,7 @@ const UploadFile = (props) => {
   // 
   const uploadNewData =()=>{
     setShowForm(true);
+    setUploadNew(!uploadNew)
   setFileName('');  // Reset the file name display
   setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully(''); 
@@ -677,7 +678,8 @@ const UploadFile = (props) => {
                         multiple={false}
                         name="file-uploader"
                         onChange={handleFileChange}
-                        className="uploaderInput"
+                        className="uploaderInput "
+                        
                       />
                     </div>
                     <label className="text--primary latto-bold text-center">
@@ -716,8 +718,9 @@ const UploadFile = (props) => {
                             type="button"
                             disabled={!nextDisabled}
                             onClick={() => uploadDirect()}
-                            className="btn btn-primary px-4 mx-4 mt-2"
+                            className="btn btn-primary px-4 mx-4 mt-2 cursor-pointer"
                             style={{ height: "2.5rem" }}
+                            
                           >
                             Next
                           </button>
@@ -741,8 +744,8 @@ const UploadFile = (props) => {
             <Modal.Body style={{height:'15rem'}}>
               <div className='mb-5'>
                 <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
-                <FaEdit size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                <FaFileUpload size={20} color="#31B89D"  />{" "}
+                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded.` :`${excelData.length} row(s) of data uploaded successfully!` }
                   
                 </p>
               </div>
