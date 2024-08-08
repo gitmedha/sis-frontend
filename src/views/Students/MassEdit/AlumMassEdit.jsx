@@ -677,7 +677,7 @@ const AlumMassEdit = (props) => {
               initialValues={initialValues}
               validationSchema={validations}
             >
-              {({ values }) => (
+              {({ values ,setFieldValue }) => (
                 <Form>
                   <>
                     <div className="row px-3 form_sec">
