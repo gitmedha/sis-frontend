@@ -760,6 +760,7 @@ const AlumMassEdit = (props) => {
                           label="Start Date"
                           placeholder="Start Date"
                           control="datepicker"
+                          onChange={(date) => setFieldValue('start_date', date)}
                           className="form-control"
                           autoComplete="off"
                         />
@@ -769,6 +770,7 @@ const AlumMassEdit = (props) => {
                           name="end_date"
                           label="End Date"
                           placeholder="End Date"
+                          onChange={(date) => setFieldValue('end_date', date)}
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
