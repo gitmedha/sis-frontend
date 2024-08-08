@@ -53,7 +53,8 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_INSTITUTES,
   });
-  let instituteOptions = data.data.institutions.map((institution) => ({
+
+  let instituteOptions = data.data.institutionsConnection.values.map((institution) => ({
     label: institution.name,
     value: Number(institution.id),
   }));
@@ -69,7 +70,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_BATCHES,
   });
-  let batchOptions = data.data.batches.map((batches) => ({
+  let batchOptions = data.data.batchesConnection.values.map((batches) => ({
     label: batches.name,
     value: Number(batches.id),
   }));
@@ -182,6 +183,20 @@ export const getAllSrm =async(role)=>{
     value: user.id,
   }));
 }
+export const getAllSrmbyname =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE,
+    variables:{
+      role:1
+    },
+  });
+  return data.data.users.map(user => ({
+    label: `${user.username}`,
+    value: user.id,
+  }));
+}
+
+
 
 export const getAllStudents =async()=>{
   let data=await queryBuilder({

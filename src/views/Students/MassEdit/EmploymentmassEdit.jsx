@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import Select, { components } from "react-select";
 import {
   getEmployerOpportunities,
   getEmploymentConnectionsPickList,
   getStudentEmploymentConnections,
   searchStudents,
-  searchEmployers
+  searchEmployers,
+  getStudentEmplymentRange
 } from "../StudentComponents/StudentActions";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
@@ -52,11 +53,13 @@ const EmploymentmassEdit = (props) => {
   const [selectedOpportunityType, setSelectedOpportunityType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [showEndDate, setShowEndDate] = useState(false);
-  const [endDateMandatory, setEndDateMandatory] = useState(false);
   const [rejectionreason, setrejectionreason] = useState([]);
   const [isRejected, setRejected] = useState(false);
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
   const [EmploymentData, setEmploymentData] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [startDate,setStartDate]=useState(null)
+  const [endDate,setEndDate]=useState(null)
 
   let initialValues = {
     employment_connection_student: "",
@@ -210,8 +213,12 @@ const EmploymentmassEdit = (props) => {
       let alumData = await Promise.all(
         students.map(async (obj) => {
           try {
-            let data = await getStudentEmploymentConnections(obj.id);
-
+            let data = await getStudentEmploymentConnections(
+              obj.value,
+              startDate,
+              endDate
+            );
+              console.log(data);
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -308,7 +315,8 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    props.handelCancel();
+    // props.handelCancel();
+    setFormStatus(!formStatus)
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -342,6 +350,7 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
+    console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
         // Build the object with only non-empty values
         let obj = {
@@ -368,15 +377,41 @@ const EmploymentmassEdit = (props) => {
             return acc;
         }, {});
 
-        // Add student_id and id since they should always be present
+        console.log(val);
         filteredObj.student_id = val.student_id;
         filteredObj.id = val.id;
 
         return filteredObj;
     });
-
+    console.log(data);
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
 };
+const initialValuesStudent = {
+  start_date: null,
+  end_date: null,
+  student_ids: [],
+};
+
+useEffect(async()=>{
+
+  if(startDate && endDate){
+    setDisabled(false)
+    let data = await getStudentEmplymentRange(startDate,endDate)
+    console.log(await getStudentEmplymentRange(startDate,endDate));
+    let uniqueStudentsMap = new Map();
+data.forEach((obj) => {
+if (!uniqueStudentsMap.has(obj.student.id)) {
+  uniqueStudentsMap.set(obj.student.id, obj);
+}
+});
+
+let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
+label: `${obj.student.full_name} (${obj.student.student_id})`,
+value: Number(obj.student.id),
+}));  
+    setStudentOptions(values);
+  }
+},[startDate,endDate])
 
 
   return (
@@ -408,32 +443,65 @@ const EmploymentmassEdit = (props) => {
               </div>
             </Modal.Header>
             <Modal.Body className="bg-white" height="">
-              <div className=" col-sm-12 px-3 d-flex flex-column justify-content-around">
-                <div>
-                  <label className="leading-24">Student</label>
-                  <Select
-                    isMulti
-                    name="student_ids"
-                    options={studentOptions}
-                    closeMenuOnSelect={false}
-                    components={customComponents}
-                    isOptionDisabled={() => students.length >= 10}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    onInputChange={(e) => setStudentInput(e)}
-                    onChange={handleselectChange}
-                    value={students}
-                  />
-                </div>
-                <div className="d-flex justify-content-end mx-5">
-                  <button
-                    className="btn btn-primary mt-3 "
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
+            <Formik
+              initialValues={initialValuesStudent}
+              // validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ values, setFieldValue }) => (
+                <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
+                  <div className="col-12 d-flex justify-content-between ">
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>Start Date</label>
+                      <Field
+                        type="date"
+                        name="start_date"
+                        placeholder="Start Date"
+                        className="form-control "
+                        required
+                        onChange={(e)=>setStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="col-md-5 col-sm-12 mt-2">
+                      <label>End Date</label>
+                      <Field
+                        type="date"
+                        name="end_date"
+                        placeholder="End Date"
+                        className="form-control ml-2"
+                        required
+                        onChange={(e)=>setEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="leading-24">Student</label>
+                    <Select
+                      isMulti
+                      name="student_ids"
+                      options={studentOptions}
+                      closeMenuOnSelect={false}
+                      components={customComponents}
+                      isOptionDisabled={() => students.length >= 10}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      isDisabled={disabled}
+                      // onInputChange={(e) => setStudentInput(e)}
+                      onChange={handleselectChange}
+                      value={students}
+                    />
+                  </div>
+                  <div className="d-flex justify-content-end mx-5">
+                  <button type="submit" onClick={()=>props.handelCancel()} className="btn btn-secondary mt-3 mr-3">
+                      Cancel
+                    </button>
+                    <button type="submit" disabled={disabled} className="btn btn-primary mt-3">
+                      Next
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
             </Modal.Body>
           </>
         )}
@@ -460,7 +528,7 @@ const EmploymentmassEdit = (props) => {
                   <Form>
                     <Section>
                       <div className="row px-3 form_sec">
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 mt-4">
                           <Select
                             isMulti
                             isDisabled={true}

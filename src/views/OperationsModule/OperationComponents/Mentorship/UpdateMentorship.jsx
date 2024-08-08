@@ -4,22 +4,24 @@ import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
-import { Input } from "../../../utils/Form";
-import { urlPath } from "../../../constants";
+import { Input } from "../../../../utils/Form";
+// import { urlPath } from "../../../../constants";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
+} from "../../../Address/addressActions";
 import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
-} from "../../../utils/function/lookupOptions";
-import DetailField from "../../../components/content/DetailField";
+} from "../../../../utils/function/lookupOptions";
+import DetailField from "src/components/content/DetailField";
 import moment from "moment";
-import { getOpsPickList, updateOpsActivity } from "./operationsActions";
+// import { getOpsPickList, updateOpsActivity } from "";
 import * as Yup from "yup";
-import { numberChecker } from "../../../utils/function/OpsModulechecker";
-import { searchBatches, searchInstitutions } from "./operationsActions";
+import { numberChecker } from "../../../../utils/function/OpsModulechecker";
+import { searchBatches, searchInstitutions, updateMentorshipData } from "../operationsActions";
+import { updateOpsActivity, getOpsPickList } from "../operationsActions";
+import { urlPath } from "src/constants";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -55,9 +57,15 @@ const hideBatchName = [
 ];
 
 const options = [
-  { value: "Yes", label: "Yes" },
-  { value: "No", label: "No" },
+  { value: "Offline", label: "Offline" },
+  { value: "Online", label: "Online" },
 ];
+const statusOption = [
+  { value: "Connected", label: "Connected" },
+  { value: "Pipeline", label: "Pipeline" },
+  { value: "Dropped out", label: "Dropped out" },
+];
+
 const Activityoptions = [
   { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
   {
@@ -72,17 +80,13 @@ const Activityoptions = [
   { value: "Placement Drive", label: "Placement Drive" },
 ];
 
-const OperationDataupdateform = (props) => {
+const UpdateMentorship = (props) => {
   let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const [batchOptions, setBatchOptions] = useState([]);
-  const [institutionOptions, setInstitutionOptions] = useState([]);
   const [programeName, setProgramName] = useState([]);
-  const [disablevalue, setdisablevalue] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -90,68 +94,9 @@ const OperationDataupdateform = (props) => {
     });
   }, []);
 
-  useEffect(() => {
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
-        setInstitutionOptions(data);
-      });
-    }
-    if (props.batch) {
-      filterBatch(props.batch.name).then((data) => {
-        setBatchOptions(data);
-      });
-    }
-  }, [props]);
 
-  const filterInstitution = async (filterValue) => {
-    try {
-      const { data } = await searchInstitutions(filterValue);
-      let filterData = data.institutionsConnection.values.map((institution) => {
-        return {
-          ...institution,
-          label: institution.name,
-          value: Number(institution.id),
-        };
-      });
 
-      return filterData;
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const filterBatch = async (filterValue) => {
-    try {
-      const { data } = await searchBatches(filterValue);
-      let batchInformtion = props ? props.batch : null;
-        let batchFoundInList = false;
-        let filterData = data.batchesConnection.values.map((batch) => {
-          if (props && batch.id === Number(batchInformtion?.id)) {
-            batchFoundInList = true;
-          }
-          if (hideBatchName.includes(batch.name)) {
-            return {};
-          } else {
-            return {
-              ...batch,
-              label: batch.name,
-              value: Number(batch.id),
-            };
-          }
-        });
-        if (props && batchInformtion !== null && !batchFoundInList) {
-          filterData.unshift({
-            label: batchInformtion.name,
-            value: Number(batchInformtion.id),
-          });
-        }
-        return filterData;
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -174,7 +119,6 @@ const OperationDataupdateform = (props) => {
     await getStateDistricts(value).then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        
         data?.data?.data?.geographiesConnection?.groupBy?.area
           .map((area) => ({
             key: area.id,
@@ -187,24 +131,11 @@ const OperationDataupdateform = (props) => {
   };
 
   const onSubmit = async (values) => {
-    const newValueObject = { ...values };
-    newValueObject["assigned_to"] = Number(values["assigned_to"]);
-    newValueObject["batch"] = Number(values["batch"]);
-    newValueObject["students_attended"] = Number(values["students_attended"]);
-    newValueObject["start_date"] = moment(values["start_date"]).format(
+    console.log(values);
+    values['onboarding_date']=moment(values["onboarding_date"]).format(
       "YYYY-MM-DD"
     );
-    newValueObject["end_date"] = moment(values["end_date"]).format(
-      "YYYY-MM-DD"
-    );
-    newValueObject["institution"] = Number(values["institution"]);
-    newValueObject["donor"] = values["donor"] === "Yes" || "yes" ? true : false;
-    newValueObject["updatedby"] = Number(userId);
-    delete newValueObject["updated_at"];
-    delete newValueObject["created_at"];
-    delete newValueObject["institute_name"];
-
-    const value = await updateOpsActivity(Number(props.id), newValueObject);
+    const value = await updateMentorshipData(Number(props.id), values);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
     onHide(value);
@@ -214,62 +145,51 @@ const OperationDataupdateform = (props) => {
 
   const userId = localStorage.getItem("user_id");
   let initialValues = {
-    topic: "",
-    assigned_to: props.assigned_to.id.toString(),
-    state: "",
-    activity_type: "",
-    institution: "",
-    guest: "",
-    organization: "",
-    updated_at: "",
-    start_date: "",
-    end_date: "",
+    assigned_to: "",
+    mentor_name: "",
+    email: "",
+    mentor_domain: "",
+    mentor_company_name: "",
     designation: "",
-    updatedby: "",
-    area: "",
-    students_attended: "",
-    batch: "",
+    mentor_area: "",
+    mentor_state: "",
+    outreach: "",
+    onboarding_date: null,
+    social_media_profile_link: "",
+    medha_area: "",
+    status: "",
+    program_name: "",
   };
 
   if (props) {
-    initialValues["batch"] = Number(props.batch.id);
-    initialValues["institution"] = Number(props.institution.id);
-    initialValues["topic"] = props.topic;
-    initialValues["activity_type"] = props.activity_type;
+    console.log(props);
+    initialValues["mentor_name"] = props.mentor_name;
+    initialValues["email"] = props.email;
+    initialValues["mentor_domain"] = props.mentor_domain;
+    initialValues["mentor_company_name"] = props.mentor_company_name;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
     initialValues["program_name"] = props.program_name;
-    initialValues["start_date"] = new Date(props.start_date);
-    initialValues["end_date"] = new Date(props.end_date);
-    initialValues["students_attended"] = props?.students_attended;
-    initialValues["created_at"] = props.created_at;
-    initialValues["organization"] = props.organization;
-    initialValues["designation"] = props.designation;
-    initialValues["guest"] = props.guest;
-    initialValues["state"] = props.state ? props.state : null;
-    initialValues["institute_name"] = Number(props?.institution?.id);
-    initialValues["donor"] = props.donor ? "Yes" : "No";
-    initialValues["area"] = props.area ? props.area : null;
+    initialValues["onboarding_date"] = new Date(props.onboarding_date);
+    initialValues["designation"] = props.designation
+    initialValues["mentor_area"] = props?.mentor_area;
+    initialValues["mentor_state"] = props.mentor_state;
+    initialValues["medha_area"] = props.medha_area;
+    initialValues["status"] = props.status;
+    initialValues["outreach"] = props.outreach;
   }
 
-  useEffect(() => {
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
-        setInstitutionOptions(data);
-      });
-    }
-  }, []);
 
-  const operationvalidation = Yup.object().shape({
-    start_date: Yup.date().required("Start date is required"),
-    end_date: Yup.date()
-      .required("End date is required")
-      .when("start_date", (start, schema) => {
-        return schema.min(
-          start,
-          "End date must be greater than or equal to start date"
-        );
-      }),
-  });
+  // const operationvalidation = Yup.object().shape({
+  //   start_date: Yup.date().required("Start date is required"),
+  //   end_date: Yup.date()
+  //     .required("End date is required")
+  //     .when("start_date", (start, schema) => {
+  //       return schema.min(
+  //         start,
+  //         "End date must be greater than or equal to start date"
+  //       );
+  //     }),
+  // });
   useEffect(async () => {
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
@@ -315,8 +235,8 @@ const OperationDataupdateform = (props) => {
           <Modal.Body className="bg-white">
             <Formik
               onSubmit={onSubmit}
-              initialValues={initialValues}
-              validationSchema={operationvalidation}
+                initialValues={initialValues}
+              // validationSchema={operationvalidation}
             >
               {({ values, setFieldValue }) => (
                 <Form>
@@ -327,13 +247,12 @@ const OperationDataupdateform = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
-                            control="lookup"
-                            name="activity_type"
-                            label="Activity Type"
+                            control="input"
+                            name="mentor_name"
+                            label="Mentor Name"
                             required
-                            options={Activityoptions}
                             className="form-control"
-                            placeholder="Activity Type"
+                            placeholder="Mentor Name"
                           />
                         </div>
 
@@ -364,116 +283,91 @@ const OperationDataupdateform = (props) => {
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {batchOptions.length && (
-                            <Input
-                              control="lookupAsync"
-                              name="batch"
-                              label="Batch Name"
-                              filterData={filterBatch}
-                              defaultOptions={batchOptions}
-                              className="form-control1"
-                              placeholder="Batch"
-                            />
-                          )}
+                          <Input
+                            control="lookupAsync"
+                            name="status"
+                            label="Status "
+                            // filterData={filterBatch}
+                            defaultOptions={statusOption}
+                            className="form-control1"
+                            placeholder="Status"
+                          />
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {institutionOptions.length && (
+                          {
                             <Input
                               control="lookupAsync"
-                              name="institution"
-                              label="Institution"
-                              filterData={filterInstitution}
-                              defaultOptions={institutionOptions}
-                              placeholder="Institution"
+                              name="outreach"
+                              label="Outreach (Offline/Online)"
+                            //   filterData={filterInstitution}
+                              defaultOptions={options}
+                              placeholder="Outreach (Offline/Online)"
                               className="form-control"
                               isClearable
                             />
-                          )}
+                          }
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            name="start_date"
-                            label="Start Date "
+                            name="onboarding_date"
+                            label="Onboarding Date"
                             //
-                            placeholder="Date of Birth"
+                            placeholder="Onboarding Date"
                             control="datepicker"
                             className="form-control"
                             autoComplete="off"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            name="end_date"
-                            label="End Date"
-                            placeholder="Date of Birth"
-                            control="datepicker"
-                            className="form-control"
-                            autoComplete="off"
-                          />
-                        </div>
-
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            icon="down"
-                            control="lookup"
-                            name="donor"
-                            label="Donor"
-                            required
-                            options={options}
-                            className="form-control"
-                            placeholder="New Entry"
-                          />
-                        </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        {/* <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             control="input"
-                            name="topic"
-                            label="Topic"
+                            name="contact"
+                            label="Contact"
                             className="form-control"
-                            placeholder="Topic"
-                          />
-                        </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            icon="down"
-                            control="input"
-                            name="guest"
-                            label="Guest"
-                            className="form-control"
-                            placeholder="Guest"
-                          />
-                        </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            icon="down"
-                            control="input"
-                            name="designation"
-                            label="Designation"
-                            className="form-control"
-                            placeholder="Designation"
-                          />
-                        </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            icon="down"
-                            control="input"
-                            name="organization"
-                            label="Organization"
-                            className="form-control"
-                            placeholder="Organization"
-                          />
-                        </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
-                          <Input
-                            name="students_attended"
-                            label="Student Attended"
-                            placeholder="Student atended"
-                            control="input"
-                            className="form-control"
+                            placeholder="Contact"
                             autoComplete="off"
                             onKeyPress={numberChecker}
+                          />
+                        </div> */}
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="email"
+                            label="Email"
+                            className="form-control"
+                            placeholder="Email"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="mentor_domain"
+                            label="Mentor's Domain"
+                            className="form-control"
+                            placeholder="Mentor's Domain"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="mentor_company_name"
+                            label="Mentor's Company Name"
+                            className="form-control"
+                            placeholder="Mentor's Company Name"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="designation"
+                            label="designation/Title"
+                            placeholder="designation/Title"
+                            control="input"
+                            className="form-control"
                           />
                         </div>
                       </div>
@@ -485,7 +379,7 @@ const OperationDataupdateform = (props) => {
                           {stateOptions.length ? (
                             <Input
                               icon="down"
-                              name="state"
+                              name="mentor_state"
                               label="State"
                               control="lookup"
                               options={stateOptions}
@@ -501,7 +395,7 @@ const OperationDataupdateform = (props) => {
                           {areaOptions.length ? (
                             <Input
                               icon="down"
-                              name="area"
+                              name="mentor_area"
                               label="Medha Area"
                               control="lookup"
                               options={areaOptions}
@@ -588,4 +482,4 @@ const OperationDataupdateform = (props) => {
   );
 };
 
-export default OperationDataupdateform;
+export default UpdateMentorship;

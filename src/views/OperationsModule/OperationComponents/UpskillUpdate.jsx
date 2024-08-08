@@ -316,7 +316,7 @@ const UpskillUpdate = (props) => {
   }, []);
 
 useEffect(() => {
-    let isMounted = true; // Add a flag to indicate if the component is mounted
+    let isMounted = true; 
 
     const fetchData = async () => {
         try {
@@ -348,12 +348,12 @@ useEffect(() => {
     fetchData();
 
     return () => {
-        isMounted = false; // Cleanup function to set isMounted to false when the component is unmounted
+        isMounted = false; 
     };
 }, []);
 
 
-  const options = [
+  const certificateoptions = [
     { value: true, label: "Yes" },
     { value: false, label: "No" },
   ];
@@ -426,7 +426,7 @@ useEffect(() => {
                             required
                             className="form-control"
                             placeholder="Certificate Received"
-                            defaultOptions={options}
+                            options={certificateoptions}
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">

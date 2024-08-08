@@ -283,7 +283,6 @@ function BatchSearchBar({
                   options={batchOptions}
                   className="form-control"
                   onChange={(e) => handleBatchOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               {selectedSearchField !== "start_date" &&

@@ -1,92 +1,96 @@
 import React from "react";
-import { Modal} from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { setAlert } from "../../../store/reducers/Notifications/actions";
+// import { FaSchool } from "react-icons/fa";
+// import { Input } from "../../../../utils/Form";
+// import { urlPath } from "../../../../constants";
+import { setAlert } from "../../../../store/reducers/Notifications/actions";
+import SweetAlert from "react-bootstrap-sweetalert";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
+} from "../../../Address/addressActions";
 import { connect } from "react-redux";
-import { searchInstitutions,searchBatches} from "./operationsActions";
-import UserTotRowdata from "./UserTotRowdata";
-import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
-const UserTot = (props) => {
+import { searchBatches, searchInstitutions } from "../operationsActions";
+// import AlumunniBulkrow from "./AlumunniBulkrow";
+import { checkEmptyValuesandplaceNA } from "../../../../utils/function/OpsModulechecker";
+import MentorBulkrow from "./MentorBulkrow";
+
+const MentorBulkAdd = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
-  const [classValue,setclassValue]=useState({})
+  const [classValue, setclassValue] = useState({});
   const [data, setData] = useState([
     {
       id: 1,
-      user_name: "",
-      trainer_1: "",
-      project_name: "",
-      certificate_given: "",
-      module_name: "",
-      project_type: "",
-      trainer_2: "",
-      partner_dept: "",
-      college: "",
-      city: "",
-      state: "",
-      age: "",
-      gender: "",
-      contact: "",
+      assigned_to: "",
+      mentor_name: "",
+      email: "",
+      mentor_domain: "",
+      mentor_company_name: "",
       designation: "",
-      start_date:"",
-      end_date:""
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
+      status: "",
+      program_name: "",
+      contact:"",
+      medha_area:""
     },
-    // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([
     {
       id: 1,
-      user_name: "",
-      trainer_1: "",
-      project_name: "",
-      certificate_given: "",
-      module_name: "",
-      project_type: "",
-      trainer_2: "",
-      partner_dept: "",
-      college: "",
-      city: "",
-      state: "",
-      age: "",
-      gender: "",
-      contact: "",
+      assigned_to: "",
+      mentor_name: "",
+      email: "",
+      mentor_domain: "",
+      mentor_company_name: "",
       designation: "",
-      start_date:"",
-      end_date:""
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
+      status: "",
+      program_name: "",
+      contact: "",
+      medha_area:""
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
-    user_name: "",
-    trainer_1: "",
-    project_name: "",
-    certificate_given: "",
-    module_name: "",
-    project_type: "",
-    trainer_2: "",
-    partner_dept: "",
-    college: "",
-    city: "",
-    state: "",
-    age: "",
-    gender: "",
-    contact: "",
-    designation: "",
-    start_date:"",
-    end_date:""
+    assigned_to: "",
+      mentor_name: "",
+      email: "",
+      mentor_domain: "",
+      mentor_company_name: "",
+      designation: "",
+      mentor_area: "",
+      mentor_state: "",
+      outreach: "",
+      onboarding_date: "",
+      social_media_profile_link: "",
+      medha_area: "",
+      status: "",
+      program_name: "",
+      contact:"",
+      medha_area:""
   });
-  // 
+
   const [showLimit, setshowLimit] = useState(false);
   function checkEmptyValues(obj) {
     const result = {};
-  
+
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
@@ -94,42 +98,61 @@ const UserTot = (props) => {
         result[key] = isEmpty;
       }
     }
-  
+
     return result;
   }
-  
+
   function isEmptyValue(value) {
     if (value === null || value === undefined) {
       return true;
     }
-  
-    if (typeof value === 'string' && value.trim() === '') {
+
+    if (typeof value === "string" && value.trim() === "") {
       return true;
     }
-  
+
     if (Array.isArray(value) && value.length === 0) {
       return true;
     }
-  
-    if (typeof value === 'object' && Object.keys(value).length === 0) {
+
+    if (typeof value === "object" && Object.keys(value).length === 0) {
       return true;
     }
-  
+
     return false;
   }
   const addRow = () => {
-    let value =checkEmptyValues(rows[rows.length-1])
-    if(value.student_name || value.gender){
-      let obj={...classValue,[`class${[rows.length-1]}`]:value}
-      return setclassValue(obj)
+    let value = checkEmptyValues(rows[rows.length - 1]);
+    if (value ) {
+      let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
+
+      setclassValue({});
+      if (
+        value.assigned_to ||
+        value.mentor_name ||
+        value.mentor_domain ||
+        value.mentor_company_name || value.contact
+      ) {
+        let obj = { [`class${[rows.length - 1]}`]: value };
+        setclassValue(obj);
+        return;
+      }
+
+      if (rows.length >= 10) {
+        setAlert("You can't Add more than 10 items.", "error");
+      } else {
+        const newRowWithId = { ...newRow, id: rows.length + 1 };
+        setRows([...rows, newRowWithId]);
+      }
+      return setclassValue(obj);
     }
-   
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });    
+      // setNewRow({ id: '', name: '', age: '' });
     }
   };
 
@@ -148,7 +171,6 @@ const UserTot = (props) => {
         );
       });
     }
-    console.log(options);
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
@@ -213,9 +235,9 @@ const UserTot = (props) => {
       );
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
+        data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
-            key: area.key,
+            key: area.id,
             label: area.key,
             value: area.key,
           }))
@@ -226,6 +248,7 @@ const UserTot = (props) => {
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
+
     setData((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
@@ -236,61 +259,41 @@ const UserTot = (props) => {
     );
   };
 
-  useEffect(() => {
-    
-    let isEmptyValuFound=false
-  // participant_name,age,gender,mobile,designation,college_name,project_name,partner_dept,module_name,trainer_2
- 
-    for (let row of rows) {
-      for(let key in row){
-         // end_date,certificate_received,issued_org,assigned_to && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2')
-        if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
-          if(isEmptyValue(row[key])){
-            isEmptyValuFound=true
-          }
-         
-        }
-      }
-     
-    }
-    setDisableSaveButton(isEmptyValuFound)
-  }, [rows]);
-
   const onSubmit = async () => {
     let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
-      row.trainer_1 = Number(row.trainer_1 );
-      row.trainer_2 = Number(row.trainer_2);
-      row.isActive = true;
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      let value = checkEmptyValuesandplaceNA(row)
+      row.isActive = true;
+
+      let value = checkEmptyValuesandplaceNA(row);
+      if (value.status == "Open") {
+        value.query_end = null;
+      }
+      // value.published_at =null
       return value;
     });
 
     try {
-      onHide('tot',data)
+      onHide("mentorship", data);
       setRows([
         {
           id: 1,
-          user_name: "",
-          trainer_1: "",
-          project_name: "",
-          certificate_given: "",
-          module_name: "",
-          project_type: "",
-          trainer_2: "",
-          partner_dept: "",
-          college: "",
-          city: "",
-          state: "",
-          age: "",
-          gender: "",
-          contact: "",
+          assigned_to: "",
+          mentor_name: "",
+          email: "",
+          mentor_domain: "",
+          mentor_company_name: "",
           designation: "",
-          start_date:"",
-          end_date:""
+          mentor_area: "",
+          mentor_state: "",
+          outreach: "",
+          onboarding_date: "",
+          social_media_profile_link: "",
+          medha_area: "",
+          status: "",
+          program_name: "",
         },
       ]);
     } catch (error) {
@@ -312,9 +315,40 @@ const UserTot = (props) => {
     });
   }, []);
 
-  const handleRowData = (rowData) => {
-    // Do something with the row data
-  };
+  useEffect(() => {
+    let isEmptyValuFound = false;
+
+    for (let row of rows) {
+      for (let key in row) {
+     
+
+        /**
+        |--------------------------------------------------
+        |    !(key == "designation") &&
+        !(key == "mentor_area") &&
+        !(key == "mentor_state") &&
+        !(key == "outreach") &&
+        !(key == "onboarding_date") &&
+        !(key == "medha_area") &&
+        !(key == "program_name")
+        |--------------------------------------------------
+        */
+        if (
+          !(key == "assigned_to") &&
+          !(key == "mentor_name") &&
+          !(key == "mentor_domain") &&
+          !(key == "mentor_company_name") 
+         
+        ) {
+          if (isEmptyValue(row[key])) {
+            isEmptyValuFound = true;
+          }
+        }
+      }
+    }
+    console.log(isEmptyValuFound);
+    setDisableSaveButton(!isEmptyValuFound);
+  }, [rows]);
 
   useEffect(() => {
     filterInstitution().then((data) => {
@@ -328,18 +362,17 @@ const UserTot = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutions(filterValue);
+      const { data } = await searchInstitutions(filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
@@ -347,18 +380,16 @@ const UserTot = (props) => {
 
   const filterBatch = async (filterValue) => {
     try {
-      const {data} = await searchBatches(filterValue);
+      const { data } = await searchBatches(filterValue);
 
       let filterData = data.batchesConnection.values.map((batch) => {
         return {
           ...batch,
           label: batch.name,
-          value: Number(batch.id),
+          value: batch.name,
         };
       });
-
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
@@ -392,9 +423,8 @@ const UserTot = (props) => {
           <div className="d-flex justify-content-between">
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-             
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New TOT Data"}
+                {props.id ? props.full_name : "Add New Alumni Query"}
               </h2>
             </div>
           </div>
@@ -429,42 +459,44 @@ const UserTot = (props) => {
                 />
               </button>
             )}
-           
+            {/* {rows.length > 0 && <button onClick={deleteTable}>Delete Table</button>} */}
           </div>
           <div className="table-container">
             <table className="create_data_table">
               <thead>
                 <tr>
-                  {/* <th className="id">ID</th> */}
-                  <th>Participant Name *</th>
-                  <th>Age </th>
-                  <th>Gender </th>
-                  <th>Mobile no.  </th>
-                  <th>State *</th>
-                  <th>City *</th>
-                  <th>Designation </th>
-                  <th>College Name</th>
-                  <th>Project Name *</th>
-                  <th>Partner Department</th>
-                  <th>Module Name</th>
-                  <th>Start Date *</th>
-                  <th>End Date *</th>
-                  <th>Trainer 1 *</th>
-                  <th>Trainer 2 </th>
-                  <th>Certificate Given *</th>
-                  <th>Project Type *</th>
-                  {/* <th>New Entry</th> */}
+                  <th>Mentor Name *</th>
+                  <th>Contact </th>
+                  <th>Email </th>
+                  <th>Mentor's Domain *</th>
+                  <th>Mentor's Company Name * </th>
+                  <th>Designation/Title *</th>
+                  <th>Mentor's State *</th>
+                  <th>Mentor's Area * </th>
+                  <th>Outreach (Offline/Online) *</th>
+                  <th>Onboarding Date *</th> 
+                  <th>Social Media Link </th>
+                  <th>Assigned To *</th>
+                  <th>Medha area *</th>
+                  <th>Medha Program Name *</th>
+                  <th>Status *</th>
+                  
+                  
+                  
+                  
+                  
+
+                  {/* <th>Area</th> */}
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <UserTotRowdata
+                  <MentorBulkrow
                     handleInputChange={handleInputChange}
                     handleChange={handleChange}
                     row={row}
                     endDate={endDate}
                     startDate={startDate}
-                    setStartdate={setStartDate}
                     institutiondata={institutionOptions}
                     batchbdata={batchOptions}
                     updateRow={updateRow}
@@ -495,7 +527,6 @@ const UserTot = (props) => {
           </div>
         </div>
       </Modal.Body>
-
     </Modal>
   );
 };
@@ -506,4 +537,4 @@ const mapActionsToProps = {
   setAlert,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(UserTot);
+export default connect(mapStateToProps, mapActionsToProps)(MentorBulkAdd);

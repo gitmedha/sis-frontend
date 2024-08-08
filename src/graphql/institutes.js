@@ -331,16 +331,40 @@ query INSTITUTION(
   "id": 8
 }
 */
-
-export const GET_ALL_INSTITUTES = `
-query TO_GET_ALL_INSTITUTES {
-  institutions{
-    id
-    name
-    status
+export const GET_INSTITUTES_COUNT = `
+query GET_INSTITUTES_COUNT {
+  institutionsConnection {
+    aggregate {
+      count
+    }
   }
 }
 `;
+
+
+export const GET_ALL_INSTITUTES = `
+query GET_ALL_INSTITUTES($start:Int ,$limit:Int) {
+  institutionsConnection(start:$start,limit:$limit){
+    values {
+      id
+      name
+      status
+    }
+  }
+  
+}
+`;
+
+// export const GET_INSTITUTES_COUNT = `
+// query GET_INSTITUTES_COUNT {
+//   institutionsConnection {
+//     aggregate {
+//       count
+//     }
+//   }
+  
+// }
+// `;
 
 export const GET_INSTITUTION_STUDENTS = `
 query GET_STUDENTS_IN_INSTITUTION ($id: Int, $limit: Int, $start: Int, $sort: String){

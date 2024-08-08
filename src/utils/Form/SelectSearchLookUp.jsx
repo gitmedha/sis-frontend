@@ -1,12 +1,12 @@
 import InputErr from "./InputErr";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
 import { components } from "react-select";
 import AsyncSelect from 'react-select/async';
 
-const SelectLookupAsyncField = styled.div`
+const SelectSearchLookupAsyncField = styled.div`
   label {
     color: #787B96;
   }
@@ -101,7 +101,7 @@ const SelectField = (props) => {
         isSearchable={isSearchable || icon !== 'down'}
         components={{ DropdownIndicator }}
         onChange={option => {
-          // setSelectedOption(option)
+          setSelectedOption(option)
           // console.log(field.name, option ? option.value : null)
             form.setFieldValue(field.name, option ? option.value : null);
             onChange(option);
@@ -120,10 +120,10 @@ const SelectField = (props) => {
   );
 };
 
-const SelectLookupAsync = (props) => {
+const SelectSearchLookUp = (props) => {
   const { label, name, required, ...rest } = props;
   return (
-    <SelectLookupAsyncField>
+    <SelectSearchLookupAsyncField>
       <div className="form-group">
         <label className="text-heading leading-24" htmlFor={name}>
           {label}
@@ -132,8 +132,9 @@ const SelectLookupAsync = (props) => {
         <Field id={name} name={name} component={SelectField} {...rest} />
         <ErrorMessage name={name} component={InputErr} />
       </div>
-    </SelectLookupAsyncField>
+    </SelectSearchLookupAsyncField>
   );
 };
 
-export default SelectLookupAsync;
+export default SelectSearchLookUp;
+
