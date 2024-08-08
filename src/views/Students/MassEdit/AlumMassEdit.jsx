@@ -355,11 +355,12 @@ const AlumMassEdit = (props) => {
     if(key ==='cross'){
       props.handelCancel();
     }else{
-      setFormStatus(!formStatus);
+    setFormStatus(!formStatus);
     setStudentOptions([]);
+    setSelectedOptions([])
     setisdisabledStudentlist(true);
     setAlumniDisable(true);
-    setTypeOptions([]);
+    setTypeOptions(null);
     setStudents([]);
     setSearchNextBool(true);
     }
