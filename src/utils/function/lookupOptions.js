@@ -197,7 +197,6 @@ export const getAllSrmbyname =async(role)=>{
 }
 
 
-
 export const getAllStudents =async()=>{
   let data=await queryBuilder({
     query:GET_ALL_STUDENT,
