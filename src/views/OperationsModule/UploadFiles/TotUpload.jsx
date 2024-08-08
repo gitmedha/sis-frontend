@@ -591,6 +591,10 @@ const TotUpload = (props) => {
   const hideShowModal = () => {
     setShowModalTOT(false);
     setUploadSuccesFully("");
+    setShowForm(true);
+    setFileName('');  // Reset the file name display
+    setNextDisabled(false);  // Optionally disable the next button
+    setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
@@ -611,6 +615,7 @@ const TotUpload = (props) => {
 
   const uploadNewData =()=>{
     setShowForm(true);
+    setUploadNew(!uploadNew)
   setFileName('');  // Reset the file name display
   setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully(''); 
@@ -740,7 +745,7 @@ const TotUpload = (props) => {
               <div className='mb-5'>
                 <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
                 <FaEdit size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded` :`${excelData.length} row(s) of data uploaded successfully` }
                   
                 </p>
               </div>
@@ -754,26 +759,27 @@ const TotUpload = (props) => {
                   Close
                 </button>
 
-                {uploadNew ? (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() =>uploadNewData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Upload New
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => proceedData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Proceed
-                  </button>
+                {!uploadNew ? (
+                   <button
+                   type="button"
+                   // disabled={!nextDisabled}
+                   onClick={() => proceedData()}
+                   className="btn btn-primary px-4 mx-4 mt-2"
+                   style={{ height: "2.5rem" }}
+                 >
+                   Proceed
+                 </button>
+                   
+                 ) : (
+                   <button
+                     type="button"
+                     // disabled={!nextDisabled}
+                     onClick={() =>uploadNewData()}
+                     className="btn btn-primary px-4 mx-4 mt-2"
+                     style={{ height: "2.5rem" }}
+                   >
+                     Upload New
+                   </button>
                 )}
               </div>
             </Modal.Body>
