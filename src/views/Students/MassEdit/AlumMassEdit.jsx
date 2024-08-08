@@ -121,7 +121,7 @@ const AlumMassEdit = (props) => {
   const [formStatus, setFormStatus] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
-  const [typeOptions, setTypeOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState(null);
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -132,6 +132,7 @@ const AlumMassEdit = (props) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alumData, setAlumData] = useState([]);
   const [searchNextBool, setSearchNextBool] = useState(true);
+  const [noDataBool,setNoDataBool]=useState(false)
   const [searchDisabled, setSearchDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(true);
   // const [selectedTypes, setSelectedTypes] = useState([]);
@@ -383,8 +384,6 @@ const AlumMassEdit = (props) => {
 
     const handleValue = () => {
       const selectedValues = getValue();
-      // console.log('Selected values:', selectedValues);
-      // Perform your submit action here
     };
 
     return (
@@ -457,7 +456,6 @@ const AlumMassEdit = (props) => {
     setSelectedOptions(selected);
 
     const matchingData = findMatchingData(alumData, selected, "type");
-    // console.log(matchingData);
 
     let values = matchingData.map((obj) => ({
       label: `${obj.student.full_name} (${obj.student.student_id})`,
@@ -468,7 +466,6 @@ const AlumMassEdit = (props) => {
         index === self.findIndex((t) => t.value === item.value)
     );
     setStudentOptions(uniqueData);
-    // console.log("Mapped values:", uniqueData);
   };
 
   const findMatchingData = (array1, array2, key) => {
@@ -497,7 +494,6 @@ const AlumMassEdit = (props) => {
     setStudents([]);
     setisdisabledStudentlist(true);
   };
- 
   return (
     <Modal
       centered
@@ -572,24 +568,27 @@ const AlumMassEdit = (props) => {
                     <label className="leading-24">Alumni Service</label>
                     <Select
                       isMulti
-                      isDisabled={alumniDisable || typeOptions.length == 0}
+                      isDisabled={alumniDisable || typeOptions?.length == 0}
                       onChange={(selectedOptions) => {
                         handleTypeChange(selectedOptions)
-                        if(selectedOptions.length ===0 ){
+                        if(selectedOptions?.length ===0 ){
                           setStudents([]);
                           setStudentOptions([]);
                           setisdisabledStudentlist(true);
                           setSearchNextBool(true);
                           setSearchDisabled(true);
                         }
+                        
                       
                       }}
                       components={customComponents}
-                      options={typeOptions}
+                      options={typeOptions || []}
                       className="basic-multi-select"
                       classNamePrefix="select"
                       value={selectedOptions}
                     />
+                    {selectedOptions?.length === 0 && typeOptions?.length === 0 ? <label className="text-danger">No Data Found</label> :""}
+                    
                   </div>
                   <div>
                     <label className="leading-24">Student</label>
@@ -599,18 +598,18 @@ const AlumMassEdit = (props) => {
                       options={studentOptions}
                       closeMenuOnSelect={false}
                       components={customComponents}
-                      isOptionDisabled={() => students.length >= 10}
+                      isOptionDisabled={() => students?.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
                       isDisabled={isdisabledStudentlist}
                       // onInputChange={(e) => setStudentInput(e)}
                       onChange={(value) => {
                         handleselectChange(value);
-                        if (value.length == 0) {
+                        if (value?.length == 0) {
                           setSearchDisabled(true);
                           setNextDisabled(true);
                         }
-                        if (value.length > 0) {
+                        if (value?.length > 0) {
                           setNextDisabled(false);
                         }
                       }}
@@ -631,7 +630,7 @@ const AlumMassEdit = (props) => {
                         type="button"
                         onClick={handelSearch}
                         disabled={selectedOptions?.length === 0 }
-                        className="btn btn-primary mt-3"
+                        className="btn btn-primary mt-3 text-capitalize "
                       >
                         Search
                       </button>
