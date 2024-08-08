@@ -351,16 +351,22 @@ const AlumMassEdit = (props) => {
       ),
   });
 
-  const handelCancel = () => {
-    // props.handelCancel();
-    setFormStatus(!formStatus);
+  const handelCancel = (key) => {
+    if(key ==='cross'){
+      props.handelCancel();
+    }else{
+      setFormStatus(!formStatus);
     setStudentOptions([]);
     setisdisabledStudentlist(true);
     setAlumniDisable(true);
     setTypeOptions([]);
     setStudents([]);
     setSearchNextBool(true);
+    }
+    
+    
   };
+
   const MultiValue = ({ index, getValue, ...props }) => {
     const maxToShow = 1; // Maximum number of values to show
     const overflowCount = getValue().length - maxToShow;
@@ -519,7 +525,7 @@ const AlumMassEdit = (props) => {
         </Modal.Title>
             <div className="d-flex justify-content-end align-items-center">
               <button
-                onClick={handelCancel}
+                onClick={()=>handelCancel('cross')}
                 style={{
                   border: "none",
                   background: "none",
@@ -541,7 +547,7 @@ const AlumMassEdit = (props) => {
                 <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
                   <div className="col-12 d-flex justify-content-between ">
                     <div className="col-md-5 col-sm-12 mt-2">
-                      <label>Start Date</label>
+                      <label>Start DateN</label>
                       <Field
                         type="date"
                         name="start_date"

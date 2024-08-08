@@ -310,7 +310,7 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    // props.handelCancel();
+    props.handelCancel();
     setFormStatus(!formStatus);
   };
 
