@@ -8,6 +8,8 @@ import api from "../../../apis";
 import { connect } from "react-redux";
 import MassEdit from "./MassEdit";
 import MassEmployerUpload from "./MassEmployerUpload";
+import EmploymenteditIMg  from "../../../assets/images/employeement edit.webp";
+import AlumnieditIMg  from "../../../assets/images/alumni edit.webp";
 
 const Styled = styled.div`
   .cont {
@@ -116,20 +118,22 @@ const ModalShowmassedit = (props) => {
         </Modal.Header>
         <Modal.Body className="bg-white" >
           <div className="d-flex justify-content-around align-items-center " style={{minHeight:"150px"}}>
-            <button
-              type="button"
+            <div
+              role="button"
               onClick={handleMassAlumuni}
-              className="btn btn-primary mass_edit_bottons"
+              className="btn mass_edit_bottons "
             >
-              Alumni Edit
-            </button>
-            <button
-              type="button"
+              <img alt="alumni-illustrator" src={AlumnieditIMg}  />
+              <p>Alumni Edit</p>
+            </div>
+            <div
+              role="button"
               onClick={handleMassemployer}
-              className="btn btn-primary mass_edit_bottons"
+              className="btn mass_edit_bottons"
             >
-              Employment Edit
-            </button>
+              <img alt="Employment-illustrator" src={EmploymenteditIMg}  />
+              <p>Employment Edit</p>
+            </div>
           </div>
         </Modal.Body>
       </Modal>
