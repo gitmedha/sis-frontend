@@ -165,7 +165,6 @@
 .mass_edit_bottons {
     width: 40%;
     border-radius: 10px;
-    color: #257b69;
     display: flex;
     border: 1px solid #bebebe;
     flex-direction: column;
@@ -176,14 +175,19 @@
         // -23px -23px 66px #ffffff;
 }
 
-.mass_edit_bottons:hover {
-    box-shadow: 23px 23px 66px #bebebe;
-    border: 1px solid #257b69;
+.mass_edit_bottons svg {
+    color: #bebebe;
+    margin-bottom: 10px;
 }
 
-.mass_edit_bottons img{
-    width: 100%;
-    height: 180px;
-    // height: ;
-    object-fit: cover;
+
+.mass_edit_bottons:hover svg {
+    color: #257b69;
+    margin-bottom: 10px;
+}
+
+.mass_edit_bottons:hover {
+    box-shadow: 23px 23px 66px #bebebe;
+    border: 1.5px solid #257b69;
+    color: #257b69;
 }
