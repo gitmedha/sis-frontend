@@ -289,7 +289,11 @@ const UploadFile = (props) => {
 
       reader.onload = () => {
         const fileData = reader.result;
-        convertExcel(fileData);
+        try {
+          convertExcel(fileData);
+        } catch (error) {
+          setNotUploadSuccesFully(error?.message);
+        }
       };
 
       reader.readAsBinaryString(file);
