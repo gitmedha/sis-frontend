@@ -1,5 +1,5 @@
 import InputErr from "./InputErr";
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
@@ -87,6 +87,7 @@ const SelectField = (props) => {
 
   // console.log(field, defaultOptions)
   const handleInputChange = (newValue) => {
+    // setInputValue(newValue);
     return newValue;
   };
 
@@ -101,12 +102,11 @@ const SelectField = (props) => {
         isSearchable={isSearchable || icon !== 'down'}
         components={{ DropdownIndicator }}
         onChange={option => {
-          setSelectedOption(option)
+            setSelectedOption(option)
             form.setFieldValue(field.name, option ? option.value : null);
             onChange(option);
           }
         }
-     
         value={selectedOpt}
         defaultOptions={defaultOptions}
         cacheOptions

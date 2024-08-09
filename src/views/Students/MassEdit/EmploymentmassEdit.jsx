@@ -7,7 +7,7 @@ import {
   getStudentEmploymentConnections,
   searchStudents,
   searchEmployers,
-  getStudentEmplymentRange
+  getStudentEmplymentRange,
 } from "../StudentComponents/StudentActions";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
@@ -58,8 +58,8 @@ const EmploymentmassEdit = (props) => {
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
   const [EmploymentData, setEmploymentData] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [startDate,setStartDate]=useState(null)
-  const [endDate,setEndDate]=useState(null)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   let initialValues = {
     employment_connection_student: "",
@@ -77,8 +77,8 @@ const EmploymentmassEdit = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-      const {data} = await searchStudents(filterValue);
-      
+      const { data } = await searchStudents(filterValue);
+
       let filterData = data.studentsConnection.values.map((student) => {
         return {
           ...student,
@@ -88,7 +88,6 @@ const EmploymentmassEdit = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
@@ -135,7 +134,7 @@ const EmploymentmassEdit = (props) => {
           label: item.value,
         }))
       );
-      
+
       setAllStatusOptions(
         data.status.map((item) => ({
           ...item,
@@ -193,7 +192,7 @@ const EmploymentmassEdit = (props) => {
 
   const filterEmployer = async (filterValue) => {
     try {
-      const {data} = await searchEmployers(filterValue);
+      const { data } = await searchEmployers(filterValue);
       let filterData = data.employersConnection.values.map((employer) => {
         return {
           ...employer,
@@ -202,9 +201,8 @@ const EmploymentmassEdit = (props) => {
         };
       });
       setEmployerOptions(filterData);
-
     } catch (error) {
-     console.error(error); 
+      console.error(error);
     }
   };
 
@@ -218,7 +216,6 @@ const EmploymentmassEdit = (props) => {
               startDate,
               endDate
             );
-              console.log(data);
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -262,11 +259,9 @@ const EmploymentmassEdit = (props) => {
       students.map((obj) => {
         if (obj.id === id) {
           if (newData.hasOwnProperty("opportunity")) {
-            
             let data = { opportunity: newData.opportunity };
             return { ...obj, ...data };
           } else if (newData.hasOwnProperty("employer")) {
-            
             let employerEntryChange = { employer: newData.employer };
             return { ...obj, ...employerEntryChange };
           } else if (
@@ -315,8 +310,8 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    // props.handelCancel();
-    setFormStatus(!formStatus)
+    props.handelCancel();
+    setFormStatus(!formStatus);
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -350,69 +345,63 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
-    console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
-        // Build the object with only non-empty values
-        let obj = {
-            assigned_to: values.assigned_to?.id,
-            experience_certificate: values.experience_certificate,
-            number_of_internship_hours: values.number_of_internship_hours,
-            end_date: values.end_date,
-            opportunity: values.opportunity_id,
-            employer: values.employer_id,
-            reason_if_rejected: values.reason_if_rejected,
-            reason_if_rejected_other: values.reason_if_rejected_other,
-            salary_offered: values.salary_offered,
-            start_date: values.start_date,
-            source: values.source,
-            status: values.status,
-            work_engagement: values.work_engagement,
-        };
+      // Build the object with only non-empty values
+      let obj = {
+        assigned_to: values.assigned_to?.id,
+        experience_certificate: values.experience_certificate,
+        number_of_internship_hours: values.number_of_internship_hours,
+        end_date: values.end_date,
+        opportunity: values.opportunity_id,
+        employer: values.employer_id,
+        reason_if_rejected: values.reason_if_rejected,
+        reason_if_rejected_other: values.reason_if_rejected_other,
+        salary_offered: values.salary_offered,
+        start_date: values.start_date,
+        source: values.source,
+        status: values.status,
+        work_engagement: values.work_engagement,
+      };
 
-        // Filter out keys with undefined or empty string values
-        let filteredObj = Object.keys(obj).reduce((acc, key) => {
-            if (obj[key] !== undefined && obj[key] !== "") {
-                acc[key] = obj[key];
-            }
-            return acc;
-        }, {});
+      // Filter out keys with undefined or empty string values
+      let filteredObj = Object.keys(obj).reduce((acc, key) => {
+        if (obj[key] !== undefined && obj[key] !== "") {
+          acc[key] = obj[key];
+        }
+        return acc;
+      }, {});
 
-        console.log(val);
-        filteredObj.student_id = val.student_id;
-        filteredObj.id = val.id;
+      filteredObj.student_id = val.student_id;
+      filteredObj.id = val.id;
 
-        return filteredObj;
+      return filteredObj;
     });
-    console.log(data);
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
-};
-const initialValuesStudent = {
-  start_date: null,
-  end_date: null,
-  student_ids: [],
-};
+  };
+  const initialValuesStudent = {
+    start_date: null,
+    end_date: null,
+    student_ids: [],
+  };
 
-useEffect(async()=>{
+  useEffect(async () => {
+    if (startDate && endDate) {
+      setDisabled(false);
+      let data = await getStudentEmplymentRange(startDate, endDate);
+      let uniqueStudentsMap = new Map();
+      data.forEach((obj) => {
+        if (!uniqueStudentsMap.has(obj.student.id)) {
+          uniqueStudentsMap.set(obj.student.id, obj);
+        }
+      });
 
-  if(startDate && endDate){
-    setDisabled(false)
-    let data = await getStudentEmplymentRange(startDate,endDate)
-    console.log(await getStudentEmplymentRange(startDate,endDate));
-    let uniqueStudentsMap = new Map();
-data.forEach((obj) => {
-if (!uniqueStudentsMap.has(obj.student.id)) {
-  uniqueStudentsMap.set(obj.student.id, obj);
-}
-});
-
-let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
-label: `${obj.student.full_name} (${obj.student.student_id})`,
-value: Number(obj.student.id),
-}));  
-    setStudentOptions(values);
-  }
-},[startDate,endDate])
-
+      let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
+        label: `${obj.student.full_name} (${obj.student.student_id})`,
+        value: Number(obj.student.id),
+      }));
+      setStudentOptions(values);
+    }
+  }, [startDate, endDate]);
 
   return (
     <>
@@ -428,6 +417,14 @@ value: Number(obj.student.id),
         {!formStatus && (
           <>
             <Modal.Header>
+              <Modal.Title
+                id="contained-modal-title-vcenter"
+                className="d-flex align-items-center"
+              >
+                <h4 className="text--primary bebas-thick mt-2">
+                  Mass Employment connection Edit
+                </h4>
+              </Modal.Title>
               <div className="d-flex justify-content-end align-items-center">
                 <button
                   onClick={handelCancel}
@@ -442,66 +439,75 @@ value: Number(obj.student.id),
                 </button>
               </div>
             </Modal.Header>
+
             <Modal.Body className="bg-white" height="">
-            <Formik
-              initialValues={initialValuesStudent}
-              // validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ values, setFieldValue }) => (
-                <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
-                  <div className="col-12 d-flex justify-content-between ">
-                    <div className="col-md-5 col-sm-12 mt-2">
-                      <label>Start Date</label>
-                      <Field
-                        type="date"
-                        name="start_date"
-                        placeholder="Start Date"
-                        className="form-control "
-                        required
-                        onChange={(e)=>setStartDate(e.target.value)}
+              <Formik
+                initialValues={initialValuesStudent}
+                // validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ values, setFieldValue }) => (
+                  <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
+                    <div className="col-12 d-flex justify-content-between ">
+                      <div className="col-md-5 col-sm-12 mt-2">
+                        <label>Start Date</label>
+                        <Field
+                          type="date"
+                          name="start_date"
+                          placeholder="Start Date"
+                          className="form-control "
+                          required
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
+                      </div>
+                      <div className="col-md-5 col-sm-12 mt-2">
+                        <label>End Date</label>
+                        <Field
+                          type="date"
+                          name="end_date"
+                          placeholder="End Date"
+                          className="form-control ml-2"
+                          required
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="leading-24">Student</label>
+                      <Select
+                        isMulti
+                        name="student_ids"
+                        options={studentOptions}
+                        closeMenuOnSelect={false}
+                        components={customComponents}
+                        isOptionDisabled={() => students.length >= 10}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        isDisabled={disabled}
+                        // onInputChange={(e) => setStudentInput(e)}
+                        onChange={handleselectChange}
+                        value={students}
                       />
                     </div>
-                    <div className="col-md-5 col-sm-12 mt-2">
-                      <label>End Date</label>
-                      <Field
-                        type="date"
-                        name="end_date"
-                        placeholder="End Date"
-                        className="form-control ml-2"
-                        required
-                        onChange={(e)=>setEndDate(e.target.value)}
-                      />
+                    <div className="d-flex justify-content-end mx-5">
+                      <button
+                        type="submit"
+                        onClick={() => props.handelCancel()}
+                        className="btn btn-secondary mt-3 mr-3"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={disabled}
+                        className="btn btn-primary mt-3"
+                      >
+                        Next
+                      </button>
                     </div>
-                  </div>
-                  <div>
-                    <label className="leading-24">Student</label>
-                    <Select
-                      isMulti
-                      name="student_ids"
-                      options={studentOptions}
-                      closeMenuOnSelect={false}
-                      components={customComponents}
-                      isOptionDisabled={() => students.length >= 10}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      isDisabled={disabled}
-                      // onInputChange={(e) => setStudentInput(e)}
-                      onChange={handleselectChange}
-                      value={students}
-                    />
-                  </div>
-                  <div className="d-flex justify-content-end mx-5">
-                  <button type="submit" onClick={()=>props.handelCancel()} className="btn btn-secondary mt-3 mr-3">
-                      Cancel
-                    </button>
-                    <button type="submit" disabled={disabled} className="btn btn-primary mt-3">
-                      Next
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
+                  </Form>
+                )}
+              </Formik>
             </Modal.Body>
           </>
         )}
