@@ -84,10 +84,13 @@ const Students = (props) => {
       {
         Header: "Name",
         accessor: "avatar",
+        
       },
       {
         Header: "Student ID",
         accessor: "student_id",
+        width:250,
+        size:200,
       },
       {
         Header: "Area",

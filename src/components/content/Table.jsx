@@ -59,7 +59,7 @@ const Styles = styled.div`
       overflow: hidden; /* Prevent overflow in cells */
       text-overflow: ellipsis; /* Add ellipsis to overflowed content */
       white-space: nowrap; /* Prevent wrapping in cells */
-      max-width: 150px; /* Set a maximum width for cells */
+      max-width: 100px; /* Set a maximum width for cells */
     }
   }
 
@@ -192,8 +192,10 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th>#</th>}
-                  {headerGroup.headers.map((column) => (
+                  {indexes && <th style={{width:'1.5rem'}}>#</th>}
+                  {headerGroup.headers.map((column) => 
+                     (
+                    
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
