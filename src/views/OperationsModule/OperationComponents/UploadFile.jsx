@@ -274,30 +274,36 @@ const UploadFile = (props) => {
   };
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+  
     setShowForm(true);
-    setFileName('');  // Reset the file name display
-    setNextDisabled(false);  // Optionally disable the next button
+    setFileName(''); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
     setUploadSuccesFully(''); 
-    setNotUploadSuccesFully('')
-    // setNextDisabled(false);
-
+    setNotUploadSuccesFully('');
+  
     if (file) {
       setFileName(`${file.name} Uploaded`);
-
+  
       const reader = new FileReader();
-
+  
       reader.onload = () => {
         const fileData = reader.result;
-        convertExcel(fileData);
+        try {
+          convertExcel(fileData);
+        } catch (error) {
+          setNotUploadSuccesFully(error?.message);
+        }
       };
-
+  
       reader.readAsBinaryString(file);
-      // setNextDisabled(true);
+      fileInput.value = '';
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
   };
+  
 
   useEffect(() => {
     const getbatch = async () => {

@@ -125,6 +125,7 @@ const MassEmployerUpload = (props) => {
   }, [props]);
 
   const onModalClose = () => {
+    setStudents([])
     onHide([]);
   };
 

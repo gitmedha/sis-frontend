@@ -21,6 +21,7 @@ import { Formik, Form, Field } from "formik";
 import { FaTimes } from "react-icons/fa";
 import styled from "styled-components";
 import DatePicker from "src/utils/Form/DatePicker";
+import moment from "moment";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -132,7 +133,7 @@ const AlumMassEdit = (props) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [alumData, setAlumData] = useState([]);
   const [searchNextBool, setSearchNextBool] = useState(true);
-  const [noDataBool,setNoDataBool]=useState(false)
+  const [noDataBool, setNoDataBool] = useState(false);
   const [searchDisabled, setSearchDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(true);
   // const [selectedTypes, setSelectedTypes] = useState([]);
@@ -296,14 +297,13 @@ const AlumMassEdit = (props) => {
         assigned_to: filteredData.assigned_to || obj.assigned_to,
         category: filteredData.category || obj.category,
         comments: filteredData.comments || obj.comments,
-        end_date: filteredData.end_date || obj.end_date,
+        end_date: moment(new Date(filteredData.end_date || obj.end_date)).format('YYYY-MM-DD'),
         fee_amount: filteredData.fee_amount || obj.fee_amount,
-        fee_submission_date:
-          filteredData.fee_submission_date || obj.fee_submission_date,
+        fee_submission_date: moment(new Date(filteredData.fee_submission_date || obj.fee_submission_date)).format('YYYY-MM-DD'),
         location: filteredData.location || obj.location,
         program_mode: filteredData.program_mode || obj.program_mode,
         receipt_number: filteredData.receipt_number || obj.receipt_number,
-        start_date: filteredData.start_date || obj.start_date,
+        start_date: moment(new Date(filteredData.start_date || obj.start_date)).format('YYYY-MM-DD'),
       };
 
       return filteredData;
@@ -331,41 +331,69 @@ const AlumMassEdit = (props) => {
     start_date: Yup.date()
       .nullable()
       .test(
-        "start-end",
-        "Both start date and end date are required",
+        "start-required-with-end",
+        "Start date is required when end date is provided",
         function (value) {
           const { end_date } = this.parent;
-          return (!value && !end_date) || (value && end_date);
+          if (end_date && !value) {
+            return false; // Fail validation if end date exists but start date doesn't
+          }
+          return true;
+        }
+      )
+      .test(
+        "start-before-end",
+        "Start date must be before End date",
+        function (value) {
+          const { end_date } = this.parent;
+          if (value && end_date && value > end_date) {
+            return false; // Fail validation if start date is after end date
+          }
+          return true;
         }
       ),
     end_date: Yup.date()
       .nullable()
-      .min(Yup.ref("start_date"), "End date can't be before Start date")
       .test(
-        "start-end",
-        "Both start date and end date are required",
+        "end-required-with-start",
+        "End date is required when start date is provided",
         function (value) {
           const { start_date } = this.parent;
-          return (!value && !start_date) || (value && start_date);
+          if (start_date && !value) {
+            return false; // Fail validation if start date exists but end date doesn't
+          }
+          return true;
+        }
+      )
+      .min(Yup.ref("start_date"), "End date can't be before Start date")
+      .test(
+        "end-after-start",
+        "End date must be after Start date",
+        function (value) {
+          const { start_date } = this.parent;
+          if (start_date && value && start_date > value) {
+            return false; // Fail validation if end date is before start date
+          }
+          return true;
         }
       ),
   });
+  
+  
 
   const handelCancel = (key) => {
-    if(key ==='cross'){
+    if (key === "cross") {
       props.handelCancel();
-    }else{
-    setFormStatus(!formStatus);
-    setStudentOptions([]);
-    setSelectedOptions([])
-    setisdisabledStudentlist(true);
-    setAlumniDisable(true);
-    setTypeOptions(null);
-    setStudents([]);
-    setSearchNextBool(true);
+    } else {
+      setFormStatus(!formStatus);
+      setStudentOptions([]);
+      setSelectedOptions([]);
+      setisdisabledStudentlist(true);
+      setAlumniDisable(true);
+      setTypeOptions(null);
+      setStudents([]);
+      setSearchNextBool(true);
     }
-    
-    
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -424,8 +452,7 @@ const AlumMassEdit = (props) => {
 
   useEffect(async () => {
     if (startDate && endDate) {
-      
-      setTypeOptions([])
+      setTypeOptions([]);
       let data = await getStudentAlumniRange(startDate, endDate);
       setAlumData(data);
       let uniqueStudentsMap = new Map();
@@ -443,7 +470,7 @@ const AlumMassEdit = (props) => {
         value: type,
         type: type,
       }));
-      
+
       setTypeOptions(uniqueTypes);
       setAlumniDisable(false);
     }
@@ -488,14 +515,14 @@ const AlumMassEdit = (props) => {
   const handleSearchStudent = () => {
     setisdisabledStudentlist(false);
   };
-  const handleDatechange = (event,key) => {
-    if(key ==="endDate"){
-      setEndDate(event.target.value)
-    }else{
-      setStartDate(event.target.value)
+  const handleDatechange = (event, key) => {
+    if (key === "endDate") {
+      setEndDate(event.target.value);
+    } else {
+      setStartDate(event.target.value);
     }
     setAlumniDisable(true);
-    setSearchNextBool(true)
+    setSearchNextBool(true);
     setSelectedOptions([]);
     setStudentOptions([]);
     setStudents([]);
@@ -514,19 +541,17 @@ const AlumMassEdit = (props) => {
       {!formStatus && (
         <>
           <Modal.Header>
-
-          <Modal.Title
-          id="contained-modal-title-vcenter"
-          className="d-flex align-items-center"
-        >
-          <h4 className="text--primary bebas-thick mb-0">
-            
-            Mass Alumni Engagement Edit
-          </h4>
-        </Modal.Title>
+            <Modal.Title
+              id="contained-modal-title-vcenter"
+              className="d-flex align-items-center"
+            >
+              <h4 className="text--primary bebas-thick mb-0">
+                Mass Alumni Engagement Edit
+              </h4>
+            </Modal.Title>
             <div className="d-flex justify-content-end align-items-center">
               <button
-                onClick={()=>handelCancel('cross')}
+                onClick={() => handelCancel("cross")}
                 style={{
                   border: "none",
                   background: "none",
@@ -538,7 +563,7 @@ const AlumMassEdit = (props) => {
               </button>
             </div>
           </Modal.Header>
-          <Modal.Body className="bg-white" height="">
+          <Modal.Body className="bg-white" style={{minHeight:"300px"}}>
             <Formik
               initialValues={initialValuesStudent}
               // validationSchema={validationSchema}
@@ -548,14 +573,14 @@ const AlumMassEdit = (props) => {
                 <Form className="col-sm-12 px-3 d-flex flex-column justify-content-around">
                   <div className="col-12 d-flex justify-content-between ">
                     <div className="col-md-5 col-sm-12 mt-2">
-                      <label>Start DateN</label>
+                      <label>Start Date</label>
                       <Field
                         type="date"
                         name="start_date"
                         placeholder="Start Date"
                         className="form-control text-uppercase "
                         required
-                        onChange={(e)=>handleDatechange(e,"startDate")}
+                        onChange={(e) => handleDatechange(e, "startDate")}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -567,26 +592,24 @@ const AlumMassEdit = (props) => {
                         className="form-control ml-2 text-uppercase"
                         required
                         min={startDate}
-                        onChange={(e)=>handleDatechange(e,"endDate")}
+                        onChange={(e) => handleDatechange(e, "endDate")}
                       />
                     </div>
                   </div>
-                  <div>
+                  <div className="mt-2">
                     <label className="leading-24">Alumni Service</label>
                     <Select
                       isMulti
                       isDisabled={alumniDisable || typeOptions?.length == 0}
                       onChange={(selectedOptions) => {
-                        handleTypeChange(selectedOptions)
-                        if(selectedOptions?.length ===0 ){
+                        handleTypeChange(selectedOptions);
+                        if (selectedOptions?.length === 0) {
                           setStudents([]);
                           setStudentOptions([]);
                           setisdisabledStudentlist(true);
                           setSearchNextBool(true);
                           setSearchDisabled(true);
                         }
-                        
-                      
                       }}
                       components={customComponents}
                       options={typeOptions || []}
@@ -594,10 +617,14 @@ const AlumMassEdit = (props) => {
                       classNamePrefix="select"
                       value={selectedOptions}
                     />
-                    {selectedOptions?.length === 0 && typeOptions?.length === 0 ? <label className="text-danger">No Data Found</label> :""}
-                    
+                    {selectedOptions?.length === 0 &&
+                    typeOptions?.length === 0 ? (
+                      <label className="text-danger">No Data Found</label>
+                    ) : (
+                      ""
+                    )}
                   </div>
-                  <div>
+                  <div className="mt-2">
                     <label className="leading-24">Student</label>
                     <Select
                       isMulti
@@ -624,7 +651,7 @@ const AlumMassEdit = (props) => {
                       value={students}
                     />
                   </div>
-                  <div className="d-flex justify-content-end mx-5">
+                  <div className="d-flex justify-content-end  mt-5 pt-5" >
                     <button
                       type="submit"
                       onClick={() => props.handelCancel()}
@@ -636,7 +663,7 @@ const AlumMassEdit = (props) => {
                       <button
                         type="button"
                         onClick={handelSearch}
-                        disabled={selectedOptions?.length === 0 }
+                        disabled={selectedOptions?.length === 0}
                         className="btn btn-primary mt-3 text-capitalize "
                       >
                         Search
@@ -677,7 +704,7 @@ const AlumMassEdit = (props) => {
               initialValues={initialValues}
               validationSchema={validations}
             >
-              {({ values ,setFieldValue }) => (
+              {({ values, setFieldValue }) => (
                 <Form>
                   <>
                     <div className="row px-3 form_sec">
@@ -757,10 +784,14 @@ const AlumMassEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="start_date"
-                          label="Start Date"
-                          placeholder="Start Date"
+                          label="Start Date W"
+                          placeholder="Start Date "
                           control="datepicker"
-                          onChange={(date) => setFieldValue('start_date', date)}
+                          onChange={(date) => {
+                            // const updatedDate = moment(date).startOf('day').add(5, 'hours').toDate();
+                            setFieldValue('start_date', date);
+                          }}
+                        
                           className="form-control"
                           autoComplete="off"
                         />
@@ -770,7 +801,7 @@ const AlumMassEdit = (props) => {
                           name="end_date"
                           label="End Date"
                           placeholder="End Date"
-                          onChange={(date) => setFieldValue('end_date', date)}
+                          onChange={(date) => setFieldValue('end_date',moment(date).startOf('day').add(24, 'hours').toDate())}
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"

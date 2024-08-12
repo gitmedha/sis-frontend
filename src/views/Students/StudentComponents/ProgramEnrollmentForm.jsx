@@ -147,23 +147,23 @@ const ProgramEnrollmentForm = (props) => {
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
       setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setStatusOptions(data?.status?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setFeeStatusOptions(data?.fee_status?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setYearOfCompletionOptions(data?.year_of_completion?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCurrentCourseYearOptions(data?.current_course_year?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseLevelOptions(data?.course_level?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseTypeOptions(data?.course_type?.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllCourse().then((data)=>{
-      const uniqueCourseLevels = new Set(data.data?.data?.coursesConnection?.values.map(item => item.course_level));
-      const uniqueCourseType=new Set(data.data.data.coursesConnection.values.map(item => item.course_type));
-      const courseLevelOptions = Array.from(uniqueCourseLevels).map(course_level => ({
+      const uniqueCourseLevels = new Set(data?.data?.data?.coursesConnection?.values?.map(item => item.course_level));
+      const uniqueCourseType=new Set(data?.data?.data?.coursesConnection?.values?.map(item => item.course_type));
+      const courseLevelOptions = Array.from(uniqueCourseLevels)?.map(course_level => ({
         key: course_level,
         value: course_level,
         label: course_level
       }));
       setCourseLevelOptions(courseLevelOptions);
-      setCourseTypeOptions(Array.from(uniqueCourseType).map(course_type => ({
+      setCourseTypeOptions(Array.from(uniqueCourseType)?.map(course_type => ({
         key: course_type,
         value: course_type,
         label: course_type
@@ -179,7 +179,7 @@ const ProgramEnrollmentForm = (props) => {
         ? props.programEnrollment.institution
         : null;
       let institutionFoundInList = false;
-      let filterData = data.institutionsConnection.values.map((institution) => {
+      let filterData = data?.institutionsConnection?.values?.map((institution) => {
         if (
           props.programEnrollment &&
           institution.id === Number(programEnrollmentInstitution?.id)
@@ -198,7 +198,7 @@ const ProgramEnrollmentForm = (props) => {
         programEnrollmentInstitution !== null &&
         !institutionFoundInList
       ) {
-        filterData.unshift({
+        filterData?.unshift({
           label: programEnrollmentInstitution.name,
           value: Number(programEnrollmentInstitution.id),
         });
@@ -216,7 +216,7 @@ const ProgramEnrollmentForm = (props) => {
         ? props.programEnrollment.batch
         : null;
       let batchFoundInList = false;
-      let filterData = data.batchesConnection.values.map((batch) => {
+      let filterData = data?.batchesConnection?.values.map((batch) => {
         if (
           props.programEnrollment &&
           batch.id === Number(programEnrollmentBatch?.id)
@@ -234,7 +234,7 @@ const ProgramEnrollmentForm = (props) => {
         programEnrollmentBatch !== null &&
         !batchFoundInList
       ) {
-        filterData.unshift({
+        filterData?.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
         });
@@ -287,16 +287,16 @@ const ProgramEnrollmentForm = (props) => {
   useEffect(()=>{
     if (courseLevel && courseType) {
       getAllCourse().then((data) => {
-        const filteredCourses = data.data.data.coursesConnection.values.filter(obj => {
+        const filteredCourses = data?.data?.data?.coursesConnection?.values?.filter(obj => {
           return obj.course_level === courseLevel && obj.course_type === courseType;
         });
         
-        const courseOptions = filteredCourses.map(obj => ({
+        const courseOptions = filteredCourses?.map(obj => ({
           key: obj.course_name,
           value: obj.course_name,
           label: obj.course_name
         }));
-        courseOptions.push({ value: "Other", label: "Other", key: "Other" });
+        courseOptions?.push({ value: "Other", label: "Other", key: "Other" });
     
       setcourse(courseOptions)
         

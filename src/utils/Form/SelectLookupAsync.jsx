@@ -1,5 +1,5 @@
 import InputErr from "./InputErr";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
@@ -61,7 +61,7 @@ const SelectField = (props) => {
     form,
     field,
     placeholder,
-    onChange = () => {},
+    onChange = () => { },
     isSearchable = false,
     filterData,
     defaultOptions,
@@ -70,42 +70,49 @@ const SelectField = (props) => {
     isMulti
   } = props;
   const [selectedOpt, setSelectedOption] = useState(null)
+  const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions : []);
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
+      setOptions(data)
       callback(data);
     });
   };
 
+  useEffect(() => {
+    if (Array.isArray(defaultOptions)) {
+      setOptions(defaultOptions);
+    }
+  }, [defaultOptions]);
+
   const handleInputChange = (newValue) => {
-    // setInputValue(newValue);
     return newValue;
   };
 
-  return (
-      <AsyncSelect
-        icon={icon}
-        name={field.name}
-        styles={style}
-        loadOptions={loadOptions}
-        onInputChange={handleInputChange}
-        placeholder={placeholder}
-        isSearchable={isSearchable || icon !== 'down'}
-        components={{ DropdownIndicator }}
-        onChange={option => {
-            setSelectedOption(option)
-            form.setFieldValue(field.name, option ? option.value : null);
-            onChange(option);
-          }
-        }
+  const handleChangeOption = (option) => {
+    setSelectedOption(option)
+    form.setFieldValue(field?.name, option ? option?.value : null);
+    onChange(option);
+  }
 
-        value={selectedOpt}
-        defaultOptions={defaultOptions}
-        cacheOptions
-        isMulti={isMulti}
-        isDisabled={isDisabled}
-        isClearable={isClearable}
-      />
+  return (
+    <AsyncSelect
+      icon={icon}
+      name={field.name}
+      styles={style}
+      loadOptions={loadOptions}
+      onInputChange={handleInputChange}
+      placeholder={placeholder}
+      isSearchable={isSearchable || icon !== 'down'}
+      components={{ DropdownIndicator }}
+      onChange={(op)=>handleChangeOption(op)}
+      value={options?.find((option) => option?.value === (field?.value || selectedOpt?.value)) || selectedOpt}
+      defaultOptions={defaultOptions || options}
+      cacheOptions
+      isMulti={isMulti}
+      isDisabled={isDisabled}
+      isClearable={isClearable}
+    />
   );
 };
 
@@ -126,3 +133,4 @@ const SelectLookupAsync = (props) => {
 };
 
 export default SelectLookupAsync;
+
