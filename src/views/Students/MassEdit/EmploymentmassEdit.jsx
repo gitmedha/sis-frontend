@@ -351,13 +351,13 @@ const EmploymentmassEdit = (props) => {
         assigned_to: values.assigned_to?.id,
         experience_certificate: values.experience_certificate,
         number_of_internship_hours: values.number_of_internship_hours,
-        end_date: values.end_date,
+        end_date: values.end_date ? moment(new Date(values.end_date)).format('YYYY-MM-DD'):val.end_date,
         opportunity: values.opportunity_id,
         employer: values.employer_id,
         reason_if_rejected: values.reason_if_rejected,
         reason_if_rejected_other: values.reason_if_rejected_other,
         salary_offered: values.salary_offered,
-        start_date: values.start_date,
+        start_date: values.start_date ? moment(new Date(values.start_date)).format('YYYY-MM-DD'):val.start_date,
         source: values.source,
         status: values.status,
         work_engagement: values.work_engagement,
@@ -373,7 +373,6 @@ const EmploymentmassEdit = (props) => {
 
       filteredObj.student_id = val.student_id;
       filteredObj.id = val.id;
-
       return filteredObj;
     });
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
@@ -440,7 +439,7 @@ const EmploymentmassEdit = (props) => {
               </div>
             </Modal.Header>
 
-            <Modal.Body className="bg-white" height="">
+            <Modal.Body className="bg-white" style={{minHeight:"300px"}}>
               <Formik
                 initialValues={initialValuesStudent}
                 // validationSchema={validationSchema}
@@ -455,9 +454,12 @@ const EmploymentmassEdit = (props) => {
                           type="date"
                           name="start_date"
                           placeholder="Start Date"
-                          className="form-control "
+                          className="form-control text-uppercase"
                           required
-                          onChange={(e) => setStartDate(e.target.value)}
+                          onChange={(e) => {
+                            setStudents([])
+                            setStudentOptions([])
+                            setStartDate(e.target.value)}}
                         />
                       </div>
                       <div className="col-md-5 col-sm-12 mt-2">
@@ -466,13 +468,17 @@ const EmploymentmassEdit = (props) => {
                           type="date"
                           name="end_date"
                           placeholder="End Date"
-                          className="form-control ml-2"
+                          className="form-control ml-2 text-uppercase"
                           required
-                          onChange={(e) => setEndDate(e.target.value)}
+                          min={startDate}
+                          onChange={(e) => {
+                            setStudents([])
+                            setStudentOptions([])
+                            setEndDate(e.target.value)}}
                         />
                       </div>
                     </div>
-                    <div>
+                    <div className="mt-2">
                       <label className="leading-24">Student</label>
                       <Select
                         isMulti
@@ -488,8 +494,10 @@ const EmploymentmassEdit = (props) => {
                         onChange={handleselectChange}
                         value={students}
                       />
+                      {studentOptions.length ==0 && students.length ==0 ?<label className="text-danger">No Data</label>:""}
+                      
                     </div>
-                    <div className="d-flex justify-content-end mx-5">
+                    <div className="d-flex justify-content-end mt-5 pt-5">
                       <button
                         type="submit"
                         onClick={() => props.handelCancel()}
@@ -499,7 +507,7 @@ const EmploymentmassEdit = (props) => {
                       </button>
                       <button
                         type="submit"
-                        disabled={disabled}
+                        disabled={students.length ==0}
                         className="btn btn-primary mt-3"
                       >
                         Next
@@ -683,7 +691,7 @@ const EmploymentmassEdit = (props) => {
                             />
                           </div>
                         ) : (
-                          <div></div>
+                          ""
                         )}
                         {ifSelectedOthers ||
                         (initialValues.reason_if_rejected_other &&
@@ -698,9 +706,9 @@ const EmploymentmassEdit = (props) => {
                             />
                           </div>
                         ) : (
-                          <div></div>
+                          ""
                         )}
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             icon="down"
                             control="lookup"
