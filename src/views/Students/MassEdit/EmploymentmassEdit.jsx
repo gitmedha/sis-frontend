@@ -16,6 +16,7 @@ import { filterAssignedTo } from "../../../utils/function/lookupOptions";
 import Skeleton from "react-loading-skeleton";
 import { FaTimes } from "react-icons/fa";
 import moment from "moment";
+import SkeletonLoader from "src/components/content/SkeletonLoader";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -60,6 +61,7 @@ const EmploymentmassEdit = (props) => {
   const [disabled, setDisabled] = useState(true);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [skeleton,setSkeleton]=useState(false)
 
   let initialValues = {
     employment_connection_student: "",
@@ -351,13 +353,17 @@ const EmploymentmassEdit = (props) => {
         assigned_to: values.assigned_to?.id,
         experience_certificate: values.experience_certificate,
         number_of_internship_hours: values.number_of_internship_hours,
-        end_date: values.end_date ? moment(new Date(values.end_date)).format('YYYY-MM-DD'):val.end_date,
+        end_date: values.end_date
+          ? moment(new Date(values.end_date)).format("YYYY-MM-DD")
+          : val.end_date,
         opportunity: values.opportunity_id,
         employer: values.employer_id,
         reason_if_rejected: values.reason_if_rejected,
         reason_if_rejected_other: values.reason_if_rejected_other,
         salary_offered: values.salary_offered,
-        start_date: values.start_date ? moment(new Date(values.start_date)).format('YYYY-MM-DD'):val.start_date,
+        start_date: values.start_date
+          ? moment(new Date(values.start_date)).format("YYYY-MM-DD")
+          : val.start_date,
         source: values.source,
         status: values.status,
         work_engagement: values.work_engagement,
@@ -386,6 +392,7 @@ const EmploymentmassEdit = (props) => {
   useEffect(async () => {
     if (startDate && endDate) {
       setDisabled(false);
+      setSkeleton(true)
       let data = await getStudentEmplymentRange(startDate, endDate);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
@@ -399,6 +406,7 @@ const EmploymentmassEdit = (props) => {
         value: Number(obj.student.id),
       }));
       setStudentOptions(values);
+      setSkeleton(false)
     }
   }, [startDate, endDate]);
 
@@ -439,7 +447,7 @@ const EmploymentmassEdit = (props) => {
               </div>
             </Modal.Header>
 
-            <Modal.Body className="bg-white" style={{minHeight:"300px"}}>
+            <Modal.Body className="bg-white" style={{ minHeight: "300px" }}>
               <Formik
                 initialValues={initialValuesStudent}
                 // validationSchema={validationSchema}
@@ -457,9 +465,10 @@ const EmploymentmassEdit = (props) => {
                           className="form-control text-uppercase"
                           required
                           onChange={(e) => {
-                            setStudents([])
-                            setStudentOptions([])
-                            setStartDate(e.target.value)}}
+                            setStudents([]);
+                            setStudentOptions([]);
+                            setStartDate(e.target.value);
+                          }}
                         />
                       </div>
                       <div className="col-md-5 col-sm-12 mt-2">
@@ -472,14 +481,17 @@ const EmploymentmassEdit = (props) => {
                           required
                           min={startDate}
                           onChange={(e) => {
-                            setStudents([])
-                            setStudentOptions([])
-                            setEndDate(e.target.value)}}
+                            setStudents([]);
+                            setStudentOptions([]);
+                            setEndDate(e.target.value);
+                          }}
                         />
                       </div>
                     </div>
                     <div className="mt-2">
-                      <label className="leading-24">Student</label>
+                      {skeleton ?  <Skeleton count={2} height={30}/>:
+                      (<>
+                        <label className="leading-24">Student</label>
                       <Select
                         isMulti
                         name="student_ids"
@@ -494,7 +506,15 @@ const EmploymentmassEdit = (props) => {
                         onChange={handleselectChange}
                         value={students}
                       />
-                      {studentOptions.length ==0 && students.length ==0 ?<label className="text-danger">No Data</label>:""}
+                      {studentOptions.length == 0 && students.length == 0 ? (
+                        <label className="text-danger">No Data</label>
+                      ) : (
+                        ""
+                      )}
+                      </>)
+
+                      }
+                    
                       
                     </div>
                     <div className="d-flex justify-content-end mt-5 pt-5">
@@ -507,7 +527,7 @@ const EmploymentmassEdit = (props) => {
                       </button>
                       <button
                         type="submit"
-                        disabled={students.length ==0}
+                        disabled={students.length == 0}
                         className="btn btn-primary mt-3"
                       >
                         Next
