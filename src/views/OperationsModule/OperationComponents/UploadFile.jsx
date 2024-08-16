@@ -238,40 +238,44 @@ const UploadFile = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const validateColumns = (data, expectedColumns) => {
-    if(data.length === 0){
-      setNotUploadSuccesFully(
-        "File is empty please select file which has data in it"
-      );
-      return false
-    }
-    if (!data ) {
-      setNotUploadSuccesFully(
-        "Some data fields are empty or not properly initialized"
-      );
+    if (data.length === 0) {
+      setNotUploadSuccesFully("File is empty, please select a file that has data in it");
       return false;
     }
+  
     const fileColumns = Object.keys(data[0]);
-    const missingColumns = expectedColumns.filter(
-      (col) => !fileColumns.includes(col)
+    const missingColumns = expectedColumns.filter(col => !fileColumns.includes(col));
+    const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col));
+  
+    // Check for columns that have missing data in any row
+    const incompleteColumns = expectedColumns.filter(col =>
+      data.every(row => row[col] === null || row[col] === "")
     );
-    const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col)
-    );
-    if (data.length > 0 && data.length > 200) {
-      setNotUploadSuccesFully(`Number of rows should be less than 200`);
-    }
+  
     if (missingColumns.length > 0) {
       setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
-
+  
     if (extraColumns.length > 0) {
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
-
+  
+    if (incompleteColumns.length > 0) {
+      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      return false;
+    }
+  
+    if (data.length > 200) {
+      setNotUploadSuccesFully(`Number of rows should be less than 200`);
+      return false;
+    }
+  
     return true;
   };
+  
+
 
   const handleFileChange = (event) => {
     const fileInput = event.target;
@@ -359,20 +363,29 @@ const UploadFile = (props) => {
   const processFileData = (jsonData) => {
     const validRecords = [];
     const invalidRecords = [];
-    jsonData.forEach((row) => {
-      if (Object.values(row).some((value) => value === null || value === "")) {
-        return;
-      } else {
-        validRecords.push(row);
+  
+    for (const row of jsonData) {
+      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
+  
+      if (isRowEmpty) {
+        break; 
       }
-    });
 
+      // if (Object.values(row).some((value) => value === null || value === "")) {
+      //   invalidRecords.push(row); 
+      // } else {
+        validRecords.push(row);
+      // }
+    }
     if (validateColumns(validRecords, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(validRecords);
     }
   };
+  
+  
+
 
   const capitalize = (s) => {
     return s[0].toUpperCase() + s.slice(1);
@@ -387,7 +400,6 @@ const UploadFile = (props) => {
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch Name"]
       );
@@ -437,21 +449,21 @@ const UploadFile = (props) => {
           index: index + 1,
           institution: institute
             ? institute.name
-            : { value: newItem["Institution"], notFound: true },
+            : { value: newItem["Institution"] ? newItem["Institution"] :"N/A", notFound: true },
           batch: batch
             ? batch.name
-            : { value: newItem["Batch Name"], notFound: true },
+            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'N/A', notFound: true },
           state: newItem["State"] || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"], notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"N/A", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"], notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"N/A", notFound: true },
           topic: newItem["Session Topic"] || "",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
@@ -464,7 +476,7 @@ const UploadFile = (props) => {
           program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
-            : { value: newItem["Assigned To"], notFound: true },
+            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'N/A', notFound: true },
           area: newItem["Medha Area"] || "",
         });
       } else {
