@@ -445,8 +445,8 @@ const AlumMassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const initialValuesStudent = {
-    start_date: null,
-    end_date: null,
+    start_date:  new Date().toISOString().split('T')[0] ,
+    end_date:  new Date().toISOString().split('T')[0] ,
     student_ids: [],
   };
 
@@ -784,14 +784,13 @@ const AlumMassEdit = (props) => {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="start_date"
-                          label="Start Date W"
+                          label="Start Date"
                           placeholder="Start Date "
                           control="datepicker"
                           onChange={(date) => {
                             // const updatedDate = moment(date).startOf('day').add(5, 'hours').toDate();
                             setFieldValue('start_date', date);
                           }}
-                        
                           className="form-control"
                           autoComplete="off"
                         />
