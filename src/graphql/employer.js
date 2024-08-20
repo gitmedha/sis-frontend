@@ -55,6 +55,22 @@ export const employerFields = `
   }
 `;
 
+export const IndustryFields = `
+  id
+  industry_name
+  sub_industry
+  category
+  active
+`;
+
+export const GET_ALL_INDUSTRY =`
+query IndustryConnection {
+  industries {
+    industry_name
+    sub_industry
+  }
+}
+`
 
 
 export const GET_ALL_EMPLOYERS = `
