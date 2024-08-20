@@ -384,8 +384,8 @@ const EmploymentmassEdit = (props) => {
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
   };
   const initialValuesStudent = {
-    start_date: null,
-    end_date: null,
+    start_date:  new Date().toISOString().split('T')[0] ,
+    end_date:  new Date().toISOString().split('T')[0] ,
     student_ids: [],
   };
 
