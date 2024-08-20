@@ -55,6 +55,9 @@ export const employerFields = `
   }
 `;
 
+export const IndustryFields = `
+`;
+
 
 
 export const GET_ALL_EMPLOYERS = `

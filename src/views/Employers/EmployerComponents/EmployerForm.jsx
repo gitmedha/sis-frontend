@@ -2,8 +2,8 @@ import { Formik, FieldArray, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaAngleDown, FaAngleRight, FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import { getEmployersPickList } from "./employerAction";
@@ -19,11 +19,22 @@ import {
 import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
+import Select, { components } from "react-select";
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
+  label {
+    color: #787B96;
+  }
+  .required {
+    color: red;
+    font-size: 16px;
+  }
+  .css-9gakcf-option{
+    background-color: #fff !important;
+  }
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
   }
@@ -38,6 +49,32 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const options = [
+  { label: "Manufacturing", value: "manufacturing" },
+  {
+    label: "Communication services",
+    value: "communication_services",
+    children: [
+      {
+        label: "Telecommunication services",
+        value: "telecommunication_services",
+      },
+      { label: "Courier services", value: "courier_services" },
+    ],
+  },
+  { label: "Information technology", value: "information_technology" },
+];
+
+const DropdownIndicator = (props) => {
+  return (
+    components.DropdownIndicator && (
+      <components.DropdownIndicator {...props}>
+        {props.selectProps.menuIsOpen ? "▲" : "▼"}
+      </components.DropdownIndicator>
+    )
+  );
+};
 
 const EmployerForm = (props) => {
   let { onHide, show } = props;
@@ -54,6 +91,77 @@ const EmployerForm = (props) => {
   const [isDuplicate, setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [dropdownOptions, setDropdownOptions] = useState(options);
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [industry,setIndustry]=useState('')
+  const formikRef = useRef();
+
+  const handleExternalChange = (value) => {
+    formikRef.current.setFieldValue('industry', value);
+  };
+
+  const handleChange = (selected) => {
+    setSelectedOption(selected);
+    console.log(selected);
+    if (selected?.children) {
+      // Expand the dropdown to include child options, sorted directly after the parent
+      setDropdownOptions([
+        ...options.filter((opt) => opt?.value !== selected?.value), // Keep other options
+        selected, // Highlight the parent option
+        ...selected.children, // Add the child options of the selected item
+      ]);
+      setMenuIsOpen(true); // Keep the dropdown open
+    } else {
+      
+      setDropdownOptions(options);
+      setMenuIsOpen(false); 
+      handleExternalChange(selected?.value)
+    }
+  };
+
+  const handleMenuOpen = () => {
+    if (selectedOption && selectedOption?.children) {
+      setDropdownOptions([
+        ...options.filter((opt) => opt.value !== selectedOption.value),
+        selectedOption,
+        ...selectedOption.children,
+      ]);
+    } else {
+      setDropdownOptions(options);
+    }
+    setMenuIsOpen(true);
+  };
+
+  const CustomOption = (props) => {
+    const isParent = props?.data?.children;
+    const isSelectedParent =
+      selectedOption && selectedOption?.value === props?.data?.value;
+
+    return (
+      <components.Option {...props}
+      style={{
+        backgroundColor: isSelectedParent ? "white" : props.isFocused ? "#f0f0f0" : "transparent", // Change entire option background
+      }}
+      >
+        <div
+          style={{
+            marginLeft: isParent ? "0" : "0",
+            fontWeight: isSelectedParent ? "bold" : "normal",
+            color: isSelectedParent ? "green" : "black", 
+            backgroundColor: isSelectedParent ? "white" : "transparent"
+          }}
+        >
+           {isParent && <FaAngleDown style={{ marginRight: "8px" }} />}
+          {props.data.label}
+        </div>
+      </components.Option>
+    );
+  };
+  const clear = () => {
+    setSelectedOption(null);
+
+  };
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -134,6 +242,7 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    console.log("hello",values);
     values.contacts = values.contacts.map((value) => {
       value.full_name =
         value.full_name[0].toUpperCase() + value.full_name.slice(1);
@@ -169,6 +278,10 @@ const EmployerForm = (props) => {
     }
     onHide(values);
   };
+//   const handleChange = (selected) => {
+//     setSelectedOption(selected);
+//     setFieldValue("industry", selected ? selected.value : "");
+// };
   const logoUploadHandler = ({ id }) => setLogo(id);
 
   let initialValues = {
@@ -250,10 +363,12 @@ const EmployerForm = (props) => {
       <Modal.Body className="bg-white">
         <Formik
           onSubmit={onSubmit}
+          innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={EmployerValidations}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue,errors }) => (
+            
             <Form>
               <div className="row form_sec">
                 <Section>
@@ -271,7 +386,7 @@ const EmployerForm = (props) => {
                         }
                         required
                       />
-
+      {/* {console.log(errors)} */}
                       {isDuplicate && !props.id ? (
                         <p style={{ color: "red" }}>
                           This employer already exist on the system
@@ -297,7 +412,7 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
+                      {/* <Input
                         icon="down"
                         name="industry"
                         label="Industry"
@@ -305,6 +420,44 @@ const EmployerForm = (props) => {
                         options={industryOptions}
                         className="form-control"
                         required
+                      /> */}
+                      <label  className="text-heading leading-24">
+            Industry <span class="required">*</span>
+          </label>
+                      <Select
+                        options={dropdownOptions}
+                        value={selectedOption}
+                        name="industry"
+                        onChange={(selected)=>{
+                          handleChange(selected);
+                        }}
+                        icon={<FaAngleDown size={15} />}
+                        placeholder="Select an option..."
+                        components={{ Option: CustomOption, DropdownIndicator }}
+                        menuIsOpen={menuIsOpen}
+                        onMenuOpen={handleMenuOpen}
+                        isClearable={()=>{
+                          clear()
+                          setFieldValue("industry", "");
+                        }}
+                        // styles={{
+                        //   control: (base) => ({
+                        //     ...base,
+                        //     margin: '0',  
+                        //     padding: '0', 
+                        //     boxShadow: 'none', 
+                        //   }),
+                        //   menu: (base) => ({
+                        //     ...base,
+                        //     margin: '0',
+                        //     padding: '0',
+                        //   }),
+                        //   option: (provided) => ({
+                        //     ...provided,
+                        //     margin: '0', 
+                        //     padding: '10px 12px', 
+                        //   }),
+                        // }}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
