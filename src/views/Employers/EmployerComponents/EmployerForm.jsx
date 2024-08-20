@@ -20,6 +20,7 @@ import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
+import { GET_ALL_INDUSTRY } from "src/graphql";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -50,21 +51,7 @@ const Section = styled.div`
   }
 `;
 
-const options = [
-  { label: "Manufacturing", value: "manufacturing" },
-  {
-    label: "Communication services",
-    value: "communication_services",
-    children: [
-      {
-        label: "Telecommunication services",
-        value: "telecommunication_services",
-      },
-      { label: "Courier services", value: "courier_services" },
-    ],
-  },
-  { label: "Information technology", value: "information_technology" },
-];
+
 
 const DropdownIndicator = (props) => {
   return (
@@ -92,7 +79,7 @@ const EmployerForm = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
 
   const [selectedOption, setSelectedOption] = useState(null);
-  const [dropdownOptions, setDropdownOptions] = useState(options);
+  const [dropdownOptions, setDropdownOptions] = useState(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [industry,setIndustry]=useState('')
   const formikRef = useRef();
@@ -103,18 +90,17 @@ const EmployerForm = (props) => {
 
   const handleChange = (selected) => {
     setSelectedOption(selected);
-    console.log(selected);
     if (selected?.children) {
       // Expand the dropdown to include child options, sorted directly after the parent
       setDropdownOptions([
-        ...options.filter((opt) => opt?.value !== selected?.value), // Keep other options
+        ...dropdownOptions.filter((opt) => opt?.value !== selected?.value), // Keep other options
         selected, // Highlight the parent option
         ...selected.children, // Add the child options of the selected item
       ]);
       setMenuIsOpen(true); // Keep the dropdown open
     } else {
       
-      setDropdownOptions(options);
+      setDropdownOptions(dropdownOptions);
       setMenuIsOpen(false); 
       handleExternalChange(selected?.value)
     }
@@ -123,12 +109,12 @@ const EmployerForm = (props) => {
   const handleMenuOpen = () => {
     if (selectedOption && selectedOption?.children) {
       setDropdownOptions([
-        ...options.filter((opt) => opt.value !== selectedOption.value),
+        ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
         selectedOption,
         ...selectedOption.children,
       ]);
     } else {
-      setDropdownOptions(options);
+      setDropdownOptions(dropdownOptions);
     }
     setMenuIsOpen(true);
   };
@@ -168,6 +154,49 @@ const EmployerForm = (props) => {
     });
   }, []);
 
+  useEffect(()=>{
+    const getAllEmployers = async () => {
+      return await api.post('/graphql', {
+        query: GET_ALL_INDUSTRY,
+      }).then(values => {
+        const data=values.data.data.industries;
+        const grouped = data.reduce((acc, { industry_name, sub_industry }) => {
+          if (!acc[industry_name]) {
+            acc[industry_name] = [];
+          }
+          if (sub_industry) {
+            acc[industry_name].push(sub_industry);
+          }
+          return acc;
+        }, {});
+
+        const options = Object.keys(grouped).map(industry_name => {
+          const subIndustries = grouped[industry_name].map(sub_industry => ({
+            label: sub_industry,
+            value: sub_industry.toLowerCase().replace(/[^a-z0-9]+/g, '_')
+          }));
+          
+          // Only include 'children' if there are subIndustries
+          const industryObject = {
+            label: industry_name,
+            value: industry_name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+          };
+        
+          if (subIndustries.length > 0) {
+            industryObject.children = subIndustries;
+          }
+        
+          return industryObject;
+        });
+        setDropdownOptions(options)
+        
+      }).catch(error => {
+        return Promise.reject(error);
+      });
+    }
+    getAllEmployers()
+  },[])
+   
   useEffect(() => {
     getEmployersPickList().then((data) => {
       setStatusOpts(
@@ -242,7 +271,6 @@ const EmployerForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log("hello",values);
     values.contacts = values.contacts.map((value) => {
       value.full_name =
         value.full_name[0].toUpperCase() + value.full_name.slice(1);
@@ -386,7 +414,7 @@ const EmployerForm = (props) => {
                         }
                         required
                       />
-      {/* {console.log(errors)} */}
+
                       {isDuplicate && !props.id ? (
                         <p style={{ color: "red" }}>
                           This employer already exist on the system
