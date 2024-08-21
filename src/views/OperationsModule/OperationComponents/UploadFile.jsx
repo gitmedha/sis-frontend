@@ -470,7 +470,7 @@ const UploadFile = (props) => {
           designation: newItem["Guest Designation"] || "",
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
-          activity_type: newItem["Activity Type"] || "",
+          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"N/A",
           guest: newItem["Guest Name"],
           student_type: newItem["Student Type"],
           program_name: newItem["Program Name"],
