@@ -59,9 +59,9 @@ const EmploymentmassEdit = (props) => {
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
   const [EmploymentData, setEmploymentData] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [skeleton,setSkeleton]=useState(false)
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0] );
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0] );
+  const [skeleton, setSkeleton] = useState(false);
 
   let initialValues = {
     employment_connection_student: "",
@@ -384,15 +384,15 @@ const EmploymentmassEdit = (props) => {
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
   };
   const initialValuesStudent = {
-    start_date:  new Date().toISOString().split('T')[0] ,
-    end_date:  new Date().toISOString().split('T')[0] ,
+    start_date: new Date().toISOString().split("T")[0],
+    end_date: new Date().toISOString().split("T")[0],
     student_ids: [],
   };
 
   useEffect(async () => {
     if (startDate && endDate) {
       setDisabled(false);
-      setSkeleton(true)
+      setSkeleton(true);
       let data = await getStudentEmplymentRange(startDate, endDate);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
@@ -406,7 +406,7 @@ const EmploymentmassEdit = (props) => {
         value: Number(obj.student.id),
       }));
       setStudentOptions(values);
-      setSkeleton(false)
+      setSkeleton(false);
     }
   }, [startDate, endDate]);
 
@@ -464,6 +464,7 @@ const EmploymentmassEdit = (props) => {
                           placeholder="Start Date"
                           className="form-control text-uppercase"
                           required
+                          value={startDate} // Make sure to include this line
                           onChange={(e) => {
                             setStudents([]);
                             setStudentOptions([]);
@@ -489,33 +490,33 @@ const EmploymentmassEdit = (props) => {
                       </div>
                     </div>
                     <div className="mt-2">
-                      {skeleton ?  <Skeleton count={2} height={30}/>:
-                      (<>
-                        <label className="leading-24">Student</label>
-                      <Select
-                        isMulti
-                        name="student_ids"
-                        options={studentOptions}
-                        closeMenuOnSelect={false}
-                        components={customComponents}
-                        isOptionDisabled={() => students.length >= 10}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        isDisabled={disabled}
-                        // onInputChange={(e) => setStudentInput(e)}
-                        onChange={handleselectChange}
-                        value={students}
-                      />
-                      {studentOptions.length == 0 && students.length == 0 ? (
-                        <label className="text-danger">No Data</label>
+                      {skeleton ? (
+                        <Skeleton count={2} height={30} />
                       ) : (
-                        ""
+                        <>
+                          <label className="leading-24">Student</label>
+                          <Select
+                            isMulti
+                            name="student_ids"
+                            options={studentOptions}
+                            closeMenuOnSelect={false}
+                            components={customComponents}
+                            isOptionDisabled={() => students.length >= 10}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            isDisabled={disabled}
+                            // onInputChange={(e) => setStudentInput(e)}
+                            onChange={handleselectChange}
+                            value={students}
+                          />
+                          {studentOptions.length == 0 &&
+                          students.length == 0 ? (
+                            <label className="text-danger">No Data</label>
+                          ) : (
+                            ""
+                          )}
+                        </>
                       )}
-                      </>)
-
-                      }
-                    
-                      
                     </div>
                     <div className="d-flex justify-content-end mt-5 pt-5">
                       <button
