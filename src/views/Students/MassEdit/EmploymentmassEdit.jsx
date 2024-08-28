@@ -466,6 +466,7 @@ const EmploymentmassEdit = (props) => {
                           required
                           value={startDate} // Make sure to include this line
                           onChange={(e) => {
+                            setFieldValue('start_date',e.target.value)
                             setStudents([]);
                             setStudentOptions([]);
                             setStartDate(e.target.value);
@@ -482,6 +483,7 @@ const EmploymentmassEdit = (props) => {
                           required
                           min={startDate}
                           onChange={(e) => {
+                            setFieldValue('end_date',e.target.value)
                             setStudents([]);
                             setStudentOptions([]);
                             setEndDate(e.target.value);
@@ -564,6 +566,7 @@ const EmploymentmassEdit = (props) => {
                     <Section>
                       <div className="row px-3 form_sec">
                         <div className="col-md-6 col-sm-12 mt-4">
+                        <label className="leading-24">Student</label>
                           <Select
                             isMulti
                             isDisabled={true}

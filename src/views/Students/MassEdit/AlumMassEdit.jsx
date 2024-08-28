@@ -580,7 +580,9 @@ const AlumMassEdit = (props) => {
                         placeholder="Start Date"
                         className="form-control text-uppercase "
                         required
-                        onChange={(e) => handleDatechange(e, "startDate")}
+                        onChange={(e) => {
+                          setFieldValue('start_date',e.target.value)
+                          handleDatechange(e, "startDate")}}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -592,7 +594,10 @@ const AlumMassEdit = (props) => {
                         className="form-control ml-2 text-uppercase"
                         required
                         min={startDate}
-                        onChange={(e) => handleDatechange(e, "endDate")}
+                        onChange={(e) => {
+                          console.log(e.target.value);
+                          setFieldValue('end_date',e.target.value)
+                          handleDatechange(e, "endDate")}}
                       />
                     </div>
                   </div>
