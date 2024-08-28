@@ -565,7 +565,7 @@ const EmploymentmassEdit = (props) => {
                   <Form>
                     <Section>
                       <div className="row px-3 form_sec">
-                        <div className="col-md-6 col-sm-12 mt-4">
+                        <div className="col-md-6 col-sm-12 mt-1">
                         <label className="leading-24">Student</label>
                           <Select
                             isMulti
@@ -578,7 +578,7 @@ const EmploymentmassEdit = (props) => {
                             classNamePrefix="select"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 mt-1">
                           <Input
                             control="lookupAsync"
                             name="assigned_to"
