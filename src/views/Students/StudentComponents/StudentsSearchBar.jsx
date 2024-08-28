@@ -227,7 +227,7 @@ function StudentsSearchBar({
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {(formik) => (
+      {(formik, values) => (
         <Form style={{ padding: 0 }}>
           <Section>
             <div className="row align-items-center">

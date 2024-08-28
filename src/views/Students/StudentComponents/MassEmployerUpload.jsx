@@ -125,6 +125,7 @@ const MassEmployerUpload = (props) => {
   }, [props]);
 
   const onModalClose = () => {
+    setStudents([])
     onHide([]);
   };
 
@@ -206,11 +207,19 @@ const MassEmployerUpload = (props) => {
   }, [selectedStatus]);
 
   useEffect(() => {
+    let isMounted = true;
+  
     getDefaultAssigneeOptions().then((data) => {
-      setAssigneeOptions(data);
+      if (isMounted) {
+        setAssigneeOptions(data);
+      }
     });
+  
+    return () => {
+      isMounted = false;
+    };
   }, []);
-
+  
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
       setrejectionreason(

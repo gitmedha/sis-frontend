@@ -20,16 +20,16 @@ const Avatar = ({ logo, name, style = {width: '35px', height: '35px'}, icon = 's
           style={style}
         />
       ) : (
-        <div className="flex-row-centered avatar avatar-default" style={style}>
-          {icon === 'school' && (<FaSchool size={20} />)}
+        <div className="flex-row-centered " style={style}>
+          {/* {icon === 'school' && (<FaSchool size={20} />)}
           {icon === 'student' && (<FaUserGraduate size={20} />)}
           {icon === 'batch' && (<FaChalkboardTeacher size={20} />)}
           {icon === 'employer' && (<FaUserTie size={20} />)}
-          {icon === 'opportunity' && (<FaBriefcase size={20} />)}
+          {icon === 'opportunity' && (<FaBriefcase size={20} />)} */}
         </div>
       )}
 
-      <p className="mb-0 latto-regular" style={{ color: '#787B96'}}>{name}</p>
+      <p className="mb-0 latto-regular" style={{ color: '',fontWeight:"500"}}>{name}</p>
     </div>
   );
 };

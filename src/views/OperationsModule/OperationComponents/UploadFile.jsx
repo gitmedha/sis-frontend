@@ -251,54 +251,72 @@ const UploadFile = (props) => {
       );
       return false;
     }
+  
     const fileColumns = Object.keys(data[0]);
-    const missingColumns = expectedColumns.filter(
-      (col) => !fileColumns.includes(col)
+    const missingColumns = expectedColumns.filter(col => !fileColumns.includes(col));
+    const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col));
+  
+    // Check for columns that have missing data in any row
+    const incompleteColumns = expectedColumns.filter(col =>
+      data.every(row => row[col] === null || row[col] === "")
     );
-    const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col)
-    );
-    if (data.length > 0 && data.length > 200) {
-      setNotUploadSuccesFully(`Number of rows should be less than 200`);
-    }
+  
     if (missingColumns.length > 0) {
       setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
-
+  
     if (extraColumns.length > 0) {
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
-
+  
+    if (incompleteColumns.length > 0) {
+      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      return false;
+    }
+  
+    if (data.length > 200) {
+      setNotUploadSuccesFully(`Number of rows should be less than 200`);
+      return false;
+    }
+  
     return true;
   };
+  
+
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+  
     setShowForm(true);
-    setFileName('');  // Reset the file name display
-    setNextDisabled(false);  // Optionally disable the next button
+    setFileName(''); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
     setUploadSuccesFully(''); 
-    setNotUploadSuccesFully('')
-    // setNextDisabled(false);
-
+    setNotUploadSuccesFully('');
+  
     if (file) {
       setFileName(`${file.name} Uploaded`);
-
+  
       const reader = new FileReader();
-
+  
       reader.onload = () => {
         const fileData = reader.result;
-        convertExcel(fileData);
+        try {
+          convertExcel(fileData);
+        } catch (error) {
+          setNotUploadSuccesFully(error?.message);
+        }
       };
-
+  
       reader.readAsBinaryString(file);
-      // setNextDisabled(true);
+      fileInput.value = '';
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
   };
+  
 
   useEffect(() => {
     const getbatch = async () => {
@@ -354,20 +372,29 @@ const UploadFile = (props) => {
   const processFileData = (jsonData) => {
     const validRecords = [];
     const invalidRecords = [];
-    jsonData.forEach((row) => {
-      if (Object.values(row).some((value) => value === null || value === "")) {
-        return;
-      } else {
-        validRecords.push(row);
+  
+    for (const row of jsonData) {
+      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
+  
+      if (isRowEmpty) {
+        break; 
       }
-    });
 
+      // if (Object.values(row).some((value) => value === null || value === "")) {
+      //   invalidRecords.push(row); 
+      // } else {
+        validRecords.push(row);
+      // }
+    }
     if (validateColumns(validRecords, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(validRecords);
     }
   };
+  
+  
+
 
   const capitalize = (s) => {
     return s[0].toUpperCase() + s.slice(1);
@@ -382,7 +409,6 @@ const UploadFile = (props) => {
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch Name"]
       );
@@ -432,34 +458,34 @@ const UploadFile = (props) => {
           index: index + 1,
           institution: institute
             ? institute.name
-            : { value: newItem["Institution"], notFound: true },
+            : { value: newItem["Institution"] ? newItem["Institution"] :"Empty", notFound: true },
           batch: batch
             ? batch.name
-            : { value: newItem["Batch Name"], notFound: true },
+            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'Empty', notFound: true },
           state: newItem["State"] || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"], notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Empty", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"], notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"Empty", notFound: true },
           topic: newItem["Session Topic"] || "",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
           designation: newItem["Guest Designation"] || "",
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
-          activity_type: newItem["Activity Type"] || "",
+          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"Empty",
           guest: newItem["Guest Name"],
           student_type: newItem["Student Type"],
           program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
-            : { value: newItem["Assigned To"], notFound: true },
+            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'Empty', notFound: true },
           area: newItem["Medha Area"] || "",
         });
       } else {
@@ -623,6 +649,7 @@ const UploadFile = (props) => {
   // 
   const uploadNewData =()=>{
     setShowForm(true);
+    setUploadNew(!uploadNew)
   setFileName('');  // Reset the file name display
   setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully(''); 
@@ -678,7 +705,8 @@ const UploadFile = (props) => {
                         multiple={false}
                         name="file-uploader"
                         onChange={handleFileChange}
-                        className="uploaderInput"
+                        className="uploaderInput "
+                        
                       />
                     </div>
                     <label className="text--primary latto-bold text-center">
@@ -717,8 +745,9 @@ const UploadFile = (props) => {
                             type="button"
                             disabled={!nextDisabled}
                             onClick={() => uploadDirect()}
-                            className="btn btn-primary px-4 mx-4 mt-2"
+                            className="btn btn-primary px-4 mx-4 mt-2 cursor-pointer"
                             style={{ height: "2.5rem" }}
+                            
                           >
                             Next
                           </button>
@@ -742,8 +771,8 @@ const UploadFile = (props) => {
             <Modal.Body style={{height:'15rem'}}>
               <div className='mb-5'>
                 <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
-                <FaEdit size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                <FaFileUpload size={20} color="#31B89D"  />{" "}
+                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded.` :`${excelData.length} row(s) of data uploaded successfully!` }
                   
                 </p>
               </div>
@@ -757,7 +786,18 @@ const UploadFile = (props) => {
                   Close
                 </button>
 
-                {uploadNew ? (
+                {!uploadNew ? (
+                  <button
+                  type="button"
+                  // disabled={!nextDisabled}
+                  onClick={() => proceedData()}
+                  className="btn btn-primary px-4 mx-4 mt-2"
+                  style={{ height: "2.5rem" }}
+                >
+                  Proceed
+                </button>
+                  
+                ) : (
                   <button
                     type="button"
                     // disabled={!nextDisabled}
@@ -766,16 +806,6 @@ const UploadFile = (props) => {
                     style={{ height: "2.5rem" }}
                   >
                     Upload New
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => proceedData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Proceed
                   </button>
                 )}
               </div>
