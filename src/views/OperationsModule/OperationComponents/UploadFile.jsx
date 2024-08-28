@@ -449,34 +449,34 @@ const UploadFile = (props) => {
           index: index + 1,
           institution: institute
             ? institute.name
-            : { value: newItem["Institution"] ? newItem["Institution"] :"N/A", notFound: true },
+            : { value: newItem["Institution"] ? newItem["Institution"] :"Empty", notFound: true },
           batch: batch
             ? batch.name
-            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'N/A', notFound: true },
+            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'Empty', notFound: true },
           state: newItem["State"] || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"N/A", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Empty", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"N/A", notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"Empty", notFound: true },
           topic: newItem["Session Topic"] || "",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
           designation: newItem["Guest Designation"] || "",
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
-          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"N/A",
+          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"Empty",
           guest: newItem["Guest Name"],
           student_type: newItem["Student Type"],
           program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
-            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'N/A', notFound: true },
+            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'Empty', notFound: true },
           area: newItem["Medha Area"] || "",
         });
       } else {

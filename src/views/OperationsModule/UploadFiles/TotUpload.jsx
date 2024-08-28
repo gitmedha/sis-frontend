@@ -501,7 +501,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Name"]
                   ? newItem["Project Name"]
-                  : "N/A",
+                  : "Empty",
                 notFound: true,
               },
           certificate_given: newItem["Certificate Given"],
@@ -510,7 +510,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Module Name"]
                   ? newItem["Module Name"]
-                  : "N/A",
+                  : "Empty",
                 notFound: true,
               },
           project_type: projectCheck
@@ -518,7 +518,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "N/A",
+                  : "Empty",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -527,12 +527,12 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Partner Department"]
                   ? newItem["Partner Department"]
-                  : "N/A",
+                  : "Empty",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
-            : "N/A",
+            : "Empty",
           city: newItem["City"] ? capitalize(newItem["City"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
