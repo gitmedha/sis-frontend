@@ -19,7 +19,11 @@ import moment from "moment";
 // import { getOpsPickList, updateOpsActivity } from "";
 import * as Yup from "yup";
 import { numberChecker } from "../../../../utils/function/OpsModulechecker";
-import { searchBatches, searchInstitutions, updateMentorshipData } from "../operationsActions";
+import {
+  searchBatches,
+  searchInstitutions,
+  updateMentorshipData,
+} from "../operationsActions";
 import { updateOpsActivity, getOpsPickList } from "../operationsActions";
 import { urlPath } from "src/constants";
 
@@ -94,10 +98,6 @@ const UpdateMentorship = (props) => {
     });
   }, []);
 
-
-
-
-
   useEffect(() => {
     getAddressOptions().then((data) => {
       setStateOptions(
@@ -131,16 +131,20 @@ const UpdateMentorship = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
-    values['onboarding_date']=moment(values["onboarding_date"]).format(
-      "YYYY-MM-DD"
-    );
-    const value = await updateMentorshipData(Number(props.id), values);
-    refreshTableOnDataSaving();
-    setDisableSaveButton(true);
-    onHide(value);
-    closeopsedit();
-    setDisableSaveButton(false);
+    try {
+      const newData = { ...values };
+      newData.onboarding_date = moment(values["onboarding_date"]).format(
+        "YYYY-MM-DD"
+      );
+      const value = await updateMentorshipData(Number(props.id), newData);
+      refreshTableOnDataSaving();
+      setDisableSaveButton(true);
+      onHide(value);
+      closeopsedit();
+      setDisableSaveButton(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const userId = localStorage.getItem("user_id");
@@ -154,7 +158,7 @@ const UpdateMentorship = (props) => {
     mentor_area: "",
     mentor_state: "",
     outreach: "",
-    onboarding_date: null,
+    onboarding_date: new Date(),
     social_media_profile_link: "",
     medha_area: "",
     status: "",
@@ -162,7 +166,6 @@ const UpdateMentorship = (props) => {
   };
 
   if (props) {
-    console.log(props);
     initialValues["mentor_name"] = props.mentor_name;
     initialValues["email"] = props.email;
     initialValues["mentor_domain"] = props.mentor_domain;
@@ -170,14 +173,13 @@ const UpdateMentorship = (props) => {
     initialValues["assigned_to"] = props.assigned_to.id.toString();
     initialValues["program_name"] = props.program_name;
     initialValues["onboarding_date"] = new Date(props.onboarding_date);
-    initialValues["designation"] = props.designation
+    initialValues["designation"] = props.designation;
     initialValues["mentor_area"] = props?.mentor_area;
     initialValues["mentor_state"] = props.mentor_state;
     initialValues["medha_area"] = props.medha_area;
     initialValues["status"] = props.status;
     initialValues["outreach"] = props.outreach;
   }
-
 
   // const operationvalidation = Yup.object().shape({
   //   start_date: Yup.date().required("Start date is required"),
@@ -235,7 +237,7 @@ const UpdateMentorship = (props) => {
           <Modal.Body className="bg-white">
             <Formik
               onSubmit={onSubmit}
-                initialValues={initialValues}
+              initialValues={initialValues}
               // validationSchema={operationvalidation}
             >
               {({ values, setFieldValue }) => (
@@ -300,7 +302,7 @@ const UpdateMentorship = (props) => {
                               control="lookupAsync"
                               name="outreach"
                               label="Outreach (Offline/Online)"
-                            //   filterData={filterInstitution}
+                              //   filterData={filterInstitution}
                               defaultOptions={options}
                               placeholder="Outreach (Offline/Online)"
                               className="form-control"
@@ -313,7 +315,6 @@ const UpdateMentorship = (props) => {
                           <Input
                             name="onboarding_date"
                             label="Onboarding Date"
-                            //
                             placeholder="Onboarding Date"
                             control="datepicker"
                             className="form-control"

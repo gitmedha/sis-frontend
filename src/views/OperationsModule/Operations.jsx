@@ -530,7 +530,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log("data", data);
           setOpts(data.data.data.activeMentoshipData.values);
           setoptsAggregate(data.data.data.allMentoshipData.aggregate);
         })
@@ -787,7 +786,7 @@ const Operations = ({
   const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
       setShowModal({ ...showModal, [key]: data });
-      return;
+      // return;
     }
   };
 
