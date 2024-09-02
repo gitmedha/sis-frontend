@@ -656,7 +656,7 @@ const AlumMassEdit = (props) => {
                       value={students}
                     />
                   </div>
-                  <div className="d-flex justify-content-end  mt-5 pt-5" >
+                  <div className="d-flex justify-content-end   mt-4 pt-2" >
                     <button
                       type="submit"
                       onClick={() => props.handelCancel()}
@@ -669,7 +669,7 @@ const AlumMassEdit = (props) => {
                         type="button"
                         onClick={handelSearch}
                         disabled={selectedOptions?.length === 0}
-                        className="btn btn-primary mt-3 text-capitalize "
+                        className="btn btn-primary mt-3 no-decoration "
                       >
                         Search
                       </button>
@@ -678,7 +678,7 @@ const AlumMassEdit = (props) => {
                         type="button"
                         onClick={() => handleSubmit()}
                         disabled={students?.length === 0}
-                        className="btn btn-primary mt-3"
+                        className="btn btn-primary mt-3 no-decoration "
                       >
                         Next
                       </button>
