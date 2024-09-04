@@ -90,21 +90,31 @@ const EmployerForm = (props) => {
 
   const handleChange = (selected) => {
     setSelectedOption(selected);
+  
     if (selected?.children) {
-      // Expand the dropdown to include child options, sorted directly after the parent
-      setDropdownOptions([
-        ...dropdownOptions.filter((opt) => opt?.value !== selected?.value), // Keep other options
-        selected, // Highlight the parent option
-        ...selected.children, // Add the child options of the selected item
-      ]);
-      setMenuIsOpen(true); // Keep the dropdown open
+      const newOptions = dropdownOptions.filter(
+        (opt) => opt?.value !== selected?.value // Remove the selected parent
+      );
+  
+      // Add the selected parent option and its children
+      const updatedOptions = [
+        ...newOptions,
+        selected, // Insert the selected parent
+        ...selected.children, // Insert the children of the selected parent
+      ];
+  
+      setDropdownOptions(updatedOptions);
+      setMenuIsOpen(true);
     } else {
-      
+      // Reset to default options when a child is selected
       setDropdownOptions(dropdownOptions);
-      setMenuIsOpen(false); 
-      handleExternalChange(selected?.value)
+      setMenuIsOpen(false); // Close the dropdown
+  
+      // Call external handler with the selected value
+      handleExternalChange(selected?.value);
     }
   };
+  
 
   const handleMenuOpen = () => {
     if (selectedOption && selectedOption?.children) {
@@ -127,7 +137,7 @@ const EmployerForm = (props) => {
     return (
       <components.Option {...props}
       style={{
-        backgroundColor: isSelectedParent ? "white" : props.isFocused ? "#f0f0f0" : "transparent", // Change entire option background
+        backgroundColor: isSelectedParent ? "white" : props.isFocused ? "#f0f0f0" : "transparent", 
       }}
       >
         <div
@@ -159,42 +169,57 @@ const EmployerForm = (props) => {
       return await api.post('/graphql', {
         query: GET_ALL_INDUSTRY,
       }).then(values => {
-        const data=values.data.data.industries;
+        console.log("Full Response:", values);
+    
+        const data = values.data.data?.industries;
+        console.log("Industries Data:", data);
+    
+        if (!Array.isArray(data)) {
+          console.error("Industries data is not an array or is undefined:", data);
+          return;
+        }
+    
         const grouped = data.reduce((acc, { industry_name, sub_industry }) => {
-          if (!acc[industry_name]) {
-            acc[industry_name] = [];
-          }
-          if (sub_industry) {
-            acc[industry_name].push(sub_industry);
+          if (industry_name) {
+            if (!acc[industry_name]) {
+              acc[industry_name] = [];
+            }
+            if (sub_industry) {
+              acc[industry_name].push(sub_industry);
+            }
           }
           return acc;
         }, {});
-
+    
+        console.log("Grouped Data:", grouped);
+    
         const options = Object.keys(grouped).map(industry_name => {
-          const subIndustries = grouped[industry_name].map(sub_industry => ({
+          const subIndustries = grouped[industry_name]?.map(sub_industry => ({
             label: sub_industry,
             value: sub_industry.toLowerCase().replace(/[^a-z0-9]+/g, '_')
           }));
-          
-          // Only include 'children' if there are subIndustries
+    
           const industryObject = {
             label: industry_name,
             value: industry_name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
           };
-        
+    
           if (subIndustries.length > 0) {
             industryObject.children = subIndustries;
           }
-        
+    
           return industryObject;
         });
-        setDropdownOptions(options)
-        
+    
+        setDropdownOptions(options);
+    
       }).catch(error => {
+        console.error("Error:", error);
         return Promise.reject(error);
       });
     }
-    getAllEmployers()
+    getAllEmployers();
+    
   },[])
    
   useEffect(() => {
