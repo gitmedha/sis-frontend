@@ -520,18 +520,18 @@ const EmploymentmassEdit = (props) => {
                         </>
                       )}
                     </div>
-                    <div className="d-flex justify-content-end mt-5 pt-5">
+                    <div className="d-flex justify-content-end  mt-4 pt-2">
                       <button
                         type="submit"
                         onClick={() => props.handelCancel()}
-                        className="btn btn-secondary mt-3 mr-3"
+                        className="btn btn-secondary mt-3 mr-3 no-decoration"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={students.length == 0}
-                        className="btn btn-primary mt-3"
+                        className="btn btn-primary mt-3 no-decoration"
                       >
                         Next
                       </button>
