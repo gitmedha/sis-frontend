@@ -12,15 +12,15 @@ import {
   getEmploymentConnectionsPickList,
   searchEmployers,
   searchStudents,
-} from "./StudentActions";
+} from "../StudentComponents/StudentActions";
 import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import moment from "moment";
-import CheckBoxForm from "./CheckBoxForm";
-import AlumMassEdit from "../MassEdit/AlumMassEdit";
-import EmploymentmassEdit from "../MassEdit/EmploymentmassEdit";
+import CheckBoxForm from "../StudentComponents/CheckBoxForm";
+import AlumMassEdit from "./AlumMassEdit";
+import EmploymentmassEdit from "./EmploymentmassEdit";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -154,7 +154,9 @@ const MassEmployerUpload = (props) => {
         work_engagement: data.work_engagement,
       };
     });
+    console.log(newdata);
     props.uploadData(newdata);
+    
   };
   const filterStudent = async (filterValue) => {
     try {
@@ -446,7 +448,7 @@ const MassEmployerUpload = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
-        {
+        {/* {
           <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
@@ -455,9 +457,9 @@ const MassEmployerUpload = (props) => {
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
           />
-        }
+        } */}
 
-        {bulkAddCheck ? (
+        {/* {bulkAddCheck ? ( */}
           <Formik
             onSubmit={onSubmit}
             initialValues={initialValues}
@@ -716,14 +718,14 @@ const MassEmployerUpload = (props) => {
               </Form>
             )}
           </Formik>
-        ) : (
-          <EmploymentmassEdit
-            setBulkAddCheck={setBulkAddCheck}
-            setMassEditCheck={setMassEditCheck}
-            handelSubmitMassEdit={handelSubmitMassEdit}
-            handelCancel={handelCancel}
-          />
-        )}
+        {/* // ) : (
+        //   <EmploymentmassEdit
+        //     setBulkAddCheck={setBulkAddCheck}
+        //     setMassEditCheck={setMassEditCheck}
+        //     handelSubmitMassEdit={handelSubmitMassEdit}
+        //     handelCancel={handelCancel}
+        //   />
+        // )} */}
       </Modal.Body>
     </Modal>
   );

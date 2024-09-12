@@ -312,8 +312,8 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    props.handelCancel();
-    setFormStatus(!formStatus);
+    props.handleMassemployer();
+    // setFormStatus(!formStatus);
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -434,7 +434,7 @@ const EmploymentmassEdit = (props) => {
               </Modal.Title>
               <div className="d-flex justify-content-end align-items-center">
                 <button
-                  onClick={handelCancel}
+                  onClick={() => props.onHide()}
                   style={{
                     border: "none",
                     background: "none",
@@ -502,7 +502,7 @@ const EmploymentmassEdit = (props) => {
                             name="student_ids"
                             options={studentOptions}
                             closeMenuOnSelect={false}
-                            components={customComponents}
+                            // components={customComponents}
                             isOptionDisabled={() => students.length >= 10}
                             className="basic-multi-select"
                             classNamePrefix="select"
@@ -523,7 +523,7 @@ const EmploymentmassEdit = (props) => {
                     <div className="d-flex justify-content-end  mt-4 pt-2">
                       <button
                         type="submit"
-                        onClick={() => props.handelCancel()}
+                        onClick={() => props.onHide()}
                         className="btn btn-secondary mt-3 mr-3 no-decoration"
                       >
                         Cancel
