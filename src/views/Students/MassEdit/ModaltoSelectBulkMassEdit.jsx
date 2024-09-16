@@ -110,6 +110,7 @@ const ModaltoSelectBulkMassEdit = (props) => {
             show={massEditCheck}
             type={"Bulk"}
             data={props.data}
+            handelSubmitMassEdit={props.handelSubmitMassEdit}
             uploadAlumniData={props.uploadAlumniData}
             uploadData={props.uploadData}
           />

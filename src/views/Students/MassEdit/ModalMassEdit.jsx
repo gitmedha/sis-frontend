@@ -79,13 +79,13 @@ const ModalMassEdit = (props) => {
   };
 
   console.log("helllllllooooo")
-  // const uploadAlumniData = (data) => {
-  //   props.uploadAlumniData(data);
-  // };
+  const uploadAlumniData = (data) => {
+    props.uploadAlumniData(data);
+  };
 
-  // const handelSubmit = (data, key) => {
-  //   props.handelSubmitMassEdit(data, key);
-  // };
+  const handelSubmit = (data, key) => {
+    props.handelSubmitMassEdit(data, key);
+  };
 
 
   console.log(modalmassEditShow1)
@@ -153,7 +153,7 @@ const ModalMassEdit = (props) => {
         onHide={handleMassAlumuni}
         uploadData={hideMassCreateModal}
         // uploadAlumniData={uploadAlumniData}
-        // handelSubmit={handelSubmit}
+        handelSubmit={uploadAlumniData}
       /> :"" }
             
       {modalmassEditShow2 ? <EmploymentmassEdit
@@ -161,7 +161,7 @@ const ModalMassEdit = (props) => {
         show={modalmassEditShow2}
         onHide={handleMassemployer}
         uploadData={uploadData}
-        // handelSubmitMassEdit={handelSubmit}
+        handelSubmitMassEdit={handelSubmit}
         // onHide={HideMassEmployeCreateModal}
       /> :""}
        
