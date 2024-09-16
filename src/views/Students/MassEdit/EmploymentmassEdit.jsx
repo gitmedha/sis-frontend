@@ -396,7 +396,7 @@ const EmploymentmassEdit = (props) => {
       let data = await getStudentEmplymentRange(startDate, endDate);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
-        if (!uniqueStudentsMap.has(obj.student.id)) {
+        if (!uniqueStudentsMap.has(obj.student?.id)) {
           uniqueStudentsMap.set(obj.student.id, obj);
         }
       });

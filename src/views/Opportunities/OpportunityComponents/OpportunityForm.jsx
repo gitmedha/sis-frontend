@@ -90,7 +90,6 @@ const OpportunityForm = (props) => {
 
   useEffect(() => {
     getOpportunitiesPickList().then(data => {
-      console.log(data);
       setStatusOptions(data.status.map((item) => {
         return {
           key: item.value,

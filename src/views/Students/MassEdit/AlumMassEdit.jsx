@@ -457,7 +457,7 @@ const AlumMassEdit = (props) => {
       setAlumData(data);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
-        if (!uniqueStudentsMap.has(obj.student.id)) {
+        if (!uniqueStudentsMap.has(obj.student?.id)) {
           uniqueStudentsMap.set(obj.student.id, obj);
         }
       });
