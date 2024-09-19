@@ -9,7 +9,7 @@ import {
   getStudentsPickList,
   getAlumniServicePickList,
   searchStudents,
-} from "./StudentActions";
+} from "../StudentComponents/StudentActions";
 import Textarea from "../../../utils/Form/Textarea";
 import {
   filterAssignedTo,
@@ -17,8 +17,8 @@ import {
 } from "../../../utils/function/lookupOptions";
 import Select ,{ components } from "react-select";
 import moment from "moment";
-import CheckBoxForm from "./CheckBoxForm";
-import AlumMassEdit from "../MassEdit/AlumMassEdit";
+import CheckBoxForm from "../StudentComponents/CheckBoxForm";
+import AlumMassEdit from "./AlumMassEdit";
 import Skeleton from "react-loading-skeleton";
 
 const Section = styled.div`
@@ -320,20 +320,20 @@ const MassEdit = (props) => {
           </h1>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-white">
-        {
-          <CheckBoxForm
+      <Modal.Body className="bg-white" >
+        
+          {/* <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
             masscheck={massEditCheck}
             massEdit="Mass Edit"
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
-          />
-        }
+          /> */}
+        
         
 
-        {bulkAddCheck ? (
+        
           <Formik
             onSubmit={onSubmit}
             initialValues={initialValues}
@@ -547,14 +547,7 @@ const MassEdit = (props) => {
               </Form>
             )}
           </Formik>
-        ) : (
-          <AlumMassEdit
-            setBulkAddCheck={setBulkAddCheck}
-            setMassEditCheck={setMassEditCheck}
-            handelSubmit={handelSubmit}
-            handelCancel={handelCancel}
-          />
-        )}
+        
       </Modal.Body>
     </Modal>
   );

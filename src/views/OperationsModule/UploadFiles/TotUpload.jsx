@@ -248,23 +248,31 @@ const TotUpload = (props) => {
   }, [props]);
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+  
     setShowForm(true);
-    setFileName('');  
-    setNextDisabled(false); 
+    setFileName(''); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
     setUploadSuccesFully(''); 
-    setNotUploadSuccesFully('')
+    setNotUploadSuccesFully('');
+  
     if (file) {
       setFileName(`${file.name} Uploaded`);
+  
       const reader = new FileReader();
-
+  
       reader.onload = () => {
         const fileData = reader.result;
-        convertExcel(fileData);
+        try {
+          convertExcel(fileData);
+        } catch (error) {
+          setNotUploadSuccesFully(error?.message);
+        }
       };
-
+  
       reader.readAsBinaryString(file);
-      // setNextDisabled(true);
+      fileInput.value = '';
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
@@ -361,7 +369,7 @@ const TotUpload = (props) => {
     const fileColumns = Object.keys(data[0]);
     if(data.length === 0){
       setNotUploadSuccesFully(
-        "File is empty please select file which have data in it"
+        "File is empty please select file which has data in it"
       );
       return false
     }
@@ -493,7 +501,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Name"]
                   ? newItem["Project Name"]
-                  : "please select one value",
+                  : "Empty",
                 notFound: true,
               },
           certificate_given: newItem["Certificate Given"],
@@ -502,7 +510,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Module Name"]
                   ? newItem["Module Name"]
-                  : "please select one value",
+                  : "Empty",
                 notFound: true,
               },
           project_type: projectCheck
@@ -510,7 +518,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "please select one value",
+                  : "Empty",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -519,12 +527,12 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Partner Department"]
                   ? newItem["Partner Department"]
-                  : "please select one value",
+                  : "Empty",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
-            : "",
+            : "Empty",
           city: newItem["City"] ? capitalize(newItem["City"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
@@ -591,6 +599,10 @@ const TotUpload = (props) => {
   const hideShowModal = () => {
     setShowModalTOT(false);
     setUploadSuccesFully("");
+    setShowForm(true);
+    setFileName('');  // Reset the file name display
+    setNextDisabled(false);  // Optionally disable the next button
+    setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
@@ -611,6 +623,7 @@ const TotUpload = (props) => {
 
   const uploadNewData =()=>{
     setShowForm(true);
+    setUploadNew(!uploadNew)
   setFileName('');  // Reset the file name display
   setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully(''); 
@@ -740,7 +753,7 @@ const TotUpload = (props) => {
               <div className='mb-5'>
                 <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
                 <FaEdit size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} rows of data will be uploaded` :`${excelData.length} rows of data uploaded successfully` }
+                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded` :`${excelData.length} row(s) of data uploaded successfully` }
                   
                 </p>
               </div>
@@ -754,26 +767,27 @@ const TotUpload = (props) => {
                   Close
                 </button>
 
-                {uploadNew ? (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() =>uploadNewData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Upload New
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => proceedData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Proceed
-                  </button>
+                {!uploadNew ? (
+                   <button
+                   type="button"
+                   // disabled={!nextDisabled}
+                   onClick={() => proceedData()}
+                   className="btn btn-primary px-4 mx-4 mt-2"
+                   style={{ height: "2.5rem" }}
+                 >
+                   Proceed
+                 </button>
+                   
+                 ) : (
+                   <button
+                     type="button"
+                     // disabled={!nextDisabled}
+                     onClick={() =>uploadNewData()}
+                     className="btn btn-primary px-4 mx-4 mt-2"
+                     style={{ height: "2.5rem" }}
+                   >
+                     Upload New
+                   </button>
                 )}
               </div>
             </Modal.Body>

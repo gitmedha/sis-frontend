@@ -28,7 +28,8 @@ import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
-import ModalShowmassedit from "./StudentComponents/ModalShowmassedit";
+import ModalShowmassedit from "./MassEdit/ModalShowmassedit";
+import ModaltoSelectBulkMassEdit from "./MassEdit/ModaltoSelectBulkMassEdit";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -84,10 +85,13 @@ const Students = (props) => {
       {
         Header: "Name",
         accessor: "avatar",
+        
       },
       {
         Header: "Student ID",
         accessor: "student_id",
+        width:250,
+        size:200,
       },
       {
         Header: "Area",
@@ -703,6 +707,7 @@ const Students = (props) => {
   };
 
   const uploadData = (data) => {
+    console.log("hehehllllo");
     HideMassEmployeCreateModal(data);
   };
 
@@ -796,7 +801,7 @@ const Students = (props) => {
                   className="btn btn-primary add_button_sec"
                   onClick={()=>setModalShowmassEdit(true)}
                 >
-                  Mass Edit 
+                  Advanced Options 
                 </button>
               </div>
             )}
@@ -847,14 +852,27 @@ const Students = (props) => {
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
 
-          <ModalShowmassedit
+          <ModaltoSelectBulkMassEdit
+            id={""} name={"name"}
+            onHide={() => hideCreateMassEdit(false)}
+            show={ModalShowmassEdit}
+            handelSubmitMassEdit={handelSubmitMassEdit}
+            data={studentsData}
+            AddCheck={false}
+            EditCheck={false}
+            uploadAlumniData={uploadAlumniData}
+            uploadData={uploadData}
+          />
+
+
+          {/* <ModalShowmassedit
             handelSubmitMassEdit={handelSubmitMassEdit}
             data={studentsData}
             onHide={() => hideCreateMassEdit(false)}
             show={ModalShowmassEdit}
             uploadData={uploadData}
             uploadAlumniData={uploadAlumniData}
-          />
+          /> */}
         </div>
       </Styled>
     </Collapse>
