@@ -23,6 +23,8 @@ const EventCalendar = (props) => {
     start_date: "",
     end_date: "",
     status: "",
+    location: "",
+    participants:""
   });
 
   const [eventList, setEventList] = useState([
@@ -37,6 +39,8 @@ const EventCalendar = (props) => {
         userId: 0,
       },
       event_status: "",
+      location: "",
+      participants:""
     },
   ]);
 
@@ -58,6 +62,8 @@ const EventCalendar = (props) => {
         userId: event?.assgined_to.id,
       },
       event_status: event?.status,
+      location: event?.location,
+      participants: event?.participants,
     }));
 
     setEventList(formattedEvents);
@@ -114,6 +120,8 @@ const EventCalendar = (props) => {
       alumni_service: eventInfo.title,
       status: eventInfo.event_status,
       id: eventInfo.id,
+      location: eventInfo.location,
+      participants:eventInfo.participants
     });
     setViewEventModal(true);
   };
