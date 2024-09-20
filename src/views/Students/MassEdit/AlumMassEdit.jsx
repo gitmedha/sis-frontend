@@ -457,7 +457,7 @@ const AlumMassEdit = (props) => {
       setAlumData(data);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
-        if (!uniqueStudentsMap.has(obj.student.id)) {
+        if (!uniqueStudentsMap.has(obj.student?.id)) {
           uniqueStudentsMap.set(obj.student.id, obj);
         }
       });
@@ -551,7 +551,7 @@ const AlumMassEdit = (props) => {
             </Modal.Title>
             <div className="d-flex justify-content-end align-items-center">
               <button
-                onClick={() => handelCancel("cross")}
+                onClick={() => props.onHide()}
                 style={{
                   border: "none",
                   background: "none",
@@ -616,7 +616,7 @@ const AlumMassEdit = (props) => {
                           setSearchDisabled(true);
                         }
                       }}
-                      components={customComponents}
+                      // components={customComponents}
                       options={typeOptions || []}
                       className="basic-multi-select"
                       classNamePrefix="select"
@@ -636,7 +636,7 @@ const AlumMassEdit = (props) => {
                       name="student_ids"
                       options={studentOptions}
                       closeMenuOnSelect={false}
-                      components={customComponents}
+                      // components={customComponents}
                       isOptionDisabled={() => students?.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
@@ -659,7 +659,7 @@ const AlumMassEdit = (props) => {
                   <div className="d-flex justify-content-end   mt-4 pt-2" >
                     <button
                       type="submit"
-                      onClick={() => props.handelCancel()}
+                      onClick={() => props.onHide()}
                       className="btn btn-secondary mt-3 mr-3"
                     >
                       Cancel
@@ -878,10 +878,10 @@ const AlumMassEdit = (props) => {
                     <div className="col-auto p-0">
                       <button
                         type="button"
-                        onClick={handelCancel}
+                        onClick={()=>props.onHide()}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
-                        CANCEL
+                        CANCEL---
                       </button>
                     </div>
                     <div className="col-auto p-0">

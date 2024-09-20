@@ -312,8 +312,8 @@ const EmploymentmassEdit = (props) => {
   };
 
   const handelCancel = () => {
-    props.handelCancel();
-    setFormStatus(!formStatus);
+    props.handleMassemployer();
+    // setFormStatus(!formStatus);
   };
 
   const MultiValue = ({ index, getValue, ...props }) => {
@@ -396,7 +396,7 @@ const EmploymentmassEdit = (props) => {
       let data = await getStudentEmplymentRange(startDate, endDate);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
-        if (!uniqueStudentsMap.has(obj.student.id)) {
+        if (!uniqueStudentsMap.has(obj.student?.id)) {
           uniqueStudentsMap.set(obj.student.id, obj);
         }
       });
@@ -434,7 +434,7 @@ const EmploymentmassEdit = (props) => {
               </Modal.Title>
               <div className="d-flex justify-content-end align-items-center">
                 <button
-                  onClick={handelCancel}
+                  onClick={() => props.onHide()}
                   style={{
                     border: "none",
                     background: "none",
@@ -502,7 +502,7 @@ const EmploymentmassEdit = (props) => {
                             name="student_ids"
                             options={studentOptions}
                             closeMenuOnSelect={false}
-                            components={customComponents}
+                            // components={customComponents}
                             isOptionDisabled={() => students.length >= 10}
                             className="basic-multi-select"
                             classNamePrefix="select"
@@ -523,7 +523,7 @@ const EmploymentmassEdit = (props) => {
                     <div className="d-flex justify-content-end  mt-4 pt-2">
                       <button
                         type="submit"
-                        onClick={() => props.handelCancel()}
+                        onClick={() => props.onHide()}
                         className="btn btn-secondary mt-3 mr-3 no-decoration"
                       >
                         Cancel
@@ -565,7 +565,7 @@ const EmploymentmassEdit = (props) => {
                   <Form>
                     <Section>
                       <div className="row px-3 form_sec">
-                        <div className="col-md-6 col-sm-12 mt-1">
+                        <div className="col-md-6 col-sm-12 ">
                         <label className="leading-24">Student</label>
                           <Select
                             isMulti
@@ -578,7 +578,7 @@ const EmploymentmassEdit = (props) => {
                             classNamePrefix="select"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-1">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             control="lookupAsync"
                             name="assigned_to"
@@ -589,7 +589,7 @@ const EmploymentmassEdit = (props) => {
                             defaultOptions={assigneeOptions}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             control="lookupAsync"
                             name="employer_id"
@@ -604,7 +604,7 @@ const EmploymentmassEdit = (props) => {
                             }}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           {employerOpportunityOptions.length ? (
                             <Input
                               icon="down"
@@ -630,7 +630,7 @@ const EmploymentmassEdit = (props) => {
                             </>
                           )}
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12">
                           <Input
                             icon="down"
                             control="lookup"
@@ -642,7 +642,7 @@ const EmploymentmassEdit = (props) => {
                             onChange={(e) => handleStatusChange(e.value)}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             name="start_date"
                             label="Start Date"
@@ -652,7 +652,7 @@ const EmploymentmassEdit = (props) => {
                             autoComplete="off"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             min={0}
                             type="number"
@@ -665,7 +665,7 @@ const EmploymentmassEdit = (props) => {
                           />
                         </div>
                         {showEndDate && (
-                          <div className="col-md-6 col-sm-12 mt-2">
+                          <div className="col-md-6 col-sm-12 ">
                             <Input
                               name="end_date"
                               label="End Date"
@@ -677,7 +677,7 @@ const EmploymentmassEdit = (props) => {
                             />
                           </div>
                         )}
-                        <div className="col-md-6 col-sm-12 mt-2">
+                        <div className="col-md-6 col-sm-12 ">
                           <Input
                             icon="down"
                             control="lookup"
@@ -692,7 +692,7 @@ const EmploymentmassEdit = (props) => {
                         {isRejected ||
                         (initialValues.reason_if_rejected &&
                           initialValues.reason_if_rejected.length) ? (
-                          <div className="col-md-6 col-sm-12 mt-2">
+                          <div className="col-md-6 col-sm-12 ">
                             <Input
                               icon="down"
                               control="lookup"
@@ -720,7 +720,7 @@ const EmploymentmassEdit = (props) => {
                         {ifSelectedOthers ||
                         (initialValues.reason_if_rejected_other &&
                           initialValues.reason_if_rejected_other.length) ? (
-                          <div className="col-md-6 col-sm-12 mt-2">
+                          <div className="col-md-6 col-sm-12 ">
                             <Input
                               name="reason_if_rejected_other"
                               control="input"
@@ -751,7 +751,7 @@ const EmploymentmassEdit = (props) => {
                               type="number"
                               control="input"
                               name="number_of_internship_hours"
-                              className="form-control"
+                              className="form-control hello"
                               label="Number of Internship hours"
                               placeholder="Number of Internship hours"
                             />
