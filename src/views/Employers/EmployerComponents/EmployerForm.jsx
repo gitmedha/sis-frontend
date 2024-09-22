@@ -83,8 +83,7 @@ const EmployerForm = (props) => {
   const formikRef = useRef();
 
   const handleExternalChange = (value) => {
-    let data=value?.value? value:value.label;
-    console.log(data);
+    let data=value.label;
     formikRef.current.setFieldValue("industry", data);
   };
 
