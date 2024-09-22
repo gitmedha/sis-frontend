@@ -28,10 +28,6 @@ const ModalMassEdit = (props) => {
   const [modalmassEditShow1, setModalShow1] = useState(false);
   const [modalmassEditShow2, setModalShow2] = useState(false);
 
-  const handleMassAlumuni = (data) => {
-    setModalShow1(!modalmassEditShow1);
-    onHide();
-  };
 
   const HideMassEmployeCreateModal = async (data) => {
     if (data.length == 0) {
@@ -66,19 +62,20 @@ const ModalMassEdit = (props) => {
     }
   };
   const handleMassemployer = () => {
-    console.log("callleeeddd");
     setModalShow2(!modalmassEditShow2);
     // // onHide();
     // setModalShow1(!modalmassEditShow1)
   };
+  const handleMassAlumuni = (data) => {
+    setModalShow1(!modalmassEditShow1);
+    // onHide();
+  };
 
   const uploadData = (data) => {
-    console.log("datat",data);
     props.uploadData(data);
     // handleMassemployer();
   };
 
-  console.log("helllllllooooo")
   const uploadAlumniData = (data) => {
     props.uploadAlumniData(data);
   };
@@ -88,8 +85,8 @@ const ModalMassEdit = (props) => {
   };
 
 
-  console.log(modalmassEditShow1)
-  console.log(modalmassEditShow2);
+  // console.log(modalmassEditShow1)
+  // console.log(modalmassEditShow2);
 
   return (
     <div>
@@ -111,7 +108,7 @@ const ModalMassEdit = (props) => {
               <div className="row justify-content-between align-items-center">
                 <div className="col-auto">
                   <h1 className="text--primary bebas-thick mb-0">
-                    Please select one option to Bulk Edit ---
+                    Please select one option to Bulk Edit
                   </h1>
                 </div>
 
