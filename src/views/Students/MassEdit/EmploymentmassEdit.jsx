@@ -397,13 +397,12 @@ const EmploymentmassEdit = (props) => {
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
         if (!uniqueStudentsMap.has(obj.student?.id)) {
-          uniqueStudentsMap.set(obj.student.id, obj);
+          uniqueStudentsMap.set(obj?.student?.id, obj);
         }
       });
-
       let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
-        label: `${obj.student.full_name} (${obj.student.student_id})`,
-        value: Number(obj.student.id),
+        label: `${obj?.student?.full_name} (${obj?.student?.student_id})`,
+        value: Number(obj?.student?.id),
       }));
       setStudentOptions(values);
       setSkeleton(false);

@@ -398,7 +398,6 @@ export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, 
   let allData = [];
   let offset = 0;
   let hasMoreData = true;
-
   while (hasMoreData) {
     const result = await api.post('/graphql', {
       query: GET_UNIQUE_STUDENT_EMPLOYMENT,

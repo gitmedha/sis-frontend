@@ -154,7 +154,6 @@ const MassEmployerUpload = (props) => {
         work_engagement: data.work_engagement,
       };
     });
-    console.log(newdata);
     props.uploadData(newdata);
     
   };
@@ -469,21 +468,13 @@ const MassEmployerUpload = (props) => {
               <Form>
                 <Section>
                   <div className="row form_sec">
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12">
                       <label className="leading-24">Student</label>
                       <Select
-                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                        // isMulti
-                        // name="student_ids"
-                        // options={studentOptions}
-                        // className="basic-multi-select"
-                        // classNamePrefix="select"
-                        // onChange={(choice) => setStudents(choice)}
                         isMulti
                          name="student_ids"
                          options={studentOptions}
                          closeMenuOnSelect={false}
-                         components={customComponents}
                          isOptionDisabled={() => students.length >= 10}
                          className="basic-multi-select"
                          classNamePrefix="select"
@@ -492,7 +483,7 @@ const MassEmployerUpload = (props) => {
                          value={students}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       {assigneeOptions.length ? (
                         <Input
                           control="lookupAsync"
@@ -508,7 +499,7 @@ const MassEmployerUpload = (props) => {
                         <Skeleton count={1} height={45} />
                       )}
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         control="lookupAsync"
                         name="employer_id"
@@ -528,7 +519,7 @@ const MassEmployerUpload = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       {employerOpportunityOptions.length ? (
                         <Input
                           icon="down"
@@ -553,7 +544,7 @@ const MassEmployerUpload = (props) => {
                         </>
                       )}
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12">
                       <Input
                         icon="down"
                         control="lookup"
@@ -570,7 +561,7 @@ const MassEmployerUpload = (props) => {
                           handleStatusChange(e.value)}}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         name="start_date"
                         label="Start Date"
@@ -581,7 +572,7 @@ const MassEmployerUpload = (props) => {
                         autoComplete="off"
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         min={0}
                         type="number"
@@ -594,7 +585,7 @@ const MassEmployerUpload = (props) => {
                       />
                     </div>
                     {showEndDate && (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           name="end_date"
                           label="End Date"
@@ -606,7 +597,7 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     )}
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         icon="down"
                         control="lookup"
@@ -622,7 +613,7 @@ const MassEmployerUpload = (props) => {
                     {isRejected ||
                     (initialValues.reason_if_rejected &&
                       initialValues.reason_if_rejected.length) ? (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           icon="down"
                           control="lookup"
@@ -646,12 +637,12 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     ) : (
-                      <div></div>
+                      ""
                     )}
                     {ifSelectedOthers ||
                     (initialValues.reason_if_rejected_other &&
                       initialValues.reason_if_rejected_other.length) ? (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           name="reason_if_rejected_other"
                           control="input"
@@ -662,9 +653,9 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     ) : (
-                      <div></div>
+                      ""
                     )}
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         icon="down"
                         control="lookup"
@@ -678,7 +669,7 @@ const MassEmployerUpload = (props) => {
                     </div>
 
                     {selectedOpportunityType === "Internship" && (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           min={0}
                           type="number"

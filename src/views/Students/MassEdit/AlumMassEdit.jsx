@@ -458,7 +458,7 @@ const AlumMassEdit = (props) => {
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
         if (!uniqueStudentsMap.has(obj.student?.id)) {
-          uniqueStudentsMap.set(obj.student.id, obj);
+          uniqueStudentsMap.set(obj?.student?.id, obj);
         }
       });
       const uniqueTypes = [
@@ -595,7 +595,6 @@ const AlumMassEdit = (props) => {
                         required
                         min={startDate}
                         onChange={(e) => {
-                          console.log(e.target.value);
                           setFieldValue('end_date',e.target.value)
                           handleDatechange(e, "endDate")}}
                       />
