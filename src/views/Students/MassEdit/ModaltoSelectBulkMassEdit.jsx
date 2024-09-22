@@ -85,6 +85,7 @@ const ModaltoSelectBulkMassEdit = (props) => {
             <div className="col-auto p-0">
               <button
                 onClick={handelClick}
+                disabled={SelectedOption?.length === 0}
                 className="btn btn-primary btn-regular collapse_form_buttons"
               >
                 Next
@@ -106,7 +107,7 @@ const ModaltoSelectBulkMassEdit = (props) => {
       ) : massEditCheck ?(
         <>
           <ModalMassEdit 
-            onHide={()=>setBulkAddCheck(false)}
+            onHide={()=>setMassEditCheck(false)}
             show={massEditCheck}
             type={"Bulk"}
             data={props.data}
