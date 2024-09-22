@@ -111,12 +111,12 @@ const ModalMassEdit = (props) => {
               <div className="row justify-content-between align-items-center">
                 <div className="col-auto">
                   <h1 className="text--primary bebas-thick mb-0">
-                    Please select one option to Bulk Edit
+                    Please select one option to Bulk Edit ---
                   </h1>
                 </div>
 
                 <div className="col-auto cont">
-                  <button onClick={()=>onHide()} className="cross">
+                  <button onClick={()=>props.onHide()} className="cross">
                     <FaTimes />
                   </button>
                 </div>
