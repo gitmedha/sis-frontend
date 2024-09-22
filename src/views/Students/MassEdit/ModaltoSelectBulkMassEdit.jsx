@@ -25,7 +25,6 @@ const ModaltoSelectBulkMassEdit = (props) => {
       } if(SelectedOption =="massEdit") {
         setMassEditCheck(true);
         setBulkAddCheck(false);
-        console.log("nooooooo");
       }
     }
     
@@ -36,8 +35,8 @@ const ModaltoSelectBulkMassEdit = (props) => {
     setMassEditCheck(false)
   }
 
-  console.log("BulkAddCheck",bulkAddCheck)
-  console.log("massEditCheck",massEditCheck);
+  // console.log("BulkAddCheck",bulkAddCheck)
+  // console.log("massEditCheck",massEditCheck);
   return (
     <Modal
       centered
@@ -96,7 +95,9 @@ const ModaltoSelectBulkMassEdit = (props) => {
       ) : bulkAddCheck ? (
         <>
           <ModalShowmassedit 
-            onHide={()=>setBulkAddCheck(false)}
+            onHide={()=>{
+              setSelectedOption([])
+              setBulkAddCheck(false)}}
             show={bulkAddCheck}
             type={"Bulk"}
             data={props.data}
@@ -107,7 +108,10 @@ const ModaltoSelectBulkMassEdit = (props) => {
       ) : massEditCheck ?(
         <>
           <ModalMassEdit 
-            onHide={()=>setMassEditCheck(false)}
+            onHide={()=>{
+              setMassEditCheck(false)
+              setSelectedOption([])
+            }}
             show={massEditCheck}
             type={"Bulk"}
             data={props.data}
