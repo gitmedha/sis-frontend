@@ -102,10 +102,12 @@ const EmployerForm = (props) => {
         }
       });
 
-      const matchIndex = dropdownOptions.findIndex(
-        (obj) => obj.value === selected.value
-      );
+      console.log(dropdownOptions,"\n",selected);
 
+      const matchIndex = dropdownOptions.findIndex(
+        (obj) => obj.label === selected.label
+      );
+        console.log(matchIndex);
       let result = [];
       if(!selected.children.includes(dropdownOptions[matchIndex+1])){
         if (matchIndex !== -1) {
@@ -146,12 +148,12 @@ const EmployerForm = (props) => {
     const selectedItem=props?.data
     const isParent = props?.data?.children;
     const matchIndex = dropdownOptions.findIndex(
-      (obj) => obj.value === selectedItem.value
+      (obj) => obj.label === selectedItem.label
     );
     
-    
+    console.log("selectedItem",selectedItem);
     let isSelectedParent =
-      selectedOption && selectedOption?.value === props?.data?.value && selectedItem?.children?.includes(dropdownOptions[matchIndex+1]) ;
+      selectedOption && selectedOption?.label === props?.data?.label && selectedItem?.children?.includes(dropdownOptions[matchIndex+1]) ;
     let haschild=!selectedItem?.isChild;
     return (
       <components.Option
