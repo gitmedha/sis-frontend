@@ -116,13 +116,22 @@ const UpdateMentorship = (props) => {
     });
      getStateDistricts().then((data) => {
       setDistrictOptions([]);
-      console.log(data);
       setDistrictOptions(
         data?.data?.data?.geographiesConnection?.groupBy?.area
           .map((value) => ({
             key: value.key,
             label: value.key,
             value: value.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection?.groupBy?.area
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
@@ -407,7 +416,7 @@ console.log(props);
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {areaOptions.length ? (
+                          {/* {areaOptions.length ||props.medha_area ? ( */}
                             <Input
                               icon="down"
                               name="mentor_area"
@@ -417,11 +426,11 @@ console.log(props);
                               placeholder="Area"
                               className="form-control"
                             />
-                          ) : (
+                          {/* ) : (
                             <>
                               <Skeleton count={1} height={45} />
                             </>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </Section>
