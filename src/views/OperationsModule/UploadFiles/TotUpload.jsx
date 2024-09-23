@@ -287,11 +287,10 @@ const TotUpload = (props) => {
     const data = results.slice(1).map((row) => {
       const newItem = {};
       headers.forEach((header, i) => {
-        newItem[header] = row[i];
+        newItem[header.trim()] = row[i];
       });
       return newItem;
     });
-
     processFileData(data);
   };
 
@@ -380,10 +379,12 @@ const TotUpload = (props) => {
       return false;
     }
     const missingColumns = expectedColumns.filter(
-      (col) => !fileColumns.includes(col)
+      (col) => {;
+        return !fileColumns.includes(col.trim())
+      }
     );
     const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col)
+      (col) => !expectedColumns.includes(col.trim())
     );
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
@@ -400,7 +401,6 @@ const TotUpload = (props) => {
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
-    // console.log('Column validation passed');
     return true;
   };
 
@@ -416,7 +416,7 @@ const TotUpload = (props) => {
     });
     const filteredArray = validRecords.filter((obj) =>
       Object.values(obj).some((value) => value !== undefined)
-    );
+    ); 
     if (
       validateColumns(filteredArray, expectedColumns) &&
       filteredArray.length <= 200 &&
@@ -460,8 +460,6 @@ const TotUpload = (props) => {
       const projectNameCheck = projectName.find(
         (project) => project === newItem["Project Name"]
       );
-
-      // projectName
 
       const trainer_1 = assigneOption.find(
         (user) => user.label === newItem["Trainer 1"]
