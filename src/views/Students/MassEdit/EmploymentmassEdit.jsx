@@ -377,10 +377,13 @@ const EmploymentmassEdit = (props) => {
         return acc;
       }, {});
 
-      filteredObj.student_id = val.student_id;
+      filteredObj.student = val.student_id;
       filteredObj.id = val.id;
+
       return filteredObj;
+
     });
+
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
   };
   const initialValuesStudent = {
