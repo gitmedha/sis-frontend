@@ -89,6 +89,7 @@ const UpdateMentorship = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [districtOption, setDistrictOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [programeName, setProgramName] = useState([]);
 
@@ -112,6 +113,19 @@ const UpdateMentorship = (props) => {
       if (props.state) {
         onStateChange({ value: props.state });
       }
+    });
+     getStateDistricts().then((data) => {
+      setDistrictOptions([]);
+      console.log(data);
+      setDistrictOptions(
+        data?.data?.data?.geographiesConnection?.groupBy?.area
+          .map((value) => ({
+            key: value.key,
+            label: value.key,
+            value: value.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
     });
   }, []);
 
@@ -180,7 +194,7 @@ const UpdateMentorship = (props) => {
     initialValues["status"] = props.status;
     initialValues["outreach"] = props.outreach;
   }
-
+console.log(props);
   // const operationvalidation = Yup.object().shape({
   //   start_date: Yup.date().required("Start date is required"),
   //   end_date: Yup.date()
@@ -321,17 +335,17 @@ const UpdateMentorship = (props) => {
                             autoComplete="off"
                           />
                         </div>
-                        {/* <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            control="input"
-                            name="contact"
-                            label="Contact"
-                            className="form-control"
-                            placeholder="Contact"
-                            autoComplete="off"
-                            onKeyPress={numberChecker}
-                          />
-                        </div> */}
+                              icon="down"
+                              name="medha_area"
+                              label="Medha Area"
+                              control="lookup"
+                              options={districtOption}
+                              placeholder="Area"
+                              className="form-control"
+                            />
+                        </div>
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
@@ -365,7 +379,7 @@ const UpdateMentorship = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             name="designation"
-                            label="designation/Title"
+                            label="Designation/Title"
                             placeholder="designation/Title"
                             control="input"
                             className="form-control"
