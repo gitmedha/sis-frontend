@@ -97,6 +97,7 @@ const MentorshipdataField = (props) => {
       dataAndEdit: false,
     });
   };
+  console.log(props);
 
   return (
     <>
@@ -212,6 +213,16 @@ const MentorshipdataField = (props) => {
                   <DetailField
                     className=""
                     Bold={""}
+                    label="Medha Area"
+                    value={
+                      props.medha_area
+                        ? props.medha_area
+                        : "Not found"
+                    }
+                  />
+                  <DetailField
+                    className=""
+                    Bold={""}
                     label="Designation"
                     value={props.designation ? props.designation : "Not found"}
                   />
@@ -226,7 +237,8 @@ const MentorshipdataField = (props) => {
                     }
                   />
 
-                  {/*  */}
+
+                  {/* medha_area */}
                 </div>
               </div>
               <div className="">
