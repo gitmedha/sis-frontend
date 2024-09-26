@@ -140,9 +140,10 @@ const UpdateMentorship = (props) => {
 
   const onStateChange = async (value) => {
     await getStateDistricts(value).then((data) => {
+      console.log(data);
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.area
+        data?.data?.data?.geographiesConnection?.groupBy?.city
           .map((area) => ({
             key: area.id,
             label: area.key,
@@ -203,18 +204,7 @@ const UpdateMentorship = (props) => {
     initialValues["status"] = props.status;
     initialValues["outreach"] = props.outreach;
   }
-console.log(props);
-  // const operationvalidation = Yup.object().shape({
-  //   start_date: Yup.date().required("Start date is required"),
-  //   end_date: Yup.date()
-  //     .required("End date is required")
-  //     .when("start_date", (start, schema) => {
-  //       return schema.min(
-  //         start,
-  //         "End date must be greater than or equal to start date"
-  //       );
-  //     }),
-  // });
+
   useEffect(async () => {
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
@@ -404,7 +394,7 @@ console.log(props);
                             <Input
                               icon="down"
                               name="mentor_state"
-                              label="State"
+                              label="Mentor State"
                               control="lookup"
                               options={stateOptions}
                               onChange={onStateChange}
@@ -420,7 +410,7 @@ console.log(props);
                             <Input
                               icon="down"
                               name="mentor_area"
-                              label="Medha Area"
+                              label="Mentor Area"
                               control="lookup"
                               options={areaOptions}
                               placeholder="Area"
