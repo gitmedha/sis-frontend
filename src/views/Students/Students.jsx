@@ -674,7 +674,7 @@ const Students = (props) => {
     );
   };
 
-  const HideMassEmployeCreateModal = async (data) => {
+  const HideMassEmployerCreateModal = async (data) => {
     try {
       // const uniqueStudentIds = [...new Set(data.map((item) => item.student))];
       // for (const id in uniqueStudentIds) {
@@ -695,10 +695,6 @@ const Students = (props) => {
       setAlert("Unable to create Alumni Data.", "error");
     } else {
       try {
-        // const uniqueStudentIds = [...new Set(data.map((item) => item.student))];
-        // for (const id in uniqueStudentIds) {
-        //   await getAndUpdateStudentFullName(id);
-        // }
         await api.post("/alumni-services/createBulkAlumniServices", data);
         setAlert("Alumni data created successfully.", "success");
       } catch (error) {
@@ -712,7 +708,7 @@ const Students = (props) => {
   };
 
   const uploadData = (data) => {
-    HideMassEmployeCreateModal(data);
+    HideMassEmployerCreateModal(data);
   };
 
   const uploadAlumniData = (data) => {
@@ -720,15 +716,10 @@ const Students = (props) => {
   };
 
   const handelSubmitMassEdit = async (data, key) => {
-    if (key === "AlumniBuldEdit") {
+    if (key === "AlumniBulkEdit") {
       await api
         .post("/alumni-services/bulk-update", data)
         .then(async(data) => {
-        //   const uniqueStudentIds = [...new Set(data.map(item => item.student))];
-        // for(const id in uniqueStudentIds){
-        //   await getAndUpdateStudentFullName(id);
-        // }
-        //   // Return data
           setAlert("Data Edited Successfully.", "success");
           setTimeout(() => {
             window.location.reload(false);
@@ -875,6 +866,7 @@ const Students = (props) => {
             EditCheck={false}
             uploadAlumniData={uploadAlumniData}
             uploadData={uploadData}
+            
           />
 
           {/* <ModalShowmassedit

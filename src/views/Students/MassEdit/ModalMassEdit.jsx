@@ -45,6 +45,7 @@ const ModalMassEdit = (props) => {
       }
     }
   };
+ 
 
   const hideMassCreateModal = async (data) => {
     if (data.length == 0) {
@@ -149,8 +150,8 @@ const ModalMassEdit = (props) => {
         show={modalmassEditShow1}
         onHide={handleMassAlumuni}
         uploadData={hideMassCreateModal}
-        // uploadAlumniData={uploadAlumniData}
-        handelSubmit={uploadAlumniData}
+        uploadAlumniData={uploadAlumniData}
+        handelSubmitMassEdit={props.handelSubmitMassEdit}
       /> :"" }
             
       {modalmassEditShow2 ? <EmploymentmassEdit
