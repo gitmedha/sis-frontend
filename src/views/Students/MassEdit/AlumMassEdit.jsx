@@ -178,7 +178,6 @@ const AlumMassEdit = (props) => {
                 }: ${JSON.stringify(data)}`
               );
             }
-
             return data.data.data.alumniServicesConnection.values.map(
               (val) => ({
                 assigned_to: val.assigned_to.id,
@@ -279,7 +278,7 @@ const AlumMassEdit = (props) => {
   const onSubmit = async (values) => {
     let data = alumniServiceData.map((obj) => {
       let initialData = {
-        student_id: obj.student_id,
+        student: obj.student_id,
         id: Number(obj.id),
         type: values.type ? values.type : obj.type,
       };
@@ -290,8 +289,6 @@ const AlumMassEdit = (props) => {
         }
         return acc;
       }, initialData);
-
-      // Add fields from obj if they are not provided in values
       filteredData = {
         ...filteredData,
         assigned_to: filteredData.assigned_to || obj.assigned_to,
@@ -458,7 +455,7 @@ const AlumMassEdit = (props) => {
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
         if (!uniqueStudentsMap.has(obj.student?.id)) {
-          uniqueStudentsMap.set(obj.student.id, obj);
+          uniqueStudentsMap.set(obj?.student?.id, obj);
         }
       });
       const uniqueTypes = [
@@ -490,6 +487,7 @@ const AlumMassEdit = (props) => {
     setSelectedOptions(selected);
 
     const matchingData = findMatchingData(alumData, selected, "type");
+
 
     let values = matchingData.map((obj) => ({
       label: `${obj.student.full_name} (${obj.student.student_id})`,
@@ -595,7 +593,6 @@ const AlumMassEdit = (props) => {
                         required
                         min={startDate}
                         onChange={(e) => {
-                          console.log(e.target.value);
                           setFieldValue('end_date',e.target.value)
                           handleDatechange(e, "endDate")}}
                       />
@@ -881,7 +878,7 @@ const AlumMassEdit = (props) => {
                         onClick={()=>props.onHide()}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
-                        CANCEL---
+                        CANCEL
                       </button>
                     </div>
                     <div className="col-auto p-0">

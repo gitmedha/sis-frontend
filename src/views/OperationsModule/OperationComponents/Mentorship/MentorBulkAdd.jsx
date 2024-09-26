@@ -93,9 +93,15 @@ const MentorBulkAdd = (props) => {
 
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
-        const value = obj[key];
+        if(key =='contact' && obj[key].length <10){
+          const value = obj[key];
+          result[key] = true;
+        }else{
+          const value = obj[key];
         const isEmpty = isEmptyValue(value);
         result[key] = isEmpty;
+        }
+        
       }
     }
 
@@ -333,9 +339,8 @@ const MentorBulkAdd = (props) => {
         !(key == "program_name")
         |--------------------------------------------------
         */
-       console.log(key =="contact" , row[key]);
         if (
-          !(key == "social_media_profile_link") && (key =="contact" && row[key].length ==10)
+          !(key == "social_media_profile_link") && (key =="contact" && row[key].length < 10)
           
          
         ) {
@@ -345,7 +350,6 @@ const MentorBulkAdd = (props) => {
         }
       }
     }
-    console.log(isEmptyValuFound);
     setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 

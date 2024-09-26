@@ -342,7 +342,7 @@ const UploadFile = (props) => {
     const data = results.slice(1).map((row) => {
       const newItem = {};
       headers.forEach((header, i) => {
-        newItem[header] = row[i];
+        newItem[header.trim()] = row[i];
       });
       return newItem;
     });
@@ -551,10 +551,9 @@ const UploadFile = (props) => {
           query: GET_ALL_BATCHES_UPLOAD_FILE,
           variables,
         });
-
         batchData = [
           ...batchData,
-          ...batchResponse.data.data.batchesConnection.values,
+          ...batchResponse.data.data.batches,
         ];
         setBatchOption(batchData);
       }
