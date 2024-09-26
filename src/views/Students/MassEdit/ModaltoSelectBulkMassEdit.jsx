@@ -101,12 +101,14 @@ const ModaltoSelectBulkMassEdit = (props) => {
             show={bulkAddCheck}
             type={"Bulk"}
             data={props.data}
+            handelSubmitMassEdit={props.handelSubmitMassEdit}
             uploadAlumniData={props.uploadAlumniData}
             uploadData={props.uploadData}
           />
         </>
       ) : massEditCheck ?(
         <>
+
           <ModalMassEdit 
             onHide={()=>{
               setMassEditCheck(false)

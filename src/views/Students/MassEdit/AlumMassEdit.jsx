@@ -114,6 +114,7 @@ const statusOption = [
   { value: "Unpaid", label: "Unpaid" },
 ];
 
+
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
@@ -303,9 +304,9 @@ const AlumMassEdit = (props) => {
         start_date: moment(new Date(filteredData.start_date || obj.start_date)).format('YYYY-MM-DD'),
       };
 
-      return filteredData;
+      return filteredData; 
     });
-    props.handelSubmit(data, "AlumniBuldEdit");
+    props.handelSubmitMassEdit(data, "AlumniBulkEdit");
   };
 
   useEffect(() => {
@@ -442,8 +443,8 @@ const AlumMassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const initialValuesStudent = {
-    start_date:  new Date().toISOString().split('T')[0] ,
-    end_date:  new Date().toISOString().split('T')[0] ,
+    start_date:  null ,
+    end_date:  null,
     student_ids: [],
   };
 
