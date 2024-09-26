@@ -129,7 +129,6 @@ const MentorBulkAdd = (props) => {
   }
   const addRow = () => {
     let value = checkEmptyValues(rows[rows.length - 1]);
-    console.log(value);
     if (value ) {
       let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
 
@@ -340,7 +339,6 @@ const MentorBulkAdd = (props) => {
         !(key == "program_name")
         |--------------------------------------------------
         */
-       console.log(key =="contact" , row[key]);
         if (
           !(key == "social_media_profile_link") && (key =="contact" && row[key].length < 10)
           
@@ -352,7 +350,6 @@ const MentorBulkAdd = (props) => {
         }
       }
     }
-    console.log(isEmptyValuFound);
     setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
