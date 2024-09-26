@@ -134,6 +134,9 @@ const Operations = ({
     tot: false,
   });
 
+  const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Sample-File.xlsx`;
+  const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Sample-File.xlsx';
+
   const columns = useMemo(
     () => [
       {
@@ -1106,14 +1109,14 @@ const Operations = ({
                         <a
                           href={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activity-Sample-File.xlsx"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
+                            feildActivityFIle
+                           :totfile}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activity-Sample-File.xlsx"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
+                            feildActivityFIle
+                           :totfile}
                         >Sample&nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
                         </a>
