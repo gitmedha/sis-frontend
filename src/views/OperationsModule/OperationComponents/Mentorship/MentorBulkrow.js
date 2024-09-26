@@ -85,10 +85,8 @@ const MentorBulkrow = (props) => {
   }, [name]);
 
   const onStateChange = (value, rowid, field) => {
-    console.log(value);
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
-      console.log(data?.data?.data?.geographiesConnection);
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
