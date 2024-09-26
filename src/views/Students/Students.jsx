@@ -431,7 +431,7 @@ const Students = (props) => {
     selectedTab,
     limit = paginationPageSize,
     offset = 0,
-    sortBy = "created_at",
+    sortBy = "updated_at",
     sortOrder = "desc"
   ) => {
     nProgress.start();
