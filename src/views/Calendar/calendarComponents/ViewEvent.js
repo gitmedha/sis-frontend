@@ -108,7 +108,7 @@ function ViewEvent(props) {
           </Modal.Header>
           <Styled>
             <Modal.Body className="bg-white">
-              <div className="row">
+              <div className="row view_calendar_form_sec">
                 <div className="col-md-6 col-sm-12 mb-2">
                   <DetailField
                     label="Assigned To"
@@ -145,6 +145,18 @@ function ViewEvent(props) {
                         ? moment(event.end_date).format("DD MMM YYYY")
                         : ""
                     }
+                  />
+                </div>
+                <div className="col-md-6 col-sm-12 mb-2">
+                  <DetailField
+                    label="Location"
+                    value={event.location ? event.location : ""}
+                  />
+                </div>
+                <div className="col-md-6 col-sm-12 mb-2">
+                  <DetailField
+                    label="Participants"
+                    value={event.participants ? event.participants : ""}
                   />
                 </div>
               </div>

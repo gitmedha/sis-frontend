@@ -13,6 +13,9 @@ import {
   updateEvent,
 } from "./calendarActions";
 import { calendarValidations } from "../../../validations/Calendar";
+import {
+  getStudentsPickList,
+} from "../../Students/StudentComponents/StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import NP from "nprogress";
@@ -54,6 +57,8 @@ export const EventForm = (props) => {
 
   const [alumniServiceOptions, setAlumniServiceOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [locationOptions, setLocationOptions] = useState([]);
+
   const initialValues = {};
 
   const userId = parseInt(localStorage.getItem("user_id"));
@@ -78,6 +83,16 @@ export const EventForm = (props) => {
       setAssigneeOptions(data);
     });
 
+    getStudentsPickList().then((data) => {
+      setLocationOptions(
+        data.alumni_service_location.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
+    });
+
     if (props.eventData) {
       initialValues.assgined_to = props.eventData.assgined_to.id.toString();
       initialValues.start_date = new Date(props.eventData.start_date);
@@ -85,6 +100,8 @@ export const EventForm = (props) => {
       initialValues.status = props.eventData.status;
       initialValues.alumni_service = props.eventData.alumni_service;
       initialValues.id = props.eventData.id;
+      initialValues.location = props.eventData?.location?props.eventData.location: " ";
+      initialValues.participants = props.eventData?.participants ? props.eventData.participants: ""
     } else {
       initialValues.assgined_to = userId.toString();
       initialValues.start_date = props.slotData.start;
@@ -93,6 +110,8 @@ export const EventForm = (props) => {
       initialValues.status = "Open";
       initialValues.alumni_service = "";
       initialValues.name = localStorage.getItem("user_name");
+      initialValues.location = "";
+      initialValues.participants = "";
     }
   }, []);
 
@@ -215,6 +234,31 @@ export const EventForm = (props) => {
                       className="form-control"
                       autoComplete="off"
                       placeholder="End Date"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      name="participants"
+                      label="Participants"
+                      required
+                      control="input"
+                      className="form-control"
+                      autoComplete="off"
+                      placeholder="Participants"
+                      type="number"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+                      icon="down"
+                      name="location"
+                      label="Location"
+                      required
+                      options={locationOptions}
+                      control="lookup"
+                      className="form-control"
+                      autoComplete="off"
+                      placeholder="Location"
                     />
                   </div>
                 </div>
