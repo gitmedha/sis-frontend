@@ -331,7 +331,7 @@ const UploadFile = (props) => {
 
   const convertExcel = (excelData) => {
     const workbook = XLSX.read(excelData, { type: "binary" });
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const worksheet = workbook.Sheets[workbook.SheetNames[1]];
     const results = XLSX.utils.sheet_to_json(worksheet, {
       header: 1,
       defval: "",
