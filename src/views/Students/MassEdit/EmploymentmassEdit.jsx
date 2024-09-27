@@ -210,6 +210,7 @@ const EmploymentmassEdit = (props) => {
 
   const handleSubmit = async (values) => {
     try {
+      console.log(students);
       let alumData = await Promise.all(
         students.map(async (obj) => {
           try {
@@ -218,8 +219,10 @@ const EmploymentmassEdit = (props) => {
               startDate,
               endDate
             );
+            // console.log(obj.value);
             return data.data.data.employmentConnectionsConnection.values.map(
-              (val) => ({
+              (val) => {
+              return ({
                 assigned_to: val.assigned_to.id,
                 experience_certificate: val.experience_certificate,
                 number_of_internship_hours: val.number_of_internship_hours,
@@ -238,11 +241,11 @@ const EmploymentmassEdit = (props) => {
                 start_date: val.start_date,
                 source: val.source,
                 status: val.status,
-                student_id: obj.id,
+                student_id: obj.value,
                 work_engagement: val.work_engagement,
                 id: val.id,
               })
-            );
+     }       );
           } catch (err) {
             console.error(err);
             return [];
@@ -347,6 +350,7 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
+    // console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
       // Build the object with only non-empty values
       let obj = {
@@ -376,10 +380,10 @@ const EmploymentmassEdit = (props) => {
         }
         return acc;
       }, {});
-
+      // console.log(values);
       filteredObj.student = val.student_id;
       filteredObj.id = val.id;
-
+      // console.log(filteredObj);
       return filteredObj;
 
     });
@@ -387,8 +391,8 @@ const EmploymentmassEdit = (props) => {
     props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
   };
   const initialValuesStudent = {
-    start_date: new Date().toISOString().split("T")[0],
-    end_date: new Date().toISOString().split("T")[0],
+    start_date: null,
+    end_date: null,
     student_ids: [],
   };
 
@@ -463,10 +467,10 @@ const EmploymentmassEdit = (props) => {
                         <Field
                           type="date"
                           name="start_date"
-                          placeholder="Start Date"
+                          placeholder="DD/MM/YYYY"
                           className="form-control text-uppercase"
                           required
-                          value={startDate} // Make sure to include this line
+                          // value={startDate} // Make sure to include this line
                           onChange={(e) => {
                             setFieldValue('start_date',e.target.value)
                             setStudents([]);
@@ -480,10 +484,10 @@ const EmploymentmassEdit = (props) => {
                         <Field
                           type="date"
                           name="end_date"
-                          placeholder="End Date"
+                          placeholder="DD/MM/YYYY"
                           className="form-control ml-2 text-uppercase"
                           required
-                          min={startDate}
+                          // min={startDate}
                           onChange={(e) => {
                             setFieldValue('end_date',e.target.value)
                             setStudents([]);
