@@ -427,7 +427,6 @@ const Batches = (props) => {
     NP.start();
     setLoading(true);
 
-    console.log("isSearchEnable:", isSearchEnable);
     if (isSearchEnable) {
       await getBatchesBySearchFilter(
         selectedTab,
@@ -645,7 +644,11 @@ const Batches = (props) => {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Batch created successfully.", "success");
-          sendEmailOnCreateBatch(data.data.data.createBatch.batch.name)
+          // if(data.data.data.createBatch.status === "Enrollment Complete -- To Be Started"){
+          //   dataToSave.id = data.data.data.createBatch.batch.id;
+          //   sendEmailOnCreateBatch(dataToSave);
+          // }
+          
           getBatches();
           setModalShow(false);
           history.push(`/batch/${data.data.data.createBatch.batch.id}`);
