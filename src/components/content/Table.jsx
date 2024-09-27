@@ -30,7 +30,7 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-    table-layout: fixed; /* Ensure table takes up available space */
+    table-layout: auto; /* Ensure table takes up available space */
 
     thead {
       th {
@@ -59,7 +59,7 @@ const Styles = styled.div`
       overflow: hidden; /* Prevent overflow in cells */
       text-overflow: ellipsis; /* Add ellipsis to overflowed content */
       white-space: nowrap; /* Prevent wrapping in cells */
-      max-width: 100px; /* Set a maximum width for cells */
+      // max-width: 150px; /* Set a maximum width for cells */
     }
   }
 
