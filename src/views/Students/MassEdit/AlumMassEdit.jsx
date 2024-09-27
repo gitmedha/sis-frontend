@@ -576,7 +576,7 @@ const AlumMassEdit = (props) => {
                       <Field
                         type="date"
                         name="start_date"
-                        placeholder="Start Date"
+                        placeholder="DD/MM/YYYY"
                         className="form-control text-uppercase "
                         required
                         onChange={(e) => {
@@ -589,7 +589,7 @@ const AlumMassEdit = (props) => {
                       <Field
                         type="date"
                         name="end_date"
-                        placeholder="End Date"
+                        placeholder="DD/MM/YYYY"
                         className="form-control ml-2 text-uppercase"
                         required
                         min={startDate}
