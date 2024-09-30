@@ -124,7 +124,7 @@ const App = (props) => {
           nextUrl = localStorage.getItem("next_url");
         }
         localStorage.removeItem("next_url");
-        history.push('/students'); // or redirect to next url
+        history.push(nextUrl); // or redirect to next url
       })
     }
   }, []);
@@ -143,7 +143,7 @@ const App = (props) => {
       }}
     >
       <Switch>
-        <PublicRoute path="/login" exact component={Login} />
+        <PublicRoute path="/" exact component={Login} />
         <PublicRoute path="/auth/microsoft/callback" />
         <Route>
           <AppContainer>
