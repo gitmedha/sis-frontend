@@ -460,6 +460,7 @@ const TotUpload = (props) => {
       const projectNameCheck = projectName.find(
         (project) => project === newItem["Project Name"]
       );
+      // console.log("projectNameCheck",projectNameCheck);
 
       const trainer_1 = assigneOption.find(
         (user) => user.label === newItem["Trainer 1"]
@@ -477,7 +478,7 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
-
+      // console.log("isStartDateValid",isEndDateValid);
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -516,7 +517,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "Empty",
+                  : "",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -539,7 +540,7 @@ const TotUpload = (props) => {
           designation: newItem["Designation"],
           start_date: isStartDateValid
             ? startDate
-            : { value: startDate, notFound: true },
+            : { value: newItem["Start Date"], notFound: true },
           end_date: isEndDateValid
             ? endDate
             : { value: newItem["End Date"], notFound: true },
@@ -574,7 +575,8 @@ const TotUpload = (props) => {
         });
       }
     });
-
+    // console.log("formattedData",formattedData);
+    // console.log("notFoundData",notFoundData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };

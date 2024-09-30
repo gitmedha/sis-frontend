@@ -210,7 +210,6 @@ const EmploymentmassEdit = (props) => {
 
   const handleSubmit = async (values) => {
     try {
-      console.log(students);
       let alumData = await Promise.all(
         students.map(async (obj) => {
           try {
@@ -219,7 +218,6 @@ const EmploymentmassEdit = (props) => {
               startDate,
               endDate
             );
-            // console.log(obj.value);
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => {
               return ({
@@ -350,24 +348,22 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
-    // console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
-      // Build the object with only non-empty values
       let obj = {
         assigned_to: values.assigned_to?.id,
         experience_certificate: values.experience_certificate,
         number_of_internship_hours: values.number_of_internship_hours,
-        end_date: values.end_date
-          ? moment(new Date(values.end_date)).format("YYYY-MM-DD")
-          : val.end_date,
+        end_date: val.end_date
+          ? val.end_date
+          : moment(new Date(values.end_date)).format("YYYY-MM-DD"),
         opportunity: values.opportunity_id,
         employer: values.employer_id,
         reason_if_rejected: values.reason_if_rejected,
         reason_if_rejected_other: values.reason_if_rejected_other,
         salary_offered: values.salary_offered,
-        start_date: values.start_date
-          ? moment(new Date(values.start_date)).format("YYYY-MM-DD")
-          : val.start_date,
+        start_date: val.start_date
+          ? val.start_date
+          :moment(new Date(values.start_date)).format("YYYY-MM-DD"),
         source: values.source,
         status: values.status,
         work_engagement: values.work_engagement,
@@ -380,7 +376,7 @@ const EmploymentmassEdit = (props) => {
         }
         return acc;
       }, {});
-      // console.log(values);
+      // // console.log(values);
       filteredObj.student = val.student_id;
       filteredObj.id = val.id;
       // console.log(filteredObj);
