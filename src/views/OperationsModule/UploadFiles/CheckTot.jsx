@@ -122,8 +122,8 @@ const CheckTot = (props) => {
                               ? obj.module_name
                               : "Please select from dropdown"}
                           </td>
-                          <td>{obj.start_date.value ?obj.start_date.valu :obj.start_date ?obj.start_date:"please add start date"}</td>
-                          <td>{obj.end_date.value ?obj.end_date.value :obj.end_date ?obj.end_date:"please add start date"}</td>
+                          <td className={obj.start_date?.notFound || !obj.start_date ? "text-danger" : ""}>{obj.start_date.value ?obj.start_date.value :obj.start_date ?obj.start_date:"please add start date"}</td>
+                          <td className={obj.end_date?.notFound || !obj.end_date ? "text-danger" : ""}>{obj.end_date.value ?obj.end_date.value :obj.end_date ?obj.end_date:"please add start date"}</td>
                           <td className={!obj.trainer_1 ? "text-danger" : ""}>
                             {obj.trainer_1
                               ? obj.trainer_1
