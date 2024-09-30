@@ -354,10 +354,10 @@ export const searchStudents = async(searchValue)=>{
 
 /* Send Emails on Creation and Updation */
 
-export const sendEmailOnCreateBatch = async (batchName) => {
+export const sendEmailOnCreateBatch = async (batchInfo) => {
   let url = `batch/sendEmailONCreationAndUpdate`;
   return await api.post(url, {
-    name:batchName
+    data:batchInfo
   }).then(data => {
     return data;
   }).catch(error => {
