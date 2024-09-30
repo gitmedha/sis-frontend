@@ -394,7 +394,7 @@ export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sor
 };
 
 
-export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+export const getStudentEmplymentRange = async (startDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
   let allData = [];
   let offset = 0;
   let hasMoreData = true;
@@ -406,7 +406,7 @@ export const getStudentEmplymentRange = async (startDate, endDate, limit = 500, 
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
         startDate: startDate,
-        endDate: endDate
+        // endDate: endDate
       },
     }).then(data => data)
     .catch(error => {
