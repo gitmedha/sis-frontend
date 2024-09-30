@@ -477,7 +477,8 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
-
+        console.log("isStartDateValid",isStartDateValid);
+        console.log("isEndDateValid",isEndDateValid);
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -539,7 +540,7 @@ const TotUpload = (props) => {
           designation: newItem["Designation"],
           start_date: isStartDateValid
             ? startDate
-            : { value: startDate, notFound: true },
+            : { value: newItem["Start Date"], notFound: true },
           end_date: isEndDateValid
             ? endDate
             : { value: newItem["End Date"], notFound: true },
