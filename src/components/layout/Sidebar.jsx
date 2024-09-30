@@ -18,12 +18,6 @@ const iconProps = {
 
 const routes = [
   {
-    to: "/",
-    title: "Dashboard",
-    icon: <MdDashboard {...iconProps} />,
-    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  },
-  {
     to: "/students",
     title: "Students & Alumni",
     aliases: ['student'],
@@ -71,6 +65,12 @@ const routes = [
     aliases: ['calender'],
     icon:<FaCalendarDay {...iconProps}/>,
     show: isAdmin() || isMedhavi(),
+  },
+  {
+    to: "/",
+    title: "Dashboard",
+    icon: <MdDashboard {...iconProps} />,
+    show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
     to: "https://data.medha.org.in/",

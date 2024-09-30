@@ -159,10 +159,9 @@ const Home = () => {
 
   return (
     <DashboardStyled className="container-fluid">
-      <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
+      {/* <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
-          {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-          {/* <WidgetUtilTab /> */}
+        
         </div>
         {isLoading ? (
           <div className="row mb-5">
@@ -227,7 +226,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-      </Collapsible>
+      </Collapsible> */}
       <Opportunities />
       <ProgramEnrollments/>
       <Students />
