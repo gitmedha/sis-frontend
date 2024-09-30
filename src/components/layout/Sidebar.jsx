@@ -67,8 +67,9 @@ const routes = [
     show: isAdmin() || isMedhavi(),
   },
   {
-    to: "/",
+    to: "/dashboard",
     title: "Dashboard",
+    aliases:['dashborad'],
     icon: <MdDashboard {...iconProps} />,
     show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
