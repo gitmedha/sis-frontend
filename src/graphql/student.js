@@ -509,14 +509,13 @@ query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $endDate: String, $limit:
 `;
 
 export const GET_UNIQUE_STUDENT_EMPLOYMENT = `
-query GET_UNIQUE_STUDENT_EMPLOYMENT($startDate: String, $endDate: String, $limit: Int, $start: Int, $sort: String){
+query GET_UNIQUE_STUDENT_EMPLOYMENT($startDate: String, $limit: Int, $start: Int, $sort: String){
   employmentConnectionsConnection(
     sort: $sort,
     start: $start,
     limit: $limit,
     where: {
-      start_date_gte: $startDate,
-      end_date_lte: $endDate
+      start_date_gte: $startDate
     }
   ) {
     values {

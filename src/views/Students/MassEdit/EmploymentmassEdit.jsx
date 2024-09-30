@@ -210,7 +210,6 @@ const EmploymentmassEdit = (props) => {
 
   const handleSubmit = async (values) => {
     try {
-      console.log(students);
       let alumData = await Promise.all(
         students.map(async (obj) => {
           try {
@@ -359,7 +358,7 @@ const EmploymentmassEdit = (props) => {
         number_of_internship_hours: values.number_of_internship_hours,
         end_date: values.end_date
           ? moment(new Date(values.end_date)).format("YYYY-MM-DD")
-          : val.end_date,
+          : "",
         opportunity: values.opportunity_id,
         employer: values.employer_id,
         reason_if_rejected: values.reason_if_rejected,
@@ -367,7 +366,7 @@ const EmploymentmassEdit = (props) => {
         salary_offered: values.salary_offered,
         start_date: values.start_date
           ? moment(new Date(values.start_date)).format("YYYY-MM-DD")
-          : val.start_date,
+          : "",
         source: values.source,
         status: values.status,
         work_engagement: values.work_engagement,
@@ -388,7 +387,17 @@ const EmploymentmassEdit = (props) => {
 
     });
 
-    props.handelSubmitMassEdit(data, "EmployerBulkdEdit");
+    const modifiedStudents = data.map((obj) => {
+      if (typeof obj.opportunity === "object" && obj.opportunity !== null) {
+        obj.opportunity = obj.opportunity.value;
+      }
+      if (typeof obj.employer === "object" && obj.employer !== null) {
+        obj.employer = obj.employer.value;
+      }
+      return obj;
+    });
+
+    props.handelSubmitMassEdit(modifiedStudents, "EmployerBulkdEdit");
   };
   const initialValuesStudent = {
     start_date: null,
@@ -400,7 +409,7 @@ const EmploymentmassEdit = (props) => {
     if (startDate && endDate) {
       setDisabled(false);
       setSkeleton(true);
-      let data = await getStudentEmplymentRange(startDate, endDate);
+      let data = await getStudentEmplymentRange(startDate);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
         if (!uniqueStudentsMap.has(obj.student?.id)) {
