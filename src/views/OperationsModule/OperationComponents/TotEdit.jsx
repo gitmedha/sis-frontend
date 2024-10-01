@@ -235,8 +235,8 @@ const TotEdit = (props) => {
     initialValues["gender"] = props.gender;
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
-    initialValues["trainer_1"] = props.trainer_1.id;
-    initialValues["trainer_2"] = props.trainer_2.id;
+    initialValues["trainer_1"] = props.trainer_1?.id;
+    initialValues["trainer_2"] = props.trainer_2?.id;
     initialValues["city"] = props.city;
     initialValues["certificate_given"] = props.certificate_given;
   }

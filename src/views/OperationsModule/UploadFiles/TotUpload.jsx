@@ -525,7 +525,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Name"]
                   ? newItem["Project Name"]
-                  : "Please select from dropdown	",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           certificate_given: newItem["Certificate Given"],
@@ -534,7 +534,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Module Name"]
                   ? newItem["Module Name"]
-                  : "Please select from dropdown	",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           project_type: projectCheck
@@ -542,7 +542,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "Please select from dropdown	",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -551,12 +551,12 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Partner Department"]
                   ? newItem["Partner Department"]
-                  : "Please select from dropdown	",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
-            : "Please select from dropdown	",
+            : "Please select from dropdown",
           city: newItem["City"] ? capitalize(newItem["City"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
@@ -567,12 +567,12 @@ const TotUpload = (props) => {
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select from dropdown	", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select from dropdown", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select from dropdown	", notFound: true }
+            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select from dropdown", notFound: true }
         });
       } else {
         formattedData.push({
