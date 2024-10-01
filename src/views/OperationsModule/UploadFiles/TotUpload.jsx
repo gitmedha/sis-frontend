@@ -17,6 +17,7 @@ import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/oper
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
+import moment from "moment";
 
 const expectedColumns = [
   "Participant Name",
@@ -294,6 +295,33 @@ const TotUpload = (props) => {
     processFileData(data);
   };
 
+  const processFileData = (jsonData) => {
+    const validRecords = [];
+    const invalidRecords = [];
+    for (const row of jsonData) {
+      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
+  
+      if (isRowEmpty) {
+        break; 
+      }
+      validRecords.push(row);
+    }
+    const filteredArray = validRecords.filter((obj) =>
+      Object.values(obj).some((value) => value !== undefined)
+    ); 
+   if(filteredArray.length == 0){
+    setNotUploadSuccesFully("Cannot upload empty file");
+    return ;
+   }
+    if (
+      validateColumns(filteredArray, expectedColumns) 
+    ) {
+      setUploadSuccesFully(`File Uploaded`);
+      setNextDisabled(true);
+      processParsedData(filteredArray);
+    }
+  };
+
   const isValidDate = (dateString) => {
     const date = new Date(dateString);
     return !isNaN(date.getTime());
@@ -366,7 +394,11 @@ const TotUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    if(data.length === 0){
+    console.log("data values",data);
+    // if(!data){
+    //   setUploadSuccesFully("No Data")
+    // }
+    if(data.length == 0){
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
       );
@@ -386,6 +418,15 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
+    const incompleteColumns = expectedColumns.filter(col =>
+      data.every(row => row[col] === null || row[col] === "" || row[col] ===undefined )
+    );
+
+    if (incompleteColumns.length > 0) {
+      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      return false;
+    }
+    
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
@@ -404,29 +445,7 @@ const TotUpload = (props) => {
     return true;
   };
 
-  const processFileData = (jsonData) => {
-    const validRecords = [];
-    const invalidRecords = [];
-    jsonData.forEach((row) => {
-      if (Object.values(row).some((value) => value === null || value === "")) {
-        return;
-      } else {
-        validRecords.push(row);
-      }
-    });
-    const filteredArray = validRecords.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    ); 
-    if (
-      validateColumns(filteredArray, expectedColumns) &&
-      filteredArray.length <= 200 &&
-      filteredArray.length > 0
-    ) {
-      setUploadSuccesFully(`File Uploaded`);
-      setNextDisabled(true);
-      processParsedData(filteredArray);
-    }
-  };
+ 
 
   const processParsedData = (data) => {
     const formattedData = [];
@@ -477,8 +496,14 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
-        console.log("isStartDateValid",isStartDateValid);
-        console.log("isEndDateValid",isEndDateValid);
+      let parseDate;
+      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+        const parsedDate1 = moment(new Date(startDate)).unix();
+        const parsedDate2 = moment(new Date(endDate)).unix();
+        if (parsedDate2 < parsedDate1) {
+          parseDate = true;
+        }
+      }
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -500,7 +525,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Name"]
                   ? newItem["Project Name"]
-                  : "Empty",
+                  : "No data",
                 notFound: true,
               },
           certificate_given: newItem["Certificate Given"],
@@ -509,7 +534,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Module Name"]
                   ? newItem["Module Name"]
-                  : "Empty",
+                  : "No data",
                 notFound: true,
               },
           project_type: projectCheck
@@ -517,7 +542,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "Empty",
+                  : "No data",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -526,24 +551,28 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Partner Department"]
                   ? newItem["Partner Department"]
-                  : "Empty",
+                  : "No data",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
-            : "Empty",
+            : "No data",
           city: newItem["City"] ? capitalize(newItem["City"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
           designation: newItem["Designation"],
-          start_date: isStartDateValid
+          start_date: parseDate
+            ? { value: startDate, notFound: true }
+            : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"], notFound: true },
-          end_date: isEndDateValid
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
+          end_date: parseDate
+            ? { value: endDate, notFound: true }
+            : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"], notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"No data", notFound: true }
         });
       } else {
         formattedData.push({
@@ -606,9 +635,7 @@ const TotUpload = (props) => {
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      // setNextDisabled(!nextDisabled);
       setShowForm(false);
-      // props.uploadExcel(excelData, "my_data");
     } else {
       setShowModalTOT(true);
     }
@@ -623,20 +650,16 @@ const TotUpload = (props) => {
   const uploadNewData =()=>{
     setShowForm(true);
     setUploadNew(!uploadNew)
-  setFileName('');  // Reset the file name display
-  setNextDisabled(false);  // Optionally disable the next button
+  setFileName('');  
+  setNextDisabled(false);  
   setUploadSuccesFully(''); 
 
   }
 
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      // setNextDisabled(!nextDisabled);
       setUploadNew(true);
-      // props.uploadExcel(excelData, "my_data");
-      bulkCreateUsersTots(excelData)
-      // await api.post("/users-ops-activities/createBulkOperations", excelData);
-      // setAlert("Data created successfully.", "success");
+      props.uploadExcel(excelData, "tot");
     }
   };
 
