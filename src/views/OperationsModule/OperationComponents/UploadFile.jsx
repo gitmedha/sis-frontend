@@ -461,34 +461,34 @@ const UploadFile = (props) => {
           index: index + 1,
           institution: institute
             ? institute.name
-            : { value: newItem["Institution"] ? newItem["Institution"] :"No data", notFound: true },
+            : { value: newItem["Institution"] ? newItem["Institution"] :"Please select from dropdown	", notFound: true },
           batch: batch
             ? batch.name
-            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'No data', notFound: true },
+            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'Please select from dropdown	', notFound: true },
           state: newItem["State"] || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select from dropdown	", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"No data", notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select from dropdown	", notFound: true },
           topic: newItem["Session Topic"] || "",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
           designation: newItem["Guest Designation"] || "",
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
-          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"No data",
+          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"Please select from dropdown	",
           guest: newItem["Guest Name"],
           student_type: newItem["Student Type"],
           program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
-            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'No data', notFound: true },
+            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'Please select from dropdown	', notFound: true },
           area: newItem["Medha Area"] || "",
         });
       } else {

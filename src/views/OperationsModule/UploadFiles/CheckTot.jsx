@@ -81,11 +81,11 @@ const CheckTot = (props) => {
                         <tr key={i}>
                           <td>{obj.index}</td>
                           <td>{obj.user_name}</td>
-                          <td className={!isNumber(obj.age)?"text-danger":""}>{ obj.age }</td>
-                          <td>{obj.gender}</td>
+                          <td className={!isNumber(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
+                          <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
                           <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>
-                          <td>{obj.state}</td>
-                          <td>{obj.city}</td>
+                          <td className={obj.state ? "":"text-danger"}>{obj.state?obj.state:"Please select from dropdown"}</td>
+                          <td className={obj.city ? "":"text-danger"}>{obj.city? obj.city:"Please select from dropdown"}</td>
                           <td>{obj.designation}</td>
                           <td className={!obj.college ? "text-danger" : ""}>{
                             obj.college
@@ -158,8 +158,8 @@ const CheckTot = (props) => {
                 </div>
               )}
             </div>
-            <div className="d-flex align-content-center justify-content-between">
-            <h6 className="text-danger">Error found !</h6>
+            <div className="">
+            <h6 className="text-danger text-center">There are 1 or more incorrect data in the excel. Please correct the ones shown in red and reupload the file</h6>
             {(isSRM() || isAdmin()) && (
             <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">
