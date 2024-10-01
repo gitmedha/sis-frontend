@@ -316,19 +316,6 @@ const UploadFile = (props) => {
       setUploadSuccesFully("The file type should be .xlsx");
     }
   };
-  
-
-  useEffect(() => {
-    const getbatch = async () => {
-      getAllBatchs();
-      getAllInstitute();
-      const data = await getAllMedhaUsers();
-      setAssigneeOption(data);
-    };
-
-    getbatch();
-  }, [props]);
-
   const convertExcel = (excelData) => {
     const workbook = XLSX.read(excelData, { type: "binary" });
     const worksheet = workbook.Sheets[workbook.SheetNames[1]];
@@ -348,25 +335,6 @@ const UploadFile = (props) => {
     });
 
     processFileData(data);
-  };
-
-  const excelSerialDateToJSDate = (serial) => {
-    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-    const date = new Date(excelEpoch.getTime() + serial * 86400000);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    return `${year}/${month}/${day}`;
-  };
-
-  const isValidDateFormat = (dateStr) => {
-    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
-    if (datePattern.test(dateStr)) {
-      const [year, month, day] = dateStr.split("/");
-      return `${year}-${month}-${day}`;
-    }
-
-    return null;
   };
 
   const processFileData = (jsonData) => {
@@ -392,6 +360,41 @@ const UploadFile = (props) => {
       processParsedData(validRecords);
     }
   };
+  
+
+  useEffect(() => {
+    const getbatch = async () => {
+      getAllBatchs();
+      getAllInstitute();
+      const data = await getAllMedhaUsers();
+      setAssigneeOption(data);
+    };
+
+    getbatch();
+  }, [props]);
+
+ 
+
+  const excelSerialDateToJSDate = (serial) => {
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+    const date = new Date(excelEpoch.getTime() + serial * 86400000);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    return `${year}/${month}/${day}`;
+  };
+
+  const isValidDateFormat = (dateStr) => {
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
+    if (datePattern.test(dateStr)) {
+      const [year, month, day] = dateStr.split("/");
+      return `${year}-${month}-${day}`;
+    }
+
+    return null;
+  };
+
+  
   
   
 
@@ -458,34 +461,34 @@ const UploadFile = (props) => {
           index: index + 1,
           institution: institute
             ? institute.name
-            : { value: newItem["Institution"] ? newItem["Institution"] :"Empty", notFound: true },
+            : { value: newItem["Institution"] ? newItem["Institution"] :"No data", notFound: true },
           batch: batch
             ? batch.name
-            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'Empty', notFound: true },
+            : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'No data', notFound: true },
           state: newItem["State"] || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Empty", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"Empty", notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"No data", notFound: true },
           topic: newItem["Session Topic"] || "",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
           designation: newItem["Guest Designation"] || "",
           organization: newItem["Organization"] || "",
           students_attended: newItem["No. Of Participants"],
-          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"Empty",
+          activity_type: newItem["Activity Type"] ? newItem["Activity Type"] :"No data",
           guest: newItem["Guest Name"],
           student_type: newItem["Student Type"],
           program_name: newItem["Program Name"],
           assigned_to: user
             ? user.name
-            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'Empty', notFound: true },
+            : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'No data', notFound: true },
           area: newItem["Medha Area"] || "",
         });
       } else {
@@ -640,8 +643,8 @@ const UploadFile = (props) => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       // setNextDisabled(!nextDisabled);
       setUploadNew(true);
-      // props.uploadExcel(excelData, "my_data");
-      await api.post("/users-ops-activities/createBulkOperations", excelData);
+      props.uploadExcel(excelData, "my_data");
+      // await api.post("/users-ops-activities/createBulkOperations", excelData);
       // setAlert("Data created successfully.", "success");
     }
   };
