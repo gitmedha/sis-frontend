@@ -999,20 +999,18 @@ const Operations = ({
     try {
       if (key === "my_data") {
         await api.post("/users-ops-activities/createBulkOperations", data);
-        // setAlert("Data created successfully.", "success");
-        // Uncomment the line below if you need to redirect
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        setAlert("Data created successfully.", "success");
       } 
       if (key === "tot") {
         await bulkCreateUsersTots(data)
         .then(() => {
           setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
         })
         .catch((err) => {
           setAlert("Unable to create upskilling data.", "error");
         })
       } 
+      getoperations()
     } catch (err) {
       if (key === "my_data") {
         setAlert("Unable to create field data.", "error");
