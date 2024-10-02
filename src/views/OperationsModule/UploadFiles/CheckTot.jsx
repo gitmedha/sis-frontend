@@ -25,6 +25,9 @@ const Style = styled.div`
 const CheckTot = (props) => {
   let { onHide } = props;
   const pattern = /^[0-9]{10}$/;
+  let AgeCheck=(value)=>{
+    return (isNumber(value) || (value>10 && value<100))
+  }
   return (
     <>
       <Modal
@@ -81,7 +84,7 @@ const CheckTot = (props) => {
                         <tr key={i}>
                           <td>{obj.index}</td>
                           <td>{obj.user_name}</td>
-                          <td className={!isNumber(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
+                          <td className={AgeCheck(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
                           <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
                           <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>
                           <td className={obj.state ? "":"text-danger"}>{obj.state?obj.state:"Please select from dropdown"}</td>
