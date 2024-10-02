@@ -27,6 +27,9 @@ const Style = styled.div`
 
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
+  let participantCheck=(value)=>{
+    return (isNumber(value) && (value>0 && value<200))
+  }
   return (
     <>
       <Modal
@@ -93,7 +96,7 @@ const CheckValuesOpsUploadedData = (props) => {
                           <td>{obj.designation}</td>
                           <td>{obj.organization}</td>
                          
-                          <td className={isNumber(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
+                          <td className={!participantCheck(obj.students_attended)?"text-danger":"" }>{obj.students_attended}</td>
                         </tr>
                       ))}
                     </tbody>
