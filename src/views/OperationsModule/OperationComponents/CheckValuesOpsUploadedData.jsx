@@ -83,7 +83,7 @@ const CheckValuesOpsUploadedData = (props) => {
                         <tr key={i}>
                           <td>{obj.index}</td>
                           <td className={ obj.assigned_to.notFound ?"text-danger":""}>{obj.assigned_to.notFound ? obj.assigned_to.value:obj.assigned_to}</td>
-                          <td className={obj.activity_type == "No data" ? "text-danger":""}>{obj.activity_type}</td>
+                          <td className={obj.activity_type == "Please select from dropdown" ? "text-danger":""}>{obj.activity_type}</td>
                           <td className={ obj.institution.notFound ?"text-danger":""}>{obj.institution.notFound ?obj.institution.value :obj.institution}</td>
                           <td>{obj.state}</td>
                           <td>{obj.area}</td>
