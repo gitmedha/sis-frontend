@@ -400,7 +400,10 @@ const UploadFile = (props) => {
 
 
   const capitalize = (s) => {
-    return s[0].toUpperCase() + s.slice(1);
+    return String(s)
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
   };
 
   const processParsedData = (data) => {
@@ -447,14 +450,14 @@ const UploadFile = (props) => {
           parseDate = true;
         }
       }
-
+      let participantCheck=isNumber(newItem["No. Of Participants"]) && (newItem["No. Of Participants"]<200 && newItem["No. Of Participants"]>0)
       if (
         !batchId ||
         !instituteId ||
         !userId ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !isNumber(newItem["No. Of Participants"]) ||
+        !participantCheck ||
         parseDate
       ) {
         notFoundData.push({

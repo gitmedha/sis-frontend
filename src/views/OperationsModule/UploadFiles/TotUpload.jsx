@@ -389,7 +389,10 @@ const TotUpload = (props) => {
   }, [props]);
 
   const capitalize = (s) => {
-    return s[0].toUpperCase() + s.slice(1);
+    return String(s)
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
   };
 
   const validateColumns = (data, expectedColumns) => {
@@ -504,6 +507,7 @@ const TotUpload = (props) => {
           parseDate = true;
         }
       }
+      let ageCheck=isNumber(newItem["Age"]) && (newItem["Age"]<100 && newItem["Age"]>10)
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -511,8 +515,7 @@ const TotUpload = (props) => {
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck ||
-        !isNumber(newItem["Age"])
+        !projectNameCheck || !ageCheck || parseDate
       ) {
         notFoundData.push({
           index: index + 1,
