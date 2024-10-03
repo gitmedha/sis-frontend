@@ -28,7 +28,7 @@ const Style = styled.div`
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
   let participantCheck=(value)=>{
-    return (typeof value === "number" && (value>0 && value<200))
+    return (typeof value === "number" && value > 10 && value < 100);
   }
   return (
     <>
@@ -96,7 +96,7 @@ const CheckValuesOpsUploadedData = (props) => {
                           <td>{obj.designation}</td>
                           <td>{obj.organization}</td>
                          
-                          <td className={participantCheck(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
+                          <td className={!participantCheck(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
                         </tr>
                       ))}
                     </tbody>
