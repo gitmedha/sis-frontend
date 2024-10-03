@@ -458,7 +458,7 @@ const UploadFile = (props) => {
         !isStartDateValid ||
         !isEndDateValid ||
         !participantCheck ||
-        parseDate
+        parseDate || !newItem["Activity Type"]
       ) {
         notFoundData.push({
           index: index + 1,
