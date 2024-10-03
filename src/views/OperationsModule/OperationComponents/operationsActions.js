@@ -438,13 +438,13 @@ export const updateMentorshipData = async (id, data) => {
     });
 };
 
-export const updateUserTot = async (id, data) => {
+export const updateUserTot = async (id,data) => {
   return await api
     .post("/graphql", {
       query: UPDATE_USER_TOT,
       variables: {
         id,
-        data,
+        data
       },
     })
     .then((data) => data)

@@ -5,7 +5,7 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
 import { queryBuilder } from "../../../apis";
 import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
-import {FaEdit, FaFileUpload } from "react-icons/fa";
+import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
@@ -37,6 +37,7 @@ const expectedColumns = [
   "Designation",
   "Start Date",
   "End Date",
+  "New Entry"
 ];
 
 const Styled = styled.div`
@@ -499,6 +500,10 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
+      const checkGender=(gender) =>{
+        const validGenders = ['male', 'female', 'other']; // You can customize this list
+        return validGenders.includes(gender.toLowerCase());
+      }
       let parseDate;
       if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
         const parsedDate1 = moment(new Date(startDate)).unix();
@@ -515,7 +520,7 @@ const TotUpload = (props) => {
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"]
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"] || checkGender(newItem["Gender"])
       ) {
         notFoundData.push({
           index: index + 1,
@@ -575,7 +580,8 @@ const TotUpload = (props) => {
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true }
+            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true },
+          new_entry:newItem["New Entry"]
         });
       } else {
         formattedData.push({
@@ -604,6 +610,7 @@ const TotUpload = (props) => {
           end_date: endDate,
           createdby: createdby,
           updatedby: currentUser,
+          new_entry:newItem["New Entry"]
         });
       }
     });
@@ -686,7 +693,7 @@ const TotUpload = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Styled>
-        {showForm ? (
+          {showForm ? (
             <Modal.Body className="bg-white">
               {showSpinner ? (
                 <div
@@ -774,12 +781,25 @@ const TotUpload = (props) => {
               )}
             </Modal.Body>
           ) : (
-            <Modal.Body style={{height:'15rem'}}>
-              <div className='mb-5'>
-                <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
-                <FaEdit size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded` :`${excelData.length} row(s) of data uploaded successfully` }
-                  
+            <Modal.Body style={{ height: "15rem" }}>
+              <div className="mb-5">
+                <p
+                  className="text-success text-center"
+                  style={{ fontSize: "1.3rem" }}
+                >
+                  {/* <FaEdit size={20} color="#31B89D"  />{" "} */}
+                  {/* {!uploadNew ? `${<FaEdit size={20} color="#31B89D"  />}${excelData.length} row(s) of data will be uploaded` :`${<FaRegCheckCircle size={20} color="#31B89D"  />} ${excelData.length} row(s) of data uploaded successfully` } */}
+                  {!uploadNew ? (
+                    <>
+                      <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
+                      row(s) of data will be uploaded.
+                    </>
+                  ) : (
+                    <>
+                      <FaRegCheckCircle size={20} color="#31B89D" />{" "}
+                      {excelData.length} row(s) of data uploaded successfully!
+                    </>
+                  )}
                 </p>
               </div>
               <div className="col-md-12 d-flex justify-content-center">
@@ -793,26 +813,25 @@ const TotUpload = (props) => {
                 </button>
 
                 {!uploadNew ? (
-                   <button
-                   type="button"
-                   // disabled={!nextDisabled}
-                   onClick={() => proceedData()}
-                   className="btn btn-primary px-4 mx-4 mt-2"
-                   style={{ height: "2.5rem" }}
-                 >
-                   Proceed
-                 </button>
-                   
-                 ) : (
-                   <button
-                     type="button"
-                     // disabled={!nextDisabled}
-                     onClick={() =>uploadNewData()}
-                     className="btn btn-primary px-4 mx-4 mt-2"
-                     style={{ height: "2.5rem" }}
-                   >
-                     Upload New
-                   </button>
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => uploadNewData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Upload New
+                  </button>
                 )}
               </div>
             </Modal.Body>
