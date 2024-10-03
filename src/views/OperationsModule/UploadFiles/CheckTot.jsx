@@ -26,7 +26,7 @@ const CheckTot = (props) => {
   let { onHide } = props;
   const pattern = /^[0-9]{10}$/;
   let AgeCheck=(value)=>{
-    return (isNumber(value) || (value>10 && value<100))
+    return (isNumber(value) && (value>10 && value<100))
   }
   return (
     <>
