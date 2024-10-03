@@ -691,3 +691,13 @@ query GET_ALL_BATCHES {
   }
 }
 `;
+
+export const GET_ALL_BATCHES_UPLOAD_FILE = `
+query GET_ALL_BATCHES {
+  batches {
+    id
+    name
+    status
+  }
+}
+`;

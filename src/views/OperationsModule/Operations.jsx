@@ -89,6 +89,9 @@ const Styled = styled.div`
   }
 `;
 
+const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
+const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
+
 const Operations = ({
   opsData,
   setAlert,
@@ -521,27 +524,26 @@ const Operations = ({
           nProgress.done();
         });
     }
-    // if (activeTab.key === "mentorship") {
-    //   // await resetSearch();
+    if (activeTab.key === "mentorship") {
+      // await resetSearch();
 
-    //   await api
-    //     .post("/graphql", {
-    //       query: GET_MENTORSHIP,
-    //       variables,
-    //     })
-    //     .then((data) => {
-    //       console.log("data", data);
-    //       setOpts(data.data.data.activeMentoshipData.values);
-    //       setoptsAggregate(data.data.data.allMentoshipData.aggregate);
-    //     })
-    //     .catch((error) => {
-    //       return Promise.reject(error);
-    //     })
-    //     .finally(() => {
-    //       setLoading(false);
-    //       nProgress.done();
-    //     });
-    // }
+      await api
+        .post("/graphql", {
+          query: GET_MENTORSHIP,
+          variables,
+        })
+        .then((data) => {
+          setOpts(data.data.data.activeMentoshipData.values);
+          setoptsAggregate(data.data.data.allMentoshipData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {
@@ -787,7 +789,7 @@ const Operations = ({
   const hideShowModal = async (key, data) => {
     if (!data || data.isTrusted) {
       setShowModal({ ...showModal, [key]: data });
-      return;
+      // return;
     }
   };
 
@@ -997,20 +999,18 @@ const Operations = ({
     try {
       if (key === "my_data") {
         await api.post("/users-ops-activities/createBulkOperations", data);
-        // setAlert("Data created successfully.", "success");
-        // Uncomment the line below if you need to redirect
-        // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        setAlert("Data created successfully.", "success");
       } 
       if (key === "tot") {
         await bulkCreateUsersTots(data)
         .then(() => {
           setAlert("data created successfully.", "success");
-          // history.push(`/student/${data.data.data.createStudent.student.id}`);
         })
         .catch((err) => {
           setAlert("Unable to create upskilling data.", "error");
         })
       } 
+      getoperations()
     } catch (err) {
       if (key === "my_data") {
         setAlert("Unable to create field data.", "error");
@@ -1076,7 +1076,7 @@ const Operations = ({
                     </span>
                   </button>
 
-                  {/* {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -1107,14 +1107,14 @@ const Operations = ({
                         <a
                           href={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activity-Sample-File.xlsx"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
+                            feildActivityFIle
+                           :totfile}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={
                             activeTab.key == "my_data"?
-                            "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activity-Sample-File.xlsx"
-                           :"https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT_Sample+File.xlsx"}
+                            feildActivityFIle
+                           :totfile}
                         >Sample&nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
                         </a>
@@ -1122,7 +1122,7 @@ const Operations = ({
                     </button>
                   ) : (
                     ""
-                  )} */}
+                  )}
                 </>
               )}
             </div>

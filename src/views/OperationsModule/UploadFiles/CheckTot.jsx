@@ -25,6 +25,9 @@ const Style = styled.div`
 const CheckTot = (props) => {
   let { onHide } = props;
   const pattern = /^[0-9]{10}$/;
+  let AgeCheck = (value) => {
+    return (typeof value === "number" && value > 10 && value < 100);
+  }
   return (
     <>
       <Modal
@@ -74,20 +77,21 @@ const CheckTot = (props) => {
                         <th>Trainer 2 </th>
                         <th>Certificate Given </th>
                         <th>Project Type </th>
+                        <th>New Entry </th>
                       </tr>
                     </thead>
                     <tbody>
                       {props.notUploadedData.map((obj, i) => (
                         <tr key={i}>
                           <td>{obj.index}</td>
-                          <td>{obj.user_name}</td>
-                          <td className={!isNumber(obj.age)?"text-danger":""}>{ obj.age }</td>
-                          <td>{obj.gender}</td>
+                          <td className={obj.user_name =="No data"?"text-danger":""}>{obj.user_name ?obj.user_name:"no data"}</td>
+                          <td className={!AgeCheck(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
+                          <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
                           <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>
-                          <td>{obj.state}</td>
-                          <td>{obj.city}</td>
+                          <td className={obj.state ? "":"text-danger"}>{obj.state?obj.state:"Please select from dropdown"}</td>
+                          <td className={obj.city ? "":"text-danger"}>{obj.city? obj.city:"Please select from dropdown"}</td>
                           <td>{obj.designation}</td>
-                          <td className={!obj.college ? "text-danger" : ""}>{
+                          <td className={obj.college ==="Please select from dropdown" ? "text-danger" : ""}>{
                             obj.college
                               ? obj.college
                               : "Please select from dropdown"
@@ -122,8 +126,8 @@ const CheckTot = (props) => {
                               ? obj.module_name
                               : "Please select from dropdown"}
                           </td>
-                          <td>{obj.start_date.value ?obj.start_date.valu :obj.start_date ?obj.start_date:"please add start date"}</td>
-                          <td>{obj.end_date.value ?obj.end_date.value :obj.end_date ?obj.end_date:"please add start date"}</td>
+                          <td className={obj.start_date?.notFound || !obj.start_date ? "text-danger" : ""}>{obj.start_date.value ?obj.start_date.value :obj.start_date ?obj.start_date:"please add start date"}</td>
+                          <td className={obj.end_date?.notFound || !obj.end_date ? "text-danger" : ""}>{obj.end_date.value ?obj.end_date.value :obj.end_date ?obj.end_date:"please add start date"}</td>
                           <td className={!obj.trainer_1 ? "text-danger" : ""}>
                             {obj.trainer_1
                               ? obj.trainer_1
@@ -146,7 +150,7 @@ const CheckTot = (props) => {
                               ? obj.project_type
                               : "Please select from dropdown"}
                           </td>
-                          {/* <td>{obj.project_type}</td> */}
+                          <td>{obj.new_entry  }</td>
                         </tr>
                       ))}
                     </tbody>
@@ -158,8 +162,8 @@ const CheckTot = (props) => {
                 </div>
               )}
             </div>
-            <div className="d-flex align-content-center justify-content-between">
-            <h6 className="text-danger">Error found !</h6>
+            <div className="">
+            <h6 className="text-danger text-center">There are 1 or more incorrect data in the excel. Please correct the ones shown in red and reupload the file</h6>
             {(isSRM() || isAdmin()) && (
             <div className="row mb-4">
               <div className="col-md-12 d-flex justify-content-center">
