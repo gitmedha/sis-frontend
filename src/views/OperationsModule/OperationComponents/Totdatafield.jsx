@@ -136,37 +136,37 @@ const Totdatafield = (props) => {
                 <div className="col-md-6 col-sm-12">
                   <DetailField
                     label="Participant Name"
-                    value={props.user_name}
+                    value={props?.user_name}
                   />
                   <DetailField
                     label="Trainer 1"
-                    value={props.trainer_1?.username}
+                    value={props?.trainer_1?.username}
                   />
                   <DetailField
                     label="Project Name"
-                    value={props.project_name}
+                    value={props?.project_name}
                   />
                   {/* */}
                   <DetailField
                     Bold={""}
                     label="Start Date"
                     value={
-                      moment(props.start_date).format("DD MMM YYYY")
-                        ? moment(props.start_date).format("DD MMM YYYY")
+                      moment(props?.start_date).format("DD MMM YYYY")
+                        ? moment(props?.start_date).format("DD MMM YYYY")
                         : ""
                     }
                   />
                   <DetailField
                     label="Project Type"
-                    value={props.project_type}
+                    value={props?.project_type}
                   />
 
                   <DetailField
                     label="Partner Department"
-                    value={props.partner_dept}
+                    value={props?.partner_dept}
                   />
-                  <DetailField label="Age" value={props.age} />
-                  <DetailField label="Contact" value={props.contact} />
+                  <DetailField label="Age" value={props?.age} />
+                  <DetailField label="Contact" value={props?.contact} />
                   {/* <DetailField
                     label="Published at"
                     value={
@@ -183,30 +183,30 @@ const Totdatafield = (props) => {
                     value={props.trainer_1.id}
                   /> */}
                   {console.log(props)}
-                  <DetailField label="Module Name" value={props.module_name} />
+                  <DetailField label="Module Name" value={props?.module_name} />
                   <DetailField
                     label="Trainer 2"
                     value={props.trainer_2?.username}
                   />
-                  <DetailField label="New Entry" value={props.new_entry ? "Yes":"No"} />
+                  <DetailField label="New Entry" value={props?.new_entry} />
                   <DetailField
                     Bold={""}
                     label="End Date"
                     value={
-                      moment(props.end_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
+                      moment(props?.end_date).format("DD MMM YYYY")
+                        ? moment(props?.end_date).format("DD MMM YYYY")
                         : ""
                     }
                   />
 
-                  <DetailField label="College" value={props.college} />
+                  <DetailField label="College" value={props?.college} />
 
                   <DetailField
                     label="Gender"
-                    value={props.gender ? props.gender : ""}
+                    value={props?.gender ? props?.gender : ""}
                     Bold={""}
                   />
-                  <DetailField label="Designation" value={props.designation} />
+                  <DetailField label="Designation" value={props?.designation} />
                 </div>
               </div>
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
@@ -214,11 +214,11 @@ const Totdatafield = (props) => {
 
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="State" value={props.state} />
+                  <DetailField Bold={""} label="State" value={props?.state} />
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="City" value={props.city} />
+                  <DetailField Bold={""} label="City" value={props?.city} />
                 </div>
               </div>
 

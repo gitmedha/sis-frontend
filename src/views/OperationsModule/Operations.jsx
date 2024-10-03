@@ -89,8 +89,8 @@ const Styled = styled.div`
   }
 `;
 
-const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Sample-File.xlsx`;
-const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Sample-File.xlsx'
+const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
+const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
 
 const Operations = ({
   opsData,
