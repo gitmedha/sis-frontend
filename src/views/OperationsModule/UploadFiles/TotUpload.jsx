@@ -521,7 +521,7 @@ const TotUpload = (props) => {
           index: index + 1,
           user_name: newItem["Participant Name"]
             ? capitalize(newItem["Participant Name"])
-            : "",
+            : "No data",
           trainer_1: newItem["Trainer 1"],
           project_name: projectCheck
             ? newItem["Project Name"]
@@ -570,12 +570,12 @@ const TotUpload = (props) => {
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select from dropdown", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select from dropdown", notFound: true }
+            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true }
         });
       } else {
         formattedData.push({
