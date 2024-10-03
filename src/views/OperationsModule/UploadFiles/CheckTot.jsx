@@ -83,7 +83,7 @@ const CheckTot = (props) => {
                       {props.notUploadedData.map((obj, i) => (
                         <tr key={i}>
                           <td>{obj.index}</td>
-                          <td>{obj.user_name}</td>
+                          <td className={obj.user_name =="No data"?"text-danger":""}>{obj.user_name ?obj.user_name:"no data"}</td>
                           <td className={AgeCheck(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
                           <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
                           <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>
