@@ -28,7 +28,7 @@ const Style = styled.div`
 const CheckValuesOpsUploadedData = (props) => {
   let { onHide } = props;
   let participantCheck=(value)=>{
-    return (isNumber(value) && (value>0 && value<200))
+    return (typeof value === "number" && (value>0 && value<200))
   }
   return (
     <>
