@@ -310,7 +310,7 @@ const TotUpload = (props) => {
       Object.values(obj).some((value) => value !== undefined)
     ); 
    if(filteredArray.length == 0){
-    setNotUploadSuccesFully("Cannot upload empty file");
+    setNotUploadSuccesFully("File is empty please select file which has data in it");
     return ;
    }
     if (
