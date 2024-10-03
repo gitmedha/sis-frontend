@@ -189,11 +189,12 @@ const TotEdit = (props) => {
 
     newObject.end_date = moment(values["end_date"]).format("YYYY-MM-DD");
 
-    newObject.published_at = values?.published_at ? values.published_at : "";
+    newObject.published_at = new Date().toISOString();
     delete values["published_at"];
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
+    // valupublishedAt= new Date().toISOString()
     onHide(value);
 
     setDisableSaveButton(false);

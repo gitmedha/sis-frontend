@@ -14,7 +14,7 @@ import {
 } from "../../../graphql";
 import api, { queryBuilder } from "../../../apis";
 import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
-import { FaEdit, FaFileUpload } from "react-icons/fa";
+import { FaEdit, FaFileUpload, FaRegCheckCircle } from "react-icons/fa";
 import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
@@ -711,7 +711,6 @@ const UploadFile = (props) => {
                         name="file-uploader"
                         onChange={handleFileChange}
                         className="uploaderInput "
-                        
                       />
                     </div>
                     <label className="text--primary latto-bold text-center">
@@ -752,7 +751,6 @@ const UploadFile = (props) => {
                             onClick={() => uploadDirect()}
                             className="btn btn-primary px-4 mx-4 mt-2 cursor-pointer"
                             style={{ height: "2.5rem" }}
-                            
                           >
                             Next
                           </button>
@@ -773,12 +771,24 @@ const UploadFile = (props) => {
               )}
             </Modal.Body>
           ) : (
-            <Modal.Body style={{height:'15rem'}}>
-              <div className='mb-5'>
-                <p className="text-success text-center" style={{fontSize:'1.3rem'}}>
-                <FaFileUpload size={20} color="#31B89D"  />{" "}
-                  {!uploadNew ? `${excelData.length} row(s) of data will be uploaded.` :`${excelData.length} row(s) of data uploaded successfully!` }
-                  
+            <Modal.Body style={{ height: "15rem" }}>
+              <div className="mb-5">
+                <p
+                  className="text-success text-center"
+                  style={{ fontSize: "1.3rem" }}
+                >
+                  {/* <FaFileUpload size={20} color="#31B89D"  />{" "} */}
+                  {!uploadNew ? (
+                    <>
+                      <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
+                      row(s) of data will be uploaded.
+                    </>
+                  ) : (
+                    <>
+                      <FaRegCheckCircle size={20} color="#31B89D" />{" "}
+                      {excelData.length} row(s) of data uploaded successfully!
+                    </>
+                  )}
                 </p>
               </div>
               <div className="col-md-12 d-flex justify-content-center">
@@ -793,20 +803,19 @@ const UploadFile = (props) => {
 
                 {!uploadNew ? (
                   <button
-                  type="button"
-                  // disabled={!nextDisabled}
-                  onClick={() => proceedData()}
-                  className="btn btn-primary px-4 mx-4 mt-2"
-                  style={{ height: "2.5rem" }}
-                >
-                  Proceed
-                </button>
-                  
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
                 ) : (
                   <button
                     type="button"
                     // disabled={!nextDisabled}
-                    onClick={() =>uploadNewData()}
+                    onClick={() => uploadNewData()}
                     className="btn btn-primary px-4 mx-4 mt-2"
                     style={{ height: "2.5rem" }}
                   >
