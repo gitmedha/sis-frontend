@@ -77,6 +77,7 @@ const CheckTot = (props) => {
                         <th>Trainer 2 </th>
                         <th>Certificate Given </th>
                         <th>Project Type </th>
+                        <th>New Entry </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -149,7 +150,7 @@ const CheckTot = (props) => {
                               ? obj.project_type
                               : "Please select from dropdown"}
                           </td>
-                          {/* <td>{obj.project_type}</td> */}
+                          <td>{obj.new_entry  }</td>
                         </tr>
                       ))}
                     </tbody>
