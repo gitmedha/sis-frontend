@@ -96,7 +96,7 @@ const CheckValuesOpsUploadedData = (props) => {
                           <td>{obj.designation}</td>
                           <td>{obj.organization}</td>
                          
-                          <td className={!participantCheck(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
+                          <td className={participantCheck(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
                         </tr>
                       ))}
                     </tbody>
