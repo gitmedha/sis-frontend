@@ -500,10 +500,6 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
-      const checkGender=(gender) =>{
-        const validGenders = ['male', 'female', 'other']; // You can customize this list
-        return validGenders.includes(gender.toLowerCase());
-      }
       let parseDate;
       if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
         const parsedDate1 = moment(new Date(startDate)).unix();
@@ -520,7 +516,7 @@ const TotUpload = (props) => {
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"] || checkGender(newItem["Gender"])
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"]
       ) {
         notFoundData.push({
           index: index + 1,
