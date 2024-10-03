@@ -48,16 +48,19 @@ const MentorBulkrow = (props) => {
       medha_area: "",
       status: "",
       program_name: "",
+      contact:"",
+      medha_area:""
     },
     // Add more initial rows as needed
   ]);
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState("");
   const [areaOptions, setAreaOptions] = useState([]);
+  const [mentorAreaOptions, setMentorAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [area, setArea] = useState({});
+  const [areaCheck, setAreaCheck] = useState(true);
   const [stateOptions, setStateOptions] = useState([]);
   const [fieldvalue, setfieldvalue] = useState({
     student_name: "",
@@ -84,7 +87,6 @@ const MentorBulkrow = (props) => {
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
-
       setAreaOptions(
         data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
@@ -106,13 +108,35 @@ const MentorBulkrow = (props) => {
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
           .map((state) => ({
-            key: state?.id,
             label: state?.key,
             value: state?.key,
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
+    getStateDistricts().then((data) => {
+      setMentorAreaOptions([]);
+      setMentorAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.area
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.area
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+   
   }, []);
 
   const changeInput = async (event, field, id) => {
@@ -172,85 +196,23 @@ const MentorBulkrow = (props) => {
           />
         </td>
         <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.assigned_to
-                ? `border-red`
-                : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="assigned_to"
-            options={assigneeOptions}
-            defaultValue={() =>
-              setAssigneeOptions(filterAssignedTo("rohit sharma"))
-            }
-            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            // className="basic-single table-input"
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.program_name
-                ? `border-red`
-                : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={programOptions}
-            filterData={filterProgram}
-            onChange={(e) => props.handleChange(e, "program_name", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.status
-                ? `border-red`
-                : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={statusOption}
-            // filterData={filterProgram}
-            onChange={(e) => props.handleChange(e, "status", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.outreach
-                ? `border-red`
-                : ""
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="batch"
-            options={options}
-            // filterData={filterProgram}
-            onChange={(e) => props.handleChange(e, "outreach", row.id)}
-          />
-        </td>
-        <td>
           <input
-            type="date"
             className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.onboarding_date
+              props.classValue[`class${row.id - 1}`]?.contact
                 ? `border-red`
                 : ""
             }`}
-            defaultValue={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-              props.updateRow(row.id, "onboarding_date", e.target.value);
-            }}
+            minLength={10}
+            maxLength={10}
+            type="text"
+            onKeyPress={mobileNochecker}
+            defaultValue={email}
+            onChange={(e) =>{
+              if(/^[0-9]*$/.test(e.target?.value)) {
+                props.updateRow(row.id, "contact", e.target.value)
+              // handleChangeInput('mobileno', e.target.value);
+            }}}
+            // onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
         <td>
@@ -318,7 +280,9 @@ const MentorBulkrow = (props) => {
             isSearchable={true}
             name="state"
             options={stateOptions}
-            onChange={(e) => onStateChange(e, row.id, "mentor_state")}
+            onChange={(e) => {
+              setAreaCheck(false)
+              onStateChange(e, row.id, "mentor_state")}}
           />
         </td>
         <td>
@@ -331,8 +295,121 @@ const MentorBulkrow = (props) => {
             classNamePrefix="select"
             isSearchable={true}
             options={areaOptions}
-            // isDisabled={!isEmptyValue(area)? true :false}
+            isDisabled={areaCheck}
             onChange={(e) => props.handleChange(e, "mentor_area", row.id)}
+          />
+        </td>
+
+       
+        
+         <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.outreach
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={options}
+            // filterData={filterProgram}
+            onChange={(e) => props.handleChange(e, "outreach", row.id)}
+          />
+        </td>
+        <td>
+          <input
+            type="date"
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.onboarding_date
+                ? `border-red`
+                : ""
+            }`}
+            defaultValue={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              props.updateRow(row.id, "onboarding_date", e.target.value);
+            }}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            disabled={email ? true : false}
+            defaultValue={email}
+            onChange={(e) => props.updateRow(row.id, "social_media_profile_link", e.target.value)}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.assigned_to
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="assigned_to"
+            options={assigneeOptions}
+            defaultValue={() =>
+              setAssigneeOptions(filterAssignedTo("rohit sharma"))
+            }
+            onChange={(e) => props.handleChange(e, "assigned_to", row.id)}
+          />
+        </td>
+       
+       
+        
+        
+        
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.medha_area
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isSearchable={true}
+            options={mentorAreaOptions}
+            // isDisabled={!isEmptyValue(area)? true :false}
+            onChange={(e) => props.handleChange(e, "medha_area", row.id)}
+          />
+        </td>
+         <td>
+          <Select
+            // className="basic-single table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.program_name
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={programOptions}
+            filterData={filterProgram}
+            onChange={(e) => props.handleChange(e, "program_name", row.id)}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.status
+                ? `border-red`
+                : ""
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="batch"
+            options={statusOption}
+            // filterData={filterProgram}
+            onChange={(e) => props.handleChange(e, "status", row.id)}
           />
         </td>
       </tr>

@@ -129,7 +129,7 @@ const Opsdatafeilds = (props) => {
     <DetailField className='' Bold={""} label="Batch" value={<Anchor text={props.batch?.name} target="_blank" rel="noopener noreferrer" href={`/batch/${props.batch?.id}`} />} />
     <DetailField className='' Bold={""} label="Start Date" value={moment(props.start_date).format("DD MMM YYYY") ? moment(props.start_date).format("DD MMM YYYY") : ""} />
     <DetailField className='' Bold={""} label="Donor" value={props.donor ? "Yes" : "No"} />
-    <DetailField className='' Bold={""} label="Guest" value={props.guest} />
+    <DetailField className='' Bold={""} label="Guest Name" value={props.guest} />
     <DetailField className='' Bold={""} label="Organization" value={props.organization} />
     <DetailField className='' Bold={""} label="Student Attended" value={props.students_attended} />
     

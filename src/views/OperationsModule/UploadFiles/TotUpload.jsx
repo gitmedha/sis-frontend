@@ -5,7 +5,7 @@ import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
 import { queryBuilder } from "../../../apis";
 import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
-import { FaFileUpload } from "react-icons/fa";
+import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
@@ -13,9 +13,11 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
-import { getTotPickList } from "../OperationComponents/operationsActions";
+import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
+import { setAlert } from "src/store/reducers/Notifications/actions";
+import moment from "moment";
 
 const expectedColumns = [
   "Participant Name",
@@ -35,6 +37,7 @@ const expectedColumns = [
   "Designation",
   "Start Date",
   "End Date",
+  "New Entry"
 ];
 
 const Styled = styled.div`
@@ -234,6 +237,8 @@ const TotUpload = (props) => {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [fileName, setFileName] = useState("");
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showForm, setShowForm] = useState(true);
+  const [uploadNew, setUploadNew] = useState(false);
 
   useEffect(() => {
     const getdata = async () => {
@@ -245,20 +250,31 @@ const TotUpload = (props) => {
   }, [props]);
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setNextDisabled(false);
-
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+  
+    setShowForm(true);
+    setFileName(''); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
+    setUploadSuccesFully(''); 
+    setNotUploadSuccesFully('');
+  
     if (file) {
       setFileName(`${file.name} Uploaded`);
+  
       const reader = new FileReader();
-
+  
       reader.onload = () => {
         const fileData = reader.result;
-        convertExcel(fileData);
+        try {
+          convertExcel(fileData);
+        } catch (error) {
+          setNotUploadSuccesFully(error?.message);
+        }
       };
-
+  
       reader.readAsBinaryString(file);
-      // setNextDisabled(true);
+      fileInput.value = '';
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
@@ -273,12 +289,38 @@ const TotUpload = (props) => {
     const data = results.slice(1).map((row) => {
       const newItem = {};
       headers.forEach((header, i) => {
-        newItem[header] = row[i];
+        newItem[header.trim()] = row[i];
       });
       return newItem;
     });
-
     processFileData(data);
+  };
+
+  const processFileData = (jsonData) => {
+    const validRecords = [];
+    const invalidRecords = [];
+    for (const row of jsonData) {
+      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
+  
+      if (isRowEmpty) {
+        break; 
+      }
+      validRecords.push(row);
+    }
+    const filteredArray = validRecords.filter((obj) =>
+      Object.values(obj).some((value) => value !== undefined)
+    ); 
+   if(filteredArray.length == 0){
+    setNotUploadSuccesFully("File is empty please select file which has data in it");
+    return ;
+   }
+    if (
+      validateColumns(filteredArray, expectedColumns) 
+    ) {
+      setUploadSuccesFully(`File Uploaded`);
+      setNextDisabled(true);
+      processParsedData(filteredArray);
+    }
   };
 
   const isValidDate = (dateString) => {
@@ -348,17 +390,47 @@ const TotUpload = (props) => {
   }, [props]);
 
   const capitalize = (s) => {
-    return s[0].toUpperCase() + s.slice(1);
+    return String(s)
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
   };
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
+    console.log("data values",data);
+    // if(!data){
+    //   setUploadSuccesFully("No Data")
+    // }
+    if(data.length == 0){
+      setNotUploadSuccesFully(
+        "File is empty please select file which has data in it"
+      );
+      return false
+    }
+    if (!data ) {
+      setNotUploadSuccesFully(
+        "Some data fields are empty or not properly initialized"
+      );
+      return false;
+    }
     const missingColumns = expectedColumns.filter(
-      (col) => !fileColumns.includes(col)
+      (col) => {;
+        return !fileColumns.includes(col.trim())
+      }
     );
     const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col)
+      (col) => !expectedColumns.includes(col.trim())
     );
+    const incompleteColumns = expectedColumns.filter(col =>
+      data.every(row => row[col] === null || row[col] === "" || row[col] ===undefined )
+    );
+
+    if (incompleteColumns.length > 0) {
+      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      return false;
+    }
+    
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
@@ -374,33 +446,10 @@ const TotUpload = (props) => {
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
-    // console.log('Column validation passed');
     return true;
   };
 
-  const processFileData = (jsonData) => {
-    const validRecords = [];
-    const invalidRecords = [];
-    jsonData.forEach((row) => {
-      if (Object.values(row).some((value) => value === null || value === "")) {
-        return;
-      } else {
-        validRecords.push(row);
-      }
-    });
-    const filteredArray = validRecords.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    );
-    if (
-      validateColumns(filteredArray, expectedColumns) &&
-      filteredArray.length <= 200 &&
-      filteredArray.length > 0
-    ) {
-      setUploadSuccesFully(`File Uploaded`);
-      setNextDisabled(true);
-      processParsedData(filteredArray);
-    }
-  };
+ 
 
   const processParsedData = (data) => {
     const formattedData = [];
@@ -435,8 +484,6 @@ const TotUpload = (props) => {
         (project) => project === newItem["Project Name"]
       );
 
-      // projectName
-
       const trainer_1 = assigneOption.find(
         (user) => user.label === newItem["Trainer 1"]
       )?.value;
@@ -453,7 +500,15 @@ const TotUpload = (props) => {
       const createdby = Number(userId);
       const updatedby = Number(userId);
       const pattern = /^[0-9]{10}$/;
-
+      let parseDate;
+      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+        const parsedDate1 = moment(new Date(startDate)).unix();
+        const parsedDate2 = moment(new Date(endDate)).unix();
+        if (parsedDate2 < parsedDate1) {
+          parseDate = true;
+        }
+      }
+      let ageCheck=isNumber(newItem["Age"]) && (newItem["Age"]<100 && newItem["Age"]>10)
       if (
         !pattern.test(newItem["Mobile no."]) ||
         !departMentCheck ||
@@ -461,21 +516,20 @@ const TotUpload = (props) => {
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck ||
-        !isNumber(newItem["Age"])
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"]
       ) {
         notFoundData.push({
           index: index + 1,
           user_name: newItem["Participant Name"]
             ? capitalize(newItem["Participant Name"])
-            : "",
+            : "No data",
           trainer_1: newItem["Trainer 1"],
           project_name: projectCheck
             ? newItem["Project Name"]
             : {
                 value: newItem["Project Name"]
                   ? newItem["Project Name"]
-                  : "please select one value",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           certificate_given: newItem["Certificate Given"],
@@ -484,7 +538,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Module Name"]
                   ? newItem["Module Name"]
-                  : "please select one value",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           project_type: projectCheck
@@ -492,7 +546,7 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Project Type"]
                   ? newItem["Project Type"]
-                  : "please select one value",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           trainer_2: newItem["Trainer 2"],
@@ -501,24 +555,29 @@ const TotUpload = (props) => {
             : {
                 value: newItem["Partner Department"]
                   ? newItem["Partner Department"]
-                  : "please select one value",
+                  : "Please select from dropdown",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
-            : "",
+            : "Please select from dropdown",
           city: newItem["City"] ? capitalize(newItem["City"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
           contact: newItem["Mobile no."],
           designation: newItem["Designation"],
-          start_date: isStartDateValid
+          start_date: parseDate
+            ? { value: startDate, notFound: true }
+            : isStartDateValid
             ? startDate
-            : { value: startDate, notFound: true },
-          end_date: isEndDateValid
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
+          end_date: parseDate
+            ? { value: endDate, notFound: true }
+            : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"], notFound: true },
+            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true },
+          new_entry:newItem["New Entry"]
         });
       } else {
         formattedData.push({
@@ -547,6 +606,7 @@ const TotUpload = (props) => {
           end_date: endDate,
           createdby: createdby,
           updatedby: currentUser,
+          new_entry:newItem["New Entry"]
         });
       }
     });
@@ -573,12 +633,15 @@ const TotUpload = (props) => {
   const hideShowModal = () => {
     setShowModalTOT(false);
     setUploadSuccesFully("");
+    setShowForm(true);
+    setFileName('');  // Reset the file name display
+    setNextDisabled(false);  // Optionally disable the next button
+    setUploadSuccesFully('');
   };
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      setNextDisabled(!nextDisabled);
-      props.uploadExcel(excelData, "tot");
+      setShowForm(false);
     } else {
       setShowModalTOT(true);
     }
@@ -589,6 +652,22 @@ const TotUpload = (props) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const uploadNewData =()=>{
+    setShowForm(true);
+    setUploadNew(!uploadNew)
+  setFileName('');  
+  setNextDisabled(false);  
+  setUploadSuccesFully(''); 
+
+  }
+
+  const proceedData = async () => {
+    if (notUploadedData.length === 0 && excelData.length > 0) {
+      setUploadNew(true);
+      props.uploadExcel(excelData, "tot");
+    }
+  };
 
   return (
     <>
@@ -610,90 +689,149 @@ const TotUpload = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Styled>
-          <Modal.Body className="bg-white">
-            {showSpinner ? (
-              <div
-                className="bg-white d-flex align-items-center justify-content-center "
-                style={{ height: "40vh" }}
-              >
-                <Spinner animation="border" variant="success" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              </div>
-            ) : (
-              <>
-                <div className="uploader-container">
-                  <div className="imageUploader">
-                    <p className="upload-helper-text">Click Here To Upload </p>
-                    <div className="upload-helper-icon">
-                      <FaFileUpload size={30} color={"#257b69"} />
+          {showForm ? (
+            <Modal.Body className="bg-white">
+              {showSpinner ? (
+                <div
+                  className="bg-white d-flex align-items-center justify-content-center "
+                  style={{ height: "40vh" }}
+                >
+                  <Spinner animation="border" variant="success" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              ) : (
+                <>
+                  <div className="uploader-container">
+                    <div className="imageUploader">
+                      <p className="upload-helper-text">
+                        Click Here To Upload{" "}
+                      </p>
+                      <div className="upload-helper-icon">
+                        <FaFileUpload size={30} color={"#257b69"} />
+                      </div>
+                      <input
+                        accept=".xlsx"
+                        type="file"
+                        multiple={false}
+                        name="file-uploader"
+                        onChange={handleFileChange}
+                        className="uploaderInput"
+                      />
                     </div>
-                    <input
-                      accept=".xlsx"
-                      type="file"
-                      multiple={false}
-                      name="file-uploader"
-                      onChange={handleFileChange}
-                      className="uploaderInput"
-                    />
+                    <label className="text--primary latto-bold text-center">
+                      Upload File
+                    </label>
                   </div>
-                  <label className="text--primary latto-bold text-center">
-                    Upload File
-                  </label>
-                </div>
-                <div className="d-flex  flex-column  ">
-                  {uploadSuccesFully ? (
-                    <div
-                      className={` text-success d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {fileName}{" "}
-                    </div>
-                  ) : (
-                    <div
-                      className={`text-danger d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {notuploadSuccesFully}{" "}
-                    </div>
-                  )}
-                  {(isSRM() || isAdmin()) && (
-                    <div className="row mb-4 mt-2">
-                      <div className="col-md-12 d-flex justify-content-center">
-                        <button
-                          type="button"
-                          onClick={() => props.closeThepopus()}
-                          className="btn btn-danger px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Close
-                        </button>
+                  <div className="d-flex  flex-column  ">
+                    {notuploadSuccesFully ? (
+                      <div
+                        className={`text-danger  d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {notuploadSuccesFully}{" "}
+                      </div>
+                    ) : (
+                      <div
+                        className={`text-success d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {fileName}{" "}
+                      </div>
+                    )}
+                    {(isSRM() || isAdmin()) && (
+                      <div className="row mb-4 mt-2">
+                        <div className="col-md-12 d-flex justify-content-center">
+                          <button
+                            type="button"
+                            onClick={() => props.closeThepopus()}
+                            className="btn btn-danger px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Close
+                          </button>
 
-                        <button
-                          type="button"
-                          disabled={!nextDisabled}
-                          onClick={() => uploadDirect()}
-                          className="btn btn-primary px-4 mx-4 mt-2"
-                          style={{ height: "2.5rem" }}
-                        >
-                          Next
-                        </button>
+                          <button
+                            type="button"
+                            disabled={!nextDisabled}
+                            onClick={() => uploadDirect()}
+                            className="btn btn-primary px-4 mx-4 mt-2"
+                            style={{ height: "2.5rem" }}
+                          >
+                            Next
+                          </button>
+                        </div>
+                        <div className="d-flex justify-content-center ">
+                          <p
+                            className="text-gradient-warning"
+                            style={{ color: "#B06B00" }}
+                          >
+                            Note : Maximum recomended number of records is 100
+                            per excel
+                          </p>
+                        </div>
                       </div>
-                      <div className="d-flex justify-content-center ">
-                        <p
-                          className="text-gradient-warning"
-                          style={{ color: "#B06B00" }}
-                        >
-                          Note : Maximum recomended number of records is 100 per
-                          excel
-                        </p>
-                      </div>
-                    </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </Modal.Body>
+          ) : (
+            <Modal.Body style={{ height: "15rem" }}>
+              <div className="mb-5">
+                <p
+                  className="text-success text-center"
+                  style={{ fontSize: "1.3rem" }}
+                >
+                  {/* <FaEdit size={20} color="#31B89D"  />{" "} */}
+                  {/* {!uploadNew ? `${<FaEdit size={20} color="#31B89D"  />}${excelData.length} row(s) of data will be uploaded` :`${<FaRegCheckCircle size={20} color="#31B89D"  />} ${excelData.length} row(s) of data uploaded successfully` } */}
+                  {!uploadNew ? (
+                    <>
+                      <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
+                      row(s) of data will be uploaded.
+                    </>
+                  ) : (
+                    <>
+                      <FaRegCheckCircle size={20} color="#31B89D" />{" "}
+                      {excelData.length} row(s) of data uploaded successfully!
+                    </>
                   )}
-                </div>
-              </>
-            )}
-          </Modal.Body>
+                </p>
+              </div>
+              <div className="col-md-12 d-flex justify-content-center">
+                <button
+                  type="button"
+                  onClick={() => props.closeThepopus()}
+                  className="btn btn-danger px-4 mx-4 mt-2"
+                  style={{ height: "2.5rem" }}
+                >
+                  Close
+                </button>
+
+                {!uploadNew ? (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    // disabled={!nextDisabled}
+                    onClick={() => uploadNewData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Upload New
+                  </button>
+                )}
+              </div>
+            </Modal.Body>
+          )}
         </Styled>
       </Modal>
 
