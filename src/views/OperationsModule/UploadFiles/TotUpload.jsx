@@ -515,7 +515,7 @@ const TotUpload = (props) => {
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck || !ageCheck || parseDate
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"]
       ) {
         notFoundData.push({
           index: index + 1,
