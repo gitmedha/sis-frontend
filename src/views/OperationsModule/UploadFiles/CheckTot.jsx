@@ -90,7 +90,7 @@ const CheckTot = (props) => {
                           <td className={obj.state ? "":"text-danger"}>{obj.state?obj.state:"Please select from dropdown"}</td>
                           <td className={obj.city ? "":"text-danger"}>{obj.city? obj.city:"Please select from dropdown"}</td>
                           <td>{obj.designation}</td>
-                          <td className={!obj.college ? "text-danger" : ""}>{
+                          <td className={obj.college ==="Please select from dropdown" ? "text-danger" : ""}>{
                             obj.college
                               ? obj.college
                               : "Please select from dropdown"
