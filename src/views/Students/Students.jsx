@@ -18,6 +18,7 @@ import Table from "../../components/content/Table";
 import {
   getStudentsPickList,
   createStudent,
+  getAndUpdateStudentFullName,
 } from "./StudentComponents/StudentActions";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
@@ -28,7 +29,8 @@ import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { isAdmin, isSRM } from "../../common/commonFunctions";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
-import ModalShowmassedit from "./StudentComponents/ModalShowmassedit";
+import ModalShowmassedit from "./MassEdit/ModalShowmassedit";
+import ModaltoSelectBulkMassEdit from "./MassEdit/ModaltoSelectBulkMassEdit";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -88,6 +90,8 @@ const Students = (props) => {
       {
         Header: "Student ID",
         accessor: "student_id",
+        width: 250,
+        size: 200,
       },
       {
         Header: "Area",
@@ -389,10 +393,10 @@ const Students = (props) => {
         status:$status
         registration_date_latest_gte:$from_registration
         registration_date_latest_lte:$to_registration
-        full_name_contains:$full_name
-        email_contains:$email
+        full_name:$full_name
+        email:$email
         phone:$phone
-        student_id_contains:$student_id
+        student_id:$student_id
       }
     ) {
       values {
@@ -427,7 +431,7 @@ const Students = (props) => {
     selectedTab,
     limit = paginationPageSize,
     offset = 0,
-    sortBy = "created_at",
+    sortBy = "updated_at",
     sortOrder = "desc"
   ) => {
     nProgress.start();
@@ -670,20 +674,21 @@ const Students = (props) => {
     );
   };
 
-
-  const HideMassEmployeCreateModal =async(data)=>{
-     
-        try {
-           await api.post(
-            "/employment-connections/createBulkEmploymentConnections",
-            data
-          );
-          setAlert("Employment Connection data created successfully.", "success");
-        } catch (error) {
-          setAlert("Unable to create Employment Connection Data.", "error");
-        }
-      
-  }
+  const HideMassEmployerCreateModal = async (data) => {
+    try {
+      // const uniqueStudentIds = [...new Set(data.map((item) => item.student))];
+      // for (const id in uniqueStudentIds) {
+      //   await getAndUpdateStudentFullName(id);
+      // }
+      await api.post(
+        "/employment-connections/createBulkEmploymentConnections",
+        data
+      );
+      setAlert("Employment Connection data created successfully.", "success");
+    } catch (error) {
+      setAlert("Unable to create Employment Connection Data.", "error");
+    }
+  };
 
   const hideMassCreateModal = async (data) => {
     if (data.length === 0) {
@@ -703,7 +708,7 @@ const Students = (props) => {
   };
 
   const uploadData = (data) => {
-    HideMassEmployeCreateModal(data);
+    HideMassEmployerCreateModal(data);
   };
 
   const uploadAlumniData = (data) => {
@@ -711,11 +716,10 @@ const Students = (props) => {
   };
 
   const handelSubmitMassEdit = async (data, key) => {
-    if (key === "AlumniBuldEdit") {
+    if (key === "AlumniBulkEdit") {
       await api
         .post("/alumni-services/bulk-update", data)
-        .then((data) => {
-          // Return data
+        .then(async(data) => {
           setAlert("Data Edited Successfully.", "success");
           setTimeout(() => {
             window.location.reload(false);
@@ -732,8 +736,12 @@ const Students = (props) => {
     if (key === "EmployerBulkdEdit") {
       await api
         .post("/employment-connections/bulk-update", data)
-        .then((data) => {
+        .then(async(data) => {
           // Return data
+        //   const uniqueStudentIds = [...new Set(data.map(item => item.student))];
+        // for(const id in uniqueStudentIds){
+        //   await getAndUpdateStudentFullName(id);
+        // }
           setAlert("Data Edited Successfully.", "success");
           setTimeout(() => {
             window.location.reload(false);
@@ -792,12 +800,12 @@ const Students = (props) => {
                 >
                   Add New
                 </button>
-                {/* <button
+                <button
                   className="btn btn-primary add_button_sec"
-                  onClick={()=>setModalShowmassEdit(true)}
+                  onClick={() => setModalShowmassEdit(true)}
                 >
-                  Mass Edit 
-                </button> */}
+                  Advanced Options
+                </button>
               </div>
             )}
           </div>
@@ -847,14 +855,28 @@ const Students = (props) => {
           </div>
           <StudentForm show={modalShow} onHide={hideCreateModal} />
 
-          <ModalShowmassedit
+          <ModaltoSelectBulkMassEdit
+            id={""}
+            name={"name"}
+            onHide={() => hideCreateMassEdit(false)}
+            show={ModalShowmassEdit}
+            handelSubmitMassEdit={handelSubmitMassEdit}
+            data={studentsData}
+            AddCheck={false}
+            EditCheck={false}
+            uploadAlumniData={uploadAlumniData}
+            uploadData={uploadData}
+            
+          />
+
+          {/* <ModalShowmassedit
             handelSubmitMassEdit={handelSubmitMassEdit}
             data={studentsData}
             onHide={() => hideCreateMassEdit(false)}
             show={ModalShowmassEdit}
             uploadData={uploadData}
             uploadAlumniData={uploadAlumniData}
-          />
+          /> */}
         </div>
       </Styled>
     </Collapse>

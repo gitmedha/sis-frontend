@@ -19,7 +19,11 @@ import moment from "moment";
 // import { getOpsPickList, updateOpsActivity } from "";
 import * as Yup from "yup";
 import { numberChecker } from "../../../../utils/function/OpsModulechecker";
-import { searchBatches, searchInstitutions, updateMentorshipData } from "../operationsActions";
+import {
+  searchBatches,
+  searchInstitutions,
+  updateMentorshipData,
+} from "../operationsActions";
 import { updateOpsActivity, getOpsPickList } from "../operationsActions";
 import { urlPath } from "src/constants";
 
@@ -85,6 +89,7 @@ const UpdateMentorship = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
+  const [districtOption, setDistrictOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [programeName, setProgramName] = useState([]);
 
@@ -93,10 +98,6 @@ const UpdateMentorship = (props) => {
       setAssigneeOptions(data);
     });
   }, []);
-
-
-
-
 
   useEffect(() => {
     getAddressOptions().then((data) => {
@@ -113,10 +114,17 @@ const UpdateMentorship = (props) => {
         onStateChange({ value: props.state });
       }
     });
-  }, []);
-
-  const onStateChange = async (value) => {
-    await getStateDistricts(value).then((data) => {
+     getStateDistricts().then((data) => {
+      setDistrictOptions([]);
+      setDistrictOptions(
+        data?.data?.data?.geographiesConnection?.groupBy?.area
+          .map((value) => ({
+            key: value.key,
+            label: value.key,
+            value: value.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
       setAreaOptions([]);
       setAreaOptions(
         data?.data?.data?.geographiesConnection?.groupBy?.area
@@ -128,19 +136,39 @@ const UpdateMentorship = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
+  }, []);
+
+  const onStateChange = async (value) => {
+    await getStateDistricts(value).then((data) => {
+      console.log(data);
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection?.groupBy?.city
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
-    values['onboarding_date']=moment(values["onboarding_date"]).format(
-      "YYYY-MM-DD"
-    );
-    const value = await updateMentorshipData(Number(props.id), values);
-    refreshTableOnDataSaving();
-    setDisableSaveButton(true);
-    onHide(value);
-    closeopsedit();
-    setDisableSaveButton(false);
+    try {
+      const newData = { ...values };
+      newData.onboarding_date = moment(values["onboarding_date"]).format(
+        "YYYY-MM-DD"
+      );
+      const value = await updateMentorshipData(Number(props.id), newData);
+      refreshTableOnDataSaving();
+      setDisableSaveButton(true);
+      onHide(value);
+      closeopsedit();
+      setDisableSaveButton(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const userId = localStorage.getItem("user_id");
@@ -154,7 +182,7 @@ const UpdateMentorship = (props) => {
     mentor_area: "",
     mentor_state: "",
     outreach: "",
-    onboarding_date: null,
+    onboarding_date: new Date(),
     social_media_profile_link: "",
     medha_area: "",
     status: "",
@@ -162,7 +190,6 @@ const UpdateMentorship = (props) => {
   };
 
   if (props) {
-    console.log(props);
     initialValues["mentor_name"] = props.mentor_name;
     initialValues["email"] = props.email;
     initialValues["mentor_domain"] = props.mentor_domain;
@@ -170,7 +197,7 @@ const UpdateMentorship = (props) => {
     initialValues["assigned_to"] = props.assigned_to.id.toString();
     initialValues["program_name"] = props.program_name;
     initialValues["onboarding_date"] = new Date(props.onboarding_date);
-    initialValues["designation"] = props.designation
+    initialValues["designation"] = props.designation;
     initialValues["mentor_area"] = props?.mentor_area;
     initialValues["mentor_state"] = props.mentor_state;
     initialValues["medha_area"] = props.medha_area;
@@ -178,18 +205,6 @@ const UpdateMentorship = (props) => {
     initialValues["outreach"] = props.outreach;
   }
 
-
-  // const operationvalidation = Yup.object().shape({
-  //   start_date: Yup.date().required("Start date is required"),
-  //   end_date: Yup.date()
-  //     .required("End date is required")
-  //     .when("start_date", (start, schema) => {
-  //       return schema.min(
-  //         start,
-  //         "End date must be greater than or equal to start date"
-  //       );
-  //     }),
-  // });
   useEffect(async () => {
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
@@ -235,7 +250,7 @@ const UpdateMentorship = (props) => {
           <Modal.Body className="bg-white">
             <Formik
               onSubmit={onSubmit}
-                initialValues={initialValues}
+              initialValues={initialValues}
               // validationSchema={operationvalidation}
             >
               {({ values, setFieldValue }) => (
@@ -300,7 +315,7 @@ const UpdateMentorship = (props) => {
                               control="lookupAsync"
                               name="outreach"
                               label="Outreach (Offline/Online)"
-                            //   filterData={filterInstitution}
+                              //   filterData={filterInstitution}
                               defaultOptions={options}
                               placeholder="Outreach (Offline/Online)"
                               className="form-control"
@@ -313,24 +328,23 @@ const UpdateMentorship = (props) => {
                           <Input
                             name="onboarding_date"
                             label="Onboarding Date"
-                            //
                             placeholder="Onboarding Date"
                             control="datepicker"
                             className="form-control"
                             autoComplete="off"
                           />
                         </div>
-                        {/* <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            control="input"
-                            name="contact"
-                            label="Contact"
-                            className="form-control"
-                            placeholder="Contact"
-                            autoComplete="off"
-                            onKeyPress={numberChecker}
-                          />
-                        </div> */}
+                              icon="down"
+                              name="medha_area"
+                              label="Medha Area"
+                              control="lookup"
+                              options={districtOption}
+                              placeholder="Area"
+                              className="form-control"
+                            />
+                        </div>
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
@@ -364,7 +378,7 @@ const UpdateMentorship = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             name="designation"
-                            label="designation/Title"
+                            label="Designation/Title"
                             placeholder="designation/Title"
                             control="input"
                             className="form-control"
@@ -380,7 +394,7 @@ const UpdateMentorship = (props) => {
                             <Input
                               icon="down"
                               name="mentor_state"
-                              label="State"
+                              label="Mentor State"
                               control="lookup"
                               options={stateOptions}
                               onChange={onStateChange}
@@ -392,21 +406,21 @@ const UpdateMentorship = (props) => {
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {areaOptions.length ? (
+                          {/* {areaOptions.length ||props.medha_area ? ( */}
                             <Input
                               icon="down"
                               name="mentor_area"
-                              label="Medha Area"
+                              label="Mentor Area"
                               control="lookup"
                               options={areaOptions}
                               placeholder="Area"
                               className="form-control"
                             />
-                          ) : (
+                          {/* ) : (
                             <>
                               <Skeleton count={1} height={45} />
                             </>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </Section>

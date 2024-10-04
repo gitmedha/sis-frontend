@@ -12,15 +12,15 @@ import {
   getEmploymentConnectionsPickList,
   searchEmployers,
   searchStudents,
-} from "./StudentActions";
+} from "../StudentComponents/StudentActions";
 import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import moment from "moment";
-import CheckBoxForm from "./CheckBoxForm";
-import AlumMassEdit from "../MassEdit/AlumMassEdit";
-import EmploymentmassEdit from "../MassEdit/EmploymentmassEdit";
+import CheckBoxForm from "../StudentComponents/CheckBoxForm";
+import AlumMassEdit from "./AlumMassEdit";
+import EmploymentmassEdit from "./EmploymentmassEdit";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -125,6 +125,7 @@ const MassEmployerUpload = (props) => {
   }, [props]);
 
   const onModalClose = () => {
+    setStudents([])
     onHide([]);
   };
 
@@ -154,6 +155,7 @@ const MassEmployerUpload = (props) => {
       };
     });
     props.uploadData(newdata);
+    
   };
   const filterStudent = async (filterValue) => {
     try {
@@ -206,11 +208,19 @@ const MassEmployerUpload = (props) => {
   }, [selectedStatus]);
 
   useEffect(() => {
+    let isMounted = true;
+  
     getDefaultAssigneeOptions().then((data) => {
-      setAssigneeOptions(data);
+      if (isMounted) {
+        setAssigneeOptions(data);
+      }
     });
+  
+    return () => {
+      isMounted = false;
+    };
   }, []);
-
+  
   useEffect(() => {
     getEmploymentConnectionsPickList().then((data) => {
       setrejectionreason(
@@ -405,6 +415,15 @@ const MassEmployerUpload = (props) => {
       setStudentOptions(data);
     });
   }, [studentInput]);
+
+  const handleKeyPress = (event) => {
+    const charCode = event.which || event.keyCode;
+    if (charCode >= 49 && charCode <= 57) {
+      return true;
+    }
+    event.preventDefault();
+    return false;
+  };
   
 
   return (
@@ -423,12 +442,12 @@ const MassEmployerUpload = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            Mass Employment connection
+            Add New Employment connection
           </h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
-        {
+        {/* {
           <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
@@ -437,9 +456,9 @@ const MassEmployerUpload = (props) => {
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
           />
-        }
+        } */}
 
-        {bulkAddCheck ? (
+        {/* {bulkAddCheck ? ( */}
           <Formik
             onSubmit={onSubmit}
             initialValues={initialValues}
@@ -449,21 +468,13 @@ const MassEmployerUpload = (props) => {
               <Form>
                 <Section>
                   <div className="row form_sec">
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12">
                       <label className="leading-24">Student</label>
                       <Select
-                        //   defaultValue={[colourOptions[2], colourOptions[3]]}
-                        // isMulti
-                        // name="student_ids"
-                        // options={studentOptions}
-                        // className="basic-multi-select"
-                        // classNamePrefix="select"
-                        // onChange={(choice) => setStudents(choice)}
                         isMulti
                          name="student_ids"
                          options={studentOptions}
                          closeMenuOnSelect={false}
-                         components={customComponents}
                          isOptionDisabled={() => students.length >= 10}
                          className="basic-multi-select"
                          classNamePrefix="select"
@@ -472,7 +483,7 @@ const MassEmployerUpload = (props) => {
                          value={students}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       {assigneeOptions.length ? (
                         <Input
                           control="lookupAsync"
@@ -488,7 +499,7 @@ const MassEmployerUpload = (props) => {
                         <Skeleton count={1} height={45} />
                       )}
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         control="lookupAsync"
                         name="employer_id"
@@ -508,7 +519,7 @@ const MassEmployerUpload = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       {employerOpportunityOptions.length ? (
                         <Input
                           icon="down"
@@ -533,7 +544,7 @@ const MassEmployerUpload = (props) => {
                         </>
                       )}
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12">
                       <Input
                         icon="down"
                         control="lookup"
@@ -543,10 +554,14 @@ const MassEmployerUpload = (props) => {
                         options={statusOptions}
                         className="form-control"
                         placeholder="Status"
-                        onChange={(e) => handleStatusChange(e.value)}
+                        onChange={(e) => {
+                          if(e.value === "Student Dropped Out"){
+                            setFieldValue('number_of_internship_hours',0)
+                          } 
+                          handleStatusChange(e.value)}}
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         name="start_date"
                         label="Start Date"
@@ -557,7 +572,7 @@ const MassEmployerUpload = (props) => {
                         autoComplete="off"
                       />
                     </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         min={0}
                         type="number"
@@ -570,7 +585,7 @@ const MassEmployerUpload = (props) => {
                       />
                     </div>
                     {showEndDate && (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           name="end_date"
                           label="End Date"
@@ -582,7 +597,7 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     )}
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         icon="down"
                         control="lookup"
@@ -598,7 +613,7 @@ const MassEmployerUpload = (props) => {
                     {isRejected ||
                     (initialValues.reason_if_rejected &&
                       initialValues.reason_if_rejected.length) ? (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           icon="down"
                           control="lookup"
@@ -613,7 +628,8 @@ const MassEmployerUpload = (props) => {
                             setFieldValue("reason_if_rejected", e.value);
                             if (e.value === "Others") {
                               setIfSelectedOthers(true);
-                            } else {
+                            }
+                            else {
                               setIfSelectedOthers(false);
                             }
                           }}
@@ -621,12 +637,12 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     ) : (
-                      <div></div>
+                      ""
                     )}
                     {ifSelectedOthers ||
                     (initialValues.reason_if_rejected_other &&
                       initialValues.reason_if_rejected_other.length) ? (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           name="reason_if_rejected_other"
                           control="input"
@@ -637,9 +653,9 @@ const MassEmployerUpload = (props) => {
                         />
                       </div>
                     ) : (
-                      <div></div>
+                      ""
                     )}
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <div className="col-md-6 col-sm-12 ">
                       <Input
                         icon="down"
                         control="lookup"
@@ -653,12 +669,13 @@ const MassEmployerUpload = (props) => {
                     </div>
 
                     {selectedOpportunityType === "Internship" && (
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 ">
                         <Input
                           min={0}
                           type="number"
                           control="input"
                           name="number_of_internship_hours"
+                          onKeyPress={handleKeyPress}
                           className="form-control"
                           label="Number of Internship hours"
                           required
@@ -692,14 +709,14 @@ const MassEmployerUpload = (props) => {
               </Form>
             )}
           </Formik>
-        ) : (
-          <EmploymentmassEdit
-            setBulkAddCheck={setBulkAddCheck}
-            setMassEditCheck={setMassEditCheck}
-            handelSubmitMassEdit={handelSubmitMassEdit}
-            handelCancel={handelCancel}
-          />
-        )}
+        {/* // ) : (
+        //   <EmploymentmassEdit
+        //     setBulkAddCheck={setBulkAddCheck}
+        //     setMassEditCheck={setMassEditCheck}
+        //     handelSubmitMassEdit={handelSubmitMassEdit}
+        //     handelCancel={handelCancel}
+        //   />
+        // )} */}
       </Modal.Body>
     </Modal>
   );

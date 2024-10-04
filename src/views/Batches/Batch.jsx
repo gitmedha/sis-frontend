@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -140,6 +140,8 @@ const Batch = (props) => {
     updateBatch(batch.id, {
       status: 'Certified'
     }).then(data => {
+      console.log(data)
+      sendEmailOnCreateBatch('pehli udaan')
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
       
@@ -227,6 +229,10 @@ const Batch = (props) => {
     NP.start();
     updateBatch(Number(id), dataToSave).then(data => {
       setAlert("Batch updated successfully.", "success");
+     if(dataToSave.status === "Enrollment Complete -- To Be Started" || dataToSave.status ==="Complete"){
+      dataToSave.id = Number(id);
+      sendEmailOnCreateBatch(dataToSave);
+     }
     }).catch(err => {
       
       setAlert("Unable to update batch.", "error");

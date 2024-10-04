@@ -2,8 +2,8 @@ import { Formik, FieldArray, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
-import { FaSchool } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
+import { FaAngleDown, FaAngleRight, FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { EmployerValidations } from "../../../validations";
 import { getEmployersPickList } from "./employerAction";
@@ -19,11 +19,23 @@ import {
 import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
+import Select, { components } from "react-select";
+import { GET_ALL_INDUSTRY } from "src/graphql";
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
+  label {
+    color: #787b96;
+  }
+  .required {
+    color: red;
+    font-size: 16px;
+  }
+  .css-9gakcf-option {
+    background-color: #fff !important;
+  }
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
   }
@@ -38,6 +50,16 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const DropdownIndicator = (props) => {
+  return (
+    components.DropdownIndicator && (
+      <components.DropdownIndicator {...props}>
+        {props.selectProps.menuIsOpen ? "▲" : "▼"}
+      </components.DropdownIndicator>
+    )
+  );
+};
 
 const EmployerForm = (props) => {
   let { onHide, show } = props;
@@ -54,10 +76,167 @@ const EmployerForm = (props) => {
   const [isDuplicate, setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [dropdownOptions, setDropdownOptions] = useState(null);
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [industry, setIndustry] = useState("");
+  const formikRef = useRef();
+
+  const handleExternalChange = (value) => {
+    let data=value.label;
+    formikRef.current.setFieldValue("industry", data);
+  };
+
+  const handleChange = (selected) => {
+    setSelectedOption(selected);
+    if (selected?.children) {
+      // setDropdownOptions([
+      //   ...dropdownOptions.filter((opt) => opt?.value !== selected?.value),
+      //   selected,
+      //   ...selected.children,
+      // ]);
+
+      const additionalItems = selected.children.map(value=>{
+        return {
+          ...value,isChild:true
+        }
+      });
+
+      console.log(dropdownOptions,"\n",selected);
+
+      const matchIndex = dropdownOptions.findIndex(
+        (obj) => obj.label === selected.label
+      );
+        console.log(matchIndex);
+      let result = [];
+      if(!selected.children.includes(dropdownOptions[matchIndex+1])){
+        if (matchIndex !== -1) {
+          result=[...dropdownOptions.slice(0,matchIndex+1),...additionalItems,...dropdownOptions.slice(matchIndex+1)]
+        }
+      
+      }else{
+        result=[...dropdownOptions.slice(0,matchIndex+1),...dropdownOptions.slice(matchIndex+additionalItems.length+1)];
+
+      }
+      result[matchIndex].children=additionalItems;
+      setDropdownOptions(result)
+
+      setMenuIsOpen(true);
+      
+    } else {
+      
+      setDropdownOptions(dropdownOptions);
+      setMenuIsOpen(false);
+      handleExternalChange(selected);
+    }
+  };
+
+  const handleMenuOpen = () => {
+    if (selectedOption && selectedOption?.children) {
+      setDropdownOptions([
+        ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
+        selectedOption,
+        ...selectedOption.children,
+      ]);
+    } else {
+      setDropdownOptions(dropdownOptions);
+    }
+    setMenuIsOpen(true);
+  };
+
+  const CustomOption = (props) => {
+    const selectedItem=props?.data
+    const isParent = props?.data?.children;
+    const matchIndex = dropdownOptions.findIndex(
+      (obj) => obj.label === selectedItem.label
+    );
+    
+    console.log("selectedItem",selectedItem);
+    let isSelectedParent =
+      selectedOption && selectedOption?.label === props?.data?.label && selectedItem?.children?.includes(dropdownOptions[matchIndex+1]) ;
+    let haschild=!selectedItem?.isChild;
+    return (
+      <components.Option
+        {...props}
+        style={{
+          backgroundColor: isSelectedParent
+            ? "white"
+            : props.isFocused
+            ? "#f0f0f0"
+            : "transparent", 
+        }}
+      >
+        <div
+          style={{
+            marginLeft: isParent ? "0" : "0",
+            fontWeight: isSelectedParent ? "bold" : "normal",
+            fontSize:'1rem',
+            color: isSelectedParent ? "green" : "black",
+            backgroundColor: isSelectedParent ? "white" : "transparent",
+            cursor:"pointer"
+          }}
+        >
+          {isParent && <FaAngleDown style={{ marginRight: "8px",transform:isSelectedParent? 'none':"rotate(-90deg)" }} />}
+          <span style={{fontSize:haschild ?'16px':'14px',paddingLeft:!haschild?'28px':''}}>{props.data.label}</span>
+          
+        </div>
+      </components.Option>
+    );
+  };
+  const clear = () => {
+    setSelectedOption(null);
+  };
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
+  }, []);
+
+  useEffect(() => {
+    const getAllEmployers = async () => {
+      return await api
+        .post("/graphql", {
+          query: GET_ALL_INDUSTRY,
+        })
+        .then((values) => {
+          const data = values.data.data.industries;
+          const grouped = data.reduce(
+            (acc, { industry_name, sub_industry }) => {
+              if (!acc[industry_name]) {
+                acc[industry_name] = [];
+              }
+              if (sub_industry) {
+                acc[industry_name].push(sub_industry);
+              }
+              return acc;
+            },
+            {}
+          );
+
+          const options = Object.keys(grouped).map((industry_name) => {
+            const subIndustries = grouped[industry_name].map(
+              (sub_industry) => ({
+                label: sub_industry,
+                value: sub_industry,
+              })
+            );
+            const industryObject = {
+              label: industry_name,
+            };
+
+            if (subIndustries.length > 0) {
+              industryObject.children = subIndustries;
+            }
+
+            return industryObject;
+          });
+          setDropdownOptions(options);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        });
+    };
+    getAllEmployers();
   }, []);
 
   useEffect(() => {
@@ -161,8 +340,6 @@ const EmployerForm = (props) => {
           .join(" ")
       : "";
 
-    //  const isDuplicate =  await FindDuplicate(values.name);
-
     setFormValues(values);
     if (logo) {
       values.logo = logo;
@@ -194,7 +371,6 @@ const EmployerForm = (props) => {
   }
 
   if (!props.contacts) {
-    // create an empty contact if no contacts are present
     initialValues["contacts"] = [];
   }
 
@@ -250,10 +426,11 @@ const EmployerForm = (props) => {
       <Modal.Body className="bg-white">
         <Formik
           onSubmit={onSubmit}
+          innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={EmployerValidations}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue, errors }) => (
             <Form>
               <div className="row form_sec">
                 <Section>
@@ -297,7 +474,7 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
+                      {/* <Input
                         icon="down"
                         name="industry"
                         label="Industry"
@@ -305,6 +482,26 @@ const EmployerForm = (props) => {
                         options={industryOptions}
                         className="form-control"
                         required
+                      /> */}
+                      <label className="text-heading leading-24">
+                        Industry <span class="required">*</span>
+                      </label>
+                      <Select
+                        options={dropdownOptions}
+                        value={selectedOption}
+                        name="industry"
+                        onChange={(selected) => {
+                          handleChange(selected);
+                        }}
+                        icon={<FaAngleDown size={15} />}
+                        placeholder="Select an option..."
+                        components={{ Option: CustomOption, DropdownIndicator }}
+                        menuIsOpen={menuIsOpen}
+                        onMenuOpen={handleMenuOpen}
+                        isClearable={() => {
+                          clear();
+                          setFieldValue("industry", "");
+                        }}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">

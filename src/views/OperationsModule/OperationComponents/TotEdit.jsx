@@ -189,11 +189,12 @@ const TotEdit = (props) => {
 
     newObject.end_date = moment(values["end_date"]).format("YYYY-MM-DD");
 
-    newObject.published_at = values?.published_at ? values.published_at : "";
+    newObject.published_at = new Date().toISOString();
     delete values["published_at"];
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
+    // valupublishedAt= new Date().toISOString()
     onHide(value);
 
     setDisableSaveButton(false);
@@ -235,8 +236,8 @@ const TotEdit = (props) => {
     initialValues["gender"] = props.gender;
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
-    initialValues["trainer_1"] = props.trainer_1.id;
-    initialValues["trainer_2"] = props.trainer_2.id;
+    initialValues["trainer_1"] = props.trainer_1?.id;
+    initialValues["trainer_2"] = props.trainer_2?.id;
     initialValues["city"] = props.city;
     initialValues["certificate_given"] = props.certificate_given;
   }

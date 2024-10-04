@@ -11,6 +11,7 @@ import {
   createBatch,
   getBatchesPickList,
   getStudentCountByBatch,
+  sendEmailOnCreateBatch
 } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -44,21 +45,21 @@ const Batches = (props) => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-  const prevIsSearchEnableRef = useRef(isSearchEnable);
+  const prevIsSearchEnableRef = useRef();
 
   useEffect(() => {
     if (isSearchEnable) {
       getBatches(activeTab.key);
     }
-  }, [isSearchEnable, selectedSearchedValue]);
-
-  useEffect(() => {
-    const prevIsSearchEnable = prevIsSearchEnableRef.current;
-    if (prevIsSearchEnable && !isSearchEnable) {
-      getBatches(activeTab.key);
+    
+    if (prevIsSearchEnableRef.current !== undefined) {
+      if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+        getBatches(activeTab.key);
+      }
     }
+
     prevIsSearchEnableRef.current = isSearchEnable;
-  }, [isSearchEnable, activeTab.key]);
+  }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
 
   const getBatchesBySearchFilter = async (
     selectedTab,
@@ -426,7 +427,6 @@ const Batches = (props) => {
     NP.start();
     setLoading(true);
 
-    console.log("isSearchEnable:", isSearchEnable);
     if (isSearchEnable) {
       await getBatchesBySearchFilter(
         selectedTab,
@@ -644,6 +644,11 @@ const Batches = (props) => {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Batch created successfully.", "success");
+          // if(data.data.data.createBatch.status === "Enrollment Complete -- To Be Started"){
+          //   dataToSave.id = data.data.data.createBatch.batch.id;
+          //   sendEmailOnCreateBatch(dataToSave);
+          // }
+          
           getBatches();
           setModalShow(false);
           history.push(`/batch/${data.data.data.createBatch.batch.id}`);
