@@ -53,7 +53,7 @@ function InstitutionSearchBar({
 
   const handleSubmit = async (values) => {
     try {
-      await setSelectedSearchedValue(values.search_by_value);
+      await setSelectedSearchedValue(values.search_by_value.trim());
       setIsSearchEnable(true);
     } catch (error) {
       console.error("error", error);
