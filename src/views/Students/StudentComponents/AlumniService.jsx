@@ -110,6 +110,7 @@ const AlumniService = (props) => {
                 <DetailField label="Category" value={alumniService.category}/>
                 
                 {props.alumniService.category &&  <DetailField label="Subcategory" value={alumniService.type}/>}
+                <DetailField label="Role" value={alumniService?.role}/>
               </div>
             </div>
           </FileStyled>
