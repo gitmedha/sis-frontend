@@ -259,7 +259,7 @@ const Institutions = (props) => {
         state:$state,
         status:$status,
         type:$type,
-        name:$name
+        name_contains: $name 
       }
     ) {
       values {
