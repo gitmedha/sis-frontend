@@ -62,6 +62,7 @@ const AlumniServiceForm = (props) => {
   const [programOptions, setProgramOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [status, setStatus] = useState("");
+  const [role,setRole]=useState([]);
 
   useEffect(() => {
     if (props.alumniService) {
@@ -90,6 +91,8 @@ const AlumniServiceForm = (props) => {
           label: item.value,
         }))
       );
+      // console.log(data);
+      setRole(data.role);
     });
   }, []);
 
@@ -172,6 +175,7 @@ const AlumniServiceForm = (props) => {
     assigned_to: localStorage.getItem("user_id"),
     category: null,
     type: "",
+    role:""
   };
 
   if (props.alumniService) {
@@ -190,6 +194,7 @@ const AlumniServiceForm = (props) => {
     initialValues["category"] = props.alumniService.category
       ? props.alumniService.category
       : null;
+      initialValues["role"]=props.alumniService?.role
   }
 
   const handleClose = () => {
@@ -298,6 +303,20 @@ const AlumniServiceForm = (props) => {
                         required
                       />
                     )}
+                  </div>
+
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={role}
+                      // onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
