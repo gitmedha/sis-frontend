@@ -224,7 +224,6 @@ const EmploymentmassEdit = (props) => {
               startDate,
               endDate
             );
-            console.log(obj.value);
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => {
               return ({
@@ -355,9 +354,7 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
-    // console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
-      // Build the object with only non-empty values
       let obj = {
         assigned_to: values.assigned_to?.id,
         experience_certificate: values.experience_certificate,
@@ -378,17 +375,14 @@ const EmploymentmassEdit = (props) => {
         work_engagement: values.work_engagement,
       };
 
-      // Filter out keys with undefined or empty string values
       let filteredObj = Object.keys(obj).reduce((acc, key) => {
         if (obj[key] !== undefined && obj[key] !== "") {
           acc[key] = obj[key];
         }
         return acc;
       }, {});
-      // console.log(values);
       filteredObj.student = val.student_id;
       filteredObj.id = val.id;
-      // console.log(filteredObj);
       return filteredObj;
 
     });
@@ -442,7 +436,6 @@ const EmploymentmassEdit = (props) => {
   }, [startDate, endDate]);
 
   const handleTypeChange = (selected) => {
-    console.log(selected);
     if (!selectedOptions || selectedOptions.length === 0) {
       setStudentOptions([]);
       // setisdisabledStudentlist(true);
@@ -455,28 +448,27 @@ const EmploymentmassEdit = (props) => {
     setSelectedOptions(selected);
 
     // const matchingData = findMatchingData(alumData, selected, "type");
-    console.log(selectedOptions);
+
     const findMatchingData = (dataValues, selected) => {
       return dataValues.filter((item1) =>
         selected.some((item2) => item1["opportunity"].employer.name === item2["value"])
       );
     };
     
-    // Example usage (with actual arguments):
-    console.log(findMatchingData(dataValues, selected));
+
     let studentvalues=findMatchingData(dataValues, selected);
     const uniqueStudentNames = studentvalues
     .filter((item, index, self) =>
       index === self.findIndex((t) => t.student === item.student)
     )
     .map(item =>{
-      console.log(item);
+
       return{
       value:item.student.id,
       label:`${item?.student?.full_name} (${item?.student?.student_id})`}});
 setStudentOptions(uniqueStudentNames)
   };
-  console.log(startDate);
+
 
   const handelSearch=()=>{
     setisdisabledStudentlist(false);
