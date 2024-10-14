@@ -339,10 +339,11 @@ const MentorBulkAdd = (props) => {
         !(key == "program_name")
         |--------------------------------------------------
         */
+       if((key =="contact" && row[key].length < 10)){
+        isEmptyValuFound=true
+       }
         if (
-          !(key == "social_media_profile_link") && (key =="contact" && row[key].length < 10)
-          
-         
+          !(key == "social_media_profile_link") 
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
