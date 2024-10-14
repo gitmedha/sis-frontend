@@ -230,6 +230,7 @@ const Batch = (props) => {
     updateBatch(Number(id), dataToSave).then(data => {
       setAlert("Batch updated successfully.", "success");
      if(dataToSave.status === "Enrollment Complete -- To Be Started" || dataToSave.status ==="Complete"){
+      
       dataToSave.id = Number(id);
       sendEmailOnCreateBatch(dataToSave);
      }
