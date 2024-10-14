@@ -199,8 +199,9 @@ const EmployerForm = (props) => {
           query: GET_ALL_INDUSTRY,
         })
         .then((values) => {
+          console.log(values);
           const data = values.data.data.industries;
-          const grouped = data.reduce(
+          const grouped = data?.reduce(
             (acc, { industry_name, sub_industry }) => {
               if (!acc[industry_name]) {
                 acc[industry_name] = [];

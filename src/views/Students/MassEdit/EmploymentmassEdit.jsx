@@ -59,9 +59,15 @@ const EmploymentmassEdit = (props) => {
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
   const [EmploymentData, setEmploymentData] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0] );
-  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0] );
+  const [startDate, setStartDate] = useState(null );
+  const [endDate, setEndDate] = useState(null);
   const [skeleton, setSkeleton] = useState(false);
+  const [uniqueEmp,setUniqueEmp]=useState([])
+  const [isdisabledStudentlist, setisdisabledStudentlist] = useState(true);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedEmp,setSelectedEmp]=useState([]);
+  const [dataValues,setDataValues]=useState([])
+  const [searchNextBool, setSearchNextBool] = useState(true);
 
   let initialValues = {
     employment_connection_student: "",
@@ -218,7 +224,6 @@ const EmploymentmassEdit = (props) => {
               startDate,
               endDate
             );
-            // console.log(obj.value);
             return data.data.data.employmentConnectionsConnection.values.map(
               (val) => {
               return ({
@@ -245,13 +250,22 @@ const EmploymentmassEdit = (props) => {
                 id: val.id,
               })
      }       );
+
+
           } catch (err) {
             console.error(err);
             return [];
           }
         })
       );
-      setEmploymentData(alumData.flat());
+      let datapoints=alumData.flat();
+      const matchingData = datapoints.filter(item => {
+        const studentMatch = students.some(student => student.value == item.student_id);
+        const employerMatch = selectedOptions.some(employer => employer.label === item.employer.label);
+        
+        return studentMatch && employerMatch;
+      });
+      setEmploymentData(matchingData);
       setFormStatus(true);
     } catch (error) {
       console.error(error);
@@ -349,9 +363,7 @@ const EmploymentmassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const onSubmit = async (values) => {
-    // console.log(EmploymentData);
     let data = EmploymentData.map((val) => {
-      // Build the object with only non-empty values
       let obj = {
         assigned_to: values.assigned_to?.id,
         experience_certificate: values.experience_certificate,
@@ -372,17 +384,14 @@ const EmploymentmassEdit = (props) => {
         work_engagement: values.work_engagement,
       };
 
-      // Filter out keys with undefined or empty string values
       let filteredObj = Object.keys(obj).reduce((acc, key) => {
         if (obj[key] !== undefined && obj[key] !== "") {
           acc[key] = obj[key];
         }
         return acc;
       }, {});
-      // console.log(values);
       filteredObj.student = val.student_id;
       filteredObj.id = val.id;
-      // console.log(filteredObj);
       return filteredObj;
 
     });
@@ -416,6 +425,16 @@ const EmploymentmassEdit = (props) => {
           uniqueStudentsMap.set(obj?.student?.id, obj);
         }
       });
+      const uniqueEmployers = data
+      .map(item => ({
+        label: item.opportunity.employer.name,
+        value: item.opportunity.employer.name
+      }))
+      .filter((item, index, self) =>
+        index === self.findIndex(e => e.value === item.value)
+      );
+      setDataValues(data)
+      setUniqueEmp(uniqueEmployers)
       let values = Array.from(uniqueStudentsMap.values()).map((obj) => ({
         label: `${obj?.student?.full_name} (${obj?.student?.student_id})`,
         value: Number(obj?.student?.id),
@@ -424,6 +443,46 @@ const EmploymentmassEdit = (props) => {
       setSkeleton(false);
     }
   }, [startDate, endDate]);
+
+  const handleTypeChange = (selected) => {
+    if (!selectedOptions || selectedOptions.length === 0) {
+      setStudentOptions([]);
+      // setisdisabledStudentlist(true);
+      setStudents([]);
+      setSearchNextBool(true);
+      // setSearchDisabled(true);
+    }
+
+    setSelectedOptions(selected);
+
+    // const matchingData = findMatchingData(alumData, selected, "type");
+
+    const findMatchingData = (dataValues, selected) => {
+      return dataValues.filter((item1) =>
+        selected.some((item2) => item1["opportunity"].employer.name === item2["value"])
+      );
+    };
+    
+
+    let studentvalues=findMatchingData(dataValues, selected);
+    const uniqueStudentNames = studentvalues
+    .filter((item, index, self) =>
+      index === self.findIndex((t) => t.student === item.student)
+    )
+    .map(item =>{
+
+      return{
+      value:item.student.id,
+      label:`${item?.student?.full_name} (${item?.student?.student_id})`}});
+setStudentOptions(uniqueStudentNames)
+  };
+
+
+  const handelSearch=()=>{
+    setisdisabledStudentlist(false);
+    setSearchNextBool(false);
+  }
+  
 
   return (
     <>
@@ -485,8 +544,12 @@ const EmploymentmassEdit = (props) => {
                             setStudents([]);
                             setStudentOptions([]);
                             setStartDate(e.target.value);
+                            setSelectedOptions([])
                           }}
                         />
+                      </div>
+                      <div>
+                     
                       </div>
                       <div className="col-md-5 col-sm-12 mt-2">
                         <label>End Date</label>
@@ -502,10 +565,39 @@ const EmploymentmassEdit = (props) => {
                             setStudents([]);
                             setStudentOptions([]);
                             setEndDate(e.target.value);
+                            setSelectedOptions([])
                           }}
                         />
                       </div>
                     </div>
+                    <div className="mt-2">
+                    <label className="leading-24">Employer</label>
+                    <Select
+                      isMulti
+                      isDisabled={!startDate && !endDate}
+                      onChange={(selectedOptions) => {
+                        handleTypeChange(selectedOptions);
+                        if (selectedOptions?.length === 0) {
+                          setStudents([]);
+                          setStudentOptions([]);
+                          setisdisabledStudentlist(true);
+                          // setSearchNextBool(true);
+                          // setSearchDisabled(true);
+                        }
+                      }}
+                      // components={customComponents}
+                      options={uniqueEmp || []}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      value={selectedOptions}
+                    />
+                    {/* {selectedOptions?.length === 0 &&
+                    typeOptions?.length === 0 ? (
+                      <label className="text-danger">No Data Found</label>
+                    ) : (
+                      ""
+                    )} */}
+                  </div>
                     <div className="mt-2">
                       {skeleton ? (
                         <Skeleton count={2} height={30} />
@@ -521,17 +613,17 @@ const EmploymentmassEdit = (props) => {
                             isOptionDisabled={() => students.length >= 10}
                             className="basic-multi-select"
                             classNamePrefix="select"
-                            isDisabled={disabled}
+                            isDisabled={isdisabledStudentlist}
                             // onInputChange={(e) => setStudentInput(e)}
                             onChange={handleselectChange}
                             value={students}
                           />
-                          {studentOptions.length == 0 &&
+                          {/* {studentOptions.length == 0 &&
                           students.length == 0 ? (
                             <label className="text-danger">No Data</label>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </>
                       )}
                     </div>
@@ -543,13 +635,29 @@ const EmploymentmassEdit = (props) => {
                       >
                         Cancel
                       </button>
-                      <button
+                      {searchNextBool ?<button
+                        onClick={handelSearch}
+                        disabled={selectedOptions.length == 0}
+
+                        className="btn btn-primary mt-3 no-decoration"
+                      >
+                        Search
+                      </button> :<button
                         type="submit"
                         disabled={students.length == 0}
+
                         className="btn btn-primary mt-3 no-decoration"
                       >
                         Next
-                      </button>
+                      </button>}
+                      {/* <button
+                        type="submit"
+                        disabled={selectedOptions.length == 0}
+
+                        className="btn btn-primary mt-3 no-decoration"
+                      >
+                        Next */}
+                      {/* </button> */}
                     </div>
                   </Form>
                 )}
