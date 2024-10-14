@@ -250,13 +250,22 @@ const EmploymentmassEdit = (props) => {
                 id: val.id,
               })
      }       );
+
+
           } catch (err) {
             console.error(err);
             return [];
           }
         })
       );
-      setEmploymentData(alumData.flat());
+      let datapoints=alumData.flat();
+      const matchingData = datapoints.filter(item => {
+        const studentMatch = students.some(student => student.value == item.student_id);
+        const employerMatch = selectedOptions.some(employer => employer.label === item.employer.label);
+        
+        return studentMatch && employerMatch;
+      });
+      setEmploymentData(matchingData);
       setFormStatus(true);
     } catch (error) {
       console.error(error);
@@ -443,7 +452,6 @@ const EmploymentmassEdit = (props) => {
       setSearchNextBool(true);
       // setSearchDisabled(true);
     }
-   
 
     setSelectedOptions(selected);
 
