@@ -349,3 +349,18 @@ export const searchStudents = async(searchValue)=>{
     console.error(error.message);
   }
 }
+
+
+
+/* Send Emails on Creation and Updation */
+
+export const sendEmailOnCreateBatch = async (batchInfo) => {
+  let url = `batch/sendEmailONCreationAndUpdate`;
+  return await api.post(url, {
+    data:batchInfo
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+};
