@@ -97,7 +97,6 @@ const MentorshipdataField = (props) => {
       dataAndEdit: false,
     });
   };
-  console.log(props);
 
   return (
     <>
