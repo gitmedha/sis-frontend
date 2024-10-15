@@ -428,7 +428,7 @@ const MentorBulkAdd = (props) => {
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Alumni Query"}
+                {props.id ? props.full_name : " Add Mentorship Data"}
               </h2>
             </div>
           </div>

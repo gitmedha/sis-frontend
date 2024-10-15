@@ -140,7 +140,6 @@ const UpdateMentorship = (props) => {
 
   const onStateChange = async (value) => {
     await getStateDistricts(value).then((data) => {
-      console.log(data);
       setAreaOptions([]);
       setAreaOptions(
         data?.data?.data?.geographiesConnection?.groupBy?.city
@@ -160,6 +159,7 @@ const UpdateMentorship = (props) => {
       newData.onboarding_date = moment(values["onboarding_date"]).format(
         "YYYY-MM-DD"
       );
+      newData["updatedby"] = Number(userId);
       const value = await updateMentorshipData(Number(props.id), newData);
       refreshTableOnDataSaving();
       setDisableSaveButton(true);
@@ -203,6 +203,7 @@ const UpdateMentorship = (props) => {
     initialValues["medha_area"] = props.medha_area;
     initialValues["status"] = props.status;
     initialValues["outreach"] = props.outreach;
+    initialValues["contact"] = props.contact;
   }
 
   useEffect(async () => {
@@ -380,6 +381,15 @@ const UpdateMentorship = (props) => {
                             name="designation"
                             label="Designation/Title"
                             placeholder="designation/Title"
+                            control="input"
+                            className="form-control"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="contact"
+                            label="Contact"
+                            placeholder="Contact"
                             control="input"
                             className="form-control"
                           />
