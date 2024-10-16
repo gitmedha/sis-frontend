@@ -21,8 +21,6 @@ import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
 import { GET_ALL_INDUSTRY } from "src/graphql";
-import DropdownTreeSelect from 'react-dropdown-tree-select';
-import 'react-dropdown-tree-select/dist/styles.css';
 
 const Section = styled.div`
   padding-top: 30px;
