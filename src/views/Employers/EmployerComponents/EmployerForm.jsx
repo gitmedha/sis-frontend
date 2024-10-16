@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form } from "formik";
+import { Formik, FieldArray, Form ,Field} from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -61,9 +61,18 @@ const DropdownIndicator = (props) => {
   );
 };
 
+const assignObjectPaths = (obj, stack) => {
+  Object.keys(obj).forEach(k => {
+    const node = obj[k];
+    if (typeof node === "object") {
+      node.path = stack ? `${stack}.${k}` : k;
+      assignObjectPaths(node, node.path);
+    }
+  });
+};
+
 const EmployerForm = (props) => {
   let { onHide, show } = props;
-  const [industryOptions, setIndustryOptions] = useState([]);
   const [statusOpts, setStatusOpts] = useState([]);
   const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -75,63 +84,69 @@ const EmployerForm = (props) => {
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate, setDuplicate] = useState(false);
   const userId = parseInt(localStorage.getItem("user_id"));
-
+  const [industryOptions, setIndustryOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [industry, setIndustry] = useState("");
+  const [selectedValue,setSelectedValue]=useState([{label:""}])
   const formikRef = useRef();
 
   const handleExternalChange = (value) => {
-    let data=value.label;
+    let data = value.label;
     formikRef.current.setFieldValue("industry", data);
   };
 
   const handleChange = (selected) => {
+    console.log(selected);
     setSelectedOption(selected);
-    if (selected?.children) {
-      // setDropdownOptions([
-      //   ...dropdownOptions.filter((opt) => opt?.value !== selected?.value),
-      //   selected,
-      //   ...selected.children,
-      // ]);
+    setSelectedValue([...selectedValue,...[{label:selected?.label}]]);
+    if(selected.label === selectedValue[selectedValue.length-1].label){
+      let result = industryOptions
+    setDropdownOptions(result);
 
-      const additionalItems = selected.children.map(value=>{
+    }
+    else if (selected?.children || (selected.label === selectedValue[selectedValue.length-1].label || selected.label === selectedValue[selectedValue.length-2].label ) ) {
+
+
+      const additionalItems = selected.children.map((value) => {
         return {
-          ...value,isChild:true
-        }
+          ...value,
+          isChild: true,
+        };
       });
 
-      console.log(dropdownOptions,"\n",selected);
-
-      const matchIndex = dropdownOptions.findIndex(
+      const matchIndex = industryOptions.findIndex(
         (obj) => obj.label === selected.label
       );
-        console.log(matchIndex);
       let result = [];
-      if(!selected.children.includes(dropdownOptions[matchIndex+1])){
+      if (!selected.children.includes(industryOptions[matchIndex + 1])) {
         if (matchIndex !== -1) {
-          result=[...dropdownOptions.slice(0,matchIndex+1),...additionalItems,...dropdownOptions.slice(matchIndex+1)]
+          result = [
+            ...industryOptions.slice(0, matchIndex + 1),
+            ...additionalItems,
+            ...industryOptions.slice(matchIndex + 1),
+          ];
         }
-      
-      }else{
-        result=[...dropdownOptions.slice(0,matchIndex+1),...dropdownOptions.slice(matchIndex+additionalItems.length+1)];
-
+      } else {
+        result = [
+          ...industryOptions.slice(0, matchIndex + 1),
+          ...industryOptions.slice(matchIndex + additionalItems.length + 1),
+        ];
       }
-      result[matchIndex].children=additionalItems;
-      setDropdownOptions(result)
+      result[matchIndex].children = additionalItems;
+      setDropdownOptions(result);
 
       setMenuIsOpen(true);
-      
     } else {
-      
-      setDropdownOptions(dropdownOptions);
+      setDropdownOptions(industryOptions);
       setMenuIsOpen(false);
       handleExternalChange(selected);
     }
   };
 
   const handleMenuOpen = () => {
+
     if (selectedOption && selectedOption?.children) {
       setDropdownOptions([
         ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
@@ -145,16 +160,16 @@ const EmployerForm = (props) => {
   };
 
   const CustomOption = (props) => {
-    const selectedItem=props?.data
+    const selectedItem = props?.data;
     const isParent = props?.data?.children;
     const matchIndex = dropdownOptions.findIndex(
       (obj) => obj.label === selectedItem.label
     );
-    
-    console.log("selectedItem",selectedItem);
     let isSelectedParent =
-      selectedOption && selectedOption?.label === props?.data?.label && selectedItem?.children?.includes(dropdownOptions[matchIndex+1]) ;
-    let haschild=!selectedItem?.isChild;
+      selectedOption &&
+      selectedOption?.label === props?.data?.label &&
+      selectedItem?.children?.includes(dropdownOptions[matchIndex + 1]);
+    let haschild = !selectedItem?.isChild;
     return (
       <components.Option
         {...props}
@@ -163,22 +178,35 @@ const EmployerForm = (props) => {
             ? "white"
             : props.isFocused
             ? "#f0f0f0"
-            : "transparent", 
+            : "transparent",
         }}
       >
         <div
           style={{
             marginLeft: isParent ? "0" : "0",
             fontWeight: isSelectedParent ? "bold" : "normal",
-            fontSize:'1rem',
+            fontSize: "1rem",
             color: isSelectedParent ? "green" : "black",
             backgroundColor: isSelectedParent ? "white" : "transparent",
-            cursor:"pointer"
+            cursor: "pointer",
           }}
         >
-          {isParent && <FaAngleDown style={{ marginRight: "8px",transform:isSelectedParent? 'none':"rotate(-90deg)" }} />}
-          <span style={{fontSize:haschild ?'16px':'14px',paddingLeft:!haschild?'28px':''}}>{props.data.label}</span>
-          
+          {isParent && (
+            <FaAngleDown
+              style={{
+                marginRight: "8px",
+                transform: isSelectedParent ? "none" : "rotate(-90deg)",
+              }}
+            />
+          )}
+          <span
+            style={{
+              fontSize: haschild ? "16px" : "14px",
+              paddingLeft: !haschild ? "28px" : "",
+            }}
+          >
+            {props.data.label}
+          </span>
         </div>
       </components.Option>
     );
@@ -199,7 +227,6 @@ const EmployerForm = (props) => {
           query: GET_ALL_INDUSTRY,
         })
         .then((values) => {
-          console.log(values);
           const data = values.data.data.industries;
           const grouped = data?.reduce(
             (acc, { industry_name, sub_industry }) => {
@@ -232,6 +259,7 @@ const EmployerForm = (props) => {
             return industryObject;
           });
           setDropdownOptions(options);
+          setIndustryOptions(options);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -252,15 +280,15 @@ const EmployerForm = (props) => {
         })
       );
 
-      setIndustryOptions(
-        data.industry.map((item) => {
-          return {
-            key: item.value,
-            label: item.value,
-            value: item.value,
-          };
-        })
-      );
+      //  setIndustryOptions (
+      //     data.industry.map((item) => {
+      //       return {
+      //         key: item.value,
+      //         label: item.value,
+      //         value: item.value,
+      //       };
+      //     })
+      //   );
     });
 
     getAddressOptions().then((data) => {
@@ -362,6 +390,7 @@ const EmployerForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
+    treeSelection: []
   };
 
   if (props.id) {
@@ -392,6 +421,12 @@ const EmployerForm = (props) => {
       console.error("error", error);
     }
   };
+
+
+
+
+
+
 
   return (
     <Modal
@@ -487,7 +522,7 @@ const EmployerForm = (props) => {
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                      <Select
+                       <Select
                         options={dropdownOptions}
                         value={selectedOption}
                         name="industry"
