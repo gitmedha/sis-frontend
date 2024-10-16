@@ -225,6 +225,7 @@ const MentorshipdataField = (props) => {
                     label="Designation"
                     value={props.designation ? props.designation : "Not found"}
                   />
+                  {console.log(props)}
                   <DetailField
                     className=""
                     Bold={""}
