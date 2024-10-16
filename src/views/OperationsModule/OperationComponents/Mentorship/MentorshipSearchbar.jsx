@@ -148,7 +148,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
  
 
   const handleSubmit = async (values) => {
-    let baseUrl = "mentorship";
+    let baseUrl = "mentorships";
     await searchOperationTab(
       baseUrl,
       values.search_by_field,
