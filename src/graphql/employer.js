@@ -65,11 +65,13 @@ export const IndustryFields = `
 
 export const GET_ALL_INDUSTRY =`
 query IndustryConnection {
-  industries {
+  industries(publicationState: PREVIEW) {
     industry_name
     sub_industry
   }
 }
+
+
 `
 
 
