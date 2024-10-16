@@ -91,6 +91,7 @@ const EmployerForm = (props) => {
   const [dropdownOptions, setDropdownOptions] = useState(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [industry, setIndustry] = useState("");
+  const [selectedValue,setSelectedValue]=useState([{label:""}])
   const formikRef = useRef();
 
   const handleExternalChange = (value) => {
@@ -99,13 +100,16 @@ const EmployerForm = (props) => {
   };
 
   const handleChange = (selected) => {
+    console.log(selected);
     setSelectedOption(selected);
-    if (selected?.children) {
-      // setDropdownOptions([
-      //   ...dropdownOptions.filter((opt) => opt?.value !== selected?.value),
-      //   selected,
-      //   ...selected.children,
-      // ]);
+    setSelectedValue([...selectedValue,...[{label:selected?.label}]]);
+    if(selected.label === selectedValue[selectedValue.length-1].label){
+      let result = industryOptions
+    setDropdownOptions(result);
+
+    }
+    else if (selected?.children || (selected.label === selectedValue[selectedValue.length-1].label || selected.label === selectedValue[selectedValue.length-2].label ) ) {
+
 
       const additionalItems = selected.children.map((value) => {
         return {
@@ -114,8 +118,6 @@ const EmployerForm = (props) => {
         };
       });
 
-      console.log(dropdownOptions, "\n", selected);
-      console.log("selectedOption", selectedOption);
       const matchIndex = industryOptions.findIndex(
         (obj) => obj.label === selected.label
       );
@@ -146,7 +148,7 @@ const EmployerForm = (props) => {
   };
 
   const handleMenuOpen = () => {
-    console.log("selectedOption", selectedOption);
+
     if (selectedOption && selectedOption?.children) {
       setDropdownOptions([
         ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
@@ -227,7 +229,6 @@ const EmployerForm = (props) => {
           query: GET_ALL_INDUSTRY,
         })
         .then((values) => {
-          console.log(values);
           const data = values.data.data.industries;
           const grouped = data?.reduce(
             (acc, { industry_name, sub_industry }) => {
@@ -243,7 +244,6 @@ const EmployerForm = (props) => {
           );
 
           const options = Object.keys(grouped).map((industry_name) => {
-            console.log("industry_name", industry_name);
             const subIndustries = grouped[industry_name].map(
               (sub_industry) => ({
                 label: sub_industry,
@@ -424,34 +424,10 @@ const EmployerForm = (props) => {
     }
   };
 
-  const treeData = [
-    {
-      label: 'Node 1',
-      value: 'node-1',
-      children: [
-        { label: 'Child 1', value: 'child-1' },
-        { label: 'Child 2', value: 'child-2' }
-      ]
-    },
-    {
-      label: 'Node 2',
-      value: 'node-2',
-    }
-  ];
 
-  const onChange = (currentNode, selectedNodes) => {
-    if (!currentNode.children || currentNode.children.length === 0) {
-      console.log("Leaf node selected:", currentNode.label, "Path:", currentNode.path);
-      // Allow selection of this node
-    } else {
-      console.log("Non-leaf node selected. Ignoring...");
-      // Ignore selection if it's not a leaf node
-    }
-  };
-  
-  assignObjectPaths(treeData);
 
-  
+
+
 
 
   return (
@@ -548,7 +524,7 @@ const EmployerForm = (props) => {
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                      {/*  <Select
+                       <Select
                         options={dropdownOptions}
                         value={selectedOption}
                         name="industry"
@@ -565,9 +541,6 @@ const EmployerForm = (props) => {
                           setFieldValue("industry", "");
                         }}
                       />
-                      */}
-
-<DropdownTreeSelect data={treeData} onChange={onChange} className="mdl-demo"  keepOpenAfterSelection={false} />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
                       <Input
