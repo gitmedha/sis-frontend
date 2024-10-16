@@ -14,7 +14,6 @@ const LatestActivityDetail=(props)=> {
     className="form-modal"
   >
     <Modal.Header className="bg-white">
-      {console.log(data)}
       <Modal.Title
         id="contained-modal-title-vcenter"
         className="d-flex align-items-center"
