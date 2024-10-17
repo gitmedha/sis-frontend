@@ -4,37 +4,42 @@ import Table from '../../../components/content/Table';
 import { connect } from "react-redux";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import LatestActivityDetail from './LatestActivityDetail';
+import { useHistory } from 'react-router-dom';
 
 const datavalues=[
     {
       activity: 'Edited',
-      moduleName: 'User Management',
+      moduleName: 'Student',
       updatedBy: 'John Doe',
       updatedAt: '2024-10-16',
-      changesIn: 'Permissions',
+      changesIn: ["name","startDate","parents/gardian"],
       view: 'View Details',
+      id:"42534"
     },
     {
       activity: 'Added',
-      moduleName: 'Payment Module',
+      moduleName: 'batch',
       updatedBy: 'Jane Smith',
       updatedAt: '2024-10-15',
-      changesIn: 'Transaction Settings',
+      changesIn: ["name","state","Medha Area"],
       view: 'View Details',
+      id:"1559"
     },
     {
       activity: 'Deleted',
-      moduleName: 'Notification System',
+      moduleName: 'institution',
       updatedBy: 'Alice Johnson',
       updatedAt: '2024-10-14',
-      changesIn: 'Alerts',
+      changesIn: ["name","state","Medha Area"],
       view: 'View Details',
+      id:"650"
     }
   ]
 const LatestActivity=(props)=> {
 
     const [showModal,setShowModal]=useState(false);
     const [dataPoint,setDataPoints]=useState({})
+    const history = useHistory();
     const columns = useMemo(
         () => [
           {
@@ -61,12 +66,15 @@ const LatestActivity=(props)=> {
             Header: 'Changes in ',
             accessor: 'changesIn',
             disableSortBy: true,
+            Cell: ({ value }) => {
+              return Array.isArray(value) ? value.join(', ') : value;
+            },
           },
           {
             Header: 'View',
             disableSortBy: true,
             Cell: ({ row }) => (
-              <button className='btn btn-primary ' onClick={() => OpenModal(row.original)}>View Details</button>
+              <button className='btn btn-primary btn-sm' onClick={() => history.push(`/${row.original.moduleName}/${row.original.id}`,)}>View Details</button>
             ),
           }
         ],
