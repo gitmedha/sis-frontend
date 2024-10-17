@@ -23,7 +23,7 @@ const datavalues=[
       updatedAt: '2024-10-15',
       changesIn: ["name","state","Medha Area"],
       view: 'View Details',
-      id:"1559"
+      id:"1229"
     },
     {
       activity: 'Deleted',
@@ -32,7 +32,7 @@ const datavalues=[
       updatedAt: '2024-10-14',
       changesIn: ["name","state","Medha Area"],
       view: 'View Details',
-      id:"650"
+      id:"634"
     }
   ]
 const LatestActivity=(props)=> {
