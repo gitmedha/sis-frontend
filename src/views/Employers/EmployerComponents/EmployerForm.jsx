@@ -228,36 +228,38 @@ const EmployerForm = (props) => {
         })
         .then((values) => {
           const data = values.data.data.industries;
-          const grouped = data?.reduce(
-            (acc, { industry_name, sub_industry }) => {
-              if (!acc[industry_name]) {
-                acc[industry_name] = [];
-              }
-              if (sub_industry) {
-                acc[industry_name].push(sub_industry);
-              }
-              return acc;
-            },
-            {}
-          );
-
-          const options = Object.keys(grouped).map((industry_name) => {
-            const subIndustries = grouped[industry_name].map(
-              (sub_industry) => ({
-                label: sub_industry,
-                value: sub_industry,
-              })
-            );
-            const industryObject = {
-              label: industry_name,
-            };
-
-            if (subIndustries.length > 0) {
-              industryObject.children = subIndustries;
+    
+          const grouped = data.reduce((acc, { industry_name, sub_industry, category }) => {
+            if (!acc[industry_name]) {
+              acc[industry_name] = new Set(); // Using a Set to avoid duplicate entries
             }
-
-            return industryObject;
+            if (category) {
+              // If category exists, only add the category, ignore sub_industry
+              acc[industry_name].add(category);
+            } else if (sub_industry) {
+              // If no category, add the sub-industry
+              acc[industry_name].add(sub_industry);
+            }
+            return acc;
+          }, {});
+    
+          const options = Object.keys(grouped).map((industry_name) => {
+            const subIndustriesOrCategoriesArray = Array.from(grouped[industry_name]);
+    
+            // If no sub-industries or categories, show the industry name itself as the only child
+            const children = subIndustriesOrCategoriesArray.length > 0 
+              ? subIndustriesOrCategoriesArray.map(item => ({
+                  label: item,
+                  value: item
+                }))
+              : [{ label: industry_name, value: industry_name }];
+    
+            return {
+              label: industry_name,
+              children: children
+            };
           });
+    
           setDropdownOptions(options);
           setIndustryOptions(options);
         })
@@ -265,6 +267,8 @@ const EmployerForm = (props) => {
           return Promise.reject(error);
         });
     };
+    
+    
     getAllEmployers();
   }, []);
 

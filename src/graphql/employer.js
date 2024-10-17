@@ -68,6 +68,7 @@ query IndustryConnection {
   industries(publicationState: PREVIEW) {
     industry_name
     sub_industry
+    category
   }
 }
 
