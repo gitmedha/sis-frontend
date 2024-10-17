@@ -390,7 +390,6 @@ const EmployerForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
-    treeSelection: []
   };
 
   if (props.id) {
