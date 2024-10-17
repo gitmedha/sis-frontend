@@ -18,6 +18,7 @@ import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
 import ProgramEnrollments from "./components/ProgramEnrollments";
 import { getMyDataMetrics } from "./components/DashboardActions";
+import LatestActivity from "./components/LatestActivity";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -227,9 +228,11 @@ const Home = () => {
             </div>
           </div>
       </Collapsible> */}
+      <LatestActivity/>
       <Opportunities />
       <ProgramEnrollments/>
       <Students />
+      
     </DashboardStyled>
   );
 };
