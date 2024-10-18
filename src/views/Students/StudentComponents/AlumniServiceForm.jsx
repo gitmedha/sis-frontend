@@ -15,6 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -204,7 +205,22 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSelectedCategory("");
-    onHide(values);
+    console.log("props",props);
+    console.log(values);
+
+    console.log(compareObjects(props.alumniService,values))
+    let propgramEnrollemntData={
+      changes_in:compareObjects(props.alumniService,values),
+      eventid:props.alumniService.id,
+      module_name:"program Enrollment",
+      activity:"Update",
+      users_permissions_users:{
+        id:"322"
+      }
+
+    }
+    await createLatestAcivity(propgramEnrollemntData)
+    // onHide(values);
   };
 
   const colourOptions = [
