@@ -467,7 +467,7 @@ const MassEmployerUpload = (props) => {
             {({ values, setFieldValue }) => (
               <Form>
                 <Section>
-                  <div className="row form_sec">
+                  <div className="row">
                     <div className="col-md-6 col-sm-12">
                       <label className="leading-24">Student</label>
                       <Select
