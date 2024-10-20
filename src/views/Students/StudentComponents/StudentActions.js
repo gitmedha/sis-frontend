@@ -26,7 +26,10 @@ import {
   SEARCH_BY_BATCHES,
   SEARCH_BY_EMPLOYERS,
   SEARCH_BY_STUDENTS,
-  GET_COURSE
+  GET_COURSE,
+  GET_STUDENT_ALUMNI_SERVICES_RANGE,
+  GET_UNIQUE_STUDENT_ALUMNI,
+  GET_UNIQUE_STUDENT_EMPLOYMENT
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -213,7 +216,7 @@ export const getEmploymentConnectionsPickList = async () => {
   });
 };
 
-export const getStudentEmploymentConnections = async (studentId, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentEmploymentConnections = async (studentId,startDate,endDate, limit=10, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
     query: GET_STUDENT_EMPLOYMENT_CONNECTIONS,
     variables: {
@@ -221,6 +224,8 @@ export const getStudentEmploymentConnections = async (studentId, limit=10, offse
       limit: limit,
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
+      startDate:startDate,
+      endDate:endDate
     },
   }).then(data => {
     return data;
@@ -321,9 +326,9 @@ export const getAllStudents = async () => {
   });
 }
 
-export const getStudentAlumniServices = async (studentId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+export const getStudentAlumniServices = async (studentId,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
   return await api.post('/graphql', {
-    query: GET_STUDENT_ALUMNI_SERVICES,
+    query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
     variables: {
       id: Number(studentId),
       limit: limit,
@@ -336,6 +341,92 @@ export const getStudentAlumniServices = async (studentId, limit=100, offset=0, s
     return Promise.reject(error);
   });
 }
+
+export const getStudentMassAlumniService = async (studentId, startDate,endDate,limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_STUDENT_ALUMNI_SERVICES_RANGE,
+    variables: {
+      id: Number(studentId),
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+      startDate:startDate,
+      endDate:endDate
+    },
+  }).then(data => {
+    return Promise.resolve(data);
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+  let allData = [];
+  let offset = 0;
+  let hasMoreData = true;
+
+  while (hasMoreData) {
+    const result = await api.post('/graphql', {
+      query: GET_UNIQUE_STUDENT_ALUMNI,
+      variables: {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+        startDate: startDate,
+        endDate: endDate
+      },
+    }).then(data => data)
+    .catch(error => {
+      return Promise.reject(error);
+    });
+
+    const fetchedData = result.data.data.alumniServicesConnection.values;
+    allData = allData.concat(fetchedData);
+
+    // Check if the fetched data is less than the limit
+    if (fetchedData.length < limit) {
+      hasMoreData = false;
+    } else {
+      offset += limit;
+    }
+  }
+  return allData;
+};
+
+
+export const getStudentEmplymentRange = async (startDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+  let allData = [];
+  let offset = 0;
+  let hasMoreData = true;
+  while (hasMoreData) {
+    const result = await api.post('/graphql', {
+      query: GET_UNIQUE_STUDENT_EMPLOYMENT,
+      variables: {
+        limit: limit,
+        start: offset,
+        sort: `${sortBy}:${sortOrder}`,
+        startDate: startDate,
+        // endDate: endDate
+      },
+    }).then(data => data)
+    .catch(error => {
+      return Promise.reject(error);
+    });
+    const fetchedData = result.data.data.employmentConnectionsConnection.values;
+    
+    allData = allData.concat(fetchedData);
+
+    // Check if the fetched data is less than the limit
+    if (fetchedData.length < limit) {
+      hasMoreData = false;
+    } else {
+      offset += limit;
+    }
+  }
+
+  return allData;
+};
+// 
 
 export const createAlumniService = async (data) => {
   return await api.post('/graphql', {
@@ -509,3 +600,5 @@ export const getAllCourse = async () => {
     return Promise.reject(error);
   });
 }
+
+

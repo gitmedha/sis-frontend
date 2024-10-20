@@ -180,12 +180,12 @@ const Details = (props) => {
         </div>
         <hr className="separator" />
         <div className="row">
-          <div className="col-md-5">
+          {/* <div className="col-md-5">
             <DetailField label="Medhavi Member" value={<FaCheckCircle size="20" color={medha_champion ? '#207B69' : '#E0E0E8'} />} />
             <DetailField label="Interested in Employment Opportunities" value={<FaCheckCircle size="20" color={interested_in_employment_opportunities ? '#207B69' : '#E0E0E8'} />} />
-            {/* <DetailField label="ID in SIS 2.0" value={old_sis_id} /> */}
-            {/* <DetailField label="Latest Course Type" value={course_type_latest} /> */}
-          </div>
+            <DetailField label="ID in SIS 2.0" value={old_sis_id} />
+            <DetailField label="Latest Course Type" value={course_type_latest} />
+          </div> */}
           <div className="col-md-4">
             <DetailField label="Income Level (INR)" value={income_level} />
             <DetailField label="Family Annual Income (INR)" value={family_annual_income} />

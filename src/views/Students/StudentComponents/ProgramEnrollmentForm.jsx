@@ -180,7 +180,7 @@ const ProgramEnrollmentForm = (props) => {
         ? props.programEnrollment.institution
         : null;
       let institutionFoundInList = false;
-      let filterData = data.institutionsConnection.values.map((institution) => {
+      let filterData = data?.institutionsConnection?.values?.map((institution) => {
         if (
           props.programEnrollment &&
           institution.id === Number(programEnrollmentInstitution?.id)
@@ -217,7 +217,7 @@ const ProgramEnrollmentForm = (props) => {
         ? props.programEnrollment.batch
         : null;
       let batchFoundInList = false;
-      let filterData = data.batchesConnection.values.map((batch) => {
+      let filterData = data?.batchesConnection?.values.map((batch) => {
         if (
           props.programEnrollment &&
           batch.id === Number(programEnrollmentBatch?.id)
@@ -235,7 +235,7 @@ const ProgramEnrollmentForm = (props) => {
         programEnrollmentBatch !== null &&
         !batchFoundInList
       ) {
-        filterData.unshift({
+        filterData?.unshift({
           label: programEnrollmentBatch.name,
           value: Number(programEnrollmentBatch.id),
         });
@@ -288,16 +288,16 @@ const ProgramEnrollmentForm = (props) => {
   useEffect(()=>{
     if (courseLevel && courseType) {
       getAllCourse().then((data) => {
-        const filteredCourses = data.data.data.coursesConnection.values.filter(obj => {
+        const filteredCourses = data?.data?.data?.coursesConnection?.values?.filter(obj => {
           return obj.course_level === courseLevel && obj.course_type === courseType;
         });
         
-        const courseOptions = filteredCourses.map(obj => ({
+        const courseOptions = filteredCourses?.map(obj => ({
           key: obj.course_name,
           value: obj.course_name,
           label: obj.course_name
         }));
-        courseOptions.push({ value: "Other", label: "Other", key: "Other" });
+        courseOptions?.push({ value: "Other", label: "Other", key: "Other" });
     
       setcourse(courseOptions)
         

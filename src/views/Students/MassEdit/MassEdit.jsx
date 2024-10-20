@@ -2,14 +2,14 @@ import { Formik, Form } from "formik";
 import { Modal, Button } from "react-bootstrap";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-
+import * as Yup from "yup";
 import { Input } from "../../../utils/Form";
 import { AlumniServiceValidations } from "../../../validations/Student";
 import {
   getStudentsPickList,
   getAlumniServicePickList,
   searchStudents,
-} from "./StudentActions";
+} from "../StudentComponents/StudentActions";
 import Textarea from "../../../utils/Form/Textarea";
 import {
   filterAssignedTo,
@@ -17,8 +17,8 @@ import {
 } from "../../../utils/function/lookupOptions";
 import Select ,{ components } from "react-select";
 import moment from "moment";
-import CheckBoxForm from "./CheckBoxForm";
-import AlumMassEdit from "../MassEdit/AlumMassEdit";
+import CheckBoxForm from "../StudentComponents/CheckBoxForm";
+import AlumMassEdit from "./AlumMassEdit";
 import Skeleton from "react-loading-skeleton";
 
 const Section = styled.div`
@@ -72,6 +72,7 @@ const MassEdit = (props) => {
   const [bulkAddCheck, setBulkAddCheck] = useState(true);
   const [massEditCheck, setMassEditCheck] = useState(false);
   const [studentInput, setStudentInput] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (props.alumniService) {
@@ -141,8 +142,8 @@ const MassEdit = (props) => {
     employer_name: "",
     opportunity_name: "",
     status: "",
-    start_date: "",
-    end_date: "",
+    start_date: null,
+    end_date: null,
     source: "",
     salary_offered: "",
     category: "",
@@ -263,6 +264,37 @@ const MassEdit = (props) => {
   const handleChange = (selectedOptions) => {
     setStudents(selectedOptions);
   };
+  useEffect(()=>{
+    let fee_submission_date = Yup.string()
+    .nullable()
+    .required("Contribution submission date is required.");
+  let fee_amount = Yup.string()
+    .nullable()
+    .required("Contribution amount is required.");
+  let receipt_number = Yup.string()
+    .nullable()
+    .required("Receipt number is required.");
+  let fieldsRequired = status === "Paid";
+  setFeeFieldsRequired(fieldsRequired);
+  if (fieldsRequired) {
+    setValidationRules(
+      AlumniServiceValidations.shape({
+        fee_submission_date,
+        fee_amount,
+        receipt_number,
+      })
+    );
+  } else {
+    setValidationRules(
+      AlumniServiceValidations.omit([
+        "fee_submission_date",
+        "fee_amount",
+        "receipt_number",
+      ])
+    );
+  }
+
+  },[status])
   
   
   return (
@@ -288,20 +320,20 @@ const MassEdit = (props) => {
           </h1>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-white">
-        {
-          <CheckBoxForm
+      <Modal.Body className="bg-white" >
+        
+          {/* <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
             masscheck={massEditCheck}
             massEdit="Mass Edit"
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
-          />
-        }
+          /> */}
+        
         
 
-        {bulkAddCheck ? (
+        
           <Formik
             onSubmit={onSubmit}
             initialValues={initialValues}
@@ -329,7 +361,7 @@ const MassEdit = (props) => {
                          name="student_ids"
                          options={studentOptions}
                          closeMenuOnSelect={false}
-                         components={customComponents}
+                        //  components={customComponents}
                          isOptionDisabled={() => students.length >= 10}
                          className="basic-multi-select"
                          classNamePrefix="select"
@@ -438,8 +470,8 @@ const MassEdit = (props) => {
                       autoComplete="off"
                       icon="down"
                       options={statusOption}
-                      // required={feeFieldsRequired}
-                      // onChange={(e) => setStatus(e.value)}
+                      required={feeFieldsRequired}
+                      onChange={(e) => setStatus(e.value)}
                     />
                     </div>
                     <div className="col-md-6 col-sm-12 mt-2">
@@ -476,6 +508,7 @@ const MassEdit = (props) => {
                       control="input"
                       className="form-control"
                       autoComplete="off"
+                      required={feeFieldsRequired}
                     />
                   </div>
 
@@ -514,14 +547,7 @@ const MassEdit = (props) => {
               </Form>
             )}
           </Formik>
-        ) : (
-          <AlumMassEdit
-            setBulkAddCheck={setBulkAddCheck}
-            setMassEditCheck={setMassEditCheck}
-            handelSubmit={handelSubmit}
-            handelCancel={handelCancel}
-          />
-        )}
+        
       </Modal.Body>
     </Modal>
   );
