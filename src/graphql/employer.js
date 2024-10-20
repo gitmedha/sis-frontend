@@ -69,6 +69,7 @@ query IndustryConnection {
     industry_name
     sub_industry
     category
+    i_name
   }
 }
 

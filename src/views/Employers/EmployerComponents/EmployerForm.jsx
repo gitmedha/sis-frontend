@@ -1,4 +1,4 @@
-import { Formik, FieldArray, Form ,Field} from "formik";
+import { Formik, FieldArray, Form, Field } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
@@ -21,6 +21,9 @@ import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
 import { GET_ALL_INDUSTRY } from "src/graphql";
+import { restructureData } from "src/utils/function/indtsryValues";
+import DropdownTreeSelect from "react-dropdown-tree-select";
+import "react-dropdown-tree-select/dist/styles.css";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -62,7 +65,7 @@ const DropdownIndicator = (props) => {
 };
 
 const assignObjectPaths = (obj, stack) => {
-  Object.keys(obj).forEach(k => {
+  Object.keys(obj).forEach((k) => {
     const node = obj[k];
     if (typeof node === "object") {
       node.path = stack ? `${stack}.${k}` : k;
@@ -89,7 +92,8 @@ const EmployerForm = (props) => {
   const [dropdownOptions, setDropdownOptions] = useState(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [industry, setIndustry] = useState("");
-  const [selectedValue,setSelectedValue]=useState([{label:""}])
+  const [selectedValue, setSelectedValue] = useState([{ label: "" }]);
+  const [selectedNode, setSelectedNode] = useState(null);
   const formikRef = useRef();
 
   const handleExternalChange = (value) => {
@@ -100,25 +104,26 @@ const EmployerForm = (props) => {
   const handleChange = (selected) => {
     console.log(selected);
     setSelectedOption(selected);
-    setSelectedValue([...selectedValue,...[{label:selected?.label}]]);
-    if(selected.label === selectedValue[selectedValue.length-1].label){
-      let result = industryOptions
-    setDropdownOptions(result);
-
-    }
-    else if (selected?.children || (selected.label === selectedValue[selectedValue.length-1].label || selected.label === selectedValue[selectedValue.length-2].label ) ) {
-
-
+    setSelectedValue([...selectedValue, ...[{ label: selected?.label }]]);
+    if (selected.label === selectedValue[selectedValue.length - 1].label) {
+      let result = industryOptions;
+      setDropdownOptions(result);
+    } else if (
+      selected?.children ||
+      selected.label === selectedValue[selectedValue.length - 1].label ||
+      selected.label === selectedValue[selectedValue.length - 2].label
+    ) {
       const additionalItems = selected.children.map((value) => {
         return {
           ...value,
           isChild: true,
         };
       });
-
+      console.log(industryOptions);
       const matchIndex = industryOptions.findIndex(
         (obj) => obj.label === selected.label
       );
+
       let result = [];
       if (!selected.children.includes(industryOptions[matchIndex + 1])) {
         if (matchIndex !== -1) {
@@ -134,6 +139,7 @@ const EmployerForm = (props) => {
           ...industryOptions.slice(matchIndex + additionalItems.length + 1),
         ];
       }
+      console.log(result);
       result[matchIndex].children = additionalItems;
       setDropdownOptions(result);
 
@@ -146,7 +152,6 @@ const EmployerForm = (props) => {
   };
 
   const handleMenuOpen = () => {
-
     if (selectedOption && selectedOption?.children) {
       setDropdownOptions([
         ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
@@ -227,48 +232,49 @@ const EmployerForm = (props) => {
           query: GET_ALL_INDUSTRY,
         })
         .then((values) => {
-          const data = values.data.data.industries;
-    
-          const grouped = data.reduce((acc, { industry_name, sub_industry, category }) => {
-            if (!acc[industry_name]) {
-              acc[industry_name] = new Set(); // Using a Set to avoid duplicate entries
-            }
-            if (category) {
-              // If category exists, only add the category, ignore sub_industry
-              acc[industry_name].add(category);
-            } else if (sub_industry) {
-              // If no category, add the sub-industry
-              acc[industry_name].add(sub_industry);
-            }
-            return acc;
-          }, {});
-    
-          const options = Object.keys(grouped).map((industry_name) => {
-            const subIndustriesOrCategoriesArray = Array.from(grouped[industry_name]);
-    
-            // If no sub-industries or categories, show the industry name itself as the only child
-            const children = subIndustriesOrCategoriesArray.length > 0 
-              ? subIndustriesOrCategoriesArray.map(item => ({
-                  label: item,
-                  value: item
-                }))
-              : [{ label: industry_name, value: industry_name }];
-    
-            return {
-              label: industry_name,
-              children: children
-            };
-          });
-    
-          setDropdownOptions(options);
-          setIndustryOptions(options);
+          const data = restructureData(values.data.data.industries);
+
+          // console.log(data);
+          console.log(restructureData(data));
+          // const grouped = data.reduce((acc, { industry_name, sub_industry, category }) => {
+          //   if (!acc[industry_name]) {
+          //     acc[industry_name] = new Set(); // Using a Set to avoid duplicate entries
+          //   }
+          //   if (category) {
+          //     // If category exists, only add the category, ignore sub_industry
+          //     acc[industry_name].add(category);
+          //   } else if (sub_industry) {
+          //     // If no category, add the sub-industry
+          //     acc[industry_name].add(sub_industry);
+          //   }
+          //   return acc;
+          // }, {});
+
+          // const options = Object.keys(grouped).map((industry_name) => {
+          //   const subIndustriesOrCategoriesArray = Array.from(grouped[industry_name]);
+
+          //   // If no sub-industries or categories, show the industry name itself as the only child
+          //   const children = subIndustriesOrCategoriesArray.length > 0
+          //     ? subIndustriesOrCategoriesArray.map(item => ({
+          //         label: item,
+          //         value: item
+          //       }))
+          //     : [{ label: industry_name, value: industry_name }];
+
+          //   return {
+          //     label: industry_name,
+          //     children: children
+          //   };
+          // });
+          console.log(data);
+          setDropdownOptions(data);
+          setIndustryOptions(data);
         })
         .catch((error) => {
           return Promise.reject(error);
         });
     };
-    
-    
+
     getAllEmployers();
   }, []);
 
@@ -424,12 +430,19 @@ const EmployerForm = (props) => {
       console.error("error", error);
     }
   };
+  const customIcons = ({ icon, className }) => {
+    return (
+      <div className={`${className} custom-icon`}>
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          {/* Your SVG icon code here */}
+        </svg>
+      </div>
+    );
+  };
 
-
-
-
-
-
+  const isChild = (item) => {
+    return item.children && item.children.length > 0;
+  };
 
   return (
     <Modal
@@ -525,21 +538,73 @@ const EmployerForm = (props) => {
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                       <Select
-                        options={dropdownOptions}
-                        value={selectedOption}
-                        name="industry"
-                        onChange={(selected) => {
-                          handleChange(selected);
+                      {/* <Select 
+                        // options={dropdownOptions}
+                        // value={selectedOption}
+                        // name="industry"
+                        // onChange={(selected) => {
+                        //   handleChange(selected);
+                        // }}
+                        // icon={<FaAngleDown size={15} />}
+                        // placeholder="Select an option..."
+                        // components={{ Option: CustomOption, DropdownIndicator }}
+                        // menuIsOpen={menuIsOpen}
+                        // onMenuOpen={handleMenuOpen}
+                        // isClearable={() => {
+                        //   clear();
+                        //   setFieldValue("industry", "");
+                        // }}
+                      />*/}
+                      <DropdownTreeSelect
+                        data={industryOptions}
+                        value={selectedNode}
+                        onChange={(selectedItems) => {
+                          const isLeafNode = (node) => {
+                            return !node.children || node.children.length === 0;
+                          };
+                          if (
+                            selectedItems.length > 0 &&
+                            isLeafNode(selectedItems[0])
+                          ) {
+                            setSelectedNode(selectedItems);
+                          }
                         }}
-                        icon={<FaAngleDown size={15} />}
-                        placeholder="Select an option..."
-                        components={{ Option: CustomOption, DropdownIndicator }}
-                        menuIsOpen={menuIsOpen}
-                        onMenuOpen={handleMenuOpen}
-                        isClearable={() => {
-                          clear();
-                          setFieldValue("industry", "");
+                        className="dropdown-tree-select"
+                        keepTreeOnSearch={true}
+                        showDropdown={true}
+                        placeholder="  jj"
+                        style={{ width: "300px" }}
+                        showPartiallySelected={true}
+                        mode="radioSelect"
+                        onNodeToggle={({ node, expanded }) => {}}
+                        customRender={(props) => {
+                          const { node, expanded, toggleExpanded } = props;
+
+                          // Function to check if a node is a parent
+                          const isLeafNode = (node) => {
+                            return !node.children || node.children.length === 0;
+                          };
+
+                          return (
+                            <div
+                              className={`node-label ${
+                                isLeafNode(node) ? "leaf-node" : "parent-node"
+                              }`}
+                            >
+                              {/* Replace the default +/- icons with custom arrows for parent nodes */}
+                              {!isLeafNode(node) && (
+                                <span
+                                  onClick={toggleExpanded}
+                                  className="expand-collapse-icon"
+                                >
+                                  {expanded ? "-" : "--"}{" "}
+                                  {/* Up arrow if expanded, down arrow if collapsed */}
+                                </span>
+                              )}
+                              {/* Show the normal label for all nodes */}
+                              {props.label}
+                            </div>
+                          );
                         }}
                       />
                     </div>
