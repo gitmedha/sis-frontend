@@ -52,18 +52,73 @@ const Section = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+  // .dropdown-trigger {
+  //   width:370px;
+  // }
+  input.search::placeholder {
+    color: transparent;
+}
+
+.full-width-dropdown .dropdown-trigger   {
+  width: 100% !important;
+}
+
+.full-width-dropdown .dropdown   {
+  width: 100% !important;
+}
+.tag-item:nth-child(n+2) {
+  display: none; /* Hide any list item after the first one */
+}
+.dropdown-content{
+  width: 100% !important;
+}
+.search{
+  width:180%;
+}
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after{
+  position: absolute !important;
+  right: 5px;
+  margin-top:0.5rem;
+}
+
+.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
+  position: absolute !important;
+  right: 5px;
+  margin-top:0.5rem;
+}
+
+
 `;
 
-const DropdownIndicator = (props) => {
+const transformData = (data) => {
+  return data.map((node) => {
+    if (node.children && node.children.length > 0) {
+      // Disable the parent node, and ensure it doesn't have a checkbox
+      return {
+        ...node,
+        // disabled: true,
+        showCheckbox: false,
+        children: transformData(node.children), // recursively transform children
+      };
+    }
+    return node;
+  });
+}
+function CustomNodeRenderer({ node, onClick }) {
   return (
-    components.DropdownIndicator && (
-      <components.DropdownIndicator {...props}>
-        {props.selectProps.menuIsOpen ? "▲" : "▼"}
-      </components.DropdownIndicator>
-    )
+    <div>
+      <div className="node-label">{node.label}</div>
+      <div className="node-controls">
+        <button onClick={() => onClick(node, 'expand')}>
+          <span className="up-arrow">&#8593;</span>
+        </button>
+        <button onClick={() => onClick(node, 'collapse')}>
+          <span className="down-arrow">&#8595;</span>
+        </button>
+      </div>
+    </div>
   );
-};
-
+}
 const assignObjectPaths = (obj, stack) => {
   Object.keys(obj).forEach((k) => {
     const node = obj[k];
@@ -97,12 +152,13 @@ const EmployerForm = (props) => {
   const formikRef = useRef();
 
   const handleExternalChange = (value) => {
+    console.log(value);
     let data = value.label;
     formikRef.current.setFieldValue("industry", data);
   };
 
   const handleChange = (selected) => {
-    console.log(selected);
+
     setSelectedOption(selected);
     setSelectedValue([...selectedValue, ...[{ label: selected?.label }]]);
     if (selected.label === selectedValue[selectedValue.length - 1].label) {
@@ -119,7 +175,6 @@ const EmployerForm = (props) => {
           isChild: true,
         };
       });
-      console.log(industryOptions);
       const matchIndex = industryOptions.findIndex(
         (obj) => obj.label === selected.label
       );
@@ -139,7 +194,6 @@ const EmployerForm = (props) => {
           ...industryOptions.slice(matchIndex + additionalItems.length + 1),
         ];
       }
-      console.log(result);
       result[matchIndex].children = additionalItems;
       setDropdownOptions(result);
 
@@ -233,9 +287,6 @@ const EmployerForm = (props) => {
         })
         .then((values) => {
           const data = restructureData(values.data.data.industries);
-
-          // console.log(data);
-          console.log(restructureData(data));
           // const grouped = data.reduce((acc, { industry_name, sub_industry, category }) => {
           //   if (!acc[industry_name]) {
           //     acc[industry_name] = new Set(); // Using a Set to avoid duplicate entries
@@ -266,7 +317,7 @@ const EmployerForm = (props) => {
           //     children: children
           //   };
           // });
-          console.log(data);
+
           setDropdownOptions(data);
           setIndustryOptions(data);
         })
@@ -556,27 +607,31 @@ const EmployerForm = (props) => {
                         // }}
                       />*/}
                       <DropdownTreeSelect
-                        data={industryOptions}
+                        data={transformData(industryOptions)}
                         value={selectedNode}
                         onChange={(selectedItems) => {
                           const isLeafNode = (node) => {
                             return !node.children || node.children.length === 0;
                           };
+                          
                           if (
                             selectedItems.length > 0 &&
                             isLeafNode(selectedItems[0])
                           ) {
+                            console.log(selectedItems);
                             setSelectedNode(selectedItems);
                           }
+                          // setSelectedNode(selectedItems);
+                          // setFieldValue("industry",selectedItems.label)
                         }}
-                        className="dropdown-tree-select"
+                        
+                        className="dropdown-tree-select full-width-dropdown"
                         keepTreeOnSearch={true}
                         showDropdown={true}
-                        placeholder="  jj"
-                        style={{ width: "300px" }}
                         showPartiallySelected={true}
                         mode="radioSelect"
-                        onNodeToggle={({ node, expanded }) => {}}
+                        name="industry"
+                        nodeRenderer={CustomNodeRenderer}
                         customRender={(props) => {
                           const { node, expanded, toggleExpanded } = props;
 
@@ -607,6 +662,7 @@ const EmployerForm = (props) => {
                           );
                         }}
                       />
+                      {console.log(selectedNode)}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
                       <Input
