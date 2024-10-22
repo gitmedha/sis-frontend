@@ -18,6 +18,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import api from "../../../apis";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -153,6 +154,16 @@ const InstitutionForm = (props) => {
       values.logo = logo;
     }
     setDisableSaveButton(true);
+    console.log(props);
+    console.log(values);
+    let propgramEnrollemntData={};
+    if(props.programEnrollment ){
+      propgramEnrollemntData={module_name:"institution",activity:"Update",event_id:props.institution.id,updatedby:userId ,changes_in:findDifferences(props.programEnrollment,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"institution",activity:"Create",event_id:props.institution.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     await onHide(values);
     setDisableSaveButton(false);
   };

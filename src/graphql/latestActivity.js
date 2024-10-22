@@ -33,7 +33,7 @@ query GET_ALL_LATEST_ACTIVITY($sort: String, $start: Int, $limit: Int) {
 export const CREATE_LATEST_ACTIVITY = `
 mutation CREATE_LATEST_ACTIVITY($input: createLatestActivityInput!) {
   createLatestActivity(input: $input) {
-    latestActivity {        # Make sure to adjust this to your schema
+    latestActivity {        
       id
       activity
       module_name
@@ -49,4 +49,3 @@ mutation CREATE_LATEST_ACTIVITY($input: createLatestActivityInput!) {
   }
 }
 `;
-

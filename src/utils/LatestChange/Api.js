@@ -17,75 +17,93 @@ export const getActivity = async (id) => {
   };
   
   export const createLatestAcivity = async (data) => {
-    return await api.post('/graphql', {
-      query: CREATE_LATEST_ACTIVITY,
-      variables: {data},
-    }).then(data => {
-      return data;
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+    // console.log(data);
+    // return  await api.post(
+    //   "/users-ops-activities/createBulkOperations",
+    //   data
+    // )
+    try {
+      const response = await api.post(
+          "/latest-activities",
+          data
+        )
+      return response;
+    } catch (error) {
+      return console.error(error);
+    }
   };
 
 
  
-
-
-
- 
-  function formatDate(dateStr) {
-    if (!dateStr) return null;
-    const date = new Date(dateStr);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth is zero-based
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+  function formatDate(date) {
+    if (typeof date === 'string') {
+      // Attempt to parse the date string into a Date object
+      let parsedDate = new Date(date);
+      
+      // Check if the parsed date is valid
+      if (!isNaN(parsedDate.getTime())) {
+        return parsedDate.toISOString().split('T')[0];  // Return "YYYY-MM-DD" format
+      }
+    }
+    return date;  // Return as is if not a string
   }
   
- export function compareObjects(obj1, obj2) {
-    const differences = {};
+ export function findDifferences(obj1, obj2) {
+    let differences = {};
   
+    // Compare only the start_date and end_date
+    const dateKeys = ['start_date', 'end_date'];
+  
+    dateKeys.forEach(key => {
+      let formattedDate1 = formatDate(obj1[key]);
+      let formattedDate2 = formatDate(obj2[key]);
+  
+      if (formattedDate1 !== formattedDate2) {
+        differences[key] = {
+          previous_value: formattedDate1,
+          new_value: formattedDate2
+        };
+      }
+    });
+  
+    // Compare all other fields
     for (let key in obj1) {
-      let value1 = obj1[key];
-      let value2 = obj2[key];
-  
-      // Handle date comparison in 'dd-mm-yyyy' format
-      if (key === 'start_date' || key === 'fee_submission_date') {
-        value1 = formatDate(value1);
-        value2 = formatDate(value2);
-      }
-  
-      // Handle assigned_to comparison by 'id'
-      if (key === 'assigned_to') {
-        if (typeof value1 === 'object' && value1 !== null && 'id' in value1) {
-          value1 = value1.id;
+      if (!dateKeys.includes(key)) {
+        if (key === 'assigned_to') {
+          // Compare the ID directly for assigned_to
+          let assignedToId1 = obj1[key].id; // Get the ID from the nested object
+          if (assignedToId1 !== obj2[key]) {
+            differences[key] = {
+              previous_value: obj1[key],
+              new_value: obj2[key] // This is a string (ID)
+            };
+          }
+        }else if (key === 'student') {
+          // Compare the full_name in the student object
+          if (obj1[key].full_name !== obj2[key].full_name) {
+            differences[key] = {
+              previous_value: obj1[key].full_name,
+              new_value: obj2[key].full_name
+            };
+          }
+        } 
+        else if (obj1[key] !== obj2[key]) {
+          // For other fields, compare values directly
+          differences[key] = {
+            previous_value: obj1[key] !== undefined ? obj1[key] : null,
+            new_value: obj2[key]
+          };
         }
-      }
-  
-      // Compare student.full_name from obj1 with alumni_service_student from obj2 (case-insensitive)
-      if (key === 'student') {
-        const studentFullName = value1?.full_name?.toLowerCase();
-        const alumniServiceStudent = obj2.alumni_service_student?.toLowerCase();
-        if (studentFullName !== alumniServiceStudent) {
-          differences['alumni_service_student'] = { obj1: value1.full_name, obj2: obj2.alumni_service_student };
-        }
-      }
-  
-      // Compare other fields
-      if (typeof value1 === 'string' && typeof value2 === 'string') {
-        // Perform case-insensitive comparison for strings
-        if (value1.toLowerCase() !== value2.toLowerCase()) {
-          differences[key] = { obj1: value1, obj2: value2 };
-        }
-      } else if (value1 !== value2 && key !== 'student') {
-        differences[key] = { obj1: value1, obj2: value2 };
       }
     }
   
-    // Check for keys present in obj2 but not in obj1
+    // Check for keys in obj2 that are not in obj1
     for (let key in obj2) {
-      if (!(key in obj1) && key !== 'alumni_service_student') {
-        differences[key] = { obj1: undefined, obj2: obj2[key] };
+      if (!(key in obj1)) {
+        differences[key] = {
+          previous_value: undefined,
+          new_value: obj2[key]
+        };
       }
     }
   

@@ -15,7 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
-import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -64,6 +64,7 @@ const AlumniServiceForm = (props) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [status, setStatus] = useState("");
   const [role,setRole]=useState([]);
+  const userId = Number(localStorage.getItem("user_id"))
 
   useEffect(() => {
     if (props.alumniService) {
@@ -205,22 +206,18 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSelectedCategory("");
-    console.log("props",props);
-    console.log(values);
 
-    console.log(compareObjects(props.alumniService,values))
-    let propgramEnrollemntData={
-      changes_in:compareObjects(props.alumniService,values),
-      eventid:props.alumniService.id,
-      module_name:"program Enrollment",
-      activity:"Update",
-      users_permissions_users:{
-        id:"322"
-      }
 
+    // console.log(compareObjects(props.alumniService,values))
+    let propgramEnrollemntData={};
+    if(props.alumniService ){
+      propgramEnrollemntData={module_name:"Student",activity:"update",event_id:values.student.id,updatedby:userId ,changes_in:findDifferences(props.alumniService,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Student",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
     }
-    await createLatestAcivity(propgramEnrollemntData)
-    // onHide(values);
+    await createLatestAcivity(propgramEnrollemntData);
+    onHide(values);
   };
 
   const colourOptions = [
