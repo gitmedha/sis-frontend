@@ -526,7 +526,8 @@ const Operations = ({
     }
     if (activeTab.key === "mentorship") {
       // await resetSearch();
-
+      // sortBy = "created_at"
+      variables.sort=`${'updated_at'}:${sortOrder}`
       await api
         .post("/graphql", {
           query: GET_MENTORSHIP,
