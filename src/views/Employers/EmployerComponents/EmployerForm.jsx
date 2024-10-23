@@ -57,37 +57,35 @@ const Section = styled.div`
   // }
   input.search::placeholder {
     color: transparent;
-}
+  }
 
-.full-width-dropdown .dropdown-trigger   {
-  width: 100% !important;
-}
+  .full-width-dropdown .dropdown-trigger {
+    width: 100% !important;
+  }
 
-.full-width-dropdown .dropdown   {
-  width: 100% !important;
-}
-.tag-item:nth-child(n+2) {
-  display: none; /* Hide any list item after the first one */
-}
-.dropdown-content{
-  width: 100% !important;
-}
-.search{
-  width:180%;
-}
-.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after{
-  position: absolute !important;
-  right: 5px;
-  margin-top:0.5rem;
-}
+  .full-width-dropdown .dropdown {
+    width: 100% !important;
+  }
+  .tag-item:nth-child(n + 2) {
+    display: none; /* Hide any list item after the first one */
+  }
+  .dropdown-content {
+    width: 100% !important;
+  }
+  .search {
+    width: 180%;
+  }
+  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after {
+    position: absolute !important;
+    right: 5px;
+    margin-top: 0.5rem;
+  }
 
-.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
-  position: absolute !important;
-  right: 5px;
-  margin-top:0.5rem;
-}
-
-
+  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
+    position: absolute !important;
+    right: 5px;
+    margin-top: 0.5rem;
+  }
 `;
 
 const transformData = (data) => {
@@ -103,16 +101,16 @@ const transformData = (data) => {
     }
     return node;
   });
-}
+};
 function CustomNodeRenderer({ node, onClick }) {
   return (
     <div>
       <div className="node-label">{node.label}</div>
       <div className="node-controls">
-        <button onClick={() => onClick(node, 'expand')}>
+        <button onClick={() => onClick(node, "expand")}>
           <span className="up-arrow">&#8593;</span>
         </button>
-        <button onClick={() => onClick(node, 'collapse')}>
+        <button onClick={() => onClick(node, "collapse")}>
           <span className="down-arrow">&#8595;</span>
         </button>
       </div>
@@ -151,14 +149,20 @@ const EmployerForm = (props) => {
   const [selectedNode, setSelectedNode] = useState(null);
   const formikRef = useRef();
 
+  // useEffect(() => {
+  //   const formikValue = formikRef.current?.values.industry;
+  //   if (formikValue && formikValue.label !== selectedNode?.label) {
+  //     setSelectedNode([{ label: formikValue }]);
+  //   }
+  // }, [formikRef.current?.values.industry, selectedNode]);
+
   const handleExternalChange = (value) => {
-    console.log(value);
     let data = value.label;
+    setSelectedNode([{ label: data }]);
     formikRef.current.setFieldValue("industry", data);
   };
 
   const handleChange = (selected) => {
-
     setSelectedOption(selected);
     setSelectedValue([...selectedValue, ...[{ label: selected?.label }]]);
     if (selected.label === selectedValue[selectedValue.length - 1].label) {
@@ -532,9 +536,11 @@ const EmployerForm = (props) => {
           innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={EmployerValidations}
+          enableReinitialize={true}
         >
-          {({ values, setFieldValue, errors }) => (
+          {({ values, setFieldValue, errors,setValues }) => (
             <Form>
+              {console.log(values)}
               <div className="row form_sec">
                 <Section>
                   <h3 className="section-header">Details</h3>
@@ -589,42 +595,23 @@ const EmployerForm = (props) => {
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                      {/* <Select 
-                        // options={dropdownOptions}
-                        // value={selectedOption}
-                        // name="industry"
-                        // onChange={(selected) => {
-                        //   handleChange(selected);
-                        // }}
-                        // icon={<FaAngleDown size={15} />}
-                        // placeholder="Select an option..."
-                        // components={{ Option: CustomOption, DropdownIndicator }}
-                        // menuIsOpen={menuIsOpen}
-                        // onMenuOpen={handleMenuOpen}
-                        // isClearable={() => {
-                        //   clear();
-                        //   setFieldValue("industry", "");
-                        // }}
-                      />*/}
+                      {/* {console.log("selected data",transformData(industryOptions))}
+                      {console.log("selectedNode",selectedNode)} */}
                       <DropdownTreeSelect
                         data={transformData(industryOptions)}
                         value={selectedNode}
                         onChange={(selectedItems) => {
-                          const isLeafNode = (node) => {
-                            return !node.children || node.children.length === 0;
-                          };
-                          
-                          if (
-                            selectedItems.length > 0 &&
-                            isLeafNode(selectedItems[0])
-                          ) {
-                            console.log(selectedItems);
-                            setSelectedNode(selectedItems);
+                          const isLeafNode = (node) => !node.children || node.children.length === 0;
+            
+                          if (selectedItems.length > 0 && isLeafNode(selectedItems[0])) {
+                            const selectedLabel = selectedItems[0].label;
+                            // console.log(selectedItems);
+                            console.log("selectedLabel",selectedLabel)
+                            setSelectedNode(selectedItems); 
+                            // setFieldValue('industry', selectedLabel); 
+                            setValues({...values,industry:selectedLabel})
                           }
-                          // setSelectedNode(selectedItems);
-                          // setFieldValue("industry",selectedItems.label)
                         }}
-                        
                         className="dropdown-tree-select full-width-dropdown"
                         keepTreeOnSearch={true}
                         showDropdown={true}
@@ -632,37 +619,7 @@ const EmployerForm = (props) => {
                         mode="radioSelect"
                         name="industry"
                         nodeRenderer={CustomNodeRenderer}
-                        customRender={(props) => {
-                          const { node, expanded, toggleExpanded } = props;
-
-                          // Function to check if a node is a parent
-                          const isLeafNode = (node) => {
-                            return !node.children || node.children.length === 0;
-                          };
-
-                          return (
-                            <div
-                              className={`node-label ${
-                                isLeafNode(node) ? "leaf-node" : "parent-node"
-                              }`}
-                            >
-                              {/* Replace the default +/- icons with custom arrows for parent nodes */}
-                              {!isLeafNode(node) && (
-                                <span
-                                  onClick={toggleExpanded}
-                                  className="expand-collapse-icon"
-                                >
-                                  {expanded ? "-" : "--"}{" "}
-                                  {/* Up arrow if expanded, down arrow if collapsed */}
-                                </span>
-                              )}
-                              {/* Show the normal label for all nodes */}
-                              {props.label}
-                            </div>
-                          );
-                        }}
                       />
-                      {console.log(selectedNode)}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
                       <Input
