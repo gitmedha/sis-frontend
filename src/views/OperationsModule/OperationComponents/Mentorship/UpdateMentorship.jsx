@@ -8,6 +8,7 @@ import { Input } from "../../../../utils/Form";
 // import { urlPath } from "../../../../constants";
 import {
   getAddressOptions,
+  getCities,
   getStateDistricts,
 } from "../../../Address/addressActions";
 import {
@@ -126,32 +127,38 @@ const UpdateMentorship = (props) => {
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
+
+    });
+
+    getCities().then((data)=>{
+
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.city
+        data
           .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
+            key: area.city,
+            label: area.city,
+            value: area.city,
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
-    });
+    })
   }, []);
 
   const onStateChange = async (value) => {
-    await getStateDistricts(value).then((data) => {
+    await getCities(value).then((data)=>{
+      console.log(data);
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.city
+        data
           .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
+            key: area.city,
+            label: area.city,
+            value: area.city,
           }))
           .sort((a, b) => a.label.localeCompare(b.label))
       );
-    });
+    })
   };
 
   const onSubmit = async (values) => {
@@ -449,6 +456,7 @@ const UpdateMentorship = (props) => {
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
+                          {/* {console.log(areaOptions)} */}
                           {/* {areaOptions.length ||props.medha_area ? ( */}
                             <Input
                               icon="down"
