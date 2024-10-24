@@ -103,7 +103,7 @@ const UpdateMentorship = (props) => {
   useEffect(() => {
     getAddressOptions().then((data) => {
       setStateOptions(
-        data?.data?.data?.geographiesConnection.groupBy.state
+        data?.data?.data?.geographiesConnection?.groupBy.state
           .map((state) => ({
             key: state.id,
             label: state.key,
@@ -128,7 +128,7 @@ const UpdateMentorship = (props) => {
       );
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection?.groupBy?.area
+        data?.data?.data?.geographiesConnection?.groupBy?.city
           .map((area) => ({
             key: area.id,
             label: area.key,
