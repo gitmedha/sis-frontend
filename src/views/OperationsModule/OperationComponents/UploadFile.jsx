@@ -259,7 +259,6 @@ const UploadFile = (props) => {
     // Check for columns that have missing data in any row
 
     const incompleteColumns = expectedColumns.filter(col =>{
-      console.log(col)
       data.every(row => row[col] === null || row[col] === "")}
     );
   
