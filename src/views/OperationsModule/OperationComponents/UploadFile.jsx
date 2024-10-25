@@ -257,8 +257,10 @@ const UploadFile = (props) => {
     const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col));
   
     // Check for columns that have missing data in any row
-    const incompleteColumns = expectedColumns.filter(col =>
-      data.every(row => row[col] === null || row[col] === "")
+
+    const incompleteColumns = expectedColumns.filter(col =>{
+      console.log(col)
+      data.every(row => row[col] === null || row[col] === "")}
     );
   
     if (missingColumns.length > 0) {
@@ -425,7 +427,8 @@ const UploadFile = (props) => {
         (user) => user.name === newItem["Assigned To"]
       );
 
-      const batchId = batch ? batch.id : null;
+     const batchId = newItem["Student Type"] === "Non-Medha Student" ? true : (batch ? batch.id : null);
+     console.log(typeof batchId);
       const instituteId = institute ? institute.id : null;
       const userId = user ? user.id : null;
 
@@ -497,7 +500,7 @@ const UploadFile = (props) => {
       } else {
         formattedData.push({
           institution: instituteId,
-          batch: batchId,
+          ...(newItem["Student Type"] !== "Non-Medha Student" && { batch: batchId }),
           state: newItem["State"] ? capitalize(newItem["State"]) : "" || "",
           start_date: isStartDateValid,
           end_date: isEndDateValid,
