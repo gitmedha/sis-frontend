@@ -88,20 +88,26 @@ const Section = styled.div`
   }
 `;
 
-const transformData = (data) => {
+const transformData = (data, selectedValues) => {
   return data.map((node) => {
+    const isSelected = selectedValues?.includes(node.value) || false; // Check if the node's value is in selectedValues
+ 
     if (node.children && node.children.length > 0) {
-      // Disable the parent node, and ensure it doesn't have a checkbox
+      // For parent nodes, disable them and hide checkboxes
       return {
         ...node,
-        // disabled: true,
         showCheckbox: false,
-        children: transformData(node.children), // recursively transform children
+        children: transformData(node.children, selectedValues), // recursively transform children
       };
     }
-    return node;
+ 
+    // For child nodes, set the `checked` property if they are in selectedValues
+    return {
+      ...node,
+      checked: isSelected,
+    };
   });
-};
+};  
 function CustomNodeRenderer({ node, onClick }) {
   return (
     <div>
@@ -146,7 +152,7 @@ const EmployerForm = (props) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [industry, setIndustry] = useState("");
   const [selectedValue, setSelectedValue] = useState([{ label: "" }]);
-  const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedNode, setSelectedNode] = useState({});
   const formikRef = useRef();
 
   // useEffect(() => {
@@ -540,7 +546,6 @@ const EmployerForm = (props) => {
         >
           {({ values, setFieldValue, errors,setValues }) => (
             <Form>
-              {console.log(values)}
               <div className="row form_sec">
                 <Section>
                   <h3 className="section-header">Details</h3>
@@ -595,23 +600,20 @@ const EmployerForm = (props) => {
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                      {/* {console.log("selected data",transformData(industryOptions))}
-                      {console.log("selectedNode",selectedNode)} */}
                       <DropdownTreeSelect
-                        data={transformData(industryOptions)}
-                        value={selectedNode}
-                        onChange={(selectedItems) => {
-                          const isLeafNode = (node) => !node.children || node.children.length === 0;
-            
-                          if (selectedItems.length > 0 && isLeafNode(selectedItems[0])) {
-                            const selectedLabel = selectedItems[0].label;
-                            // console.log(selectedItems);
-                            console.log("selectedLabel",selectedLabel)
-                            setSelectedNode(selectedItems); 
-                            // setFieldValue('industry', selectedLabel); 
-                            setValues({...values,industry:selectedLabel})
+                        data={transformData(industryOptions, selectedNode?.value)}
+                        value={[selectedNode]} // Set the default value here
+                        defaultOptions={!selectedNode ? []:[{props}]}
+                        onChange={(currentNode, selectedNodes) => {
+                          if (selectedNodes.length === 0) {
+                            setSelectedNode({}); // Deselect logic
+                            setFieldValue("industry", ""); // Clear field value
+                          } else {
+                            setSelectedNode(currentNode);
+                            setFieldValue("industry", currentNode?.value);
                           }
-                        }}
+                        }
+                      }
                         className="dropdown-tree-select full-width-dropdown"
                         keepTreeOnSearch={true}
                         showDropdown={true}
