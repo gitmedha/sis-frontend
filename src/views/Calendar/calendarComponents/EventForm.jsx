@@ -19,6 +19,7 @@ import {
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import NP from "nprogress";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -121,6 +122,14 @@ export const EventForm = (props) => {
       setIsLoading(true);
       if (props.eventData) {
         values.name = values.alumni_service;
+        let propgramEnrollemntData={};
+    if(props.eventData ){
+      propgramEnrollemntData={module_name:"Calendar",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Calendar",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
         await updateEvent(values, props.eventData.id);
         setIsLoading(false);
 

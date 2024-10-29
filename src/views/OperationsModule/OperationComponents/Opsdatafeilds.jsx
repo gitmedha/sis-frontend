@@ -11,6 +11,7 @@ import {deactivate_user_ops} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { Link } from "react-router-dom";
 import { Anchor } from "../../../components/content/Utils";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -48,6 +49,7 @@ const Opsdatafeilds = (props) => {
     delete:false
   });
   const [operationdata] = useState(props);
+  const userId = localStorage.getItem("user_id");
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
       onHide()
@@ -73,6 +75,9 @@ const Opsdatafeilds = (props) => {
   }
 
   const deleteEntry=async()=>{
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"USER Ops Activity DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    // console.log(findDifferences(newValueObject,props.operationdata));
+    await createLatestAcivity(datavaluesforlatestcreate);
    const data=await deactivate_user_ops(Number(props.id))
    if(data.status===200){
     setAlert("Entry Deleted Successfully.", "success");
@@ -233,6 +238,7 @@ const Opsdatafeilds = (props) => {
         showModal.dataAndEdit &&
         (
           <OperationDataupdateform
+          operationdata={operationdata}
             {...operationdata}
             show={showModal}
             onHide={hideShowModal1}

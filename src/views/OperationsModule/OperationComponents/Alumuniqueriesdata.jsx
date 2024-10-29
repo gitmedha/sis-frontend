@@ -19,6 +19,7 @@ import AllumuniEdit from './AllumuniEdit';
 import { deactivate_user_alumni_query } from './operationsActions';
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { createLatestAcivity } from 'src/utils/LatestChange/Api';
 
 const Styled = styled.div`
   .icon-box {
@@ -54,6 +55,7 @@ const Alumuniqueriesdata = (props) => {
       delete:false
     });
     const [operationdata, setoperationdata] = useState(props);
+    const userId = localStorage.getItem("user_id");
     const hideShowModal1 = async (data) => {
       if (!data || data.isTrusted) {
         setShowModal(false);
@@ -79,6 +81,8 @@ const Alumuniqueriesdata = (props) => {
     }
 
     const deleteEntry=async()=>{
+      let datavaluesforlatestcreate={module_name:"Operation",activity:"Alumni Query DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+      await createLatestAcivity(datavaluesforlatestcreate);
       const data=await deactivate_user_alumni_query(Number(props.id))
       if(data.status==200){
        setAlert("Entry Deleted Successfully.", "success");

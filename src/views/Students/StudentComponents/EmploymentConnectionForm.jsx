@@ -14,7 +14,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEmployerDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -114,10 +114,12 @@ const EnrollmentConnectionForm = (props) => {
 
     let propgramEnrollemntData={};
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      console.log(props.employmentConnection);
+      console.log(values);
+      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Update",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);

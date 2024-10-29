@@ -216,8 +216,8 @@ const BatchForm = (props) => {
     }
     console.log(props);
     console.log(values);
-    let propgramEnrollemntData={};
-    // if(props.programEnrollment ){
+    // let propgramEnrollemntData={};
+    // if(props ){
     //   propgramEnrollemntData={module_name:"institution",activity:"Update",event_id:props.institution.id,updatedby:userId ,changes_in:findDifferences(props.programEnrollment,values)};
       
     // }else {
@@ -225,7 +225,7 @@ const BatchForm = (props) => {
     // }
     // await createLatestAcivity(propgramEnrollemntData);
 
-    // setFormValues(values);
+    setFormValues(values);
 
     onHide(values);
   };

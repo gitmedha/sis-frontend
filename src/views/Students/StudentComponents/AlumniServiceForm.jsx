@@ -15,7 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
-import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -211,10 +211,12 @@ const AlumniServiceForm = (props) => {
     // console.log(compareObjects(props.alumniService,values))
     let propgramEnrollemntData={};
     if(props.alumniService ){
-      propgramEnrollemntData={module_name:"Student",activity:"update",event_id:values.student.id,updatedby:userId ,changes_in:findDifferences(props.alumniService,values)};
+      console.log(props.alumniService);
+      console.log(values);
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Update",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Student",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
