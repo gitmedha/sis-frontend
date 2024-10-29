@@ -100,6 +100,8 @@ const OperationDataupdateform = (props) => {
       filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
+    }if(!props.batch){
+      setBatchOptions([])
     }
   }, [props]);
 
@@ -232,7 +234,7 @@ const OperationDataupdateform = (props) => {
   };
 
   if (props) {
-    initialValues["batch"] = Number(props.batch.id);
+    initialValues["batch"] = Number(props?.batch?.id);
     initialValues["institution"] = Number(props.institution.id);
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
@@ -364,7 +366,7 @@ const OperationDataupdateform = (props) => {
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {batchOptions.length && (
+                          {batchOptions && (
                             <Input
                               control="lookupAsync"
                               name="batch"
