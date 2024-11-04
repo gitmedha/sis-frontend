@@ -277,6 +277,7 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
+    console.log(alumniServiceData);
     let data = alumniServiceData.map((obj) => {
       let initialData = {
         student: obj.student_id,
@@ -449,9 +450,9 @@ const AlumMassEdit = (props) => {
   };
 
   useEffect(async () => {
-    if (startDate && endDate) {
+    if (startDate ) {
       setTypeOptions([]);
-      let data = await getStudentAlumniRange(startDate, endDate);
+      let data = await getStudentAlumniRange(startDate);
       setAlumData(data);
       let uniqueStudentsMap = new Map();
       data.forEach((obj) => {
