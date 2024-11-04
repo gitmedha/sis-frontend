@@ -657,14 +657,14 @@ query GET_UNIQUE_STUDENT_EMPLOYMENT($startDate: String, $limit: Int, $start: Int
 `;
 
 export const GET_UNIQUE_STUDENT_ALUMNI = `
-query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $endDate: String, $limit: Int, $start: Int, $sort: String,){
+query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $limit: Int, $start: Int, $sort: String,){
   alumniServicesConnection(
     sort: $sort,
     start: $start,
     limit: $limit,
     where: {
       start_date_gte: $startDate
-      end_date_lte: $endDate
+
     }
   ) {
     values {
@@ -682,12 +682,8 @@ query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $endDate: String, $limit:
 }
 `;
 
-
-
-
-
 export const GET_STUDENT_ALUMNI_SERVICES_RANGE = `
-query GET_STUDENT_ALUMNI_SERVICES_RANGE ($id: Int, $startDate: String, $endDate: String, $limit: Int, $start: Int, $sort: String ){
+query GET_STUDENT_ALUMNI_SERVICES_RANGE($id: Int, $startDate: String, $limit: Int, $start: Int, $sort: String) {
   alumniServicesConnection (
     sort: $sort,
     start: $start,
@@ -697,7 +693,6 @@ query GET_STUDENT_ALUMNI_SERVICES_RANGE ($id: Int, $startDate: String, $endDate:
         id: $id
       }
       start_date_gte: $startDate
-      end_date_lte: $endDate
     }
   ) {
     values {
