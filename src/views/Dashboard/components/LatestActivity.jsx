@@ -5,40 +5,42 @@ import { connect } from "react-redux";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import LatestActivityDetail from './LatestActivityDetail';
 import { useHistory } from 'react-router-dom';
+import { getActivity } from 'src/utils/LatestChange/Api';
 
-const datavalues=[
-    {
-      activity: 'Edited',
-      moduleName: 'Student',
-      updatedBy: 'John Doe',
-      updatedAt: '2024-10-16',
-      changesIn: ["name","startDate","parents/gardian"],
-      view: 'View Details',
-      id:"42534"
-    },
-    {
-      activity: 'Added',
-      moduleName: 'batch',
-      updatedBy: 'Jane Smith',
-      updatedAt: '2024-10-15',
-      changesIn: ["name","state","Medha Area"],
-      view: 'View Details',
-      id:"1229"
-    },
-    {
-      activity: 'Deleted',
-      moduleName: 'institution',
-      updatedBy: 'Alice Johnson',
-      updatedAt: '2024-10-14',
-      changesIn: ["name","state","Medha Area"],
-      view: 'View Details',
-      id:"634"
-    }
-  ]
+// const datavalues=[
+//     {
+//       activity: 'Edited',
+//       moduleName: 'Student',
+//       updatedBy: 'John Doe',
+//       updatedAt: '2024-10-16',
+//       changesIn: ["name","startDate","parents/gardian"],
+//       view: 'View Details',
+//       id:"42534"
+//     },
+//     {
+//       activity: 'Added',
+//       moduleName: 'batch',
+//       updatedBy: 'Jane Smith',
+//       updatedAt: '2024-10-15',
+//       changesIn: ["name","state","Medha Area"],
+//       view: 'View Details',
+//       id:"1229"
+//     },
+//     {
+//       activity: 'Deleted',
+//       moduleName: 'institution',
+//       updatedBy: 'Alice Johnson',
+//       updatedAt: '2024-10-14',
+//       changesIn: ["name","state","Medha Area"],
+//       view: 'View Details',
+//       id:"634"
+//     }
+//   ]
 const LatestActivity=(props)=> {
 
     const [showModal,setShowModal]=useState(false);
     const [dataPoint,setDataPoints]=useState({})
+    const [dataValues,setDataValues]=useState([])
     const history = useHistory();
     const columns = useMemo(
         () => [
@@ -49,22 +51,22 @@ const LatestActivity=(props)=> {
           },
           {
             Header: 'Module name ',
-            accessor: 'moduleName',
+            accessor: 'module_name',
             disableSortBy: true,
           },
           {
             Header: 'Updated by ',
-            accessor: 'updatedBy',
+            accessor: 'updatedby.username',
             disableSortBy: true,
           },
           {
             Header: 'Updated at',
-            accessor: 'updatedAt',
+            accessor: 'updated_at',
             disableSortBy: true,
           },
           {
             Header: 'Changes in ',
-            accessor: 'changesIn',
+            accessor: 'changes_in',
             disableSortBy: true,
             Cell: ({ value }) => {
               return Array.isArray(value) ? value.join(', ') : value;
@@ -81,8 +83,11 @@ const LatestActivity=(props)=> {
         []
       );
 
-      const fetchData=()=>{
+      const fetchData=async ()=>{
         // onHide={() => hideShowModal("mentorship", false)}
+        let data=await getActivity();
+        // console.log(data.data);
+        setDataValues(data?.data)
       }
       const OpenModal=(data)=>{
         setDataPoints(data)
@@ -101,10 +106,10 @@ const LatestActivity=(props)=> {
             {/* <WidgetUtilTab /> */}
           </div>
         </div>
-        <Table columns={columns} data={datavalues} totalRecords={datavalues.length} fetchData={fetchData}  />
+        <Table columns={columns} data={dataValues} totalRecords={dataValues.length} fetchData={fetchData}  />
       </div>
     </Collapse>
-    <LatestActivityDetail data={dataPoint} show={showModal} onHide={onHide}/>
+    {/* <LatestActivityDetail data={dataPoint} show={showModal} onHide={onHide}/> */}
     </>
   )
 }

@@ -1,19 +1,15 @@
 import api from "src/apis";
 import { CREATE_LATEST_ACTIVITY, GET_ALL_LATEST_ACTIVITY } from "src/graphql/latestActivity";
-
-export const getActivity = async (id) => {
-    return await api.post("/graphql", {
-      query: GET_ALL_LATEST_ACTIVITY,
-      variables: {
-        id
-      },
-    })
-    .then(data => {
-      return data;
-    })
-    .catch(error => {
-      return Promise.reject(error);
-    });
+export const getActivity = async (data) => {
+    try {
+      const response = await api.get(
+          "/latest-activities",
+          data
+        )
+      return response;
+    } catch (error) {
+      return console.error(error);
+    }
   };
   
   export const createLatestAcivity = async (data) => {
@@ -414,4 +410,55 @@ export function findServiceStudentDifferences(obj1, obj2) {
   // Log the differences
   console.log(differences);
   return differences;
+}
+
+
+export function compareObjects(obj1, obj2) {
+    const differences = {};
+    const excludedKeys = ["updatedby", "created_by"];
+
+    function isDate(value) {
+        return (
+            (typeof value === "string" && !isNaN(Date.parse(value))) ||
+            value instanceof Date
+        );
+    }
+
+    function normalizeDate(value) {
+        return value instanceof Date ? value : new Date(value);
+    }
+
+    for (const key in obj1) {
+        if (excludedKeys.includes(key)) continue; // Skip excluded keys
+
+        const val1 = obj1[key];
+        const val2 = obj2[key];
+
+        // Handle donor field equivalence for "Yes" and true
+        if (key === "donor" && (val1 === true || val1 === "Yes") && (val2 === true || val2 === "Yes")) {
+            continue; // Skip if equivalent
+        }
+
+        // Handle date comparison
+        if (isDate(val1) && isDate(val2)) {
+            const date1 = normalizeDate(val1);
+            const date2 = normalizeDate(val2);
+
+            if (date1.getTime() !== date2.getTime()) {
+                differences[key] = { oldValue: date1, newValue: date2 };
+            }
+        }
+        // Handle other comparisons
+        else if (val1 !== val2) {
+            differences[key] = {  newValue: val1, oldValue: val2 };
+        }
+    }
+
+    for (const key in obj2) {
+        if (!(key in obj1) && !excludedKeys.includes(key)) {
+            differences[key] = { oldValue: undefined, newValue: obj2[key] };
+        }
+    }
+
+    return differences;
 }
