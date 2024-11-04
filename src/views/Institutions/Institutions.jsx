@@ -6,7 +6,7 @@ import {
   uploadFile,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback ,useRef} from "react";
 import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -47,10 +47,22 @@ const Institutions = (props) => {
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
+  const prevIsSearchEnableRef = useRef();
 
+  
   useEffect(() => {
-    getInstitutions(activeTab.key);
-  }, [activeTab, isSearchEnable, selectedSearchedValue]);
+    if (isSearchEnable) {
+      getInstitutions(activeTab.key);
+    }
+    
+    if (prevIsSearchEnableRef.current !== undefined) {
+      if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+        getInstitutions(activeTab.key);
+      }
+    }
+
+    prevIsSearchEnableRef.current = isSearchEnable;
+  }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
 
   const columns = useMemo(
     () => [
@@ -247,7 +259,7 @@ const Institutions = (props) => {
         state:$state,
         status:$status,
         type:$type,
-        name:$name
+        name_contains: $name 
       }
     ) {
       values {

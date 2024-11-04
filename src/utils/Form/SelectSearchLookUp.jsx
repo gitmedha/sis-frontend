@@ -1,12 +1,12 @@
 import InputErr from "./InputErr";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from "styled-components";
 import { FaSearch, FaAngleDown } from "react-icons/fa";
 import { Field, ErrorMessage } from "formik";
 import { components } from "react-select";
 import AsyncSelect from 'react-select/async';
 
-const SelectLookupAsyncField = styled.div`
+const SelectSearchLookupAsyncField = styled.div`
   label {
     color: #787B96;
   }
@@ -61,7 +61,7 @@ const SelectField = (props) => {
     form,
     field,
     placeholder,
-    onChange = () => { },
+    onChange = () => {},
     isSearchable = false,
     filterData,
     defaultOptions,
@@ -69,57 +69,61 @@ const SelectField = (props) => {
     isClearable,
     isMulti
   } = props;
+  // const [inputValue, setInputValue] = useState('');
+  // const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions: []);
   const [selectedOpt, setSelectedOption] = useState(null)
-  const [options, setOptions] = useState(Array.isArray(defaultOptions) ? defaultOptions : []);
 
   const loadOptions = (inputValue, callback) => {
     filterData(inputValue).then(data => {
-      setOptions(data)
+      // setOptions(data);
       callback(data);
     });
   };
-
-  useEffect(() => {
-    if (Array.isArray(defaultOptions)) {
-      setOptions(defaultOptions);
-    }
-  }, [defaultOptions]);
+  // useEffect(() => {
+  //   if (Array.isArray(defaultOptions)) {
+  //     setOptions(defaultOptions);
+  //   }
+  // }, [defaultOptions]);
 
   const handleInputChange = (newValue) => {
+    // setInputValue(newValue);
     return newValue;
   };
 
-  const handleChangeOption = (option) => {
-    setSelectedOption(option)
-    form.setFieldValue(field?.name, option ? option?.value : null);
-    onChange(option);
-  }
-
   return (
-    <AsyncSelect
-      icon={icon}
-      name={field.name}
-      styles={style}
-      loadOptions={loadOptions}
-      onInputChange={handleInputChange}
-      placeholder={placeholder}
-      isSearchable={isSearchable || icon !== 'down'}
-      components={{ DropdownIndicator }}
-      onChange={(op)=>handleChangeOption(op)}
-      value={options?.find((option) => option?.value === (field?.value || selectedOpt?.value)) || selectedOpt}
-      defaultOptions={defaultOptions || options}
-      cacheOptions
-      isMulti={isMulti}
-      isDisabled={isDisabled}
-      isClearable={isClearable}
-    />
+      <AsyncSelect
+        icon={icon}
+        name={field.name}
+        styles={style}
+        loadOptions={loadOptions}
+        onInputChange={handleInputChange}
+        placeholder={placeholder}
+        isSearchable={isSearchable || icon !== 'down'}
+        components={{ DropdownIndicator }}
+        onChange={option => {
+          setSelectedOption(option)
+          // console.log(field.name, option ? option.value : null)
+            form.setFieldValue(field.name, option ? option.value : null);
+            onChange(option);
+          }
+        }
+        // value={
+        //   options ? options.find((option) => option.value === field.value) || field.value  : null
+        // }
+        value={selectedOpt}
+        defaultOptions={defaultOptions}
+        cacheOptions
+        isMulti={isMulti}
+        isDisabled={isDisabled}
+        isClearable={isClearable}
+      />
   );
 };
 
-const SelectLookupAsync = (props) => {
+const SelectSearchLookUp = (props) => {
   const { label, name, required, ...rest } = props;
   return (
-    <SelectLookupAsyncField>
+    <SelectSearchLookupAsyncField>
       <div className="form-group">
         <label className="text-heading leading-24" htmlFor={name}>
           {label}
@@ -128,9 +132,9 @@ const SelectLookupAsync = (props) => {
         <Field id={name} name={name} component={SelectField} {...rest} />
         <ErrorMessage name={name} component={InputErr} />
       </div>
-    </SelectLookupAsyncField>
+    </SelectSearchLookupAsyncField>
   );
 };
 
-export default SelectLookupAsync;
+export default SelectSearchLookUp;
 

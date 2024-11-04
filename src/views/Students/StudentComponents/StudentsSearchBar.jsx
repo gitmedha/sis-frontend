@@ -227,7 +227,7 @@ function StudentsSearchBar({
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {(formik) => (
+      {(formik, values) => (
         <Form style={{ padding: 0 }}>
           <Section>
             <div className="row align-items-center">
@@ -240,7 +240,7 @@ function StudentsSearchBar({
                   options={filteredStudentsOptions}
                   className="form-control"
                   onChange={(e) => handleStudentsOptions(e.value)}
-                  isDisabled={isDisable}
+                  // isDisabled={!isSearching && isDisable}
                 />
               </div>
               {selectedSearchField !== "registration_date_latest" && (

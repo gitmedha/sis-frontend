@@ -206,7 +206,6 @@ function EmployerSearchBar({
                   options={employersOptions}
                   className="form-control"
                   onChange={(e) => handleBatchOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               <div

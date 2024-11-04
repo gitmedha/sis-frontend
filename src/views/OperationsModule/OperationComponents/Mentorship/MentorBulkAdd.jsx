@@ -339,10 +339,21 @@ const MentorBulkAdd = (props) => {
         !(key == "program_name")
         |--------------------------------------------------
         */
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+       if((key =="contact" && row[key].length < 10 )){
+        isEmptyValuFound=true
+       }
+       if((key =="email" && (!emailRegex.test(row[key]) ))){
+        isEmptyValuFound=true
+       }
         if (
+<<<<<<< HEAD
           !(key == "social_media_profile_link") && (key =="contact" && row[key].length < 10)
           
          
+=======
+          !(key == "social_media_profile_link") 
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
@@ -427,7 +438,7 @@ const MentorBulkAdd = (props) => {
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Alumni Query"}
+                {props.id ? props.full_name : " Add Mentorship Data"}
               </h2>
             </div>
           </div>
@@ -470,7 +481,11 @@ const MentorBulkAdd = (props) => {
                 <tr>
                   <th>Mentor Name *</th>
                   <th>Contact *</th>
+<<<<<<< HEAD
                   <th>Email </th>
+=======
+                  <th>Email *</th>
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
                   <th>Mentor's Domain *</th>
                   <th>Mentor's Company Name * </th>
                   <th>Designation/Title *</th>

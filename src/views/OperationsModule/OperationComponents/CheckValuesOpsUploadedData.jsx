@@ -96,7 +96,11 @@ const CheckValuesOpsUploadedData = (props) => {
                           <td>{obj.guest}</td>
                           <td>{obj.designation}</td>
                           <td>{obj.organization}</td>
+<<<<<<< HEAD
                          <td>{obj.student_type}</td>
+=======
+                         
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
                           <td className={participantCheck(obj.students_attended)?"":"text-danger" }>{obj.students_attended}</td>
                         </tr>
                       ))}

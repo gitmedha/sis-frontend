@@ -65,7 +65,7 @@ const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Pitching", key: "collegePitches" },
-  // { title: "Mentorship", key: "mentorship" },
+  { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
@@ -526,7 +526,12 @@ const Operations = ({
     }
     if (activeTab.key === "mentorship") {
       // await resetSearch();
+<<<<<<< HEAD
 
+=======
+      // sortBy = "created_at"
+      variables.sort=`${'updated_at'}:${sortOrder}`
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
       await api
         .post("/graphql", {
           query: GET_MENTORSHIP,

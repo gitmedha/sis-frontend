@@ -426,6 +426,10 @@ const UploadFile = (props) => {
       );
 
      const batchId = newItem["Student Type"] === "Non-Medha Student" ? true : (batch ? batch.id : null);
+<<<<<<< HEAD
+=======
+     console.log(typeof batchId);
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
       const instituteId = institute ? institute.id : null;
       const userId = user ? user.id : null;
 
@@ -617,8 +621,13 @@ const UploadFile = (props) => {
     setShowModal(false);
     // setUploadSuccesFully("");
     setShowForm(true);
+<<<<<<< HEAD
   setFileName('');  
   setNextDisabled(false);  
+=======
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
   setUploadSuccesFully('');
   };
 
@@ -651,8 +660,13 @@ const UploadFile = (props) => {
   const uploadNewData =()=>{
     setShowForm(true);
     setUploadNew(!uploadNew)
+<<<<<<< HEAD
   setFileName('');  
   setNextDisabled(false);  
+=======
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
   setUploadSuccesFully(''); 
 
   }

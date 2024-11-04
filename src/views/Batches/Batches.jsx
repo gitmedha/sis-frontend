@@ -45,21 +45,21 @@ const Batches = (props) => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-  const prevIsSearchEnableRef = useRef(isSearchEnable);
+  const prevIsSearchEnableRef = useRef();
 
   useEffect(() => {
     if (isSearchEnable) {
       getBatches(activeTab.key);
     }
-  }, [isSearchEnable, selectedSearchedValue]);
-
-  useEffect(() => {
-    const prevIsSearchEnable = prevIsSearchEnableRef.current;
-    if (prevIsSearchEnable && !isSearchEnable) {
-      getBatches(activeTab.key);
+    
+    if (prevIsSearchEnableRef.current !== undefined) {
+      if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+        getBatches(activeTab.key);
+      }
     }
+
     prevIsSearchEnableRef.current = isSearchEnable;
-  }, [isSearchEnable, activeTab.key]);
+  }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
 
   const getBatchesBySearchFilter = async (
     selectedTab,

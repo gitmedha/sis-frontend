@@ -398,6 +398,10 @@ const TotUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
+<<<<<<< HEAD
+=======
+    console.log("data values",data);
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
     // if(!data){
     //   setUploadSuccesFully("No Data")
     // }

@@ -88,7 +88,7 @@ const MentorBulkrow = (props) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.area
+        data?.data?.data?.geographiesConnection.groupBy.city
           .map((area) => ({
             key: area.id,
             label: area.key,
@@ -127,7 +127,11 @@ const MentorBulkrow = (props) => {
       );
       setAreaOptions([]);
       setAreaOptions(
+<<<<<<< HEAD
         data?.data?.data?.geographiesConnection.groupBy.area
+=======
+        data?.data?.data?.geographiesConnection.groupBy.city
+>>>>>>> 630f098c0c166360e362bb4353d7c2c3ea285949
           .map((area) => ({
             key: area.id,
             label: area.key,
