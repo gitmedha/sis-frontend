@@ -351,7 +351,7 @@ export const getStudentMassAlumniService = async (studentId, startDate,endDate,l
       start: offset,
       sort: `${sortBy}:${sortOrder}`,
       startDate:startDate,
-      endDate:endDate
+      // endDate:endDate
     },
   }).then(data => {
     return Promise.resolve(data);
@@ -360,7 +360,7 @@ export const getStudentMassAlumniService = async (studentId, startDate,endDate,l
   });
 }
 
-export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
+export const getStudentAlumniRange = async (startDate, limit = 500, sortBy = 'created_at', sortOrder = 'desc') => {
   let allData = [];
   let offset = 0;
   let hasMoreData = true;
@@ -373,7 +373,7 @@ export const getStudentAlumniRange = async (startDate, endDate, limit = 500, sor
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
         startDate: startDate,
-        endDate: endDate
+        // endDate: endDate
       },
     }).then(data => data)
     .catch(error => {
@@ -600,3 +600,5 @@ export const getAllCourse = async () => {
     return Promise.reject(error);
   });
 }
+
+
