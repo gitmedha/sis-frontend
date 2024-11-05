@@ -1,10 +1,9 @@
 import api from "src/apis";
 import { CREATE_LATEST_ACTIVITY, GET_ALL_LATEST_ACTIVITY } from "src/graphql/latestActivity";
-export const getActivity = async (data) => {
+export const getActivity = async (page,limit) => {
     try {
       const response = await api.get(
-          "/latest-activities",
-          data
+          `/latest-activities/${page}/${limit}`
         )
       return response;
     } catch (error) {
@@ -13,11 +12,6 @@ export const getActivity = async (data) => {
   };
   
   export const createLatestAcivity = async (data) => {
-    // console.log(data);
-    // return  await api.post(
-    //   "/users-ops-activities/createBulkOperations",
-    //   data
-    // )
     try {
       const response = await api.post(
           "/latest-activities",
