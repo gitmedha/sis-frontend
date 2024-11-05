@@ -8,7 +8,6 @@ import DetailField from "src/components/content/DetailField";
 const LatestActivityDetail = (props) => {
   const { onHide, show, data } = props;
   const history = useHistory();
-  // console.log(data);
   return (
     <Modal
       centered
@@ -29,7 +28,6 @@ const LatestActivityDetail = (props) => {
           </h1>
         </Modal.Title>
         <div className="Go to">
-          {console.log(props.data)}
           <button className="bg-light border-0 cursor-pointer" onClick={() => history.push(`/${props.data.module_name}/${props.data.event_id}`)}>
           <FaExternalLinkAlt size={25} />
           </button>

@@ -235,9 +235,6 @@ const OperationDataupdateform = (props) => {
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
     delete newValueObject["institute_name"];
-    console.log(newValueObject);
-    console.log(props);
-    console.log( Number(props?.institution?.id),newValueObject.institution);
     let valuesdata = {
       batch: Number(props?.batch?.id),
       institution: Number(props.institution?.id),
@@ -255,11 +252,7 @@ const OperationDataupdateform = (props) => {
       donor: props.donor ? "Yes" : "No",
       area: props.area ? props.area : null
   };
-  console.log(valuesdata);
-    console.log(compareObjects(newValueObject,valuesdata));
-    console.log(newValueObject);
     let datavaluesforlatestcreate={module_name:"Operation",activity:"User-ops Activity Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
-    // console.log(findDifferences(newValueObject,props.operationdata));
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();

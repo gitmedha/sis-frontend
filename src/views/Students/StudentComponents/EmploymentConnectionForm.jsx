@@ -114,8 +114,6 @@ const EnrollmentConnectionForm = (props) => {
 
     let propgramEnrollemntData={};
     if(props.employmentConnection ){
-      console.log(props.employmentConnection);
-      console.log(values);
       propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Update",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};
       
     }else {

@@ -107,7 +107,6 @@ const EnrollmentConnectionForm = (props) => {
   const onSubmit = async (values) => {
 
     let propgramEnrollemntData={};
-    console.log(props);
     if(props.employmentConnection ){
       propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props.employmentConnection.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
       

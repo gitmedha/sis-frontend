@@ -139,8 +139,6 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
-    console.log(props);
-    console.log(values);
     let propgramEnrollemntData={};
     if(props.programEnrollment ){
       let data=values;

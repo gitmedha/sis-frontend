@@ -122,7 +122,6 @@ export const EventForm = (props) => {
       setIsLoading(true);
       if (props.eventData) {
         values.name = values.alumni_service;
-        console.log(initialValues);
         let datavaluesforlatestcreate={module_name:"Calendar",activity:"Calendar",event_id:"",updatedby:userId ,changes_in:compareObjects(values,initialValues)};
         await createLatestAcivity(datavaluesforlatestcreate);
         await updateEvent(values, props.eventData.id);

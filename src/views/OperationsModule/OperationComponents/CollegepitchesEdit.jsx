@@ -175,7 +175,6 @@ const CollepitchesEdit = (props) => {
           "YYYY-MM-DD"
         ))
       : delete newObj["pitch_date"];
-      // console.log(props);
       const initialValues = {
         email: props.email,
         phone: props.phone,
@@ -190,7 +189,6 @@ const CollepitchesEdit = (props) => {
         program_name: props.program_name,
         whatsapp:props.whatsapp
       };
-    // console.log(newObj);
     let datavaluesforlatestcreate={module_name:"Operation",activity:"College Pitching Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObj,initialValues)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateCollegePitch(Number(props.id), newObj);
@@ -220,7 +218,6 @@ const CollepitchesEdit = (props) => {
     return date;
   }
   if (props) {
-    console.log(props.whatsapp);
     initialValues["email"] = props.email;
     initialValues["phone"] = props.phone;
     initialValues["course_name"] = props.course_name;
@@ -270,7 +267,6 @@ const CollepitchesEdit = (props) => {
 
   return (
     <>
-   {console.log(initialValues)} 
       {initialValues && props && (
         <Modal
           centered
