@@ -208,11 +208,8 @@ const AlumniServiceForm = (props) => {
     setSelectedCategory("");
 
 
-    // console.log(compareObjects(props.alumniService,values))
     let propgramEnrollemntData={};
     if(props.alumniService ){
-      console.log(props.alumniService);
-      console.log(values);
       propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Update",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
       
     }else {

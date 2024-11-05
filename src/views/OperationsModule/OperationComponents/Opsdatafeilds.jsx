@@ -76,7 +76,6 @@ const Opsdatafeilds = (props) => {
 
   const deleteEntry=async()=>{
     let datavaluesforlatestcreate={module_name:"Operation",activity:"USER Ops Activity DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    // console.log(findDifferences(newValueObject,props.operationdata));
     await createLatestAcivity(datavaluesforlatestcreate);
    const data=await deactivate_user_ops(Number(props.id))
    if(data.status===200){

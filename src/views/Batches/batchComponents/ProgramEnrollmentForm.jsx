@@ -149,7 +149,6 @@ const ProgramEnrollmentForm = (props) => {
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
-      console.log(props);
     if(props.programEnrollment ){
       propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Update",event_id:props.batch.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
       
@@ -266,7 +265,6 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     try {
       const { data } = await searchStudents(filterValue);
-      console.log(data);
       let programEnrollmentStudent = props.programEnrollment
         ? props.programEnrollment.student
         : null;

@@ -124,8 +124,7 @@ export function findEnrollmentDifferences(obj1, obj2) {
   compareFields('course_name_in_current_sis', obj1.course_name_in_current_sis, obj2.course_name_in_current_sis);
   compareFields('course_name_other', obj1.course_name_other, obj2.course_name_other);
 
-  // Compare institution if IDs are different
-  console.log(obj2);
+
   if (String(obj1.institution.id) !== String(obj2.institution)) {
       differences.institution = {
           previous_value: { id: obj1.institution.id, name: obj1.institution.name },
@@ -140,7 +139,6 @@ export function findEnrollmentDifferences(obj1, obj2) {
           new_value: obj2.batch,
       };
   }
-  console.log(differences);
   return differences;
 }
 
@@ -250,8 +248,7 @@ export function findEmployerDifferences(obj1, obj2) {
       };
   }
 
-  // Log the differences
-  console.log(differences);
+
   return differences;
 }
 
@@ -362,7 +359,6 @@ export function findServiceStudentDifferences(obj1, obj2) {
       };
   }
 
-  // Compare fee_submission_date (format new value for comparison)
   const newFeeSubmissionDate = new Date(obj2.fee_submission_date);
   const formattedNewFeeSubmissionDate = newFeeSubmissionDate.toLocaleDateString('en-GB', {
       day: '2-digit',
@@ -377,7 +373,6 @@ export function findServiceStudentDifferences(obj1, obj2) {
       };
   }
 
-  // Compare category
   if (obj1.category !== obj2.category) {
       differences.category = {
           previous_value: obj1.category,
@@ -385,7 +380,7 @@ export function findServiceStudentDifferences(obj1, obj2) {
       };
   }
 
-  // Compare role
+
   if (obj1.role !== obj2.role) {
       differences.role = {
           previous_value: obj1.role,
@@ -393,7 +388,6 @@ export function findServiceStudentDifferences(obj1, obj2) {
       };
   }
 
-  // Compare student (if necessary)
   if (obj1.student.id !== obj2.student.id) {
       differences.student = {
           previous_value: obj1.student,
@@ -401,8 +395,6 @@ export function findServiceStudentDifferences(obj1, obj2) {
       };
   }
 
-  // Log the differences
-  console.log(differences);
   return differences;
 }
 

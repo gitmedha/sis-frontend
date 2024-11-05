@@ -214,8 +214,6 @@ const BatchForm = (props) => {
     if(values.mode_of_payment === 'Free'){
       values.per_student_fees = 0
     }
-    console.log(props);
-    console.log(values);
     // let propgramEnrollemntData={};
     // if(props ){
     //   propgramEnrollemntData={module_name:"institution",activity:"Update",event_id:props.institution.id,updatedby:userId ,changes_in:findDifferences(props.programEnrollment,values)};

@@ -141,7 +141,6 @@ const Batch = (props) => {
     updateBatch(batch.id, {
       status: 'Certified'
     }).then(data => {
-      console.log(data)
       sendEmailOnCreateBatch('pehli udaan')
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
@@ -241,7 +240,6 @@ const Batch = (props) => {
 
   const handleDelete = async () => {
     NP.start();
-    console.log(batch);
     let data={module_name:"Batch",activity:"Delete",event_id:batch.id,updatedby:userId ,changes_in:batch};
     await createLatestAcivity(data);
     deleteBatch(batch.id).then(data => {

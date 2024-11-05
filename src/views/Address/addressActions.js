@@ -31,7 +31,7 @@ export const getCities = async (value) => {
   let allData = [];
   let start = 0;
   let totalCount = 0;
-  console.log(value);
+
   try {
     const stateFilter = value?.value ? `state: "${value?.value}",` : ``;
 
@@ -78,7 +78,6 @@ export const getCities = async (value) => {
 
       start += limit;  // Move to the next batch
     }
-    console.log(allData);
     return allData;  // Return all accumulated records
   } catch (error) {
     return Promise.reject(error);  // Handle errors
