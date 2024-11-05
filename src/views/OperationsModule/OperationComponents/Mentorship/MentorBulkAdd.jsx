@@ -327,18 +327,6 @@ const MentorBulkAdd = (props) => {
     for (let row of rows) {
       for (let key in row) {
      
-
-        /**
-        |--------------------------------------------------
-        |    !(key == "designation") &&
-        !(key == "mentor_area") &&
-        !(key == "mentor_state") &&
-        !(key == "outreach") &&
-        !(key == "onboarding_date") &&
-        !(key == "medha_area") &&
-        !(key == "program_name")
-        |--------------------------------------------------
-        */
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        if((key =="contact" && row[key].length < 10 )){
         isEmptyValuFound=true
