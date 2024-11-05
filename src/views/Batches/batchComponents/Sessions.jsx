@@ -148,6 +148,7 @@ const Sessions = (props) => {
   };
 
   const onDelete = async () => {
+    console.log(batch);
     await deleteSession(batchSessionAttendanceFormData.id).then(() => {
       setAlert("Session deleted successfully.", "success");
     }).catch(err => {

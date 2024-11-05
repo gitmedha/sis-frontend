@@ -24,6 +24,7 @@ import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions,
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 .button{
@@ -240,6 +241,9 @@ const Batch = (props) => {
 
   const handleDelete = async () => {
     NP.start();
+    console.log(batch);
+    let data={module_name:"Batch",activity:"Delete",event_id:batch.id,updatedby:userId ,changes_in:batch};
+    await createLatestAcivity(data);
     deleteBatch(batch.id).then(data => {
       setAlert("Batch deleted successfully.", "success");
     }).catch(err => {

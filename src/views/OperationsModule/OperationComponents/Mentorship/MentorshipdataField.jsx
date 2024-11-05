@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { Anchor } from "../../../../components/content/Utils";
 import UpdateMentorship from "./UpdateMentorship";
 import DetailField from "src/components/content/DetailField";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -53,6 +54,7 @@ const MentorshipdataField = (props) => {
     dataAndEdit: false,
     delete: false,
   });
+  const userId = localStorage.getItem("user_id");
   const [operationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -77,6 +79,8 @@ const MentorshipdataField = (props) => {
   };
 
   const deleteEntry = async () => {
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const data = await deactivate_mentorship(Number(props.id));
     if (data.status === 200) {
       setAlert("Entry Deleted Successfully.", "success");

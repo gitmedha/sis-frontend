@@ -13,6 +13,7 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -153,6 +154,15 @@ const OpportunityForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    let propgramEnrollemntData={};
+    console.log(props);
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Opprtunity",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Opprtunity",activity:"Create",event_id:props.employer.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 

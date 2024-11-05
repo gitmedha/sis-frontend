@@ -15,6 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
+import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -63,6 +64,7 @@ const AlumniServiceForm = (props) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [status, setStatus] = useState("");
   const [role,setRole]=useState([]);
+  const userId = Number(localStorage.getItem("user_id"))
 
   useEffect(() => {
     if (props.alumniService) {
@@ -204,6 +206,19 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSelectedCategory("");
+
+
+    // console.log(compareObjects(props.alumniService,values))
+    let propgramEnrollemntData={};
+    if(props.alumniService ){
+      console.log(props.alumniService);
+      console.log(values);
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Update",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 

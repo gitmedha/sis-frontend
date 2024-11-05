@@ -14,6 +14,7 @@ import UpskillUpdate from "./UpskillUpdate";
 import { deactivate_user_students_upskills } from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -49,6 +50,7 @@ const Upskillingdatafield = (props) => {
     dataAndEdit:false,
     delete:false
   });
+  const userId = localStorage.getItem("user_id");
   
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
@@ -78,6 +80,8 @@ const Upskillingdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+      await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_students_upskills(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");

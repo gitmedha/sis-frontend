@@ -1,88 +1,120 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState,useCallback } from 'react'
 import Collapse from "../../../components/content/CollapsiblePanels";
 import Table from '../../../components/content/Table';
 import { connect } from "react-redux";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import LatestActivityDetail from './LatestActivityDetail';
 import { useHistory } from 'react-router-dom';
+import { getActivity } from 'src/utils/LatestChange/Api';
 
-const datavalues=[
-    {
-      activity: 'Edited',
-      moduleName: 'Student',
-      updatedBy: 'John Doe',
-      updatedAt: '2024-10-16',
-      changesIn: ["name","startDate","parents/gardian"],
-      view: 'View Details',
-      id:"42534"
-    },
-    {
-      activity: 'Added',
-      moduleName: 'batch',
-      updatedBy: 'Jane Smith',
-      updatedAt: '2024-10-15',
-      changesIn: ["name","state","Medha Area"],
-      view: 'View Details',
-      id:"1229"
-    },
-    {
-      activity: 'Deleted',
-      moduleName: 'institution',
-      updatedBy: 'Alice Johnson',
-      updatedAt: '2024-10-14',
-      changesIn: ["name","state","Medha Area"],
-      view: 'View Details',
-      id:"634"
-    }
-  ]
+// const datavalues=[
+//     {
+//       activity: 'Edited',
+//       moduleName: 'Student',
+//       updatedBy: 'John Doe',
+//       updatedAt: '2024-10-16',
+//       changesIn: ["name","startDate","parents/gardian"],
+//       view: 'View Details',
+//       id:"42534"
+//     },
+//     {
+//       activity: 'Added',
+//       moduleName: 'batch',
+//       updatedBy: 'Jane Smith',
+//       updatedAt: '2024-10-15',
+//       changesIn: ["name","state","Medha Area"],
+//       view: 'View Details',
+//       id:"1229"
+//     },
+//     {
+//       activity: 'Deleted',
+//       moduleName: 'institution',
+//       updatedBy: 'Alice Johnson',
+//       updatedAt: '2024-10-14',
+//       changesIn: ["name","state","Medha Area"],
+//       view: 'View Details',
+//       id:"634"
+//     }
+//   ]
 const LatestActivity=(props)=> {
 
     const [showModal,setShowModal]=useState(false);
     const [dataPoint,setDataPoints]=useState({})
+    const [dataValues,setDataValues]=useState([])
+    const [pageIndex,setPageIndex] = useState(0);
+    const [pageSize,setPageSize] = useState(25);
+    const [totalCount,setTotalCount] = useState(0)
     const history = useHistory();
     const columns = useMemo(
-        () => [
-          {
-            Header: 'Activity',
-            accessor: 'activity',
-            disableSortBy: true,
-          },
-          {
-            Header: 'Module name ',
-            accessor: 'moduleName',
-            disableSortBy: true,
-          },
-          {
-            Header: 'Updated by ',
-            accessor: 'updatedBy',
-            disableSortBy: true,
-          },
-          {
-            Header: 'Updated at',
-            accessor: 'updatedAt',
-            disableSortBy: true,
-          },
-          {
-            Header: 'Changes in ',
-            accessor: 'changesIn',
-            disableSortBy: true,
-            Cell: ({ value }) => {
-              return Array.isArray(value) ? value.join(', ') : value;
-            },
-          },
-          {
-            Header: 'View',
-            disableSortBy: true,
-            Cell: ({ row }) => (
-              <button className='btn btn-primary btn-sm' onClick={() => history.push(`/${row.original.moduleName}/${row.original.id}`,)}>View Details</button>
-            ),
-          }
-        ],
-        []
-      );
-
-      const fetchData=()=>{
+      () => [
+        {
+          Header: 'Activity',
+          accessor: 'activity',
+          disableSortBy: true,
+        },
+        {
+          Header: 'Module name',
+          accessor: 'module_name',
+          disableSortBy: true,
+        },
+        {
+          Header: 'Updated by',
+          accessor: 'updatedby.username',
+          disableSortBy: true,
+        },
+        {
+          Header: 'Updated at',
+          accessor: 'updated_at',
+          disableSortBy: true,
+        },
+        // {
+        //   Header: 'Changes in',
+        //   accessor: 'changes_in',
+        //   disableSortBy: true,
+        //   Cell: ({ value }) => {
+        //     if (!value) return '';
+    
+        //     return (
+        //       <ul>
+        //         {Object.entries(value).map(([key, changes]) => (
+        //           <li key={key}>
+        //             {key}: 
+        //             {changes?.previous_value !== undefined && (
+        //               <span> {changes ? `From ${changes?.previous_value ? changes?.previous_value :""}` :" "} </span>
+        //             )}
+        //             {` to ${changes.new_value}`}
+        //           </li>
+        //         ))}
+        //       </ul>
+        //     );
+        //   },
+        // },
+        {
+          Header: 'View',
+          disableSortBy: true,
+          Cell: ({ row }) => (
+            <button
+              className="btn btn-primary btn-sm"
+              // onClick={() => history.push(`/${row.original.module_name}/${row.original.event_id}`)}
+              onClick={()=>OpenModal(row.original)}
+            >
+              View Details
+            </button>
+          ),
+        },
+      ],
+      [history]
+    );
+    useEffect(() => {
+      fetchData(pageIndex,pageSize);
+    }, []);
+    
+      const fetchData=async (page,limit)=>{
         // onHide={() => hideShowModal("mentorship", false)}
+        // OpenModal()
+        let data=await getActivity(page,limit);
+        setDataValues(data?.data?.data);
+        setTotalCount(data?.data?.totalCount);
       }
       const OpenModal=(data)=>{
         setDataPoints(data)
@@ -91,6 +123,11 @@ const LatestActivity=(props)=> {
       const onHide=()=>{
         setShowModal(false)
       }
+      
+      const fetchCallback = useCallback(async()=>{
+        let data=await getActivity(pageIndex,pageSize);
+        setDataValues(data?.data?.data)
+      }, [pageIndex,pageSize])
   return (
     <>
     <Collapse title="Latest Activity" type="plain" opened={true} id="keyMetrics" >
@@ -101,10 +138,20 @@ const LatestActivity=(props)=> {
             {/* <WidgetUtilTab /> */}
           </div>
         </div>
-        <Table columns={columns} data={datavalues} totalRecords={datavalues.length} fetchData={fetchData}  />
+        <Table 
+          columns={columns} 
+          data={dataValues} 
+          totalRecords={totalCount}  
+          fetchData={fetchCallback}
+          paginationPageIndex={pageIndex}
+          onPageIndexChange={setPageIndex}
+          paginationPageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          />
       </div>
     </Collapse>
-    <LatestActivityDetail data={dataPoint} show={showModal} onHide={onHide}/>
+    {showModal ? <LatestActivityDetail data={dataPoint} show={showModal} onHide={onHide}/>:""}
+   
     </>
   )
 }
