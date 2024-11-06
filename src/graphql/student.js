@@ -688,6 +688,79 @@ export const GET_COURSE = `
     }
   }
 `;
+export const GET_UNIQUE_STUDENT_EMPLOYMENT = `
+query GET_UNIQUE_STUDENT_EMPLOYMENT($startDate: String, $limit: Int, $start: Int, $sort: String){
+  employmentConnectionsConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      start_date_gte: $startDate
+    }
+  ) {
+    values {
+      ${employmentConnectionFields}
+      student {
+        id
+        full_name
+        student_id
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const GET_UNIQUE_STUDENT_ALUMNI = `
+query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $limit: Int, $start: Int, $sort: String,){
+  alumniServicesConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      start_date_gte: $startDate
+
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+      student {
+        id
+        full_name
+        student_id
+      }
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const GET_STUDENT_ALUMNI_SERVICES_RANGE = `
+query GET_STUDENT_ALUMNI_SERVICES_RANGE($id: Int, $startDate: String, $limit: Int, $start: Int, $sort: String) {
+  alumniServicesConnection (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      student: {
+        id: $id
+      }
+      start_date_gte: $startDate
+    }
+  ) {
+    values {
+      ${alumniServicesFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
 
 
 export const GET_UNIQUE_STUDENT_ALUMNI = `

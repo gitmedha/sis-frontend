@@ -75,6 +75,7 @@ const CheckValuesOpsUploadedData = (props) => {
                         <th>Guest Name</th>
                         <th>Guest Designation</th>
                         <th>Organization</th>
+                        <th>Student type</th>
                         <th>No. of Participant</th>
                       </tr>
                     </thead>
