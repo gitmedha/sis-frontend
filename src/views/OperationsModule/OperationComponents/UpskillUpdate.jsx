@@ -25,6 +25,7 @@ import {
 } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -77,6 +78,7 @@ const UpskillUpdate = (props) => {
   const [studentinput] = useState("");
   const [subcategory, setSubcategory] = useState([]);
   const [programeName, setProgramName] = useState([]);
+  const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
     let isMounted = true; // Add a flag to indicate if the component is mounted
@@ -246,6 +248,24 @@ const UpskillUpdate = (props) => {
 
     newObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
+    const dataValues = {
+      category: props.category,
+      program_name: props.program_name,
+      sub_category: props.sub_category,
+      certificate_received: props.certificate_received,
+      issued_org: props.issued_org,
+      course_name: props.course_name,
+      student_id: Number(props.student_id.id),
+      start_date: formatDateStringToIndianStandardTime(props.start_date),
+      end_date: formatDateStringToIndianStandardTime(props.end_date),
+      published_at: new Date(props.published_at),
+      assigned_to: Number(props?.assigned_to?.id),
+      institution: Number(props?.institution?.id),
+      batch: Number(props?.batch?.id)
+  };
+
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
 
     const value = await updateStudetnsUpskills(Number(props.id), newObject);
     refreshTableOnDataSaving();

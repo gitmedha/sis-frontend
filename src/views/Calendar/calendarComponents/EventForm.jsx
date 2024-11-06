@@ -19,6 +19,7 @@ import {
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import NP from "nprogress";
+import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -121,6 +122,8 @@ export const EventForm = (props) => {
       setIsLoading(true);
       if (props.eventData) {
         values.name = values.alumni_service;
+        let datavaluesforlatestcreate={module_name:"Calendar",activity:"Calendar",event_id:"",updatedby:userId ,changes_in:compareObjects(values,initialValues)};
+        await createLatestAcivity(datavaluesforlatestcreate);
         await updateEvent(values, props.eventData.id);
         setIsLoading(false);
 

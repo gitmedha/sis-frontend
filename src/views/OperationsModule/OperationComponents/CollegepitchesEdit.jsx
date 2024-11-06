@@ -25,6 +25,7 @@ import {
   handleKeyPress,
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -58,7 +59,7 @@ const CollepitchesEdit = (props) => {
   const [colleges, setCollege] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState(null);
-
+  const userId = localStorage.getItem("user_id");
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -174,6 +175,22 @@ const CollepitchesEdit = (props) => {
           "YYYY-MM-DD"
         ))
       : delete newObj["pitch_date"];
+      const initialValues = {
+        email: props.email,
+        phone: props.phone,
+        course_name: props.course_name,
+        course_year: props.course_year,
+        college_name: props.college_name,
+        srm_name: props.srm_name ? props.srm_name.id.toString() : "",
+        student_name: props.student_name,
+        pitch_date: props.pitch_date ? formatDateStringToIndianStandardTime(props.pitch_date) : "",
+        remarks: props.remarks,
+        area: props.area,
+        program_name: props.program_name,
+        whatsapp:props.whatsapp
+      };
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"College Pitching Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObj,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateCollegePitch(Number(props.id), newObj);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -214,6 +231,7 @@ const CollepitchesEdit = (props) => {
     initialValues["remarks"] = props.remarks;
     initialValues["area"] = props.area;
     initialValues["program_name"] = props.program_name;
+    initialValues["whatsapp"] = props.whatsapp;
   }
 
   useEffect(() => {

@@ -24,6 +24,7 @@ import { GET_ALL_INDUSTRY } from "src/graphql";
 import { restructureData } from "src/utils/function/indtsryValues";
 import DropdownTreeSelect from "react-dropdown-tree-select";
 import "react-dropdown-tree-select/dist/styles.css";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -444,6 +445,14 @@ const EmployerForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
+    let propgramEnrollemntData={};
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
   const logoUploadHandler = ({ id }) => setLogo(id);

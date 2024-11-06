@@ -13,6 +13,7 @@ import {
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -57,6 +58,7 @@ const ProgramEnrollmentForm = (props) => {
   const [courseLevel, setCourseLevel] = useState("");
   const [courseType, setCourseType] = useState("");
   const [courseName,setCourseName] = useState("");
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(()=>{
     if(props.programEnrollment){
@@ -146,6 +148,14 @@ const ProgramEnrollmentForm = (props) => {
 
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
+      let propgramEnrollemntData={};
+    if(props.programEnrollment ){
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Update",event_id:props.batch.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Create",event_id:props.batch.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
     }
   };
@@ -255,7 +265,6 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     try {
       const { data } = await searchStudents(filterValue);
-      console.log(data);
       let programEnrollmentStudent = props.programEnrollment
         ? props.programEnrollment.student
         : null;

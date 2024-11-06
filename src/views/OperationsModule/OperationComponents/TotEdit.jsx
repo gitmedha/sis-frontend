@@ -31,6 +31,7 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -79,6 +80,7 @@ const TotEdit = (props) => {
   const [moduleName, setModuleName] = useState([]);
   const [partnerDept, setPartnerDept] = useState([]);
   const [projectName, setProjectName] = useState([]);
+  const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -191,6 +193,8 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);

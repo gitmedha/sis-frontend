@@ -24,6 +24,7 @@ import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions,
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 .button{
@@ -140,7 +141,6 @@ const Batch = (props) => {
     updateBatch(batch.id, {
       status: 'Certified'
     }).then(data => {
-      console.log(data)
       sendEmailOnCreateBatch('pehli udaan')
       setAlert("Batch updated successfully.", "success");
     }).catch(err => {
@@ -240,6 +240,8 @@ const Batch = (props) => {
 
   const handleDelete = async () => {
     NP.start();
+    let data={module_name:"Batch",activity:"Delete",event_id:batch.id,updatedby:userId ,changes_in:batch};
+    await createLatestAcivity(data);
     deleteBatch(batch.id).then(data => {
       setAlert("Batch deleted successfully.", "success");
     }).catch(err => {

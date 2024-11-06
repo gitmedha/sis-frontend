@@ -107,7 +107,8 @@ const OperationCreateform = (props) => {
           !(key === "designation") &&
           !(key === "guest") &&
           !(key === "donor") &&
-          !(key === "organization")
+          !(key === "organization") && 
+          !(key === "batch" && row["student_type"] === "Non-Medha Student")
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
