@@ -24,7 +24,7 @@ import { GET_ALL_INDUSTRY } from "src/graphql";
 import { restructureData } from "src/utils/function/indtsryValues";
 import DropdownTreeSelect from "react-dropdown-tree-select";
 import "react-dropdown-tree-select/dist/styles.css";
-import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -445,14 +445,14 @@ const EmployerForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    let propgramEnrollemntData={};
+    let EmployerEnrollmentData={};
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      EmployerEnrollmentData={module_name:"Employer",activity:"update",event_id:values.id,updatedby:userId ,changes_in:compareObjects(props.employmentConnection,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+      EmployerEnrollmentData={module_name:"Empoyer",activity:"Create",event_id:values.id,updatedby:userId ,changes_in:values};
     }
-    await createLatestAcivity(propgramEnrollemntData);
+    await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };
   const logoUploadHandler = ({ id }) => setLogo(id);
