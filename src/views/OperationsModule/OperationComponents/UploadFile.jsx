@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import {
   GET_ALL_BATCH,
   GET_ALL_BATCHES,
@@ -16,7 +16,6 @@ import api, { queryBuilder } from "../../../apis";
 import { getAllMedhaUsers } from "../../../utils/function/lookupOptions";
 import { FaEdit, FaFileUpload, FaRegCheckCircle } from "react-icons/fa";
 import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
-import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { isNumber } from "lodash";
 import moment from "moment";
@@ -566,7 +565,7 @@ const UploadFile = (props) => {
         setBatchOption(batchData);
       }
     } catch (err) {
-      console.error(err); // Add error handling as needed
+      console.error(err); 
     }
   };
 
@@ -574,14 +573,10 @@ const UploadFile = (props) => {
     try {
       let count = 0;
       let instituteData = [];
-
-      // First API call to get the count of batches
       const countResponse = await api.post("/graphql", {
         query: GET_INSTITUTES_COUNT,
       });
       count = countResponse.data.data.institutionsConnection.aggregate.count;
-
-      // Loop to fetch all batches in increments of 500
       for (let i = 0; i < count; i += 500) {
         const variables = {
           limit: 500,
@@ -653,7 +648,7 @@ const UploadFile = (props) => {
       // setAlert("Data created successfully.", "success");
     }
   };
-  // 
+  
   const uploadNewData =()=>{
     setShowForm(true);
     setUploadNew(!uploadNew)
@@ -735,7 +730,7 @@ const UploadFile = (props) => {
                         {fileName}{" "}
                       </div>
                     )}
-                    {(isSRM() || isAdmin()) && (
+                    {(isSRM() || isAdmin() || isMedhavi()) && (
                       <div className="row mb-4 mt-2">
                         <div className="col-md-12 d-flex justify-content-center">
                           <button

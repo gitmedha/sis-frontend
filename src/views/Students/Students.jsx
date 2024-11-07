@@ -27,7 +27,7 @@ import StudentGrid from "./StudentComponents/StudentGrid";
 import { studentStatusOptions } from "./StudentComponents/StudentConfig";
 import StudentForm from "./StudentComponents/StudentForm";
 import Collapse from "../../components/content/CollapsiblePanels";
-import { isAdmin, isSRM } from "../../common/commonFunctions";
+import { isAdmin, isMedhavi, isSRM } from "../../common/commonFunctions";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 import ModalShowmassedit from "./MassEdit/ModalShowmassedit";
 import ModaltoSelectBulkMassEdit from "./MassEdit/ModaltoSelectBulkMassEdit";
@@ -791,7 +791,7 @@ const Students = (props) => {
               onTabChange={handleStudentStatusTabChange}
             />
 
-            {(isSRM() || isAdmin()) && (
+            {(isSRM() || isAdmin() || isMedhavi()) && (
               <div className="d-flex  align-items-center">
                 <button
                   className="btn btn-primary add_button_sec"
