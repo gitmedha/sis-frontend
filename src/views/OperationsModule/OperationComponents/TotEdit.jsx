@@ -577,7 +577,7 @@ const TotEdit = (props) => {
                           <Input
                             icon="down"
                             name="city"
-                            label="City"
+                            label="District where training took place"
                             control="lookup"
                             options={areaOptions}
                             placeholder="City"

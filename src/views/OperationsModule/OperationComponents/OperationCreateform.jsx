@@ -260,6 +260,7 @@ const OperationCreateform = (props) => {
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
+      
       delete row["id"];
       delete row["name"];
       row.createdby = Number(userId);
@@ -270,6 +271,11 @@ const OperationCreateform = (props) => {
       row.students_attended = Number(row.students_attended);
       row.donor = row.donor ? true : false;
       row.isActive = true;
+      if (row.student_type === "Non-Medha Student") {
+        delete row.batch;
+      } else {
+        row.batch = Number(row.batch);
+      }
       let value = checkEmptyValuesandplaceNA(row);
       return value;
     });
