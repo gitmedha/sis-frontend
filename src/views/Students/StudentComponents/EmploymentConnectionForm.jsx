@@ -202,7 +202,8 @@ const EnrollmentConnectionForm = (props) => {
       selectedOpportunityType === "Internship" ||
       selectedOpportunityType === "UnPaid GIG" ||
       selectedOpportunityType === "Paid GIG" ||
-      selectedOpportunityType === "Apprenticeship"
+      selectedOpportunityType === "Apprenticeship" ||
+      selectedOpportunityType === "Freelance"
     ) {
       filteredOptions = allStatusOptions.filter(
         (item) =>
