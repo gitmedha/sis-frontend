@@ -11,8 +11,4 @@ export const calendarValidations = Yup.object({
   ),
   alumni_service: Yup.string().required("Alumni Service is required."),
   reporting_date: Yup.date(),
-  location: Yup.string().required("Location is required."),
-  participants: Yup.number().required("Participants is required.")
-
-
 });

@@ -243,7 +243,6 @@ export const EventForm = (props) => {
                     <Input
                       name="participants"
                       label="Participants"
-                      required
                       control="input"
                       className="form-control"
                       autoComplete="off"
@@ -256,7 +255,6 @@ export const EventForm = (props) => {
                       icon="down"
                       name="location"
                       label="Location"
-                      required
                       options={locationOptions}
                       control="lookup"
                       className="form-control"

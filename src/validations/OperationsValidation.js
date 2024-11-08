@@ -23,13 +23,18 @@ const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
 const email  = Yup.string().required("Email is required.");
 
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
 
 
 export const mentorshipValidations = Yup.object({
     email: Yup.string().email('Invalid email format').required('Email is required'),
     contact: Yup.string()
-      .min(10, 'Contact must be at least 10 digits')
-      .required('Contact is required'),
+    .matches(phoneRegExp, "Phone number is not valid")
+    .min(10, "Number is too short")
+    .max(10, "Number is too long")
+    .nullable(),
     mentor_name: Yup.string().required('Mentor name is required'),
     mentor_area: Yup.string().required('Mentor area is required'),
     mentor_domain: Yup.string().required('Mentor domain is required'),
