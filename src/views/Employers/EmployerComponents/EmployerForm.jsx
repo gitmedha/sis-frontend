@@ -553,7 +553,7 @@ const EmployerForm = (props) => {
           validationSchema={EmployerValidations}
           enableReinitialize={true}
         >
-          {({ values, setFieldValue, errors,setValues }) => (
+          {({ values, setFieldValue, errors, setValues }) => (
             <Form>
               <div className="row form_sec">
                 <Section>
@@ -610,9 +610,12 @@ const EmployerForm = (props) => {
                         Industry <span class="required">*</span>
                       </label>
                       <DropdownTreeSelect
-                        data={transformData(industryOptions, selectedNode?.value)}
+                        data={transformData(
+                          industryOptions,
+                          selectedNode?.value
+                        )}
                         value={[selectedNode]} // Set the default value here
-                        defaultOptions={!selectedNode ? []:[{props}]}
+                        defaultOptions={!selectedNode ? [] : [{ props }]}
                         onChange={(currentNode, selectedNodes) => {
                           if (selectedNodes.length === 0) {
                             setSelectedNode({}); // Deselect logic
@@ -621,9 +624,8 @@ const EmployerForm = (props) => {
                             setSelectedNode(currentNode);
                             setFieldValue("industry", currentNode?.value);
                           }
-                        }
-                      }
-                        className="dropdown-tree-select full-width-dropdown"
+                        }}
+                        className="dropdown-tree-select full-width-dropdown custom-dropdown"
                         keepTreeOnSearch={true}
                         showDropdown={true}
                         showPartiallySelected={true}
