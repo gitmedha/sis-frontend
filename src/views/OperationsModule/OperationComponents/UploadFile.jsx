@@ -426,6 +426,7 @@ const UploadFile = (props) => {
       );
 
      const batchId = newItem["Student Type"] === "Non-Medha Student" ? true : (batch ? batch.id : null);
+     console.log(typeof batchId);
       const instituteId = institute ? institute.id : null;
       const userId = user ? user.id : null;
 
@@ -617,8 +618,8 @@ const UploadFile = (props) => {
     setShowModal(false);
     // setUploadSuccesFully("");
     setShowForm(true);
-  setFileName('');  
-  setNextDisabled(false);  
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully('');
   };
 
@@ -651,8 +652,8 @@ const UploadFile = (props) => {
   const uploadNewData =()=>{
     setShowForm(true);
     setUploadNew(!uploadNew)
-  setFileName('');  
-  setNextDisabled(false);  
+  setFileName('');  // Reset the file name display
+  setNextDisabled(false);  // Optionally disable the next button
   setUploadSuccesFully(''); 
 
   }

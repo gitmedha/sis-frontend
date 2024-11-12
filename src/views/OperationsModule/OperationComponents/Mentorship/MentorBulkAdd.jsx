@@ -327,22 +327,15 @@ const MentorBulkAdd = (props) => {
     for (let row of rows) {
       for (let key in row) {
      
-
-        /**
-        |--------------------------------------------------
-        |    !(key == "designation") &&
-        !(key == "mentor_area") &&
-        !(key == "mentor_state") &&
-        !(key == "outreach") &&
-        !(key == "onboarding_date") &&
-        !(key == "medha_area") &&
-        !(key == "program_name")
-        |--------------------------------------------------
-        */
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+       if((key =="contact" && row[key].length < 10 )){
+        isEmptyValuFound=true
+       }
+       if((key =="email" && (!emailRegex.test(row[key]) ))){
+        isEmptyValuFound=true
+       }
         if (
-          !(key == "social_media_profile_link") && (key =="contact" && row[key].length < 10)
-          
-         
+          !(key == "social_media_profile_link") 
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
@@ -427,7 +420,7 @@ const MentorBulkAdd = (props) => {
             {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
               <h2 className="text--primary bebas-thick mb-0">
-                {props.id ? props.full_name : "Add New Alumni Query"}
+                {props.id ? props.full_name : " Add Mentorship Data"}
               </h2>
             </div>
           </div>
@@ -470,7 +463,7 @@ const MentorBulkAdd = (props) => {
                 <tr>
                   <th>Mentor Name *</th>
                   <th>Contact *</th>
-                  <th>Email </th>
+                  <th>Email *</th>
                   <th>Mentor's Domain *</th>
                   <th>Mentor's Company Name * </th>
                   <th>Designation/Title *</th>
