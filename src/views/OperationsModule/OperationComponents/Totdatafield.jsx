@@ -18,6 +18,7 @@ import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+// import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -53,6 +54,7 @@ const Totdatafield = (props) => {
     dataAndEdit:false,
     delete:false
   });
+  const userId = localStorage.getItem("user_id");
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -92,6 +94,8 @@ const Totdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
+    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    // await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_tots(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
@@ -218,7 +222,7 @@ const Totdatafield = (props) => {
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="City" value={props?.city} />
+                  <DetailField Bold={""} label="District where training took place" value={props?.city} />
                 </div>
               </div>
 

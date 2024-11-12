@@ -54,6 +54,7 @@ import TotUpload from "./UploadFiles/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
+// import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -65,7 +66,7 @@ const tabPickerOptions1 = [
   { title: "Field Activities", key: "my_data" },
   { title: "Student Upskilling", key: "upskilling" },
   { title: "Pitching", key: "collegePitches" },
-  // { title: "Mentorship", key: "mentorship" },
+  { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
@@ -136,6 +137,7 @@ const Operations = ({
     myData: false,
     tot: false,
   });
+  const userId = localStorage.getItem("user_id");
 
   const columns = useMemo(
     () => [
@@ -526,7 +528,8 @@ const Operations = ({
     }
     if (activeTab.key === "mentorship") {
       // await resetSearch();
-
+      // sortBy = "created_at"
+      variables.sort=`${'updated_at'}:${sortOrder}`
       await api
         .post("/graphql", {
           query: GET_MENTORSHIP,
@@ -822,7 +825,19 @@ const Operations = ({
       setModalShow(false);
       return;
     }
+    let newValues=data.reduce((acc, obj) => {
+      const id = obj.id;
+      acc[id] = obj;
+      delete acc[id].id; // Optionally remove `id` from each object
+      return acc;
+  }, {});
+    let datavaluesforlatestcreate={};
     if (key == "feilddata") {
+      
+    
+    //   datavaluesforlatestcreate={module_name:"Operation",activity:"Create",event_id:"",updatedby:userId ,changes_in:newValues};
+    
+    // await createLatestAcivity(datavaluesforlatestcreate);
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -834,6 +849,9 @@ const Operations = ({
         });
     }
     if (key == "alum") {
+      
+      // datavaluesforlatestcreate={module_name:"Operation",activity:"Alumni service Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      // await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateAlumniQueries(data)
         .then((data) => {
           setAlert("Alumni data created successfully.", "success");
@@ -844,6 +862,10 @@ const Operations = ({
         });
     }
     if (key == "collegepitches") {
+
+    //   datavaluesforlatestcreate={module_name:"Operation",activity:"college Pitches Create",event_id:"",updatedby:userId ,changes_in:newValues};
+    
+    // await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateCollegePitch(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -854,6 +876,9 @@ const Operations = ({
         });
     }
     if (key == "upskill") {
+      // datavaluesforlatestcreate={module_name:"Operation",activity:"Upskiling Create",event_id:"",updatedby:userId ,changes_in:newValues};
+    
+      // await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateStudentsUpskillings(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -876,6 +901,8 @@ const Operations = ({
     }
 
     if (key == "mentorship") {
+      // datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      // await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateMentorship(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -996,12 +1023,23 @@ const Operations = ({
   }, [activeTabMain.key]);
 
   const uploadExcel = async (data, key) => {
+    let newValues=data.reduce((acc, obj) => {
+      const id = obj.id;
+      acc[id] = obj;
+      delete acc[id].id; // Optionally remove `id` from each object
+      return acc;
+  }, {});
+    let datavaluesforlatestcreate={};
     try {
       if (key === "my_data") {
+      //   datavaluesforlatestcreate={module_name:"Operation",activity:"User-OPS Upload",event_id:"",updatedby:userId ,changes_in:newValues};
+      // await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
       } 
       if (key === "tot") {
+        // datavaluesforlatestcreate={module_name:"Operation",activity:"User-Tot Upload",event_id:"",updatedby:userId ,changes_in:newValues};
+        // await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
         .then(() => {
           setAlert("data created successfully.", "success");
