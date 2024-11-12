@@ -99,6 +99,8 @@ function formatDate(dateString) {
 
 
 export function findEnrollmentDifferences(obj1, obj2) {
+    console.log("obj1 ",obj1);
+    console.log("obj2 ",obj2);
   const differences = {};
 
   // Define a helper function to format dates
@@ -118,28 +120,53 @@ export function findEnrollmentDifferences(obj1, obj2) {
   };
 
   // Compare course fields
-  compareFields('course_level', obj1.course_level, obj2.course_level);
-  compareFields('registration_date', formatDate(obj1.registration_date), formatDate(obj2.registration_date));
-  compareFields('certification_date', formatDate(obj1.certification_date), formatDate(obj2.certification_date));
-  compareFields('course_name_in_current_sis', obj1.course_name_in_current_sis, obj2.course_name_in_current_sis);
-  compareFields('course_name_other', obj1.course_name_other, obj2.course_name_other);
+  compareFields('course_level', obj1?.course_level, obj2?.course_level);
+  compareFields('registration_date', formatDate(obj1?.registration_date), formatDate(obj2?.registration_date));
+  compareFields('certification_date', formatDate(obj1?.certification_date), formatDate(obj2?.certification_date));
+  compareFields('course_name_in_current_sis', obj1?.course_name_in_current_sis, obj2?.course_name_in_current_sis);
+  compareFields('course_name_other', obj1?.course_name_other, obj2?.course_name_other);
 
 
-  if (String(obj1.institution.id) !== String(obj2.institution)) {
+  if (String(obj1?.institution?.id) !== String(obj2?.institution)) {
       differences.institution = {
-          previous_value: { id: obj1.institution.id, name: obj1.institution.name },
-          new_value: obj2.institution,
+          previous_value: obj1?.institution.name ,
+          new_value: obj2?.institution.name,
       };
   }
 
   // Compare batch if IDs are different
-  if (String(obj1.batch.id) !== String(obj2.batch)) {
+  if (String(obj1?.batch?.id) !== String(obj2.batch)) {
       differences.batch = {
-          previous_value: { id: obj1.batch.id, name: obj1.batch.name, program: obj1.batch.program },
-          new_value: obj2.batch,
+          previous_value:   obj1?.batch.name,
+          new_value: obj2?.batch.name,
       };
   }
   return differences;
+}
+
+export function findUpdates(obj1, obj2) {
+    const updates = {};
+
+    for (const key in obj1) {
+        // Check if keys exist in both objects and are different
+        if (obj2.hasOwnProperty(key) && obj1[key] !== obj2[key]) {
+            // Handle date differences (e.g., "2024-01-22" vs. "Mon Jan 22 2024")
+            const date1 = new Date(obj1[key]);
+            const date2 = new Date(obj2[key]);
+
+            if (!isNaN(date1) && !isNaN(date2) && date1.getTime() === date2.getTime()) {
+                continue; 
+            }
+            if (key === 'institution' || key === 'batch') {
+                if (obj1[key]?.id !== obj2[key].toString()) {
+                    updates[key] = {new_value:obj2[key],previous_value:obj1[key]?.id}; 
+                }
+            } else {
+                updates[key] = {new_value:obj2[key],previous_value:obj1[key]}; 
+            }
+        }
+    }
+    return updates;
 }
 
 export function findEmployerDifferences(obj1, obj2) {

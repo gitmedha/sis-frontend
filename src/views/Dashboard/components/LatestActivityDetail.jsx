@@ -8,6 +8,8 @@ import DetailField from "src/components/content/DetailField";
 const LatestActivityDetail = (props) => {
   const { onHide, show, data } = props;
   const history = useHistory();
+
+  console.log(props.data);
   return (
     <Modal
       centered
@@ -47,14 +49,15 @@ const LatestActivityDetail = (props) => {
              
             </div>
             
-            <div className="row">
+            <div className="col-md-6 col-sm-12">
   {Object.entries(props.data.changes_in).map(([key, value], index) => (
     <div className="col-md-6 col-sm-12" key={key}>
+      {console.log(value)}
       <DetailField
         label={key
           .replace(/_/g, " ")
           .replace(/\b\w/g, (c) => c.toUpperCase())} // Format label
-        value={value.new_value || value} // Display new_value if present
+        value={value?.newValue?value.newValue:"" || value} // Display new_value if present
         Bold=""
         className=""
       />
