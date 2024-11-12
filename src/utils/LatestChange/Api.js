@@ -28,7 +28,7 @@ export const getActivity = async (page,limit) => {
  
 
 
-  export function findDifferences(obj1, obj2) {
+  export function   findDifferences(obj1, obj2) {
     let differences = {};
   
     // Compare only the start_date and end_date
@@ -51,7 +51,7 @@ export const getActivity = async (page,limit) => {
       if (!dateKeys.includes(key)) {
         if (key === 'assigned_to') {
           // Compare the ID directly for assigned_to
-          let assignedToId1 = obj1[key].id; // Get the ID from the nested object
+          let assignedToId1 = obj1[key]?.id; // Get the ID from the nested object
           if (assignedToId1 !== obj2[key]) {
             differences[key] = {
               previous_value: obj1[key],
@@ -130,15 +130,16 @@ export function findEnrollmentDifferences(obj1, obj2) {
   if (String(obj1?.institution?.id) !== String(obj2?.institution)) {
       differences.institution = {
           previous_value: obj1?.institution.name ,
-          new_value: obj2?.institution.name,
+          new_value: obj2?.institution,
       };
   }
 
   // Compare batch if IDs are different
   if (String(obj1?.batch?.id) !== String(obj2.batch)) {
+    console.log(obj2);
       differences.batch = {
           previous_value:   obj1?.batch.name,
-          new_value: obj2?.batch.name,
+          new_value: obj2?.batch,
       };
   }
   return differences;
@@ -157,9 +158,16 @@ export function findUpdates(obj1, obj2) {
             if (!isNaN(date1) && !isNaN(date2) && date1.getTime() === date2.getTime()) {
                 continue; 
             }
-            if (key === 'institution' || key === 'batch') {
+            console.log(key);
+            if (key === 'institution' || key === 'batch' || key=="student") {
+                console.log(obj1);
                 if (obj1[key]?.id !== obj2[key].toString()) {
-                    updates[key] = {new_value:obj2[key],previous_value:obj1[key]?.id}; 
+                    if(key=="student"){
+                        updates[key] = {new_value:obj2[key],previous_value:obj1[key].full_name}; 
+                    }else{
+                        updates[key] = {new_value:obj2[key],previous_value:obj1[key].name};
+                    }
+                     
                 }
             } else {
                 updates[key] = {new_value:obj2[key],previous_value:obj1[key]}; 
@@ -171,11 +179,19 @@ export function findUpdates(obj1, obj2) {
 
 export function findEmployerDifferences(obj1, obj2) {
   const differences = {};
-
+    console.log(obj1);
   // Compare employer_id if IDs are different
+  console.log(obj2);
+  if (String(obj1.student.id) !== String(obj2.student_id)) {
+    console.log("obj2.employer_id",obj2);
+      differences.employer_id = {
+          previous_value:  obj1.student.full_name ,
+          new_value: obj2.student_id,
+      };
+  }
   if (String(obj2.employer_id) !== String(obj1.opportunity.employer.id)) {
       differences.employer_id = {
-          previous_value: { id: obj1.opportunity.employer.id, name: obj1.employer },
+          previous_value:  obj1.employer || obj1.opportunity.employer.name,
           new_value: obj2.employer_id,
       };
   }
@@ -282,7 +298,6 @@ export function findEmployerDifferences(obj1, obj2) {
 export function findServiceStudentDifferences(obj1, obj2) {
   const differences = {};
 
-  // Compare id
   if (obj1.id !== obj2.id) {
       differences.id = {
           previous_value: obj1.id,
@@ -301,7 +316,7 @@ export function findServiceStudentDifferences(obj1, obj2) {
   // Compare assigned_to if IDs are different
   if (String(obj1.assigned_to.id) !== String(obj2.assigned_to)) {
       differences.assigned_to = {
-          previous_value: obj1.assigned_to,
+          previous_value: obj1.assigned_to.username,
           new_value: obj2.assigned_to,
       };
   }
@@ -414,10 +429,11 @@ export function findServiceStudentDifferences(obj1, obj2) {
           new_value: obj2.role,
       };
   }
-
-  if (obj1.student.id !== obj2.student.id) {
+console.log(obj1);
+  if (obj1.student.id !== obj2.student) {
+    
       differences.student = {
-          previous_value: obj1.student,
+          previous_value: obj1.student.name,
           new_value: obj2.student,
       };
   }
