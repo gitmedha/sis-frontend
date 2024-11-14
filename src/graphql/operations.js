@@ -232,6 +232,7 @@ medha_area
 status
 isactive
 program_name
+contact
 createdby {
     id
     username
