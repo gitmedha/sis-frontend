@@ -24,7 +24,12 @@ import { GET_ALL_INDUSTRY } from "src/graphql";
 import { restructureData } from "src/utils/function/indtsryValues";
 import DropdownTreeSelect from "react-dropdown-tree-select";
 import "react-dropdown-tree-select/dist/styles.css";
-import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
+import {
+  compareObjects,
+  createLatestAcivity,
+  findDifferences,
+} from "src/utils/LatestChange/Api";
+import NestedDropdown from "./NestedDropdown";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -92,7 +97,7 @@ const Section = styled.div`
 const transformData = (data, selectedValues) => {
   return data.map((node) => {
     const isSelected = selectedValues?.includes(node.value) || false; // Check if the node's value is in selectedValues
- 
+
     if (node.children && node.children.length > 0) {
       // For parent nodes, disable them and hide checkboxes
       return {
@@ -101,14 +106,14 @@ const transformData = (data, selectedValues) => {
         children: transformData(node.children, selectedValues), // recursively transform children
       };
     }
- 
+
     // For child nodes, set the `checked` property if they are in selectedValues
     return {
       ...node,
       checked: isSelected,
     };
   });
-};  
+};
 function CustomNodeRenderer({ node, onClick }) {
   return (
     <div>
@@ -155,135 +160,12 @@ const EmployerForm = (props) => {
   const [selectedValue, setSelectedValue] = useState([{ label: "" }]);
   const [selectedNode, setSelectedNode] = useState({});
   const formikRef = useRef();
-
-  // useEffect(() => {
-  //   const formikValue = formikRef.current?.values.industry;
-  //   if (formikValue && formikValue.label !== selectedNode?.label) {
-  //     setSelectedNode([{ label: formikValue }]);
-  //   }
-  // }, [formikRef.current?.values.industry, selectedNode]);
-
   const handleExternalChange = (value) => {
     let data = value.label;
     setSelectedNode([{ label: data }]);
     formikRef.current.setFieldValue("industry", data);
   };
 
-  const handleChange = (selected) => {
-    setSelectedOption(selected);
-    setSelectedValue([...selectedValue, ...[{ label: selected?.label }]]);
-    if (selected.label === selectedValue[selectedValue.length - 1].label) {
-      let result = industryOptions;
-      setDropdownOptions(result);
-    } else if (
-      selected?.children ||
-      selected.label === selectedValue[selectedValue.length - 1].label ||
-      selected.label === selectedValue[selectedValue.length - 2].label
-    ) {
-      const additionalItems = selected.children.map((value) => {
-        return {
-          ...value,
-          isChild: true,
-        };
-      });
-      const matchIndex = industryOptions.findIndex(
-        (obj) => obj.label === selected.label
-      );
-
-      let result = [];
-      if (!selected.children.includes(industryOptions[matchIndex + 1])) {
-        if (matchIndex !== -1) {
-          result = [
-            ...industryOptions.slice(0, matchIndex + 1),
-            ...additionalItems,
-            ...industryOptions.slice(matchIndex + 1),
-          ];
-        }
-      } else {
-        result = [
-          ...industryOptions.slice(0, matchIndex + 1),
-          ...industryOptions.slice(matchIndex + additionalItems.length + 1),
-        ];
-      }
-      result[matchIndex].children = additionalItems;
-      setDropdownOptions(result);
-
-      setMenuIsOpen(true);
-    } else {
-      setDropdownOptions(industryOptions);
-      setMenuIsOpen(false);
-      handleExternalChange(selected);
-    }
-  };
-
-  const handleMenuOpen = () => {
-    if (selectedOption && selectedOption?.children) {
-      setDropdownOptions([
-        ...dropdownOptions.filter((opt) => opt.value !== selectedOption.value),
-        selectedOption,
-        ...selectedOption.children,
-      ]);
-    } else {
-      setDropdownOptions(dropdownOptions);
-    }
-    setMenuIsOpen(true);
-  };
-
-  const CustomOption = (props) => {
-    const selectedItem = props?.data;
-    const isParent = props?.data?.children;
-    const matchIndex = dropdownOptions.findIndex(
-      (obj) => obj.label === selectedItem.label
-    );
-    let isSelectedParent =
-      selectedOption &&
-      selectedOption?.label === props?.data?.label &&
-      selectedItem?.children?.includes(dropdownOptions[matchIndex + 1]);
-    let haschild = !selectedItem?.isChild;
-    return (
-      <components.Option
-        {...props}
-        style={{
-          backgroundColor: isSelectedParent
-            ? "white"
-            : props.isFocused
-            ? "#f0f0f0"
-            : "transparent",
-        }}
-      >
-        <div
-          style={{
-            marginLeft: isParent ? "0" : "0",
-            fontWeight: isSelectedParent ? "bold" : "normal",
-            fontSize: "1rem",
-            color: isSelectedParent ? "green" : "black",
-            backgroundColor: isSelectedParent ? "white" : "transparent",
-            cursor: "pointer",
-          }}
-        >
-          {isParent && (
-            <FaAngleDown
-              style={{
-                marginRight: "8px",
-                transform: isSelectedParent ? "none" : "rotate(-90deg)",
-              }}
-            />
-          )}
-          <span
-            style={{
-              fontSize: haschild ? "16px" : "14px",
-              paddingLeft: !haschild ? "28px" : "",
-            }}
-          >
-            {props.data.label}
-          </span>
-        </div>
-      </components.Option>
-    );
-  };
-  const clear = () => {
-    setSelectedOption(null);
-  };
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -298,36 +180,6 @@ const EmployerForm = (props) => {
         })
         .then((values) => {
           const data = restructureData(values.data.data.industries);
-          // const grouped = data.reduce((acc, { industry_name, sub_industry, category }) => {
-          //   if (!acc[industry_name]) {
-          //     acc[industry_name] = new Set(); // Using a Set to avoid duplicate entries
-          //   }
-          //   if (category) {
-          //     // If category exists, only add the category, ignore sub_industry
-          //     acc[industry_name].add(category);
-          //   } else if (sub_industry) {
-          //     // If no category, add the sub-industry
-          //     acc[industry_name].add(sub_industry);
-          //   }
-          //   return acc;
-          // }, {});
-
-          // const options = Object.keys(grouped).map((industry_name) => {
-          //   const subIndustriesOrCategoriesArray = Array.from(grouped[industry_name]);
-
-          //   // If no sub-industries or categories, show the industry name itself as the only child
-          //   const children = subIndustriesOrCategoriesArray.length > 0
-          //     ? subIndustriesOrCategoriesArray.map(item => ({
-          //         label: item,
-          //         value: item
-          //       }))
-          //     : [{ label: industry_name, value: industry_name }];
-
-          //   return {
-          //     label: industry_name,
-          //     children: children
-          //   };
-          // });
 
           setDropdownOptions(data);
           setIndustryOptions(data);
@@ -351,16 +203,6 @@ const EmployerForm = (props) => {
           };
         })
       );
-
-      //  setIndustryOptions (
-      //     data.industry.map((item) => {
-      //       return {
-      //         key: item.value,
-      //         label: item.value,
-      //         value: item.value,
-      //       };
-      //     })
-      //   );
     });
 
     getAddressOptions().then((data) => {
@@ -445,12 +287,23 @@ const EmployerForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    let EmployerEnrollmentData={};
-    if(props.employmentConnection ){
-      EmployerEnrollmentData={module_name:"Employer",activity:"update",event_id:values.id,updatedby:userId ,changes_in:compareObjects(props.employmentConnection,values)};
-      
-    }else {
-      EmployerEnrollmentData={module_name:"Empoyer",activity:"Create",event_id:values.id,updatedby:userId ,changes_in:values};
+    let EmployerEnrollmentData = {};
+    if (props.employmentConnection) {
+      EmployerEnrollmentData = {
+        module_name: "Employer",
+        activity: "update",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects(props.employmentConnection, values),
+      };
+    } else {
+      EmployerEnrollmentData = {
+        module_name: "Empoyer",
+        activity: "Create",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: values,
+      };
     }
     await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
@@ -499,19 +352,6 @@ const EmployerForm = (props) => {
     } catch (error) {
       console.error("error", error);
     }
-  };
-  const customIcons = ({ icon, className }) => {
-    return (
-      <div className={`${className} custom-icon`}>
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          {/* Your SVG icon code here */}
-        </svg>
-      </div>
-    );
-  };
-
-  const isChild = (item) => {
-    return item.children && item.children.length > 0;
   };
 
   return (
@@ -597,41 +437,17 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
-                      {/* <Input
-                        icon="down"
-                        name="industry"
-                        label="Industry"
-                        control="lookup"
-                        options={industryOptions}
-                        className="form-control"
-                        required
-                      /> */}
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
-                      <DropdownTreeSelect
-                        data={transformData(
-                          industryOptions,
-                          selectedNode?.value
-                        )}
-                        value={[selectedNode]} // Set the default value here
-                        defaultOptions={!selectedNode ? [] : [{ props }]}
-                        onChange={(currentNode, selectedNodes) => {
-                          if (selectedNodes.length === 0) {
-                            setSelectedNode({}); // Deselect logic
-                            setFieldValue("industry", ""); // Clear field value
-                          } else {
-                            setSelectedNode(currentNode);
-                            setFieldValue("industry", currentNode?.value);
-                          }
-                        }}
-                        className="dropdown-tree-select full-width-dropdown custom-dropdown"
-                        keepTreeOnSearch={true}
-                        showDropdown={true}
-                        showPartiallySelected={true}
-                        mode="radioSelect"
+
+                      <Field
                         name="industry"
-                        nodeRenderer={CustomNodeRenderer}
+                        defaultValue={props.industry}
+                        onChange={(value) => setFieldValue("industry", value)}
+                        data={industryOptions}
+                        error={errors.industry}
+                        component={NestedDropdown}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
