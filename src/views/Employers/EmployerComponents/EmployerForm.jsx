@@ -315,7 +315,7 @@ const EmployerForm = (props) => {
     industry: "",
     email: "",
     phone: "",
-    status: "active",
+    status: "",
     address: "",
     assigned_to: userId.toString(),
     state: "",
