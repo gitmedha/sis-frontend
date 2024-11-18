@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FaAngleDown } from "react-icons/fa";
 
 const NestedDropdown = ({ data,defaultValue,onChange, error }) => {
     const [selected, setSelected] = useState(defaultValue || null);
@@ -52,23 +52,23 @@ const NestedDropdown = ({ data,defaultValue,onChange, error }) => {
             textAlign: 'left',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
           id="dropdown-basic"
           className="form-group"
         >
-          {selected ? ` ${selected}` : 'Select an option'}
+          {selected ? ` ${selected}` :<span style={{color:"hsl(0, 0%, 50%)"}}>Select</span>}
           <div className="d-flex" style={{ marginLeft: 'auto', color: 'hsl(0, 0%, 80%)' }}>
             <span style={{ color: 'hsl(0, 0%, 80%)' }}> | </span>
-            <i
+            <FaAngleDown
               className="fa-solid fa-chevron-down"
               style={{
-                marginTop: '0.5rem',
+                marginTop: '0.4rem',
                 marginLeft: '0.2rem',
-                fontSize: '10px',
+                fontSize: '14px',
                 color: 'hsl(0, 0%, 80%)',
               }}
-            ></i>
+            />
           </div>
         </Dropdown.Toggle>
         <Dropdown.Menu className='w-100'>{renderDropdownItems(data)}</Dropdown.Menu>
