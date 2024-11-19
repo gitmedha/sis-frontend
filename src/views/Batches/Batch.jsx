@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendPreBatchLinks,sendPostBatchLinks } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -282,6 +282,35 @@ const Batch = (props) => {
     });
   }
 
+//for sending pre batch links to students
+
+  const preBatchLinks = async ()=>{
+    try {
+      NP.start();
+      console.log(batch.id)
+      sendPreBatchLinks(batch.id);
+      NP.done();
+      
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  };
+
+//for sending post batch links to students
+
+  const postBatchLinks = async ()=>{
+    try {
+      NP.start();
+      sendPostBatchLinks(batch.id);
+      NP.done();
+      
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -315,6 +344,28 @@ const Batch = (props) => {
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                  <Dropdown.Item
+                      onClick={() => preBatchLinks()}
+                      // disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
+                    >
+                      <FaCheckCircle
+                        size="20"
+                        color='#207B69'
+                        className="mr-2"
+                      />
+                      <span>&nbsp;&nbsp;Pre survey test</span>
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => postBatchLinks()}
+                      // disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
+                    >
+                      <FaCheckCircle
+                        size="20"
+                        color='#207B69'
+                        className="mr-2"
+                      />
+                      <span>&nbsp;&nbsp;Post survey test</span>
+                    </Dropdown.Item>
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {
@@ -323,7 +374,7 @@ const Batch = (props) => {
                     }}
                     className="d-flex align-items-center"
                   >
-                      <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                    <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
                       <span>&nbsp;&nbsp;Send a link</span>
                     </Dropdown.Item>
                     }
