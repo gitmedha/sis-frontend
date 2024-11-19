@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 
 
 
 const Dropdown = ({ data, selected, setSelected, setOpen }) => {
   return (
-    <div className="dropdown">
+    <div className="dropdown-select "  >
       {data.map((item) => (
         <DropdownItem selected={selected} setSelected={setSelected} key={item.label} item={item} />
       ))}
@@ -31,8 +31,8 @@ const DropdownItem = ({ item, selected, setSelected }) => {
       >
         {item.label}
         {item.children.length > 0 && (
-          <span style={{ color: '#000' }} className={`arrow ${isOpen ? "open" : ""}`}>
-            {`>`}
+          <span style={{ color: 'hsl(0, 0%, 80%)' }} className={`arrow ${isOpen ? "open" : ""}`}>
+            <FaAngleRight />
           </span>
         )}
       </div>

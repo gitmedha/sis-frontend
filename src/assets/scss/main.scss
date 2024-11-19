@@ -404,7 +404,7 @@ div::-webkit-scrollbar-thumb {
   text-decoration: none !important ;
 }
 /* Dropdown Container */
-.dropdown {
+.dropdown-select {
   display: flex;
   flex-direction: column;
   width: "100%";
@@ -415,12 +415,14 @@ div::-webkit-scrollbar-thumb {
   min-height: auto;
   max-height: 320px;
   overflow-y: scroll;
+  // width: 47%;
+  z-index: 1;
 }
 
 /* Individual Item */
 .dropdown-item {
   margin: 5px 0;
-  padding: 5px 10px;
+  padding: 5px 5px;
   cursor: pointer;
 }
 
@@ -438,13 +440,14 @@ div::-webkit-scrollbar-thumb {
 .dropdown-label:hover {
   background-color: #e6e6e6;
   border-radius: 3px;
+  padding: 5px;
 }
 
 /* Children Container */
 .dropdown-children {
   margin-left: 15px;
   border-left: 2px dashed #ddd;
-  padding-left: 10px;
+  padding-left: 6px;
 }
 
 /* Arrow Styling */
@@ -462,6 +465,7 @@ div::-webkit-scrollbar-thumb {
 .selectItem {
   background-color: #e6e6e6;
   text-align: black;
+  padding: 5px !important;
 }
 @import './media/lg.scss';
 @import './media/md.scss';
