@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-// import "./Dropdown.css";
+
 
 const Dropdown = ({ data, selected, setSelected, setOpen }) => {
   return (
