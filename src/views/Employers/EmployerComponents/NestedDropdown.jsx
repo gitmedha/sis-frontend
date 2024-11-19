@@ -1,81 +1,102 @@
-import React, { useState } from 'react';
-import { Dropdown } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaAngleDown } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 
-const NestedDropdown = ({ data,defaultValue,onChange, error }) => {
-    const [selected, setSelected] = useState(defaultValue || null);
 
-  const renderDropdownItems = (items) => {
-    return items.map((item) => {
-      // Handler for item selection
-      const handleSelect = (value) => {
-        console.log('Selected:', value); // Console the selected value
-        setSelected(value); // Update local state
-        onChange(value); // Update Formik state
-      };
 
-      return (
-        <Dropdown key={item.value} className='form-group' style={{ width: '100%' }}>
-          {/* Only show dropdown if the item has children */}
-          {item.children.length > 0 ? (
-            <>
-              <Dropdown.Toggle as="a" href="#">
-                {item.label}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {renderDropdownItems(item.children)}
-              </Dropdown.Menu>
-            </>
-          ) : (
-            // If no children, just show the item as a clickable item
-            <Dropdown.Item
-              onClick={() => handleSelect(item.value)}
-              style={{ color: 'black' }} // Set the color of dropdown items to black
-            >
-              {item.label}
-            </Dropdown.Item>
-          )}
-        </Dropdown>
-      );
-    });
-  };
+const Dropdown = ({ data, selected, setSelected, setOpen }) => {
+  return (
+    <div className="dropdown-select "  >
+      {data.map((item) => (
+        <DropdownItem selected={selected} setSelected={setSelected} key={item.label} item={item} />
+      ))}
+    </div>
+  );
+};
+
+const DropdownItem = ({ item, selected, setSelected }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
-      <Dropdown>
-        <Dropdown.Toggle
-          variant="none"
-          style={{
-            border: '1px solid hsl(0, 0%, 80%)',
-            width: '100%',
-            textAlign: 'left',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-          id="dropdown-basic"
-          className="form-group"
-        >
-          {selected ? ` ${selected}` :<span style={{color:"hsl(0, 0%, 50%)"}}>Select</span>}
-          <div className="d-flex" style={{ marginLeft: 'auto', color: 'hsl(0, 0%, 80%)' }}>
-            <span style={{ color: 'hsl(0, 0%, 80%)' }}> | </span>
+    <div className="dropdown-item">
+      <div
+        className={`dropdown-label ${(selected?.value && selected?.value === item?.value) ? 'selectItem' : ''} ${item.children.length ? "has-children" : ""}`}
+        onClick={() => {
+          setIsOpen((prev) => !prev)
+          if (item.children.length === 0) {
+            setSelected(item)
+          } if (selected?.value && selected?.value === item?.value) {
+            setSelected({})
+          }
+        }}
+      >
+        {item.label}
+        {item.children.length > 0 && (
+          <span style={{ color: 'hsl(0, 0%, 80%)' }} className={`arrow ${isOpen ? "open" : ""}`}>
+            <FaAngleRight />
+          </span>
+        )}
+      </div>
+      {isOpen && item.children.length > 0 && (
+        <div className="dropdown-children">
+          {item.children.map((child) => (
+            <DropdownItem
+              selected={selected} setSelected={setSelected}
+              key={child.label} item={child} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// export default Dropdown;
+
+const NestedDropdown = ({ data,onChange,error,defaultValue }) => {
+  const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState({})
+  // const dropdownRef = useRef(null); // Create a ref for the dropdown container
+  
+  useEffect(() => {
+      if(selected?.value){
+        setOpen(false)
+      }
+  }, [selected?.value]);
+
+  useEffect(()=>{
+    setSelected({value:defaultValue,label:defaultValue})
+  },[defaultValue])
+
+  const handleChange=(val)=>{
+    setSelected(val)
+    onChange(val.value)
+  }
+
+  return <div className="form-group" style={{ width: '100%'}}>
+    <div className="d-flex " style={{ width: "100%" ,background:"none",border:"1px solid #dee2e6",minHeight:"38px" }} onClick={() => setOpen(!open)}>
+      <span style={{ marginTop: '0.3rem',position:'relative',left:"2%" }}>{selected?.label ||  <span style={{ marginTop: '0.3rem',marginRight:"", color: 'hsl(0, 0%, 80%)' }}>{'Select Industry'}</span> }</span>
+      <div className="d-flex" style={{ marginLeft: 'auto',marginRight:"2%", color: 'hsl(0, 0%, 80%)' }}>
+            <span style={{ marginTop: '0.3rem', color: 'hsl(0, 0%, 80%)' }}> | </span>
             <FaAngleDown
               className="fa-solid fa-chevron-down"
               style={{
-                marginTop: '0.4rem',
+                marginTop: '0.6rem',
                 marginLeft: '0.2rem',
                 fontSize: '14px',
                 color: 'hsl(0, 0%, 80%)',
               }}
             />
-          </div>
-        </Dropdown.Toggle>
-        <Dropdown.Menu className='w-100'>{renderDropdownItems(data)}</Dropdown.Menu>
-        {error && <div className="text-danger error--text mt-2">{error}</div>}
-      </Dropdown>
+      </div>
     </div>
-  );
-};
+    
+    {open && <div >
+      <Dropdown
+        setOpen={setOpen}
+        selected={selected}
+        setSelected={(val)=>handleChange(val)} data={data} />
+    </div>}
+    {error && <div className="text-danger error--text mt-2">{error}</div>}
+  </div>
+}
+
 
 export default NestedDropdown;

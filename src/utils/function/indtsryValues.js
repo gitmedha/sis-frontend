@@ -1,7 +1,6 @@
 
 export function restructureData(data) {
     const result = [];
-    console.log(data.length);
     data.forEach(item => {
         const { category, industry_name, sub_industry, i_name } = item;
 
@@ -40,22 +39,9 @@ export function restructureData(data) {
                 };
                 industryEntry.children.push(subIndustryEntry);
             }
-
-            // Add the i_name to the sub-industry
-            // subIndustryEntry.children.push({
-            //     label: i_name,
-            //     value: i_name
-            // });
         } 
-        // else {
-        //     // Add the i_name directly to the industry if no sub-industry
-        //     industryEntry.children.push({
-        //         label: i_name,
-        //         value: i_name
-        //     });
-        // }
+      
     });
-    console.log(result);
     return result;
 }
 
