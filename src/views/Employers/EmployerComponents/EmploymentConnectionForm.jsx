@@ -15,7 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import { searchStudents, searchEmployers } from "./employerAction";
-import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEmployerDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -130,9 +130,16 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setotherrejection(rejectionfeild);
   }, [employmentConnection]);
-
+  let propgramEnrollemntData={};
+  console.log(props);
   const onSubmit = async (values) => {
-   
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Employer",activity:"Employment Connection Update",event_id:props.employer.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Employer",activity:"Employment Connection Create",event_id:props.employer.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 

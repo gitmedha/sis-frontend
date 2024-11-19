@@ -8,6 +8,8 @@ import DetailField from "src/components/content/DetailField";
 const LatestActivityDetail = (props) => {
   const { onHide, show, data } = props;
   const history = useHistory();
+
+  console.log(props.data);
   return (
     <Modal
       centered
@@ -28,8 +30,13 @@ const LatestActivityDetail = (props) => {
           </h1>
         </Modal.Title>
         <div className="Go to">
-          <button className="bg-light border-0 cursor-pointer" onClick={() => history.push(`/${props.data.module_name}/${props.data.event_id}`)}>
-          <FaExternalLinkAlt size={25} />
+          <button
+            className="bg-light border-0 cursor-pointer"
+            onClick={() =>
+              history.push(`/${props.data.module_name}/${props.data.event_id}`)
+            }
+          >
+            <FaExternalLinkAlt size={25} />
           </button>
         </div>
       </Modal.Header>
@@ -38,32 +45,33 @@ const LatestActivityDetail = (props) => {
           <h4 className="section-header ">Basic Info</h4>
           <div className="row  ">
             <div className="col-md-6 col-sm-12">
-            <DetailField
+              <DetailField
                 className=""
                 Bold={""}
                 label="Activity"
                 value={props.data.activity}
               />
-             
             </div>
-            
-            <div className="row">
-  {Object.entries(props.data.changes_in).map(([key, value], index) => (
-    <div className="col-md-6 col-sm-12" key={key}>
-      <DetailField
-        label={key
-          .replace(/_/g, " ")
-          .replace(/\b\w/g, (c) => c.toUpperCase())} // Format label
-        value={value.new_value || value} // Display new_value if present
-        Bold=""
-        className=""
-      />
-    </div>
-  ))}
-</div>
-<div className="col-md-6 col-sm-12">
 
-            <DetailField
+            <div className="row d-flex flex-start  ">
+              {Object.entries(props.data.changes_in).map(
+                ([key, value], index) => (
+                  <div className="col-md-6 col-sm-12 ">
+                    <DetailField
+                      key={key}
+                      label={key
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase())} // Format label
+                      value={value?.previous_value || ""} // Display previous_value only
+                      Bold=""
+                      className=""
+                    />
+                  </div>
+                )
+              )}
+            </div>
+            <div className="col-md-6 col-sm-12">
+              <DetailField
                 className=""
                 Bold={""}
                 label="Module Name"
@@ -72,14 +80,13 @@ const LatestActivityDetail = (props) => {
             </div>
 
             <div className="col-md-6 col-sm-12">
-            <DetailField
+              <DetailField
                 className=""
                 Bold={""}
                 label="Updated By"
                 value={props.data?.updatedby?.username}
               />
             </div>
-
           </div>
         </Modal.Body>
         <div className="d-flex justify-content-center my-2">

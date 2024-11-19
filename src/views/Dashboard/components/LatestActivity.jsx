@@ -128,6 +128,8 @@ const LatestActivity=(props)=> {
         let data=await getActivity(pageIndex,pageSize);
         setDataValues(data?.data?.data)
       }, [pageIndex,pageSize])
+
+      console.log(props);
   return (
     <>
     <Collapse title="Latest Activity" type="plain" opened={true} id="keyMetrics" >
