@@ -189,8 +189,14 @@ function OpportunitySearchBar({
         clearInterval(interval);
         handleLoaderForSearch();
 
-        await setSearchValueOptions(data);
-        await setDefaultSearchArray(data);
+        if (selectedSearchField === "assigned_to") {
+          let newSRM = await getAllSearchSrm();
+          await setSearchValueOptions(newSRM);
+          await setDefaultSearchArray(newSRM);
+        } else {
+          await setSearchValueOptions(data);
+          await setDefaultSearchArray(data);
+        }
       } catch (error) {
         console.error("error", error);
       }

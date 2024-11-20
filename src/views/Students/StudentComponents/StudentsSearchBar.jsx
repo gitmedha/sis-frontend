@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { getFieldValues } from "./StudentActions";
 import api from "../../../apis";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -206,9 +207,15 @@ function StudentsSearchBar({
         );
         clearInterval(interval);
         handleLoaderForSearch();
-
-        await setSearchValueOptions(data);
-        await setDefaultSearchArray(data);
+        console.log(data, selectedSearchField);
+        if (selectedSearchField === "assigned_to") {
+          let newSRM = await getAllSearchSrm();
+          await setSearchValueOptions(newSRM);
+          await setDefaultSearchArray(newSRM);
+        } else {
+          await setSearchValueOptions(data);
+          await setDefaultSearchArray(data);
+        }
       } catch (error) {
         console.error("error", error);
       }
