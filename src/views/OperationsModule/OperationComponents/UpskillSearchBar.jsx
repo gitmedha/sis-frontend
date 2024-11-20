@@ -9,6 +9,7 @@ import {
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
 import * as Yup from "yup";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -186,7 +187,9 @@ const UpSkillSearchBar = function UpSkillSearch({
       if (fieldName === "student_id") {
         setStudentNameOptions(data);
       } else if (fieldName === "assigned_to") {
-        setAssignedToOptions(data);
+        let newSRM=await getAllSearchSrm();
+        setAssignedToOptions(newSRM);
+        // setAssignedToOptions(data);
       } else if (fieldName === "institution") {
         setInstitutionOptions(data);
       } else if (fieldName === "course_name") {

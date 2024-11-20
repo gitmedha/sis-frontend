@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { getFieldValues } from "./instituteActions";
 import api from "../../../apis";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -173,7 +174,13 @@ function InstitutionSearchBar({
         );
         clearInterval(interval);
         handleLoaderForSearch();
-        await setSearchValueOptions(data);
+        if (selectedSearchField === "assigned_to") {
+          let newSRM = await getAllSearchSrm();
+          await setSearchValueOptions(newSRM);
+        } else {
+          await setSearchValueOptions(data);
+        }
+        
       } catch (error) {
         console.error("error", error);
       }
