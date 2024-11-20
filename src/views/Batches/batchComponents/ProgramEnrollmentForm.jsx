@@ -13,7 +13,7 @@ import {
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
-import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -150,7 +150,7 @@ const ProgramEnrollmentForm = (props) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
     if(props.programEnrollment ){
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Update",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Update",event_id:props.batch.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
       
     }else {
       propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Create",event_id:props.batch.id,updatedby:userId ,changes_in:values};

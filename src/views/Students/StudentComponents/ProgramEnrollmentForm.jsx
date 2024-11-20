@@ -8,7 +8,7 @@ import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import {searchInstitution,searchBatch, getAllCourse} from "../StudentComponents/StudentActions";
-import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findProgramEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findProgramEnrollmentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -142,13 +142,11 @@ const ProgramEnrollmentForm = (props) => {
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
-      console.log(props.programEnrollment);
-      console.log(findUpdates(props.programEnrollment,values));
       if(props.programEnrollment ){
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Update",event_id:props.student.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Update",event_id:props.student.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
         
       }else {
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Create",event_id:props.student.id,updatedby:userId ,changes_in:{}};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
       }
       await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
