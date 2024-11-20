@@ -261,7 +261,10 @@ export const GET_OPERATIONS = `
         ) {
             values {
                 ${operationFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     } 
 `;
@@ -285,7 +288,10 @@ export const GET_USERSTOTS = `
         ) {
             values {
                 ${usersTotsFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -306,7 +312,10 @@ export const GET_STUDENTS_UPSKILLINGS = `
         ) {
             values {
                 ${studentUpskillingFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -325,7 +334,10 @@ export const GET_DTE_SAMARTH_SDITS = `
             }
             aggregate {
                 count
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 
@@ -346,7 +358,10 @@ export const GET_ALUMNI_QUERIES = `
         ) {
             values {
                 ${alumniQueriesFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -367,7 +382,10 @@ export const GET_COLLEGE_PITCHES = `
         ) {
             values {
                 ${collegePitchesFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -377,7 +395,7 @@ export const GET_MENTORSHIP = `
         allMentoshipData: mentorshipsConnection {
             aggregate {
                 count
-            }
+            },
         }
         activeMentoshipData: mentorshipsConnection(
             sort: $sort,
@@ -387,7 +405,10 @@ export const GET_MENTORSHIP = `
         ) {
             values {
                 ${mentoshipfeild}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;

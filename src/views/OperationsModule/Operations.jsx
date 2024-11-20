@@ -414,7 +414,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeOperations.values);
-          setoptsAggregate(data.data.data.allOperations.aggregate);
+          setoptsAggregate(data.data.data.activeOperations.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -435,7 +435,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeUserstots.values);
-          setoptsAggregate(data.data.data.allUserstots.aggregate);
+          setoptsAggregate(data.data.data.activeUserstots.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -456,7 +456,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeStudentsUpskillings.values);
-          setoptsAggregate(data.data.data.allStudentsUpskillings.aggregate);
+          setoptsAggregate(data.data.data.activeStudentsUpskillings.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -496,7 +496,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeAlumniQueries.values);
-          setoptsAggregate(data.data.data.allAlumniQueries.aggregate);
+          setoptsAggregate(data.data.data.activeAlumniQueries.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -516,7 +516,7 @@ const Operations = ({
         })
         .then((data) => {
           setOpts(data.data.data.activeCollegePitches.values);
-          setoptsAggregate(data.data.data.allCollegePitches.aggregate);
+          setoptsAggregate(data.data.data.activeCollegePitches.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -536,8 +536,9 @@ const Operations = ({
           variables,
         })
         .then((data) => {
+          console.log(data.data.data);
           setOpts(data.data.data.activeMentoshipData.values);
-          setoptsAggregate(data.data.data.allMentoshipData.aggregate);
+          setoptsAggregate(data.data.data.activeMentoshipData.aggregate);
         })
         .catch((error) => {
           return Promise.reject(error);
