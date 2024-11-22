@@ -169,7 +169,7 @@ const UpdateMentorship = (props) => {
         "YYYY-MM-DD"
       );
       newData["updatedby"] = Number(userId);
-      let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
+      let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await updateMentorshipData(Number(props.id), newData);
       refreshTableOnDataSaving();

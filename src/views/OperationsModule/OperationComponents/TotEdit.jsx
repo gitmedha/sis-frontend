@@ -193,7 +193,7 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();

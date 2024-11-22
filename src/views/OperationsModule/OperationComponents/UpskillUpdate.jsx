@@ -264,7 +264,7 @@ const UpskillUpdate = (props) => {
       batch: Number(props?.batch?.id)
   };
 
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
     await createLatestAcivity(datavaluesforlatestcreate);
 
     const value = await updateStudetnsUpskills(Number(props.id), newObject);

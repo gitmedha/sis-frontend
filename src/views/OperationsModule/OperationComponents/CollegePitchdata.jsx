@@ -80,7 +80,7 @@ const CollegePitchdata = (props) => {
   }
 
   const deleteEntry=async()=>{
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"COLLEGE Pitches DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"COLLEGE Pitches Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
       await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_college_pitch(Number(props.id))
     if(data.status===200){

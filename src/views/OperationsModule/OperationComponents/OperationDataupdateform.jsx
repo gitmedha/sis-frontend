@@ -252,7 +252,7 @@ const OperationDataupdateform = (props) => {
       donor: props.donor ? "Yes" : "No",
       area: props.area ? props.area : null
   };
-    let datavaluesforlatestcreate={module_name:"operations",activity:"Feild Activity Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
+    let datavaluesforlatestcreate={module_name:"operations",activity:"Feild Activity Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();
