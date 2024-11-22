@@ -192,7 +192,7 @@ const StudentForm = (props) => {
       console.log(changes_in);
       studentData = {
         module_name: "student",
-        activity: "update",
+        activity: "Student Data Updated",
         event_id: values.id,
         updatedby: userId,
         changes_in: compareObjects( values,updatedvalue),

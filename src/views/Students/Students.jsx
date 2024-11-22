@@ -655,7 +655,7 @@ const Students = (props) => {
         
           let studentData = {
             module_name: "student",
-            activity: "Create",
+            activity: "Student Data Created",
             event_id: data.data.data.createStudent.student.id,
             updatedby: userId,
             changes_in: {name:data.data.data.createStudent.student.full_name},

@@ -432,7 +432,7 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
     nProgress.start();
     createOpportunity(dataToSave).then(async(data) => {
       console.log(data.data.data.createOpportunity.opportunity);
-      let propgramEnrollemntData={module_name:"opportunity",activity:"Create",event_id:data.data.data.createOpportunity.opportunity.id,updatedby:userId ,changes_in:{name:data.data.data.createOpportunity.opportunity.role_or_designation}};
+      let propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Created",event_id:data.data.data.createOpportunity.opportunity.id,updatedby:userId ,changes_in:{name:data.data.data.createOpportunity.opportunity.role_or_designation}};
       await createLatestAcivity(propgramEnrollemntData);
       setAlert("Opportunity created successfully.", "success");
       history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);

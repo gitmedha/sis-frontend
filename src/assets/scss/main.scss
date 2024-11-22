@@ -494,6 +494,9 @@ div::-webkit-scrollbar-thumb {
     color: rgb(14, 198, 43) !important;
     background-color: rgb(178, 255, 191);
 }
+.text-decor{
+  text-transform: uppercase !important;
+}
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';

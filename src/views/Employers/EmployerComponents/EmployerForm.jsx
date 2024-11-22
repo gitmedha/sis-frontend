@@ -291,7 +291,7 @@ const EmployerForm = (props) => {
     if (props.employmentConnection) {
       EmployerEnrollmentData = {
         module_name: "employer",
-        activity: "update",
+        activity: "Employer Data Update",
         event_id: values.id,
         updatedby: userId,
         changes_in: compareObjects(props.employmentConnection, values),

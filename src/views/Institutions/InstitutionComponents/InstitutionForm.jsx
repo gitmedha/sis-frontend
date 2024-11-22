@@ -158,7 +158,7 @@ const InstitutionForm = (props) => {
     let propgramEnrollemntData={};
     console.log(values);
     if(props.id ){
-      propgramEnrollemntData={module_name:"institution",activity:"Update",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
+      propgramEnrollemntData={module_name:"institution",activity:"Institution Data Updated",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
       await createLatestAcivity(propgramEnrollemntData);
     }
     

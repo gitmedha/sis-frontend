@@ -36,7 +36,7 @@ const LatestActivityDetail = (props) => {
   <div className="row">
   <div className="col-md-6 col-sm-12">
   <DetailField
-    className={`text-capitalize ${props.data.activity === "Delete" ? 'detail-field-delete ' : 'detail-field-create'}`}
+    className={`text-capitalize ${props.data.activity === "Delete" ? ' ' : ''}`}
     Bold=""
     label="Activity"
     value={props.data.activity}
@@ -75,7 +75,7 @@ const LatestActivityDetail = (props) => {
   </div>
 
   <div className="row">
-    {props.data.activity.includes("Create")|| props.data.activity == "Delete" ?(
+    {props.data.activity.includes("Create")|| props.data.activity.includes("Delete") ?(
       <div className="col-md-6 col-sm-12 text-capitalize">
         <DetailField
           label="Name"
@@ -105,18 +105,18 @@ const LatestActivityDetail = (props) => {
 </Modal.Body>
 
         <div className="d-flex justify-content-center my-3">
-          <button className="btn btn-danger" onClick={onHide}>
-            Close
+          <button className="btn  btn-danger cursor-pointer text-decor  " onClick={onHide}>
+            Close{" "}
           </button>
           <div className="Go to mx-4">
             {props.data.activity !=="Delete" ? <button
-            className="btn bg-success border-0 cursor-pointer"
+            className="btn btn-primary cursor-pointer"
             onClick={() =>
               history.push(`/${props.data.module_name}${props.data.event_id ? "/"+props.data.event_id :''}`)
             }
           >
             Check{" "}
-            <FaExternalLinkAlt size={15} />
+            {/* <FaExternalLinkAlt size={15} /> */}
           </button> :''}
           
         </div>

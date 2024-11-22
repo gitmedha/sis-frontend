@@ -145,10 +145,10 @@ const ProgramEnrollmentForm = (props) => {
       console.log(props.programEnrollment);
       console.log(findUpdates(props.programEnrollment,values));
       if(props.programEnrollment ){
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Update",event_id:props.student.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Update",event_id:props.student.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
         
       }else {
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Create",event_id:props.student.id,updatedby:userId ,changes_in:{name:props.student}};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Create",event_id:props.student.id,updatedby:userId ,changes_in:{name:props.student}};
       }
       await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
