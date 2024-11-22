@@ -836,7 +836,7 @@ const Operations = ({
     if (key == "feilddata") {
       
     
-      datavaluesforlatestcreate={module_name:"operations",activity:"Create ",event_id:"",updatedby:userId ,changes_in:newValues};
+      datavaluesforlatestcreate={module_name:"operations",activity:"Feild Data Created",event_id:"",updatedby:userId ,changes_in:newValues};
     
     await createLatestAcivity(datavaluesforlatestcreate);
       const value = await api
@@ -851,7 +851,7 @@ const Operations = ({
     }
     if (key == "alum") {
       
-      datavaluesforlatestcreate={module_name:"operations",activity:"Alumni service Create",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+      datavaluesforlatestcreate={module_name:"operations",activity:"Alumni Queries Data Create",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateAlumniQueries(data)
         .then((data) => {
@@ -864,7 +864,7 @@ const Operations = ({
     }
     if (key == "collegepitches") {
 
-      datavaluesforlatestcreate={module_name:"operations",activity:"college Pitches Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      datavaluesforlatestcreate={module_name:"operations",activity:"college Pitches Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
     
     await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateCollegePitch(data)
@@ -877,7 +877,7 @@ const Operations = ({
         });
     }
     if (key == "upskill") {
-      datavaluesforlatestcreate={module_name:"operations",activity:"Upskiling Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      datavaluesforlatestcreate={module_name:"operations",activity:"Upskiling Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
     
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateStudentsUpskillings(data)
@@ -902,7 +902,7 @@ const Operations = ({
     }
 
     if (key == "mentorship") {
-      datavaluesforlatestcreate={module_name:"Operations",activity:"Mentorship Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      datavaluesforlatestcreate={module_name:"Operations",activity:"Mentorship Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateMentorship(data)
         .then((data) => {
@@ -1033,13 +1033,13 @@ const Operations = ({
     let datavaluesforlatestcreate={};
     try {
       if (key === "my_data") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"Field Activities Upload",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
+        datavaluesforlatestcreate={module_name:"Operations",activity:"Field Activities Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
       await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
       } 
       if (key === "tot") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"User-Tot Upload",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
+        datavaluesforlatestcreate={module_name:"Operations",activity:"User-Tot Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
         .then(() => {

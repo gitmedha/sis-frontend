@@ -160,7 +160,7 @@ const AllumuniEdit = (props) => {
       : null;
 
     delete newObject["published_at"];
-    let datavaluesforlatestcreate={module_name:"operations",activity:"Alumni Query Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    let datavaluesforlatestcreate={module_name:"operations",activity:"Alumni Query data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateAlumniQuery(Number(props.id), newObject);
     refreshTableOnDataSaving();

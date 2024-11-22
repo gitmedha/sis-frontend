@@ -81,7 +81,7 @@ const Alumuniqueriesdata = (props) => {
     }
 
     const deleteEntry=async()=>{
-      let datavaluesforlatestcreate={module_name:"Operation",activity:"Alumni Query DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+      let datavaluesforlatestcreate={module_name:"Operation",activity:"Alumni Query Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
       await createLatestAcivity(datavaluesforlatestcreate);
       const data=await deactivate_user_alumni_query(Number(props.id))
       if(data.status==200){
