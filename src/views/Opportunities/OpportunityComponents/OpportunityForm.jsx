@@ -212,7 +212,7 @@ const OpportunityForm = (props) => {
     }).join(" ")
     let propgramEnrollemntData={};
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"opportunity",activity:"update",event_id:props?.student?.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:props?.student?.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
       await createLatestAcivity(propgramEnrollemntData);
     }
    

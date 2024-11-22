@@ -170,7 +170,7 @@ const Employer = (props) => {
     console.log(employerData);
     let studentData = {
       module_name: "employer",
-      activity: "Delete",
+      activity: "Employer Data Deleted",
       event_id: employerId,
       updatedby: userId,
       changes_in: {name:`${employerData.name }`},

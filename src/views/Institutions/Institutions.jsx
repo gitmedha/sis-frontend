@@ -486,7 +486,7 @@ const Institutions = (props) => {
           
           let propgramEnrollemntData = {
             module_name: "institution",
-            activity: "Create",
+            activity: "Institution Data Created",
             event_id: data.data.data.createInstitution.institution.id,
             updatedby: userId,
             changes_in: { name: data.data.data.createInstitution.institution.name },

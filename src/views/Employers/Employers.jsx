@@ -502,7 +502,7 @@ const Employers = (props) => {
           setModalShow(false);
           let EmployerEnrollmentData = {
             module_name: "employer",
-            activity: "Create",
+            activity: "Employer Data Created",
             event_id: data.data.data.createEmployer.employer.id,
             updatedby: userId,
             changes_in: { name: data.data.data.createEmployer.employer.name },

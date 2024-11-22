@@ -210,11 +210,11 @@ const Student = (props) => {
     await getEmploymentConnections();
     await getAlumniServices();
   }, [studentId]);
-  const deleteStudent=async()=>{
+  const deleteStudentProfile=async()=>{
     console.log(student);
     let studentData = {
       module_name: "students",
-      activity: "Delete",
+      activity: "Student Data Deleted",
       event_id: student.id,
       updatedby: userId,
       changes_in: {name:`${student.full_name }- ${student.student_id}`},
@@ -237,7 +237,7 @@ const Student = (props) => {
             >
               EDIT
             </button>
-            {(isSRM() || isAdmin()) && <button onClick={() =>deleteStudent()} className="btn--primary action_button_sec">
+            {(isSRM() || isAdmin()) && <button onClick={() =>deleteStudentProfile()} className="btn--primary action_button_sec">
               DELETE
             </button>}
           </div>
