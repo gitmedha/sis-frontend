@@ -69,7 +69,7 @@ const LatestActivity=(props)=> {
           disableSortBy: true,
           Cell: ({ value }) => {
             if (!value) return ''; // Handle null/undefined values
-            return moment(value).format('YYYY-MM-DD HH:mm'); // Customize format as needed
+            return moment(value).format('YYYY-MM-DD'); // Customize format as needed
           }
         },
         // {
