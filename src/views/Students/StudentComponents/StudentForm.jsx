@@ -197,16 +197,8 @@ const StudentForm = (props) => {
         updatedby: userId,
         changes_in: compareObjects( values,updatedvalue),
       };
-    } else {
-      studentData = {
-        module_name: "students",
-        activity: "Create",
-        event_id: values.id,
-        updatedby: userId,
-        changes_in: {name:values.full_name},
-      };
-    }
-    await createLatestAcivity(studentData);
+      await createLatestAcivity(studentData)
+    } 
     
     
     setDisableSaveButton(false);
