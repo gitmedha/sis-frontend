@@ -197,14 +197,14 @@ function compareObjects(obj1, obj2) {
 
     let propgramEnrollemntData={};
     console.log(values);
-    console.log(props.employmentConnection);
-    console.log(transformObj1(props.employmentConnection));
-    console.log(compareObjects(props.employmentConnection,values))
+    console.log(props);
+    // console.log(transformObj1(props.employmentConnection));
+    // console.log(compareObjects(props.employmentConnection,values))
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Update",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};
+      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Update",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(initialValues,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"student",activity:"Employment Connection Create",event_id:props.student.id,updatedby:userId ,changes_in: {name:values.full_name}};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);

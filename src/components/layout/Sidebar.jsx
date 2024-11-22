@@ -53,7 +53,7 @@ const routes = [
     show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
   },
   {
-    to: "/operation",
+    to: "/operations",
     title: "Operations",
     aliases: ['operations'],
     icon: <FaUsersCog {...iconProps} />,

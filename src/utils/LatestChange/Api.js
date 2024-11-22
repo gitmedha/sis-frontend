@@ -34,7 +34,7 @@ export const getActivity = async (page,limit) => {
     // Compare only the start_date and end_date
     const dateKeys = ['start_date', 'end_date'];
   
-    dateKeys.forEach(key => {
+    dateKeys?.forEach(key => {
       let formattedDate1 = formatDate(obj1[key]);
       let formattedDate2 = formatDate(obj2[key]);
   
@@ -89,6 +89,55 @@ export const getActivity = async (page,limit) => {
   
     return differences;
 }
+
+
+export function findDifferencesInstitute(initialValues, formValues) {
+    const differences = {};
+
+    function compareValues(key, initial, form) {
+      if (key === "assigned_to") {
+        // Special handling for "assigned_to"
+        const initialId = typeof initial === "object" ? initial.id : initial;
+        const formId = typeof form === "object" ? form.id : form;
+  
+        if (initialId !== formId) {
+          differences[key] = {
+            previous_value: typeof initial === "object" ? `${initial.username}` : initialId,
+            new_value: formId,
+          };
+        }
+        return;
+      }
+  
+      if (typeof initial === "object" && initial !== null && !Array.isArray(initial)) {
+        // For nested objects
+        const nestedDiff = findDifferences(initial, form);
+        if (Object.keys(nestedDiff).length > 0) {
+          differences[key] = nestedDiff;
+        }
+      } else if (Array.isArray(initial) && Array.isArray(form)) {
+        // For arrays (e.g., mou)
+        if (JSON.stringify(initial) !== JSON.stringify(form)) {
+          differences[key] = { previous_value: initial, new_value: form };
+        }
+      } else if (initial !== form) {
+        // For primitive values
+        differences[key] = { previous_value: initial, new_value: form };
+      }
+    }
+  
+    for (const key in initialValues) {
+      if (initialValues.hasOwnProperty(key)) {
+        const initialValue = initialValues[key];
+        const formValue = formValues[key];
+  
+        compareValues(key, initialValue, formValue);
+      }
+    }
+  
+    return differences;
+  }
+  
 function formatDate(dateString) {
   // Check if dateString is a valid string before calling .includes
   if (typeof dateString !== "string") return null;
@@ -182,7 +231,7 @@ export function findEmployerDifferences(obj1, obj2) {
     console.log(obj1);
   // Compare employer_id if IDs are different
   console.log(obj2);
-  if (String(obj1.student.id) !== String(obj2.student_id)) {
+  if (String(obj1.student?.id) !== String(obj2?.student_id)) {
     console.log("obj2.employer_id",obj2);
       differences.employer_id = {
           previous_value:  obj1.student.full_name ,
@@ -197,9 +246,9 @@ export function findEmployerDifferences(obj1, obj2) {
   }
 
   // Compare assigned_to if IDs are different
-  if (String(obj1.assigned_to.id) !== String(obj2.assigned_to)) {
+  if (String(obj1.assigned_to) !== String(obj2.assigned_to)) {
       differences.assigned_to = {
-          previous_value: obj1.assigned_to,
+          previous_value: obj1.assigned_to.username,
           new_value: obj2.assigned_to,
       };
   }
@@ -474,18 +523,18 @@ export function compareObjects(obj1, obj2) {
             const date2 = normalizeDate(val2);
 
             if (date1.getTime() !== date2.getTime()) {
-                differences[key] = { oldValue: date1, newValue: date2 };
+                differences[key] = { previous_value: date1, newValue: date2 };
             }
         }
         // Handle other comparisons
         else if (val1 !== val2) {
-            differences[key] = {  newValue: val1, oldValue: val2 };
+            differences[key] = {  newValue: val1, previous_value: val2 };
         }
     }
 
     for (const key in obj2) {
         if (!(key in obj1) && !excludedKeys.includes(key)) {
-            differences[key] = { oldValue: undefined, newValue: obj2[key] };
+            differences[key] = { previous_value: undefined, newValue: obj2[key] };
         }
     }
 

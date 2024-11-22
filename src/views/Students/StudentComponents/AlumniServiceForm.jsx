@@ -213,8 +213,9 @@ const AlumniServiceForm = (props) => {
       propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Update",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Create",event_id:props.student.id,updatedby:userId ,changes_in:{name:values.alumni_service_student}};
     }
+
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };

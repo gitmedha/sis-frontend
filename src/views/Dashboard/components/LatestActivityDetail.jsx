@@ -8,7 +8,7 @@ import DetailField from "src/components/content/DetailField";
 const LatestActivityDetail = (props) => {
   const { onHide, show, data } = props;
   const history = useHistory();
-
+  console.log(props.data);
   console.log(props.data);
   return (
     <Modal
@@ -29,70 +29,97 @@ const LatestActivityDetail = (props) => {
             Latest Activity Detail
           </h1>
         </Modal.Title>
-        <div className="Go to">
-          <button
-            className="bg-light border-0 cursor-pointer"
-            onClick={() =>
-              history.push(`/${props.data.module_name}/${props.data.event_id}`)
-            }
-          >
-            <FaExternalLinkAlt size={25} />
-          </button>
-        </div>
+       
       </Modal.Header>
       <>
-        <Modal.Body className="bg-white">
-          <h4 className="section-header ">Basic Info</h4>
-          <div className="row  ">
-            <div className="col-md-6 col-sm-12">
-              <DetailField
-                className=""
-                Bold={""}
-                label="Activity"
-                value={props.data.activity}
-              />
-            </div>
+      <Modal.Body className="bg-white">
+  <div className="row">
+  <div className="col-md-6 col-sm-12">
+  <DetailField
+    className={`text-capitalize ${props.data.activity === "Delete" ? 'detail-field-delete ' : 'detail-field-create'}`}
+    Bold=""
+    label="Activity"
+    value={props.data.activity}
+  />
+</div>
+    <div className="col-md-6 col-sm-12">
+      <DetailField
+        className=" text-capitalize "
+        Bold
+        label="Module Name"
+        value={props.data.module_name}
+      />
+    </div>
+  </div>
 
-            <div className="row d-flex flex-start  ">
-              {Object.entries(props.data.changes_in).map(
-                ([key, value], index) => (
-                  <div className="col-md-6 col-sm-12 ">
-                    <DetailField
-                      key={key}
-                      label={key
-                        .replace(/_/g, " ")
-                        .replace(/\b\w/g, (c) => c.toUpperCase())} // Format label
-                      value={value?.previous_value || ""} // Display previous_value only
-                      Bold=""
-                      className=""
-                    />
-                  </div>
-                )
-              )}
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <DetailField
-                className=""
-                Bold={""}
-                label="Module Name"
-                value={props.data.module_name}
-              />
-            </div>
+ 
 
-            <div className="col-md-6 col-sm-12">
-              <DetailField
-                className=""
-                Bold={""}
-                label="Updated By"
-                value={props.data?.updatedby?.username}
-              />
-            </div>
-          </div>
-        </Modal.Body>
-        <div className="d-flex justify-content-center my-2">
+  {/* Next row starts here to align properly after changes */}
+  <div className="row">
+    <div className="col-md-6 col-sm-12">
+      <DetailField
+        className=""
+        Bold=""
+        label="Updated By"
+        value={props.data?.updatedby?.username}
+      />
+    </div>
+    <div className="col-md-6 col-sm-12">
+      <DetailField
+        className=""
+        Bold=""
+        label="Updated At"
+        value={moment(props.data?.updated_at).format('YYYY-MM-DD') || "N/A" }
+      />
+    </div>
+  </div>
+
+  <div className="row">
+    {props.data.activity.includes("Create")|| props.data.activity == "Delete" ?(
+      <div className="col-md-6 col-sm-12 text-capitalize">
+        <DetailField
+          label="Name"
+          value={props.data?.changes_in?.name}
+          Bold=""
+          className=""
+        />
+      </div>
+    ) : (
+      Object.entries(props.data.changes_in).map(([key, value], index) => (
+        <div className="col-md-6 col-sm-12" key={key}>
+          <DetailField
+            label={
+              "Previous " +
+              key
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, (c) => c)
+            }
+            value={value?.previous_value || "No data"}
+            Bold=""
+            className="text-capitalize "
+          />
+        </div>
+      ))
+    ) }
+  </div>
+</Modal.Body>
+
+        <div className="d-flex justify-content-center my-3">
           <button className="btn btn-danger" onClick={onHide}>
             Close
           </button>
+          <div className="Go to mx-4">
+            {props.data.activity !=="Delete" ? <button
+            className="btn bg-success border-0 cursor-pointer"
+            onClick={() =>
+              history.push(`/${props.data.module_name}${props.data.event_id ? "/"+props.data.event_id :''}`)
+            }
+          >
+            Check{" "}
+            <FaExternalLinkAlt size={15} />
+          </button> :''}
+          
+        </div>
         </div>
       </>
     </Modal>

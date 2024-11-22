@@ -60,7 +60,7 @@ const options = [
   { value: "No", label: "No" },
 ];
 const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
+  { value: "Industry Talk/Expert Talk", label: "Industry Talk/Expert T  alk" },
   {
     value: "Industry visit/Exposure visit",
     label: "Industry visit/Exposure visit",
@@ -252,7 +252,7 @@ const OperationDataupdateform = (props) => {
       donor: props.donor ? "Yes" : "No",
       area: props.area ? props.area : null
   };
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"User-ops Activity Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
+    let datavaluesforlatestcreate={module_name:"operations",activity:"Feild Activity Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();

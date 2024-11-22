@@ -212,12 +212,10 @@ const OpportunityForm = (props) => {
     }).join(" ")
     let propgramEnrollemntData={};
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props?.student?.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
-      
-    }else {
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props?.student?.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"opportunity",activity:"update",event_id:props?.student?.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      await createLatestAcivity(propgramEnrollemntData);
     }
-    await createLatestAcivity(propgramEnrollemntData);
+   
     onHide(values);
   };
 

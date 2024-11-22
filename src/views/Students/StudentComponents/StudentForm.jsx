@@ -18,6 +18,7 @@ import {
 } from "../../../utils/function/lookupOptions";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { capitalizeFirstLetter } from "../../../utils/function/Checker";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -176,8 +177,38 @@ const StudentForm = (props) => {
     values.name_of_parent_or_guardian = capitalizeFirstLetter(
       values.name_of_parent_or_guardian
     );
+    console.log(values.full_name);
     setDisableSaveButton(true);
-    await onHide(values);
+    let studentData = {};
+    let StudentValues=await onHide(values); 
+    console.log(StudentValues);
+    if (props.student_id) {
+      let updatedvalue=initialValues;
+    updatedvalue.full_name=capitalizeFirstLetter(initialValues.full_name);
+    updatedvalue.name_of_parent_or_guardian = capitalizeFirstLetter(
+      initialValues.name_of_parent_or_guardian
+    );
+      let changes_in=compareObjects( values,studentData);
+      console.log(changes_in);
+      studentData = {
+        module_name: "student",
+        activity: "update",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects( values,updatedvalue),
+      };
+    } else {
+      studentData = {
+        module_name: "students",
+        activity: "Create",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: {name:values.full_name},
+      };
+    }
+    await createLatestAcivity(studentData);
+    
+    
     setDisableSaveButton(false);
   };
 
