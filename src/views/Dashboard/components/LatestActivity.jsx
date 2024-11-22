@@ -52,6 +52,13 @@ const LatestActivity=(props)=> {
           Header: 'Activity',
           accessor: 'activity',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return 'N/A';
+            let formattedValue;
+              // Capitalize first letter
+              formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+            return formattedValue;
+          },
         },
         {
           Header: 'Module name',
