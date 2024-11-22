@@ -20,6 +20,7 @@ import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import EmployerSearchBar from "./EmployerComponents/EmployerSearchBar";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -492,13 +493,26 @@ const Employers = (props) => {
 
     nProgress.start();
     createEmployer(dataToSave)
-      .then((data) => {
+      .then(async(data) => {
         if (data.data.errors) {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Employer created successfully.", "success");
           getEmployers();
           setModalShow(false);
+          let EmployerEnrollmentData = {
+            module_name: "employer",
+            activity: "Create",
+            event_id: data.data.data.createEmployer.employer.id,
+            updatedby: userId,
+            changes_in: { name: data.data.data.createEmployer.employer.name },
+          };
+    
+          try {
+            await createLatestAcivity(EmployerEnrollmentData);
+          } catch (error) {
+            console.error("Error logging activity:", error);
+          }
           history.push(
             `/employer/${data.data.data.createEmployer.employer.id}`
           );

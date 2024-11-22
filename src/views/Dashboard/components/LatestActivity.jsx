@@ -6,6 +6,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import LatestActivityDetail from './LatestActivityDetail';
 import { useHistory } from 'react-router-dom';
 import { getActivity } from 'src/utils/LatestChange/Api';
+import moment from 'moment';
 
 // const datavalues=[
 //     {
@@ -66,6 +67,10 @@ const LatestActivity=(props)=> {
           Header: 'Updated at',
           accessor: 'updated_at',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return ''; // Handle null/undefined values
+            return moment(value).format('YYYY-MM-DD HH:mm'); // Customize format as needed
+          }
         },
         // {
         //   Header: 'Changes in',

@@ -290,21 +290,13 @@ const EmployerForm = (props) => {
     let EmployerEnrollmentData = {};
     if (props.employmentConnection) {
       EmployerEnrollmentData = {
-        module_name: "Employer",
+        module_name: "employer",
         activity: "update",
         event_id: values.id,
         updatedby: userId,
         changes_in: compareObjects(props.employmentConnection, values),
       };
-    } else {
-      EmployerEnrollmentData = {
-        module_name: "Empoyer",
-        activity: "Create",
-        event_id: values.id,
-        updatedby: userId,
-        changes_in: values,
-      };
-    }
+    } 
     await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };

@@ -20,6 +20,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -475,16 +476,31 @@ const Institutions = (props) => {
   const createInstitutionApi = (id, dataToSave) => {
     nProgress.start();
     createInstitution(dataToSave)
-      .then((data) => {
+      .then(async(data) => {
         if (data.data.errors) {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Institution created successfully.", "success");
           setModalShow(false);
           getInstitutions();
-          history.push(
-            `/institution/${data.data.data.createInstitution.institution.id}`
-          );
+          
+          let propgramEnrollemntData = {
+            module_name: "institution",
+            activity: "Create",
+            event_id: data.data.data.createInstitution.institution.id,
+            updatedby: userId,
+            changes_in: { name: data.data.data.createInstitution.institution.name },
+          };
+    
+          createLatestAcivity(propgramEnrollemntData)
+            .then(() => {
+              console.log("Activity created successfully.");
+            })
+            .catch((err) => {
+              console.error("Failed to create activity:", err);
+            });
+    
+          history.push(`/institution/${data.data.data.createInstitution.institution.id}`);
         }
       })
       .catch((err) => {
