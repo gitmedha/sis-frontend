@@ -57,6 +57,26 @@ const LatestActivity=(props)=> {
           Header: 'Module name',
           accessor: 'module_name',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return '';
+            
+            let formattedValue;
+        
+            // Handle specific cases for "batch" and "opportunity"
+            if (value.toLowerCase() === 'batch') {
+              formattedValue = 'Batches';
+            } else if (value.toLowerCase() === 'opportunity') {
+              formattedValue = 'Opportunities';
+            } else {
+              // Capitalize first letter and add "s" if not ending with "s"
+              formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+              if (!formattedValue.endsWith('s')) {
+                formattedValue += 's';
+              }
+            }
+        
+            return formattedValue;
+          },
         },
         {
           Header: 'Updated by',
