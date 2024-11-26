@@ -708,7 +708,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                 </Section>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

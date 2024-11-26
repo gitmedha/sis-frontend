@@ -362,8 +362,9 @@ div::-webkit-scrollbar-thumb {
 }
 
 .form_sec {
-  height: 500px;
-  overflow: scroll;
+  // height: 500px;
+  // overflow: scroll;
+  overflow-y: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
@@ -496,6 +497,15 @@ div::-webkit-scrollbar-thumb {
 }
 .text-decor{
   text-transform: uppercase !important;
+}
+
+
+// Form Container
+
+.form-container {
+  max-height: 90vh !important; /* Adjust as needed */
+  overflow-y: auto !important;
+  position: relative !important;
 }
 @import './media/lg.scss';
 @import './media/md.scss';
