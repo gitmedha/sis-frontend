@@ -11,6 +11,7 @@ import {
   GET_ALL_USERS,
   GET_USERS_BY_ROLE,
   GET_ALL_STUDENT,
+  GET_USERS_BY_ROLE_SEARCH,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -186,9 +187,10 @@ export const getAllSrm =async(role)=>{
 
 export const getAllSearchSrm =async(role)=>{
   let data =await queryBuilder({
-    query:GET_USERS_BY_ROLE,
+    query:GET_USERS_BY_ROLE_SEARCH,
     variables:{
-      role:1
+      role:1,
+      blocked: false, 
     },
   });
   return data?.data?.users.map(user => ({
