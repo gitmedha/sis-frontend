@@ -145,7 +145,7 @@ const ProgramEnrollmentForm = (props) => {
       data.institution=data.institution.id;
       propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Update",event_id:props.institution.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,data)};
     }else {
-      propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Create",event_id:props.institution.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Created",event_id:props.institution.id,updatedby:userId ,changes_in:values};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
