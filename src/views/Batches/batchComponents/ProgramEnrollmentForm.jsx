@@ -153,7 +153,7 @@ const ProgramEnrollmentForm = (props) => {
       propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Update",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:values?.program_enrollment_batch};
     }
     await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
