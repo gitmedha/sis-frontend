@@ -29,7 +29,7 @@ const expectedColumns = [
   "Trainer 2",
   "Partner Department",
   "College Name",
-  "City",
+  "District where training took place",
   "State",
   "Age",
   "Gender",
@@ -561,7 +561,7 @@ const TotUpload = (props) => {
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "Please select from dropdown",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
@@ -594,7 +594,7 @@ const TotUpload = (props) => {
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
