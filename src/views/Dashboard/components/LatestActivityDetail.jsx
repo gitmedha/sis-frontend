@@ -75,33 +75,64 @@ const LatestActivityDetail = (props) => {
   </div>
 
   <div className="row">
-    {props.data.activity.includes("Create")|| props.data.activity.includes("Delete") ?(
-      <div className="col-md-6 col-sm-12 text-capitalize">
-        <DetailField
-          label="Name"
-          value={props.data?.changes_in?.name}
-          Bold=""
-          className=""
-        />
-      </div>
-    ) : (
-      Object.entries(props.data.changes_in).map(([key, value], index) => (
-        <div className="col-md-6 col-sm-12" key={key}>
-          <DetailField
-            label={
-              "Previous " +
-              key
-                .replace(/_/g, " ")
-                .replace(/\b\w/g, (c) => c)
-            }
-            value={value?.previous_value || "No data"}
-            Bold=""
-            className="text-capitalize "
-          />
-        </div>
-      ))
-    ) }
-  </div>
+  {props.data.activity.includes("Create") || props.data.activity.includes("Delete") ? (
+    <div className="col-md-6 col-sm-12 text-capitalize">
+      <DetailField
+        label={props.data?.module_name.charAt(0).toUpperCase() + props.data?.module_name.slice(1) + " Name"}
+        value={props.data?.changes_in?.name}
+        Bold=""
+        className=""
+      />
+    </div>
+  ) : (
+    Object.entries(props.data.changes_in)
+      .filter(([key, value]) => {
+        const { previous_value, new_value } = value || {};
+
+        // Normalize strings to lowercase for case-insensitive comparison
+        const normalizeString = (val) => (typeof val === "string" ? val.trim().toLowerCase() : val);
+
+        // Format dates for comparison
+        const formatDate = (val) =>
+          moment(val, moment.ISO_8601, true).isValid()
+            ? moment(val).format("YYYY-MM-DD")
+            : val;
+
+        // Normalize values
+        const normalizedPrev = formatDate(normalizeString(previous_value));
+        const normalizedNew = formatDate(normalizeString(new_value));
+
+        // Check if previous and new values are meaningfully different
+        return normalizedPrev !== normalizedNew;
+      })
+      .map(([key, value]) => {
+        const { previous_value } = value || {};
+
+        // Display formatted date or raw value
+        const displayValue = moment(previous_value, moment.ISO_8601, true).isValid()
+          ? moment(previous_value).format("YYYY-MM-DD")
+          : previous_value;
+
+        return (
+          <div className="col-md-6 col-sm-12" key={key}>
+            <DetailField
+              label={
+                "Previous " +
+                key
+                  .replace(/_/g, " ")
+                  .replace(/\b\w/g, (c) => c.toUpperCase())
+              }
+              value={displayValue || "No data"}
+              Bold=""
+              className="text-capitalize"
+            />
+          </div>
+        );
+      })
+  )}
+</div>
+
+
 </Modal.Body>
 
         <div className="d-flex justify-content-center my-3">
