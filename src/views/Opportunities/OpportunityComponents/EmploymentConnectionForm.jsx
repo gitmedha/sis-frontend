@@ -109,10 +109,10 @@ const EnrollmentConnectionForm = (props) => {
     let propgramEnrollemntData={};
     console.log(props);
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Update",event_id:props.opportunity.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Updated",event_id:props.opportunity.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Create",event_id:props.opportunity.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Created",event_id:props.opportunity.id,updatedby:userId ,changes_in:values};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);

@@ -150,13 +150,15 @@ const ProgramEnrollmentForm = (props) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
     if(props.programEnrollment ){
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Update",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Updated",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:values?.program_enrollment_batch};
+      console.log("hehehlooo");
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:{name:values?.program_enrollment_batch}};
     }
+    console.log(propgramEnrollemntData);
     await createLatestAcivity(propgramEnrollemntData);
-      onHide(values);
+    onHide(values);
     }
   };
 

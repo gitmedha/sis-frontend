@@ -201,10 +201,10 @@ function compareObjects(obj1, obj2) {
     // console.log(transformObj1(props.employmentConnection));
     // console.log(compareObjects(props.employmentConnection,values))
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Update",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(initialValues,values)};
+      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Updated",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(initialValues,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"student",activity:"Employment Connection Create",event_id:props.student.id,updatedby:userId ,changes_in: {name:values.full_name}};
+      propgramEnrollemntData={module_name:"student",activity:"Employment Connection Created",event_id:props.student.id,updatedby:userId ,changes_in: {name:values.full_name}};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
