@@ -8,8 +8,6 @@ import DetailField from "src/components/content/DetailField";
 const LatestActivityDetail = (props) => {
   const { onHide, show, data } = props;
   const history = useHistory();
-  console.log(props.data);
-  console.log(props.data);
   return (
     <Modal
       centered
@@ -140,7 +138,7 @@ const LatestActivityDetail = (props) => {
             Close{" "}
           </button>
           <div className="Go to mx-4">
-            {props.data.activity !=="Delete" ? <button
+            {!props.data.activity.toLowerCase().includes("delete") ? <button
             className="btn btn-primary cursor-pointer"
             onClick={() =>
               history.push(`/${props.data.module_name}${props.data.event_id ? "/"+props.data.event_id :''}`)
