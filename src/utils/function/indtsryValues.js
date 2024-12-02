@@ -16,6 +16,7 @@ export function restructureData(data) {
         }
 
         // Find or create the industry entry within the category
+        // console.log("categoryEntry",categoryEntry);
         let industryEntry = categoryEntry.children.find(ind => ind.label === industry_name);
 
         if (!industryEntry) {
