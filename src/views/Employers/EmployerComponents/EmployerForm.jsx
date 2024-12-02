@@ -20,7 +20,7 @@ import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
-import { GET_ALL_INDUSTRY } from "src/graphql";
+import { GET_ALL_INDUSTRY, GET_PICKLIST } from "src/graphql";
 import { restructureData } from "src/utils/function/indtsryValues";
 import DropdownTreeSelect from "react-dropdown-tree-select";
 import "react-dropdown-tree-select/dist/styles.css";
@@ -173,20 +173,13 @@ const EmployerForm = (props) => {
   }, []);
 
   useEffect(() => {
-    const getAllEmployers = async () => {
-      return await api
-        .post("/graphql", {
-          query: GET_ALL_INDUSTRY,
-        })
-        .then((values) => {
-          const data = restructureData(values.data.data.industries);
 
-          setDropdownOptions(data);
-          setIndustryOptions(data);
-        })
-        .catch((error) => {
-          return Promise.reject(error);
-        });
+    
+  
+    const getAllEmployers = async () => {
+
+      let { data } = await api.post("/industries/findAll");
+      setIndustryOptions(data);
     };
 
     getAllEmployers();
