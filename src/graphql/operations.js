@@ -75,6 +75,7 @@ const usersTotsFields = `
     gender
     contact
     designation
+    email
 `;
 const studentUpskillingFields = `
     id
