@@ -179,7 +179,13 @@ const EmployerForm = (props) => {
     const getAllEmployers = async () => {
 
       let { data } = await api.post("/industries/findAll");
-      setIndustryOptions(data);
+      const excludeServices = (array) => {
+        return array.filter((item) => item.label !== "Services");
+      };
+      
+      const updatedData = excludeServices(data);
+      
+      setIndustryOptions(updatedData);
     };
 
     getAllEmployers();
