@@ -143,6 +143,10 @@ const Totdatafield = (props) => {
                     value={props?.user_name}
                   />
                   <DetailField
+                    label="Email id"
+                    value={props?.email}
+                  />
+                  <DetailField
                     label="Trainer 1"
                     value={props?.trainer_1?.username}
                   />
@@ -186,7 +190,6 @@ const Totdatafield = (props) => {
                     label="Trainer Name"
                     value={props.trainer_1.id}
                   /> */}
-                  {console.log(props)}
                   <DetailField label="Module Name" value={props?.module_name} />
                   <DetailField
                     label="Trainer 2"
