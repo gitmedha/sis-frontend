@@ -36,7 +36,8 @@ const UserTot = (props) => {
       contact: "",
       designation: "",
       start_date:"",
-      end_date:""
+      end_date:"",
+      email:""
     },
     // Add more initial rows as needed
   ]);
@@ -59,7 +60,8 @@ const UserTot = (props) => {
       contact: "",
       designation: "",
       start_date:"",
-      end_date:""
+      end_date:"",
+      email:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -80,7 +82,8 @@ const UserTot = (props) => {
     contact: "",
     designation: "",
     start_date:"",
-    end_date:""
+    end_date:"",
+    email:""
   });
   // 
   const [showLimit, setshowLimit] = useState(false);
@@ -437,6 +440,7 @@ const UserTot = (props) => {
                 <tr>
                   {/* <th className="id">ID</th> */}
                   <th>Participant Name *</th>
+                  <th>Email id</th>
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Mobile no.  </th>

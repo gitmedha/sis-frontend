@@ -221,6 +221,7 @@ const TotEdit = (props) => {
     contact: "",
     designation: "",
     published_at: "",
+    email:""
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -244,6 +245,7 @@ const TotEdit = (props) => {
     initialValues["trainer_2"] = props.trainer_2?.id;
     initialValues["city"] = props.city;
     initialValues["certificate_given"] = props.certificate_given;
+    initialValues["email"] = props?.email;
   }
 
   useEffect(() => {
@@ -305,6 +307,9 @@ const TotEdit = (props) => {
         const trainer1 = this.resolve(Yup.ref("trainer_1"));
         return trainer1 !== trainer2;
       }),
+      email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
   });
 
   const deleteEntry = async () => {
@@ -368,6 +373,15 @@ const TotEdit = (props) => {
                           control="input"
                           name="user_name"
                           label="Participant Name"
+                          className="form-control"
+                          placeholder="Participant Name"
+                        />
+                      </div>
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="email"
+                          label="Email id"
                           className="form-control"
                           placeholder="Participant Name"
                         />
