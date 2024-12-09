@@ -44,6 +44,7 @@ const UserTotRowdata = (props) => {
       designation: "",
       start_date: "",
       end_date: "",
+      email:""
     },
     // Add more initial rows as needed
   ]);
@@ -182,6 +183,13 @@ const UserTotRowdata = (props) => {
             onKeyPress={handleKeyPresscharandspecialchar}
             ref={userName}
             onChange={(e) => handleInputChange(row.id, "user_name",userName)}
+          />
+        </td>
+        <td>
+          <input
+            className="table-input h-2"
+            type="text"
+            onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
         </td>
          <td>
