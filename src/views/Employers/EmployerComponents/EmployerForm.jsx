@@ -179,12 +179,34 @@ const EmployerForm = (props) => {
     const getAllEmployers = async () => {
 
       let { data } = await api.post("/industries/findAll");
-      const excludeServices = (array) => {
-        return array.filter((item) => item.label !== "Services");
-      };
+      const processData = (data) => {
+        return data.map((item) => {
+            if (item.label === "Irrigation") {
+                return {
+                    ...item,
+                    value: item.label, 
+                    children: [] 
+                };
+            }
+            if (item.label === "Diversified") {
+              return {
+                  ...item,
+                  value: item.label, 
+                  children: [] 
+              };
+          }
+            if (item.children && item.children.length > 0) {
+                return {
+                    ...item,
+                    children: processData(item.children)
+                };
+            }
+            return item;
+        });
+    };
+    
       
-      const updatedData = excludeServices(data);
-      
+      const updatedData = processData(data);
       setIndustryOptions(updatedData);
     };
 
