@@ -50,11 +50,14 @@ import {
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
 import UploadFile from "./OperationComponents/UploadFile";
-import TotUpload from "./UploadFiles/TotUpload";
+import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
+import UpskillUpdate from "./OperationComponents/UpskillUpdate";
+import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -92,6 +95,8 @@ const Styled = styled.div`
 
 const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
 const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
+const mentorshipFile='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
+
 
 const Operations = ({
   opsData,
@@ -136,6 +141,9 @@ const Operations = ({
   const [uploadModal, setUploadModal] = useState({
     myData: false,
     tot: false,
+    mentorship:false,
+    upskill:false,
+    pitching:false
   });
   const userId = localStorage.getItem("user_id");
 
@@ -1033,20 +1041,31 @@ const Operations = ({
     let datavaluesforlatestcreate={};
     try {
       if (key === "my_data") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"Field Activities Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
+        datavaluesforlatestcreate={module_name:"Operations",activity:"Field Activities Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
       await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
       } 
       if (key === "tot") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"User-Tot Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:"N/A"}};
+        datavaluesforlatestcreate={module_name:"Operations",activity:"User-Tot Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
         .then(() => {
           setAlert("data created successfully.", "success");
         })
         .catch((err) => {
-          setAlert("Unable to create upskilling data.", "error");
+          setAlert("Unable to create TOT data.", "error");
+        })
+      } 
+      if (key === "mentorship") {
+        datavaluesforlatestcreate={module_name:"Operations",activity:"Mentorship Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateMentorship(data)
+        .then(() => {
+          setAlert("data created successfully.", "success");
+        })
+        .catch((err) => {
+          setAlert("Unable to create Mentorship data.", "error");
         })
       } 
       getoperations()
@@ -1072,6 +1091,7 @@ const Operations = ({
     }
   };
   const closeUpload = () => {
+    console.log("jejejej");
     setUploadModal(false);
   };
 
@@ -1115,7 +1135,7 @@ const Operations = ({
                     </span>
                   </button>
 
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {activeTab.key == "my_data" || activeTab.key == "useTot" || activeTab.key =="mentorship" || activeTab.key == "upskilling" || activeTab.key == "collegePitches" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -1124,10 +1144,34 @@ const Operations = ({
                             myData: true,
                             tot: false,
                           });
-                        } else {
+                        } if(activeTab.key == "useTot") {
                           setUploadModal({
                             tot: true,
                             myData: false,
+                          });
+                        }
+                        if(activeTab.key == "mentorship"){
+                          setUploadModal({
+                            tot: false,
+                            myData: false,
+                            mentorship:true
+                          });
+                        }
+                        if(activeTab.key == "upskilling"){
+                          setUploadModal({
+                            tot: false,
+                            myData: false,
+                            mentorship:false,
+                            upskill:true
+                          });
+                        }
+                        if(activeTab.key == "collegePitches"){
+                          setUploadModal({
+                            tot: false,
+                            myData: false,
+                            mentorship:false,
+                            upskill:false,
+                            pitching:true
                           });
                         }
                       }}
@@ -1140,14 +1184,14 @@ const Operations = ({
                   ) : (
                     ""
                   )}
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" ? (
+                  {activeTab.key == "my_data" || activeTab.key == "useTot"  || activeTab.key =="mentorship" || activeTab.key == "upskilling" || activeTab.key == "collegePitches"? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
                           href={
                             activeTab.key == "my_data"?
                             feildActivityFIle
-                           :totfile}
+                           : activeTab.key == "useTot" ? totfile: activeTab.key == "mentorship" ? mentorshipFile :""}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={
@@ -1416,6 +1460,28 @@ const Operations = ({
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}
                 tot="yes"
+              />
+            </>
+          )}
+
+{uploadModal.mentorship && (
+            <>
+              <MentorshipUpload
+                uploadExcel={uploadExcel}
+                // alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={()=>closeUpload()}
+                mentorship="yes"
+              />
+            </>
+          )}
+
+{uploadModal.upskill && (
+            <>
+              <UpskillingUpload
+                // uploadExcel={uploadExcel}
+                // alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={()=>closeUpload()}
+                mentorship="yes"
               />
             </>
           )}

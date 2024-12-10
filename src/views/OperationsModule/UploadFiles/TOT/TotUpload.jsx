@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
-import { queryBuilder } from "../../../apis";
-import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
+import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
+import { queryBuilder } from "../../../../apis";
+import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
 import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
@@ -12,8 +12,8 @@ import * as XLSX from "xlsx";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
-import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
+} from "../../../Address/addressActions";
+import { bulkCreateUsersTots, getTotPickList } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
