@@ -1,5 +1,5 @@
 import React from "react";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";

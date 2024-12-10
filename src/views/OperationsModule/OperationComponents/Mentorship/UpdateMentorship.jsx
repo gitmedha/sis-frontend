@@ -73,19 +73,6 @@ const statusOption = [
   { value: "Dropped out", label: "Dropped out" },
 ];
 
-const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
-  {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
-  },
-  {
-    value: "Workshop/Training Session/Activity (In/Off campus)",
-    label: "Workshop/Training Session/Activity (In/Off campus)",
-  },
-  { value: "Alumni Engagement", label: "Alumni Engagement" },
-  { value: "Placement Drive", label: "Placement Drive" },
-];
 
 const UpdateMentorship = (props) => {
   let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
