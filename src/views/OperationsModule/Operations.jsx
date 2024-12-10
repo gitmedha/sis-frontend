@@ -544,7 +544,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data.data.data);
           setOpts(data.data.data.activeMentoshipData.values);
           setoptsAggregate(data.data.data.activeMentoshipData.aggregate);
         })
@@ -1091,9 +1090,55 @@ const Operations = ({
     }
   };
   const closeUpload = () => {
-    console.log("jejejej");
     setUploadModal(false);
   };
+
+  const openclosepopup=()=>{
+    if (activeTab.key == "my_data") {
+      setUploadModal({
+        myData: true,
+        tot: false,
+        mentorship:false,
+        upskill:false,
+        pitching:true
+      });
+    } if(activeTab.key == "useTot") {
+      setUploadModal({
+        tot: true,
+        myData: false,
+        mentorship:false,
+        upskill:false,
+        pitching:true
+      });
+    }
+    if(activeTab.key == "mentorship"){
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship:true,
+        upskill:false,
+        pitching:true
+      });
+    }
+    if(activeTab.key == "upskilling"){
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship:false,
+        pitching:true,
+        upskill:true
+      });
+    }
+    if(activeTab.key == "collegePitches"){
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship:false,
+        upskill:false,
+        pitching:true
+      });
+    }
+  }
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1139,41 +1184,7 @@ const Operations = ({
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
-                        if (activeTab.key == "my_data") {
-                          setUploadModal({
-                            myData: true,
-                            tot: false,
-                          });
-                        } if(activeTab.key == "useTot") {
-                          setUploadModal({
-                            tot: true,
-                            myData: false,
-                          });
-                        }
-                        if(activeTab.key == "mentorship"){
-                          setUploadModal({
-                            tot: false,
-                            myData: false,
-                            mentorship:true
-                          });
-                        }
-                        if(activeTab.key == "upskilling"){
-                          setUploadModal({
-                            tot: false,
-                            myData: false,
-                            mentorship:false,
-                            upskill:true
-                          });
-                        }
-                        if(activeTab.key == "collegePitches"){
-                          setUploadModal({
-                            tot: false,
-                            myData: false,
-                            mentorship:false,
-                            upskill:false,
-                            pitching:true
-                          });
-                        }
+                        openclosepopup()
                       }}
                     >
                       Upload &nbsp;

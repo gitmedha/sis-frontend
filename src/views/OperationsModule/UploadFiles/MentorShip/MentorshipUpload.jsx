@@ -178,7 +178,6 @@ const MentorshipUpload = (props) => {
     if (validateColumns(filteredArray, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
-      console.log(filteredArray);
       processParsedData(filteredArray);
     }
   };
@@ -219,7 +218,6 @@ useEffect(() => {
   });
   const getdata = async () => {
     const data = await getAllSrmbyname();
-    console.log(data);
     setAssigneeOption(data);
   };
 
@@ -251,8 +249,6 @@ const processParsedData = (data) => {
       (user) => user.label === newItem["Assigned To"]
     )?.value;
     
-
-    console.log('srmcheck',srmcheck);
 
 
     const onboardingDate = excelSerialDateToJSDate(newItem["Onboarding Date"]);
@@ -308,7 +304,6 @@ const processParsedData = (data) => {
       });
     }
   });
-  console.log('formattedData',notFoundData);
   setExcelData(formattedData);
   setNotuploadedData(notFoundData);
 };

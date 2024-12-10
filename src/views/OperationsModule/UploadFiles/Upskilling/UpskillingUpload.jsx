@@ -147,7 +147,7 @@ const UpskillingUpload = (props) => {
             <div className="col-md-12 d-flex justify-content-center">
               <button
                 type="button"
-                onClick={ ()=>console.log("heheehhehe")}
+                onClick={ ()=>console.log("check")}
                 className="btn btn-danger px-4 mx-4 mt-2"
                 style={{ height: "2.5rem" }}
               >
