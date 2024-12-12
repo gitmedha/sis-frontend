@@ -202,7 +202,7 @@ const EmployerForm = (props) => {
                 };
             }
             return item;
-        });
+        }).sort((a, b) => a.label.localeCompare(b.label));
     };
     
       
