@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_STUDENT } from "../../../graphql";
+import { GET_ALL_INSTITUTES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -808,4 +808,35 @@ export const getOpsPickList = async () => {
     .catch((error) => {
       return Promise.reject(error);
     });
+};
+
+
+export const getAllInstitute = async () => {
+  try {
+    let count = 0;
+    let instituteData = [];
+    const countResponse = await api.post("/graphql", {
+      query: GET_INSTITUTES_COUNT,
+    });
+    count = countResponse.data.data.institutionsConnection.aggregate.count;
+    for (let i = 0; i < count; i += 500) {
+      const variables = {
+        limit: 500,
+        start: i,
+      };
+
+      const batchResponse = await api.post("/graphql", {
+        query: GET_ALL_INSTITUTES,
+        variables,
+      });
+
+      instituteData = [
+        ...instituteData,
+        ...batchResponse.data.data.institutionsConnection.values,
+      ];
+      return instituteData;
+    }
+  } catch (err) {
+    console.error(err);
+  }
 };
