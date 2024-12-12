@@ -8,7 +8,10 @@ import {
 } from "react-icons/fa";
 import { isAdmin, isSRM } from "src/common/commonFunctions";
 import { getAllSrmbyname } from "src/utils/function/lookupOptions";
-import { getAddressOptions, getStateDistricts } from "src/views/Address/addressActions";
+import {
+  getAddressOptions,
+  getStateDistricts,
+} from "src/views/Address/addressActions";
 import * as XLSX from "xlsx";
 import Check from "./Check";
 
@@ -28,7 +31,7 @@ const expectedColumns = [
   "Medha Program Name",
   "Status",
   "Additional Comments",
-  "Assigned To"
+  "Assigned To",
 ];
 
 const MentorshipUpload = (props) => {
@@ -45,7 +48,7 @@ const MentorshipUpload = (props) => {
   const [excelData, setExcelData] = useState([]);
   const [notUploadedData, setNotuploadedData] = useState([]);
   const [uploadNew, setUploadNew] = useState(false);
-  const [showModalMentor,setShowModalMentor]=useState(false)
+  const [showModalMentor, setShowModalMentor] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,35 +62,37 @@ const MentorshipUpload = (props) => {
     // if(!data){
     //   setUploadSuccesFully("No Data")
     // }
-    if(data.length == 0){
+    if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
       );
-      return false
+      return false;
     }
-    if (!data ) {
+    if (!data) {
       setNotUploadSuccesFully(
         "Some data fields are empty or not properly initialized"
       );
       return false;
     }
-    const missingColumns = expectedColumns.filter(
-      (col) => {;
-        return !fileColumns.includes(col.trim())
-      }
-    );
+    const missingColumns = expectedColumns.filter((col) => {
+      return !fileColumns.includes(col.trim());
+    });
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
-    const incompleteColumns = expectedColumns.filter(col =>
-      data.every(row => row[col] === null || row[col] === "" || row[col] ===undefined )
+    const incompleteColumns = expectedColumns.filter((col) =>
+      data.every(
+        (row) => row[col] === null || row[col] === "" || row[col] === undefined
+      )
     );
 
     if (incompleteColumns.length > 0) {
-      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      setNotUploadSuccesFully(
+        `Columns with missing data: ${incompleteColumns.join(", ")}`
+      );
       return false;
     }
-    
+
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
@@ -191,155 +196,159 @@ const MentorshipUpload = (props) => {
     return `${year}-${month}-${day}`;
   };
 
-useEffect(() => {
+  useEffect(() => {
+    getAddressOptions().then((data) => {
+      setStateOptions(
+        data?.data?.data?.geographiesConnection.groupBy.state
+          .map((state) => ({
+            key: state?.id,
+            label: state?.key,
+            value: state?.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+    getStateDistricts().then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.district
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+    });
+    const getdata = async () => {
+      const data = await getAllSrmbyname();
+      setAssigneeOption(data);
+    };
 
-  getAddressOptions().then((data) => {
-    setStateOptions(
-      data?.data?.data?.geographiesConnection.groupBy.state
-        .map((state) => ({
-          key: state?.id,
-          label: state?.key,
-          value: state?.key,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
-    );
-  });
-  getStateDistricts().then((data) => {
-    setAreaOptions([]);
-    setAreaOptions(
-      data?.data?.data?.geographiesConnection.groupBy.district
-        .map((area) => ({
-          key: area.id,
-          label: area.key,
-          value: area.key,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
-    );
-  });
-  const getdata = async () => {
-    const data = await getAllSrmbyname();
-    setAssigneeOption(data);
+    getdata();
+  }, [props]);
+
+  const processParsedData = (data) => {
+    const formattedData = [];
+    const notFoundData = [];
+    const userId = localStorage.getItem("user_id");
+
+    data.forEach((item, index) => {
+      const newItem = {};
+      Object.keys(item).forEach((key) => {
+        newItem[key] = item[key];
+      });
+
+      const currentUser = localStorage.getItem("user_id");
+      console.log(stateOptions);
+      const StateCheck = stateOptions.find(
+        (state) => state === newItem["State"]
+      )?.id;
+      const areaCheck = areaOptions.find(
+        (area) => area === newItem["City"]
+      )?.id;
+
+      const srmcheck = assigneOption.find(
+        (user) => user.label === newItem["Assigned To"]
+      )?.value;
+
+      const onboardingDate = excelSerialDateToJSDate(
+        newItem["Onboarding Date"]
+      );
+
+      // const isStartDateValid = isValidDateFormat(startDate);
+
+      const createdby = Number(userId);
+      const updatedby = Number(userId);
+
+      const isValidContact = (contact) => {
+        const pattern = /^[0-9]{10}$/; // Regex for 10-digit number
+        return contact && pattern.test(contact);
+      };
+      let parseDate;
+
+      if (
+        !srmcheck ||
+        !newItem["Mentor Name"] ||
+        !newItem["Email ID"] ||
+        !newItem["Mentor's Domain"] ||
+        !isValidContact(newItem["Contact"]) ||
+        !newItem["Mentor's Company Name"] ||
+        !newItem["Designation/Title"]
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          assigned_to: newItem["Assigned To"],
+          mentor_name: newItem["Mentor Name"] || "",
+          email: newItem["Email ID"] || "",
+          mentor_domain: newItem["Mentor's Domain"] || "",
+          mentor_company_name: newItem["Mentor's Company Name"] || "",
+          designation: newItem["Designation/Title"] || "",
+          mentor_area: newItem["Mentor's Area"] || "",
+          mentor_state: newItem["Mentor's State"] || "",
+          outreach: newItem["Outreach (Offline/Online)"] || "",
+          onboarding_date: onboardingDate || "",
+          social_media_profile_link: newItem["Social Media Profile Link"] || "",
+          medha_area: newItem["Medha Area"] || "",
+          status: newItem["Status"] || "",
+          program_name: newItem["Medha Program Name"] || "",
+          contact: newItem["Contact"] || "",
+        });
+      } else {
+        formattedData.push({
+          assigned_to: srmcheck,
+          mentor_name: newItem["Mentor Name"] || "",
+          email: newItem["Email ID"] || "",
+          mentor_domain: newItem["Mentor's Domain"] || "",
+          mentor_company_name: newItem["Mentor's Company Name"] || "",
+          designation: newItem["Designation/Title"] || "",
+          mentor_area: newItem["Mentor's Area"] || "",
+          mentor_state: newItem["Mentor's State"] || "",
+          outreach: newItem["Outreach (Offline/Online)"] || "",
+          onboarding_date: onboardingDate || "",
+          social_media_profile_link: newItem["Social Media Profile Link"] || "",
+          medha_area: newItem["Medha Area"] || "",
+          status: newItem["Status"] || "",
+          program_name: newItem["Medha Program Name"] || "",
+          contact: newItem["Contact"] || "",
+        });
+      }
+    });
+    setExcelData(formattedData);
+    setNotuploadedData(notFoundData);
   };
 
-  getdata();
-}, [props]);
-
-const processParsedData = (data) => {
-  const formattedData = [];
-  const notFoundData = [];
-  const userId = localStorage.getItem("user_id");
-
-  data.forEach((item, index) => {
-    const newItem = {};
-    Object.keys(item).forEach((key) => {
-      newItem[key] = item[key];
-    });
-
-    const currentUser = localStorage.getItem("user_id");
-    const StateCheck = stateOptions.find(
-      (state) => state === newItem["State"]
-    )?.id;
-    const areaCheck = areaOptions.find(
-      (area) => area === newItem["City"]
-    )?.id;
-  
-
-
-    const srmcheck = assigneOption.find(
-      (user) => user.label === newItem["Assigned To"]
-    )?.value;
-    
-
-
-    const onboardingDate = excelSerialDateToJSDate(newItem["Onboarding Date"]);
-
-
-    // const isStartDateValid = isValidDateFormat(startDate);
-
-    const createdby = Number(userId);
-    const updatedby = Number(userId);
-
-   const isValidContact=(contact) =>{
-      const pattern = /^[0-9]{10}$/; // Regex for 10-digit number
-      return contact && pattern.test(contact);
-    }
-    let parseDate;
-
-    if (!srmcheck ||!newItem["Mentor Name"] || !newItem["Email ID"] || !newItem["Mentor's Domain"] || !isValidContact(newItem["Contact"] ) || !newItem["Mentor's Company Name"] || !newItem["Designation/Title"]) {
-      notFoundData.push({
-        index: index + 1,
-        assigned_to: newItem["Assigned To"],
-      mentor_name: newItem["Mentor Name"] || "",
-      email: newItem["Email ID"] || "",
-      mentor_domain: newItem["Mentor's Domain"] || "",
-      mentor_company_name: newItem["Mentor's Company Name"] || "",
-      designation: newItem["Designation/Title"] || "",
-      mentor_area: newItem["Mentor's Area"] || "",
-      mentor_state: newItem["Mentor's State"] || "",
-      outreach: newItem["Outreach (Offline/Online)"] || "",
-      onboarding_date: onboardingDate || "",
-      social_media_profile_link: newItem["Social Media Profile Link"] || "",
-      medha_area: newItem["Medha Area"] || "",
-      status: newItem["Status"] || "",
-      program_name: newItem["Medha Program Name"] || "",
-      contact: newItem["Contact"] || ""
-      });
+  const uploadDirect = () => {
+    if (notUploadedData.length === 0 && excelData.length > 0) {
+      setShowForm(false);
     } else {
-      formattedData.push({
-        assigned_to: srmcheck,
-        mentor_name: newItem["Mentor Name"] || "",
-        email: newItem["Email ID"] || "",
-        mentor_domain: newItem["Mentor's Domain"] || "",
-        mentor_company_name: newItem["Mentor's Company Name"] || "",
-        designation: newItem["Designation/Title"] || "",
-        mentor_area: newItem["Mentor's Area"] || "",
-        mentor_state: newItem["Mentor's State"] || "",
-        outreach: newItem["Outreach (Offline/Online)"] || "",
-        onboarding_date: onboardingDate || "",
-        social_media_profile_link: newItem["Social Media Profile Link"] || "",
-        medha_area: newItem["Medha Area"] || "",
-        status: newItem["Status"] || "",
-        program_name: newItem["Medha Program Name"] || "",
-        contact: newItem["Contact"] || ""
-      });
+      setShowModalMentor(true);
     }
-  });
-  setExcelData(formattedData);
-  setNotuploadedData(notFoundData);
-};
+  };
 
-const uploadDirect = () => {
-  if (notUploadedData.length === 0 && excelData.length > 0) {
-    setShowForm(false);
-  } else {
-    setShowModalMentor(true);
-  }
-};
+  const proceedData = async () => {
+    if (notUploadedData.length === 0 && excelData.length > 0) {
+      setUploadNew(true);
+      props.uploadExcel(excelData, "mentorship");
+    }
+  };
 
-const proceedData = async () => {
-  if (notUploadedData.length === 0 && excelData.length > 0) {
-    setUploadNew(true);
-    props.uploadExcel(excelData, "mentorship");
-  }
-};
+  const uploadNewData = () => {
+    setShowForm(true);
+    setUploadNew(!uploadNew);
+    setFileName("");
+    setNextDisabled(false);
+    setUploadSuccesFully("");
+  };
 
-const uploadNewData =()=>{
-  setShowForm(true);
-  setUploadNew(!uploadNew)
-setFileName('');  
-setNextDisabled(false);  
-setUploadSuccesFully(''); 
-
-}
-
-const hideShowModal = () => {
-  setShowModalMentor(false);
-  setUploadSuccesFully("");
-  setShowForm(true);
-  setFileName('');  // Reset the file name display
-  setNextDisabled(false);  // Optionally disable the next button
-  setUploadSuccesFully('');
-};
+  const hideShowModal = () => {
+    setShowModalMentor(false);
+    setUploadSuccesFully("");
+    setShowForm(true);
+    setFileName(""); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
+    setUploadSuccesFully("");
+  };
 
   return (
     <>
@@ -399,20 +408,20 @@ const hideShowModal = () => {
                   </div>
                   <div className="d-flex  flex-column  ">
                     {notuploadSuccesFully ? (
-                    <div
-                      className={`text-danger  d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {notuploadSuccesFully}{" "}
-                    </div>
-                  ) : (
-                    <div
-                      className={`text-success d-flex justify-content-center `}
-                    >
-                      {" "}
-                      {fileName}{" "}
-                    </div>
-                  )}
+                      <div
+                        className={`text-danger  d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {notuploadSuccesFully}{" "}
+                      </div>
+                    ) : (
+                      <div
+                        className={`text-success d-flex justify-content-center `}
+                      >
+                        {" "}
+                        {fileName}{" "}
+                      </div>
+                    )}
                     {(isSRM() || isAdmin()) && (
                       <div className="row mb-4 mt-2">
                         <div className="col-md-12 d-flex justify-content-center">
@@ -427,8 +436,8 @@ const hideShowModal = () => {
 
                           <button
                             type="button"
-                              disabled={!nextDisabled}
-                              onClick={() => uploadDirect()}
+                            disabled={!nextDisabled}
+                            onClick={() => uploadDirect()}
                             className="btn btn-primary px-4 mx-4 mt-2"
                             style={{ height: "2.5rem" }}
                           >
@@ -460,16 +469,16 @@ const hideShowModal = () => {
                   {/* <FaEdit size={20} color="#31B89D"  />{" "} */}
                   {/* {!uploadNew ? `${<FaEdit size={20} color="#31B89D"  />}${excelData.length} row(s) of data will be uploaded` :`${<FaRegCheckCircle size={20} color="#31B89D"  />} ${excelData.length} row(s) of data uploaded successfully` } */}
                   {!uploadNew ? (
-                  <>
-                    <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
-                    row(s) of data will be uploaded.
-                  </>
-                ) : (
-                  <>
-                    <FaRegCheckCircle size={20} color="#31B89D" />{" "}
-                    {excelData.length} row(s) of data uploaded successfully!
-                  </>
-                )}
+                    <>
+                      <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
+                      row(s) of data will be uploaded.
+                    </>
+                  ) : (
+                    <>
+                      <FaRegCheckCircle size={20} color="#31B89D" />{" "}
+                      {excelData.length} row(s) of data uploaded successfully!
+                    </>
+                  )}
                 </p>
               </div>
               <div className="col-md-12 d-flex justify-content-center">
@@ -483,26 +492,26 @@ const hideShowModal = () => {
                 </button>
 
                 {!uploadNew ? (
-                <button
-                  type="button"
-                  disabled={!nextDisabled}
-                  onClick={() => proceedData()}
-                  className="btn btn-primary px-4 mx-4 mt-2"
-                  style={{ height: "2.5rem" }}
-                >
-                  Proceed
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled={!nextDisabled}
-                  onClick={() => uploadNewData()}
-                  className="btn btn-primary px-4 mx-4 mt-2"
-                  style={{ height: "2.5rem" }}
-                >
-                  Upload New
-                </button>
-              )}
+                  <button
+                    type="button"
+                    disabled={!nextDisabled}
+                    onClick={() => proceedData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Proceed
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={!nextDisabled}
+                    onClick={() => uploadNewData()}
+                    className="btn btn-primary px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Upload New
+                  </button>
+                )}
               </div>
             </Modal.Body>
           )}
@@ -510,12 +519,12 @@ const hideShowModal = () => {
       </Modal>
 
       <Check
-      show={showModalMentor}
-      onHide={() => hideShowModal()}
-      notUploadedData={notUploadedData}
-      excelData={excelData}
-      uploadExcel={props.uploadExcel}
-    />
+        show={showModalMentor}
+        onHide={() => hideShowModal()}
+        notUploadedData={notUploadedData}
+        excelData={excelData}
+        uploadExcel={props.uploadExcel}
+      />
     </>
   );
 };

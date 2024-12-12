@@ -58,6 +58,7 @@ import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
+import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1067,6 +1068,18 @@ const Operations = ({
           setAlert("Unable to create Mentorship data.", "error");
         })
       } 
+
+      if (key === "pitching") {
+        datavaluesforlatestcreate={module_name:"Operations",activity:"College Pitching Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateCollegePitch(data)
+        .then(() => {
+          setAlert("data created successfully.", "success");
+        })
+        .catch((err) => {
+          setAlert("Unable to create Mentorship data.", "error");
+        })
+      } 
       getoperations()
     } catch (err) {
       if (key === "my_data") {
@@ -1491,6 +1504,17 @@ const Operations = ({
               <UpskillingUpload
                 // uploadExcel={uploadExcel}
                 // alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={()=>closeUpload()}
+                mentorship="yes"
+              />
+            </>
+          )}
+
+{uploadModal.pitching && (
+            <>
+              <PitchingUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={()=>closeUpload()}
                 mentorship="yes"
               />
