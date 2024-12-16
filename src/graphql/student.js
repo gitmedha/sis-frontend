@@ -234,6 +234,16 @@ export const GET_STUDENT = `
   }
 `;
 
+export const GET_STUDENT_BY_STUID = `
+  query GET_STUDENT_BY_STUID($student_id: String!) {
+    student(student_id: $student_id) {
+      ${studentFields}
+    }
+  }
+`;
+
+
+
 export const CREATE_STUDENT = `
   mutation CREATE_STUDENT(
     $data: StudentInput!

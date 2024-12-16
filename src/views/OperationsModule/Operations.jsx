@@ -1080,6 +1080,17 @@ const Operations = ({
           setAlert("Unable to create Mentorship data.", "error");
         })
       } 
+      if (key === "upskilling") {
+        datavaluesforlatestcreate={module_name:"Operations",activity:"Students Upskilling Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateStudentsUpskillings(data)
+        .then(() => {
+          setAlert("data created successfully.", "success");
+        })
+        .catch((err) => {
+          setAlert("Unable to create Mentorship data.", "error");
+        })
+      } 
       getoperations()
     } catch (err) {
       if (key === "my_data") {
@@ -1138,7 +1149,7 @@ const Operations = ({
         tot: false,
         myData: false,
         mentorship:false,
-        pitching:true,
+        pitching:false,
         upskill:true
       });
     }
@@ -1502,10 +1513,10 @@ const Operations = ({
 {uploadModal.upskill && (
             <>
               <UpskillingUpload
-                // uploadExcel={uploadExcel}
-                // alertForNotuploadedData={alertForNotuploadedData}
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={()=>closeUpload()}
-                mentorship="yes"
+                Upskill="yes"
               />
             </>
           )}
@@ -1516,7 +1527,7 @@ const Operations = ({
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={()=>closeUpload()}
-                mentorship="yes"
+                Pitching="yes"
               />
             </>
           )}
