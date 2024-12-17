@@ -362,8 +362,9 @@ div::-webkit-scrollbar-thumb {
 }
 
 .form_sec {
-  height: 500px;
-  overflow: scroll;
+  // height: 500px;
+  // overflow: scroll;
+  overflow-y: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
@@ -392,6 +393,119 @@ div::-webkit-scrollbar-thumb {
 }
 .tag-remove {
   display: none;
+}
+.form-group::after {
+  display: none !important;
+}
+.w-100{
+  width: 100%;
+}
+.dropdown-toggle{
+  color: #000 !important;
+  text-decoration: none !important ;
+}
+/* Dropdown Container */
+.dropdown-select {
+  display: flex;
+  flex-direction: column;
+  width: "100%";
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: auto;
+  max-height: 320px;
+  overflow-y: scroll;
+  // width: 47%;
+  z-index: 1;
+}
+
+/* Individual Item */
+.dropdown-item {
+  margin: 5px 0;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+/* Label Styling */
+.dropdown-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Hover Effect */
+.dropdown-label:hover {
+  background-color: #e6e6e6;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+/* Children Container */
+.dropdown-children {
+  margin-left: 15px;
+  border-left: 2px dashed #ddd;
+  padding-left: 6px;
+}
+
+/* Arrow Styling */
+.arrow {
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.arrow.open {
+  transform: rotate(90deg);
+}
+
+
+
+.selectItem {
+  background-color: #e6e6e6;
+  text-align: black;
+  padding: 5px !important;
+}
+
+
+// Latest Activity 
+
+.detail-field-delete {
+    height: auto;
+    display: flex;
+    padding: 4px 12px;
+    border-radius: 5px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    justify-content: center;
+    color: rgb(255, 55, 55) !important;
+    background-color: rgb(255, 205, 205);
+}
+
+.detail-field-create{
+    height: auto;
+    display: flex;
+    padding: 4px 12px;
+    border-radius: 5px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    justify-content: center;
+    color: rgb(14, 198, 43) !important;
+    background-color: rgb(178, 255, 191);
+}
+.text-decor{
+  text-transform: uppercase !important;
+}
+
+
+// Form Container
+
+.form-container {
+  max-height: 90vh !important; /* Adjust as needed */
+  overflow-y: auto !important;
+  position: relative !important;
 }
 @import './media/lg.scss';
 @import './media/md.scss';

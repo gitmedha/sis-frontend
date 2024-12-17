@@ -107,11 +107,12 @@ const EnrollmentConnectionForm = (props) => {
   const onSubmit = async (values) => {
 
     let propgramEnrollemntData={};
+    console.log(props);
     if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props.employmentConnection.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Updated",event_id:props.opportunity.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props.employmentConnection.id,updatedby:userId ,changes_in:values};
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Created",event_id:props.opportunity.id,updatedby:userId ,changes_in:values};
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);

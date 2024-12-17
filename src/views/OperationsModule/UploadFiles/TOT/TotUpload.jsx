@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
-import { queryBuilder } from "../../../apis";
-import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
+import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
+import { queryBuilder } from "../../../../apis";
+import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
 import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
@@ -12,32 +12,33 @@ import * as XLSX from "xlsx";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
-import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
+} from "../../../Address/addressActions";
+import { bulkCreateUsersTots, getTotPickList } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
 
 const expectedColumns = [
-  "Participant Name",
+  "Full Name",
   "Trainer 1",
   "Project Name",
-  "Certificate Given",
-  "Module Name",
+  "Certificate Provided",
+  "Program/Module Name",
   "Project Type",
   "Trainer 2",
-  "Partner Department",
+  "Government Department partnered with",
   "College Name",
-  "City",
+  "District where training took place",
   "State",
   "Age",
   "Gender",
-  "Mobile no.",
+  "Contact Number",
   "Designation",
   "Start Date",
   "End Date",
-  "New Entry"
+  "New Entry",
+  "Email id"
 ];
 
 const Styled = styled.div`
@@ -398,7 +399,6 @@ const TotUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    console.log("data values",data);
     // if(!data){
     //   setUploadSuccesFully("No Data")
     // }
@@ -470,11 +470,11 @@ const TotUpload = (props) => {
         (area) => area === newItem["City"]
       )?.id;
       const moduleCheck = moduleName.find(
-        (module) => module.value === newItem["Module Name"]
+        (module) => module.value === newItem["Program/Module Name"]
       );
 
       const departMentCheck = partnerDept.find(
-        (department) => department.value === newItem["Partner Department"]
+        (department) => department.value === newItem["Government Department partnered with"]
       );
 
       const projectCheck = ["Internal", "External"].find(
@@ -510,20 +510,21 @@ const TotUpload = (props) => {
       }
       let ageCheck=isNumber(newItem["Age"]) && (newItem["Age"]<100 && newItem["Age"]>10)
       if (
-        !pattern.test(newItem["Mobile no."]) ||
+        !pattern.test(newItem["Contact Number"]) ||
         !departMentCheck ||
         !projectCheck ||
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"]
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Full Name"] || !newItem["College Name"]
       ) {
         notFoundData.push({
           index: index + 1,
-          user_name: newItem["Participant Name"]
-            ? capitalize(newItem["Participant Name"])
+          user_name: newItem["Full Name"]
+            ? capitalize(newItem["Full Name"])
             : "No data",
           trainer_1: newItem["Trainer 1"],
+          email:newItem['Email id'],
           project_name: projectCheck
             ? newItem["Project Name"]
             : {
@@ -532,12 +533,12 @@ const TotUpload = (props) => {
                   : "Please select from dropdown",
                 notFound: true,
               },
-          certificate_given: newItem["Certificate Given"],
+          certificate_given: newItem["Certificate Provided"],
           module_name: moduleCheck
-            ? newItem["Module Name"]
+            ? newItem["Program/Module Name"]
             : {
-                value: newItem["Module Name"]
-                  ? newItem["Module Name"]
+                value: newItem["Program/Module Name"]
+                  ? newItem["Program/Module Name"]
                   : "Please select from dropdown",
                 notFound: true,
               },
@@ -551,21 +552,21 @@ const TotUpload = (props) => {
               },
           trainer_2: newItem["Trainer 2"],
           partner_dept: departMentCheck
-            ? newItem["Partner Department"]
+            ? newItem["Government Department partnered with"]
             : {
-                value: newItem["Partner Department"]
-                  ? newItem["Partner Department"]
+                value: newItem["Government Department partnered with"]
+                  ? newItem["Government Department partnered with"]
                   : "Please select from dropdown",
                 notFound: true,
               },
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "Please select from dropdown",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Mobile no."],
+          contact: newItem["Contact Number"],
           designation: newItem["Designation"],
           start_date: parseDate
             ? { value: startDate, notFound: true }
@@ -581,28 +582,29 @@ const TotUpload = (props) => {
         });
       } else {
         formattedData.push({
-          user_name: newItem["Participant Name"]
-            ? capitalize(newItem["Participant Name"])
+          user_name: newItem["Full Name"]
+            ? capitalize(newItem["Full Name"])
             : "",
           trainer_1: Number(trainer_1),
           project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Given"],
-          module_name: newItem["Module Name"],
+          certificate_given: newItem["Certificate Provided"],
+          module_name: newItem["Program/Module Name"],
           project_type: newItem["Project Type"],
           trainer_2: Number(trainer_2),
-          partner_dept: newItem["Partner Department"],
+          partner_dept: newItem["Government Department partnered with"],
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
+          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Mobile no."],
+          contact: newItem["Contact Number"],
           designation: newItem["Designation"]
             ? capitalize(newItem["Designation"])
             : "",
           start_date: startDate,
+          email:newItem['Email id'],
           end_date: endDate,
           createdby: createdby,
           updatedby: currentUser,

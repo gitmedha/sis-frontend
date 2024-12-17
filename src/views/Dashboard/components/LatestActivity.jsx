@@ -6,6 +6,7 @@ import { setAlert } from "../../../store/reducers/Notifications/actions";
 import LatestActivityDetail from './LatestActivityDetail';
 import { useHistory } from 'react-router-dom';
 import { getActivity } from 'src/utils/LatestChange/Api';
+import moment from 'moment';
 
 // const datavalues=[
 //     {
@@ -51,11 +52,38 @@ const LatestActivity=(props)=> {
           Header: 'Activity',
           accessor: 'activity',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return 'N/A';
+            let formattedValue;
+              // Capitalize first letter
+              formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+            return formattedValue;
+          },
         },
         {
           Header: 'Module name',
           accessor: 'module_name',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return '';
+            
+            let formattedValue;
+        
+            // Handle specific cases for "batch" and "opportunity"
+            if (value.toLowerCase() === 'batch') {
+              formattedValue = 'Batches';
+            } else if (value.toLowerCase() === 'opportunity') {
+              formattedValue = 'Opportunities';
+            } else {
+              // Capitalize first letter and add "s" if not ending with "s"
+              formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+              if (!formattedValue.endsWith('s')) {
+                formattedValue += 's';
+              }
+            }
+        
+            return formattedValue;
+          },
         },
         {
           Header: 'Updated by',
@@ -66,6 +94,10 @@ const LatestActivity=(props)=> {
           Header: 'Updated at',
           accessor: 'updated_at',
           disableSortBy: true,
+          Cell: ({ value }) => {
+            if (!value) return ''; // Handle null/undefined values
+            return moment(value).format('YYYY-MM-DD'); // Customize format as needed
+          }
         },
         // {
         //   Header: 'Changes in',

@@ -189,7 +189,7 @@ const CollepitchesEdit = (props) => {
         program_name: props.program_name,
         whatsapp:props.whatsapp
       };
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"College Pitching Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObj,initialValues)};
+    let datavaluesforlatestcreate={module_name:"operations",activity:"College Pitching Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObj,initialValues)};
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateCollegePitch(Number(props.id), newObj);
     refreshTableOnDataSaving();

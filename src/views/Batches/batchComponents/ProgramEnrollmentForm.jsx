@@ -13,7 +13,7 @@ import {
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
-import { createLatestAcivity, findDifferences, findEnrollmentDifferences } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -150,13 +150,15 @@ const ProgramEnrollmentForm = (props) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
     if(props.programEnrollment ){
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Update",event_id:props.batch.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Updated",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
       
     }else {
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollement Create",event_id:props.batch.id,updatedby:userId ,changes_in:values};
+      console.log("hehehlooo");
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:{name:values?.program_enrollment_batch}};
     }
+    console.log(propgramEnrollemntData);
     await createLatestAcivity(propgramEnrollemntData);
-      onHide(values);
+    onHide(values);
     }
   };
 
@@ -708,7 +710,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                 </Section>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

@@ -79,7 +79,7 @@ const MentorshipdataField = (props) => {
   };
 
   const deleteEntry = async () => {
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Data Delete",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
     await createLatestAcivity(datavaluesforlatestcreate);
     const data = await deactivate_mentorship(Number(props.id));
     if (data.status === 200) {

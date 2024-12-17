@@ -155,12 +155,8 @@ const OpportunityForm = (props) => {
 
   const onSubmit = async (values) => {
     let propgramEnrollemntData={};
-    if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Opprtunity",activity:"update",event_id:props.student.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
-      
-    }else {
-      propgramEnrollemntData={module_name:"Opprtunity",activity:"Create",event_id:props.employer.id,updatedby:userId ,changes_in:values};
-    }
+    
+    propgramEnrollemntData={module_name:"Employer ",activity:"Create Opprtunity",event_id:props.employer.id,updatedby:userId ,changes_in:{}};
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
@@ -432,7 +428,7 @@ const OpportunityForm = (props) => {
                 </Section>
               </div>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

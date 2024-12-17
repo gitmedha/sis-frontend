@@ -73,19 +73,6 @@ const statusOption = [
   { value: "Dropped out", label: "Dropped out" },
 ];
 
-const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
-  {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
-  },
-  {
-    value: "Workshop/Training Session/Activity (In/Off campus)",
-    label: "Workshop/Training Session/Activity (In/Off campus)",
-  },
-  { value: "Alumni Engagement", label: "Alumni Engagement" },
-  { value: "Placement Drive", label: "Placement Drive" },
-];
 
 const UpdateMentorship = (props) => {
   let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
@@ -169,7 +156,7 @@ const UpdateMentorship = (props) => {
         "YYYY-MM-DD"
       );
       newData["updatedby"] = Number(userId);
-      let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
+      let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await updateMentorshipData(Number(props.id), newData);
       refreshTableOnDataSaving();

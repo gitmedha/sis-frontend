@@ -559,7 +559,7 @@ const getModeOfPayment = (event) =>{
                     }
                   </div>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                    <button type="button"
                    onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>

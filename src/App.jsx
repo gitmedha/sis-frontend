@@ -39,7 +39,6 @@ import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import operations from "./views/OperationsModule/Operations";
-import Operation from "./views/OperationsModule/Operation";
 import { isAdmin, isMedhavi, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
@@ -176,7 +175,7 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
-                    <PrivateRoute path="/operation" exact component={operations} />
+                    <PrivateRoute path="/operations" exact component={operations} />
                     <PrivateRoute path="/calender" exact component={EventCalendar}/>
                   </>
                   }

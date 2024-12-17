@@ -1,5 +1,5 @@
 import React from "react";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
@@ -61,6 +61,7 @@ const CheckTot = (props) => {
                       <tr>
                         <th>#</th>
                         <th>Participant Name </th>
+                        <th>Email id</th>
                         <th>Age </th>
                         <th>Gender </th>
                         <th>Mobile no. </th>
@@ -85,6 +86,7 @@ const CheckTot = (props) => {
                         <tr key={i}>
                           <td>{obj.index}</td>
                           <td className={obj.user_name =="No data"?"text-danger":""}>{obj.user_name ?obj.user_name:"no data"}</td>
+                          <td className={obj.email =="No data"?"text-danger":""}>{obj.email ?obj.email:"no data"}</td>
                           <td className={!AgeCheck(obj.age)?"text-danger":""}>{ obj.age ? obj.age:"No data" }</td>
                           <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
                           <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>

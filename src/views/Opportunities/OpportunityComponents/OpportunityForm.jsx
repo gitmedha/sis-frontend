@@ -211,13 +211,14 @@ const OpportunityForm = (props) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
     let propgramEnrollemntData={};
-    if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"update",event_id:props?.student?.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
-      
-    }else {
-      propgramEnrollemntData={module_name:"Employment Connection",activity:"Create",event_id:props?.student?.id,updatedby:userId ,changes_in:values};
+    console.log(props);
+    if(props ){
+      propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:props?.id,updatedby:userId ,changes_in:findDifferences(initialValues,values)};
+      await createLatestAcivity(propgramEnrollemntData);
     }
-    await createLatestAcivity(propgramEnrollemntData);
+    // let datavaluesforlatestcreate={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
+    // await createLatestAcivity(datavaluesforlatestcreate);
+   
     onHide(values);
   };
 

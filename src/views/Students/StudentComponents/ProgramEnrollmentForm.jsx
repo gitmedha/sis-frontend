@@ -8,7 +8,7 @@ import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import {searchInstitution,searchBatch, getAllCourse} from "../StudentComponents/StudentActions";
-import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findProgramEnrollmentDifferences } from "src/utils/LatestChange/Api";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findProgramEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -142,11 +142,13 @@ const ProgramEnrollmentForm = (props) => {
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
       let propgramEnrollemntData={};
+      console.log(props.programEnrollment);
+      console.log(findUpdates(props.programEnrollment,values));
       if(props.programEnrollment ){
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Update",event_id:props.student.id,updatedby:userId ,changes_in:findEnrollmentDifferences(props.programEnrollment,values)};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Update",event_id:props.student.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
         
       }else {
-        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollement Create",event_id:props.student.id,updatedby:userId ,changes_in:values};
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:props.student.full_name}};
       }
       await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
@@ -630,7 +632,7 @@ const ProgramEnrollmentForm = (props) => {
                 </Section>
               </div>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"
