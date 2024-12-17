@@ -77,13 +77,16 @@ const Batch = (props) => {
   };
 
   const getAttendanceStats = async (sessionsList) => {
+    console.log("sessionsList",sessionsList);
+
     getBatchSessionAttendanceStats(Number(batchID)).then(async data => {
+      console.log("data",data)
       let groupByBatch = data.data.data.programEnrollmentsConnection.groupBy.batch;
       if (!groupByBatch.length) {
         return;
       }
       const totalStudents = groupByBatch[0].connection.aggregate.studentsEnrolled;
-
+console.log(totalStudents);
       let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
         (sess) => ({
           id: sess.sessionId,
@@ -91,6 +94,8 @@ const Batch = (props) => {
           percent: (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
         })
       );
+
+      console.log("attPercentage",attPercentage);
 
       sessionsList = sessionsList.map(session => {
         let matchedAttPercentage = attPercentage.find(att => att.id === session.id);
@@ -101,6 +106,7 @@ const Batch = (props) => {
         };
       })
 
+      console.log("sessionsListNew",sessionsList)
       await setSessions(sessionsList);
     }).catch(err => {
       

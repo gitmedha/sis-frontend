@@ -156,6 +156,8 @@ export const getSessionAttendance = async (sessionId) => {
       sessionID: sessionId,
     },
   }).then(data => {
+    console.log("sessions reponse ",data);
+    
     return data;
   }).catch(error => {
     return Promise.reject(error);
@@ -177,6 +179,8 @@ export const createSessionAttendance = async (sessionId, data) => {
 }
 
 export const updateAttendance = async (attendanceId, data) => {
+  console.log("attendanceId",attendanceId);
+  console.log("data",data);
   return await api.post('/graphql', {
     query: UPDATE_SESSION_ATTENDANCE,
     variables: {

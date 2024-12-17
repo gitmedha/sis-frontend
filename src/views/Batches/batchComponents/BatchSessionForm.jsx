@@ -40,7 +40,15 @@ const BatchSessionForm = (props) => {
   const [selectedRows, setSelectedRows] = useState({});
   const [sessionAttendance, setSessionAttendance] = useState([]);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-
+console.log("states", 
+  "\n selectedStudents",selectedStudents,
+  "\n selectedRows",selectedRows,
+  "\n sessionAttendance",sessionAttendance,
+  "\n showDeleteAlert",showDeleteAlert,
+  "\n students",students,
+  "\n loading",loading,
+  "\n batch",batch,
+)
   let initialValues = {
     topics: '',
     date: '',
@@ -51,6 +59,7 @@ const BatchSessionForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+    
     let selectedStudentIds = selectedStudents.map(student => student.id);
     await onHide({
       ...values,
@@ -82,6 +91,7 @@ const BatchSessionForm = (props) => {
   };
 
   const clubStudentRecords = (records) => {
+    console.log("records",records)
     return records.map((rec) => ({
       present: false,
       id: rec.student.id,
@@ -103,6 +113,7 @@ const BatchSessionForm = (props) => {
     if (props.session && props.session.id) {
       setLoading(true);
       getSessionAttendance(props.session.id).then(async data => {
+        console.log(data,"data")
         setSessionAttendance(data.data.data.attendances); // saving session attendance records
         let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
           return attendance.program_enrollment && attendance.present;
@@ -116,6 +127,7 @@ const BatchSessionForm = (props) => {
           }
           return student;
         });
+        console.log("checkedRows",checkedRows)
         setSelectedRows(checkedRows);
       }).finally(() => {
         setLoading(false);

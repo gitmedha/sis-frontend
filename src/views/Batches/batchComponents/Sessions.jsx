@@ -103,6 +103,7 @@ const Sessions = (props) => {
   };
 
   const hideUpdateModal = async (data) => {
+    console.log("data hide",data)
     if (!data || data.isTrusted) {
       setUpdateModalShow(false);
       return;
@@ -125,6 +126,7 @@ const Sessions = (props) => {
         }
         return attendance;
       });
+      console.log("sessionAttendanceIds",sessionAttendanceIds)
 
       // update attendance corresponding to the student in the session/batch
       await students.forEach(async (student) => {
