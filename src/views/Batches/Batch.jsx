@@ -310,7 +310,7 @@ const Batch = (props) => {
       NP.done();
     }
   }
-
+console.log('batch',batch);
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -339,33 +339,31 @@ const Batch = (props) => {
                     variant="secondary"
                     id="dropdown-basic"
                     className="btn--primary action_button_sec"
-                    disabled={batch?.status == "Enrollment Ongoing"}
+                    // disabled={batch?.status == "Enrollment Ongoing"}
                   >
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                  <Dropdown.Item
+                  {(
+                  batch?.program?.name === "Technology Advancement Bootcamp" || 
+                  batch?.program?.name ==="Svapoorna" || 
+                  batch?.program?.name ==="Swarambh" || 
+                  batch?.program?.name === "Career Advancement Bootcamp") ?<Dropdown.Item
                       onClick={() => preBatchLinks()}
-                      // disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
                     >
-                      <FaCheckCircle
-                        size="20"
-                        color='#207B69'
-                        className="mr-2"
-                      />
-                      <span>&nbsp;&nbsp;Pre survey test</span>
-                    </Dropdown.Item>
-                    <Dropdown.Item
+                      <FaCheckCircle size="20" color={!batch?.pre_batch_email_sent ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                      <span style={{color:!batch?.pre_batch_email_sent?'#E0E0E8' :'#000000'}}>&nbsp;&nbsp;Pre survey test</span>
+                    </Dropdown.Item>:<div></div>}
+                    {(
+                  batch?.program?.name === "Technology Advancement Bootcamp" || 
+                  batch?.program?.name ==="Svapoorna" || 
+                  batch?.program?.name ==="Swarambh" || 
+                  batch?.program?.name === "Career Advancement Bootcamp") ?<Dropdown.Item
                       onClick={() => postBatchLinks()}
-                      // disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
                     >
-                      <FaCheckCircle
-                        size="20"
-                        color='#207B69'
-                        className="mr-2"
-                      />
-                      <span>&nbsp;&nbsp;Post survey test</span>
-                    </Dropdown.Item>
+                      <FaCheckCircle size="20" color={!batch?.post_batch_email_sent ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                      <span style={{color:!batch?.post_batch_email_sent?'#E0E0E8' :'#000000'}}>&nbsp;&nbsp;Post survey test</span>
+                    </Dropdown.Item>:<div></div>}
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {

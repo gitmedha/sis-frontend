@@ -57,6 +57,8 @@ export const batchesFields = `
   program {
     name
   }
+  pre_batch_email_sent
+  post_batch_email_sent
 `;
 
 export const GET_BATCHES = `
