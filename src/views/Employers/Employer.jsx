@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 import { deleteFile } from "../../common/commonActions";
 import {isAdmin,getUser} from "../../common/commonFunctions";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 .button {
@@ -50,7 +51,7 @@ const Employer = (props) => {
   const {setAlert} = props;
   const history = useHistory();
   const employerId = props.match.params.id;
-
+  const userId = parseInt(localStorage.getItem("user_id"));
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
       setModalShow(false);
@@ -94,6 +95,7 @@ const Employer = (props) => {
         query: GET_EMPLOYER,
         variables: { id: employerId },
       });
+      console.log(data.data);
       setEmployerData(data.data.employer);
     } catch (err) {
     }finally {
@@ -121,8 +123,11 @@ const Employer = (props) => {
   }
 
   const getEmploymentConnections = async () => {
+    console.log(employerId);
     getEmployerEmploymentConnections(employerId).then(data => {
+      console.log(data);
       let employmentConnections = data.data.data.employmentConnectionsConnection.values;
+      console.log(employerEmploymentConnections);
       setEmployerEmploymentConnections(employmentConnections);
     }).catch(err => {
     });
@@ -161,7 +166,18 @@ const Employer = (props) => {
       return employerData.assigned_to.username.toLowerCase() === getUser().toLowerCase();
     }
   }
-
+  const deleteStudent=async()=>{
+    console.log(employerData);
+    let studentData = {
+      module_name: "employer",
+      activity: "Employer Data Deleted",
+      event_id: employerId,
+      updatedby: userId,
+      changes_in: {name:`${employerData.name }`},
+    };
+    await createLatestAcivity(studentData);
+    setShowDeleteAlert(true)
+  }
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -177,7 +193,7 @@ const Employer = (props) => {
             >
               EDIT
             </button>
-            <button onClick={() => setShowDeleteAlert(true)} className="btn--primary action_button_sec">
+            <button onClick={() => deleteStudent()} className="btn--primary action_button_sec">
               DELETE
             </button>
           </div>

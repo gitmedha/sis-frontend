@@ -11,7 +11,7 @@ import {deactivate_user_ops} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { Link } from "react-router-dom";
 import { Anchor } from "../../../components/content/Utils";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -75,8 +75,8 @@ const Opsdatafeilds = (props) => {
   }
 
   const deleteEntry=async()=>{
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"USER Ops Activity DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Feild Activity Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+    await createLatestAcivity(datavaluesforlatestcreate);
    const data=await deactivate_user_ops(Number(props.id))
    if(data.status===200){
     setAlert("Entry Deleted Successfully.", "success");

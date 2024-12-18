@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
-import { queryBuilder } from "../../../apis";
-import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
+import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
+import { queryBuilder } from "../../../../apis";
+import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
 import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
@@ -12,8 +12,8 @@ import * as XLSX from "xlsx";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
-import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
+} from "../../../Address/addressActions";
+import { bulkCreateUsersTots, getTotPickList } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
@@ -517,15 +517,23 @@ const TotUpload = (props) => {
 
 
       if (
+<<<<<<< HEAD:src/views/OperationsModule/UploadFiles/TotUpload.jsx
+=======
+        !pattern.test(newItem["Contact Number"]) ||
+>>>>>>> 1d113314224859249489e634fee231c5ab0f7377:src/views/OperationsModule/UploadFiles/TOT/TotUpload.jsx
         !departMentCheck ||
         !projectCheck ||
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
+<<<<<<< HEAD:src/views/OperationsModule/UploadFiles/TotUpload.jsx
         !projectNameCheck ||
         parseDate || 
         !newItem["Full Name"] || 
         !newItem["College Name"]
+=======
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Full Name"] || !newItem["College Name"]
+>>>>>>> 1d113314224859249489e634fee231c5ab0f7377:src/views/OperationsModule/UploadFiles/TOT/TotUpload.jsx
       ) {
         notFoundData.push({
           index: index + 1,

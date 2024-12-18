@@ -20,10 +20,11 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendPreBatchLinks,sendPostBatchLinks } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 .button{
@@ -239,6 +240,8 @@ const Batch = (props) => {
 
   const handleDelete = async () => {
     NP.start();
+    let data={module_name:"Batch",activity:"Delete",event_id:batch.id,updatedby:userId ,changes_in:batch};
+    await createLatestAcivity(data);
     deleteBatch(batch.id).then(data => {
       setAlert("Batch deleted successfully.", "success");
     }).catch(err => {
@@ -279,6 +282,35 @@ const Batch = (props) => {
     });
   }
 
+//for sending pre batch links to students
+
+  const preBatchLinks = async ()=>{
+    try {
+      NP.start();
+      console.log(batch.id)
+      sendPreBatchLinks(batch.id);
+      NP.done();
+      
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  };
+
+//for sending post batch links to students
+
+  const postBatchLinks = async ()=>{
+    try {
+      NP.start();
+      sendPostBatchLinks(batch.id);
+      NP.done();
+      
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  }
+console.log('batch',batch);
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -307,11 +339,31 @@ const Batch = (props) => {
                     variant="secondary"
                     id="dropdown-basic"
                     className="btn--primary action_button_sec"
-                    disabled={batch?.status == "Enrollment Ongoing"}
+                    // disabled={batch?.status == "Enrollment Ongoing"}
                   >
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                  {(
+                  batch?.program?.name === "Technology Advancement Bootcamp" || 
+                  batch?.program?.name ==="Svapoorna" || 
+                  batch?.program?.name ==="Swarambh" || 
+                  batch?.program?.name === "Career Advancement Bootcamp") ?<Dropdown.Item
+                      onClick={() => preBatchLinks()}
+                    >
+                      <FaCheckCircle size="20" color={!batch?.pre_batch_email_sent ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                      <span style={{color:!batch?.pre_batch_email_sent?'#E0E0E8' :'#000000'}}>&nbsp;&nbsp;Pre survey test</span>
+                    </Dropdown.Item>:<div></div>}
+                    {(
+                  batch?.program?.name === "Technology Advancement Bootcamp" || 
+                  batch?.program?.name ==="Svapoorna" || 
+                  batch?.program?.name ==="Swarambh" || 
+                  batch?.program?.name === "Career Advancement Bootcamp") ?<Dropdown.Item
+                      onClick={() => postBatchLinks()}
+                    >
+                      <FaCheckCircle size="20" color={!batch?.post_batch_email_sent ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                      <span style={{color:!batch?.post_batch_email_sent?'#E0E0E8' :'#000000'}}>&nbsp;&nbsp;Post survey test</span>
+                    </Dropdown.Item>:<div></div>}
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {
@@ -320,7 +372,7 @@ const Batch = (props) => {
                     }}
                     className="d-flex align-items-center"
                   >
-                      <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                    <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
                       <span>&nbsp;&nbsp;Send a link</span>
                     </Dropdown.Item>
                     }

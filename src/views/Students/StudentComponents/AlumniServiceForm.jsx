@@ -15,6 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
+import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -63,6 +64,7 @@ const AlumniServiceForm = (props) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [status, setStatus] = useState("");
   const [role,setRole]=useState([]);
+  const userId = Number(localStorage.getItem("user_id"))
 
   useEffect(() => {
     if (props.alumniService) {
@@ -204,21 +206,20 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSelectedCategory("");
+
+
+    let propgramEnrollemntData={};
+    if(props.alumniService ){
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Updated",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:values.alumni_service_student}};
+    }
+
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
-  const colourOptions = [
-    { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
-    { value: "blue", label: "Blue", color: "#0052CC", isDisabled: true },
-    { value: "purple", label: "Purple", color: "#5243AA" },
-    { value: "red", label: "Red", color: "#FF5630", isFixed: true },
-    { value: "orange", label: "Orange", color: "#FF8B00" },
-    { value: "yellow", label: "Yellow", color: "#FFC400" },
-    { value: "green", label: "Green", color: "#36B37E" },
-    { value: "forest", label: "Forest", color: "#00875A" },
-    { value: "slate", label: "Slate", color: "#253858" },
-    { value: "silver", label: "Silver", color: "#666666" },
-  ];
 
   return (
     <Modal
@@ -431,7 +432,7 @@ const AlumniServiceForm = (props) => {
                 </div>
               </Section>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

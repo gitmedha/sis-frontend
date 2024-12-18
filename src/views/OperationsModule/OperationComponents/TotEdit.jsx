@@ -31,7 +31,7 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -193,8 +193,8 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -364,6 +364,16 @@ const TotEdit = (props) => {
                           control="input"
                           name="user_name"
                           label="Participant Name"
+                          className="form-control"
+                          placeholder="Participant Name"
+                        />
+                      </div>
+
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
+                          control="input"
+                          name="email"
+                          label="Email id"
                           className="form-control"
                           placeholder="Participant Name"
                         />

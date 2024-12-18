@@ -10,6 +10,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import { searchStudents } from "./opportunityAction";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -104,6 +105,16 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+
+    let propgramEnrollemntData={};
+    console.log(props);
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Updated",event_id:props.opportunity.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Created",event_id:props.opportunity.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 

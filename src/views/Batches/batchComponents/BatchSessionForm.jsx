@@ -33,7 +33,7 @@ const Section = styled.div`
 `;
 
 const BatchSessionForm = (props) => {
-  let { onHide, show, batch, onDelete } = props;
+  let { onHide, show, batch, onDelete } = props; 
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);

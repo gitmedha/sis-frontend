@@ -13,6 +13,7 @@ import {
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -57,6 +58,7 @@ const ProgramEnrollmentForm = (props) => {
   const [courseLevel, setCourseLevel] = useState("");
   const [courseType, setCourseType] = useState("");
   const [courseName,setCourseName] = useState("");
+  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(()=>{
     if(props.programEnrollment){
@@ -146,14 +148,24 @@ const ProgramEnrollmentForm = (props) => {
 
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
-      onHide(values);
+      let propgramEnrollemntData={};
+    if(props.programEnrollment ){
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Updated",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+      
+    }else {
+      console.log("hehehlooo");
+      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:{name:values?.program_enrollment_batch}};
+    }
+    console.log(propgramEnrollemntData);
+    await createLatestAcivity(propgramEnrollemntData);
+    onHide(values);
     }
   };
 
   useEffect(() => {
     getAllBatches().then((data) => {
       setBatchOptions(
-        data?.data?.data?.batches.map((batches) => ({
+        data?.data?.data?.batchesConnection.values.map((batches) => ({
           key: batches.name,
           label: batches.name,
           value: batches.id,
@@ -255,7 +267,6 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     try {
       const { data } = await searchStudents(filterValue);
-      console.log(data);
       let programEnrollmentStudent = props.programEnrollment
         ? props.programEnrollment.student
         : null;
@@ -699,7 +710,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                 </Section>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

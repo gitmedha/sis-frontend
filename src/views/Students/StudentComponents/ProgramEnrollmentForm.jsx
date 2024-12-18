@@ -8,6 +8,7 @@ import { ProgramEnrollmentValidations } from "../../../validations/Student";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import {searchInstitution,searchBatch, getAllCourse} from "../StudentComponents/StudentActions";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findProgramEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -56,7 +57,7 @@ const ProgramEnrollmentForm = (props) => {
     setLookUpLoading(false);
   };
   const [courseName,setCourseName] = useState("");
-
+  const userId = localStorage.getItem("user_id");
 
   useEffect(()=>{
     if(props.programEnrollment){
@@ -140,31 +141,40 @@ const ProgramEnrollmentForm = (props) => {
 
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
+      let propgramEnrollemntData={};
+      console.log(props.programEnrollment);
+      console.log(findUpdates(props.programEnrollment,values));
+      if(props.programEnrollment ){
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Update",event_id:props.student.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
+        
+      }else {
+        propgramEnrollemntData={module_name:"Student",activity:"Program Enrollment Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:props.student.full_name}};
+      }
+      await createLatestAcivity(propgramEnrollemntData);
       onHide(values);
     }
   };
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
-      // setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
-      setStatusOptions(data.status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setFeeStatusOptions(data.fee_status.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setYearOfCompletionOptions(data.year_of_completion.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      setCurrentCourseYearOptions(data.current_course_year.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseLevelOptions(data.course_level.map(item => ({ key: item.value, value: item.value, label: item.value })));
-      // setCourseTypeOptions(data.course_type.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setcourse(data?.course?.map(item=>({ key: item, value: item, label: item })))
+      setStatusOptions(data?.status?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setFeeStatusOptions(data?.fee_status?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setYearOfCompletionOptions(data?.year_of_completion?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCurrentCourseYearOptions(data?.current_course_year?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseLevelOptions(data?.course_level?.map(item => ({ key: item.value, value: item.value, label: item.value })));
+      setCourseTypeOptions(data?.course_type?.map(item => ({ key: item.value, value: item.value, label: item.value })));
     });
     getAllCourse().then((data)=>{
-      console.log(data.data?.data);
-      const uniqueCourseLevels = new Set(data.data?.data?.coursesConnection?.values.map(item => item.course_level));
-      const uniqueCourseType=new Set(data.data.data.coursesConnection.values.map(item => item.course_type));
-      const courseLevelOptions = Array.from(uniqueCourseLevels).map(course_level => ({
+      const uniqueCourseLevels = new Set(data?.data?.data?.coursesConnection?.values?.map(item => item.course_level));
+      const uniqueCourseType=new Set(data?.data?.data?.coursesConnection?.values?.map(item => item.course_type));
+      const courseLevelOptions = Array.from(uniqueCourseLevels)?.map(course_level => ({
         key: course_level,
         value: course_level,
         label: course_level
       }));
       setCourseLevelOptions(courseLevelOptions);
-      setCourseTypeOptions(Array.from(uniqueCourseType).map(course_type => ({
+      setCourseTypeOptions(Array.from(uniqueCourseType)?.map(course_type => ({
         key: course_type,
         value: course_type,
         label: course_type
@@ -199,7 +209,7 @@ const ProgramEnrollmentForm = (props) => {
         programEnrollmentInstitution !== null &&
         !institutionFoundInList
       ) {
-        filterData.unshift({
+        filterData?.unshift({
           label: programEnrollmentInstitution.name,
           value: Number(programEnrollmentInstitution.id),
         });
@@ -622,7 +632,7 @@ const ProgramEnrollmentForm = (props) => {
                 </Section>
               </div>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

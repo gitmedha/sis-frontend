@@ -18,6 +18,7 @@ import NP from "nprogress";
 import nProgress from "nprogress";
 import api from "../../../apis";
 import { deleteFile } from "../../../common/commonActions";
+import { createLatestAcivity } from 'src/utils/LatestChange/Api';
 
 const ProgramEnrollments = (props) => {
   let { id, institution } = props;
@@ -33,6 +34,7 @@ const ProgramEnrollments = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [programEnrollmentTableData, setProgramEnrollmentsTableData] = useState([]);
   const [programEnrollments, setProgramEnrollments] = useState([]);
+  const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
     getProgramEnrollmentsPickList().then(data => {
@@ -214,7 +216,11 @@ const ProgramEnrollments = (props) => {
 
   const handleDelete = async () => {
      NP.start();
-    deleteProgramEnrollment(selectedProgramEnrollment.id).then(data => {
+    deleteProgramEnrollment(selectedProgramEnrollment.id).then(async(data) => {
+      console.log(props);
+      let propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Deleted",event_id:props.institution.id,updatedby:userId ,changes_in:{name:data.institution.name}};
+    
+      await createLatestAcivity(propgramEnrollemntData);
       setAlert("Program Enrollment deleted successfully.", "success");
     }).catch(err => {
       setAlert("Unable to delete program enrollment.", "error");
