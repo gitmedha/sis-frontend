@@ -1132,7 +1132,7 @@ const Operations = ({
         myData: false,
         mentorship:false,
         upskill:false,
-        pitching:true
+        pitching:false
       });
     }
     if(activeTab.key == "mentorship"){
@@ -1141,7 +1141,7 @@ const Operations = ({
         myData: false,
         mentorship:true,
         upskill:false,
-        pitching:true
+        pitching:false
       });
     }
     if(activeTab.key == "upskilling"){
@@ -1525,7 +1525,7 @@ const Operations = ({
             <>
               <PitchingUpload
                 uploadExcel={uploadExcel}
-                alertForNotuploadedData={alertForNotuploadedData}
+                // alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={()=>closeUpload()}
                 Pitching="yes"
               />
