@@ -424,6 +424,7 @@ const AlumniServiceForm = (props) => {
                       label="Comments"
                       placeholder="Comments"
                       control="input"
+                      required
                       className="form-control"
                       autoComplete="off"
                     ></Textarea>

@@ -82,6 +82,7 @@ const program_mode = Yup.string()
   .nullable()
   .required("Program mode is required.");
 const category = Yup.string().nullable().required("Category is required.");
+const comments=Yup.string().nullable().required("Comment is required.");
 const subcategory = Yup.string()
   .nullable()
   .required("Subcategory is required.");
@@ -246,6 +247,7 @@ export const AlumniServiceValidations = Yup.object({
   start_date,
   program_mode,
   category,
+  comments,
   end_date:Yup.date().nullable().when("start_date", (start,schema)=>{
     return schema.min(new Date(start), "End date can't be before Start date")
   })

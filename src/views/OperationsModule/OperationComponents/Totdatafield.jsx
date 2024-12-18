@@ -142,6 +142,10 @@ const Totdatafield = (props) => {
                     label="Participant Name"
                     value={props?.user_name}
                   />
+                   <DetailField
+                    label="Email id"
+                    value={props?.email}
+                  />
                   <DetailField
                     label="Email id"
                     value={props?.email}
