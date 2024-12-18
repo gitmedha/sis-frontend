@@ -517,23 +517,15 @@ const TotUpload = (props) => {
 
 
       if (
-<<<<<<< HEAD:src/views/OperationsModule/UploadFiles/TotUpload.jsx
-=======
-        !pattern.test(newItem["Contact Number"]) ||
->>>>>>> 1d113314224859249489e634fee231c5ab0f7377:src/views/OperationsModule/UploadFiles/TOT/TotUpload.jsx
         !departMentCheck ||
         !projectCheck ||
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-<<<<<<< HEAD:src/views/OperationsModule/UploadFiles/TotUpload.jsx
         !projectNameCheck ||
         parseDate || 
         !newItem["Full Name"] || 
         !newItem["College Name"]
-=======
-        !projectNameCheck || !ageCheck || parseDate || !newItem["Full Name"] || !newItem["College Name"]
->>>>>>> 1d113314224859249489e634fee231c5ab0f7377:src/views/OperationsModule/UploadFiles/TOT/TotUpload.jsx
       ) {
         notFoundData.push({
           index: index + 1,
