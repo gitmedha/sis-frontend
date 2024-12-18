@@ -422,15 +422,9 @@ const TotUpload = (props) => {
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
-    const exemptColumns = ["Age", "Contact Number"];
-  const incompleteColumns = expectedColumns.filter(
-    (col) =>
-      !exemptColumns.includes(col) &&
-      data.every(
-        (row) =>
-          row[col] === null || row[col] === "" || row[col] === undefined
-      )
-  );
+    const incompleteColumns = expectedColumns.filter(col =>
+      data.every(row => row[col] === null || row[col] === "" || row[col] ===undefined )
+    );
 
     if (incompleteColumns.length > 0) {
       setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
@@ -514,18 +508,15 @@ const TotUpload = (props) => {
           parseDate = true;
         }
       }
-
-
+      let ageCheck=isNumber(newItem["Age"]) && (newItem["Age"]<100 && newItem["Age"]>10)
       if (
+        !pattern.test(newItem["Contact Number"]) ||
         !departMentCheck ||
         !projectCheck ||
         !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck ||
-        parseDate || 
-        !newItem["Full Name"] || 
-        !newItem["College Name"]
+        !projectNameCheck || !ageCheck || parseDate || !newItem["Full Name"] || !newItem["College Name"]
       ) {
         notFoundData.push({
           index: index + 1,
