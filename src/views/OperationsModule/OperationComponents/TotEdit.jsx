@@ -300,7 +300,16 @@ const TotEdit = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
-    trainer_1: Yup.string().required("Trainer 1 is required")
+    trainer_1: Yup.string().required("Trainer 1 is required"),
+    trainer_2: Yup.string()
+      .required("Trainer 2 is required")
+      .test("not-same", "Trainers must be different", function (trainer2) {
+        const trainer1 = this.resolve(Yup.ref("trainer_1"));
+        return trainer1 !== trainer2;
+      }),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
   });
 
   const deleteEntry = async () => {
@@ -369,15 +378,6 @@ const TotEdit = (props) => {
                         />
                       </div>
 
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="email"
-                          label="Email id"
-                          className="form-control"
-                          placeholder="Participant Name"
-                        />
-                      </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
                           control="input"
