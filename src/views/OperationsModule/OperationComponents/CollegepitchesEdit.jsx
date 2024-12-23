@@ -133,6 +133,7 @@ const CollepitchesEdit = (props) => {
         }
       });
       let data = await getAllSrm();
+      console.log(data);
       setsrmOption(data);
       getProgramEnrollmentsPickList().then((data) => {
         setcourse(
@@ -223,7 +224,7 @@ const CollepitchesEdit = (props) => {
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name?.id.toString();
+    initialValues["srm_name"] = props.srm_name?.id;
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
@@ -399,13 +400,14 @@ const CollepitchesEdit = (props) => {
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
+                          {console.log(assigneeOptions)}
                           <Input
                             name="srm_name"
                             label="SRM Name"
                             placeholder="SRM Name"
-                            control="lookup"
+                            control="lookupAsync"
                             icon="down"
-                            defaultOptions={srmOption}
+                            defaultOptions={assigneeOptions}
                             onKeyPress={handleKeyPress}
                             className="form-control"
                           />
