@@ -313,7 +313,7 @@ const UpskillUpdate = (props) => {
     initialValues["sub_category"] = props.sub_category;
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
-    initialValues["course_name"] = props["course_name"];
+    initialValues["course_name"] = props.course_name;
     initialValues["student_id"] = Number(props.student_id.id);
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date
@@ -322,9 +322,10 @@ const UpskillUpdate = (props) => {
       props.end_date
     );
     initialValues["published_at"] = new Date(props.published_at);
-    initialValues["assigned_to"] = Number(props?.assigned_to?.id);
+    initialValues["assigned_to"] = props?.assigned_to?.id;
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
+    console.log(props);
   }
 
   useEffect(() => {

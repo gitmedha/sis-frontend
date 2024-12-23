@@ -253,16 +253,18 @@ const UpskillingUpload = (props) => {
   
       const studentId = newItem["Student ID"];
       let studentExists = false;
-  
+      let studentIdNum;
       if (studentId) {
         try {
           const student = await searchStudents(studentId);
-          studentExists = student.data.studentsConnection.values.length > 0;
+          studentIdNum=parseInt(student.data?.studentsConnection.values[0].id, 10);
+          studentExists = student?.data?.studentsConnection?.values.length > 0;
         } catch (err) {
           console.error(`Error fetching student with ID: ${studentId}`, err);
         }
       }
-  
+      const createdby = Number(userId);
+      const updatedby = Number(userId);
       if (
         !assignedUserId ||
         !studentExists ||
@@ -314,18 +316,20 @@ const UpskillingUpload = (props) => {
         });
       } else {
         formattedData.push({
-          assigned_to: assignedUserId || "",
-          student_id: newItem["Student ID"] || "",
-          institution: newItem["Institution"] || "",
-          batch: batchId || "",
-          start_date: newItem["Start Date"] || "",
-          end_date: newItem["End Date"] || "",
+          assigned_to: Number(assignedUserId) || "",
+          student_id: studentIdNum || "",
+          institution: Number(instituteId) || "",
+          batch: Number(batchId) || "",
+          start_date: startDate || "",
+          end_date: endDate || "",
           course_name: newItem["Certificate Course Name"] || "",
-          certificate_received: newItem["Certificate Received"] || "",
+          certificate_received: newItem["Certificate Received"].toLowerCase() === "yes" ,
           category: newItem["Category"] || "",
           sub_category: newItem["Sub Category"] || "",
           issued_org: newItem["Issuing Organization"] || "",
           program_name: newItem["Program Name"] || "",
+          createdby: createdby,
+          updatedby: updatedby,
         });
       }
     }
@@ -340,7 +344,7 @@ const UpskillingUpload = (props) => {
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setUploadNew(true);
-      props.uploadExcel(excelData, "mentorship");
+      props.uploadExcel(excelData, "upskilling");
     }
   };
 
