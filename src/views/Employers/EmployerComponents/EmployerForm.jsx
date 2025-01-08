@@ -180,7 +180,9 @@ const EmployerForm = (props) => {
 
       let { data } = await api.post("/industries/findAll");
       const processData = (data) => {
-        return data.map((item) => {
+        return data
+        .filter((item) => item.label.toLowerCase() !== "consultancy")
+        .map((item) => {
             if (item.label === "Irrigation") {
                 return {
                     ...item,
