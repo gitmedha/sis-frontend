@@ -61,8 +61,8 @@ const options = [
 const Activityoptions = [
   { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
   {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
+    value: "Industry Visit/Exposure Visit",
+    label: "Industry Visit/Exposure Visit",
   },
   {
     value: "Workshop/Training Session/Activity (In/Off campus)",
@@ -100,8 +100,9 @@ const OperationDataupdateform = (props) => {
       filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
-    }if(!props.batch){
-      setBatchOptions([])
+    }
+    if (!props.batch) {
+      setBatchOptions([]);
     }
   }, [props]);
 
@@ -117,7 +118,6 @@ const OperationDataupdateform = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
@@ -127,29 +127,28 @@ const OperationDataupdateform = (props) => {
     try {
       const { data } = await searchBatches(filterValue);
       let batchInformtion = props ? props.batch : null;
-        let batchFoundInList = false;
-        let filterData = data.batchesConnection.values.map((batch) => {
-          if (props && batch.id === Number(batchInformtion?.id)) {
-            batchFoundInList = true;
-          }
-          if (hideBatchName.includes(batch.name)) {
-            return {};
-          } else {
-            return {
-              ...batch,
-              label: batch.name,
-              value: Number(batch.id),
-            };
-          }
-        });
-        if (props && batchInformtion !== null && !batchFoundInList) {
-          filterData.unshift({
-            label: batchInformtion.name,
-            value: Number(batchInformtion.id),
-          });
+      let batchFoundInList = false;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if (props && batch.id === Number(batchInformtion?.id)) {
+          batchFoundInList = true;
         }
-        return filterData;
-
+        if (hideBatchName.includes(batch.name)) {
+          return {};
+        } else {
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
+      });
+      if (props && batchInformtion !== null && !batchFoundInList) {
+        filterData.unshift({
+          label: batchInformtion.name,
+          value: Number(batchInformtion.id),
+        });
+      }
+      return filterData;
     } catch (error) {
       console.error(error);
     }
@@ -176,7 +175,6 @@ const OperationDataupdateform = (props) => {
     await getStateDistricts(value).then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        
         data?.data?.data?.geographiesConnection?.groupBy?.area
           .map((area) => ({
             key: area.id,
