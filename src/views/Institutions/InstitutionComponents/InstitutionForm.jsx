@@ -155,7 +155,6 @@ const InstitutionForm = (props) => {
     }
     setDisableSaveButton(true);
     let propgramEnrollemntData={};
-    console.log(values);
     if(props.id ){
       propgramEnrollemntData={module_name:"institution",activity:"Institution Data Updated",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
       await createLatestAcivity(propgramEnrollemntData);

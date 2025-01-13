@@ -217,7 +217,6 @@ const PitchingUpload = (props) => {
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
     let validProgramNames = await filterProgram();
-    console.log(validProgramNames);
     setProgramOption(validProgramNames);
     data.forEach((item, index) => {
       const newItem = {};
@@ -251,10 +250,6 @@ const PitchingUpload = (props) => {
       const isValidProgramName = (programName) => {
         return validProgramNames.includes(programName);
       };
-      console.log(
-        "isValidProgramName",
-        isValidProgramName(newItem["Program name"])
-      );
       const Date = excelSerialDateToJSDate(newItem["Date of Pitching"]);
 
       if (

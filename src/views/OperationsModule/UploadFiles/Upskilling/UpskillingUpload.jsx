@@ -347,9 +347,6 @@ const UpskillingUpload = (props) => {
         });
       }
     }
-
-    console.log("Formatted Data:", formattedData);
-    console.log("Not Found Data:", notFoundData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
