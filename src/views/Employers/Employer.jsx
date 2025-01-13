@@ -12,33 +12,37 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { GET_EMPLOYER, UPDATE_EMPLOYER } from "../../graphql";
-import { deleteEmployer, updateEmployer, getEmployerEmploymentConnections } from "./EmployerComponents/employerAction";
+import {
+  deleteEmployer,
+  updateEmployer,
+  getEmployerEmploymentConnections,
+} from "./EmployerComponents/employerAction";
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
-import styled from 'styled-components';
+import styled from "styled-components";
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
 import { deleteFile } from "../../common/commonActions";
-import {isAdmin,getUser} from "../../common/commonFunctions";
+import { isAdmin, getUser } from "../../common/commonFunctions";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
-.button {
-  padding: 6px 43px !important;
-}
+  .button {
+    padding: 6px 43px !important;
+  }
 
-@media screen and (max-width: 360px) {
- .btn-box{
-   margin-left: 20px;
+  @media screen and (max-width: 360px) {
+    .btn-box {
+      margin-left: 20px;
+    }
+    .section-badge {
+      margin-left: 2px;
+      padding: 0px 20px !important;
+    }
   }
- .section-badge {
-   margin-left: 2px;
-   padding: 0px 20px !important;
-  }
-}
-`
+`;
 const Employer = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [employerData, setEmployerData] = useState({});
@@ -47,8 +51,9 @@ const Employer = (props) => {
   const [employerOpportunities, setEmployerOpportunities] = useState([]);
   const [opportunitiesBadge, setOpportunitiesBadge] = useState(<></>);
   const { address, contacts, ...rest } = employerData;
-  const [employerEmploymentConnections, setEmployerEmploymentConnections] = useState([]);
-  const {setAlert} = props;
+  const [employerEmploymentConnections, setEmployerEmploymentConnections] =
+    useState([]);
+  const { setAlert } = props;
   const history = useHistory();
   const employerId = props.match.params.id;
   const userId = parseInt(localStorage.getItem("user_id"));
@@ -57,35 +62,51 @@ const Employer = (props) => {
       setModalShow(false);
       return;
     }
-    let {id, show, created_at, created_by_frontend, updated_by_frontend, updated_at, mou_file, ...dataToSave} = data;
-    if (typeof data.logo === 'object') {
-      dataToSave['logo'] = data.logo?.id;
+    let {
+      id,
+      show,
+      created_at,
+      created_by_frontend,
+      updated_by_frontend,
+      updated_at,
+      mou_file,
+      ...dataToSave
+    } = data;
+    if (typeof data.logo === "object") {
+      dataToSave["logo"] = data.logo?.id;
     }
 
     NP.start();
-    updateEmployer(Number(id), dataToSave).then(data => {
-      setAlert("Employer updated successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to update employer.", "error");
-    }).finally(() => {
-      NP.done();
-      getThisEmployer();
-    });
+    updateEmployer(Number(id), dataToSave)
+      .then((data) => {
+        setAlert("Employer updated successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to update employer.", "error");
+      })
+      .finally(() => {
+        NP.done();
+        getThisEmployer();
+      });
     setModalShow(false);
   };
 
   const handleDelete = async () => {
     NP.start();
-    deleteEmployer(employerData.id).then(data => {
-      setAlert("Employer deleted successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to delete employer.", "error");
-    }).finally(() => {
-      setShowDeleteAlert(false);
-      NP.done();
-      history.push("/employers");
-    });
-  }
+
+    deleteEmployer(employerData.id)
+      .then((data) => {
+        setAlert("Employer deleted successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to delete employer.", "error");
+      })
+      .finally(() => {
+        setShowDeleteAlert(false);
+        NP.done();
+        history.push("/employers");
+      });
+  };
 
   const getThisEmployer = async () => {
     setLoading(true);
@@ -98,47 +119,64 @@ const Employer = (props) => {
       console.log(data.data);
       setEmployerData(data.data.employer);
     } catch (err) {
-    }finally {
+    } finally {
       setLoading(false);
       NP.done();
     }
   };
 
   const updateOpportunitiesBadge = (opportunities) => {
-    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
-    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    let jobOpportunities = opportunities.filter(
+      (opportunity) => opportunity.type.toLowerCase() === "job"
+    );
+    let internshipOpportunities = opportunities.filter(
+      (opportunity) => opportunity.type.toLowerCase() === "internship"
+    );
     setOpportunitiesBadge(
       <>
-       <Tooltip  placement="top" title="Internships">
-        <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
-      </Tooltip>
-        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
-      <Tooltip placement="top" title="Jobs">
-        <FaBriefcase width="15" color="#D7D7E0" />
-      </Tooltip>
-      <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
-
+        <Tooltip placement="top" title="Internships">
+          <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
+        </Tooltip>
+        <span
+          style={{
+            margin: "0 20px 0 10px",
+            color: "#FFFFFF",
+            fontSize: "16px",
+          }}
+        >
+          {internshipOpportunities.length}
+        </span>
+        <Tooltip placement="top" title="Jobs">
+          <FaBriefcase width="15" color="#D7D7E0" />
+        </Tooltip>
+        <span
+          style={{ margin: "0 0 0 10px", color: "#FFFFFF", fontSize: "16px" }}
+        >
+          {jobOpportunities.length}
+        </span>
       </>
     );
-  }
+  };
 
   const getEmploymentConnections = async () => {
     console.log(employerId);
-    getEmployerEmploymentConnections(employerId).then(data => {
-      console.log(data);
-      let employmentConnections = data.data.data.employmentConnectionsConnection.values;
-      console.log(employerEmploymentConnections);
-      setEmployerEmploymentConnections(employmentConnections);
-    }).catch(err => {
-    });
-  }
+    getEmployerEmploymentConnections(employerId)
+      .then((data) => {
+        console.log(data);
+        let employmentConnections =
+          data.data.data.employmentConnectionsConnection.values;
+        console.log(employerEmploymentConnections);
+        setEmployerEmploymentConnections(employmentConnections);
+      })
+      .catch((err) => {});
+  };
 
   const getOpportunities = () => {
-    getEmployerOpportunities(employerId).then(data => {
+    getEmployerOpportunities(employerId).then((data) => {
       setEmployerOpportunities(data.data.data.opportunities);
       updateOpportunitiesBadge(data.data.data.opportunities);
     });
-  }
+  };
 
   useEffect(() => {
     getThisEmployer();
@@ -148,107 +186,137 @@ const Employer = (props) => {
 
   const handleMouDelete = async () => {
     NP.start();
-    deleteFile(employerData.mou_file.id).then(data => {
-      setAlert("File deleted successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to delete file.", "error");
-    }).finally(() => {
-      setShowDeleteAlert(false);
-      NP.done();
-      history.push("/employer/" . id);
-      getThisEmployer();
-    });
+    deleteFile(employerData.mou_file.id)
+      .then((data) => {
+        setAlert("File deleted successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to delete file.", "error");
+      })
+      .finally(() => {
+        setShowDeleteAlert(false);
+        NP.done();
+        history.push("/employer/".id);
+        getThisEmployer();
+      });
   };
 
-
-  const isValidUser = () =>{
-    if(Object.keys(employerData).length > 0) {
-      return employerData.assigned_to.username.toLowerCase() === getUser().toLowerCase();
+  const isValidUser = () => {
+    if (Object.keys(employerData).length > 0) {
+      return (
+        employerData.assigned_to.username.toLowerCase() ===
+        getUser().toLowerCase()
+      );
     }
-  }
-  const deleteStudent=async()=>{
+  };
+  const deleteStudent = async () => {
     console.log(employerData);
     let studentData = {
       module_name: "employer",
       activity: "Employer Data Deleted",
       event_id: employerId,
       updatedby: userId,
-      changes_in: {name:`${employerData.name }`},
+      changes_in: { name: `${employerData.name}` },
     };
     await createLatestAcivity(studentData);
-    setShowDeleteAlert(true)
-  }
+    setShowDeleteAlert(true);
+  };
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
     return (
       <Styled>
         <>
-        {(isValidUser() || isAdmin()) && <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12 d-flex">
-            <button
-              onClick={() => setModalShow(true)}
-              style={{ marginLeft: "0px" }}
-              className="btn--primary action_button_sec"
-            >
-              EDIT
-            </button>
-            <button onClick={() => deleteStudent()} className="btn--primary action_button_sec">
-              DELETE
-            </button>
-          </div>
-        </div>}
-        <Collapsible
-          opened={true}
-          titleContent={
-            <TitleWithLogo
-              done={() => getThisEmployer()}
-              id={rest.id}
-              logo={rest.logo}
-              title={rest.name}
-              query={UPDATE_EMPLOYER}
-              icon="employer"
+          {(isValidUser() || isAdmin()) && (
+            <div className="row" style={{ margin: "30px 0 0" }}>
+              <div className="col-12 d-flex">
+                <button
+                  onClick={() => setModalShow(true)}
+                  style={{ marginLeft: "0px" }}
+                  className="btn--primary action_button_sec"
+                >
+                  EDIT
+                </button>
+                <button
+                  onClick={() => deleteStudent()}
+                  className="btn--primary action_button_sec"
+                >
+                  DELETE
+                </button>
+              </div>
+            </div>
+          )}
+          <Collapsible
+            opened={true}
+            titleContent={
+              <TitleWithLogo
+                done={() => getThisEmployer()}
+                id={rest.id}
+                logo={rest.logo}
+                title={rest.name}
+                query={UPDATE_EMPLOYER}
+                icon="employer"
+              />
+            }
+          >
+            <Details
+              {...employerData}
+              onMouUpdate={getThisEmployer}
+              onMouDelete={handleMouDelete}
             />
-          }
-        >
-          <Details {...employerData} onMouUpdate={getThisEmployer} onMouDelete={handleMouDelete} />
-        </Collapsible>
-        <Collapsible title="Address">
-          <Address {...employerData} />
-        </Collapsible>
-        <Collapsible title="Contacts" badge={employerData?.contacts?.length}>
-          <Contacts contacts={contacts} id={rest.id} />
-        </Collapsible>
-        <Collapsible title="Opportunities" badge={opportunitiesBadge}>
-          <Opportunities opportunities={employerOpportunities} employer={employerData} onDataUpdate={getOpportunities} />
-        </Collapsible>
-        <Collapsible title="Employment Connections" badge={employerEmploymentConnections.length}>
-            <EmploymentConnections employmentConnections={employerEmploymentConnections} employer={employerData} onDataUpdate={getEmploymentConnections} />
           </Collapsible>
-        <EmployerForm
-          {...employerData}
-          show={modalShow}
-          onHide={hideUpdateModal}
-        />
-        <SweetAlert
-          danger
-          showCancel
-          btnSize="md"
-          show={showDeleteAlert}
-          onConfirm={() => handleDelete()}
-          onCancel={() => setShowDeleteAlert(false)}
-          title={
-            <span className="text--primary latto-bold">Delete {employerData.name}?</span>
-          }
-          customButtons={
-            <>
+          <Collapsible title="Address">
+            <Address {...employerData} />
+          </Collapsible>
+          <Collapsible title="Contacts" badge={employerData?.contacts?.length}>
+            <Contacts contacts={contacts} id={rest.id} />
+          </Collapsible>
+          <Collapsible title="Opportunities" badge={opportunitiesBadge}>
+            <Opportunities
+              opportunities={employerOpportunities}
+              employer={employerData}
+              onDataUpdate={getOpportunities}
+            />
+          </Collapsible>
+          <Collapsible
+            title="Employment Connections"
+            badge={employerEmploymentConnections.length}
+          >
+            <EmploymentConnections
+              employmentConnections={employerEmploymentConnections}
+              employer={employerData}
+              onDataUpdate={getEmploymentConnections}
+            />
+          </Collapsible>
+          <EmployerForm
+            {...employerData}
+            show={modalShow}
+            onHide={hideUpdateModal}
+          />
+          <SweetAlert
+            danger
+            showCancel
+            btnSize="md"
+            show={showDeleteAlert}
+            onConfirm={() => handleDelete()}
+            onCancel={() => setShowDeleteAlert(false)}
+            title={
+              <span className="text--primary latto-bold">
+                Delete {employerData.name}?
+              </span>
+            }
+            customButtons={
+              <>
                 <button
                   onClick={() => setShowDeleteAlert(false)}
                   className="btn btn-secondary mx-2 px-4"
                 >
                   Cancel
                 </button>
-                <button onClick={() => handleDelete()} className="btn btn-danger mx-2 px-4">
+                <button
+                  onClick={() => handleDelete()}
+                  className="btn btn-danger mx-2 px-4"
+                >
                   Delete
                 </button>
               </>

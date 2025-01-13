@@ -228,9 +228,6 @@ export function findUpdates(obj1, obj2) {
 
 export function findEmployerDifferences(obj1, obj2) {
   const differences = {};
-    console.log(obj1);
-  // Compare employer_id if IDs are different
-  console.log(obj2);
   if (String(obj1.student?.id) !== String(obj2?.student_id)) {
     console.log("obj2.employer_id",obj2);
       differences.employer_id = {

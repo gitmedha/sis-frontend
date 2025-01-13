@@ -311,13 +311,14 @@ const EmployerForm = (props) => {
       values.logo = logo;
     }
     let EmployerEnrollmentData = {};
-    if (props.employmentConnection) {
+    console.log(props);
+    if (props.id) {
       EmployerEnrollmentData = {
         module_name: "employer",
         activity: "Employer Data Update",
         event_id: values.id,
         updatedby: userId,
-        changes_in: compareObjects(props.employmentConnection, values),
+        changes_in: compareObjects(props, values),
       };
     } 
     await createLatestAcivity(EmployerEnrollmentData);
