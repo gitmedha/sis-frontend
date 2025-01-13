@@ -47,7 +47,7 @@ function OpportunitySearchBar({
     { key: 2, label: "Area", value: "medha_area" },
     { key: 3, label: "Type", value: "type" },
     { key: 4, label: "Employer Name", value: "employer" },
-    { key: 5, label: "Role", value: "role_or_designation" },
+    { key: 5, label: "Role/Desigination", value: "role_or_designation" },
   ]);
 
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
