@@ -135,7 +135,6 @@ const UpdateMentorship = (props) => {
 
   const onStateChange = async (value) => {
     await getCities(value).then((data)=>{
-      console.log(data);
       setAreaOptions([]);
       setAreaOptions(
         data

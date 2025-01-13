@@ -196,10 +196,6 @@ function compareObjects(obj1, obj2) {
   const onSubmit = async (values) => {
 
     let propgramEnrollemntData={};
-    console.log(values);
-    console.log(props);
-    // console.log(transformObj1(props.employmentConnection));
-    // console.log(compareObjects(props.employmentConnection,values))
     if(props.employmentConnection ){
       propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Updated",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(initialValues,values)};
       

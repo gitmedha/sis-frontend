@@ -133,7 +133,6 @@ const CollepitchesEdit = (props) => {
         }
       });
       let data = await getAllSrm();
-      console.log(data);
       setsrmOption(data);
       getProgramEnrollmentsPickList().then((data) => {
         setcourse(

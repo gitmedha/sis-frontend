@@ -17,7 +17,10 @@ import Check from "./Check";
 import { isValidContact, isValidEmail } from "src/common/commonFunctions";
 import { GET_INSTITUTE_NAME } from "src/graphql";
 import api from "src/apis";
-import { getAllInstitute, searchPrograms } from "../../OperationComponents/operationsActions";
+import {
+  getAllInstitute,
+  searchPrograms,
+} from "../../OperationComponents/operationsActions";
 
 const expectedColumns = [
   "Date of Pitching",
@@ -29,7 +32,6 @@ const expectedColumns = [
   "Phone",
   "WhatsApp Number",
   "Email ID",
-  "Remarks",
   "SRM Name",
   "Medha Area",
 ];
@@ -48,7 +50,7 @@ const PitchingUpload = (props) => {
   const [uploadNew, setUploadNew] = useState(false);
   const [showModalPitching, setShowModalPitching] = useState(false);
   const [instituteOptions, setInstituteOptions] = useState([]);
-  const [programOption,setProgramOption]=useState([])
+  const [programOption, setProgramOption] = useState([]);
 
   useEffect(async () => {
     let instituteData = await getAllInstitute();
@@ -203,20 +205,19 @@ const PitchingUpload = (props) => {
     try {
       const { data } = await searchPrograms(filterValue);
       return data.programsConnection.values.map((program) => {
-        return program.name
+        return program.name;
       });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const processParsedData =  async (data) => {
+  const processParsedData = async (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-    let validProgramNames=await filterProgram();
-    console.log(validProgramNames);
-    setProgramOption(validProgramNames)
+    let validProgramNames = await filterProgram();
+    setProgramOption(validProgramNames);
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
@@ -249,50 +250,47 @@ const PitchingUpload = (props) => {
       const isValidProgramName = (programName) => {
         return validProgramNames.includes(programName);
       };
-      console.log("isValidProgramName",isValidProgramName(newItem["Program name"] ));
       const Date = excelSerialDateToJSDate(newItem["Date of Pitching"]);
 
-
-        if (
-          !newItem["Student Name"] ||
-          !newItem["Course Name"] ||
-          !newItem["Phone"] ||
-          !instituteId ||
-          !newItem["Email ID"] ||
-          !isValidProgramName(newItem["Program name"])        
-        ) {
-          notFoundData.push({
-            index: index + 1,
-            date_of_pitching: Date || "",
-            student_name: newItem["Student Name"] || "",
-            course_name: newItem["Course Name"] || "",
-            course_year: newItem["Course Year"] || "",
-            institution: newItem["Institution"]  || "",
-            program_name: newItem["Program name"] || "",
-            phone: newItem["Phone"] || "",
-            whatsapp_number: newItem["WhatsApp Number"] || "",
-            email: newItem["Email ID"] || "",
-            remarks: newItem["Remarks"] || "",
-            srm_name: newItem["SRM Name"] || "",
-            medha_area: newItem["Medha Area"] || "",
-          });
-        } else {
-          formattedData.push({
-            date_of_pitching: Date || "",
-            student_name: newItem["Student Name"] || "",
-            course_name: newItem["Course Name"] || "",
-            course_year: newItem["Course Year"] || "",
-            institution: newItem["Institution"] || "",
-            program_name: newItem["Program name"] || "",
-            phone: newItem["Phone"] || "",
-            whatsapp_number: newItem["WhatsApp Number"] || "",
-            email: newItem["Email ID"] || "",
-            remarks: newItem["Remarks"] || "",
-            srm_name: srmcheck, // Ensure `srmcheck` is validated
-            medha_area: newItem["Medha Area"] || "",
-          });
-        }
-      
+      if (
+        !newItem["Student Name"] ||
+        !newItem["Course Name"] ||
+        !newItem["Phone"] ||
+        !instituteId ||
+        !newItem["Email ID"] ||
+        !isValidProgramName(newItem["Program name"])
+      ) {
+        notFoundData.push({
+          index: index + 1,
+          date_of_pitching: Date || "",
+          student_name: newItem["Student Name"] || "",
+          course_name: newItem["Course Name"] || "",
+          course_year: newItem["Course Year"] || "",
+          institution: newItem["Institution"] || "",
+          program_name: newItem["Program name"] || "",
+          phone: newItem["Phone"] || "",
+          whatsapp_number: newItem["WhatsApp Number"] || "",
+          email: newItem["Email ID"] || "",
+          remarks: newItem["Remarks"] || "",
+          srm_name: newItem["SRM Name"] || "",
+          medha_area: newItem["Medha Area"] || "",
+        });
+      } else {
+        formattedData.push({
+          date_of_pitching: Date || "",
+          student_name: newItem["Student Name"] || "",
+          course_name: newItem["Course Name"] || "",
+          course_year: newItem["Course Year"] || "",
+          institution: newItem["Institution"] || "",
+          program_name: newItem["Program name"] || "",
+          phone: newItem["Phone"] || "",
+          whatsapp_number: newItem["WhatsApp Number"] || "",
+          email: newItem["Email ID"] || "",
+          remarks: newItem["Remarks"] || "",
+          srm_name: srmcheck, // Ensure `srmcheck` is validated
+          medha_area: newItem["Medha Area"] || "",
+        });
+      }
     });
 
     setExcelData(formattedData);
@@ -499,14 +497,14 @@ const PitchingUpload = (props) => {
       </Modal>
 
       <Check
-      show={showModalPitching}
-      onHide={() => hideShowModal()}
-      instituteData={instituteOptions}
-      programOption={programOption}
-      notFoundData={notUploadedData}
-      excelData={excelData}
-      uploadExcel={props.uploadExcel}
-    />
+        show={showModalPitching}
+        onHide={() => hideShowModal()}
+        instituteData={instituteOptions}
+        programOption={programOption}
+        notFoundData={notUploadedData}
+        excelData={excelData}
+        uploadExcel={props.uploadExcel}
+      />
     </>
   );
 };

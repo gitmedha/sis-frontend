@@ -11,13 +11,14 @@ import {
   createBatch,
   getBatchesPickList,
   getStudentCountByBatch,
-  sendEmailOnCreateBatch
+  sendEmailOnCreateBatch,
 } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import TabPicker from "../../components/content/TabPicker";
 import BatchSearchBar from "./batchComponents/BatchSearchBar";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -51,7 +52,7 @@ const Batches = (props) => {
     if (isSearchEnable) {
       getBatches(activeTab.key);
     }
-    
+
     if (prevIsSearchEnableRef.current !== undefined) {
       if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
         getBatches(activeTab.key);
@@ -59,7 +60,7 @@ const Batches = (props) => {
     }
 
     prevIsSearchEnableRef.current = isSearchEnable;
-  }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
+  }, [isSearchEnable, selectedSearchedValue, activeTab.key]);
 
   const getBatchesBySearchFilter = async (
     selectedTab,
@@ -639,7 +640,7 @@ const Batches = (props) => {
 
     NP.start();
     createBatch(dataToSave)
-      .then((data) => {
+      .then(async (data) => {
         if (data.data.errors) {
           setFormErrors(data.data.errors);
         } else {
@@ -648,7 +649,21 @@ const Batches = (props) => {
           //   dataToSave.id = data.data.data.createBatch.batch.id;
           //   sendEmailOnCreateBatch(dataToSave);
           // }
-          
+
+          let BatchData = {
+            module_name: "batch",
+            activity: "Batch Data Created",
+            event_id: data.data.data.createBatch.batch.id,
+            updatedby: userId,
+            changes_in: { name: data.data.data.createBatch.batch.name },
+          };
+
+          try {
+            await createLatestAcivity(BatchData);
+          } catch (error) {
+            console.error("Error logging activity:", error);
+          }
+
           getBatches();
           setModalShow(false);
           history.push(`/batch/${data.data.data.createBatch.batch.id}`);

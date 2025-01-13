@@ -131,7 +131,7 @@ const EnrollmentConnectionForm = (props) => {
     setotherrejection(rejectionfeild);
   }, [employmentConnection]);
   let propgramEnrollemntData={};
-  console.log(props);
+  
   const onSubmit = async (values) => {
     if(props.employmentConnection ){
       propgramEnrollemntData={module_name:"Employer",activity:"Employment Connection Updated",event_id:props.employer.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};

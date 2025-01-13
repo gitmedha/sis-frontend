@@ -39,7 +39,6 @@ const expectedColumns = [
   "Start Date",
   "End Date",
   "Certificate Received",
-  "Issuing Organization",
 ];
 
 const UpskillingUpload = (props) => {
@@ -213,34 +212,39 @@ const UpskillingUpload = (props) => {
     return null;
   };
 
-
   const processParsedData = async (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
-  
+
     for (const [index, item] of data.entries()) {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-  
+
       const currentUser = localStorage.getItem("user_id");
-      const batch = batchOption.find((batch) => batch.name === newItem["Batch Name"]);
-      const institute = instituteOptions.find((institute) => institute.name === newItem["Institution"]);
-      const user = assigneOption.find((user) => user.name === newItem["Assigned To"]);
-  
+      const batch = batchOption.find(
+        (batch) => batch.name === newItem["Batch Name"]
+      );
+      const institute = instituteOptions.find(
+        (institute) => institute.name === newItem["Institution"]
+      );
+      const user = assigneOption.find(
+        (user) => user.name === newItem["Assigned To"]
+      );
+
       const batchId = batch ? batch.id : null;
       const instituteId = institute ? institute.id : null;
       const assignedUserId = user ? user.id : null;
-  
+
       const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
       const endDate = excelSerialDateToJSDate(newItem["End Date"]);
-  
+
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
       let parseDate = false;
-  
+
       if (startDate && endDate) {
         const parsedDate1 = moment(new Date(startDate)).unix();
         const parsedDate2 = moment(new Date(endDate)).unix();
@@ -250,14 +254,17 @@ const UpskillingUpload = (props) => {
       } else {
         parseDate = true;
       }
-  
+
       const studentId = newItem["Student ID"];
       let studentExists = false;
       let studentIdNum;
       if (studentId) {
         try {
           const student = await searchStudents(studentId);
-          studentIdNum=parseInt(student.data?.studentsConnection.values[0].id, 10);
+          studentIdNum = parseInt(
+            student.data?.studentsConnection.values[0].id,
+            10
+          );
           studentExists = student?.data?.studentsConnection?.values.length > 0;
         } catch (err) {
           console.error(`Error fetching student with ID: ${studentId}`, err);
@@ -279,7 +286,9 @@ const UpskillingUpload = (props) => {
           assigned_to: user
             ? user.name
             : {
-                value: newItem["Assigned To"] ? newItem["Assigned To"] : "Please select from dropdown",
+                value: newItem["Assigned To"]
+                  ? newItem["Assigned To"]
+                  : "Please select from dropdown",
                 notFound: true,
               },
           student_id: studentExists
@@ -288,13 +297,17 @@ const UpskillingUpload = (props) => {
           institution: institute
             ? institute.name
             : {
-                value: newItem["Institution"] ? newItem["Institution"] : "Please select from dropdown",
+                value: newItem["Institution"]
+                  ? newItem["Institution"]
+                  : "Please select from dropdown",
                 notFound: true,
               },
           batch: batch
             ? batch.name
             : {
-                value: newItem["Batch Name"] ? newItem["Batch Name"] : "Please select from dropdown",
+                value: newItem["Batch Name"]
+                  ? newItem["Batch Name"]
+                  : "Please select from dropdown",
                 notFound: true,
               },
           start_date: parseDate
@@ -323,7 +336,8 @@ const UpskillingUpload = (props) => {
           start_date: startDate || "",
           end_date: endDate || "",
           course_name: newItem["Certificate Course Name"] || "",
-          certificate_received: newItem["Certificate Received"].toLowerCase() === "yes" ,
+          certificate_received:
+            newItem["Certificate Received"].toLowerCase() === "yes",
           category: newItem["Category"] || "",
           sub_category: newItem["Sub Category"] || "",
           issued_org: newItem["Issuing Organization"] || "",
@@ -333,13 +347,9 @@ const UpskillingUpload = (props) => {
         });
       }
     }
-  
-    console.log("Formatted Data:", formattedData);
-    console.log("Not Found Data:", notFoundData);
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
-  
 
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {

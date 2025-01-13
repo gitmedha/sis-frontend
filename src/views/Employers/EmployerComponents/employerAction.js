@@ -98,7 +98,6 @@ export const getEmployerEmploymentConnections = async (employerId, limit=100, of
       sort: `${sortBy}:${sortOrder}`,
     },
   }).then(data => {
-    console.log(data);
     return data;
   }).catch(error => {
     return Promise.reject(error);
