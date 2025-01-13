@@ -217,7 +217,6 @@ const ProgramEnrollments = (props) => {
   const handleDelete = async () => {
      NP.start();
     deleteProgramEnrollment(selectedProgramEnrollment.id).then(async(data) => {
-      console.log(props);
       let propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Deleted",event_id:props.institution.id,updatedby:userId ,changes_in:{name:data.institution.name}};
     
       await createLatestAcivity(propgramEnrollemntData);

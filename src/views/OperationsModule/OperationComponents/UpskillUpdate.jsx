@@ -325,7 +325,6 @@ const UpskillUpdate = (props) => {
     initialValues["assigned_to"] = props?.assigned_to?.id;
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
-    console.log(props);
   }
 
   useEffect(() => {

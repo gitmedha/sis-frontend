@@ -196,8 +196,6 @@ function compareObjects(obj1, obj2) {
   const onSubmit = async (values) => {
 
     let propgramEnrollemntData={};
-    console.log(values);
-    console.log(props);
     // console.log(transformObj1(props.employmentConnection));
     // console.log(compareObjects(props.employmentConnection,values))
     if(props.employmentConnection ){

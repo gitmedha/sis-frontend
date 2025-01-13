@@ -229,7 +229,7 @@ export function findUpdates(obj1, obj2) {
 export function findEmployerDifferences(obj1, obj2) {
   const differences = {};
   if (String(obj1.student?.id) !== String(obj2?.student_id)) {
-    console.log("obj2.employer_id",obj2);
+
       differences.employer_id = {
           previous_value:  obj1.student.full_name ,
           new_value: obj2.student_id,

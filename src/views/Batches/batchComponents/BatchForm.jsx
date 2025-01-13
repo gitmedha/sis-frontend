@@ -215,7 +215,7 @@ const BatchForm = (props) => {
       values.per_student_fees = 0
     }
     let propgramEnrollemntData={};
-    console.log(props);
+
     if(props.id ){
       propgramEnrollemntData={module_name:"batch",activity:"Batch Data Updated",event_id:props.id,updatedby:userId ,changes_in:findUpdates(props,values)};
       await createLatestAcivity(propgramEnrollemntData);

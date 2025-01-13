@@ -154,7 +154,6 @@ const InstitutionForm = (props) => {
       values.logo = logo;
     }
     setDisableSaveButton(true);
-    console.log(props);
     let propgramEnrollemntData={};
     console.log(values);
     if(props.id ){

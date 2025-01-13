@@ -649,7 +649,7 @@ const Batches = (props) => {
           //   dataToSave.id = data.data.data.createBatch.batch.id;
           //   sendEmailOnCreateBatch(dataToSave);
           // }
-          console.log(data);
+
           let BatchData = {
             module_name: "batch",
             activity: "Batch Data Created",

@@ -211,7 +211,6 @@ const OpportunityForm = (props) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
     let propgramEnrollemntData={};
-    console.log(props);
     if(props ){
       propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:props?.id,updatedby:userId ,changes_in:findDifferences(initialValues,values)};
       await createLatestAcivity(propgramEnrollemntData);

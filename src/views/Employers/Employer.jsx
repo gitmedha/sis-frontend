@@ -162,7 +162,7 @@ const Employer = (props) => {
     console.log(employerId);
     getEmployerEmploymentConnections(employerId)
       .then((data) => {
-        console.log(data);
+
         let employmentConnections =
           data.data.data.employmentConnectionsConnection.values;
         console.log(employerEmploymentConnections);

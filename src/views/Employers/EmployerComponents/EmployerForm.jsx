@@ -311,7 +311,6 @@ const EmployerForm = (props) => {
       values.logo = logo;
     }
     let EmployerEnrollmentData = {};
-    console.log(props);
     if (props.id) {
       EmployerEnrollmentData = {
         module_name: "employer",
