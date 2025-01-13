@@ -12,7 +12,7 @@ import { getAddressOptions, getStateDistricts }  from "../../Address/addressActi
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isPartnership} from "../../../common/commonFunctions";
 import {searchInstitutes,searchGrants,searchPrograms} from '../batchActions'
-import { findDifferences } from 'src/utils/LatestChange/Api';
+import { createLatestAcivity, findDifferences, findUpdates } from 'src/utils/LatestChange/Api';
 
 
 const Section = styled.div`
@@ -214,15 +214,13 @@ const BatchForm = (props) => {
     if(values.mode_of_payment === 'Free'){
       values.per_student_fees = 0
     }
-    // let propgramEnrollemntData={};
-    // if(props ){
-    //   propgramEnrollemntData={module_name:"institution",activity:"Update",event_id:props.institution.id,updatedby:userId ,changes_in:findDifferences(props.programEnrollment,values)};
-      
-    // }else {
-    //   propgramEnrollemntData={module_name:"institution",activity:"Create",event_id:props.institution.id,updatedby:userId ,changes_in:values};
-    // }
-    // await createLatestAcivity(propgramEnrollemntData);
+    let propgramEnrollemntData={};
 
+    if(props.id ){
+      propgramEnrollemntData={module_name:"batch",activity:"Batch Data Updated",event_id:props.id,updatedby:userId ,changes_in:findUpdates(props,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    
     setFormValues(values);
 
     onHide(values);
