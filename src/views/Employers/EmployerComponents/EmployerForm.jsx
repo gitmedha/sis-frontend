@@ -19,7 +19,7 @@ import {
 import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
-import "react-dropdown-tree-select/dist/styles.css";
+// import "react-dropdown-tree-select/dist/styles.css";
 import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
 
 
