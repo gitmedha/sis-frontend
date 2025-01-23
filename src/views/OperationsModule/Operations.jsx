@@ -1124,7 +1124,7 @@ const Operations = ({
         tot: false,
         mentorship:false,
         upskill:false,
-        pitching:true
+        pitching:false
       });
     } if(activeTab.key == "useTot") {
       setUploadModal({
@@ -1163,6 +1163,23 @@ const Operations = ({
       });
     }
   }
+
+  const SampleFile = () => {
+    switch (activeTab.key) {
+      case "my_data":
+        return feildActivityFIle;
+      case "useTot":
+        return totfile;
+      case "mentorship":
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship+Template.xlsx";
+      case "upskilling":
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
+      case "collegePitches":
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+      default:
+        return ""; // Fallback in case the tab doesn't match
+    }
+  };
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1223,16 +1240,11 @@ const Operations = ({
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
-                          href={
-                            activeTab.key == "my_data"?
-                            feildActivityFIle
-                           : activeTab.key == "useTot" ? totfile: activeTab.key == "mentorship" ? mentorshipFile :""}
+                          
+                          href={SampleFile()}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
-                          download={
-                            activeTab.key == "my_data"?
-                            feildActivityFIle
-                           :totfile}
+                          download={SampleFile()}
                         >Sample&nbsp;
                         <span><FaDownload size="12" color="#fff" /></span>
                         </a>
