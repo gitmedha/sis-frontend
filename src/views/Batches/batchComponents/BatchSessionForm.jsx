@@ -149,6 +149,7 @@ const BatchSessionForm = (props) => {
     []
   );
 
+
   return (
     <Modal
       centered
@@ -216,7 +217,7 @@ const BatchSessionForm = (props) => {
                 </div>
               </Section>
               <div className="row justify-content-end mt-1">
-                {batch.status === 'In Progress' && onDelete && <div className="col-auto p-0">
+                {batch?.status === 'In Progress' && onDelete && <div className="col-auto p-0">
                   <button 
                     onClick={() => {setShowDeleteAlert(true)}} className='btn btn-danger btn-regular collapse_form_buttons'>
                     DELETE

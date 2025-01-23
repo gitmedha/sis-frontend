@@ -2,7 +2,7 @@ import moment from "moment";
 import NP from "nprogress";
 import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { useHistory } from "react-router-dom";
+import { useHistory ,useLocation} from "react-router-dom";
 import { connect } from "react-redux";
 import { Dropdown } from 'react-bootstrap';
 import { isAdmin } from "../../common/commonFunctions";
@@ -53,6 +53,7 @@ const Batch = (props) => {
   const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
   const [clickedSendLink, setClickedSendLink ] =useState(false);
   const userId = localStorage.getItem("user_id");
+
 
   const getThisBatch = async () => {
     try {
@@ -399,6 +400,7 @@ const Batch = (props) => {
                 fetchData={getSessions}
               />
             </Collapsible>
+            
             {batch && (
               <BatchForm {...batch} show={modalShow} onHide={hideUpdateModal} />
             )}
