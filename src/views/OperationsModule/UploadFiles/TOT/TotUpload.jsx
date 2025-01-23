@@ -5,7 +5,12 @@ import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
 import { queryBuilder } from "../../../../apis";
 import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
-import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
+import {
+  FaEdit,
+  FaFileUpload,
+  FaCheckCircle,
+  FaRegCheckCircle,
+} from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
@@ -13,7 +18,10 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../../Address/addressActions";
-import { bulkCreateUsersTots, getTotPickList } from "../../OperationComponents/operationsActions";
+import {
+  bulkCreateUsersTots,
+  getTotPickList,
+} from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
@@ -38,7 +46,7 @@ const expectedColumns = [
   "Start Date",
   "End Date",
   "New Entry",
-  "Email id"
+  "Email id",
 ];
 
 const Styled = styled.div`
@@ -253,18 +261,18 @@ const TotUpload = (props) => {
   const handleFileChange = (event) => {
     const fileInput = event.target;
     const file = fileInput.files[0];
-  
+
     setShowForm(true);
-    setFileName(''); // Reset the file name display
+    setFileName(""); // Reset the file name display
     setNextDisabled(false); // Optionally disable the next button
-    setUploadSuccesFully(''); 
-    setNotUploadSuccesFully('');
-  
+    setUploadSuccesFully("");
+    setNotUploadSuccesFully("");
+
     if (file) {
       setFileName(`${file.name} Uploaded`);
-  
+
       const reader = new FileReader();
-  
+
       reader.onload = () => {
         const fileData = reader.result;
         try {
@@ -273,9 +281,9 @@ const TotUpload = (props) => {
           setNotUploadSuccesFully(error?.message);
         }
       };
-  
+
       reader.readAsBinaryString(file);
-      fileInput.value = '';
+      fileInput.value = "";
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
@@ -301,23 +309,25 @@ const TotUpload = (props) => {
     const validRecords = [];
     const invalidRecords = [];
     for (const row of jsonData) {
-      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
-  
+      const isRowEmpty = Object.values(row).every(
+        (value) => value === null || value === ""
+      );
+
       if (isRowEmpty) {
-        break; 
+        break;
       }
       validRecords.push(row);
     }
     const filteredArray = validRecords.filter((obj) =>
       Object.values(obj).some((value) => value !== undefined)
-    ); 
-   if(filteredArray.length == 0){
-    setNotUploadSuccesFully("File is empty please select file which has data in it");
-    return ;
-   }
-    if (
-      validateColumns(filteredArray, expectedColumns) 
-    ) {
+    );
+    if (filteredArray.length == 0) {
+      setNotUploadSuccesFully(
+        "File is empty please select file which has data in it"
+      );
+      return;
+    }
+    if (validateColumns(filteredArray, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
@@ -392,9 +402,9 @@ const TotUpload = (props) => {
 
   const capitalize = (s) => {
     return String(s)
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const validateColumns = (data, expectedColumns) => {
@@ -402,41 +412,41 @@ const TotUpload = (props) => {
     // if(!data){
     //   setUploadSuccesFully("No Data")
     // }
-    if(data.length == 0){
+    if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
       );
-      return false
+      return false;
     }
-    if (!data ) {
+    if (!data) {
       setNotUploadSuccesFully(
         "Some data fields are empty or not properly initialized"
       );
       return false;
     }
-    const missingColumns = expectedColumns.filter(
-      (col) => {;
-        return !fileColumns.includes(col.trim())
-      }
-    );
+    const missingColumns = expectedColumns.filter((col) => {
+      return !fileColumns.includes(col.trim());
+    });
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
     const exemptColumns = ["Age", "Contact Number"];
-  const incompleteColumns = expectedColumns.filter(
-    (col) =>
-      !exemptColumns.includes(col) &&
-      data.every(
-        (row) =>
-          row[col] === null || row[col] === "" || row[col] === undefined
-      )
-  );
+    const incompleteColumns = expectedColumns.filter(
+      (col) =>
+        !exemptColumns.includes(col) &&
+        data.every(
+          (row) =>
+            row[col] === null || row[col] === "" || row[col] === undefined
+        )
+    );
 
     if (incompleteColumns.length > 0) {
-      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      setNotUploadSuccesFully(
+        `Columns with missing data: ${incompleteColumns.join(", ")}`
+      );
       return false;
     }
-    
+
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
@@ -454,8 +464,6 @@ const TotUpload = (props) => {
     }
     return true;
   };
-
- 
 
   const processParsedData = (data) => {
     const formattedData = [];
@@ -480,7 +488,8 @@ const TotUpload = (props) => {
       );
 
       const departMentCheck = partnerDept.find(
-        (department) => department.value === newItem["Government Department partnered with"]
+        (department) =>
+          department.value === newItem["Government Department partnered with"]
       );
 
       const projectCheck = ["Internal", "External"].find(
@@ -515,7 +524,6 @@ const TotUpload = (props) => {
         }
       }
 
-
       if (
         !departMentCheck ||
         !projectCheck ||
@@ -523,8 +531,8 @@ const TotUpload = (props) => {
         !isStartDateValid ||
         !isEndDateValid ||
         !projectNameCheck ||
-        parseDate || 
-        !newItem["Full Name"] || 
+        parseDate ||
+        !newItem["Full Name"] ||
         !newItem["College Name"]
       ) {
         notFoundData.push({
@@ -533,7 +541,7 @@ const TotUpload = (props) => {
             ? capitalize(newItem["Full Name"])
             : "No data",
           trainer_1: newItem["Trainer 1"],
-          email:newItem['Email id'],
+          email: newItem["Email id"],
           project_name: projectCheck
             ? newItem["Project Name"]
             : {
@@ -571,7 +579,9 @@ const TotUpload = (props) => {
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "Please select from dropdown",
-          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
+          city: newItem["District where training took place"]
+            ? capitalize(newItem["District where training took place"])
+            : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
@@ -581,13 +591,21 @@ const TotUpload = (props) => {
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
+            : {
+                value: newItem["Start Date"]
+                  ? newItem["Start Date"]
+                  : "No data",
+                notFound: true,
+              },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true },
-          new_entry:newItem["New Entry"]
+            : {
+                value: newItem["End Date"] ? newItem["End Date"] : "no data",
+                notFound: true,
+              },
+          new_entry: newItem["New Entry"],
         });
       } else {
         formattedData.push({
@@ -604,7 +622,9 @@ const TotUpload = (props) => {
           college: newItem["College Name"]
             ? capitalize(newItem["College Name"])
             : "",
-          city: newItem["District where training took place"] ? capitalize(newItem["District where training took place"]) : "",
+          city: newItem["District where training took place"]
+            ? capitalize(newItem["District where training took place"])
+            : "",
           state: newItem["State"] ? capitalize(newItem["State"]) : "",
           age: newItem["Age"],
           gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
@@ -613,11 +633,11 @@ const TotUpload = (props) => {
             ? capitalize(newItem["Designation"])
             : "",
           start_date: startDate,
-          email:newItem['Email id'],
+          email: newItem["Email id"],
           end_date: endDate,
           createdby: createdby,
           updatedby: currentUser,
-          new_entry:newItem["New Entry"]
+          new_entry: newItem["New Entry"],
         });
       }
     });
@@ -645,9 +665,9 @@ const TotUpload = (props) => {
     setShowModalTOT(false);
     setUploadSuccesFully("");
     setShowForm(true);
-    setFileName('');  // Reset the file name display
-    setNextDisabled(false);  // Optionally disable the next button
-    setUploadSuccesFully('');
+    setFileName(""); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
+    setUploadSuccesFully("");
   };
 
   const uploadDirect = () => {
@@ -664,14 +684,13 @@ const TotUpload = (props) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const uploadNewData =()=>{
+  const uploadNewData = () => {
     setShowForm(true);
-    setUploadNew(!uploadNew)
-  setFileName('');  
-  setNextDisabled(false);  
-  setUploadSuccesFully(''); 
-
-  }
+    setUploadNew(!uploadNew);
+    setFileName("");
+    setNextDisabled(false);
+    setUploadSuccesFully("");
+  };
 
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
