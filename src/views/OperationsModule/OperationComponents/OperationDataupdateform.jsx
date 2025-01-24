@@ -20,7 +20,10 @@ import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 import { searchBatches, searchInstitutions } from "./operationsActions";
-import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import {
+  compareObjects,
+  createLatestAcivity,
+} from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -83,6 +86,7 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [programeName, setProgramName] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
+  const [activityoption, setActivityOption] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
@@ -101,8 +105,9 @@ const OperationDataupdateform = (props) => {
       filterBatch(props.batch.name).then((data) => {
         setBatchOptions(data);
       });
-    }if(!props.batch){
-      setBatchOptions([])
+    }
+    if (!props.batch) {
+      setBatchOptions([]);
     }
   }, [props]);
 
@@ -118,7 +123,6 @@ const OperationDataupdateform = (props) => {
       });
 
       return filterData;
-
     } catch (error) {
       console.error(error);
     }
@@ -128,29 +132,28 @@ const OperationDataupdateform = (props) => {
     try {
       const { data } = await searchBatches(filterValue);
       let batchInformtion = props ? props.batch : null;
-        let batchFoundInList = false;
-        let filterData = data.batchesConnection.values.map((batch) => {
-          if (props && batch.id === Number(batchInformtion?.id)) {
-            batchFoundInList = true;
-          }
-          if (hideBatchName.includes(batch.name)) {
-            return {};
-          } else {
-            return {
-              ...batch,
-              label: batch.name,
-              value: Number(batch.id),
-            };
-          }
-        });
-        if (props && batchInformtion !== null && !batchFoundInList) {
-          filterData.unshift({
-            label: batchInformtion.name,
-            value: Number(batchInformtion.id),
-          });
+      let batchFoundInList = false;
+      let filterData = data.batchesConnection.values.map((batch) => {
+        if (props && batch.id === Number(batchInformtion?.id)) {
+          batchFoundInList = true;
         }
-        return filterData;
-
+        if (hideBatchName.includes(batch.name)) {
+          return {};
+        } else {
+          return {
+            ...batch,
+            label: batch.name,
+            value: Number(batch.id),
+          };
+        }
+      });
+      if (props && batchInformtion !== null && !batchFoundInList) {
+        filterData.unshift({
+          label: batchInformtion.name,
+          value: Number(batchInformtion.id),
+        });
+      }
+      return filterData;
     } catch (error) {
       console.error(error);
     }
@@ -177,7 +180,6 @@ const OperationDataupdateform = (props) => {
     await getStateDistricts(value).then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        
         data?.data?.data?.geographiesConnection?.groupBy?.area
           .map((area) => ({
             key: area.id,
@@ -192,31 +194,35 @@ const OperationDataupdateform = (props) => {
     const changes = {};
 
     function compareObjects(o1, o2, path) {
-        for (const key in o1) {
-            const currentPath = path ? `${path}.${key}` : key;
+      for (const key in o1) {
+        const currentPath = path ? `${path}.${key}` : key;
 
-            if (!(key in o2)) {
-                changes[currentPath] = { old: o1[key], new: undefined };
-            } else if (typeof o1[key] === "object" && o1[key] !== null && typeof o2[key] === "object" && o2[key] !== null) {
-                compareObjects(o1[key], o2[key], currentPath);
-            } else if (o1[key] !== o2[key]) {
-                changes[currentPath] = { old: o1[key], new: o2[key] };
-            }
+        if (!(key in o2)) {
+          changes[currentPath] = { old: o1[key], new: undefined };
+        } else if (
+          typeof o1[key] === "object" &&
+          o1[key] !== null &&
+          typeof o2[key] === "object" &&
+          o2[key] !== null
+        ) {
+          compareObjects(o1[key], o2[key], currentPath);
+        } else if (o1[key] !== o2[key]) {
+          changes[currentPath] = { old: o1[key], new: o2[key] };
         }
+      }
 
-        for (const key in o2) {
-            const currentPath = path ? `${path}.${key}` : key;
+      for (const key in o2) {
+        const currentPath = path ? `${path}.${key}` : key;
 
-            if (!(key in o1)) {
-                changes[currentPath] = { old: undefined, new: o2[key] };
-            }
+        if (!(key in o1)) {
+          changes[currentPath] = { old: undefined, new: o2[key] };
         }
+      }
     }
 
     compareObjects(obj1, obj2, "");
     return changes;
-}
-
+  }
 
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
@@ -250,9 +256,15 @@ const OperationDataupdateform = (props) => {
       guest: props.guest,
       state: props.state ? props.state : null,
       donor: props.donor ? "Yes" : "No",
-      area: props.area ? props.area : null
-  };
-    let datavaluesforlatestcreate={module_name:"operations",activity:"Field Activity Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
+      area: props.area ? props.area : null,
+    };
+    let datavaluesforlatestcreate = {
+      module_name: "operations",
+      activity: "Field Activity Data Updated",
+      event_id: "",
+      updatedby: userId,
+      changes_in: compareObjects(newValueObject, valuesdata),
+    };
     await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();
@@ -321,6 +333,11 @@ const OperationDataupdateform = (props) => {
       }),
   });
   useEffect(async () => {
+    let activityOption = await getOpsPickList().then((data) => {
+      return data.activity_type.map((value) => value);
+    });
+
+    setActivityOption(activityOption);
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
         key: value,
