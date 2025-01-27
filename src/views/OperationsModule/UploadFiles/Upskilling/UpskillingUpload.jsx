@@ -31,7 +31,7 @@ const expectedColumns = [
   "Assigned To",
   "Student ID",
   "Institution",
-  "Batch Name",
+  "Batch",
   "Program Name",
   "Certificate Course Name",
   "Category",
@@ -39,6 +39,7 @@ const expectedColumns = [
   "Start Date",
   "End Date",
   "Certificate Received",
+  "Issuing Organization",
 ];
 
 const UpskillingUpload = (props) => {
@@ -225,7 +226,7 @@ const UpskillingUpload = (props) => {
 
       const currentUser = localStorage.getItem("user_id");
       const batch = batchOption.find(
-        (batch) => batch.name === newItem["Batch Name"]
+        (batch) => batch.name === newItem["Batch"]
       );
       const institute = instituteOptions.find(
         (institute) => institute.name === newItem["Institution"]
@@ -305,8 +306,8 @@ const UpskillingUpload = (props) => {
           batch: batch
             ? batch.name
             : {
-                value: newItem["Batch Name"]
-                  ? newItem["Batch Name"]
+                value: newItem["Batch"]
+                  ? newItem["Batch"]
                   : "Please select from dropdown",
                 notFound: true,
               },

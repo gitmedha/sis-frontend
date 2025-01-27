@@ -34,6 +34,15 @@ const expectedColumns = [
   "Assigned To",
 ];
 
+const requiredColumns = [
+  "Mentor Name",
+  "Contact",
+  "Email ID",
+  "Mentor's Domain",
+  "Mentor's Area",
+  "Assigned To",
+];
+
 const MentorshipUpload = (props) => {
   const { onHide } = props;
   const [showForm, setShowForm] = useState(true);
@@ -74,13 +83,13 @@ const MentorshipUpload = (props) => {
       );
       return false;
     }
-    const missingColumns = expectedColumns.filter((col) => {
+    const missingColumns = requiredColumns.filter((col) => {
       return !fileColumns.includes(col.trim());
     });
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
-    const incompleteColumns = expectedColumns.filter((col) =>
+    const incompleteColumns = requiredColumns.filter((col) =>
       data.every(
         (row) => row[col] === null || row[col] === "" || row[col] === undefined
       )
