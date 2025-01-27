@@ -34,6 +34,21 @@ const expectedColumns = [
   "Email ID",
   "SRM Name",
   "Medha Area",
+  "Remarks",
+];
+
+const requiredColumns = [
+  "Date of Pitching",
+  "Student Name",
+  "Course Name",
+  "Course Year",
+  "Institution",
+  "Program name",
+  "Phone",
+  "WhatsApp Number",
+  "Email ID",
+  "SRM Name",
+  "Medha Area",
 ];
 
 const PitchingUpload = (props) => {
@@ -79,13 +94,13 @@ const PitchingUpload = (props) => {
       );
       return false;
     }
-    const missingColumns = expectedColumns.filter((col) => {
+    const missingColumns = requiredColumns.filter((col) => {
       return !fileColumns.includes(col.trim());
     });
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
-    const incompleteColumns = expectedColumns.filter((col) =>
+    const incompleteColumns = requiredColumns.filter((col) =>
       data.every(
         (row) => row[col] === null || row[col] === "" || row[col] === undefined
       )

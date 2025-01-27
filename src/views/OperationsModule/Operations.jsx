@@ -94,10 +94,11 @@ const Styled = styled.div`
   }
 `;
 
-const totfile=`https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
-const feildActivityFIle='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
-const mentorshipFile='https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx'
-
+const totfile = `https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
+const feildActivityFIle =
+  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
+const mentorshipFile =
+  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
 
 const Operations = ({
   opsData,
@@ -142,9 +143,9 @@ const Operations = ({
   const [uploadModal, setUploadModal] = useState({
     myData: false,
     tot: false,
-    mentorship:false,
-    upskill:false,
-    pitching:false
+    mentorship: false,
+    upskill: false,
+    pitching: false,
   });
   const userId = localStorage.getItem("user_id");
 
@@ -435,8 +436,8 @@ const Operations = ({
     }
     if (activeTab.key === "useTot") {
       await resetSearch();
-      variables.isactive = true
-      delete variables.isActive
+      variables.isactive = true;
+      delete variables.isActive;
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
@@ -538,7 +539,7 @@ const Operations = ({
     if (activeTab.key === "mentorship") {
       // await resetSearch();
       // sortBy = "created_at"
-      variables.sort=`${'updated_at'}:${sortOrder}`
+      variables.sort = `${"updated_at"}:${sortOrder}`;
       await api
         .post("/graphql", {
           query: GET_MENTORSHIP,
@@ -768,7 +769,7 @@ const Operations = ({
         if (sortBy.length) {
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -834,19 +835,23 @@ const Operations = ({
       setModalShow(false);
       return;
     }
-    let newValues=data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
-  }, {});
-    let datavaluesforlatestcreate={};
+    }, {});
+    let datavaluesforlatestcreate = {};
     if (key == "feilddata") {
-      
-    
-      datavaluesforlatestcreate={module_name:"operations",activity:"Feild Data Created",event_id:"",updatedby:userId ,changes_in:newValues};
-    
-    await createLatestAcivity(datavaluesforlatestcreate);
+      datavaluesforlatestcreate = {
+        module_name: "operations",
+        activity: "Feild Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: newValues,
+      };
+
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -858,8 +863,13 @@ const Operations = ({
         });
     }
     if (key == "alum") {
-      
-      datavaluesforlatestcreate={module_name:"operations",activity:"Alumni Queries Data Create",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+      datavaluesforlatestcreate = {
+        module_name: "operations",
+        activity: "Alumni Queries Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: { name: "N/A" },
+      };
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateAlumniQueries(data)
         .then((data) => {
@@ -871,10 +881,15 @@ const Operations = ({
         });
     }
     if (key == "collegepitches") {
+      datavaluesforlatestcreate = {
+        module_name: "operations",
+        activity: "college Pitches Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: newValues,
+      };
 
-      datavaluesforlatestcreate={module_name:"operations",activity:"college Pitches Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
-    
-    await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateCollegePitch(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -885,8 +900,14 @@ const Operations = ({
         });
     }
     if (key == "upskill") {
-      datavaluesforlatestcreate={module_name:"operations",activity:"Upskiling Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
-    
+      datavaluesforlatestcreate = {
+        module_name: "operations",
+        activity: "Upskiling Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: newValues,
+      };
+
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateStudentsUpskillings(data)
         .then((data) => {
@@ -910,7 +931,13 @@ const Operations = ({
     }
 
     if (key == "mentorship") {
-      datavaluesforlatestcreate={module_name:"Operations",activity:"Mentorship Data Create",event_id:"",updatedby:userId ,changes_in:newValues};
+      datavaluesforlatestcreate = {
+        module_name: "Operations",
+        activity: "Mentorship Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: newValues,
+      };
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateMentorship(data)
         .then((data) => {
@@ -1032,66 +1059,96 @@ const Operations = ({
   }, [activeTabMain.key]);
 
   const uploadExcel = async (data, key) => {
-    let newValues=data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
-  }, {});
-    let datavaluesforlatestcreate={};
+    }, {});
+    let datavaluesforlatestcreate = {};
     try {
       if (key === "my_data") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"Field Activities Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
-      await createLatestAcivity(datavaluesforlatestcreate);
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Field Activities Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
-      } 
+      }
       if (key === "tot") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"User-Tot Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "User-Tot Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
-        .then(() => {
-          setAlert("data created successfully.", "success");
-        })
-        .catch((err) => {
-          setAlert("Unable to create TOT data.", "error");
-        })
-      } 
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create TOT data.", "error");
+          });
+      }
       if (key === "mentorship") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"Mentorship Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Mentorship Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateMentorship(data)
-        .then(() => {
-          setAlert("data created successfully.", "success");
-        })
-        .catch((err) => {
-          setAlert("Unable to create Mentorship data.", "error");
-        })
-      } 
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
 
       if (key === "pitching") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"College Pitching Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "College Pitching Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateCollegePitch(data)
-        .then(() => {
-          setAlert("data created successfully.", "success");
-        })
-        .catch((err) => {
-          setAlert("Unable to create Mentorship data.", "error");
-        })
-      } 
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
       if (key === "upskilling") {
-        datavaluesforlatestcreate={module_name:"Operations",activity:"Students Upskilling Upload File",event_id:"",updatedby:userId ,changes_in:{changes_in:{name:"N/A"}}};
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Students Upskilling Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
         await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateStudentsUpskillings(data)
-        .then(() => {
-          setAlert("data created successfully.", "success");
-        })
-        .catch((err) => {
-          setAlert("Unable to create Mentorship data.", "error");
-        })
-      } 
-      getoperations()
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      getoperations();
     } catch (err) {
       if (key === "my_data") {
         setAlert("Unable to create field data.", "error");
@@ -1117,52 +1174,53 @@ const Operations = ({
     setUploadModal(false);
   };
 
-  const openclosepopup=()=>{
+  const openclosepopup = () => {
     if (activeTab.key == "my_data") {
       setUploadModal({
         myData: true,
         tot: false,
-        mentorship:false,
-        upskill:false,
-        pitching:false
+        mentorship: false,
+        upskill: false,
+        pitching: false,
       });
-    } if(activeTab.key == "useTot") {
+    }
+    if (activeTab.key == "useTot") {
       setUploadModal({
         tot: true,
         myData: false,
-        mentorship:false,
-        upskill:false,
-        pitching:false
+        mentorship: false,
+        upskill: false,
+        pitching: false,
       });
     }
-    if(activeTab.key == "mentorship"){
+    if (activeTab.key == "mentorship") {
       setUploadModal({
         tot: false,
         myData: false,
-        mentorship:true,
-        upskill:false,
-        pitching:false
+        mentorship: true,
+        upskill: false,
+        pitching: false,
       });
     }
-    if(activeTab.key == "upskilling"){
+    if (activeTab.key == "upskilling") {
       setUploadModal({
         tot: false,
         myData: false,
-        mentorship:false,
-        pitching:false,
-        upskill:true
+        mentorship: false,
+        pitching: false,
+        upskill: true,
       });
     }
-    if(activeTab.key == "collegePitches"){
+    if (activeTab.key == "collegePitches") {
       setUploadModal({
         tot: false,
         myData: false,
-        mentorship:false,
-        upskill:false,
-        pitching:true
+        mentorship: false,
+        upskill: false,
+        pitching: true,
       });
     }
-  }
+  };
 
   const SampleFile = () => {
     switch (activeTab.key) {
@@ -1221,11 +1279,15 @@ const Operations = ({
                     </span>
                   </button>
 
-                  {activeTab.key == "my_data" || activeTab.key == "useTot" || activeTab.key =="mentorship" || activeTab.key == "upskilling" || activeTab.key == "collegePitches" ? (
+                  {activeTab.key == "my_data" ||
+                  activeTab.key == "useTot" ||
+                  activeTab.key == "mentorship" ||
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
-                        openclosepopup()
+                        openclosepopup();
                       }}
                     >
                       Upload &nbsp;
@@ -1236,17 +1298,23 @@ const Operations = ({
                   ) : (
                     ""
                   )}
-                  {activeTab.key == "my_data" || activeTab.key == "useTot"  || activeTab.key =="mentorship" || activeTab.key == "upskilling" || activeTab.key == "collegePitches"? (
+                  {activeTab.key == "my_data" ||
+                  activeTab.key == "useTot" ||
+                  activeTab.key == "mentorship" ||
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
-                          
                           href={SampleFile()}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
                           download={SampleFile()}
-                        >Sample&nbsp;
-                        <span><FaDownload size="12" color="#fff" /></span>
+                        >
+                          Sample&nbsp;
+                          <span>
+                            <FaDownload size="12" color="#fff" />
+                          </span>
                         </a>
                       </div>
                     </button>
@@ -1511,34 +1579,34 @@ const Operations = ({
             </>
           )}
 
-{uploadModal.mentorship && (
+          {uploadModal.mentorship && (
             <>
               <MentorshipUpload
                 uploadExcel={uploadExcel}
                 // alertForNotuploadedData={alertForNotuploadedData}
-                closeThepopus={()=>closeUpload()}
+                closeThepopus={() => closeUpload()}
                 mentorship="yes"
               />
             </>
           )}
 
-{uploadModal.upskill && (
+          {uploadModal.upskill && (
             <>
               <UpskillingUpload
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
-                closeThepopus={()=>closeUpload()}
+                closeThepopus={() => closeUpload()}
                 Upskill="yes"
               />
             </>
           )}
 
-{uploadModal.pitching && (
+          {uploadModal.pitching && (
             <>
               <PitchingUpload
                 uploadExcel={uploadExcel}
                 // alertForNotuploadedData={alertForNotuploadedData}
-                closeThepopus={()=>closeUpload()}
+                closeThepopus={() => closeUpload()}
                 Pitching="yes"
               />
             </>
