@@ -398,7 +398,7 @@ const OperationDataupdateform = (props) => {
                             name="activity_type"
                             label="Activity Type"
                             required
-                            options={Activityoptions}
+                            options={activityoption}
                             className="form-control"
                             placeholder="Activity Type"
                           />
