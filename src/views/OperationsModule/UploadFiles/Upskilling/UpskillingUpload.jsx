@@ -102,8 +102,8 @@ const UpskillingUpload = (props) => {
       return false;
     }
 
-    if (data.length > 0 && data.length > 200) {
-      setNotUploadSuccesFully(`Number of rows should be less than 200`);
+    if (data.length > 0 && data.length > 100) {
+      setNotUploadSuccesFully(`Number of rows should be less than 100`);
     }
 
     if (missingColumns.length > 0) {
@@ -225,6 +225,7 @@ const UpskillingUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
+      // console.log(batchOption);
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch"]
       );
@@ -234,7 +235,6 @@ const UpskillingUpload = (props) => {
       const user = assigneOption.find(
         (user) => user.name === newItem["Assigned To"]
       );
-
       const batchId = batch ? batch.id : null;
       const instituteId = institute ? institute.id : null;
       const assignedUserId = user ? user.id : null;
