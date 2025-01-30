@@ -920,6 +920,15 @@ const Operations = ({
     }
 
     if (key == "tot") {
+      datavaluesforlatestcreate = {
+        module_name: "operations",
+        activity: "User Tot Data Created",
+        event_id: "",
+        updatedby: userId,
+        changes_in: newValues,
+      };
+
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateUsersTots(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
