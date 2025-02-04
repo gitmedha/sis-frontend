@@ -65,8 +65,8 @@ const options = [
 const Activityoptions = [
   { value: "Industry Talk/Expert Talk", label: "Industry Talk/Expert T  alk" },
   {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
+    value: "Industry Visit/Exposure Visit",
+    label: "Industry Visit/Exposure Visit",
   },
   {
     value: "Workshop/Training Session/Activity (In/Off campus)",

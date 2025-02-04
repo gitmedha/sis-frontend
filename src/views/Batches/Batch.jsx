@@ -29,6 +29,7 @@ import {
   sendEmailOnCreateBatch,
   sendPreBatchLinks,
   sendPostBatchLinks,
+  sendReminder
 } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from "styled-components";
@@ -405,6 +406,7 @@ const Batch = (props) => {
                   >
                     ACTIONS
                   </Dropdown.Toggle>
+               
                   <Dropdown.Menu>
                     {batch?.program?.name ===
                       "Technology Advancement Bootcamp" ||
@@ -481,6 +483,25 @@ const Batch = (props) => {
                         <span>&nbsp;&nbsp;Send a link</span>
                       </Dropdown.Item>
                     )}
+                  <Dropdown.Item
+                      onClick={() => sendReminder(batch.id)}
+                      className="d-flex align-items-center"
+                    >
+                      <FaCheckCircle size="20" color={'#207B69'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Send Reminder</span>
+                    </Dropdown.Item>
+                    {batch?.status === "Complete" &&
+                    <Dropdown.Item
+                    onClick={() => {
+                      sendLinks();
+                      setClickedSendLink(true);
+                    }}
+                    className="d-flex align-items-center"
+                  >
+                      <FaCheckCircle size="20" color={clickedSendLink === false && batch?.link_sent_at === null ? '#E0E0E8' :'#207B69' }className="mr-2" />
+                      <span>&nbsp;&nbsp;Send a link</span>
+                    </Dropdown.Item>
+                    }
                     <Dropdown.Item
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"

@@ -59,6 +59,7 @@ const AlumniServiceForm = (props) => {
     AlumniServiceValidations
   );
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
+  const [commentRequired,setCommentRequired]=useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -93,7 +94,6 @@ const AlumniServiceForm = (props) => {
           label: item.value,
         }))
       );
-      // console.log(data);
       setRole(data.role);
     });
   }, []);
@@ -118,6 +118,7 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string()
       .nullable()
       .required("Contribution submission date is required.");
+    let comments=Yup.string().nullable().required("Comment is required.");
     let fee_amount = Yup.string()
       .nullable()
       .required("Contribution amount is required.");
@@ -133,24 +134,35 @@ const AlumniServiceForm = (props) => {
       }
     }
     setFeeFieldsRequired(fieldsRequired);
-    if (fieldsRequired) {
+    if (fieldsRequired ) {
       setValidationRules(
         AlumniServiceValidations.shape({
           fee_submission_date,
           fee_amount,
           receipt_number,
+          comments
         })
       );
-    } else {
+      
+    }
+    if (commentRequired ) {
+      setValidationRules(
+        AlumniServiceValidations.shape({
+          comments
+        })
+      ); 
+    }
+    else {
       setValidationRules(
         AlumniServiceValidations.omit([
           "fee_submission_date",
           "fee_amount",
           "receipt_number",
+          "comments"
         ])
       );
     }
-  }, [status, props.alumniService]);
+  }, [status, props.alumniService,commentRequired]);
 
   useEffect(() => {
     setFeeSubmissionDateValue(
@@ -299,6 +311,10 @@ const AlumniServiceForm = (props) => {
                         options={typeOptions.filter(
                           (option) => option.category === selectedCategory
                         )}
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value; 
+                          setCommentRequired(value.toLowerCase() === "workshop"); 
+                        }}
                         className="form-control"
                         placeholder="Subcategory"
                         required
@@ -424,7 +440,8 @@ const AlumniServiceForm = (props) => {
                       label="Comments"
                       placeholder="Comments"
                       control="input"
-                      required
+                      required={commentRequired}
+                      // onInput={(e)=>setCommentRequired(true)}
                       className="form-control"
                       autoComplete="off"
                     ></Textarea>
