@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendReminder } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -307,11 +307,20 @@ const Batch = (props) => {
                     variant="secondary"
                     id="dropdown-basic"
                     className="btn--primary action_button_sec"
-                    disabled={batch?.status == "Enrollment Ongoing"}
+                    disabled={batch?.status === "Enrollment Ongoing"}
+                    
                   >
                     ACTIONS
                   </Dropdown.Toggle>
+               
                   <Dropdown.Menu>
+                  <Dropdown.Item
+                      onClick={() => sendReminder(batch.id)}
+                      className="d-flex align-items-center"
+                    >
+                      <FaCheckCircle size="20" color={'#207B69'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Send Reminder</span>
+                    </Dropdown.Item>
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {
