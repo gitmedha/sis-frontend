@@ -52,6 +52,7 @@ const OpportunityForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -72,6 +73,7 @@ const OpportunityForm = (props) => {
     pin_code: '',
     medha_area: '',
     district:'',
+    experience_required:''
   });
 
   useEffect(() => {
@@ -106,6 +108,16 @@ const OpportunityForm = (props) => {
           value: item.value,
         };
       }));
+      setExperienceOption(
+        
+        data.experience_required.map((item) => {
+          return {
+            key: item,
+            label: item,
+            value: item,
+          };
+        })
+      )
 
       setDepartmentOptions(data.department.map((item) => {
         return {
@@ -382,6 +394,18 @@ const OpportunityForm = (props) => {
                       options={departmentOptions}
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="experience_required"
+                        control="lookup"
+                        label="Experience"
+                        placeholder="Experience"
+                        options={experienceOption}
+                        className="form-control"
+                        required
+                      />
+                    </div>
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="salary"
