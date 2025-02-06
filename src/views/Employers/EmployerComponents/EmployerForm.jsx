@@ -29,42 +29,72 @@ import {
   createLatestAcivity,
   findDifferences,
 } from "src/utils/LatestChange/Api";
-import NestedDropdown from "./NestedDropdown";
-
+import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
 const Section = styled.div`
-  padding-top: 30px;
+  padding-top: 15px;
   padding-bottom: 30px;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;  }
 
   label {
     color: #787b96;
   }
+
+  .modal-body {
+      padding:2px 2px
+  }
+
   .required {
     color: red;
     font-size: 16px;
   }
-  .css-9gakcf-option {
-    background-color: #fff !important;
-  }
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
+  .section-header{
+    color: rgb(32, 123, 105);
+    font-family: Latto-Regular;
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
     line-height: 18px;
     margin-bottom: 15px;
   }
-  // .dropdown-trigger {
-  //   width:370px;
-  // }
-  input.search::placeholder {
-    color: transparent;
+
+  /* Set dropdown background to white */
+  .dropdown-content,
+  .dropdown-item {
+    background-color: #fff !important;
   }
 
+  .dropdown-item{
+      margin:4px 2px;
+      padding:3px;
+      position:relative;
+      padding-bottom:8px
+  }
+
+  /* Remove border from labels */
+  .dropdown-label {
+    font-size:16px;
+    font-weight:500
+    color: #333
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer;
+    position: relative
+  }
+  .dropdown-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px; /* Thickness of the line */
+    background-color: #ddd; /* Color of the line */
+  }
+
+  /* Ensure full width for dropdown */
   .full-width-dropdown .dropdown-trigger {
     width: 100% !important;
   }
@@ -72,24 +102,40 @@ const Section = styled.div`
   .full-width-dropdown .dropdown {
     width: 100% !important;
   }
+
+  /* Hide extra tags beyond the first one */
   .tag-item:nth-child(n + 2) {
-    display: none; /* Hide any list item after the first one */
-  }
-  .dropdown-content {
-    width: 100% !important;
-  }
-  .search {
-    width: 180%;
-  }
-  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after {
-    position: absolute !important;
-    right: 5px;
-    margin-top: 0.5rem;
+    display: none;
   }
 
+  /* Styling for search field */
+  .search {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 5px;
+  }
+
+  .dropdown-children {
+    margin-left: 15px; /* Indent child items */
+    border-left: 2px dashed #ddd; /* Optional: Vertical line for hierarchy */
+    padding-left: 5px;
+
+  }
+
+  /* Customizing dropdown tree select styles */
+  .react-dropdown-tree-select {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 3px;
+  }
+
+  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after,
   .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
     position: absolute !important;
-    right: 5px;
+    right: 8px;
     margin-top: 0.5rem;
   }
 `;
@@ -173,41 +219,37 @@ const EmployerForm = (props) => {
   }, []);
 
   useEffect(() => {
-
-    
-  
     const getAllEmployers = async () => {
-
       let { data } = await api.post("/industries/findAll");
       const processData = (data) => {
         return data
-        .filter((item) => item.label.toLowerCase() !== "consultancy")
-        .map((item) => {
+          .filter((item) => item.label.toLowerCase() !== "consultancy")
+          .map((item) => {
             if (item.label === "Irrigation") {
-                return {
-                    ...item,
-                    value: item.label, 
-                    children: [] 
-                };
+              return {
+                ...item,
+                value: item.label,
+                children: [],
+              };
             }
             if (item.label === "Diversified") {
               return {
-                  ...item,
-                  value: item.label, 
-                  children: [] 
+                ...item,
+                value: item.label,
+                children: [],
               };
-          }
+            }
             if (item.children && item.children.length > 0) {
-                return {
-                    ...item,
-                    children: processData(item.children)
-                };
+              return {
+                ...item,
+                children: processData(item.children),
+              };
             }
             return item;
-        }).sort((a, b) => a.label.localeCompare(b.label));
-    };
-    
-      
+          })
+          .sort((a, b) => a.label.localeCompare(b.label));
+      };
+
       const updatedData = processData(data);
       setIndustryOptions(updatedData);
     };
@@ -319,7 +361,7 @@ const EmployerForm = (props) => {
         updatedby: userId,
         changes_in: compareObjects(props, values),
       };
-    } 
+    }
     await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };
@@ -452,6 +494,7 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
+                      {/* industry */}
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>

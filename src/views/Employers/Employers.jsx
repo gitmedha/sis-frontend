@@ -21,6 +21,8 @@ import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import EmployerSearchBar from "./EmployerComponents/EmployerSearchBar";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import styled from "styled-components";
+
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -28,6 +30,25 @@ const tabPickerOptions = [
   { title: "My State", key: "my_state" },
   { title: "All Medha", key: "all_medha" },
 ];
+
+const TSection = styled.div`
+.flex-row-centered {
+  width:1px !important;
+}
+ .latto-bold,.text--sm{
+    display: flex !important;
+    font-family: 'Latto', sans-serif !important;
+    font-weight: regular !important;
+    font-size:14px !important;
+    padding: 0px 0px !important;
+    letter-spacing: 0.5px !important;
+    justify-content: start !important;
+    color: #787B96 !important;
+    background-color: #ffffff !important ;
+
+}
+
+`;
 
 const Employers = (props) => {
   const history = useHistory();
@@ -554,6 +575,7 @@ const Employers = (props) => {
           }}
           isDisable={employersAggregate.count ? false : true}
         />
+        <TSection>
         <Table
           columns={columns}
           data={employersTableData}
@@ -566,6 +588,7 @@ const Employers = (props) => {
           selectedSearchField={selectedSearchField}
           selectedSearchedValue={selectedSearchedValue}
         />
+        </TSection>
         <EmployerForm
           show={modalShow}
           onHide={hideCreateModal}
