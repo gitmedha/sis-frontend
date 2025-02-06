@@ -19,9 +19,17 @@ import {
 import { yesOrNoOptions } from "../../../common/commonConstants";
 import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
-// import "react-dropdown-tree-select/dist/styles.css";
-import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
-
+import Select, { components } from "react-select";
+import { GET_ALL_INDUSTRY, GET_PICKLIST } from "src/graphql";
+import { restructureData } from "src/utils/function/indtsryValues";
+import DropdownTreeSelect from "react-dropdown-tree-select";
+import "react-dropdown-tree-select/dist/styles.css";
+import {
+  compareObjects,
+  createLatestAcivity,
+  findDifferences,
+} from "src/utils/LatestChange/Api";
+import NestedDropdown from "./NestedDropdown";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -106,7 +114,21 @@ const transformData = (data, selectedValues) => {
     };
   });
 };
-
+function CustomNodeRenderer({ node, onClick }) {
+  return (
+    <div>
+      <div className="node-label">{node.label}</div>
+      <div className="node-controls">
+        <button onClick={() => onClick(node, "expand")}>
+          <span className="up-arrow">&#8593;</span>
+        </button>
+        <button onClick={() => onClick(node, "collapse")}>
+          <span className="down-arrow">&#8595;</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 const assignObjectPaths = (obj, stack) => {
   Object.keys(obj).forEach((k) => {
     const node = obj[k];
@@ -151,6 +173,8 @@ const EmployerForm = (props) => {
   }, []);
 
   useEffect(() => {
+
+    
   
     const getAllEmployers = async () => {
 
@@ -286,17 +310,17 @@ const EmployerForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    // let EmployerEnrollmentData = {};
-    // if (props.id) {
-    //   EmployerEnrollmentData = {
-    //     module_name: "employer",
-    //     activity: "Employer Data Update",
-    //     event_id: values.id,
-    //     updatedby: userId,
-    //     changes_in: compareObjects(props, values),
-    //   };
-    // } 
-    // await createLatestAcivity(EmployerEnrollmentData);
+    let EmployerEnrollmentData = {};
+    if (props.id) {
+      EmployerEnrollmentData = {
+        module_name: "employer",
+        activity: "Employer Data Update",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects(props, values),
+      };
+    } 
+    await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };
   const logoUploadHandler = ({ id }) => setLogo(id);

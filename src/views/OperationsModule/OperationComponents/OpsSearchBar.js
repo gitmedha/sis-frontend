@@ -8,6 +8,8 @@ import {
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
+
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -196,7 +198,8 @@ const OpsSearchDropdown = function OpsSearchBar({
       const { data } = await getFieldValues(fieldName, "users-ops-activities");
 
       if (fieldName === "assigned_to") {
-        setAssignedOptions(data);
+        let newSRM=await getAllSearchSrm();
+        setAssignedOptions(newSRM);
       } else if (fieldName === "batch") {
         setBatchOptions(data);
       } else if (fieldName === "area") {

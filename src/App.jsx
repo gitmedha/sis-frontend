@@ -39,7 +39,6 @@ import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import operations from "./views/OperationsModule/Operations";
-import Operation from "./views/OperationsModule/Operation";
 import { isAdmin, isMedhavi, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
@@ -119,7 +118,7 @@ const App = (props) => {
       axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
         localStorage.setItem("token", data.data.jwt);
         setUser(data.data.user);
-        let nextUrl = '/';
+        let nextUrl = '/students';
         if (localStorage.getItem("next_url")){
           nextUrl = localStorage.getItem("next_url");
         }
@@ -143,7 +142,7 @@ const App = (props) => {
       }}
     >
       <Switch>
-        <PublicRoute path="/login" exact component={Login} />
+        <PublicRoute path="/" exact component={Login} />
         <PublicRoute path="/auth/microsoft/callback" />
         <Route>
           <AppContainer>
@@ -152,7 +151,7 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  <PrivateRoute path="/" exact component={Home} />
+                  <PrivateRoute path="/dashboard" exact component={()=><Home/> } />
                   <PrivateRoute path="/students" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/student/:id" exact component={Student} />
                   {(isSRM() || isPartnership() || isAdmin() || isMedhavi()) &&
@@ -176,7 +175,7 @@ const App = (props) => {
                     />
                     <PrivateRoute path="/employers" exact component={Employers} />
                     <PrivateRoute path="/employer/:id" exact component={Employer} />
-                    <PrivateRoute path="/operation" exact component={operations} />
+                    <PrivateRoute path="/operations" exact component={operations} />
                     <PrivateRoute path="/calender" exact component={EventCalendar}/>
                   </>
                   }

@@ -137,7 +137,6 @@ const UserTotedit = (props) => {
       );
     });
   };
-
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
 

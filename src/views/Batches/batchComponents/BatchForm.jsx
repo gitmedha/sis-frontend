@@ -12,6 +12,7 @@ import { getAddressOptions, getStateDistricts }  from "../../Address/addressActi
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
 import { isAdmin, isPartnership} from "../../../common/commonFunctions";
 import {searchInstitutes,searchGrants,searchPrograms} from '../batchActions'
+import { createLatestAcivity, findDifferences, findUpdates } from 'src/utils/LatestChange/Api';
 
 
 const Section = styled.div`
@@ -213,8 +214,15 @@ const BatchForm = (props) => {
     if(values.mode_of_payment === 'Free'){
       values.per_student_fees = 0
     }
+    let propgramEnrollemntData={};
 
+    if(props.id ){
+      propgramEnrollemntData={module_name:"batch",activity:"Batch Data Updated",event_id:props.id,updatedby:userId ,changes_in:findUpdates(props,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    
     setFormValues(values);
+
     onHide(values);
   };
 
@@ -549,7 +557,7 @@ const getModeOfPayment = (event) =>{
                     }
                   </div>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                    <button type="button"
                    onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>

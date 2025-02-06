@@ -22,6 +22,7 @@ import InstitutionForm from "./InstitutionComponents/InstitutionForm";
 import { uploadFile } from "../../components/content/Utils";
 import styled from "styled-components";
 import MoUs from "./InstitutionComponents/MoUs";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .button {
@@ -54,6 +55,7 @@ const Institute = (props) => {
   const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState(
     []
   );
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -169,6 +171,18 @@ const Institute = (props) => {
     getProgramEnrollments();
   }, [instituteID]);
 
+  const handeleInstituteDelete=async()=>{
+    setShowDeleteAlert(true);
+    console.log(instituteData);
+    let studentData = {
+      module_name: "institute",
+      activity: "Institute Data Deleted",
+      event_id: instituteID,
+      updatedby: userId,
+      changes_in: {name:instituteData.name},
+    };
+    await createLatestAcivity(studentData);
+  }
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -185,7 +199,7 @@ const Institute = (props) => {
                 EDIT
               </button>
               <button
-                onClick={() => setShowDeleteAlert(true)}
+                onClick={() => handeleInstituteDelete()}
                 className="btn--primary action_button_sec"
               >
                 DELETE

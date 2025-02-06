@@ -20,6 +20,10 @@ import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 import { searchBatches, searchInstitutions } from "./operationsActions";
+import {
+  compareObjects,
+  createLatestAcivity,
+} from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -59,7 +63,7 @@ const options = [
   { value: "No", label: "No" },
 ];
 const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
+  { value: "Industry Talk/Expert Talk", label: "Industry Talk/Expert T  alk" },
   {
     value: "Industry Visit/Exposure Visit",
     label: "Industry Visit/Exposure Visit",
@@ -82,6 +86,7 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [programeName, setProgramName] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
+  const [activityoption, setActivityOption] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
@@ -185,6 +190,39 @@ const OperationDataupdateform = (props) => {
       );
     });
   };
+  function findDifferences(obj1, obj2) {
+    const changes = {};
+
+    function compareObjects(o1, o2, path) {
+      for (const key in o1) {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (!(key in o2)) {
+          changes[currentPath] = { old: o1[key], new: undefined };
+        } else if (
+          typeof o1[key] === "object" &&
+          o1[key] !== null &&
+          typeof o2[key] === "object" &&
+          o2[key] !== null
+        ) {
+          compareObjects(o1[key], o2[key], currentPath);
+        } else if (o1[key] !== o2[key]) {
+          changes[currentPath] = { old: o1[key], new: o2[key] };
+        }
+      }
+
+      for (const key in o2) {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (!(key in o1)) {
+          changes[currentPath] = { old: undefined, new: o2[key] };
+        }
+      }
+    }
+
+    compareObjects(obj1, obj2, "");
+    return changes;
+  }
 
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
@@ -203,7 +241,31 @@ const OperationDataupdateform = (props) => {
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
     delete newValueObject["institute_name"];
-
+    let valuesdata = {
+      batch: Number(props?.batch?.id),
+      institution: Number(props.institution?.id),
+      topic: props.topic,
+      activity_type: props?.activity_type,
+      assigned_to: Number(props?.assigned_to?.id),
+      program_name: props.program_name,
+      start_date: new Date(props.start_date),
+      end_date: new Date(props.end_date),
+      students_attended: props?.students_attended,
+      organization: props.organization,
+      designation: props.designation,
+      guest: props.guest,
+      state: props.state ? props.state : null,
+      donor: props.donor ? "Yes" : "No",
+      area: props.area ? props.area : null,
+    };
+    let datavaluesforlatestcreate = {
+      module_name: "operations",
+      activity: "Field Activity Data Updated",
+      event_id: "",
+      updatedby: userId,
+      changes_in: compareObjects(newValueObject, valuesdata),
+    };
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -271,6 +333,11 @@ const OperationDataupdateform = (props) => {
       }),
   });
   useEffect(async () => {
+    let activityOption = await getOpsPickList().then((data) => {
+      return data.activity_type.map((value) => value);
+    });
+
+    setActivityOption(activityOption);
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
         key: value,
@@ -331,7 +398,7 @@ const OperationDataupdateform = (props) => {
                             name="activity_type"
                             label="Activity Type"
                             required
-                            options={Activityoptions}
+                            options={activityoption}
                             className="form-control"
                             placeholder="Activity Type"
                           />
