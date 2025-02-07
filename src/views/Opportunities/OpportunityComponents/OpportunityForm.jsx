@@ -399,7 +399,7 @@ const OpportunityForm = (props) => {
                         icon="down"
                         name="experience_required"
                         control="lookup"
-                        label="Experience"
+                        label="Experience Required"
                         placeholder="Experience"
                         options={experienceOption}
                         className="form-control"
