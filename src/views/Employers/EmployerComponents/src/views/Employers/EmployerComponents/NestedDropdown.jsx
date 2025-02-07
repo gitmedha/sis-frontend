@@ -8,7 +8,11 @@ const Dropdown = ({ data, selected, setSelected, setOpen, searchTerm, expandedIt
         const isMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
         const filteredChildren = item.children ? filterData(item.children, searchTerm) : [];
 
-        if (isMatch || filteredChildren.length > 0) {
+        if (isMatch) {
+          return { ...item, children: item.children || [] }; // Include all children
+        }
+
+        if (filteredChildren.length > 0) {
           return { ...item, children: filteredChildren };
         }
         return null;
