@@ -403,7 +403,6 @@ const OpportunityForm = (props) => {
                         placeholder="Experience"
                         options={experienceOption}
                         className="form-control"
-                        required
                       />
                     </div>
                   <div className="col-md-6 col-sm-12 mb-2">
