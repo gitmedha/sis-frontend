@@ -394,17 +394,7 @@ const OpportunityForm = (props) => {
                       options={departmentOptions}
                     />
                   </div>
-                  <div className="col-md-6 col-sm-12 mb-2">
-                      <Input
-                        icon="down"
-                        name="experience_required"
-                        control="lookup"
-                        label="Experience Required"
-                        placeholder="Experience"
-                        options={experienceOption}
-                        className="form-control"
-                      />
-                    </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="salary"
@@ -438,6 +428,17 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="experience_required"
+                        control="lookup"
+                        label="Experience Required"
+                        placeholder="Experience"
+                        options={experienceOption}
+                        className="form-control"
+                      />
+                    </div>
                   <div className="col-sm-12 mb-2">
                     <Input
                       name="role_description"
