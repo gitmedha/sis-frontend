@@ -240,6 +240,9 @@ const BatchSessionForm = (props) => {
                       onClick={() => {
                         setShowDeleteAlert(true);
                       }}
+                      disabled={
+                        props.batch.status !== "In Progress"
+                      }
                       className="btn btn-danger btn-regular collapse_form_buttons"
                     >
                       DELETE
@@ -260,7 +263,7 @@ const BatchSessionForm = (props) => {
                     className="btn btn-primary btn-regular collapse_form_buttons"
                     disabled={
                       isSubmitting ||
-                      props.batch.status.toLowerCase() === "complete"
+                      props.batch.status !== "In Progress"
                     }
                   >
                     SAVE
