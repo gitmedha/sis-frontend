@@ -15,7 +15,6 @@ const StickyPagination = styled.div`
     padding-bottom:10px;
   }
 `;
-
 const Styles = styled.div`
   border: 1.5px solid #d7d7e0;
   background: #ffffff;
@@ -30,7 +29,7 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-    table-layout: fixed; /* Ensure table takes up available space */
+    table-layout: auto; /* Ensure table takes up available space */
 
     thead {
       th {
@@ -59,7 +58,7 @@ const Styles = styled.div`
       overflow: hidden; /* Prevent overflow in cells */
       text-overflow: ellipsis; /* Add ellipsis to overflowed content */
       white-space: nowrap; /* Prevent wrapping in cells */
-      max-width: 150px; /* Set a maximum width for cells */
+      // max-width: 150px; /* Set a maximum width for cells */
     }
   }
 
@@ -97,7 +96,6 @@ const Styles = styled.div`
     min-height:180px
   }
 `;
-
 const Table = ({
   selectedSearchedValue,
   selectedSearchField,
@@ -192,7 +190,7 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th>#</th>}
+                  {indexes && <th className="hash-column">#</th>}
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -250,7 +248,7 @@ const Table = ({
                         <td
                           style={{ color: "#787B96", fontFamily: "Latto-Bold" }}
                         >
-                          {row.original.href && !rowClickFunctionExists ? (
+                          {row.original.href && !rowClickFunctionExists ? ( 
                             <a
                               className="table-row-link"
                               href={row.original.href}
@@ -298,7 +296,7 @@ const Table = ({
                       fontFamily: "Latto-Bold",
                       textAlign: "center",
                     }}
-                  >
+                  > 
                     <span
                       style={{
                         fontStyle: "italic",
