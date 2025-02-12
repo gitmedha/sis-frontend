@@ -149,6 +149,9 @@ const MassEdit = (props) => {
     category: "",
     subcategory: "",
     assigned_to: "",
+    location:"",
+    program_mode: "",
+    comments: ""
   };
 
   const handleClose = () => {
