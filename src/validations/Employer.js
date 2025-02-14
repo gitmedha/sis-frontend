@@ -39,7 +39,7 @@ const employer_id = Yup.string().required("Employer is required.");
 const opportunity_id = Yup.string().required("Opportunity is required.");
 const student_id = Yup.string().required("Student is required.");
 const source = Yup.string().required("Source is required.");
-const salary_offered = Yup.number().nullable().required("Salary Offered is required.")
+const salary_offered = Yup.number().nullable().required("Monthly Salary is required.")
                           .min(0, 'Min value 0.')
                           .max(1000000, 'Salary should be in range of between 0 to 10 Lakh.');
 const work_engagement = Yup.string().required("Work Engagement is required.");
