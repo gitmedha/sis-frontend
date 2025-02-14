@@ -101,7 +101,7 @@ const OpportunityForm = (props) => {
         };
       }));
 
-      setTypeOptions(data.type.map((item) => {
+      setTypeOptions(data?.type.map((item) => {
         return {
           key: item.value,
           label: item.value,
@@ -110,7 +110,7 @@ const OpportunityForm = (props) => {
       }));
       setExperienceOption(
         
-        data.experience_required.map((item) => {
+        data?.experience_required?.map((item) => {
           return {
             key: item,
             label: item,
@@ -400,8 +400,8 @@ const OpportunityForm = (props) => {
                       name="salary"
                       type="number"
                       control="input"
-                      label="Salary"
-                      placeholder="Salary"
+                      label="Monthly Salary"
+                      placeholder="Monthly Salary"
                       className="form-control"
                       required
                     />
