@@ -476,10 +476,10 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="your_plan_after_your_current_course"
-                        label="Your plan after your current course"
+                        label="Your plan after your current course ?"
                         options={yourPlanFfterYourCurrentCourse}
                         className="form-control"
-                        placeholder="Current Course"
+                        placeholder="Your plan after your current course"
                       />
                     </div>
                     {(isSRM() || isAdmin()) && (

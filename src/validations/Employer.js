@@ -79,6 +79,7 @@ export const EmployerValidations = Yup.object({
       'Please remove extra space.',
       (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
     ),
+    medha_partner:Yup.string().required('Medha Partner is required.'),
     status,
     phone:Yup.string().required('Phone is required.') // Check for required input
     .test(
