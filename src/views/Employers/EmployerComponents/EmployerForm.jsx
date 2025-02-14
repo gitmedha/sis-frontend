@@ -801,6 +801,7 @@ const EmployerForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="medha_partner"
+                        required
                         label="Medha Partner"
                         options={yesOrNoOptions}
                         className="form-control"
