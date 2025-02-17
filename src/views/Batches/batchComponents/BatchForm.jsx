@@ -224,28 +224,29 @@ const getModeOfPayment = (event) =>{
 }
 
   const filterInstitution = async (filterValue) => {
-   
+    console.log(filterValue);
     try {
       const {data} = await searchInstitutes(filterValue);
-      console.log("Response Data:", data);
+      if(data){
+        
+      }
 
-      if (data?.data?.institutionsConnection?.values?.length > 0) {
-        const formattedInstitutes = data.data.institutionsConnection.values.map((institution) => ({
+      return data.institutionsConnection.values.map(institution=>{
+        return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
-        }));
-  
-        setInstitutionOptions(formattedInstitutes); // Update state
-  
-        return formattedInstitutes;
-      }
-  
-      setInstitutionOptions([]);
+        }
+      })
     } catch (error) {
       console.error(error);
     }
   }
+
+  useEffect(async()=>{
+    let data=await filterInstitution('');
+    setInstitutionOptions(data);
+  },[])
 
   const filterProgram = async (filterValue) => {
     try {
@@ -390,13 +391,15 @@ const getModeOfPayment = (event) =>{
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
+                    {console.log(institutionOptions)}
                     {!lookUpLoading ? (
                       <Input
-                        control="lookupAsync"
+                        control="lookup"
                         name="institution"
                         label="Institution"
-                        filterData={filterInstitution}
-                        defaultOptions={props.id ? institutionOptions : true}
+                        // filterData={filterInstitution}
+                        // defaultOptions={props.id ? institutionOptions : true}
+                        options={institutionOptions}
                         placeholder="Institution"
                         className="form-control"
                         isClearable

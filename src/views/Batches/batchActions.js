@@ -282,30 +282,20 @@ export const getFieldValues = async (searchField,baseURL,tab,info)=>{
 }
 
 export const searchInstitutes = async (searchValue) => {
-  console.log("searchValue",searchValue)
-
-  if (!searchValue || searchValue.trim() === "") {
-    console.log("Empty search value, returning empty array.");
-    return [];
-  }
-
-  const payload = {
-    query: SEARCH_BY_INSTITUTIONS,
-    variables: {
-      limit: 20,
-      query: searchValue.trim(),
-      sort: "name:asc",
-    },
-  };
-
 
   try {
-    const { data } = await api.post("/graphql", payload);
-    console.log("Response Data:", data);
+    
+    const {data} = await api.post('/graphql', {
+      query:SEARCH_BY_INSTITUTIONS,
+      variables:{
+        limit:20,
+        query:searchValue,
+        sort:`name:asc`
+      }
+    })
     return data;
   } catch (error) {
     console.error("GraphQL Error:", error);
-    return [];
   }
 };
 
