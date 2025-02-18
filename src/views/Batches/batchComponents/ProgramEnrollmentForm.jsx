@@ -58,10 +58,12 @@ const ProgramEnrollmentForm = (props) => {
   const [courseType, setCourseType] = useState("");
   const [courseName,setCourseName] = useState("");
 
-  useEffect(()=>{
+  useEffect(async()=>{
     if(props.programEnrollment){
       setCourseName(programEnrollment.course_name_in_current_sis)
     }
+    let data=await filterInstitution('');
+    setInstitutionOptions(data);
   },[props.programEnrollment])
 
   const prepareLookUpFields = async () => {
@@ -255,7 +257,6 @@ const ProgramEnrollmentForm = (props) => {
   const filterStudent = async (filterValue) => {
     try {
       const { data } = await searchStudents(filterValue);
-      console.log(data);
       let programEnrollmentStudent = props.programEnrollment
         ? props.programEnrollment.student
         : null;
@@ -445,12 +446,13 @@ const ProgramEnrollmentForm = (props) => {
                     <div className="col-md-6 col-sm-12 mt-2">
                       {!lookUpLoading ? (
                         <Input
-                          control="lookupAsync"
+                          control="lookup"
+
                           name="institution"
                           label="Institution"
                           required
-                          filterData={filterInstitution}
-                          defaultOptions={props.id ? institutionOptions : true}
+                          // filterData={filterInstitution}
+                          options={institutionOptions}
                           className="form-control"
                           placeholder="Institution"
                         />

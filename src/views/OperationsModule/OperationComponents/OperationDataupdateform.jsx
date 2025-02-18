@@ -280,6 +280,8 @@ const OperationDataupdateform = (props) => {
     });
 
     setProgramName(data);
+
+    
   }, []);
 
   return (
@@ -380,14 +382,14 @@ const OperationDataupdateform = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           {institutionOptions.length && (
                             <Input
-                              control="lookupAsync"
+                              control="lookup"
                               name="institution"
                               label="Institution"
-                              filterData={filterInstitution}
-                              defaultOptions={institutionOptions}
+                              // filterData={filterInstitution}
+                              Options={institutionOptions}
                               placeholder="Institution"
                               className="form-control"
-                              isClearable
+                              // isClearable
                             />
                           )}
                         </div>

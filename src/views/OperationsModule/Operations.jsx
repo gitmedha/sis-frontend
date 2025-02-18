@@ -536,7 +536,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data.data.data);
           setOpts(data.data.data.activeMentoshipData.values);
           setoptsAggregate(data.data.data.activeMentoshipData.aggregate);
         })
