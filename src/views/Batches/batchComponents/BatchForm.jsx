@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
-import { getBatchesPickList } from "../batchActions";
+import { getBatchesPickList, getBatchProgramEnrollments } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import {
   getAddressOptions,
@@ -27,6 +27,7 @@ import {
   findDifferences,
   findUpdates,
 } from "src/utils/LatestChange/Api";
+import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 
 const Section = styled.div`
   padding-top: 30px;
