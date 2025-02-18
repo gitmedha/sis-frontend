@@ -46,6 +46,9 @@ const TSection = styled.div`
 .hash-column {
     width: 5rem !important;
   }
+  table{
+  table-layout: auto;
+  }
 `;
 
 const Employers = (props) => {

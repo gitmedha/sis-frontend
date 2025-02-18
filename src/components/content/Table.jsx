@@ -29,7 +29,7 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-    table-layout: auto; /* Ensure table takes up available space */
+    table-layout: fixed; /* Ensure table takes up available space */
 
     thead {
       th {
