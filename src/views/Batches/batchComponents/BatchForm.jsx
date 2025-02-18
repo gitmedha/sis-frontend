@@ -187,7 +187,6 @@ const BatchForm = (props) => {
     }
     if (props.institution) {
       filterInstitution(props.institution.name).then(data => {
-        console.log("data",data)
         setInstitutionOptions(data);
       });
     }
@@ -224,7 +223,6 @@ const getModeOfPayment = (event) =>{
 }
 
   const filterInstitution = async (filterValue) => {
-    console.log(filterValue);
     try {
       const {data} = await searchInstitutes(filterValue);
       if(data){
@@ -391,7 +389,6 @@ const getModeOfPayment = (event) =>{
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                    {console.log(institutionOptions)}
                     {!lookUpLoading ? (
                       <Input
                         control="lookup"

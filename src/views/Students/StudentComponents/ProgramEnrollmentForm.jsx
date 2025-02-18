@@ -64,6 +64,12 @@ const ProgramEnrollmentForm = (props) => {
     }
   },[props.programEnrollment])
 
+  useEffect(async() => {
+    let data =await filterInstitution('')
+    setInstitutionOptions(data)
+  }, [props])
+  
+
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(
@@ -194,16 +200,17 @@ const ProgramEnrollmentForm = (props) => {
         };
       });
 
-      if (
-        props.programEnrollment &&
-        programEnrollmentInstitution !== null &&
-        !institutionFoundInList
-      ) {
-        filterData.unshift({
-          label: programEnrollmentInstitution.name,
-          value: Number(programEnrollmentInstitution.id),
-        });
-      }
+      // if (
+      //   props.programEnrollment &&
+      //   programEnrollmentInstitution !== null &&
+      //   !institutionFoundInList
+      // ) {
+      //   console.log(programEnrollmentInstitution);
+      //   filterData.unshift({
+      //     label: programEnrollmentInstitution?.name,
+      //     value: Number(programEnrollmentInstitution?.id),
+      //   });
+      // }
       return filterData;
     } catch (error) {
       console.error("error:", error);
@@ -398,12 +405,12 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookupAsync"
+                      control="lookup"
                       name="institution"
                       label="Institution"
                       required
-                      filterData={filterInstitution}
-                      defaultOptions={props.id ? institutionOptions : true}
+                      // filterData={filterInstitution}
+                      options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
                     />

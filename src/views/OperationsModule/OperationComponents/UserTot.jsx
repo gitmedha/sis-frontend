@@ -151,7 +151,6 @@ const UserTot = (props) => {
         );
       });
     }
-    console.log(options);
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {

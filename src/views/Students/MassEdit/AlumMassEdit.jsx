@@ -277,7 +277,6 @@ const AlumMassEdit = (props) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(alumniServiceData);
     let data = alumniServiceData.map((obj) => {
       let initialData = {
         student: obj.student_id,
