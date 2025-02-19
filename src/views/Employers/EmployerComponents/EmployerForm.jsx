@@ -502,6 +502,7 @@ const EmployerForm = (props) => {
                       <Field
                         name="industry"
                         defaultValue={props.industry}
+                      
                         onChange={(value) => setFieldValue("industry", value)}
                         data={industryOptions}
                         error={errors.industry}
