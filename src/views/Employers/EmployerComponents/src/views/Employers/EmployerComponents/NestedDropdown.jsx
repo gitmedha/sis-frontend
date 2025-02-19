@@ -170,14 +170,24 @@ const NestedDropdown = ({ data, onChange, error, defaultValue }) => {
       {open && (
         <div
           style={{
-            border: "1px solid #dee2e6",
-            // padding: "5px",
+            // border: "1px solid #dee2e6",
+            // // padding: "5px",
+            // marginTop: "5px",
+            // borderRadius: "4px",
+            // maxHeight: "200px",
+            // overflowY: "auto",
+            // backgroundColor: "#fff",
+            // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            border: "1px solid rgb(222, 226, 230)",
             marginTop: "5px",
             borderRadius: "4px",
             maxHeight: "200px",
             overflowY: "auto",
-            backgroundColor: "#fff",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            overflowX: "hidden !important", // Prevent horizontal scrolling
+            backgroundColor: "rgb(255, 255, 255)",
+            boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 8px",
+            scrollbarWidth: "none", // Hide scrollbar in Firefox
+            msOverflowStyle: "none",
           }}
         >
           <Dropdown
