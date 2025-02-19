@@ -6,7 +6,7 @@ import {
   uploadFile,
 } from "../../components/content/Utils";
 import Avatar from "../../components/content/Avatar";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback ,useRef} from "react";
 import { useHistory } from "react-router-dom";
 import { GET_USER_INSTITUTES } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -20,14 +20,15 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
-
+// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+ 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
   { title: "My Area", key: "my_area" },
   { title: "My State", key: "my_state" },
   { title: "All Medha", key: "all_medha" },
 ];
-
+ 
 const Institutions = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -47,11 +48,23 @@ const Institutions = (props) => {
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
-
+  const prevIsSearchEnableRef = useRef();
+ 
+ 
   useEffect(() => {
-    getInstitutions(activeTab.key);
-  }, [activeTab, isSearchEnable, selectedSearchedValue]);
-
+    if (isSearchEnable) {
+      getInstitutions(activeTab.key);
+    }
+   
+    if (prevIsSearchEnableRef.current !== undefined) {
+      if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
+        getInstitutions(activeTab.key);
+      }
+    }
+ 
+    prevIsSearchEnableRef.current = isSearchEnable;
+  }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
+ 
   const columns = useMemo(
     () => [
       {
@@ -81,7 +94,7 @@ const Institutions = (props) => {
     ],
     []
   );
-
+ 
   const getInstitutionsBySearchFilter = async (
     selectedTab,
     limit = paginationPageSize,
@@ -116,7 +129,7 @@ const Institutions = (props) => {
       type
       created_at
   `;
-
+ 
     let variables = {
       limit,
       start: offset,
@@ -124,7 +137,7 @@ const Institutions = (props) => {
         sortOrder ? sortOrder : "asc"
       }`,
     };
-
+ 
     if (selectedTab === "my_data") {
       if (selectedSearchField === "medha_area") {
         Object.assign(variables, {
@@ -232,7 +245,7 @@ const Institutions = (props) => {
     } else if (selectedSearchField === "name") {
       Object.assign(variables, { name: selectedSearchedValue.trim() });
     }
-
+ 
     const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
   institutionsConnection (
       sort: $sort
@@ -247,7 +260,7 @@ const Institutions = (props) => {
         state:$state,
         status:$status,
         type:$type,
-        name:$name
+        name_contains: $name
       }
     ) {
       values {
@@ -258,7 +271,7 @@ const Institutions = (props) => {
       }
     }
   }`;
-
+ 
     await api
       .post("/graphql", {
         query: InstitutionQuery,
@@ -278,7 +291,7 @@ const Institutions = (props) => {
         return Promise.reject(error);
       });
   };
-
+ 
   const getInstitutions = async (
     selectedTab,
     limit = paginationPageSize,
@@ -288,7 +301,7 @@ const Institutions = (props) => {
   ) => {
     nProgress.start();
     setLoading(true);
-
+ 
     if (isSearchEnable) {
       await getInstitutionsBySearchFilter(
         selectedTab,
@@ -303,7 +316,7 @@ const Institutions = (props) => {
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
       };
-
+ 
       if (selectedTab == "my_data") {
         Object.assign(variables, { id: userId });
       } else if (selectedTab == "my_state") {
@@ -311,7 +324,6 @@ const Institutions = (props) => {
       } else if (selectedTab == "my_area") {
         Object.assign(variables, { area: area });
       }
-      console.log("variables",variables);
       await api
         .post("/graphql", {
           query: GET_USER_INSTITUTES,
@@ -332,7 +344,7 @@ const Institutions = (props) => {
         });
     }
   };
-
+ 
   const fetchData = useCallback(
     (
       pageIndex,
@@ -345,18 +357,18 @@ const Institutions = (props) => {
       if (sortBy.length) {
         let sortByField = "name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-
+ 
         switch (sortBy[0].id) {
           case "status":
           case "type":
           case "medba_area":
             sortByField = sortBy[0].id;
             break;
-
+ 
           case "assignedTo":
             sortByField = "assigned_to.username";
             break;
-
+ 
           case "state":
             sortByField = sortBy[0].id;
             break;
@@ -365,7 +377,7 @@ const Institutions = (props) => {
             sortByField = "name";
             break;
         }
-
+ 
         if (sortBy[0].id == "medha_area") {
           sortByField = sortBy[0].id;
         }
@@ -404,11 +416,11 @@ const Institutions = (props) => {
     },
     [activeTab.key]
   );
-
+ 
   useEffect(() => {
     getInstitutionsPickList().then((data) => setPickList(data));
   }, []);
-
+ 
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
@@ -431,15 +443,15 @@ const Institutions = (props) => {
     });
     setInstitutionsTableData(data);
   }, [institutions, pickList]);
-
+ 
   const hideCreateModal = async (data) => {
     setFormErrors([]);
-
+ 
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
     }
-
+ 
     // need to remove `show` from the payload
     let { id, show, mou, ...dataToSave } = data;
     dataToSave["mou"] = [];
@@ -460,20 +472,35 @@ const Institutions = (props) => {
     }
     createInstitutionApi(id, dataToSave);
   };
-
+ 
   const createInstitutionApi = (id, dataToSave) => {
     nProgress.start();
     createInstitution(dataToSave)
-      .then((data) => {
+      .then(async(data) => {
         if (data.data.errors) {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Institution created successfully.", "success");
           setModalShow(false);
           getInstitutions();
-          history.push(
-            `/institution/${data.data.data.createInstitution.institution.id}`
-          );
+         
+          let propgramEnrollemntData = {
+            module_name: "institution",
+            activity: "Institution Data Created",
+            event_id: data.data.data.createInstitution.institution.id,
+            updatedby: userId,
+            changes_in: { name: data.data.data.createInstitution.institution.name },
+          };
+   
+          // createLatestAcivity(propgramEnrollemntData)
+          //   .then(() => {
+          //     console.log("Activity created successfully.");
+          //   })
+          //   .catch((err) => {
+          //     console.error("Failed to create activity:", err);
+          //   });
+   
+          history.push(`/institution/${data.data.data.createInstitution.institution.id}`);
         }
       })
       .catch((err) => {
@@ -485,7 +512,7 @@ const Institutions = (props) => {
         nProgress.done();
       });
   };
-
+ 
   return (
     <Collapse title="INSTITUTIONS" type="plain" opened={true}>
       <div className="row">
@@ -533,11 +560,13 @@ const Institutions = (props) => {
     </Collapse>
   );
 };
-
+ 
 const mapStateToProps = (state) => ({});
-
+ 
 const mapActionsToProps = {
   setAlert,
 };
-
+ 
 export default connect(mapStateToProps, mapActionsToProps)(Institutions);
+ 
+ 
