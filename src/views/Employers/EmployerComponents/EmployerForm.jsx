@@ -21,8 +21,7 @@ import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
 import { GET_ALL_INDUSTRY, GET_PICKLIST } from "src/graphql";
-import DropdownTreeSelect from "react-dropdown-tree-select";
-import "react-dropdown-tree-select/dist/styles.css";
+
 // import {
 //   compareObjects,
 //   createLatestAcivity,
