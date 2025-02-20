@@ -8,7 +8,7 @@ const employer = Yup.string().required("Employer is required.");
 const role_or_designation = Yup.string().required("Role/Designation is required.");
 const number_of_opportunities = Yup.string().required("No. of opportunities is required.");
 const department_or_team = Yup.string().required("Department/Team is required.");
-const salary = Yup.string().required("Salary is required.");
+const salary = Yup.string().required("Monthly Salary  is required.");
 const compensation_type = Yup.string().required("Paid/Unpaid is required.");
 const skills_required = Yup.string().required("Skills required is required.");
 const role_description = Yup.string().required("Description is required.");
@@ -21,12 +21,14 @@ const pin_code = Yup.string("Should be a number.")
   .required("Pincode is required.");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
+const experience_required=Yup.string().required("Experience is required.");
 
 export const OpportunityValidations = Yup.object({
   status,
   assigned_to,
   type,
   employer,
+  experience_required,
   role_or_designation :Yup.string().required('Role is required.') // Check for required input
   .test(
     'no-trailing-space',
