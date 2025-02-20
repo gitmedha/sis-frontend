@@ -21,12 +21,14 @@ const pin_code = Yup.string("Should be a number.")
   .required("Pincode is required.");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
+const experience_required=Yup.string().required("Experience is required.");
 
 export const OpportunityValidations = Yup.object({
   status,
   assigned_to,
   type,
   employer,
+  experience_required,
   role_or_designation :Yup.string().required('Role is required.') // Check for required input
   .test(
     'no-trailing-space',
