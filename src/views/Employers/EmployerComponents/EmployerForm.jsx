@@ -380,6 +380,7 @@ const EmployerForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
+    medha_partner:""
   };
 
   if (props.id) {
