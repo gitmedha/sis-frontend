@@ -400,8 +400,8 @@ const OpportunityForm = (props) => {
                       name="salary"
                       type="number"
                       control="input"
-                      label="Monthly Salary"
-                      placeholder="Monthly Salary"
+                      label="Monthly Salary Offered"
+                      placeholder="Monthly Salary Offered"
                       className="form-control"
                       required
                     />
