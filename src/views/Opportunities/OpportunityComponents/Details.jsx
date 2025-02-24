@@ -91,7 +91,7 @@ const Details = (props) => {
             {/* <DetailField label="Location" value={employer ? employer.address : ''} /> */}
             <DetailField label="No. of openings" value={number_of_opportunities} />
             <DetailField label="Paid" value={<FaCheckCircle size="20" color={compensation_type == 'Yes' ? '#207B69' : '#E0E0E8'} />} />
-            <DetailField label="Monthly Salary" value={salary} />
+            <DetailField label="Monthly Salary Offered" value={salary} />
             <DetailField label="Role Description" className="capitalize" value={role_description} />
             &nbsp;
             <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
