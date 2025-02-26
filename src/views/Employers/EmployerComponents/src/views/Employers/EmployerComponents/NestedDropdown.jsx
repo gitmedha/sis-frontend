@@ -1,47 +1,83 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 
+const Dropdown = ({ data, selected, setSelected, setOpen, searchTerm, expandedItems, toggleExpand }) => {
+  const filterData = (data, searchTerm) => {
+    return data
+      .map((item) => {
+        const isMatch = item.label.toLowerCase().includes(searchTerm.toLowerCase());
+        const filteredChildren = item.children ? filterData(item.children, searchTerm) : [];
 
+        if (isMatch) {
+          return { ...item, children: item.children || [] }; // Include all children
+        }
 
-const Dropdown = ({ data, selected, setSelected, setOpen }) => {
+        if (filteredChildren.length > 0) {
+          return { ...item, children: filteredChildren };
+        }
+        return null;
+      })
+      .filter((item) => item !== null);
+  };
+
+  const filteredData = searchTerm ? filterData(data, searchTerm) : data;
+
   return (
-    <div className="dropdown-select "  >
-      {data.map((item) => (
-        <DropdownItem selected={selected} setSelected={setSelected} key={item.label} item={item} />
+    <div>
+      {filteredData.map((item) => (
+        <DropdownItem
+          selected={selected}
+          setSelected={setSelected}
+          key={item.label}
+          item={item}
+          setOpen={setOpen}
+          expandedItems={expandedItems}
+          toggleExpand={toggleExpand}
+        />
       ))}
     </div>
   );
 };
 
-const DropdownItem = ({ item, selected, setSelected }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const DropdownItem = ({ item, selected, setSelected, setOpen, expandedItems, toggleExpand }) => {
+  const isOpen = expandedItems[item.label] || false;
+
+  const handleSelect = (e) => {
+    e.stopPropagation();
+    if (!item.children?.length) {
+      setSelected(item);
+      setOpen(false); // Close dropdown only for items without children
+    } else {
+      toggleExpand(item.label);
+    }
+  };
 
   return (
     <div className="dropdown-item">
       <div
-        className={`dropdown-label ${(selected?.value && selected?.value === item?.value) ? 'selectItem' : ''} ${item.children.length ? "has-children" : ""}`}
-        onClick={() => {
-          setIsOpen((prev) => !prev)
-          if (item.children.length === 0) {
-            setSelected(item)
-          } if (selected?.value && selected?.value === item?.value) {
-            setSelected({})
-          }
-        }}
+        className={`dropdown-label ${selected?.value === item?.value ? "selectItem" : ""} ${item.children?.length ? "has-children" : ""}`}
+        onClick={handleSelect}
       >
         {item.label}
-        {item.children.length > 0 && (
-          <span style={{ color: 'hsl(0, 0%, 80%)' }} className={`arrow ${isOpen ? "open" : ""}`}>
-            <FaAngleRight />
+        {item.children?.length > 0 && (
+          <span className={`arrow ${isOpen ? "open" : ""}`}>
+            {isOpen ? <FaAngleDown /> : <FaAngleRight />}
           </span>
         )}
       </div>
-      {isOpen && item.children.length > 0 && (
+      {isOpen && item.children?.length > 0 && (
         <div className="dropdown-children">
           {item.children.map((child) => (
             <DropdownItem
-              selected={selected} setSelected={setSelected}
-              key={child.label} item={child} />
+              selected={selected}
+              setSelected={setSelected}
+              key={child.label}
+              item={child}
+              setOpen={setOpen}
+              expandedItems={expandedItems}
+              toggleExpand={toggleExpand}
+            />
           ))}
         </div>
       )}
@@ -49,54 +85,116 @@ const DropdownItem = ({ item, selected, setSelected }) => {
   );
 };
 
-// export default Dropdown;
+const NestedDropdown = ({ data, onChange, error, defaultValue }) => {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [expandedItems, setExpandedItems] = useState({}); // Track expanded items
+  const dropdownRef = useRef(null);
 
-const NestedDropdown = ({ data,onChange,error,defaultValue }) => {
-  const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState({})
-  // const dropdownRef = useRef(null); // Create a ref for the dropdown container
-  
   useEffect(() => {
-      if(selected?.value){
-        setOpen(false)
-      }
-  }, [selected?.value]);
+    setSelected({ value: defaultValue, label: defaultValue });
+    setSearchTerm(defaultValue || "");
+  }, [defaultValue]);
 
-  useEffect(()=>{
-    setSelected({value:defaultValue,label:defaultValue})
-  },[defaultValue])
+  const handleChange = (val) => {
+    setSelected(val);
+    setSearchTerm(val.label);
+    onChange(val.value);
+  };
 
-  const handleChange=(val)=>{
-    setSelected(val)
-    onChange(val.value)
-  }
+  const handleInput = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value === "") {
+      setSelected({});
+      onChange(""); // Notify parent of clear
+    }
+    setOpen(true); // Always open the dropdown when typing or backspacing
+  };
 
-  return <div className="form-group" style={{ width: '100%'}}>
-    <div className="d-flex " style={{ width: "100%" ,background:"none",border:"1px solid #dee2e6",minHeight:"38px" }} onClick={() => setOpen(!open)}>
-      <span style={{ marginTop: '0.3rem',position:'relative',left:"2%" }}>{selected?.label ||  <span style={{ marginTop: '0.3rem',marginRight:"", color: 'hsl(0, 0%, 80%)' }}>{'Select Industry'}</span> }</span>
-      <div className="d-flex" style={{ marginLeft: 'auto',marginRight:"2%", color: 'hsl(0, 0%, 80%)' }}>
-            <span style={{ marginTop: '0.3rem', color: 'hsl(0, 0%, 80%)' }}> | </span>
-            <FaAngleDown
-              className="fa-solid fa-chevron-down"
-              style={{
-                marginTop: '0.6rem',
-                marginLeft: '0.2rem',
-                fontSize: '14px',
-                color: 'hsl(0, 0%, 80%)',
-              }}
-            />
+  const toggleExpand = (label) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [label]: !prev[label], // Toggle the expanded state
+    }));
+  };
+
+  return (
+    <div className="form-group" style={{ width: "100%" }} ref={dropdownRef}>
+      <div
+        className="d-flex"
+        style={{
+          width: "100%",
+          border: "1px solid #dee2e6",
+          minHeight: "38px",
+          cursor: "pointer",
+        }}
+        onClick={() => setOpen(!open)}
+      >
+        <input
+          type="text"
+          value={searchTerm}
+          onInput={handleInput} // Open the dropdown and filter results when typing
+          placeholder="Select Industry"
+          style={{
+            flex: 1,
+            padding: "2px 9px",
+            border: "none",
+            outline: "none",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+        />
+        <div
+          style={{
+            marginLeft: "auto",
+            marginRight: "2%",
+            color: "hsl(0, 0%, 80%)",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ marginRight: "0.5rem", color: "hsl(0, 0%, 80%)" }}>
+            {" "}
+            |{" "}
+          </span>
+          <FaAngleDown
+            className="fa-solid fa-chevron-down"
+            style={{
+              fontSize: "14px",
+              color: "hsl(0, 0%, 80%)",
+            }}
+          />
+        </div>
       </div>
+      {open && (
+        <div
+          style={{
+            border: "1px solid #dee2e6",
+            // padding: "5px",
+            marginTop: "5px",
+            borderRadius: "4px",
+            maxHeight: "200px",
+            overflowY: "auto",
+            backgroundColor: "#fff",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <Dropdown
+            setOpen={setOpen}
+            selected={selected}
+            setSelected={handleChange}
+            data={data}
+            searchTerm={searchTerm}
+            expandedItems={expandedItems}
+            toggleExpand={toggleExpand}
+          />
+        </div>
+      )}
+      {error && <div className="text-danger error--text mt-2">{error}</div>}
     </div>
-    
-    {open && <div >
-      <Dropdown
-        setOpen={setOpen}
-        selected={selected}
-        setSelected={(val)=>handleChange(val)} data={data} />
-    </div>}
-    {error && <div className="text-danger error--text mt-2">{error}</div>}
-  </div>
-}
-
+  );
+};
 
 export default NestedDropdown;

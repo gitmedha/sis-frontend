@@ -1,12 +1,12 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-import { BatchValidations} from "../../../validations";
-import { getBatchesPickList } from "../batchActions";
+import { BatchValidations } from "../../../validations";
+import { getBatchesPickList, getBatchProgramEnrollments } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
@@ -14,18 +14,19 @@ import { isAdmin, isPartnership} from "../../../common/commonFunctions";
 import {searchInstitutes,searchGrants,searchPrograms} from '../batchActions'
 import { createLatestAcivity, findDifferences, findUpdates } from 'src/utils/LatestChange/Api';
 
+import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -48,59 +49,59 @@ const BatchForm = (props) => {
   const [formValues, setFormValues] = useState(null);
   const [programOptions, setProgramOptions] = useState(null);
   const [grantOptions, setGrantOptions] = useState(null);
-  const userId = parseInt(localStorage.getItem('user_id'))
+  const userId = parseInt(localStorage.getItem("user_id"));
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [modeOfPayment,setModeOfPayment] = useState('')
+  const [modeOfPayment, setModeOfPayment] = useState("");
   const AssignmentFileCertification = [
-    {key: true, value: true, label: "Yes"},
-    {key: false, value: false, label: "No"},
+    { key: true, value: true, label: "Yes" },
+    { key: false, value: false, label: "No" },
   ];
 
   useEffect(() => {
-    setEnrollmentType(props?.enrollment_type?.toLowerCase() !=='multi institution')
+    setEnrollmentType(
+      props?.enrollment_type?.toLowerCase() !== "multi institution"
+    );
   }, [props.enrollment_type]);
 
   useEffect(() => {
-    getDefaultAssigneeOptions().then(data => {
+    getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-
   }, []);
 
   const filterGrant = async (filterValue) => {
     try {
-      const {data} = await searchGrants(filterValue);
+      const { data } = await searchGrants(filterValue);
 
-      return data.grantsConnection.values.map(grant=> {
+      return data.grantsConnection.values.map((grant) => {
         return {
           ...grant,
           label: `${grant.name} | ${grant.donor}`,
           value: Number(grant.id),
-        }
-      })
-      
+        };
+      });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const [initialValues, setInitialValues] = useState({
-    name: '',
+    name: "",
     // name_in_current_sis: '',
     assigned_to: userId.toString(),
-    program: '',
-    grant: '',
-    institution: '',
-    status: '',
-    number_of_sessions_planned: '',
-    per_student_fees: '',
-    seats_available: '',
-    start_date: '',
-    end_date: '',
-    enrollment_type:'',
-    state:'',
-    medha_area:'',
-    mode_of_payment:''
+    program: "",
+    grant: "",
+    institution: "",
+    status: "",
+    number_of_sessions_planned: "",
+    per_student_fees: "",
+    seats_available: "",
+    start_date: "",
+    end_date: "",
+    enrollment_type: "",
+    state: "",
+    medha_area: "",
+    mode_of_payment: "",
   });
 
   const prepareLookUpFields = async () => {
@@ -111,39 +112,48 @@ const BatchForm = (props) => {
   };
 
   useEffect(() => {
-    getBatchesPickList().then(data => {
-      setEnrollmentTypeOptions(data.enrollment_type.map(enrollment_type => ({
-        key: enrollment_type.value,
-        value: enrollment_type.value,
-        label: enrollment_type.value
-      })));
+    getBatchesPickList().then((data) => {
+      setEnrollmentTypeOptions(
+        data.enrollment_type.map((enrollment_type) => ({
+          key: enrollment_type.value,
+          value: enrollment_type.value,
+          label: enrollment_type.value,
+        }))
+      );
 
-      let filteredStatusOptions = data.status.filter(status => {
+      let filteredStatusOptions = data.status.filter((status) => {
         // if admin, return all statuses
         if (isAdmin()) return true;
         // otherwise return only those status that are applicable to all
-        return status['applicable-to'] === 'All';
+        return status["applicable-to"] === "All";
       });
 
-      setPaymentOptions(data.mode_of_payment.map(modeOfPayment => ({
-        value: modeOfPayment.value,
-        label: modeOfPayment.value
-      })));
+      setPaymentOptions(
+        data.mode_of_payment.map((modeOfPayment) => ({
+          value: modeOfPayment.value,
+          label: modeOfPayment.value,
+        }))
+      );
 
-      setStatusOptions(filteredStatusOptions.map(status => ({
-        key: status.value,
-        value: status.value,
-        label: status.value
-      })));
+      setStatusOptions(
+        filteredStatusOptions.map((status) => ({
+          key: status.value,
+          value: status.value,
+          label: status.value,
+        }))
+      );
     });
 
-
-    getAddressOptions().then(data => {
-      setStateOptions(data?.data?.data?.geographiesConnection.groupBy.state.map((state) => ({
-          key: state.id,
-          label: state.key,
-          value: state.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));
+    getAddressOptions().then((data) => {
+      setStateOptions(
+        data?.data?.data?.geographiesConnection.groupBy.state
+          .map((state) => ({
+            key: state.id,
+            label: state.key,
+            value: state.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
 
       if (props.state) {
         onStateChange({
@@ -153,14 +163,18 @@ const BatchForm = (props) => {
     });
   }, []);
 
-  const onStateChange = value => {
-    getStateDistricts(value).then(data => {
+  const onStateChange = (value) => {
+    getStateDistricts(value).then((data) => {
       setAreaOptions([]);
-      setAreaOptions(data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
-        key: area.id,
-        label: area.key,
-        value: area.key,
-      })).sort((a, b) => a.label.localeCompare(b.label)));
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.area
+          .map((area) => ({
+            key: area.id,
+            label: area.key,
+            value: area.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
     });
   };
 
@@ -170,38 +184,40 @@ const BatchForm = (props) => {
         ...props,
         grant: Number(props.grant?.id),
         program: Number(props.program?.id),
-        institution: props.institution?.id ? Number(props.institution?.id): null ,
+        institution: props.institution?.id
+          ? Number(props.institution?.id)
+          : null,
         assigned_to: props.assigned_to?.id,
         start_date: new Date(props.start_date),
         end_date: new Date(props.end_date),
-      })
+      });
     } else {
       // get default grant for SRMs
       if (!isAdmin() && !isPartnership()) {
-        filterGrant('None').then(data => {
+        filterGrant("None").then((data) => {
           setGrantOptions(data);
           if (data.length) {
-            initialValues['grant'] = Number(data[0].id);
+            initialValues["grant"] = Number(data[0].id);
           }
         });
       }
     }
     if (props.institution) {
-      filterInstitution(props.institution.name).then(data => {
+      filterInstitution(props.institution.name).then((data) => {
         setInstitutionOptions(data);
       });
     }
     if (props.program) {
-      filterProgram(props.program.name).then(data => {
+      filterProgram(props.program.name).then((data) => {
         setProgramOptions(data);
       });
     }
     if (props.grant) {
-      filterGrant(props.grant.name).then(data => {
+      filterGrant(props.grant.name).then((data) => {
         setGrantOptions(data);
       });
     }
-  }, [props])
+  }, [props]);
 
   useEffect(() => {
     if (show && !options) {
@@ -210,9 +226,8 @@ const BatchForm = (props) => {
   }, [show, options]);
 
   const onSubmit = async (values) => {
-
-    if(values.mode_of_payment === 'Free'){
-      values.per_student_fees = 0
+    if (values.mode_of_payment === "Free") {
+      values.per_student_fees = 0;
     }
     let propgramEnrollemntData={};
 
@@ -226,25 +241,25 @@ const BatchForm = (props) => {
     onHide(values);
   };
 
-const getModeOfPayment = (event) =>{
-  setModeOfPayment(event.value)
-}
+  const getModeOfPayment = (event) => {
+    setModeOfPayment(event.value);
+  };
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutes(filterValue);
+      const { data } = await searchInstitutes(filterValue);
 
-      return data.institutionsConnection.values.map(institution=>{
+      return data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
-        }
-      })
+        };
+      });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const filterProgram = async (filterValue) => {
     try {
@@ -252,23 +267,23 @@ const getModeOfPayment = (event) =>{
       return data.programsConnection.values.map(program=>{
         return {
           ...program,
-          label:program.name,
-          value:Number(program.id)
-        }
-      })
+          label: program.name,
+          value: Number(program.id),
+        };
+      });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <Modal
       centered
       size="lg"
       show={show}
-      onHide={async()=>{
-        await setModeOfPayment()
-        onHide()
+      onHide={async () => {
+        await setModeOfPayment();
+        onHide();
       }}
       animation={false}
       aria-labelledby="contained-modal-title-vcenter"
@@ -280,7 +295,7 @@ const getModeOfPayment = (event) =>{
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.id ? props.name : 'Add New Batch'}
+            {props.id ? props.name : "Add New Batch"}
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -305,16 +320,16 @@ const getModeOfPayment = (event) =>{
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
+                    <Input
+                      control="lookupAsync"
+                      name="assigned_to"
+                      label="Assigned To"
+                      required
+                      className="form-control"
+                      placeholder="Assigned To"
+                      filterData={filterAssignedTo}
+                      defaultOptions={assigneeOptions}
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
@@ -343,8 +358,9 @@ const getModeOfPayment = (event) =>{
                         placeholder={initialValues.status || "Status"}
                         className="form-control"
                         options={statusOptions}
-                        isDisabled={!isAdmin() && initialValues.status === 'Certified'}
-
+                        isDisabled={
+                          !isAdmin() && initialValues.status === "Certified"
+                        }
                       />
                     ) : (
                       <Skeleton count={1} height={60} />
@@ -377,25 +393,27 @@ const getModeOfPayment = (event) =>{
                       placeholder="Enrollment Type"
                       className="form-control"
                       options={enrollmentTypeOptions}
-                      onChange = {
-                        (selectedOption) => {
-                          const selectedEnrollmentType = selectedOption.value.toLowerCase();
-                          setEnrollmentType(selectedEnrollmentType !== 'multi institution');
-                          if (selectedEnrollmentType === 'multi institution') {
-                            setFieldValue('institution', null);
-                          }
+                      onChange={(selectedOption) => {
+                        const selectedEnrollmentType =
+                          selectedOption.value.toLowerCase();
+                        setEnrollmentType(
+                          selectedEnrollmentType !== "multi institution"
+                        );
+                        if (selectedEnrollmentType === "multi institution") {
+                          setFieldValue("institution", null);
                         }
-                      }
+                      }}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
-                        control="lookupAsync"
+                        control="lookup"
                         name="institution"
                         label="Institution"
-                        filterData={filterInstitution}
-                        defaultOptions={props.id ? institutionOptions : true}
+                        // filterData={filterInstitution}
+                        // defaultOptions={props.id ? institutionOptions : true}
+                        options={institutionOptions}
                         placeholder="Institution"
                         className="form-control"
                         isClearable
@@ -453,34 +471,34 @@ const getModeOfPayment = (event) =>{
                       placeholder="Number of sessions planned"
                     />
                   </div>
-                 {modeOfPayment == 'Free'?
-                 <div className="col-md-6 col-sm-12 mt-2">
-                 <Input
-                     min={0}
-                     type="number"
-                     control="input"
-                     name="per_student_fees"
-                     className="form-control"
-                     label="Per Student Contribution"
-                     placeholder="0"
-                     disabled={true}
-                     value={0}
-
-                   />
-                 </div>:
-                 <div className="col-md-6 col-sm-12 mt-2">
-                  <Input
-                      min={0}
-                      type="number"
-                      control="input"
-                      name="per_student_fees"
-                      className="form-control"
-                      label="Per Student Contribution"
-                      required
-                      placeholder="Per Student Contribution"
-
-                    />
-                  </div>}
+                  {modeOfPayment == "Free" ? (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        min={0}
+                        type="number"
+                        control="input"
+                        name="per_student_fees"
+                        className="form-control"
+                        label="Per Student Contribution"
+                        placeholder="0"
+                        disabled={true}
+                        value={0}
+                      />
+                    </div>
+                  ) : (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        min={0}
+                        type="number"
+                        control="input"
+                        name="per_student_fees"
+                        className="form-control"
+                        label="Per Student Contribution"
+                        required
+                        placeholder="Per Student Contribution"
+                      />
+                    </div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       min={0}
@@ -525,47 +543,61 @@ const getModeOfPayment = (event) =>{
                       className="form-control"
                       placeholder=""
                     />
-
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                       <Input
-                        control="lookup"
-                        icon="down"
-                        name="mode_of_payment"
-                        label="Mode of Payment"
-                        required
-                        placeholder="Mode of Payment"
-                        className="form-control"
-                        options={paymentOptions}
-                        onChange = {(e)=>getModeOfPayment(e)}
-                      />
+                    <Input
+                      control="lookup"
+                      icon="down"
+                      name="mode_of_payment"
+                      label="Mode of Payment"
+                      required
+                      placeholder="Mode of Payment"
+                      className="form-control"
+                      options={paymentOptions}
+                      onChange={(e) => getModeOfPayment(e)}
+                    />
                   </div>
                 </div>
               </Section>
               <div className="row">
-                  <div className="col-12">
-                    {props.errors ? props.errors.length !== 0 &&
-                      <div className="alert alert-danger">
-                        <span>There are some errors. Please resolve them and save again:</span>
-                        <ul className="mb-0">
-                          {props.errors.map((error, index) => (
-                            <li key={index}>{error.message.toLowerCase() === 'duplicate entry' ? `Batch with "${formValues.name}" already exists.` : error.message}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    :null
-                    }
-                  </div>
+                <div className="col-12">
+                  {props.errors
+                    ? props.errors.length !== 0 && (
+                        <div className="alert alert-danger">
+                          <span>
+                            There are some errors. Please resolve them and save
+                            again:
+                          </span>
+                          <ul className="mb-0">
+                            {props.errors.map((error, index) => (
+                              <li key={index}>
+                                {error.message.toLowerCase() ===
+                                "duplicate entry"
+                                  ? `Batch with "${formValues.name}" already exists.`
+                                  : error.message}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    : null}
+                </div>
               </div>
               <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
-                   <button type="button"
-                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
-                    CANCEL                    
+                  <button
+                    type="button"
+                    onClick={onHide}
+                    className="btn btn-secondary btn-regular collapse_form_buttons"
+                  >
+                    CANCEL
                   </button>
                 </div>
                 <div className="col-auto p-0">
-                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                  >
                     SAVE
                   </button>
                 </div>

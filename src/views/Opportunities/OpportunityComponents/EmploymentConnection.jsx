@@ -46,7 +46,6 @@ const EmploymentConnection = (props) => {
   }, []);
 
   const isValidUser = () =>{
-    console.log(employmentConnection)
     if(Object.keys(employmentConnection).length > 0 && employmentConnection.assigned_to) {
       return employmentConnection.assigned_to.username.toLowerCase() === getUser().toLowerCase();
     }
@@ -121,7 +120,7 @@ const EmploymentConnection = (props) => {
               <DetailField label="End Date" value={employmentConnection.end_date ? moment(employmentConnection.end_date).format("DD MMM YYYY") : ''} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               {employmentConnection.reason_if_rejected_other && <DetailField label="Specify rejection reason" value={employmentConnection.reason_if_rejected_other} />}
-              <DetailField label="Salary offered" value={employmentConnection.salary_offered} />
+              <DetailField label="Monthly Salary" value={employmentConnection.salary_offered} />
               <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
               <DetailField label="Upload Certificate" value= {
                 employmentConnection.experience_certificate &&

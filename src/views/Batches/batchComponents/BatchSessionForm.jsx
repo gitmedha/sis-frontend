@@ -1,15 +1,15 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form } from "formik";
 import { Modal } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect, useMemo } from "react";
-import { Anchor} from "../../../components/content/Utils";
+import { Anchor } from "../../../components/content/Utils";
 import api from "../../../apis";
 
 import { Input } from "../../../utils/Form";
 import { sessionValidations } from "../../../validations";
 import { GET_BATCH_STUDENTS_ONLY } from "../../../graphql";
-import TableWithSelection from '../../../components/content/TableWithSelection';
+import TableWithSelection from "../../../components/content/TableWithSelection";
 import { getSessionAttendance } from "../batchActions";
 import SweetAlert from "react-bootstrap-sweetalert";
 
@@ -18,12 +18,12 @@ const Section = styled.div`
   padding-bottom: 30px;
 
   &:not(:first-child) {
-    border-top: 1px solid #C4C4C4;
+    border-top: 1px solid #c4c4c4;
   }
 
   .section-header {
-    color: #207B69;
-    font-family: 'Latto-Regular';
+    color: #207b69;
+    font-family: "Latto-Regular";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -42,20 +42,20 @@ const BatchSessionForm = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   let initialValues = {
-    topics: '',
-    date: '',
+    topics: "",
+    date: "",
   };
   if (props.session) {
-    initialValues['topics'] = props.session.topics_covered;
-    initialValues['date'] = new Date(props.session.date);
+    initialValues["topics"] = props.session.topics_covered;
+    initialValues["date"] = new Date(props.session.date);
   }
 
   const onSubmit = async (values) => {
-    let selectedStudentIds = selectedStudents.map(student => student.id);
+    let selectedStudentIds = selectedStudents.map((student) => student.id);
     await onHide({
       ...values,
       sessionAttendance,
-      students: students.map(student => {
+      students: students.map((student) => {
         return {
           ...student,
           present: selectedStudentIds.includes(student.id),
@@ -75,7 +75,6 @@ const BatchSessionForm = (props) => {
       });
       setStudents(clubStudentRecords(data.data.programEnrollments));
     } catch (err) {
-      
     } finally {
       setLoading(false);
     }
@@ -86,11 +85,15 @@ const BatchSessionForm = (props) => {
       present: false,
       id: rec.student.id,
       program_enrollment_id: Number(rec.id),
-      name: <Anchor text={rec.student?.full_name} href={`/student/${rec.student?.id}`} />,
+      name: (
+        <Anchor
+          text={rec.student?.full_name}
+          href={`/student/${rec.student?.id}`}
+        />
+      ),
       phone: rec.student.phone,
       student_id: rec.student.student_id,
-      parent_name: rec.student.name_of_parent_or_guardian
-
+      parent_name: rec.student.name_of_parent_or_guardian,
     }));
   };
 
@@ -104,22 +107,29 @@ const BatchSessionForm = (props) => {
       setLoading(true);
       getSessionAttendance(props.session.id).then(async data => {
         setSessionAttendance(data.data.data.attendances); // saving session attendance records
-        let selectedStudentProgramEnrollmentIds = data.data.data.attendances.filter(attendance => {
-          return attendance.program_enrollment && attendance.present;
-        }).map(attendance => {
-          return Number(attendance.program_enrollment.id);
+          let selectedStudentProgramEnrollmentIds = data.data.data.attendances
+            .filter((attendance) => {
+              return attendance.program_enrollment && attendance.present;
+            })
+            .map((attendance) => {
+              return Number(attendance.program_enrollment.id);
+            });
+          const checkedRows = {};
+          students.map((student, index) => {
+            if (
+              selectedStudentProgramEnrollmentIds.includes(
+                student.program_enrollment_id
+              )
+            ) {
+              checkedRows[index] = true;
+            }
+            return student;
+          });
+          setSelectedRows(checkedRows);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        const checkedRows = {};
-        students.map((student, index) => {
-          if (selectedStudentProgramEnrollmentIds.includes(student.program_enrollment_id)) {
-            checkedRows[index] = true;
-          }
-          return student;
-        });
-        setSelectedRows(checkedRows);
-      }).finally(() => {
-        setLoading(false);
-      })
     }
   }, [props.session]);
 
@@ -216,20 +226,38 @@ const BatchSessionForm = (props) => {
                 </div>
               </Section>
               <div className="row justify-content-end mt-1">
-                {batch.status === 'In Progress' && onDelete && <div className="col-auto p-0">
-                  <button 
-                    onClick={() => {setShowDeleteAlert(true)}} className='btn btn-danger btn-regular collapse_form_buttons'>
-                    DELETE
-                  </button>
-                </div>}
+                {batch.status === "In Progress" && onDelete && (
+                  <div className="col-auto p-0">
+                    <button
+                      onClick={() => {
+                        setShowDeleteAlert(true);
+                      }}
+                      disabled={
+                        props.batch.status !== "In Progress"
+                      }
+                      className="btn btn-danger btn-regular collapse_form_buttons"
+                    >
+                      DELETE
+                    </button>
+                  </div>
+                )}
                 <div className="col-auto p-0">
-                   <button 
-                   onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
-                    CANCEL                    
+                  <button
+                    onClick={onHide}
+                    className="btn btn-secondary btn-regular collapse_form_buttons"
+                  >
+                    CANCEL
                   </button>
                 </div>
                 <div className="col-auto p-0">
-                  <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'disabled={isSubmitting}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                    disabled={
+                      isSubmitting ||
+                      props.batch.status !== "In Progress"
+                    }
+                  >
                     SAVE
                   </button>
                 </div>
@@ -267,8 +295,8 @@ const BatchSessionForm = (props) => {
             </>
           }
         >
-        <p>Are you sure, you want to delete this session?</p>
-      </SweetAlert>
+          <p>Are you sure, you want to delete this session?</p>
+        </SweetAlert>
       </Modal.Body>
     </Modal>
   );

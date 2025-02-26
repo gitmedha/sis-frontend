@@ -52,6 +52,7 @@ const OpportunityForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
 
   const [initialValues, setInitialValues] = useState({
@@ -72,6 +73,7 @@ const OpportunityForm = (props) => {
     pin_code: '',
     medha_area: '',
     district:'',
+    experience_required:''
   });
 
   useEffect(() => {
@@ -99,13 +101,23 @@ const OpportunityForm = (props) => {
         };
       }));
 
-      setTypeOptions(data.type.map((item) => {
+      setTypeOptions(data?.type.map((item) => {
         return {
           key: item.value,
           label: item.value,
           value: item.value,
         };
       }));
+      setExperienceOption(
+        
+        data?.experience_required?.map((item) => {
+          return {
+            key: item,
+            label: item,
+            value: item,
+          };
+        })
+      )
 
       setDepartmentOptions(data.department.map((item) => {
         return {
@@ -382,13 +394,14 @@ const OpportunityForm = (props) => {
                       options={departmentOptions}
                     />
                   </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="salary"
                       type="number"
                       control="input"
-                      label="Salary"
-                      placeholder="Salary"
+                      label="Monthly Salary Offered"
+                      placeholder="Monthly Salary Offered"
                       className="form-control"
                       required
                     />
@@ -415,6 +428,18 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="experience_required"
+                        control="lookup"
+                        required
+                        label="Experience Required"
+                        placeholder="Experience"
+                        options={experienceOption}
+                        className="form-control"
+                      />
+                    </div>
                   <div className="col-sm-12 mb-2">
                     <Input
                       name="role_description"

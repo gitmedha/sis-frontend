@@ -15,7 +15,6 @@ const StickyPagination = styled.div`
     padding-bottom:10px;
   }
 `;
-
 const Styles = styled.div`
   border: 1.5px solid #d7d7e0;
   background: #ffffff;
@@ -97,7 +96,6 @@ const Styles = styled.div`
     min-height:180px
   }
 `;
-
 const Table = ({
   selectedSearchedValue,
   selectedSearchField,
@@ -252,7 +250,7 @@ const Table = ({
                         <td
                           style={{ color: "#787B96", fontFamily: "Latto-Bold" }}
                         >
-                          {row.original.href && !rowClickFunctionExists ? (
+                          {row.original.href && !rowClickFunctionExists ? ( 
                             <a
                               className="table-row-link"
                               href={row.original.href}
@@ -300,7 +298,7 @@ const Table = ({
                       fontFamily: "Latto-Bold",
                       textAlign: "center",
                     }}
-                  >
+                  > 
                     <span
                       style={{
                         fontStyle: "italic",

@@ -100,16 +100,15 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
   const setDropdownValues = async (fieldName) => {
     try {
-      console.log(fieldName);
+
       const { data } = await getFieldValues(fieldName, "mentorship");
 
       if (fieldName === "mentor_state") {
         setStateOption(data);
       }
       if (fieldName === "mentor_area") {
-        console.log("data",data);
+     
         setAreaOption(data);
-        console.log(areaOption);
       }
       if (fieldName === "mentor_name") {
         setMentorNameOption(data);
@@ -167,7 +166,6 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       })
     );
 
-    console.log(value);
   };
   const formik = useFormik({
     initialValues,
