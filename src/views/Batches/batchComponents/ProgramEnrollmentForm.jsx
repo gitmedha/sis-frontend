@@ -13,7 +13,6 @@ import {
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
-import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -58,7 +57,6 @@ const ProgramEnrollmentForm = (props) => {
   const [courseLevel, setCourseLevel] = useState("");
   const [courseType, setCourseType] = useState("");
   const [courseName,setCourseName] = useState("");
-  const userId = parseInt(localStorage.getItem('user_id'))
 
   useEffect(async()=>{
     if(props.programEnrollment){
@@ -150,24 +148,14 @@ const ProgramEnrollmentForm = (props) => {
 
   const onSubmit = async (values) => {
     if (!showDuplicateWarning) {
-      let propgramEnrollemntData={};
-    if(props.programEnrollment ){
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Updated",event_id:props.batch.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,values)};
-      
-    }else {
-      console.log("hehehlooo");
-      propgramEnrollemntData={module_name:"Batch",activity:"Program Enrollment Created",event_id:props.batch.id,updatedby:userId ,changes_in:{name:values?.program_enrollment_batch}};
-    }
-    console.log(propgramEnrollemntData);
-    await createLatestAcivity(propgramEnrollemntData);
-    onHide(values);
+      onHide(values);
     }
   };
 
   useEffect(() => {
     getAllBatches().then((data) => {
       setBatchOptions(
-        data?.data?.data?.batchesConnection.values.map((batches) => ({
+        data?.data?.data?.batches.map((batches) => ({
           key: batches.name,
           label: batches.name,
           value: batches.id,
@@ -713,7 +701,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                 </Section>
               </div>
-              <div className="row justify-content-end mt-5">
+              <div className="row justify-content-end mt-1">
                 <div className="col-auto p-0">
                   <button
                     type="button"

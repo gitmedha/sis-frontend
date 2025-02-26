@@ -32,9 +32,12 @@ const tabPickerOptions = [
 ];
 
 const TSection = styled.div`
+.flex-row-centered {
+  width:1px !important;
+}
  .latto-bold,.text--sm{
     display: flex !important;
-    font-family: 'Lato', sans-serif !important;
+    font-family: 'Latto', sans-serif !important;
     font-weight: regular !important;
     font-size:14px !important;
     padding: 0px 0px !important;
@@ -44,12 +47,6 @@ const TSection = styled.div`
     background-color: #ffffff !important ;
 
 }
-.hash-column {
-    width: 5rem !important;
-  }
-  table{
-  table-layout: auto;
-  }
 `;
 
 const Employers = (props) => {

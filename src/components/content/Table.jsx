@@ -190,7 +190,7 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th style={{width:'1.5rem'}}>#</th>}
+                  {indexes && <th style={{width:'4.5rem'}}>#</th>}
                   {headerGroup.headers.map((column) => 
                      (
                     

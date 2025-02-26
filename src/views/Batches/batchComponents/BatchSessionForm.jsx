@@ -33,7 +33,7 @@ const Section = styled.div`
 `;
 
 const BatchSessionForm = (props) => {
-  let { onHide, show, batch, onDelete } = props; 
+  let { onHide, show, batch, onDelete } = props;
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -105,8 +105,9 @@ const BatchSessionForm = (props) => {
     // setting the rows that needs to be checked if an existing session is being updated.
     if (props.session && props.session.id) {
       setLoading(true);
-      getSessionAttendance(props.session.id).then(async data => {
-        setSessionAttendance(data.data.data.attendances); // saving session attendance records
+      getSessionAttendance(props.session.id)
+        .then(async (data) => {
+          setSessionAttendance(data.data.data.attendances); // saving session attendance records
           let selectedStudentProgramEnrollmentIds = data.data.data.attendances
             .filter((attendance) => {
               return attendance.program_enrollment && attendance.present;
@@ -136,23 +137,23 @@ const BatchSessionForm = (props) => {
   const columns = useMemo(
     () => [
       {
-        Header: 'Name',
-        accessor: 'name',
+        Header: "Name",
+        accessor: "name",
         disableSortBy: true,
       },
       {
-        Header: 'Student ID',
-        accessor: 'student_id',
+        Header: "Student ID",
+        accessor: "student_id",
         disableSortBy: true,
       },
       {
-        Header: 'Phone',
-        accessor: 'phone',
+        Header: "Phone",
+        accessor: "phone",
         disableSortBy: true,
       },
       {
-        Header: 'Parent Name',
-        accessor: 'parent_name',
+        Header: "Parent Name",
+        accessor: "parent_name",
         disableSortBy: true,
       },
     ],
@@ -175,7 +176,8 @@ const BatchSessionForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.session && props.session.id ? 'Update' : 'Add New'} Session and Attendance
+            {props.session && props.session.id ? "Update" : "Add New"} Session
+            and Attendance
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -220,7 +222,13 @@ const BatchSessionForm = (props) => {
                         <Skeleton width="100%" height="50px" />
                       </>
                     ) : (
-                      <TableWithSelection columns={columns} data={students} selectAllHeader="Mark Attendance" selectedRows={selectedRows} setSelectedRows={setSelectedStudents} />
+                      <TableWithSelection
+                        columns={columns}
+                        data={students}
+                        selectAllHeader="Mark Attendance"
+                        selectedRows={selectedRows}
+                        setSelectedRows={setSelectedStudents}
+                      />
                     )}
                   </div>
                 </div>
@@ -271,9 +279,7 @@ const BatchSessionForm = (props) => {
           btnSize="md"
           show={showDeleteAlert}
           title={
-            <span className="text--primary latto-bold">
-              Delete session?
-            </span>
+            <span className="text--primary latto-bold">Delete session?</span>
           }
           customButtons={
             <>

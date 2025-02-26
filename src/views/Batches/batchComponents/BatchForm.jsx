@@ -8,12 +8,25 @@ import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
 import { getBatchesPickList, getBatchProgramEnrollments } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
-import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
-import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-import { isAdmin, isPartnership} from "../../../common/commonFunctions";
-import {searchInstitutes,searchGrants,searchPrograms} from '../batchActions'
-import { createLatestAcivity, findDifferences, findUpdates } from 'src/utils/LatestChange/Api';
-
+import {
+  getAddressOptions,
+  getStateDistricts,
+} from "../../Address/addressActions";
+import {
+  filterAssignedTo,
+  getDefaultAssigneeOptions,
+} from "../../../utils/function/lookupOptions";
+import { isAdmin, isPartnership } from "../../../common/commonFunctions";
+import {
+  searchInstitutes,
+  searchGrants,
+  searchPrograms,
+} from "../batchActions";
+import {
+  createLatestAcivity,
+  findDifferences,
+  findUpdates,
+} from "src/utils/LatestChange/Api";
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 
 const Section = styled.div`
@@ -229,14 +242,22 @@ const BatchForm = (props) => {
     if (values.mode_of_payment === "Free") {
       values.per_student_fees = 0;
     }
-    let propgramEnrollemntData={};
 
-    if(props.id ){
-      propgramEnrollemntData={module_name:"batch",activity:"Batch Data Updated",event_id:props.id,updatedby:userId ,changes_in:findUpdates(props,values)};
-      await createLatestAcivity(propgramEnrollemntData);
-    }
-    
+    const { data } = await getBatchProgramEnrollments(values.id);
+    const programEnrollments = data.data.programEnrollmentsConnection.values;
+
     setFormValues(values);
+
+    if (values.status === "In Progress") {
+      try {
+        const updatePromises = programEnrollments.map((enrollment) =>
+          updateProgramEnrollment(enrollment.id, { status: "Batch Assigned" })
+        );
+        await Promise.all(updatePromises);
+      } catch (error) {
+        console.error("Error updating program enrollment statuses:", error);
+      }
+    }
 
     onHide(values);
   };
@@ -263,8 +284,8 @@ const BatchForm = (props) => {
 
   const filterProgram = async (filterValue) => {
     try {
-      const {data} = await searchPrograms(filterValue);
-      return data.programsConnection.values.map(program=>{
+      const { data } = await searchPrograms(filterValue);
+      return data.programsConnection.values.map((program) => {
         return {
           ...program,
           label: program.name,
@@ -424,37 +445,42 @@ const BatchForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {stateOptions.length ? (
-                    <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      required
-                      control="lookup"
-                      placeholder="State"
-                      className="form-control"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                    />
+                    {stateOptions.length ? (
+                      <Input
+                        icon="down"
+                        name="state"
+                        label="State"
+                        required
+                        control="lookup"
+                        placeholder="State"
+                        className="form-control"
+                        options={stateOptions}
+                        onChange={onStateChange}
+                      />
                     ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      placeholder="Medha Area"
-                      required
-                      options={areaOptions}
-                    />
+                    {areaOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="medha_area"
+                        label="Medha Area"
+                        className="form-control"
+                        placeholder="Medha Area"
+                        required
+                        options={areaOptions}
+                      />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Please select State to view Medha Areas
+                        </label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}

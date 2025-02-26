@@ -29,8 +29,7 @@ import {
   createLatestAcivity,
   findDifferences,
 } from "src/utils/LatestChange/Api";
-import NestedDropdown from "./NestedDropdown";
-
+import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
 const Section = styled.div`
   padding-top: 15px;
   padding-bottom: 30px;
@@ -220,9 +219,6 @@ const EmployerForm = (props) => {
   }, []);
 
   useEffect(() => {
-
-    
-  
     const getAllEmployers = async () => {
       let { data } = await api.post("/industries/findAll");
       const processData = (data) => {
@@ -365,7 +361,7 @@ const EmployerForm = (props) => {
         updatedby: userId,
         changes_in: compareObjects(props, values),
       };
-    } 
+    }
     await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };
@@ -499,6 +495,7 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
+                      {/* industry */}
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
@@ -506,6 +503,7 @@ const EmployerForm = (props) => {
                       <Field
                         name="industry"
                         defaultValue={props.industry}
+                      
                         onChange={(value) => setFieldValue("industry", value)}
                         data={industryOptions}
                         error={errors.industry}
