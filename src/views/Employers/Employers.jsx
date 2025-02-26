@@ -47,7 +47,6 @@ const TSection = styled.div`
     background-color: #ffffff !important ;
 
 }
-
 `;
 
 const Employers = (props) => {

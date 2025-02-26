@@ -28,7 +28,7 @@ const tabPickerOptions = [
   { title: "My State", key: "my_state" },
   { title: "All Medha", key: "all_medha" },
 ];
-
+ 
 const Institutions = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -94,7 +94,7 @@ const Institutions = (props) => {
     ],
     []
   );
-
+ 
   const getInstitutionsBySearchFilter = async (
     selectedTab,
     limit = paginationPageSize,
@@ -129,7 +129,7 @@ const Institutions = (props) => {
       type
       created_at
   `;
-
+ 
     let variables = {
       limit,
       start: offset,
@@ -137,7 +137,7 @@ const Institutions = (props) => {
         sortOrder ? sortOrder : "asc"
       }`,
     };
-
+ 
     if (selectedTab === "my_data") {
       if (selectedSearchField === "medha_area") {
         Object.assign(variables, {
@@ -245,7 +245,7 @@ const Institutions = (props) => {
     } else if (selectedSearchField === "name") {
       Object.assign(variables, { name: selectedSearchedValue.trim() });
     }
-
+ 
     const InstitutionQuery = `query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String,$username:String,$type:String, $name:String) {
   institutionsConnection (
       sort: $sort
@@ -271,7 +271,7 @@ const Institutions = (props) => {
       }
     }
   }`;
-
+ 
     await api
       .post("/graphql", {
         query: InstitutionQuery,
@@ -291,7 +291,7 @@ const Institutions = (props) => {
         return Promise.reject(error);
       });
   };
-
+ 
   const getInstitutions = async (
     selectedTab,
     limit = paginationPageSize,
@@ -301,7 +301,7 @@ const Institutions = (props) => {
   ) => {
     nProgress.start();
     setLoading(true);
-
+ 
     if (isSearchEnable) {
       await getInstitutionsBySearchFilter(
         selectedTab,
@@ -316,7 +316,7 @@ const Institutions = (props) => {
         start: offset,
         sort: `${sortBy}:${sortOrder}`,
       };
-
+ 
       if (selectedTab == "my_data") {
         Object.assign(variables, { id: userId });
       } else if (selectedTab == "my_state") {
@@ -344,7 +344,7 @@ const Institutions = (props) => {
         });
     }
   };
-
+ 
   const fetchData = useCallback(
     (
       pageIndex,
@@ -357,18 +357,18 @@ const Institutions = (props) => {
       if (sortBy.length) {
         let sortByField = "name";
         let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-
+ 
         switch (sortBy[0].id) {
           case "status":
           case "type":
           case "medba_area":
             sortByField = sortBy[0].id;
             break;
-
+ 
           case "assignedTo":
             sortByField = "assigned_to.username";
             break;
-
+ 
           case "state":
             sortByField = sortBy[0].id;
             break;
@@ -377,7 +377,7 @@ const Institutions = (props) => {
             sortByField = "name";
             break;
         }
-
+ 
         if (sortBy[0].id == "medha_area") {
           sortByField = sortBy[0].id;
         }
@@ -416,11 +416,11 @@ const Institutions = (props) => {
     },
     [activeTab.key]
   );
-
+ 
   useEffect(() => {
     getInstitutionsPickList().then((data) => setPickList(data));
   }, []);
-
+ 
   useEffect(() => {
     let data = institutions;
     data = data.map((institution, index) => {
@@ -443,15 +443,15 @@ const Institutions = (props) => {
     });
     setInstitutionsTableData(data);
   }, [institutions, pickList]);
-
+ 
   const hideCreateModal = async (data) => {
     setFormErrors([]);
-
+ 
     if (!data || data.isTrusted) {
       setModalShow(false);
       return;
     }
-
+ 
     // need to remove `show` from the payload
     let { id, show, mou, ...dataToSave } = data;
     dataToSave["mou"] = [];
@@ -472,7 +472,7 @@ const Institutions = (props) => {
     }
     createInstitutionApi(id, dataToSave);
   };
-
+ 
   const createInstitutionApi = (id, dataToSave) => {
     nProgress.start();
     createInstitution(dataToSave)
@@ -512,7 +512,7 @@ const Institutions = (props) => {
         nProgress.done();
       });
   };
-
+ 
   return (
     <Collapse title="INSTITUTIONS" type="plain" opened={true}>
       <div className="row">
@@ -560,11 +560,13 @@ const Institutions = (props) => {
     </Collapse>
   );
 };
-
+ 
 const mapStateToProps = (state) => ({});
-
+ 
 const mapActionsToProps = {
   setAlert,
 };
-
+ 
 export default connect(mapStateToProps, mapActionsToProps)(Institutions);
+ 
+ 
