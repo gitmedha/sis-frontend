@@ -445,8 +445,7 @@ const UpdateMentorship = (props) => {
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {/* {console.log(areaOptions)} */}
-                          {/* {areaOptions.length ||props.medha_area ? ( */}
+                         
                             <Input
                               icon="down"
                               name="mentor_area"

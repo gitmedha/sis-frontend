@@ -429,11 +429,12 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
-                        control="lookupAsync"
+                        control="lookup"
                         name="institution"
                         label="Institution"
-                        filterData={filterInstitution}
-                        defaultOptions={props.id ? institutionOptions : true}
+                        // filterData={filterInstitution}
+                        // defaultOptions={props.id ? institutionOptions : true}
+                        options={institutionOptions}
                         placeholder="Institution"
                         className="form-control"
                         isClearable

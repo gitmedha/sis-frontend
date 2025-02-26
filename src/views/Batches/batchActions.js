@@ -281,22 +281,25 @@ export const getFieldValues = async (searchField,baseURL,tab,info)=>{
 
 }
 
-export const searchInstitutes = async(searchValue)=>{
+export const searchInstitutes = async (searchValue) => {
+
   try {
+    
     const {data} = await api.post('/graphql', {
-      query:SEARCH_BY_INSTITUTIONS, 
+      query:SEARCH_BY_INSTITUTIONS,
       variables:{
         limit:20,
         query:searchValue,
         sort:`name:asc`
       }
     })
-  return data
-    
+    return data;
   } catch (error) {
-    return console.error(error)
+    console.error("GraphQL Error:", error);
   }
-}
+};
+
+
 
 export const searchGrants = async (searchValue)=>{
   try{

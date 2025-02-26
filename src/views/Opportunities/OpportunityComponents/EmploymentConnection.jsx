@@ -46,7 +46,6 @@ const EmploymentConnection = (props) => {
   }, []);
 
   const isValidUser = () =>{
-    console.log(employmentConnection)
     if(Object.keys(employmentConnection).length > 0 && employmentConnection.assigned_to) {
       return employmentConnection.assigned_to.username.toLowerCase() === getUser().toLowerCase();
     }
