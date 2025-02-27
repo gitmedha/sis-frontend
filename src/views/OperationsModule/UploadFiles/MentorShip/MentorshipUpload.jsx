@@ -242,90 +242,100 @@ const MentorshipUpload = (props) => {
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
 
-    data.forEach((item, index) => {
-      const newItem = {};
-      Object.keys(item).forEach((key) => {
-        newItem[key] = item[key];
-      });
-
-      const currentUser = localStorage.getItem("user_id");
-      console.log(stateOptions);
-      const StateCheck = stateOptions.find(
-        (state) => state === newItem["State"]
-      )?.id;
-      const areaCheck = areaOptions.find(
-        (area) => area === newItem["City"]
-      )?.id;
-
-      const srmcheck = assigneOption.find(
-        (user) => user.label === newItem["Assigned To"]
-      )?.value;
-
-      const onboardingDate = excelSerialDateToJSDate(
-        newItem["Onboarding Date"]
-      );
-
-      // const isStartDateValid = isValidDateFormat(startDate);
-
-      const createdby = Number(userId);
-      const updatedby = Number(userId);
-
-      const isValidContact = (contact) => {
-        const pattern = /^[0-9]{10}$/; // Regex for 10-digit number
+    // Function to validate phone numbers (must be exactly 10 digits)
+    const isValidContact = (contact) => {
+        const pattern = /^[0-9]{10}$/; // 10-digit number regex
         return contact && pattern.test(contact);
-      };
-      let parseDate;
+    };
 
-      if (
-        !srmcheck ||
-        !newItem["Mentor Name"] ||
-        !newItem["Email ID"] ||
-        !newItem["Mentor's Domain"] ||
-        !isValidContact(newItem["Contact"]) ||
-        !newItem["Mentor's Company Name"] ||
-        !newItem["Designation/Title"]
-      ) {
-        notFoundData.push({
-          index: index + 1,
-          assigned_to: newItem["Assigned To"],
-          mentor_name: newItem["Mentor Name"] || "",
-          email: newItem["Email ID"] || "",
-          mentor_domain: newItem["Mentor's Domain"] || "",
-          mentor_company_name: newItem["Mentor's Company Name"] || "",
-          designation: newItem["Designation/Title"] || "",
-          mentor_area: newItem["Mentor's Area"] || "",
-          mentor_state: newItem["Mentor's State"] || "",
-          outreach: newItem["Outreach (Offline/Online)"] || "",
-          onboarding_date: onboardingDate || "",
-          social_media_profile_link: newItem["Social Media Profile Link"] || "",
-          medha_area: newItem["Medha Area"] || "",
-          status: newItem["Status"] || "",
-          program_name: newItem["Medha Program Name"] || "",
-          contact: newItem["Contact"] || "",
+    // Function to validate email addresses
+    const isValidEmail = (email) => {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
+        return email && pattern.test(email);
+    };
+
+    data.forEach((item, index) => {
+        const newItem = {};
+        Object.keys(item).forEach((key) => {
+            newItem[key] = item[key];
         });
-      } else {
-        formattedData.push({
-          assigned_to: srmcheck,
-          mentor_name: newItem["Mentor Name"] || "",
-          email: newItem["Email ID"] || "",
-          mentor_domain: newItem["Mentor's Domain"] || "",
-          mentor_company_name: newItem["Mentor's Company Name"] || "",
-          designation: newItem["Designation/Title"] || "",
-          mentor_area: newItem["Mentor's Area"] || "",
-          mentor_state: newItem["Mentor's State"] || "",
-          outreach: newItem["Outreach (Offline/Online)"] || "",
-          onboarding_date: onboardingDate || "",
-          social_media_profile_link: newItem["Social Media Profile Link"] || "",
-          medha_area: newItem["Medha Area"] || "",
-          status: newItem["Status"] || "",
-          program_name: newItem["Medha Program Name"] || "",
-          contact: newItem["Contact"] || "",
-        });
-      }
+
+        const currentUser = localStorage.getItem("user_id");
+
+        const StateCheck = stateOptions.find(
+            (state) => state === newItem["State"]
+        )?.id;
+        const areaCheck = areaOptions.find(
+            (area) => area === newItem["City"]
+        )?.id;
+
+        const srmcheck = assigneOption.find(
+            (user) => user.label === newItem["Assigned To"]
+        )?.value;
+
+        const onboardingDate = excelSerialDateToJSDate(
+            newItem["Onboarding Date"]
+        );
+
+        const createdby = Number(userId);
+        const updatedby = Number(userId);
+
+        if (
+            !srmcheck ||
+            !newItem["Mentor Name"] ||
+            !newItem["Email ID"] ||
+            !newItem["Mentor's Domain"] ||
+            !isValidContact(newItem["Contact"]) ||  // Phone number validation
+            !isValidEmail(newItem["Email ID"]) ||   // Email validation
+            !newItem["Mentor's Company Name"] ||
+            !newItem["Designation/Title"]
+        ) {
+         
+            notFoundData.push({
+                index: index + 1,
+                assigned_to: newItem["Assigned To"],
+                mentor_name: newItem["Mentor Name"] || "",
+                email: newItem["Email ID"] || "",
+                mentor_domain: newItem["Mentor's Domain"] || "",
+                mentor_company_name: newItem["Mentor's Company Name"] || "",
+                designation: newItem["Designation/Title"] || "",
+                mentor_area: newItem["Mentor's Area"] || "",
+                mentor_state: newItem["Mentor's State"] || "",
+                outreach: newItem["Outreach (Offline/Online)"] || "",
+                onboarding_date: onboardingDate || "",
+                social_media_profile_link: newItem["Social Media Profile Link"] || "",
+                medha_area: newItem["Medha Area"] || "",
+                status: newItem["Status"] || "",
+                program_name: newItem["Medha Program Name"] || "",
+                contact: newItem["Contact"] || "",
+                validation_error: `Invalid ${!isValidContact(newItem["Contact"]) ? "Phone Number" : ""} ${!isValidEmail(newItem["Email ID"]) ? "Email" : ""}`
+            });
+        } else {
+            formattedData.push({
+                assigned_to: srmcheck,
+                mentor_name: newItem["Mentor Name"] || "",
+                email: newItem["Email ID"] || "",
+                mentor_domain: newItem["Mentor's Domain"] || "",
+                mentor_company_name: newItem["Mentor's Company Name"] || "",
+                designation: newItem["Designation/Title"] || "",
+                mentor_area: newItem["Mentor's Area"] || "",
+                mentor_state: newItem["Mentor's State"] || "",
+                outreach: newItem["Outreach (Offline/Online)"] || "",
+                onboarding_date: onboardingDate || "",
+                social_media_profile_link: newItem["Social Media Profile Link"] || "",
+                medha_area: newItem["Medha Area"] || "",
+                status: newItem["Status"] || "",
+                program_name: newItem["Medha Program Name"] || "",
+                contact: newItem["Contact"] || "",
+            });
+        }
     });
+
     setExcelData(formattedData);
+    
     setNotuploadedData(notFoundData);
-  };
+};
+
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
