@@ -8,8 +8,7 @@ import {
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
-import { getAllSearchSrm } from "src/utils/function/lookupOptions";
-
+import { FaPlusCircle } from "react-icons/fa";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -28,6 +27,7 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
 const OpsSearchDropdown = function OpsSearchBar({
   searchOperationTab,
   resetSearch,
@@ -35,25 +35,30 @@ const OpsSearchDropdown = function OpsSearchBar({
   let today = new Date();
 
   const initialValues = {
-    search_by_field: "",
-    search_by_value: "",
-    search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date_end_from: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
-    search_by_value_date_end_to: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
+    searches: [
+      {
+        search_by_field: "",
+        search_by_value: "",
+        search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
+        search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+        search_by_value_date_end_from: new Date(
+          new Date(today).setDate(today.getDate())
+        ),
+        search_by_value_date_end_to: new Date(
+          new Date(today).setDate(today.getDate())
+        ),
+      },
+    ],
   };
 
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
+  const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
   const [assignedToOptions, setAssignedOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
-  const [disabled, setDisbaled] = useState(true);
+  const [disabled, setDisabled] = useState(true);
+  const [counter, setCounter] = useState(1);
 
   const formatdate = (dateval) => {
     const date = new Date(dateval);
@@ -69,71 +74,35 @@ const OpsSearchDropdown = function OpsSearchBar({
   const handleSubmit = async (values) => {
     let baseUrl = "users-ops-activities";
 
-    if (
-      values.search_by_field === "start_date" ||
-      values.search_by_field === "end_date"
-    ) {
-      if (values.search_by_field === "start_date") {
-        const date1 = formatdate(values.search_by_value_date);
-        const date2 = formatdate(values.search_by_value_date_to);
-        let val = {
-          start_date: date1,
-          end_date: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
+    const searchFields = [];
+    const searchValues = [];
 
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
-
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
+    values.searches.forEach((search) => {
+      if (search.search_by_field && search.search_by_value) {
+        // Push the field name and value directly
+        searchFields.push(search.search_by_field); // Keep the full field name (e.g., "assigned_to.username")
+        searchValues.push(search.search_by_value);
       }
-      if (values.search_by_field === "end_date") {
-        const date1 = formatdate(values.search_by_value_date_end_from);
-        const date2 = formatdate(values.search_by_value_date_end_to);
-        let val = {
-          start_date: date1,
-          end_date: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
+    });
 
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
+    const searchData = {
+      searchFields,
+      searchValues,
+    };
 
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
-      }
-    } else {
-      await searchOperationTab(
-        baseUrl,
-        values.search_by_field,
-        values.search_by_value
-      );
+    console.log(searchData); // This will log the data in the desired format
 
-      //stores the last searched result in the local storage as cache
-      //we will use it to refresh the search results
+    // You can now use searchData to perform your search operation
+    await searchOperationTab(baseUrl, searchData);
 
-      await localStorage.setItem(
-        "prevSearchedPropsAndValues",
-        JSON.stringify({
-          baseUrl: baseUrl,
-          searchedProp: values.search_by_field,
-          searchValue: values.search_by_value,
-        })
-      );
-    }
+    // Store the last searched result in the local storage as cache
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({
+        baseUrl: baseUrl,
+        searchData: searchData,
+      })
+    );
   };
 
   const options = [
@@ -145,8 +114,8 @@ const OpsSearchDropdown = function OpsSearchBar({
     { key: 5, value: "start_date", label: "Start Date" },
     { key: 6, value: "end_date", label: "End Date" },
   ].sort((a, b) => a.label - b.label);
+
   const formik = useFormik({
-    // Create a Formik reference using useFormik
     initialValues,
     onSubmit: handleSubmit,
   });
@@ -174,12 +143,15 @@ const OpsSearchDropdown = function OpsSearchBar({
   const clear = async (formik) => {
     formik.setValues(initialValues);
     await resetSearch();
-    setSelectedSearchField(null);
-    setDisbaled(true);
+    setSelectedSearchFields([null]);
+    setDisabled(true);
   };
-  const setSearchItem = (value) => {
-    setSelectedSearchField(value);
-    setDisbaled(false);
+
+  const setSearchItem = (value, index) => {
+    const newSelectedSearchFields = [...selectedSearchFields];
+    newSelectedSearchFields[index] = value;
+    setSelectedSearchFields(newSelectedSearchFields);
+    setDisabled(false);
     setIsFieldEmpty(false);
 
     if (value.includes("assigned_to")) {
@@ -219,145 +191,156 @@ const OpsSearchDropdown = function OpsSearchBar({
           <Form>
             <Section>
               <div className="row align-items-center">
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
-                  <Input
-                    icon="down"
-                    name="search_by_field"
-                    label="Search Field"
-                    control="lookup"
-                    options={options}
-                    className="form-control"
-                    onChange={(e) => setSearchItem(e.value)}
-                  />
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-                  {selectedSearchField === null && (
-                    <Input
-                      name="search_by_value"
-                      control="input"
-                      label="Search Value"
-                      className="form-control"
-                      onClick={() => setIsFieldEmpty(true)}
-                      disabled={true}
-                    />
-                  )}
-
-                  {selectedSearchField === "program_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={programOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-
-                  {selectedSearchField === "activity_type" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={activityTypes}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-
-                  {selectedSearchField === "assigned_to.username" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={assignedToOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "batch.name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={batchOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "area" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={areaOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "start_date" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
-                        <Input
-                          name="search_by_value_date"
-                          label="From"
-                          placeholder="Start Date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_to"
-                          label="To"
-                          placeholder="End Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
+                {Array.from({ length: counter }).map((_, index) => (
+                  <Fragment key={index}>
+                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name={`searches[${index}].search_by_field`}
+                        label="Search Field"
+                        control="lookup"
+                        options={options}
+                        className="form-control"
+                        onChange={(e) => setSearchItem(e.value, index)}
+                      />
                     </div>
-                  )}
-
-                  {selectedSearchField === "end_date" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
+                    <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
+                      {selectedSearchFields[index] === null && (
                         <Input
-                          name="search_by_value_date_end_from"
-                          label="From"
-                          placeholder="Start Date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_end_to"
-                          label="To"
-                          placeholder="End Date"
-                          control="datepicker"
+                          name={`searches[${index}].search_by_value`}
+                          control="input"
+                          label="Search Value"
                           className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
+                          onClick={() => setIsFieldEmpty(true)}
+                          disabled
                         />
-                      </div>
+                      )}
+
+                      {selectedSearchFields[index] === "program_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={programOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "activity_type" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={activityTypes}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "assigned_to.username" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={assignedToOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "batch.name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={batchOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={areaOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "start_date" && (
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div className="mr-3">
+                            <Input
+                              name={`searches[${index}].search_by_value_date`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div className="ml-2">
+                            <Input
+                              name={`searches[${index}].search_by_value_date_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedSearchFields[index] === "end_date" && (
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div className="mr-3">
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_from`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div className="ml-2">
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </Fragment>
+                ))}
+
+                <div className="col-lg-3">
+                  <FaPlusCircle onClick={() => setCounter(counter + 1)} />
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
                     className="btn btn-primary action_button_sec search_bar_action_sec"
                     type="submit"
-                    disabled={disabled ? true : false}
+                    disabled={disabled}
                   >
                     FIND
                   </button>
@@ -365,7 +348,7 @@ const OpsSearchDropdown = function OpsSearchBar({
                     className="btn btn-secondary action_button_sec search_bar_action_sec"
                     type="button"
                     onClick={() => clear(formik)}
-                    disabled={disabled ? true : false}
+                    disabled={disabled}
                   >
                     CLEAR
                   </button>
