@@ -73,7 +73,10 @@ const tabPickerOptions1 = [
   { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
-const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
+const tabPickerOptions3 = [
+  { title: "TOT", key: "useTot" },
+  {title:"Student Outreach",key:"studentOutreach"}
+];
 
 const Styled = styled.div`
   .MuiSwitch-root {
