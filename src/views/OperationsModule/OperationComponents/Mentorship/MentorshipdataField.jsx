@@ -156,10 +156,10 @@ const MentorshipdataField = (props) => {
                   <DetailField
                     className=""
                     Bold={""}
-                    label="Onboarding Date"
+                    label="Outreach Date"
                     value={
-                      moment(props.outreach).format("DD MMM YYYY")
-                        ? moment(props.start_date).format("DD MMM YYYY")
+                      moment(props.outreach).format("DD-MM-YYYY")
+                        ? moment(props.start_date).format("DD-MM-YYYY")
                         : ""
                     }
                   />
@@ -202,8 +202,8 @@ const MentorshipdataField = (props) => {
                     Bold={""}
                     label="Onboarding Date"
                     value={
-                      moment(props.onboarding_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
+                      moment(props.onboarding_date).format("DD-MM-YYYY")
+                        ? moment(props.end_date).format("DD-MM-YYYY")
                         : ""
                     }
                   />
@@ -260,7 +260,7 @@ const MentorshipdataField = (props) => {
                   <div className="col-md-6 col-sm-12">
                     <DetailField
                       Bold={""}
-                      label="Mentor Area"
+                      label="Mentor’s Area"
                       value={props.mentor_area}
                     />
                   </div>

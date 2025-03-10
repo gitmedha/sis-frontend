@@ -27,6 +27,7 @@ import {
 } from "../../OperationComponents/operationsActions";
 import api from "src/apis";
 import { GET_STUDENT } from "src/graphql";
+
 const expectedColumns = [
   "Assigned To",
   "Student ID",
@@ -58,6 +59,7 @@ const UpskillingUpload = (props) => {
   const [instituteOptions, setInstituteOptions] = useState([]);
   const [batchOption, setBatchOption] = useState([]);
   const [programOption, setProgramOption] = useState([]);
+  const [validationComplete, setValidationComplete] = useState(false); // New state variable
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,9 +70,6 @@ const UpskillingUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    // if(!data){
-    //   setUploadSuccesFully("No Data")
-    // }
     if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
@@ -129,6 +128,7 @@ const UpskillingUpload = (props) => {
     setNextDisabled(false); // Optionally disable the next button
     setUploadSuccesFully("");
     setNotUploadSuccesFully("");
+    setValidationComplete(false); // Reset the validation complete state
 
     if (file) {
       setFileName(`${file.name} Uploaded`);
@@ -225,7 +225,6 @@ const UpskillingUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
-      // console.log(batchOption);
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch"]
       );
@@ -347,7 +346,13 @@ const UpskillingUpload = (props) => {
           updatedby: updatedby,
         });
       }
+
+      // After checking each student, set the validationComplete state to true
+      if (index === data.length - 1) {
+        setValidationComplete(true);
+      }
     }
+
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
@@ -365,6 +370,7 @@ const UpskillingUpload = (props) => {
     setFileName("");
     setNextDisabled(false);
     setUploadSuccesFully("");
+    setValidationComplete(false); // Reset the validation complete state
   };
 
   const hideShowModal = () => {
@@ -396,6 +402,7 @@ const UpskillingUpload = (props) => {
 
     getbatch();
   }, [props]);
+
   return (
     <>
       <Modal
@@ -480,15 +487,17 @@ const UpskillingUpload = (props) => {
                             Close
                           </button>
 
-                          <button
-                            type="button"
-                            //   disabled={!nextDisabled}
-                            onClick={() => uploadDirect()}
-                            className="btn btn-primary px-4 mx-4 mt-2"
-                            style={{ height: "2.5rem" }}
-                          >
-                            Next
-                          </button>
+                          {/* {validationComplete && ( */}
+                            <button
+                              type="button"
+                              disabled={!validationComplete}
+                              onClick={() => uploadDirect()}
+                              className="btn btn-primary px-4 mx-4 mt-2"
+                              style={{ height: "2.5rem" }}
+                            >
+                              Next
+                            </button>
+                          {/* )} */}
                         </div>
                         <div className="d-flex justify-content-center ">
                           <p
@@ -512,8 +521,6 @@ const UpskillingUpload = (props) => {
                   className="text-success text-center"
                   style={{ fontSize: "1.3rem" }}
                 >
-                  {/* <FaEdit size={20} color="#31B89D"  />{" "} */}
-                  {/* {!uploadNew ? `${<FaEdit size={20} color="#31B89D"  />}${excelData.length} row(s) of data will be uploaded` :`${<FaRegCheckCircle size={20} color="#31B89D"  />} ${excelData.length} row(s) of data uploaded successfully` } */}
                   {!uploadNew ? (
                     <>
                       <FaEdit size={20} color="#31B89D" /> {excelData.length}{" "}
@@ -527,38 +534,38 @@ const UpskillingUpload = (props) => {
                   )}
                 </p>
               </div>
-              <div className="col-md-12 d-flex justify-content-center">
-                <button
-                  type="button"
-                  onClick={() => props.closeThepopus()}
-                  className="btn btn-danger px-4 mx-4 mt-2"
-                  style={{ height: "2.5rem" }}
-                >
-                  Close
-                </button>
+              {validationComplete && (
+                <div className="col-md-12 d-flex justify-content-center">
+                  <button
+                    type="button"
+                    onClick={() => props.closeThepopus()}
+                    className="btn btn-danger px-4 mx-4 mt-2"
+                    style={{ height: "2.5rem" }}
+                  >
+                    Close
+                  </button>
 
-                {!uploadNew ? (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => proceedData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Proceed
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    // disabled={!nextDisabled}
-                    onClick={() => uploadNewData()}
-                    className="btn btn-primary px-4 mx-4 mt-2"
-                    style={{ height: "2.5rem" }}
-                  >
-                    Upload New
-                  </button>
-                )}
-              </div>
+                  {!uploadNew ? (
+                    <button
+                      type="button"
+                      onClick={() => proceedData()}
+                      className="btn btn-primary px-4 mx-4 mt-2"
+                      style={{ height: "2.5rem" }}
+                    >
+                      Proceed
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => uploadNewData()}
+                      className="btn btn-primary px-4 mx-4 mt-2"
+                      style={{ height: "2.5rem" }}
+                    >
+                      Upload New
+                    </button>
+                  )}
+                </div>
+              )}
             </Modal.Body>
           )}
         </>
