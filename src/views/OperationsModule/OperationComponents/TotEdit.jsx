@@ -299,15 +299,14 @@ const TotEdit = (props) => {
         );
       }),
     trainer_1: Yup.string().required("Trainer 1 is required"),
-    trainer_2: Yup.string()
-      .required("Trainer 2 is required")
-      .test("not-same", "Trainers must be different", function (trainer2) {
-        const trainer1 = this.resolve(Yup.ref("trainer_1"));
-        return trainer1 !== trainer2;
-      }),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
+    // trainer_2: Yup.string()
+    //   .required("Trainer 2 is required")
+    //   .test("not-same", "Trainers must be different", function (trainer2) {
+    //     const trainer1 = this.resolve(Yup.ref("trainer_1"));
+    //     return trainer1 !== trainer2;
+    //   }),
+    // email: Yup.string()
+    //   .required("Email is required"),
   });
 
   const deleteEntry = async () => {
