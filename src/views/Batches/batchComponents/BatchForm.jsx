@@ -229,9 +229,16 @@ const BatchForm = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (show && !options) {
-      prepareLookUpFields();
-    }
+    const fetchData = async () => {
+      if (show && !options) {
+        await prepareLookUpFields();
+      }
+      
+      const data = await filterInstitution();
+      setInstitutionOptions(data);
+    };
+  
+    fetchData();
   }, [show, options]);
 
   const onSubmit = async (values) => {
