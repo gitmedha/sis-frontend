@@ -18,6 +18,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import api from "../../../apis";
+import { createLatestAcivity, findDifferences, findDifferencesInstitute } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -153,6 +154,12 @@ const InstitutionForm = (props) => {
       values.logo = logo;
     }
     setDisableSaveButton(true);
+    let propgramEnrollemntData={};
+    if(props.id ){
+      propgramEnrollemntData={module_name:"institution",activity:"Institution Data Updated",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    
     await onHide(values);
     setDisableSaveButton(false);
   };
@@ -672,7 +679,7 @@ const InstitutionForm = (props) => {
                     : null}
                 </div>
 
-                <div className="row justify-content-end mt-1">
+                <div className="row justify-content-end mt-3">
                   <div className="col-auto p-0">
                     <button
                       type="button"

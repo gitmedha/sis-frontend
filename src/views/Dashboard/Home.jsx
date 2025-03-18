@@ -18,6 +18,7 @@ import Opportunities from "./components/Opportunities";
 import Students from "./components/Students";
 import ProgramEnrollments from "./components/ProgramEnrollments";
 import { getMyDataMetrics } from "./components/DashboardActions";
+import LatestActivity from "./components/LatestActivity";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -159,10 +160,9 @@ const Home = () => {
 
   return (
     <DashboardStyled className="container-fluid">
-      <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
+      {/* <Collapsible opened={true} title="My Key Metrics" id="keyMetrics">
         <div className="d-flex justify-content-between">
-          {/* <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} /> */}
-          {/* <WidgetUtilTab /> */}
+        
         </div>
         {isLoading ? (
           <div className="row mb-5">
@@ -227,10 +227,12 @@ const Home = () => {
               </div>
             </div>
           </div>
-      </Collapsible>
+      </Collapsible> */}
+      <LatestActivity/>
       <Opportunities />
       <ProgramEnrollments/>
       <Students />
+      
     </DashboardStyled>
   );
 };

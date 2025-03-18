@@ -9,6 +9,8 @@ import  {getOpportunitiesPickList} from "./opportunityAction"
 import { getAllEmployers,searchEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
+import { createLatestAcivity, findDifferences } from 'src/utils/LatestChange/Api';
+
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -220,6 +222,14 @@ const OpportunityForm = (props) => {
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
+    let propgramEnrollemntData={};
+    if(props ){
+      propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:props?.id,updatedby:userId ,changes_in:findDifferences(initialValues,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    // let datavaluesforlatestcreate={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
+    // await createLatestAcivity(datavaluesforlatestcreate);
+   
     onHide(values);
   };
 

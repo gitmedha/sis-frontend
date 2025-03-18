@@ -22,7 +22,11 @@ import {
   searchGrants,
   searchPrograms,
 } from "../batchActions";
-
+import {
+  createLatestAcivity,
+  findDifferences,
+  findUpdates,
+} from "src/utils/LatestChange/Api";
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 import { GET_ALL_INSTITUTES } from "src/graphql";
 import api from "src/apis";
@@ -325,8 +329,8 @@ const BatchForm = (props) => {
 
   const filterProgram = async (filterValue) => {
     try {
-      const {data} = await searchPrograms(filterValue);
-      return data.programsConnection.values.map(program=>{
+      const { data } = await searchPrograms(filterValue);
+      return data.programsConnection.values.map((program) => {
         return {
           ...program,
           label: program.name,
@@ -486,37 +490,42 @@ const BatchForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {stateOptions.length ? (
-                    <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      required
-                      control="lookup"
-                      placeholder="State"
-                      className="form-control"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                    />
+                    {stateOptions.length ? (
+                      <Input
+                        icon="down"
+                        name="state"
+                        label="State"
+                        required
+                        control="lookup"
+                        placeholder="State"
+                        className="form-control"
+                        options={stateOptions}
+                        onChange={onStateChange}
+                      />
                     ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      placeholder="Medha Area"
-                      required
-                      options={areaOptions}
-                    />
+                    {areaOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="medha_area"
+                        label="Medha Area"
+                        className="form-control"
+                        placeholder="Medha Area"
+                        required
+                        options={areaOptions}
+                      />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Please select State to view Medha Areas
+                        </label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}

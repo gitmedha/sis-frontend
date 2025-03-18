@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_STUDENT } from "../../../graphql";
+import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, GET_STUDENT_BY_STUID } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -128,14 +128,16 @@ export const getSearchOps = async (searchField, value) => {
     "Content-Type": "application/json",
   };
 
+  console.log(searchField);
   return await api
     .post(
       "/users-ops-activities/search",
-      {
-        searchField: searchField,
-        searchValue: value,
-        // {start}
-      },
+      // {
+      //   searchField: searchField,
+      //   searchValue: value,
+      //   // {start}
+      // }
+      searchField,
       { headers }
     )
     .then((data) => data)
@@ -730,6 +732,9 @@ export const getStudent = async (id) => {
   }
 };
 
+
+
+
 export const getPitchingPickList = async () => {
   return await api
     .post("/graphql", {
@@ -808,4 +813,69 @@ export const getOpsPickList = async () => {
     .catch((error) => {
       return Promise.reject(error);
     });
+};
+
+
+export const getAllInstitute = async () => {
+  try {
+    let count = 0;
+    let instituteData = [];
+    const countResponse = await api.post("/graphql", {
+      query: GET_INSTITUTES_COUNT,
+    });
+    count = countResponse.data.data.institutionsConnection.aggregate.count;
+    for (let i = 0; i < count; i += 500) {
+      const variables = {
+        limit: 500,
+        start: i,
+      };
+
+      const batchResponse = await api.post("/graphql", {
+        query: GET_ALL_INSTITUTES,
+        variables,
+      });
+
+      instituteData = [
+        ...instituteData,
+        ...batchResponse.data.data.institutionsConnection.values,
+      ];
+      return instituteData;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+export const getAllBatchs = async () => {
+  try {
+    let count = 0;
+    let batchData = [];
+
+    // First API call to get the count of batches
+    const countResponse = await api.post("/graphql", {
+      query: GET_BATCHES,
+    });
+
+    count = countResponse.data.data.batchesConnection.aggregate.count;
+
+    for (let i = 0; i < count; i += 500) {
+      const variables = {
+        limit: 500,
+        start: i,
+      };
+
+      const batchResponse = await api.post("/graphql", {
+        query: GET_ALL_BATCHES_UPLOAD_FILE,
+        variables,
+      });
+      batchData = [
+        ...batchData,
+        ...batchResponse.data.data.batches,
+      ];
+      return batchData;
+    }
+  } catch (err) {
+    console.error(err); 
+  }
 };

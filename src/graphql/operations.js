@@ -210,7 +210,7 @@ const collegePitchesFields = `
     area
 `;
 
-const mentoshipfeild=`
+const mentoshipfeild = `
 id
 created_at
 updated_at
@@ -223,6 +223,7 @@ email
 mentor_domain
 mentor_company_name
 designation
+contact
 mentor_area
 mentor_state
 outreach
@@ -242,14 +243,11 @@ updatedby {
     username
 }
 
-`
-
-
-
+`;
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
-        allOperations: usersOpsActivitiesConnection {
+        allOperations: usersOpsActivitiesConnection(where: { isactive: true }) {
             aggregate {
                 count
             }
@@ -270,13 +268,9 @@ export const GET_OPERATIONS = `
     } 
 `;
 
-
-
-
-
 export const GET_USERSTOTS = `
     query GET_USERSTOTS($limit:Int, $start:Int, $sort:String) {
-        allUserstots: usersTotsConnection {
+        allUserstots: usersTotsConnection(where: { isactive: true }) {
             aggregate {
                 count
             }
@@ -297,10 +291,9 @@ export const GET_USERSTOTS = `
     }
 `;
 
-
 export const GET_STUDENTS_UPSKILLINGS = `
     query GET_STUDENTS_UPSKILLINGS($limit: Int, $start: Int, $sort: String) {
-        allStudentsUpskillings: studentsUpskillingsConnection {
+        allStudentsUpskillings: studentsUpskillingsConnection(where: { isactive: true }) {
             aggregate {
                 count
             }
@@ -320,7 +313,6 @@ export const GET_STUDENTS_UPSKILLINGS = `
         }
     }
 `;
-
 
 export const GET_DTE_SAMARTH_SDITS = `
     query GET_DTE_SAMARTH_SDITS($limit:Int,$start:Int,$sort:String) {
@@ -346,7 +338,7 @@ export const GET_DTE_SAMARTH_SDITS = `
 
 export const GET_ALUMNI_QUERIES = `
     query GET_ALUMNI_QUERIES($limit: Int, $start: Int, $sort: String) {
-        allAlumniQueries: alumniQueriesConnection {
+        allAlumniQueries: alumniQueriesConnection(where: { isactive: true }) {
             aggregate {
                 count
             }
@@ -367,10 +359,9 @@ export const GET_ALUMNI_QUERIES = `
     }
 `;
 
-
 export const GET_COLLEGE_PITCHES = `
     query GET_COLLEGE_PITCHES($limit: Int, $start: Int, $sort: String) {
-        allCollegePitches: collegePitchesConnection {
+        allCollegePitches: collegePitchesConnection(where: { isactive: true }) {
             aggregate {
                 count
             }
@@ -393,7 +384,7 @@ export const GET_COLLEGE_PITCHES = `
 
 export const GET_MENTORSHIP = `
     query GET_MENTORSHIP($limit: Int, $start: Int, $sort: String) {
-        allMentoshipData: mentorshipsConnection {
+        allMentoshipData: mentorshipsConnection(where: { isactive: true }) {
             aggregate {
                 count
             },
@@ -645,7 +636,6 @@ query GET_ALL_PROGRAMS($limit:Int, $start:Int) {
 }
 `;
 
-
 export const GET_ALL_STUDENTS = `
     query GET_ALL_STUDENTS ($limit:Int, $start: Int){
         studentsConnection(
@@ -658,7 +648,7 @@ export const GET_ALL_STUDENTS = `
             }
         }
     }
-`
+`;
 
 export const SEARCH_INSTITUITIONS = `
   query SEARCH_INSTIUTION($query:String,$limit:Int,$sort:String){
@@ -680,8 +670,7 @@ export const SEARCH_INSTITUITIONS = `
       }
     }
   }
-`
-
+`;
 
 export const SEARCH_BY_BATCHES = `
   query SEARCH_BY_BATCHES($query:String, $limit:Int, $sort:String){
@@ -700,7 +689,7 @@ export const SEARCH_BY_BATCHES = `
       }
     }
   }
-`
+`;
 
 export const SEARCH_BY_STUDENTS = `
   query SEARCH_BY_STUDENTS($query:String, $limit:Int, $sort:String){
@@ -721,7 +710,7 @@ export const SEARCH_BY_STUDENTS = `
       }
     }
   }
-`
+`;
 
 export const SEARCH_BY_EMPLOYERS = `
   query SEARCH_BY_EMPLOYERS($query:String, $limit:Int, $sort:String){
@@ -740,7 +729,7 @@ export const SEARCH_BY_EMPLOYERS = `
       }
     }
   }
-`
+`;
 
 export const SEARCH_BY_PROGRAMS = `
   query SEARCH_BY_PROGRAMS($query:String, $limit:Int, $sort:String){
@@ -759,4 +748,4 @@ export const SEARCH_BY_PROGRAMS = `
       }
     }
   }
-`
+`;
