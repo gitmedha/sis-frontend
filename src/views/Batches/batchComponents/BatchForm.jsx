@@ -22,11 +22,11 @@ import {
   searchGrants,
   searchPrograms,
 } from "../batchActions";
-import {
-  createLatestAcivity,
-  findDifferences,
-  findUpdates,
-} from "src/utils/LatestChange/Api";
+// import {
+//   createLatestAcivity,
+//   findDifferences,
+//   findUpdates,
+// } from "src/utils/LatestChange/Api";
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 import { GET_ALL_INSTITUTES } from "src/graphql";
 import api from "src/apis";
