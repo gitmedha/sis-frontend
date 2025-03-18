@@ -528,7 +528,6 @@ export const searchInstitution = async function(searchValue){
         sort:'name:asc'
       }
     })
-
     return data
     
   } catch (error) {
