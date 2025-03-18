@@ -12,6 +12,7 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
+  GET_STUDENT_OUTREACHES
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -24,6 +25,7 @@ import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBu
 import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
+import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
 import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
@@ -108,6 +110,7 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData:false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -120,6 +123,7 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -208,6 +212,64 @@ const Operations = ({
       },
     ],
     []
+  );
+
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy", // Maps to the year_fy field in the data
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter", // Maps to the quarter field in the data
+      },
+      {
+        Header: "Month",
+        accessor: "month", // Maps to the month field in the data
+      },
+      {
+        Header: "Category",
+        accessor: "category", // Maps to the category field in the data
+      },
+      {
+        Header: "State",
+        accessor: "state", // Maps to the state field in the data
+      },
+      {
+        Header: "Department",
+        accessor: "department", // Maps to the department field in the data
+      },
+      {
+        Header: "Gender",
+        accessor: "gender", // Maps to the gender field in the data
+      },
+      {
+        Header: "Students",
+        accessor: "students", // Maps to the students field in the data
+      },
+      {
+        Header: "Institution Type",
+        accessor: "institution_type", // Maps to the institution_type field in the data
+      },
+      // {
+      //   Header: "Created By",
+      //   accessor: "created_by", // Maps to the created_by field in the data
+      // },
+      // {
+      //   Header: "Updated By",
+      //   accessor: "updated_by", // Maps to the updated_by field in the data
+      // },
+      // {
+      //   Header: "Created At",
+      //   accessor: "created_at", // Maps to the created_at field in the data
+      // },
+      // {
+      //   Header: "Updated At",
+      //   accessor: "updated_at", // Maps to the updated_at field in the data
+      // },
+    ],
+    [] // Empty dependency array to ensure the columns are only created once
   );
 
   const columnsMentor = useMemo(
@@ -449,6 +511,30 @@ const Operations = ({
         });
     }
 
+    if (activeTab.key === "studentOutreach") {
+      await resetSearch();
+      variables.isactive = true
+      delete variables.isActive
+      await api
+        .post("/graphql", {
+          query: GET_STUDENT_OUTREACHES,
+          variables,
+        })
+        .then((data) => {
+          console.log(data,'studentOutreach')
+          setOpts(data.data.data.activeStudentOutreaches.values);
+          setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
+        })
+        .catch((error) => {
+          console.error("API Error:", error.response ? error.response.data : error.message);
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+
     if (activeTab.key === "upskilling") {
       await resetSearch();
 
@@ -603,6 +689,40 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -1204,6 +1324,23 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ): activeTab.key == "studentOutreach" ? (
+              <>
+                <TotSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("studentOutreachData", data)}
+                  columns={columnsStudentOutreach}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
             ) : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
@@ -1352,6 +1489,15 @@ const Operations = ({
               {...optsdata.totdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("totdata", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
+            />
+          )}
+          {showModal.studentOutreachData && (isSRM() || isAdmin() || isMedhavi()) && (
+            <StudentOutreachDataField
+              {...optsdata.studentOutreachData}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("studentOutreachData", false)}
               refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />

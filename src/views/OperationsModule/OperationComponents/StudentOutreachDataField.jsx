@@ -15,7 +15,7 @@ import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
 import TotEdit from "./TotEdit";
-import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
+import { deactivate_user_tots ,GET_STUDENT_OUTREACHES} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
@@ -48,7 +48,7 @@ const Styled = styled.div`
   }
 `;
 
-const Totdatafield = (props) => {
+const StudentOutreachDataField = (props) => {
   let { onHide ,refreshTableOnDataSaving,refreshTableOnDeleting} = props;
   const [showModal, setShowModal] = useState({
     dataAndEdit:false,
@@ -94,8 +94,6 @@ const Totdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    // await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_tots(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
@@ -109,9 +107,9 @@ const Totdatafield = (props) => {
     
    }
   useEffect(()=>{
-    fetchAllStudents()
+    // GET_STUDENT_OUTREACHES()
   },[])
-  console.log(props,'props')
+  console.log(props,'props',)
   return (
     <>
       {!showModal.dataAndEdit &&(
@@ -130,7 +128,7 @@ const Totdatafield = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                User TOt Details
+                Student Outreaches Details
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -140,96 +138,47 @@ const Totdatafield = (props) => {
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
                   <DetailField
-                    label="Participant Name"
-                    value={props?.user_name}
+                    label="finacial year"
+                    value={props?.year_fy}
                   />
                    <DetailField
-                    label="Email id"
-                    value={props?.email}
+                    label="Quarter"
+                    value={props?.quarter}
                   />
                   <DetailField
-                    label="Trainer 1"
-                    value={props?.trainer_1?.username}
+                    label="Month"
+                    value={props?.month}
                   />
                   <DetailField
-                    label="Project Name"
-                    value={props?.project_name}
+                    label="Category"
+                    value={props?.category}
                   />
-                  {/* */}
+                
                   <DetailField
-                    Bold={""}
-                    label="Start Date"
-                    value={
-                      moment(props?.start_date).format("DD MMM YYYY")
-                        ? moment(props?.start_date).format("DD MMM YYYY")
-                        : ""
-                    }
-                  />
-                  <DetailField
-                    label="Project Type"
-                    value={props?.project_type}
+                    label="State"
+                    value={props?.state}
                   />
 
-                  <DetailField
-                    label="Partner Department"
-                    value={props?.partner_dept}
-                  />
-                  <DetailField label="Age" value={props?.age} />
-                  <DetailField label="Contact" value={props?.contact} />
-                  {/* <DetailField
-                    label="Published at"
-                    value={
-                      moment(props.published_at).format("DD MMM YYYY")
-                        ? moment(props.published_at).format("DD MMM YYYY")
-                        : ""
-                    }
-                  /> */}
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  {/* <DetailField
-                    label="Trainer Name"
-                    value={props.trainer_1.id}
-                  /> */}
-                  <DetailField label="Module Name" value={props?.module_name} />
+                  
+                  <DetailField label="Department" value={props?.department} />
                   <DetailField
-                    label="Trainer 2"
-                    value={props.trainer_2?.username}
+                    label="Institution Type"
+                    value={props.institution_type}
                   />
-                  <DetailField label="New Entry" value={props?.new_entry} />
-                  <DetailField
-                    Bold={""}
-                    label="End Date"
-                    value={
-                      moment(props?.end_date).format("DD MMM YYYY")
-                        ? moment(props?.end_date).format("DD MMM YYYY")
-                        : ""
-                    }
-                  />
+                  <DetailField label="Gender" value={props?.gender} />
 
-                  <DetailField label="College" value={props?.college} />
+                  <DetailField label="Students" value={props?.students} />
 
                   <DetailField
                     label="Gender"
                     value={props?.gender ? props?.gender : ""}
                     Bold={""}
                   />
-                  <DetailField label="Designation" value={props?.designation} />
                 </div>
               </div>
-              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
-              <h4 className="section-header">Address Info</h4>
-
-              <div className="row  ">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="State" value={props?.state} />
-                </div>
-
-                <div className="col-md-6 col-sm-12">
-                  <DetailField Bold={""} label="District where training took place" value={props?.city} />
-                </div>
-              </div>
-
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
               <div className="row">
@@ -306,4 +255,4 @@ showModal.delete && (
   );
 };
 
-export default Totdatafield;
+export default StudentOutreachDataField;
