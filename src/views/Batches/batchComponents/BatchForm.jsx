@@ -28,6 +28,8 @@ import {
   findUpdates,
 } from "src/utils/LatestChange/Api";
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
+import { GET_ALL_INSTITUTES } from "src/graphql";
+import api from "src/apis";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -215,11 +217,12 @@ const BatchForm = (props) => {
         });
       }
     }
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
-        setInstitutionOptions(data);
-      });
-    }
+    // if (props.institution) {
+    //   // filterInstitution(props.institution.name).then((data) => {
+    //   //   setInstitutionOptions(data);
+    //   // });
+    //   let data =getAllInstitutions()
+    // }
     if (props.program) {
       filterProgram(props.program.name).then((data) => {
         setProgramOptions(data);
@@ -233,10 +236,42 @@ const BatchForm = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (show && !options) {
-      prepareLookUpFields();
-    }
+    const fetchData = async () => {
+      if (show && !options) {
+        await prepareLookUpFields();
+      }
+      
+      const data = await getAllInstitutions();
+      console.log(data.data.data.institutionsConnection.values);
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
+      }));
+    };
+  
+    fetchData();
   }, [show, options]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+     
+      
+      const data = await getAllInstitutions();
+      console.log(data.data.data.institutionsConnection.values);
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
+      }));
+    };
+  
+    fetchData();
+  }, []);
 
   const onSubmit = async (values) => {
     if (values.mode_of_payment === "Free") {
@@ -266,6 +301,7 @@ const BatchForm = (props) => {
     setModeOfPayment(event.value);
   };
 
+  // GET_ALL_INSTITUTES
   const filterInstitution = async (filterValue) => {
     try {
       const { data } = await searchInstitutes(filterValue);
@@ -281,6 +317,15 @@ const BatchForm = (props) => {
       console.error(error);
     }
   };
+  const getAllInstitutions = async () => {
+    return await api.post('/graphql', {
+      query: GET_ALL_INSTITUTES,
+    }).then(data => {
+      return data;
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
 
   const filterProgram = async (filterValue) => {
     try {
