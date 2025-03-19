@@ -48,6 +48,7 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateStudentOutreach
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -62,6 +63,8 @@ import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
+import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
+// import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1072,6 +1075,16 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key == "studentOutreach") {
+      const value = await bulkCreateStudentOutreach(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
 
     if (key == "mentorship") {
       datavaluesforlatestcreate = {
@@ -1294,6 +1307,78 @@ const Operations = ({
             setAlert("Unable to create Mentorship data.", "error");
           });
       }
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
+            setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
+          })
+          .catch((err) => {
+            setAlert("Unable to create TOT data.", "error");
+          });
+      }
+      if (key === "mentorship") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Mentorship Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateMentorship(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+
+      if (key === "pitching") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "College Pitching Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateCollegePitch(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      if (key === "upskilling") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Students Upskilling Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateStudentsUpskillings(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
+            setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
+          })
+          .catch((err) => {
+            setAlert("Unable to create upskilling data.", "error");
+          });
+      }
       getoperations();
     } catch (err) {
       if (key === "my_data") {
@@ -1509,7 +1594,7 @@ const Operations = ({
               </>
             ) : activeTab.key == "studentOutreach" ? (
               <>
-                <TotSearchBar />
+                <StudentOutreachSearchBar />
                 <Table
                   onRowClick={(data) =>
                     showRowData("studentOutreachData", data)

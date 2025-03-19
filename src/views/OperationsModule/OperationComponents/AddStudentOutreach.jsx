@@ -94,7 +94,7 @@ const AddStudentOutreach = (props) => {
       return;
     }
 
-    const payload = rows.map((row) => ({
+    const data = rows.map((row) => ({
       category: row.category,
       department: row.department,
       gender: row.gender,
@@ -106,7 +106,7 @@ const AddStudentOutreach = (props) => {
       year_fy: row.year_fy,
     }));
 
-    console.log("Payload for POST request:", payload);
+    console.log("Payload for POST request:", data);
     // Call your API here
     // Example: axios.post('/api/student-outreach', payload)
 
@@ -125,7 +125,7 @@ const AddStudentOutreach = (props) => {
         year_fy: "",
       },
     ]);
-    onHide();
+    // onHide('studentOutreach', data);
   };
 
   return (

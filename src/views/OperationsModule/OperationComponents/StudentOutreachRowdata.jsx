@@ -30,8 +30,8 @@ const StudentOutreachRowdata = ({ row, updateRow }) => {
   const stateOptions = [
     { value: "Haryana", label: "Haryana" },
     { value: "Bihar", label: "Bihar" },
-    { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-    { value: "Uttarakhand", label: "Uttarakhand" },
+    { value: "UttarPradesh", label: "Uttar Pradesh" },
+    { value: "Uttarkhand", label: "Uttarakhand" },
   ];
 
   // Handle input change for text and number fields
