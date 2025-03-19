@@ -1076,6 +1076,7 @@ const Operations = ({
         });
     }
     if (key == "studentOutreach") {
+      console.log('hello')
       const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");

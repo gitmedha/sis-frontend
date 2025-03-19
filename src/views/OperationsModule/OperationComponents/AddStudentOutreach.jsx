@@ -125,7 +125,7 @@ const AddStudentOutreach = (props) => {
         year_fy: "",
       },
     ]);
-    // onHide('studentOutreach', data);
+    onHide('studentOutreach', data);
   };
 
   return (

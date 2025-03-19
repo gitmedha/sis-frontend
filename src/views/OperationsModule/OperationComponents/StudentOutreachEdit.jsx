@@ -81,6 +81,35 @@ const StudentOutreachEdit = (props) => {
     { value: "Female", label: "Female" },
     { value: "Other", label: "Other" },
   ];
+  const quarterOptions = [
+    { value: "Q1", label: "Q1" },
+    { value: "Q2", label: "Q2" },
+    { value: "Q3", label: "Q3" },
+    { value: "Q4", label: "Q4" },
+    { value: "Q1-Q4", label: "Q1-Q4" },
+  ];
+
+  const monthOptions = [
+    { value: "January", label: "January" },
+    { value: "February", label: "February" },
+    { value: "March", label: "March" },
+    { value: "April", label: "April" },
+    { value: "May", label: "May" },
+    { value: "June", label: "June" },
+    { value: "July", label: "July" },
+    { value: "August", label: "August" },
+    { value: "September", label: "September" },
+    { value: "October", label: "October" },
+    { value: "November", label: "November" },
+    { value: "December", label: "December" },
+  ];
+
+  const stateOptions = [
+    { value: "Haryana", label: "Haryana" },
+    { value: "Bihar", label: "Bihar" },
+    { value: "UttarPradesh", label: "Uttar Pradesh" },
+    { value: "Uttarkhand", label: "Uttarakhand" },
+  ];
 
   const studentOutreachValidation = Yup.object().shape({
     category: Yup.string().required("Category is required"),
@@ -154,9 +183,11 @@ const StudentOutreachEdit = (props) => {
 
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            control="input"
+                            icon="down"
+                            control="lookup"
                             name="quarter"
                             label="Quarter"
+                            options={quarterOptions}
                             className="form-control"
                             placeholder="Quarter"
                           />
@@ -164,9 +195,10 @@ const StudentOutreachEdit = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
-                            control="input"
+                            control="lookup"
                             name="month"
                             label="Month"
+                            options={monthOptions}
                             className="form-control"
                             placeholder="Month"
                           />
@@ -174,9 +206,11 @@ const StudentOutreachEdit = (props) => {
 
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            control="input"
+                            icon="down"
+                            control="lookup"
                             name="state"
                             label="State"
+                            options={stateOptions}
                             className="form-control"
                             placeholder="State"
                           />
@@ -201,9 +235,11 @@ const StudentOutreachEdit = (props) => {
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
-                            control="input"
+                            icon="down"
+                            control="lookup"
                             name="gender"
                             label="Gender"
+                            options={genderOptions}
                             className="form-control"
                             placeholder="Gender"
                           />
