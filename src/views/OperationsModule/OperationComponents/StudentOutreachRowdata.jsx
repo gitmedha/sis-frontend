@@ -11,6 +11,14 @@ const StudentOutreachRowdata = ({ row, updateRow }) => {
     { value: "Other", label: "Other" },
   ];
 
+  const quarterOptions = [
+    { value: "Q1", label: "Q1" },
+    { value: "Q2", label: "Q2" },
+    { value: "Q3", label: "Q3" },
+    { value: "Q4", label: "Q4" },
+    { value: "Q1-Q4", label: "Q1-Q4" },
+  ];
+
   // Month options for the Select component
   const monthOptions = [
     { value: "January", label: "January" },
@@ -56,6 +64,11 @@ const StudentOutreachRowdata = ({ row, updateRow }) => {
     setErrors((prevErrors) => ({ ...prevErrors, state: "" }));
   };
 
+  const handleQuarterChange = (selectedOption) => {
+    updateRow(row.id, "quarter", selectedOption ? selectedOption.value : "");
+    setErrors((prevErrors) => ({ ...prevErrors, quarter: "" }));
+  };
+
   return (
     <tr key={row.id}>
       {/* Financial Year */}
@@ -71,11 +84,15 @@ const StudentOutreachRowdata = ({ row, updateRow }) => {
 
       {/* Quarter */}
       <td>
-        <input
-          className={`table-input h-2 ${errors.quarter ? "border-red" : ""}`}
-          type="text"
-          value={row.quarter}
-          onChange={(e) => handleInputChange("quarter", e.target.value)}
+        <Select
+          className={`table-input ${errors.quarter ? "border-red" : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="quarter"
+          options={quarterOptions}
+          value={quarterOptions.find((option) => option.value === row.quarter)}
+          onChange={handleQuarterChange}
         />
         {errors.quarter && <span className="error">{errors.quarter}</span>}
       </td>
