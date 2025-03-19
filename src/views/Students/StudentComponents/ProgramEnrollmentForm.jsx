@@ -405,12 +405,13 @@ const ProgramEnrollmentForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                   {!lookUpLoading ? (
                     <Input
-                      control="lookup"
+                      control="lookupAsync"
                       name="institution"
                       label="Institution"
                       required
-                      // filterData={filterInstitution}
-                      options={institutionOptions}
+                      filterData={filterInstitution}
+                      defaultOptions={props ? institutionOptions : true}
+                      // options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
                     />
