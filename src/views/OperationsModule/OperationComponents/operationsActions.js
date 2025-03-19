@@ -128,14 +128,16 @@ export const getSearchOps = async (searchField, value) => {
     "Content-Type": "application/json",
   };
 
+  console.log(searchField);
   return await api
     .post(
       "/users-ops-activities/search",
-      {
-        searchField: searchField,
-        searchValue: value,
-        // {start}
-      },
+      // {
+      //   searchField: searchField,
+      //   searchValue: value,
+      //   // {start}
+      // }
+      searchField,
       { headers }
     )
     .then((data) => data)

@@ -242,6 +242,18 @@ const MentorshipUpload = (props) => {
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
 
+    // Function to validate phone numbers (must be exactly 10 digits)
+    const isValidContact = (contact) => {
+      const pattern = /^[0-9]{10}$/; // 10-digit number regex
+      return contact && pattern.test(contact);
+    };
+
+    // Function to validate email addresses
+    const isValidEmail = (email) => {
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
+      return email && pattern.test(email);
+    };
+
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
@@ -249,7 +261,7 @@ const MentorshipUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
-      console.log(stateOptions);
+
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
@@ -265,23 +277,16 @@ const MentorshipUpload = (props) => {
         newItem["Onboarding Date"]
       );
 
-      // const isStartDateValid = isValidDateFormat(startDate);
-
       const createdby = Number(userId);
       const updatedby = Number(userId);
-
-      const isValidContact = (contact) => {
-        const pattern = /^[0-9]{10}$/; // Regex for 10-digit number
-        return contact && pattern.test(contact);
-      };
-      let parseDate;
 
       if (
         !srmcheck ||
         !newItem["Mentor Name"] ||
         !newItem["Email ID"] ||
         !newItem["Mentor's Domain"] ||
-        !isValidContact(newItem["Contact"]) ||
+        !isValidContact(newItem["Contact"]) || // Phone number validation
+        !isValidEmail(newItem["Email ID"]) || // Email validation
         !newItem["Mentor's Company Name"] ||
         !newItem["Designation/Title"]
       ) {
@@ -302,6 +307,9 @@ const MentorshipUpload = (props) => {
           status: newItem["Status"] || "",
           program_name: newItem["Medha Program Name"] || "",
           contact: newItem["Contact"] || "",
+          validation_error: `Invalid ${
+            !isValidContact(newItem["Contact"]) ? "Phone Number" : ""
+          } ${!isValidEmail(newItem["Email ID"]) ? "Email" : ""}`,
         });
       } else {
         formattedData.push({
@@ -320,10 +328,14 @@ const MentorshipUpload = (props) => {
           status: newItem["Status"] || "",
           program_name: newItem["Medha Program Name"] || "",
           contact: newItem["Contact"] || "",
+          createdby: createdby,
+          updatedby: currentUser,
         });
       }
     });
+
     setExcelData(formattedData);
+
     setNotuploadedData(notFoundData);
   };
 

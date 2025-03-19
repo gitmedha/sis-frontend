@@ -468,7 +468,7 @@ const MentorBulkAdd = (props) => {
                   <th>Mentor's Company Name * </th>
                   <th>Designation/Title *</th>
                   <th>Mentor's State *</th>
-                  <th>Mentor's City * </th>
+                  <th>Mentor’s Area* </th>
                   <th>Outreach (Offline/Online) *</th>
                   <th>Onboarding Date *</th> 
                   <th>Social Media Link </th>

@@ -73,7 +73,10 @@ const tabPickerOptions1 = [
   { title: "Mentorship", key: "mentorship" },
 ];
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
-const tabPickerOptions3 = [{ title: "TOT", key: "useTot" }];
+const tabPickerOptions3 = [
+  { title: "TOT", key: "useTot" },
+  {title:"Student Outreach",key:"studentOutreach"}
+];
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -1238,7 +1241,7 @@ const Operations = ({
       case "useTot":
         return totfile;
       case "mentorship":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship-Template.xlsx";
       case "upskilling":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
       case "collegePitches":

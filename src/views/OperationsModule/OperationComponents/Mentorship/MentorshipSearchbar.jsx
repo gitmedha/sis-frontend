@@ -1,14 +1,14 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Input } from "../../../../utils/Form";
-import { Formik, Form, useFormik } from "formik";
+import { Formik, Form } from "formik";
 import styled from "styled-components";
 import {
   searchOperationTab,
   resetSearch,
 } from "../../../../store/reducers/Operations/actions";
 import { getFieldValues } from "../operationsActions";
-import * as Yup from "yup";
+import { FaPlusCircle } from "react-icons/fa";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -27,6 +27,7 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
 const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   let options = [
     { key: 0, value: "mentor_name", label: "Mentor Name" },
@@ -35,310 +36,284 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     { key: 3, value: "designation", label: "Designation" },
     { key: 4, value: "mentor_area", label: "Mentor Area" },
     { key: 5, value: "mentor_state", label: "Mentor State" },
-    // { key: 6, value: "outreach", label: "Outreach" },
-    // { key: 7, value: "onboarding_date", label: "Onboarding Date" },
     { key: 8, value: "medha_area", label: "Medha Area" },
     { key: 9, value: "program_name", label: "Program Name" },
     { key: 10, value: "status", label: "Status" },
   ];
 
-
   const [mentorNameOption, setMentorNameOption] = useState([]);
   const [areaOption, setAreaOption] = useState([]);
   const [stateOption, setStateOption] = useState([]);
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [disabled, setDisbaled] = useState(true);
   const [mentorDomain, setMentorDomain] = useState([]);
   const [mentorCompanyName, setMentorCompanyName] = useState([]);
   const [designationOption, setDesignation] = useState([]);
   const [medhaArea, setMedhaArea] = useState([]);
   const [programName, setProgramName] = useState([]);
   const [status, setStatus] = useState([]);
-  const [outreach, setOutreach] = useState(null);
-  const [onboardingDate, setOnboardingDate] = useState(null);
 
- 
+  const [selectedSearchFields, setSelectedSearchFields] = useState([null]); // Track selected fields for each counter
+  const [disabled, setDisabled] = useState(true);
+  const [counter, setCounter] = useState(1); // Counter for dynamic search fields
 
-  const setSearchItem = (value) => {
-    setSelectedSearchField(value);
-    setDisbaled(false);
+  const initialValues = {
+    searches: [
+      {
+        search_by_field: "",
+        search_by_value: "",
+      },
+    ],
+  };
+
+  const handleSubmit = async (values) => {
+    const baseUrl = "mentorships";
+
+    // Initialize arrays for search fields and values
+    const searchFields = [];
+    const searchValues = [];
+
+    // Loop through each search field and value
+    values.searches.forEach((search) => {
+      if (search.search_by_field && search.search_by_value) {
+        searchFields.push(search.search_by_field);
+        searchValues.push(search.search_by_value);
+      }
+    });
+
+    // Construct the payload
+    const payload = {
+      searchFields,
+      searchValues,
+    };
+
+    console.log("Payload:", payload); // Log the payload for debugging
+
+    // Submit the payload to the API
+    await searchOperationTab(baseUrl, payload);
+
+    // Store the last searched result in local storage as cache
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({
+        baseUrl,
+        searchData: payload,
+      })
+    );
+  };
+
+  const clear = async (formik) => {
+    formik.setValues(initialValues);
+    await resetSearch();
+    setSelectedSearchFields([null]);
+    setDisabled(true);
+    setCounter(1);
+  };
+
+  const setSearchItem = (value, index) => {
+    const newSelectedSearchFields = [...selectedSearchFields];
+    newSelectedSearchFields[index] = value;
+    setSelectedSearchFields(newSelectedSearchFields);
+    setDisabled(false);
 
     if (value === "mentor_name") {
-      setDropdownValues(value);
+      setDropdownValues("mentor_name", index);
+    } else if (value === "mentor_domain") {
+      setDropdownValues("mentor_domain", index);
+    } else if (value === "mentor_company_name") {
+      setDropdownValues("mentor_company_name", index);
+    } else if (value === "designation") {
+      setDropdownValues("designation", index);
+    } else if (value === "mentor_area") {
+      setDropdownValues("mentor_area", index);
+    } else if (value === "mentor_state") {
+      setDropdownValues("mentor_state", index);
+    } else if (value === "medha_area") {
+      setDropdownValues("medha_area", index);
+    } else if (value === "program_name") {
+      setDropdownValues("program_name", index);
+    } else if (value === "status") {
+      setDropdownValues("status", index);
     }
-    if (value === "mentor_domain") {
-      setDropdownValues(value);
-    }
-    if (value === "mentor_company_name") {
-      setDropdownValues(value);
-    }
-    if (value === "designation") {
-      setDropdownValues(value);
-    }
-    if (value === "mentor_area") {
-      setDropdownValues(value);
-    }
-    if (value === "mentor_state") {
-      setDropdownValues(value);
-    }
-    if (value === "outreach") {
-      setDropdownValues(value);
-    }
-    if (value === "onboarding_date") {
-      setDropdownValues(value);
-    }
-    if (value === "medha_area") {
-      setDropdownValues(value);
-    }
-    if (value === "program_name") {
-      setDropdownValues(value);
-    }
-    if (value === "status") {
-      setDropdownValues(value);
-    }
-
   };
-  const setDropdownValues = async (fieldName) => {
+
+  const setDropdownValues = async (fieldName, index) => {
     try {
+      const { data } = await getFieldValues(fieldName, "mentorships");
 
-      const { data } = await getFieldValues(fieldName, "mentorship");
-
-      if (fieldName === "mentor_state") {
-        setStateOption(data);
-      }
-      if (fieldName === "mentor_area") {
-     
-        setAreaOption(data);
-      }
       if (fieldName === "mentor_name") {
         setMentorNameOption(data);
-      }
-      if (fieldName === "mentor_domain") {
+      } else if (fieldName === "mentor_domain") {
         setMentorDomain(data);
-      }
-      if (fieldName === "designation") {
+      } else if (fieldName === "mentor_company_name") {
+        setMentorCompanyName(data);
+      } else if (fieldName === "designation") {
         setDesignation(data);
-      }
-      if (fieldName === "program_name") {
-        setProgramName(data);
-      }
-      if (fieldName === "medha_area") {
+      } else if (fieldName === "mentor_area") {
+        setAreaOption(data);
+      } else if (fieldName === "mentor_state") {
+        setStateOption(data);
+      } else if (fieldName === "medha_area") {
         setMedhaArea(data);
-      }
-      if (fieldName === "status") {
+      } else if (fieldName === "program_name") {
+        setProgramName(data);
+      } else if (fieldName === "status") {
         setStatus(data);
       }
-      if (fieldName === "mentor_company_name") {
-        setMentorCompanyName(data);
-      }
-      
-      
     } catch (error) {
       console.error("error", error);
     }
   };
 
-  let today = new Date();
-  const initialValues = {
-    search_by_field: "",
-    search_by_value: "",
-  };
- 
- 
-
-  const handleSubmit = async (values) => {
-    let baseUrl = "mentorships";
-    await searchOperationTab(
-      baseUrl,
-      values.search_by_field,
-      values.search_by_value
-    );
-
-    //stores the last searched result in the local storage as cache
-    //we will use it to refresh the search results
-
-    let value = await localStorage.setItem(
-      "prevSearchedPropsAndValues",
-      JSON.stringify({
-        baseUrl: baseUrl,
-        searchedProp: values.search_by_field,
-        searchValue: values.search_by_value,
-      })
-    );
-
-  };
-  const formik = useFormik({
-    initialValues,
-    onSubmit: handleSubmit,
-  });
-
-  const clear = async (formik) => {
-    formik.setValues(initialValues);
-    await resetSearch();
-    setSelectedSearchField(null);
-    setDisbaled(true);
-  };
-
   return (
     <Fragment>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        // validationSchema={validate}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {(formik) => (
           <Form>
             <Section>
               <div className="row align-items-center">
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
-                  <Input
-                    icon="down"
-                    name="search_by_field"
-                    label="Search Field"
-                    control="lookup"
-                    options={options}
-                    className="form-control"
-                    onChange={(e) => setSearchItem(e.value)}
-                  />
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-                  {selectedSearchField === null && (
-                    <Input
-                      name="search_by_value"
-                      control="input"
-                      label="Search Value"
-                      className="form-control"
-                      disabled={true}
-                    />
-                  )}
-                  {selectedSearchField === "mentor_name" && (
-                    <Input
-                    icon="down"
-                    name="search_by_value"
-                    label="Search Value"
-                    control="lookup"
-                    options={mentorNameOption}
-                    className="form-control"
-                    disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "medha_area" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={medhaArea}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "status" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={status}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "mentor_domain" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={mentorDomain}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "mentor_company_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={mentorCompanyName}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "designation" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={designationOption}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "mentor_area" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      className="form-control"
-                      options={areaOption}
-                      // onChange={(e) => setSearchItem(e.value)}
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField == "mentor_state" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={stateOption}
-                      className="form-control"
-                      // onChange={(e) => setSearchItem(e.value)}
-                      // disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "outreach" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="input"
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "program_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={programName}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "onboarding_date" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="input"
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
+                {Array.from({ length: counter }).map((_, index) => (
+                  <Fragment key={index}>
+                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name={`searches[${index}].search_by_field`}
+                        label="Search Field"
+                        control="lookup"
+                        options={options}
+                        className="form-control"
+                        onChange={(e) => setSearchItem(e.value, index)}
+                      />
+                    </div>
+                    <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
+                      {selectedSearchFields[index] === null && (
+                        <Input
+                          name={`searches[${index}].search_by_value`}
+                          control="input"
+                          label="Search Value"
+                          className="form-control"
+                          disabled
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "mentor_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorNameOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "mentor_domain" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorDomain}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "mentor_company_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorCompanyName}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "designation" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={designationOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "mentor_area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={areaOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "mentor_state" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={stateOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "medha_area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={medhaArea}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "program_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={programName}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "status" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={status}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+                    </div>
+                  </Fragment>
+                ))}
+
+                <div className="col-lg-3">
+                  <FaPlusCircle onClick={() => setCounter(counter + 1)} />
                 </div>
 
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
-                <button
+                  <button
                     className="btn btn-primary action_button_sec search_bar_action_sec"
                     type="submit"
-                    disabled={disabled ? true : false}
+                    disabled={disabled}
                   >
                     FIND
                   </button>
@@ -346,11 +321,10 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                     className="btn btn-secondary action_button_sec search_bar_action_sec"
                     type="button"
                     onClick={() => clear(formik)}
-                    disabled={disabled ? true : false}
+                    disabled={disabled}
                   >
                     CLEAR
                   </button>
-                  
                 </div>
               </div>
             </Section>

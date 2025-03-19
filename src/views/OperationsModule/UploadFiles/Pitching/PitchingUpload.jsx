@@ -233,47 +233,51 @@ const PitchingUpload = (props) => {
     const userId = localStorage.getItem("user_id");
     let validProgramNames = await filterProgram();
     setProgramOption(validProgramNames);
+  
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const phoneRegex = /^\d{10}$/;
+  
     data.forEach((item, index) => {
       const newItem = {};
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
-
+  
       const currentUser = localStorage.getItem("user_id");
-
       const srmcheck = assigneOption.find(
         (user) => user.label === newItem["Assigned To"]
       )?.value;
-
-      const onboardingDate = excelSerialDateToJSDate(
-        newItem["Onboarding Date"]
-      );
-
-      // const isStartDateValid = isValidDateFormat(startDate);
-
+  
+      const onboardingDate = excelSerialDateToJSDate(newItem["Onboarding Date"]);
       const createdby = Number(userId);
       const updatedby = Number(userId);
+  
       const normalizeString = (str) =>
         str.replace(/\s+/g, " ").replace(/\n/g, "").trim();
-      // getThisInstitution(normalizeString(newItem["Institution"]))
-
+  
       const institute = instituteOptions.find(
-        (institute) =>
-          institute.name === normalizeString(newItem["Institution"])
+        (institute) => institute.name === normalizeString(newItem["Institution"])
       );
       const instituteId = institute ? institute.id : null;
+  
       const isValidProgramName = (programName) => {
         return validProgramNames.includes(programName);
       };
+  
       const Date = excelSerialDateToJSDate(newItem["Date of Pitching"]);
-
+  
+      const phoneValid = phoneRegex.test(newItem["Phone"]);
+      const whatsappValid = phoneRegex.test(newItem["WhatsApp Number"]);
+      const emailValid = emailRegex.test(newItem["Email ID"]);
+  
       if (
         !newItem["Student Name"] ||
         !newItem["Course Name"] ||
-        !newItem["Phone"] ||
+        !phoneValid ||
         !instituteId ||
-        !newItem["Email ID"] ||
-        !isValidProgramName(newItem["Program name"])
+        !emailValid ||
+        !isValidProgramName(newItem["Program name"]) ||
+        (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
         notFoundData.push({
           index: index + 1,
@@ -289,6 +293,9 @@ const PitchingUpload = (props) => {
           remarks: newItem["Remarks"] || "",
           srm_name: newItem["SRM Name"] || "",
           medha_area: newItem["Medha Area"] || "",
+          error: `Invalid ${!phoneValid ? "Phone" : ""} ${
+            !whatsappValid ? "WhatsApp Number" : ""
+          } ${!emailValid ? "Email" : ""}`.trim(),
         });
       } else {
         formattedData.push({
@@ -302,15 +309,16 @@ const PitchingUpload = (props) => {
           whatsapp_number: newItem["WhatsApp Number"] || "",
           email: newItem["Email ID"] || "",
           remarks: newItem["Remarks"] || "",
-          srm_name: srmcheck, // Ensure `srmcheck` is validated
+          srm_name: srmcheck,
           medha_area: newItem["Medha Area"] || "",
         });
       }
     });
-
+  
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
+  
 
   const uploadDirect = () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
@@ -477,7 +485,7 @@ const PitchingUpload = (props) => {
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
-                  onClick={() => console.log("Check")}
+                  onClick={() =>  props.closeThepopus()}
                   className="btn btn-danger px-4 mx-4 mt-2"
                   style={{ height: "2.5rem" }}
                 >
