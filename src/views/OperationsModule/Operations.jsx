@@ -48,6 +48,7 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateStudentOutreach
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -57,6 +58,7 @@ import MentorshipdataField from "./OperationComponents/Mentorship/Mentorshipdata
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
+import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptionsMain = [
@@ -1023,6 +1025,16 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key == "studentOutreach") {
+      const value = await bulkCreateStudentOutreach(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
 
     if (key == "mentorship") {
       // datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Create",event_id:"",updatedby:userId ,changes_in:newValues};
@@ -1167,6 +1179,16 @@ const Operations = ({
         await bulkCreateUsersTots(data)
           .then(() => {
             setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create upskilling data.", "error");
+          });
+      }
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
+            setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
           })
           .catch((err) => {
             setAlert("Unable to create upskilling data.", "error");
@@ -1332,7 +1354,7 @@ const Operations = ({
               </>
             ) : activeTab.key == "studentOutreach" ? (
               <>
-                <TotSearchBar />
+                <StudentOutreachSearchBar />
                 <Table
                   onRowClick={(data) =>
                     showRowData("studentOutreachData", data)
