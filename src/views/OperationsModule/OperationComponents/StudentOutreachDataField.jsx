@@ -2,23 +2,12 @@ import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
-import { Anchor, Badge } from "../../../components/content/Utils";
-import CertificateUpload from "../../../components/content/Certificate";
-import Tooltip from "../../../components/content/Tooltip";
-import { urlPath } from "../../../constants";
-import { FaTrashAlt, FaEye } from "react-icons/fa";
-import {
-  getEmploymentConnectionsPickList,
-  getOpportunitiesPickList,
-} from "./StudentActions";
-import { UPDATE_EMPLOYMENT_CONNECTION } from "../../../graphql";
 import styled from "styled-components";
 import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
-import TotEdit from "./TotEdit";
-import { deactivate_user_tots ,GET_STUDENT_OUTREACHES} from "./operationsActions";
+import { deactivate_student_outreach, deactivate_user_tots ,GET_STUDENT_OUTREACHES} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import StudentOutreachEdit from "./StudentOutreachEdit";
 
 const Styled = styled.div`
   .icon-box {
@@ -94,7 +83,8 @@ const StudentOutreachDataField = (props) => {
   }
 
   const deleteEntry=async()=>{
-    const data=await deactivate_user_tots(Number(props.id))
+    const data=await deactivate_student_outreach(Number(props.id))
+    console.log(data,'data')
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
      refreshTableOnDeleting()
@@ -109,7 +99,6 @@ const StudentOutreachDataField = (props) => {
   useEffect(()=>{
     // GET_STUDENT_OUTREACHES()
   },[])
-  console.log(props,'props',)
   return (
     <>
       {!showModal.dataAndEdit &&(
@@ -242,7 +231,7 @@ const StudentOutreachDataField = (props) => {
       {
         showModal.dataAndEdit && 
         (
-          <TotEdit {...operationdata} show={showModal} onHide={hideShowModal1} refreshTableOnDataSaving={refreshTableOnDataSaving}/>
+          <StudentOutreachEdit {...operationdata} show={showModal} onHide={hideShowModal1} refreshTableOnDataSaving={refreshTableOnDataSaving}/>
         )
       }
       {
