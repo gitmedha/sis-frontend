@@ -8,6 +8,7 @@ import {
   GET_USERSTOTS,
   CREATE_USER_TOT,
   UPDATE_USER_TOT,
+  UPDATE_STUDENT_OUTREACH,
   GET_STUDENTS_UPSKILLINGS,
   CREATE_STUDENT_UPSKILL,
   UPDATE_STUDENTS_UPSKILLING,
@@ -453,6 +454,20 @@ export const updateUserTot = async (id,data) => {
     .catch((error) => Promise.reject(error));
 };
 
+export const updateStudentOutreach = async (id,data) => {
+  console.log(data, id,'data')
+  return await api
+    .post("/graphql", {
+      query: UPDATE_STUDENT_OUTREACH,
+      variables: {
+        id,
+        data
+      },
+    })
+    .then((data) => data)
+    .catch((error) => Promise.reject(error));
+};
+
 export const updateStudetnsUpskills = async (id, data) => {
   return await api
     .post("/graphql", {
@@ -615,6 +630,27 @@ export const deactivate_user_tots = async (id) => {
       return Promise.reject(error);
     });
 };
+
+export const deactivate_student_outreach = async (id) => {
+  console.log(id,'id')
+  let data = { isactive: false };
+
+  return await api
+    .post("/graphql", {
+      query: UPDATE_STUDENT_OUTREACH,
+      variables: {
+        id,
+        data,
+      },
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+};
+
 export const deactivate_user_dte_samarth = async (id) => {
   let data = { isactive: false };
 

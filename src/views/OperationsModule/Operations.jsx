@@ -12,7 +12,7 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
-  GET_STUDENT_OUTREACHES
+  GET_STUDENT_OUTREACHES,
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -56,6 +56,7 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
+import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
@@ -77,7 +78,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  {title:"Student Outreach",key:"studentOutreach"}
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -117,7 +118,7 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
-    studentOutreachData:false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -503,6 +504,8 @@ const Operations = ({
       await resetSearch();
       variables.isactive = true;
       delete variables.isActive;
+      variables.isactive = true;
+      delete variables.isActive;
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
@@ -523,20 +526,23 @@ const Operations = ({
 
     if (activeTab.key === "studentOutreach") {
       await resetSearch();
-      variables.isactive = true
-      delete variables.isActive
+      variables.isactive = true;
+      delete variables.isActive;
       await api
         .post("/graphql", {
           query: GET_STUDENT_OUTREACHES,
           variables,
         })
         .then((data) => {
-          console.log(data,'studentOutreach')
+          console.log(data, "studentOutreach");
           setOpts(data.data.data.activeStudentOutreaches.values);
           setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
         })
         .catch((error) => {
-          console.error("API Error:", error.response ? error.response.data : error.message);
+          console.error(
+            "API Error:",
+            error.response ? error.response.data : error.message
+          );
           return Promise.reject(error);
         })
         .finally(() => {
@@ -628,6 +634,7 @@ const Operations = ({
     if (activeTab.key === "mentorship") {
       // await resetSearch();
       // sortBy = "created_at"
+      variables.sort = `${"updated_at"}:${sortOrder}`;
       variables.sort = `${"updated_at"}:${sortOrder}`;
       await api
         .post("/graphql", {
@@ -893,6 +900,7 @@ const Operations = ({
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
 
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -959,10 +967,13 @@ const Operations = ({
       return;
     }
     let newValues = data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
+    }, {});
+    let datavaluesforlatestcreate = {};
     }, {});
     let datavaluesforlatestcreate = {};
     if (key == "feilddata") {
@@ -1192,10 +1203,13 @@ const Operations = ({
 
   const uploadExcel = async (data, key) => {
     let newValues = data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
+    }, {});
+    let datavaluesforlatestcreate = {};
     }, {});
     let datavaluesforlatestcreate = {};
     try {
@@ -1493,11 +1507,13 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ): activeTab.key == "studentOutreach" ? (
+            ) : activeTab.key == "studentOutreach" ? (
               <>
                 <TotSearchBar />
                 <Table
-                  onRowClick={(data) => showRowData("studentOutreachData", data)}
+                  onRowClick={(data) =>
+                    showRowData("studentOutreachData", data)
+                  }
                   columns={columnsStudentOutreach}
                   data={isSearching ? (isFound ? searchedData : []) : opts}
                   totalRecords={
@@ -1603,6 +1619,14 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
+          ) : activeTab.key == "studentOutreach" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AddStudentOutreach
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
           ) : activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
@@ -1662,15 +1686,16 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.studentOutreachData && (isSRM() || isAdmin() || isMedhavi()) && (
-            <StudentOutreachDataField
-              {...optsdata.studentOutreachData}
-              show={showModal.opsdata}
-              onHide={() => hideShowModal("studentOutreachData", false)}
-              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
-              refreshTableOnDeleting={() => refreshTableOnDeleting()}
-            />
-          )}
+          {showModal.studentOutreachData &&
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <StudentOutreachDataField
+                {...optsdata.studentOutreachData}
+                show={showModal.opsdata}
+                onHide={() => hideShowModal("studentOutreachData", false)}
+                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+                refreshTableOnDeleting={() => refreshTableOnDeleting()}
+              />
+            )}
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}

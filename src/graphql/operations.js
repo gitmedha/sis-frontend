@@ -91,6 +91,8 @@ const studentOutreachesFields = `
     gender
     institution_type
     students
+    published_at
+    
 `;
 
 const studentUpskillingFields = `
@@ -330,8 +332,6 @@ export const GET_STUDENT_OUTREACHES = `
     }
   }
 `;
-
-
 
 export const GET_STUDENTS_UPSKILLINGS = `
     query GET_STUDENTS_UPSKILLINGS($limit: Int, $start: Int, $sort: String) {
@@ -597,6 +597,22 @@ mutation UPDATE_USER_TOT(
       }
     }
   }
+`;
+
+export const UPDATE_STUDENT_OUTREACH = `
+mutation UPDATE_STUDENT_OUTREACH(
+  $data: editStudentOutreachInput!
+  $id: ID!
+) {
+  updateStudentOutreach(input: {
+    data: $data
+    where: { id: $id }
+  }) {
+    studentOutreach {
+      ${studentOutreachesFields}
+    }
+  }
+}
 `;
 
 export const UPDATE_STUDENTS_UPSKILLING = `
