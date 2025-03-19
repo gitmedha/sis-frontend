@@ -104,6 +104,7 @@ const AddStudentOutreach = (props) => {
       state: row.state,
       students: row.students,
       year_fy: row.year_fy,
+      isactive: true
     }));
 
     console.log("Payload for POST request:", data);

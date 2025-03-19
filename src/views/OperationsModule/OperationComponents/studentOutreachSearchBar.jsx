@@ -55,7 +55,7 @@ const StudentOutreachSearchBar = ({ searchOperationTab, resetSearch }) => {
 
   // Handle form submission
   const handleSubmit = async (values) => {
-    const baseUrl = "studentOutreach"; // Update the base URL for student outreach
+    const baseUrl = "student-outreaches"; // Update the base URL for student outreach
 
     await searchOperationTab(
       baseUrl,
