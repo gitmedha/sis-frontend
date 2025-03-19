@@ -203,7 +203,6 @@ const ProgramEnrollmentForm = (props) => {
       // if (
       //   props.programEnrollment &&
       //   programEnrollmentInstitution !== null &&
-      //   !institutionFoundInList
       // ) {
       //   console.log(programEnrollmentInstitution);
       //   filterData.unshift({
@@ -211,6 +210,8 @@ const ProgramEnrollmentForm = (props) => {
       //     value: Number(programEnrollmentInstitution?.id),
       //   });
       // }
+
+
       return filterData;
     } catch (error) {
       console.error("error:", error);
@@ -313,7 +314,6 @@ const ProgramEnrollmentForm = (props) => {
       
     
   },[courseLevel,courseType])
-
  
   return (
     <Modal
@@ -414,6 +414,7 @@ const ProgramEnrollmentForm = (props) => {
                       // options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
+                      // defaultOptions={institutionOptions}
                     />
                     ) : (
                       <Skeleton count={1} height={60} />
