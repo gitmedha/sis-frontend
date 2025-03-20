@@ -77,6 +77,32 @@ const usersTotsFields = `
     designation
     email
 `;
+
+const studentOutreachesFields = `
+    id
+    created_at
+    updated_at
+    year_fy
+    quarter
+    month
+    category
+    state
+    department
+    gender
+    institution_type
+    students
+    created_by_frontend {
+      id
+      username
+    }
+    updated_by_frontend {
+      id
+      username
+    }
+    published_at
+    
+`;
+
 const studentUpskillingFields = `
     id
     created_at
@@ -289,6 +315,30 @@ export const GET_USERSTOTS = `
             },
         }
     }
+`;
+
+export const GET_STUDENT_OUTREACHES = `
+  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
+    allStudentOutreaches: studentOutreachesConnection {
+      aggregate {
+        count
+      }
+    }
+
+    activeStudentOutreaches: studentOutreachesConnection(
+      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
+      start: $start,     # Pagination offset (e.g., 20)
+      limit: $limit,     # Number of records per page (e.g., 10)
+      where: { isactive: true } 
+    ) {
+      values {
+        ${studentOutreachesFields}
+      },
+      aggregate {
+        count # Total count of active records
+      },
+    }
+  }
 `;
 
 export const GET_STUDENTS_UPSKILLINGS = `
@@ -555,6 +605,22 @@ mutation UPDATE_USER_TOT(
       }
     }
   }
+`;
+
+export const UPDATE_STUDENT_OUTREACH = `
+mutation UPDATE_STUDENT_OUTREACH(
+  $data: editStudentOutreachInput!
+  $id: ID!
+) {
+  updateStudentOutreach(input: {
+    data: $data
+    where: { id: $id }
+  }) {
+    studentOutreach {
+      ${studentOutreachesFields}
+    }
+  }
+}
 `;
 
 export const UPDATE_STUDENTS_UPSKILLING = `
