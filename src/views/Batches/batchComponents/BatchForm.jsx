@@ -22,8 +22,9 @@ import {
   searchGrants,
   searchPrograms,
 } from "../batchActions";
-
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
+import { GET_ALL_INSTITUTES } from "src/graphql";
+import api from "src/apis";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -211,11 +212,12 @@ const BatchForm = (props) => {
         });
       }
     }
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
-        setInstitutionOptions(data);
-      });
-    }
+    // if (props.institution) {
+    //   // filterInstitution(props.institution.name).then((data) => {
+    //   //   setInstitutionOptions(data);
+    //   // });
+    //   let data =getAllInstitutions()
+    // }
     if (props.program) {
       filterProgram(props.program.name).then((data) => {
         setProgramOptions(data);
@@ -229,10 +231,42 @@ const BatchForm = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (show && !options) {
-      prepareLookUpFields();
-    }
+    const fetchData = async () => {
+      if (show && !options) {
+        await prepareLookUpFields();
+      }
+      
+      const data = await getAllInstitutions();
+      console.log(data.data.data.institutionsConnection.values);
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
+      }));
+    };
+  
+    fetchData();
   }, [show, options]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+     
+      
+      const data = await getAllInstitutions();
+      console.log(data.data.data.institutionsConnection.values);
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
+        return {
+          ...institution,
+          label: institution.name,
+          value: Number(institution.id),
+        };
+      }));
+    };
+  
+    fetchData();
+  }, []);
 
   const onSubmit = async (values) => {
     if (values.mode_of_payment === "Free") {
@@ -262,6 +296,7 @@ const BatchForm = (props) => {
     setModeOfPayment(event.value);
   };
 
+  // GET_ALL_INSTITUTES
   const filterInstitution = async (filterValue) => {
     try {
       const { data } = await searchInstitutes(filterValue);
@@ -277,11 +312,20 @@ const BatchForm = (props) => {
       console.error(error);
     }
   };
+  const getAllInstitutions = async () => {
+    return await api.post('/graphql', {
+      query: GET_ALL_INSTITUTES,
+    }).then(data => {
+      return data;
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
 
   const filterProgram = async (filterValue) => {
     try {
-      const {data} = await searchPrograms(filterValue);
-      return data.programsConnection.values.map(program=>{
+      const { data } = await searchPrograms(filterValue);
+      return data.programsConnection.values.map((program) => {
         return {
           ...program,
           label: program.name,
@@ -425,12 +469,12 @@ const BatchForm = (props) => {
                   <div className="col-md-6 col-sm-12 mt-2">
                     {!lookUpLoading ? (
                       <Input
-                        control="lookup"
+                        control="lookupAsync"
                         name="institution"
                         label="Institution"
-                        // filterData={filterInstitution}
-                        // defaultOptions={props.id ? institutionOptions : true}
-                        options={institutionOptions}
+                        filterData={filterInstitution}
+                        defaultOptions={props.id ? institutionOptions : true}
+                        // options={institutionOptions}
                         placeholder="Institution"
                         className="form-control"
                         isClearable
@@ -441,37 +485,42 @@ const BatchForm = (props) => {
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {stateOptions.length ? (
-                    <Input
-                      icon="down"
-                      name="state"
-                      label="State"
-                      required
-                      control="lookup"
-                      placeholder="State"
-                      className="form-control"
-                      options={stateOptions}
-                      onChange={onStateChange}
-                    />
+                    {stateOptions.length ? (
+                      <Input
+                        icon="down"
+                        name="state"
+                        label="State"
+                        required
+                        control="lookup"
+                        placeholder="State"
+                        className="form-control"
+                        options={stateOptions}
+                        onChange={onStateChange}
+                      />
                     ) : (
                       <Skeleton count={1} height={45} />
                     )}
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
-                  {areaOptions.length ? (
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="medha_area"
-                      label="Medha Area"
-                      className="form-control"
-                      placeholder="Medha Area"
-                      required
-                      options={areaOptions}
-                    />
+                    {areaOptions.length ? (
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="medha_area"
+                        label="Medha Area"
+                        className="form-control"
+                        placeholder="Medha Area"
+                        required
+                        options={areaOptions}
+                      />
                     ) : (
                       <>
-                        <label className="text-heading" style={{color: '#787B96'}}>Please select State to view Medha Areas</label>
+                        <label
+                          className="text-heading"
+                          style={{ color: "#787B96" }}
+                        >
+                          Please select State to view Medha Areas
+                        </label>
                         <Skeleton count={1} height={35} />
                       </>
                     )}
