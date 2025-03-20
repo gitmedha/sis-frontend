@@ -256,22 +256,6 @@ const Operations = ({
         Header: "Institution Type",
         accessor: "institution_type", // Maps to the institution_type field in the data
       },
-      // {
-      //   Header: "Created By",
-      //   accessor: "created_by", // Maps to the created_by field in the data
-      // },
-      // {
-      //   Header: "Updated By",
-      //   accessor: "updated_by", // Maps to the updated_by field in the data
-      // },
-      // {
-      //   Header: "Created At",
-      //   accessor: "created_at", // Maps to the created_at field in the data
-      // },
-      // {
-      //   Header: "Updated At",
-      //   accessor: "updated_at", // Maps to the updated_at field in the data
-      // },
     ],
     [] // Empty dependency array to ensure the columns are only created once
   );

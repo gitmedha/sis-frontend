@@ -33,10 +33,12 @@ const Section = styled.div`
 const StudentOutreachEdit = (props) => {
   let { onHide, show, refreshTableOnDataSaving } = props;
   const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const userId = localStorage.getItem("user_id");
 
   const onSubmit = async (values) => {
     const newObject = { ...values };
     // newObject.start_date = moment(values["start_date"]).format("YYYY-MM-DD");
+    newObject.updated_by_frontend = Number(userId);
 
     // newObject.end_date = moment(values["end_date"]).format("YYYY-MM-DD");
     newObject.students = parseInt(newObject.students, 10);

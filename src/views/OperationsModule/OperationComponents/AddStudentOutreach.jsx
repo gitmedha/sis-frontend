@@ -8,6 +8,7 @@ import StudentOutreachRowdata from "./StudentOutreachRowdata";
 const AddStudentOutreach = (props) => {
   const { onHide, show, setAlert } = props;
   const iconStyles = { color: "#257b69", fontSize: "1.5em" };
+  const userId = localStorage.getItem("user_id");
   const [rows, setRows] = useState([
     {
       id: 1,
@@ -104,7 +105,9 @@ const AddStudentOutreach = (props) => {
       state: row.state,
       students: row.students,
       year_fy: row.year_fy,
-      isactive: true
+      isactive: true,
+      created_by_frontend: Number(userId),
+      updated_by_frontend: null,
     }));
 
     console.log("Payload for POST request:", data);
@@ -126,7 +129,7 @@ const AddStudentOutreach = (props) => {
         year_fy: "",
       },
     ]);
-    onHide('studentOutreach', data);
+    onHide("studentOutreach", data);
   };
 
   return (
