@@ -4,7 +4,9 @@ import moment from "moment";
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
 import { isAdmin, isMedhavi, isSRM } from "../../../common/commonFunctions";
-import { deactivate_student_outreach, deactivate_user_tots ,GET_STUDENT_OUTREACHES} from "./operationsActions";
+import {
+  deactivate_student_outreach,
+} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import StudentOutreachEdit from "./StudentOutreachEdit";
@@ -38,70 +40,65 @@ const Styled = styled.div`
 `;
 
 const StudentOutreachDataField = (props) => {
-  let { onHide ,refreshTableOnDataSaving,refreshTableOnDeleting} = props;
+  let { onHide, refreshTableOnDataSaving, refreshTableOnDeleting } = props;
   const [showModal, setShowModal] = useState({
-    dataAndEdit:false,
-    delete:false
+    dataAndEdit: false,
+    delete: false,
   });
   const userId = localStorage.getItem("user_id");
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
       setShowModal(false);
-      onHide()
+      onHide();
       return 0;
-    }
-    else{
+    } else {
       onHide();
     }
-    
   };
   useEffect(() => {
     setoperationdata(props);
   }, [props]);
-  
-  const closeThepopup =async () =>{
+
+  const closeThepopup = async () => {
     setShowModal({
       ...showModal,
-      delete:true,
-      dataAndEdit:false 
+      delete: true,
+      dataAndEdit: false,
     });
-  }
+  };
 
   const updatevalue = () => {
     setShowModal({
       ...showModal,
-      dataAndEdit:true
+      dataAndEdit: true,
     });
   };
-  const closepop =()=>{
-   
+  const closepop = () => {
     setShowModal({
       ...showModal,
-      delete:false,
+      delete: false,
     });
-  }
+  };
 
-  const deleteEntry=async()=>{
-    const data=await deactivate_student_outreach(Number(props.id))
-    console.log(data,'data')
-    if(data.status==200){
-     setAlert("Entry Deleted Successfully.", "success");
-     refreshTableOnDeleting()
-     onHide()
-    }else{
-     setAlert("Not Able to delete", "Danger");
-     onHide()
+  const deleteEntry = async () => {
+    const data = await deactivate_student_outreach(Number(props.id));
+    console.log(data, "data");
+    if (data.status == 200) {
+      setAlert("Entry Deleted Successfully.", "success");
+      refreshTableOnDeleting();
+      onHide();
+    } else {
+      setAlert("Not Able to delete", "Danger");
+      onHide();
     }
-    
-    
-   }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     // GET_STUDENT_OUTREACHES()
-  },[])
+  }, []);
   return (
     <>
-      {!showModal.dataAndEdit &&(
+      {!showModal.dataAndEdit && (
         <Modal
           centered
           size="lg"
@@ -126,32 +123,15 @@ const StudentOutreachDataField = (props) => {
               <h4 className="section-header ">Basic Info</h4>
               <div className="row  ">
                 <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="finacial year"
-                    value={props?.year_fy}
-                  />
-                   <DetailField
-                    label="Quarter"
-                    value={props?.quarter}
-                  />
-                  <DetailField
-                    label="Month"
-                    value={props?.month}
-                  />
-                  <DetailField
-                    label="Category"
-                    value={props?.category}
-                  />
-                
-                  <DetailField
-                    label="State"
-                    value={props?.state}
-                  />
+                  <DetailField label="finacial year" value={props?.year_fy} />
+                  <DetailField label="Quarter" value={props?.quarter} />
+                  <DetailField label="Month" value={props?.month} />
+                  <DetailField label="Category" value={props?.category} />
 
+                  <DetailField label="State" value={props?.state} />
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  
                   <DetailField label="Department" value={props?.department} />
                   <DetailField
                     label="Institution Type"
@@ -175,15 +155,15 @@ const StudentOutreachDataField = (props) => {
                   <DetailField
                     label="Updated By"
                     value={
-                      props.updatedby?.username
-                        ? props.updatedby?.username
-                        : ""
+                      props.updated_by_frontend?.username ? props.updated_by_frontend?.username : ""
                     }
                   />
                   <DetailField
                     label="Updated At"
                     value={moment(
-                      props.updated_at ? props.updated_at : props.created_at
+                      props.updated_at
+                        ? props.updated_at
+                        : props.created_at
                     ).format("DD MMM YYYY, h:mm a")}
                   />
                 </div>
@@ -191,10 +171,13 @@ const StudentOutreachDataField = (props) => {
                   <DetailField
                     label="Created By"
                     value={
-                      props.createdby?.username ? props.createdby?.username : ""
+                      props.created_by_frontend?.username
+                        ? props.created_by_frontend?.username
+                        : ""
                     }
                   />
                   <DetailField
+                    style={{ marginLeft: "4px" }}
                     label="Created At"
                     value={moment(props.created_at).format(
                       "DD MMM YYYY, h:mm a"
@@ -203,7 +186,7 @@ const StudentOutreachDataField = (props) => {
                 </div>
               </div>
             </Modal.Body>
-            {(isSRM() ||isMedhavi() || isAdmin()) && (
+            {(isSRM() || isMedhavi() || isAdmin()) && (
               <div className="row mt-4 mb-4">
                 <div className="col-md-12 d-flex justify-content-center">
                   <button
@@ -225,21 +208,18 @@ const StudentOutreachDataField = (props) => {
             )}
           </Styled>
         </Modal>
-        
-        
       )}
-      {
-        showModal.dataAndEdit && 
-        (
-          <StudentOutreachEdit {...operationdata} show={showModal} onHide={hideShowModal1} refreshTableOnDataSaving={refreshTableOnDataSaving}/>
-        )
-      }
-      {
-
-showModal.delete && (
-  <Deletepopup  setShowModal={closepop} deleteEntry={deleteEntry}/>
-)
-      }
+      {showModal.dataAndEdit && (
+        <StudentOutreachEdit
+          {...operationdata}
+          show={showModal}
+          onHide={hideShowModal1}
+          refreshTableOnDataSaving={refreshTableOnDataSaving}
+        />
+      )}
+      {showModal.delete && (
+        <Deletepopup setShowModal={closepop} deleteEntry={deleteEntry} />
+      )}
     </>
   );
 };

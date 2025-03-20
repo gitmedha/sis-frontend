@@ -91,6 +91,14 @@ const studentOutreachesFields = `
     gender
     institution_type
     students
+    created_by_frontend {
+      id
+      username
+    }
+    updated_by_frontend {
+      id
+      username
+    }
     published_at
     
 `;
