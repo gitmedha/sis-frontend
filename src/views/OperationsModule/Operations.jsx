@@ -262,10 +262,10 @@ const Operations = ({
         Header: "Students",
         accessor: "students", // Maps to the students field in the data
       },
-      {
-        Header: "Institution Type",
-        accessor: "institution_type", // Maps to the institution_type field in the data
-      },
+      // {
+      //   Header: "Institution Type",
+      //   accessor: "institution_type", // Maps to the institution_type field in the data
+      // },
     ],
     [] // Empty dependency array to ensure the columns are only created once
   );
