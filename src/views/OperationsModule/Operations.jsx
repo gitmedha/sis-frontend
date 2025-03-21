@@ -12,6 +12,7 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
+  GET_STUDENT_OUTREACHES,
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -24,6 +25,7 @@ import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBu
 import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
+import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
 import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
@@ -46,6 +48,7 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateStudentOutreach
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -54,11 +57,14 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
+import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
+import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
+// import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -75,7 +81,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  {title:"Student Outreach",key:"studentOutreach"}
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -115,6 +121,7 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -127,6 +134,7 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -218,6 +226,48 @@ const Operations = ({
       },
     ],
     []
+  );
+
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy", // Maps to the year_fy field in the data
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter", // Maps to the quarter field in the data
+      },
+      {
+        Header: "Month",
+        accessor: "month", // Maps to the month field in the data
+      },
+      {
+        Header: "Category",
+        accessor: "category", // Maps to the category field in the data
+      },
+      {
+        Header: "State",
+        accessor: "state", // Maps to the state field in the data
+      },
+      {
+        Header: "Department",
+        accessor: "department", // Maps to the department field in the data
+      },
+      {
+        Header: "Gender",
+        accessor: "gender", // Maps to the gender field in the data
+      },
+      {
+        Header: "Students",
+        accessor: "students", // Maps to the students field in the data
+      },
+      {
+        Header: "Institution Type",
+        accessor: "institution_type", // Maps to the institution_type field in the data
+      },
+    ],
+    [] // Empty dependency array to ensure the columns are only created once
   );
 
   const columnsMentor = useMemo(
@@ -441,6 +491,8 @@ const Operations = ({
       await resetSearch();
       variables.isactive = true;
       delete variables.isActive;
+      variables.isactive = true;
+      delete variables.isActive;
       await api
         .post("/graphql", {
           query: GET_USERSTOTS,
@@ -451,6 +503,33 @@ const Operations = ({
           setoptsAggregate(data.data.data.activeUserstots.aggregate);
         })
         .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+
+    if (activeTab.key === "studentOutreach") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_STUDENT_OUTREACHES,
+          variables,
+        })
+        .then((data) => {
+          console.log(data, "studentOutreach");
+          setOpts(data.data.data.activeStudentOutreaches.values);
+          setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
+        })
+        .catch((error) => {
+          console.error(
+            "API Error:",
+            error.response ? error.response.data : error.message
+          );
           return Promise.reject(error);
         })
         .finally(() => {
@@ -543,6 +622,7 @@ const Operations = ({
       // await resetSearch();
       // sortBy = "created_at"
       variables.sort = `${"updated_at"}:${sortOrder}`;
+      variables.sort = `${"updated_at"}:${sortOrder}`;
       await api
         .post("/graphql", {
           query: GET_MENTORSHIP,
@@ -613,6 +693,40 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -773,6 +887,7 @@ const Operations = ({
           let sortByField = "full_name";
           let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
 
+
           getoperations(
             activeStatus,
             activeTab.key,
@@ -839,10 +954,13 @@ const Operations = ({
       return;
     }
     let newValues = data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
+    }, {});
+    let datavaluesforlatestcreate = {};
     }, {});
     let datavaluesforlatestcreate = {};
     if (key == "feilddata") {
@@ -933,6 +1051,17 @@ const Operations = ({
 
       await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
+    if (key == "studentOutreach") {
+      console.log('hello')
+      const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
           // history.push(`/student/${data.data.data.createStudent.student.id}`);
@@ -1072,10 +1201,13 @@ const Operations = ({
 
   const uploadExcel = async (data, key) => {
     let newValues = data.reduce((acc, obj) => {
+    let newValues = data.reduce((acc, obj) => {
       const id = obj.id;
       acc[id] = obj;
       delete acc[id].id; // Optionally remove `id` from each object
       return acc;
+    }, {});
+    let datavaluesforlatestcreate = {};
     }, {});
     let datavaluesforlatestcreate = {};
     try {
@@ -1158,6 +1290,78 @@ const Operations = ({
           })
           .catch((err) => {
             setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
+            setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
+          })
+          .catch((err) => {
+            setAlert("Unable to create TOT data.", "error");
+          });
+      }
+      if (key === "mentorship") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Mentorship Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateMentorship(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+
+      if (key === "pitching") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "College Pitching Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateCollegePitch(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      if (key === "upskilling") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Students Upskilling Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateStudentsUpskillings(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
+            setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
+          })
+          .catch((err) => {
+            setAlert("Unable to create upskilling data.", "error");
           });
       }
       getoperations();
@@ -1373,6 +1577,25 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ) : activeTab.key == "studentOutreach" ? (
+              <>
+                <StudentOutreachSearchBar />
+                <Table
+                  onRowClick={(data) =>
+                    showRowData("studentOutreachData", data)
+                  }
+                  columns={columnsStudentOutreach}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
             ) : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
@@ -1466,6 +1689,14 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
+          ) : activeTab.key == "studentOutreach" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AddStudentOutreach
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
           ) : activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
@@ -1525,6 +1756,16 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
+          {showModal.studentOutreachData &&
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <StudentOutreachDataField
+                {...optsdata.studentOutreachData}
+                show={showModal.opsdata}
+                onHide={() => hideShowModal("studentOutreachData", false)}
+                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+                refreshTableOnDeleting={() => refreshTableOnDeleting()}
+              />
+            )}
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}
