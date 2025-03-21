@@ -56,20 +56,29 @@ const StudentOutreachSearchBar = ({ searchOperationTab, resetSearch }) => {
   // Handle form submission
   const handleSubmit = async (values) => {
     const baseUrl = "student-outreaches"; // Update the base URL for student outreach
-
-    await searchOperationTab(
-      baseUrl,
-      values.search_by_field,
-      values.search_by_value
-    );
-
+  
+    // Extract search field and value from form values
+    const searchField = values.search_by_field; // e.g., "state"
+    const searchValue = values.search_by_value; // e.g., "Bihar"
+  
+    // Construct the payload as expected by the backend
+    const payload = {
+      searchField, // Top-level field
+      searchValue, // Top-level field
+    };
+  
+    console.log("Payload:", payload); // Log the payload for debugging
+  
+    // Submit the payload to the API
+    await searchOperationTab(baseUrl, payload);
+  
     // Store the last searched result in local storage as cache
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
       JSON.stringify({
-        baseUrl: baseUrl,
-        searchedProp: values.search_by_field,
-        searchValue: values.search_by_value,
+        baseUrl,
+        searchedProp: searchField, // e.g., "state"
+        searchValue: searchValue, // e.g., "Bihar"
       })
     );
   };
