@@ -254,8 +254,8 @@ const BatchForm = (props) => {
      
       
       const data = await getAllInstitutions();
-      console.log(data.data.data.institutionsConnection.values);
-      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
+      console.log(data);
+      setInstitutionOptions(data.map((institution) => {
         return {
           ...institution,
           label: institution.name,
