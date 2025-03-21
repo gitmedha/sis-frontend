@@ -193,6 +193,7 @@ const AlumMassEdit = (props) => {
                 start_date: val.start_date,
                 type: val.type,
                 student_id: obj.value,
+                role:obj.role,
                 id: Number(val.id),
               })
             );
