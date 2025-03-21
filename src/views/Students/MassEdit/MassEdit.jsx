@@ -74,6 +74,7 @@ const MassEdit = (props) => {
   const [massEditCheck, setMassEditCheck] = useState(false);
   const [studentInput, setStudentInput] = useState("");
   const [status, setStatus] = useState("");
+  const [role, setRole] = useState([]);
 
   useEffect(() => {
     if (props.alumniService) {
@@ -96,6 +97,7 @@ const MassEdit = (props) => {
       setCategoryOptions(
         data.category.map((item) => ({ value: item.value, label: item.value }))
       );
+      setRole(data.role);
       setProgramOptions(
         data.program_mode.map((item) => ({
           value: item.value,
@@ -153,6 +155,7 @@ const MassEdit = (props) => {
     location: "",
     program_mode: "",
     comments: "",
+    role: "",
   };
 
   const handleClose = () => {
@@ -427,6 +430,19 @@ const MassEdit = (props) => {
                         required
                       />
                     )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={role}
+                      // onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
