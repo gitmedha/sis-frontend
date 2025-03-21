@@ -37,6 +37,12 @@ const Styled = styled.div`
     line-height: 18px;
     margin-bottom: 15px;
   }
+  
+  .detail-field{
+  word-wrap: break-word; /* Allow long text to wrap */
+  overflow-wrap: break-word; /* Ensure long words break and wrap */
+  max-width: 100%; /* Prevent the value from overflowing */
+}
 `;
 
 const StudentOutreachDataField = (props) => {
@@ -151,7 +157,7 @@ const StudentOutreachDataField = (props) => {
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6 detail-field">
                   <DetailField
                     label="Updated By"
                     value={
@@ -167,7 +173,7 @@ const StudentOutreachDataField = (props) => {
                     ).format("DD MMM YYYY, h:mm a")}
                   />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-6 detail-field">
                   <DetailField
                     label="Created By"
                     value={
