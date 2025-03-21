@@ -192,6 +192,7 @@ const MassEdit = (props) => {
         receipt_number: receiptNumber,
         start_date: startDate,
         type: values.type,
+        role:values.role
       };
     });
     props.uploadAlumniData(newdata);
