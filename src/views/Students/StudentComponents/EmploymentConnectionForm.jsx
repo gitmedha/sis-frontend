@@ -14,7 +14,11 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import { createLatestAcivity, findDifferences, findEmployerDifferences } from "src/utils/LatestChange/Api";
+import {
+  createLatestAcivity,
+  findDifferences,
+  findEmployerDifferences,
+} from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -110,97 +114,117 @@ const EnrollmentConnectionForm = (props) => {
     onHide();
   };
 
- // Transform obj1 to match obj2 structure
-function transformObj1(obj1) {
-  return {
-    "employment_connection_student": obj1.status, // Assuming status is employment_connection_student
-    "employer_id": obj1.opportunity?.employer?.id, // Map employer id
-    "opportunity_id": obj1.opportunity?.id, // Map opportunity id
-    "status": obj1.status, // Same status
-    "start_date": obj1.start_date, // Same start date
-    "end_date": obj1.end_date, // Same end date
-    "source": obj1.source, // Same source
-    "salary_offered": obj1.salary_offered, // Same salary
-    "reason_if_rejected": obj1.reason_if_rejected, // Same rejection reason
-    "reason_if_rejected_other": obj1.reason_if_rejected_other, // Same other rejection reason
-    "assigned_to": obj1.assigned_to?.id, // Only id for assigned_to
-    "id": obj1.id, // Same id
-    "updated_at": obj1.updated_at, // Same updated_at
-    "work_engagement": obj1.work_engagement, // Same work engagement
-    "number_of_internship_hours": obj1.number_of_internship_hours, // Same internship hours
-    "experience_certificate": obj1.experience_certificate, // Same certificate
-    "offer_letter": obj1.offer_letter, // Same offer letter
-    "opportunity": {
-      "id": obj1.opportunity?.id, // Same opportunity id
-      "role_description": obj1.opportunity?.role_description, // Same role description
-      "role_or_designation": obj1.opportunity?.role_or_designation, // Same role or designation
-      "type": obj1.opportunity?.type, // Same opportunity type
-      "updated_at": obj1.opportunity?.updated_at, // Same opportunity updated_at
-      "employer": {
-        "id": obj1.opportunity?.employer?.id, // Same employer id
-        "name": obj1.opportunity?.employer?.name // Same employer name
-      }
-    },
-    "employer": obj1.employer, // Same employer name
-    "status_badge": obj1.status_badge, // Same status badge
-    "role_or_designation": obj1.role_or_designation, // Same role or designation
-    "registration_date_formatted": obj1.registration_date_formatted, // Same registration date
-    "opportunity_type": obj1.opportunity_type // Same opportunity type
-  };
-}
-
-// The comparison function
-function compareObjects(obj1, obj2) {
-  const differences = {};
-
-  // Helper function to handle nested objects comparison
-  const compareNested = (key, value1, value2) => {
-    // Special handling for 'assigned_to' and 'employer' fields: Compare by 'id'
-    if (key === 'assigned_to' || key === 'employer') {
-      if (value1?.id !== value2?.id) {
-        differences[key] = { obj1: value1?.id, obj2: value2?.id };
-      }
-    } else if (typeof value1 === 'object' && value1 !== null && typeof value2 === 'object' && value2 !== null) {
-      // For other objects, recurse into them
-      const nestedDiffs = compareObjects(value1, value2);
-      if (Object.keys(nestedDiffs).length > 0) {
-        differences[key] = nestedDiffs;
-      }
-    } else if (value1 !== value2) {
-      // Compare primitive values
-      differences[key] = { obj1: value1, obj2: value2 };
-    }
-  };
-
-  // Iterate over the keys of both objects
-  for (const key in obj1) {
-    if (key !== 'updated_at' && key !== 'created_at') { // Exclude fields you don't want to compare
-      if (obj2.hasOwnProperty(key)) {
-        compareNested(key, obj1[key], obj2[key]);
-      } else {
-        differences[key] = { obj1: obj1[key], obj2: undefined };
-      }
-    }
+  // Transform obj1 to match obj2 structure
+  function transformObj1(obj1) {
+    return {
+      employment_connection_student: obj1.status, // Assuming status is employment_connection_student
+      employer_id: obj1.opportunity?.employer?.id, // Map employer id
+      opportunity_id: obj1.opportunity?.id, // Map opportunity id
+      status: obj1.status, // Same status
+      start_date: obj1.start_date, // Same start date
+      end_date: obj1.end_date, // Same end date
+      source: obj1.source, // Same source
+      salary_offered: obj1.salary_offered, // Same salary
+      reason_if_rejected: obj1.reason_if_rejected, // Same rejection reason
+      reason_if_rejected_other: obj1.reason_if_rejected_other, // Same other rejection reason
+      assigned_to: obj1.assigned_to?.id, // Only id for assigned_to
+      id: obj1.id, // Same id
+      updated_at: obj1.updated_at, // Same updated_at
+      work_engagement: obj1.work_engagement, // Same work engagement
+      number_of_internship_hours: obj1.number_of_internship_hours, // Same internship hours
+      experience_certificate: obj1.experience_certificate, // Same certificate
+      offer_letter: obj1.offer_letter, // Same offer letter
+      opportunity: {
+        id: obj1.opportunity?.id, // Same opportunity id
+        role_description: obj1.opportunity?.role_description, // Same role description
+        role_or_designation: obj1.opportunity?.role_or_designation, // Same role or designation
+        type: obj1.opportunity?.type, // Same opportunity type
+        updated_at: obj1.opportunity?.updated_at, // Same opportunity updated_at
+        employer: {
+          id: obj1.opportunity?.employer?.id, // Same employer id
+          name: obj1.opportunity?.employer?.name, // Same employer name
+        },
+      },
+      employer: obj1.employer, // Same employer name
+      status_badge: obj1.status_badge, // Same status badge
+      role_or_designation: obj1.role_or_designation, // Same role or designation
+      registration_date_formatted: obj1.registration_date_formatted, // Same registration date
+      opportunity_type: obj1.opportunity_type, // Same opportunity type
+    };
   }
 
-  // Check for keys in obj2 that are not in obj1
-  for (const key in obj2) {
-    if (key !== 'updated_at' && key !== 'created_at' && !obj1.hasOwnProperty(key)) {
-      differences[key] = { obj1: undefined, obj2: obj2[key] };
-    }
-  }
+  // The comparison function
+  function compareObjects(obj1, obj2) {
+    const differences = {};
 
-  return differences;
-}
+    // Helper function to handle nested objects comparison
+    const compareNested = (key, value1, value2) => {
+      // Special handling for 'assigned_to' and 'employer' fields: Compare by 'id'
+      if (key === "assigned_to" || key === "employer") {
+        if (value1?.id !== value2?.id) {
+          differences[key] = { obj1: value1?.id, obj2: value2?.id };
+        }
+      } else if (
+        typeof value1 === "object" &&
+        value1 !== null &&
+        typeof value2 === "object" &&
+        value2 !== null
+      ) {
+        // For other objects, recurse into them
+        const nestedDiffs = compareObjects(value1, value2);
+        if (Object.keys(nestedDiffs).length > 0) {
+          differences[key] = nestedDiffs;
+        }
+      } else if (value1 !== value2) {
+        // Compare primitive values
+        differences[key] = { obj1: value1, obj2: value2 };
+      }
+    };
+
+    // Iterate over the keys of both objects
+    for (const key in obj1) {
+      if (key !== "updated_at" && key !== "created_at") {
+        // Exclude fields you don't want to compare
+        if (obj2.hasOwnProperty(key)) {
+          compareNested(key, obj1[key], obj2[key]);
+        } else {
+          differences[key] = { obj1: obj1[key], obj2: undefined };
+        }
+      }
+    }
+
+    // Check for keys in obj2 that are not in obj1
+    for (const key in obj2) {
+      if (
+        key !== "updated_at" &&
+        key !== "created_at" &&
+        !obj1.hasOwnProperty(key)
+      ) {
+        differences[key] = { obj1: undefined, obj2: obj2[key] };
+      }
+    }
+
+    return differences;
+  }
 
   const onSubmit = async (values) => {
-
-    let propgramEnrollemntData={};
-    if(props.employmentConnection ){
-      propgramEnrollemntData={module_name:"Student",activity:"Employment Connection Updated",event_id:props.student.id,updatedby:userId ,changes_in:findEmployerDifferences(initialValues,values)};
-      
-    }else {
-      propgramEnrollemntData={module_name:"student",activity:"Employment Connection Created",event_id:props.student.id,updatedby:userId ,changes_in: {name:values.full_name}};
+    let propgramEnrollemntData = {};
+    if (props.employmentConnection) {
+      propgramEnrollemntData = {
+        module_name: "Student",
+        activity: "Employment Connection Updated",
+        event_id: props.student.id,
+        updatedby: userId,
+        changes_in: findEmployerDifferences(initialValues, values),
+      };
+    } else {
+      propgramEnrollemntData = {
+        module_name: "student",
+        activity: "Employment Connection Created",
+        event_id: props.student.id,
+        updatedby: userId,
+        changes_in: { name: values.full_name },
+      };
     }
     await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
@@ -386,7 +410,7 @@ function compareObjects(obj1, obj2) {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
       setRejected(true);
-    } else if (value === "Offer Rejected by Student") {
+    } else if (value === "Rejected by Student") {
       setRejected(true);
     } else {
       setRejected(false);
