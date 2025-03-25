@@ -321,29 +321,61 @@ const MentorBulkAdd = (props) => {
     });
   }, []);
 
-  useEffect(() => {
-    let isEmptyValuFound = false;
+  // useEffect(() => {
+  //   let isEmptyValuFound = false;
 
-    for (let row of rows) {
-      for (let key in row) {
+  //   for (let row of rows) {
+  //     for (let key in row) {
      
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-       if((key =="contact" && row[key].length < 10 )){
-        isEmptyValuFound=true
-       }
-       if((key =="email" && (!emailRegex.test(row[key]) ))){
-        isEmptyValuFound=true
-       }
-        if (
-          !(key == "social_media_profile_link") 
-        ) {
-          if (isEmptyValue(row[key])) {
-            isEmptyValuFound = true;
-          }
-        }
+  //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //      if((key =="contact" && row[key].length < 10 )){
+  //       isEmptyValuFound=true
+  //      }
+  //      if((key =="email" && (!emailRegex.test(row[key]) ))){
+  //       isEmptyValuFound=true
+  //      }
+  //       if (
+          /* !(key == "social_media_profile_link") */
+  //       ) {
+  //         if (isEmptyValue(row[key])) {
+  //           isEmptyValuFound = true;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   setDisableSaveButton(isEmptyValuFound);
+  // }, [rows]);
+
+  useEffect(() => {
+    let isEmptyValueFound = false;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    for (let row of rows) {
+      // Check required fields only
+      if (
+        isEmptyValue(row.mentor_name) ||
+        isEmptyValue(row.contact) ||
+        row.contact?.length < 10 || // Phone number validation
+        isEmptyValue(row.email) ||
+        !emailRegex.test(row.email) || // Email format validation
+        isEmptyValue(row.mentor_domain) ||
+        isEmptyValue(row.mentor_company_name) ||
+        isEmptyValue(row.designation) ||
+        isEmptyValue(row.mentor_state) ||
+        isEmptyValue(row.mentor_area) ||
+        isEmptyValue(row.outreach) ||
+        isEmptyValue(row.onboarding_date) ||
+        isEmptyValue(row.assigned_to) ||
+        isEmptyValue(row.medha_area) ||
+        isEmptyValue(row.program_name) ||
+        isEmptyValue(row.status)
+      ) {
+        isEmptyValueFound = true;
+        break; // No need to check further if one invalid field is found
       }
     }
-    setDisableSaveButton(isEmptyValuFound);
+    
+    setDisableSaveButton(isEmptyValueFound);
   }, [rows]);
 
   useEffect(() => {
