@@ -85,10 +85,17 @@ const StudentOutreachSearchBar = ({ searchOperationTab, resetSearch }) => {
 
   // Clear the form and reset search
   const clear = async (formik) => {
-    formik.setValues(initialValues);
-    await resetSearch();
+    // Reset form without validation
+    formik.resetForm({
+      values: initialValues, // Reset to initial values
+    });
+    
+    // Manually reset local state
     setSelectedSearchField(null);
     setDisabled(true);
+    
+    // Reset search results
+    await resetSearch();
   };
 
   // Set the selected search field
@@ -128,7 +135,7 @@ const StudentOutreachSearchBar = ({ searchOperationTab, resetSearch }) => {
                     name="search_by_value"
                     label="Search Value"
                     control="lookup"
-                    options={stateOptions}
+                    options={selectedSearchField === "state" ? stateOptions : []} // Show states only if "State" is selected
                     className="form-control"
                     disabled={disabled}
                   />
