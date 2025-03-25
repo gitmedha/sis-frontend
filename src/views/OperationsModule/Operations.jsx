@@ -232,42 +232,56 @@ const Operations = ({
     () => [
       {
         Header: "Financial Year",
-        accessor: "year_fy", // Maps to the year_fy field in the data
+        accessor: "year_fy",
+        width: 120 // Fixed width in pixels
       },
       {
         Header: "Quarter",
-        accessor: "quarter", // Maps to the quarter field in the data
+        accessor: "quarter",
+        width: 80
       },
       {
         Header: "Month",
-        accessor: "month", // Maps to the month field in the data
+        accessor: "month",
+        width: 100
       },
       {
         Header: "Category",
-        accessor: "category", // Maps to the category field in the data
+        accessor: "category",
+        width: 200,
+        cell: ({ value }) => (
+          <div style={{ 
+            width: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {value}
+          </div>
+        )
       },
       {
         Header: "State",
-        accessor: "state", // Maps to the state field in the data
+        accessor: "state",
+        width: 120
       },
       {
         Header: "Department",
-        accessor: "department", // Maps to the department field in the data
+        accessor: "department",
+        width: 150
       },
       {
         Header: "Gender",
-        accessor: "gender", // Maps to the gender field in the data
+        accessor: "gender",
+        width: 100
       },
       {
         Header: "Students",
-        accessor: "students", // Maps to the students field in the data
+        accessor: "students",
+        width: 100
       },
-      // {
-      //   Header: "Institution Type",
-      //   accessor: "institution_type", // Maps to the institution_type field in the data
-      // },
     ],
-    [] // Empty dependency array to ensure the columns are only created once
+    []
   );
 
   const columnsMentor = useMemo(
