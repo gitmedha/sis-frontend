@@ -206,7 +206,7 @@ const StudentForm = (props) => {
     registered_by: userId.toString(),
     how_did_you_hear_about_us: "",
     how_did_you_hear_about_us_other: "",
-    // your_plan_after_your_current_course: "",
+    your_plan_after_your_current_course: "",
   };
 
   let fileName = "";
