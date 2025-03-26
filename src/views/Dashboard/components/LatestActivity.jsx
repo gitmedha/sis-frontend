@@ -74,7 +74,10 @@ const LatestActivity=(props)=> {
               formattedValue = 'Batches';
             } else if (value.toLowerCase() === 'opportunity') {
               formattedValue = 'Opportunities';
-            } else {
+             
+          } else if (value.toLowerCase() === 'calender') {
+            formattedValue = 'Calendar';
+          } else {
               // Capitalize first letter and add "s" if not ending with "s"
               formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
               if (!formattedValue.endsWith('s')) {
