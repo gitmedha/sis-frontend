@@ -77,57 +77,112 @@ const PitchingUpload = (props) => {
     return () => clearTimeout(timer);
   }, []);
 
+  // const validateColumns = (data, expectedColumns) => {
+  //   const fileColumns = Object.keys(data[0]);
+  //   // if(!data){
+  //   //   setUploadSuccesFully("No Data")
+  //   // }
+  //   if (data.length == 0) {
+  //     setNotUploadSuccesFully(
+  //       "File is empty please select file which has data in it"
+  //     );
+  //     return false;
+  //   }
+  //   if (!data) {
+  //     setNotUploadSuccesFully(
+  //       "Some data fields are empty or not properly initialized"
+  //     );
+  //     return false;
+  //   }
+  //   const missingColumns = requiredColumns.filter((col) => {
+  //     return !fileColumns.includes(col.trim());
+  //   });
+  //   const extraColumns = fileColumns.filter(
+  //     (col) => !expectedColumns.includes(col.trim())
+  //   );
+  //   const incompleteColumns = requiredColumns.filter((col) =>
+  //     data.every(
+  //       (row) => row[col] === null || row[col] === "" || row[col] === undefined
+  //     )
+  //   );
+
+  //   if (incompleteColumns.length > 0) {
+  //     setNotUploadSuccesFully(
+  //       `Columns with missing data: ${incompleteColumns.join(", ")}`
+  //     );
+  //     return false;
+  //   }
+
+  //   if (data.length > 0 && data.length > 200) {
+  //     setNotUploadSuccesFully(`Number of rows should be less than 200`);
+  //   }
+
+  //   if (missingColumns.length > 0) {
+  //     console.error(`Missing columns: ${missingColumns.join(", ")}`);
+  //     setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
+  //     return false;
+  //   }
+
+  //   if (extraColumns.length > 0) {
+  //     console.error(`Extra columns: ${extraColumns.join(", ")}`);
+  //     setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
+  //     return false;
+  //   }
+  //   return true;
+  // };
+
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    // if(!data){
-    //   setUploadSuccesFully("No Data")
-    // }
+    
     if (data.length == 0) {
-      setNotUploadSuccesFully(
-        "File is empty please select file which has data in it"
-      );
+      setNotUploadSuccesFully("File is empty please select file which has data in it");
       return false;
     }
+    
     if (!data) {
-      setNotUploadSuccesFully(
-        "Some data fields are empty or not properly initialized"
-      );
+      setNotUploadSuccesFully("Some data fields are empty or not properly initialized");
       return false;
     }
+  
+    // Check for missing required columns
     const missingColumns = requiredColumns.filter((col) => {
       return !fileColumns.includes(col.trim());
     });
-    const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col.trim())
-    );
+  
+    // Check for empty required columns
     const incompleteColumns = requiredColumns.filter((col) =>
       data.every(
         (row) => row[col] === null || row[col] === "" || row[col] === undefined
       )
     );
-
+  
+    // Check for extra columns
+    const extraColumns = fileColumns.filter(
+      (col) => !expectedColumns.includes(col.trim())
+    );
+  
     if (incompleteColumns.length > 0) {
       setNotUploadSuccesFully(
         `Columns with missing data: ${incompleteColumns.join(", ")}`
       );
       return false;
     }
-
+  
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
+      return false;
     }
-
+  
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(", ")}`);
       setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
-
+  
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(", ")}`);
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
+  
     return true;
   };
 
