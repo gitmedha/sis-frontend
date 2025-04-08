@@ -489,6 +489,28 @@ export const CREATE_USER_TOT = `
     }
 `;
 
+export const COUNT_USERS_TOTS = `
+  query COUNT_USERS_TOTS (
+    $startDate: Date
+    $endDate: Date
+    $state: String
+    $dept: String
+  ) {
+    usersTotsConnection(
+      where: {
+        start_date: $startDate
+        end_date: $endDate
+        state: $state
+        partner_dept: $dept
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
 export const CREATE_STUDENT_UPSKILL = `
     mutation CREATE_STUDENT_UPSKILL (
         $data:StudentsUpskillingInput!
