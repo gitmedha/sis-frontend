@@ -507,6 +507,28 @@ export const COUNT_USERS_TOTS = `
       aggregate {
         count
       }
+      values {
+        designation
+        project_name
+      }
+    }
+  }
+`;
+
+export const GET_STUDENT_SYSTEM_ACTOR_RATIO = `
+  query GET_STUDENT_SYSTEM_ACTOR_RATIO($project_name: String!, $designations: String!) {
+    studentSystemActorRatiosConnection(
+      where: {
+        project_name: $project_name,
+        designations: $designations
+      }
+    ) {
+      values {
+        id
+        student_system_actor_ratio
+        project_name
+        designations
+      }
     }
   }
 `;
