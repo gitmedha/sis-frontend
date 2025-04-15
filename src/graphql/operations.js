@@ -489,6 +489,50 @@ export const CREATE_USER_TOT = `
     }
 `;
 
+export const COUNT_USERS_TOTS = `
+  query COUNT_USERS_TOTS (
+    $startDate: Date
+    $endDate: Date
+    $state: String
+    $dept: String
+  ) {
+    usersTotsConnection(
+      where: {
+        start_date: $startDate
+        end_date: $endDate
+        state: $state
+        partner_dept: $dept
+      }
+    ) {
+      aggregate {
+        count
+      }
+      values {
+        designation
+        project_name
+      }
+    }
+  }
+`;
+
+export const GET_STUDENT_SYSTEM_ACTOR_RATIO = `
+  query GET_STUDENT_SYSTEM_ACTOR_RATIO($project_name: String!, $designations: String!) {
+    studentSystemActorRatiosConnection(
+      where: {
+        project_name: $project_name,
+        designations: $designations
+      }
+    ) {
+      values {
+        id
+        student_system_actor_ratio
+        project_name
+        designations
+      }
+    }
+  }
+`;
+
 export const CREATE_STUDENT_UPSKILL = `
     mutation CREATE_STUDENT_UPSKILL (
         $data:StudentsUpskillingInput!
