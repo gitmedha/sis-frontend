@@ -8,6 +8,22 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
   const [designations, setDesignations] = useState([]);
   const [projectNames, setProjectNames] = useState([]);
   const [studentSystemActorRatio, setStudentSystemActorRatio] = useState(null);
+  const [localFacultyCount, setLocalFacultyCount] = useState(0);
+  const [localStudentCount, setLocalStudentCount] = useState(0);
+
+  // Initialize localStudentCount when row.students changes outside this component
+  useEffect(() => {
+    console.log("row.students changed externally:", row.students);
+    
+    // Only update localStudentCount from row.students during initialization
+    // or when localStudentCount is 0 (to prevent overwriting calculated values)
+    if (row.students !== undefined && localStudentCount === 0) {
+      console.log("Updating localStudentCount from row.students:", row.students);
+      setLocalStudentCount(row.students);
+    } else {
+      console.log("Not updating localStudentCount - current value:", localStudentCount);
+    }
+  }, [row.students]);
 
   // State to department/project mapping
   const STATE_DEPARTMENT_MAP = {
@@ -98,7 +114,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
   // Function to determine financial year based on date (assuming Indian FY: April-March)
   const getFinancialYear = (dateString) => {
     if (!dateString) return "";
-
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
@@ -139,39 +154,38 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
 
   // Handle input change for text and number fields
   const handleInputChange = (field, value) => {
-    updateRow(row.id, field, value);
+    updateRow(field, value);
     setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
   };
 
   // Handle Select change for gender
   const handleGenderChange = (selectedOption) => {
-    updateRow(row.id, "gender", selectedOption ? selectedOption.value : "");
+    updateRow("gender", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, gender: "" }));
   };
 
   // Handle Select change for month
   const handleMonthChange = (selectedOption) => {
-    updateRow(row.id, "month", selectedOption ? selectedOption.value : "");
+    updateRow("month", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, month: "" }));
   };
 
   // Handle state change
   const handleStateChange = (selectedOption) => {
     const stateValue = selectedOption ? selectedOption.value : "";
-    console.log("Selected state:", stateValue); // Debugging
 
-    updateRow(row.id, "state", stateValue);
-    // updateRow(row.id, "department", ""); // Reset department
+    updateRow("state", stateValue);
+    // updateRow("department", ""); // Reset department
     setErrors((prev) => ({ ...prev, state: "", department: "" }));
   };
 
   const handleDepartmentChange = (selectedOption) => {
-    updateRow(row.id, "department", selectedOption ? selectedOption.value : "");
+    updateRow("department", selectedOption ? selectedOption.value : "");
     setErrors((prev) => ({ ...prev, department: "" }));
   };
 
   const handleQuarterChange = (selectedOption) => {
-    updateRow(row.id, "quarter", selectedOption ? selectedOption.value : "");
+    updateRow("quarter", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, quarter: "" }));
   };
 
@@ -182,13 +196,11 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
     if (field === "start_date" && value) {
       const fy = getFinancialYear(value);
       // Update both fields at once
-      setRows(prev => prev.map(row => 
-        row.id === row.id 
-          ? { ...row, start_date: value, year_fy: fy }
-          : row
+      setRows(prev => prev.map(prevRow => 
+        ({ ...prevRow, start_date: value, year_fy: fy })
       ));
     } else {
-      updateRow(row.id, field, value);
+      updateRow(field, value);
     }
   };
 
@@ -200,74 +212,84 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       const month = getMonthFromDate(value);
       // Single atomic update for end_date, quarter, and month
       setRows(prevRows => prevRows.map(prevRow => 
-        prevRow.id === row.id 
-          ? { ...prevRow, end_date: value, quarter: quarter, month: month }
-          : prevRow
+        ({ ...prevRow, end_date: value, quarter: quarter, month: month })
       ));
     } else {
       // Just update end_date if no quarter calculation needed
-      updateRow(row.id, "end_date", value);
+      updateRow("end_date", value);
     }
   };
 
   // Handle Select change for category
   const handleCategoryChange = (selectedOption) => {
-    updateRow(row.id, "category", selectedOption ? selectedOption.value : "");
+    updateRow("category", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, category: "" }));
   };
 
   // Function to fetch student system actor ratio
   const fetchStudentSystemActorRatio = async () => {
-    if (!row.department) {
+    console.log("FETCH STUDENT RATIO - Starting with params:", {
+      department: row.department,
+      projectNames: projectNames,
+      faculty: row.faculty,
+      designations: designations
+    });
+    
+    if (!row.department || !projectNames[0]) {
+      console.log("Missing department or project name, skipping ratio fetch");
       return;
     }
 
     try {
-      // Use the first value from projectNames state array
-      const projectName = projectNames.length > 0 ? projectNames[0] : "";
+      console.log("Fetching student ratios with params:", {
+        project_name: projectNames[0],
+        department: row.department,
+        start_date: row.start_date,
+        end_date: row.end_date,
+        state: row.state
+      });
       
-      if (!projectName) {
-        console.log("Missing project name");
-        return;
-      }
-
       // Special designations list
       const specialDesignations = ["TPO", "Principal", "TCAPO", "ESI", "Instructor"];
       
       // Count designations from the response data
       const designationCounts = {};
       
-      // Log raw designations for debugging
-      console.log("Raw designations array:", designations);
-      
       // Count each designation type from the values array
       if (Array.isArray(designations)) {
+        console.log("Processing designations:", designations);
+        
+        // Log unique designations for debugging
+        const uniqueDesignations = [...new Set(designations)];
+        console.log("Unique designations found:", uniqueDesignations);
+        
         designations.forEach(designation => {
           // Skip empty designations
-          if (!designation) return;
+          if (!designation) {
+            console.log("Skipping empty designation");
+            return;
+          }
           
           // Categorize as special designation or Faculty
           const category = specialDesignations.includes(designation) ? designation : "Faculty";
+          console.log(`Designation "${designation}" categorized as "${category}"`);
+          
           designationCounts[category] = (designationCounts[category] || 0) + 1;
         });
+        
+        // If "Faculty" was selected but no faculty designations found, add a default count of 1
+        if (row.faculty === "Faculty" && !designationCounts["Faculty"]) {
+          console.log("Faculty was selected but no faculty designations found in API data, adding default count of 1");
+          designationCounts["Faculty"] = 1;
+        }
       }
       
-      console.log("Designation counts:", designationCounts);
-      
-      // Ensure we have TPO and Principal in the counts
-      if (designations.includes("TPO") && !designationCounts["TPO"]) {
-        designationCounts["TPO"] = designations.filter(d => d === "TPO").length;
-      }
-      
-      if (designations.includes("Principal") && !designationCounts["Principal"]) {
-        designationCounts["Principal"] = designations.filter(d => d === "Principal").length;
-      }
-      
-      console.log("Final designation counts:", designationCounts);
+      console.log("Designation counts calculated:", designationCounts);
       
       // Calculate total students based on each designation type
       let totalStudents = 0;
       let totalRatios = {};
+      let foundInstitutionType = "";
       let promises = [];
       
       // List of designations we'll query
@@ -277,27 +299,54 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       // Prepare all API calls in parallel
       for (const designationType of designationsToQuery) {
         const count = designationCounts[designationType] || 0;
-        console.log(`Preparing API call for ${designationType} with count ${count}`);
         
         if (count > 0) {
+          console.log(`Sending API request for ${designationType} with count ${count}`);
           const promise = api.post("/graphql", {
             query: GET_STUDENT_SYSTEM_ACTOR_RATIO,
             variables: {
-              project_name: projectName,
+              project_name: projectNames[0],
               designations: designationType
             }
           }).then(response => {
-            console.log(`API response for ${designationType}:`, response.data);
-            const ratioData = response.data?.data?.studentSystemActorRatiosConnection?.values?.[0];
+            console.log(`Full response for ${designationType}:`, JSON.stringify(response.data));
             
-            if (ratioData && ratioData.student_system_actor_ratio) {
-              return {
-                designationType,
-                count,
-                ratio: ratioData.student_system_actor_ratio
-              };
+            // Extract values array
+            const values = response.data?.data?.studentSystemActorRatiosConnection?.values || [];
+            console.log(`Found ${values.length} ratio values for ${designationType}`);
+            
+            if (values.length > 0) {
+              const ratioData = values[0];
+              console.log(`Detailed ratio data for ${designationType}:`, ratioData);
+              
+              // If we found an institution_type, store it
+              if (ratioData.institution_type) {
+                foundInstitutionType = ratioData.institution_type;
+                console.log("Found institution type:", foundInstitutionType);
+              }
+              
+              if (ratioData.student_system_actor_ratio) {
+                // Parse ratio as a number to ensure it's valid
+                const parsedRatio = parseFloat(ratioData.student_system_actor_ratio);
+                
+                if (!isNaN(parsedRatio) && parsedRatio > 0) {
+                  console.log(`Valid ratio found for ${designationType}: ${parsedRatio}`);
+                  return {
+                    designationType,
+                    count,
+                    ratio: parsedRatio,
+                    institution_type: ratioData.institution_type || ""
+                  };
+                } else {
+                  console.warn(`Invalid ratio value for ${designationType}: ${ratioData.student_system_actor_ratio}`);
+                }
+              } else {
+                console.warn(`No student_system_actor_ratio field found for ${designationType}`);
+              }
+            } else {
+              console.warn(`No ratio data found for ${designationType}`);
             }
-            console.log(`No ratio found for ${designationType}`);
+            
             return null;
           }).catch(error => {
             console.error(`Error fetching ratio for ${designationType}:`, error);
@@ -308,39 +357,107 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         }
       }
       
-      console.log(`Created ${promises.length} API call promises`);
-      
       // Wait for all API calls to complete
       const results = await Promise.all(promises);
-      console.log("API call results:", results);
+      console.log("All API results:", results);
       
       // Process results
-      for (const result of results) {
+      console.log("Processing API results:", results);
+      let anyValidRatioFound = false;
+
+      // Check if we have any valid ratio results
+      const validResults = results.filter(result => result !== null);
+      console.log(`Found ${validResults.length} valid results out of ${results.length} total`);
+
+      // If we have Faculty selected but no valid Faculty ratio, use a default ratio
+      if (row.faculty === "Faculty" && 
+          !validResults.some(r => r && r.designationType === "Faculty") && 
+          designationCounts["Faculty"] > 0) {
+        console.log("No valid Faculty ratio found but Faculty is selected - using default ratio of 30");
+        
+        // Add a synthetic result for Faculty with a reasonable default ratio
+        validResults.push({
+          designationType: "Faculty",
+          count: designationCounts["Faculty"],
+          ratio: 30, // Default ratio of 30 students per faculty
+          institution_type: row.department.includes("Higher Education") ? "University" : "College"
+        });
+        
+        console.log("Added default Faculty ratio:", validResults[validResults.length - 1]);
+      }
+
+      for (const result of validResults) {
         if (result) {
-          const { designationType, count, ratio } = result;
+          const { designationType, count, ratio, institution_type } = result;
+          console.log(`Processing result for ${designationType}:`, { count, ratio, institution_type });
           totalRatios[designationType] = ratio;
+          
+          // If we found an institution_type and haven't set one yet, use this one
+          if (institution_type && !foundInstitutionType) {
+            foundInstitutionType = institution_type;
+          }
           
           // Calculate students for this designation type
           const studentsForThisType = count * ratio;
-          totalStudents += studentsForThisType;
+          console.log(`Calculated ${studentsForThisType} students for ${designationType} (${count} × ${ratio})`);
           
-          console.log(`${designationType}: ${count} × ${ratio} = ${studentsForThisType}`);
+          if (!isNaN(studentsForThisType) && isFinite(studentsForThisType) && studentsForThisType > 0) {
+            anyValidRatioFound = true;
+            totalStudents += studentsForThisType;
+          } else {
+            console.warn(`Invalid student calculation for ${designationType}: ${count} × ${ratio} = ${studentsForThisType}`);
+          }
         }
       }
       
-      console.log("Total students calculation:", totalStudents);
+      console.log("Total students calculated:", totalStudents, "Any valid ratio found:", anyValidRatioFound);
       
       // Store the ratio data for reference
       setStudentSystemActorRatio({ 
         student_system_actor_ratio: totalRatios,
-        project_name: projectName
+        project_name: projectNames[0],
+        institution_type: foundInstitutionType
       });
       
-      // Update the students count
-      if (totalStudents > 0 && !row.students) {
-        const roundedStudents = Math.round(totalStudents);
-        updateRow(row.id, "students", roundedStudents);
+      // Always update the student count, even if it's zero
+      // But only if we actually got data from the API
+      if (anyValidRatioFound || results.length > 0) {
+        const roundedStudents = totalStudents > 0 ? Math.round(totalStudents) : 0;
+        console.log("Setting student count based on calculation:", roundedStudents);
+        
+        // Update both row state and local state
+        // But avoid needlessly setting to zero if we already have a value
+        if (roundedStudents > 0 || localStudentCount === 0) {
+          console.log("Updating student count to:", roundedStudents);
+          setLocalStudentCount(roundedStudents);
+          updateRow("students", roundedStudents);
+        } else {
+          console.log("Keeping existing student count:", localStudentCount, "instead of setting to zero");
+        }
+        
+        // Create a local variable to track the expected update
+        const studentUpdatePromise = new Promise(resolve => {
+          // Wait slightly to allow state update
+          setTimeout(() => {
+            console.log("After student update, values are - row.students:", row.students, "localStudentCount:", localStudentCount); 
+            resolve();
+          }, 100);
+        });
+        
+        await studentUpdatePromise;
+      } else {
+        console.log("No valid student ratio found, not updating student count");
       }
+      
+      // Update institution type if available, or clear it if not found
+      if (foundInstitutionType) {
+        console.log("Setting institution type to:", foundInstitutionType);
+        updateRow("institution_type", foundInstitutionType);
+      } else {
+        console.log("No institution type found, clearing field");
+        updateRow("institution_type", "");
+      }
+      
     } catch (error) {
       console.error("Error calculating students from ratios:", error);
       setStudentSystemActorRatio(null);
@@ -348,11 +465,25 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
   };
 
   const fetchFacultyCount = async () => {
-    if (!row.start_date || !row.end_date || !row.state) {
+    if (!row.start_date || !row.end_date || !row.state || !row.department) {
+      // Reset values if criteria are incomplete
+      setDesignations([]);
+      setProjectNames([]);
+      
+      // Reset faculty-related fields
+      updateRow("faculty", "");
+      updateRow("facultyCount", 0);
+      
+      // Explicitly reset student count
+      setLocalStudentCount(0);
+      updateRow("students", 0);
+      updateRow("institution_type", "");
+      
       return 0;
     }
 
     try {
+      console.log("Fetching faculty count from API...");
       const response = await api.post("/graphql", {
         query: COUNT_USERS_TOTS,
         variables: {
@@ -367,79 +498,165 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       const designationsArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.designation) || [];
       const projectNamesArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.project_name) || [];
       
-      setDesignations(designationsArray);
-      setProjectNames(projectNamesArray);
+      console.log("API returned designations:", designationsArray);
+      console.log("API returned projectNames:", projectNamesArray);
       
-      // Log the arrays for debugging
-      console.log("Designations:", designationsArray);
-      console.log("Project Names:", projectNamesArray);
-
-      // If we have designations and project names, set the first ones as default
-      if (designationsArray.length > 0 && !row.designation) {
-        updateRow(row.id, "designation", designationsArray[0]);
+      // Update state only if we have values
+      if (designationsArray.length > 0) {
+        setDesignations(designationsArray);
+      } else {
+        setDesignations([]);
+        // No designations means no faculty
+        updateRow("faculty", "");
       }
       
-      if (projectNamesArray.length > 0 && !row.project_name) {
-        updateRow(row.id, "project_name", projectNamesArray[0]);
+      if (projectNamesArray.length > 0) {
+        setProjectNames(projectNamesArray);
+      } else {
+        setProjectNames([]);
+        // No project names means no faculty
+        updateRow("faculty", "");
       }
-
-      return response.data?.data?.usersTotsConnection?.aggregate?.count || 0;
+      
+      const count = response.data?.data?.usersTotsConnection?.aggregate?.count || 0;
+      console.log("Faculty count from API:", count);
+      
+      // If count is 0, clear faculty selection and student count
+      if (count === 0) {
+        updateRow("faculty", "");
+        // Explicitly reset student count when faculty count is zero
+        setLocalStudentCount(0);
+        updateRow("students", 0);
+        updateRow("institution_type", "");
+      }
+      
+      return count;
     } catch (error) {
       console.error("Error fetching faculty count:", error);
+      // Reset values on error
+      setDesignations([]);
+      setProjectNames([]);
+      updateRow("faculty", "");
+      // Explicitly reset student count on error
+      setLocalStudentCount(0);
+      updateRow("students", 0);
+      updateRow("institution_type", "");
       return 0;
     }
   };
 
   // Memoized faculty options with count
   const facultyOptions = useMemo(() => {
+    console.log("Updating faculty options with count:", localFacultyCount);
+    console.log("Faculty count type:", typeof localFacultyCount);
+    console.log("Is faculty dropdown disabled?", !localFacultyCount || localFacultyCount <= 0);
     return [
       {
         value: "Faculty",
-        label: `Faculty (${row.facultyCount || 0})`,
+        label: `Faculty (${localFacultyCount || 0})`,
       },
     ];
-  }, [row.facultyCount]);
+  }, [localFacultyCount]);
 
-  // Function to trigger when filters change
-  const updateFacultyCount = async () => {
-    if (row.start_date && row.end_date && row.state) {
-      const count = await fetchFacultyCount();
-      // updateRow(row.id, "facultyCount", count);
-    }
-  };
-
-  // Call updateFacultyCount when relevant filters change
+  // Call fetchFacultyCount when relevant filters change
   useEffect(() => {
+    console.log("Department/State/Date dependencies changed, updating faculty count");
+    console.log("Current dependencies:", {
+      start_date: row.start_date,
+      end_date: row.end_date,
+      state: row.state,
+      department: row.department
+    });
+    
     const fetchCount = async () => {
       if (row.start_date && row.end_date && row.state && row.department) {
         const count = await fetchFacultyCount();
-        updateRow(row.id, "facultyCount", count);
+        console.log(`Faculty count updated to ${count}, type: ${typeof count}`);
+        
+        // Update faculty count state
+        setLocalFacultyCount(count);
+        updateRow("facultyCount", count);
+        
+        console.log("After updateRow call, facultyCount:", row.facultyCount);
+        
+        // Auto-select Faculty if count is greater than 0 and faculty is not already selected
+        if (count > 0 && !row.faculty) {
+          console.log("Auto-selecting Faculty since we have faculty count");
+          console.log("Current student count:", localStudentCount);
+          
+          // Important: Don't reset student count when auto-selecting faculty
+          const currentStudentCount = localStudentCount;
+          
+          updateRow("faculty", "Faculty");
+          
+          // If we had a non-zero student count, restore it 
+          // This prevents auto-faculty selection from resetting the student count
+          if (currentStudentCount > 0) {
+            console.log("Preserving existing student count:", currentStudentCount);
+            setTimeout(() => {
+              setLocalStudentCount(currentStudentCount);
+              updateRow("students", currentStudentCount);
+            }, 100);
+          }
+        }
       }
     };
     fetchCount();
   }, [row.start_date, row.end_date, row.state, row.department]);
 
-  // Call fetchStudentSystemActorRatio when faculty is selected and we have designations/projectNames
+  // Trigger fetch when faculty is selected or any required parameter changes
   useEffect(() => {
-    if (row.faculty && designations.length > 0 && projectNames.length > 0) {
-      fetchStudentSystemActorRatio();
+    console.log("Dependencies changed - current state:", {
+      faculty: row.faculty,
+      facultyCount: localFacultyCount,
+      start_date: !!row.start_date,
+      end_date: !!row.end_date,
+      state: !!row.state,
+      department: !!row.department,
+      studentCount: localStudentCount
+    });
+    
+    // ONLY reset values if faculty is specifically deselected or removed
+    // Don't reset when other dependencies change
+    if (!row.faculty) {
+      console.log("Faculty deselected or not set, clearing student count");
+      setLocalStudentCount(0);
+      updateRow("students", 0);
+      updateRow("institution_type", "");
+      return;
     }
-  }, [row.faculty, designations, projectNames]);
+    
+    // Only trigger new data fetch if we have all dependencies
+    if (row.faculty && 
+        row.start_date && row.end_date && 
+        row.state && row.department && 
+        designations.length > 0 && projectNames.length > 0) {
+      
+      console.log("All dependencies present, triggering student data fetch");
+      
+      // Use a slight delay to ensure the faculty value is processed
+      setTimeout(() => {
+        fetchStudentSystemActorRatio();
+      }, 200);
+    } else {
+      console.log("Not all dependencies available for student data fetch");
+    }
+  }, [row.faculty, row.start_date, row.end_date, row.state, row.department, designations.length, projectNames.length]);
+
+  // Add a useEffect to ensure student count is zero when faculty count is zero
+  useEffect(() => {
+    console.log("Faculty count changed:", localFacultyCount);
+    
+    // If faculty count is zero or not present, ensure student count is also zero
+    if (localFacultyCount === 0) {
+      console.log("Faculty count is zero, resetting student count to zero");
+      setLocalStudentCount(0);
+      updateRow("students", 0);
+    }
+  }, [localFacultyCount]);
 
   return (
-    <tr key={row.id}>
-      {/* Financial Year - Now read-only as it's auto-determined */}
-      <td>
-        <input
-          className={`table-input h-2 ${errors.year_fy ? "border-red" : ""}`}
-          type="text"
-          value={row.year_fy || ""}
-          onChange={(e) => handleInputChange("year_fy", e.target.value)}
-          readOnly
-        />
-        {errors.year_fy && <span className="error">{errors.year_fy}</span>}
-      </td>
-
+    <tr>
       {/* Start Date */}
       <td>
         <input
@@ -460,6 +677,18 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
           onChange={(e) => handleEndDateChange(e.target.value)}
         />
         {errors.end_date && <span className="error">{errors.end_date}</span>}
+      </td>
+
+      {/* Financial Year - Now read-only as it's auto-determined */}
+      <td>
+        <input
+          className={`table-input h-2 ${errors.year_fy ? "border-red" : ""}`}
+          type="text"
+          value={row.year_fy || ""}
+          onChange={(e) => handleInputChange("year_fy", e.target.value)}
+          readOnly
+        />
+        {errors.year_fy && <span className="error">{errors.year_fy}</span>}
       </td>
 
       {/* Quarter - Now read-only as it's determined by end date */}
@@ -509,24 +738,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         {errors.category && <span className="error">{errors.category}</span>}
       </td>
 
-      {/* Faculty dropdown */}
-      <td>
-        <Select
-          className={`table-input ${errors.faculty ? "border-red" : ""}`}
-          classNamePrefix="select"
-          isClearable={true}
-          name="faculty"
-          options={facultyOptions}
-          value={facultyOptions.find((option) => option.value === row.faculty)}
-          onChange={(selectedOption) => {
-            updateRow(row.id, "faculty", selectedOption?.value || "");
-            setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
-          }}
-          isDisabled={!row.facultyCount} // Disable if no faculty count
-        />
-        {errors.faculty && <span className="error">{errors.faculty}</span>}
-      </td>
-
       {/* State */}
       <td>
         <Select
@@ -560,6 +771,67 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         )}
       </td>
 
+      {/* Faculty dropdown */}
+      <td>
+        <Select
+          className={`table-input ${errors.faculty ? "border-red" : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          name="faculty"
+          options={facultyOptions}
+          value={facultyOptions.find((option) => option.value === row.faculty)}
+          onChange={(selectedOption) => {
+            const facultyValue = selectedOption ? selectedOption.value : "";
+            console.log("Faculty selected manually:", facultyValue, "current student count:", localStudentCount);
+            
+            // Reset faculty-related fields when deselected
+            if (!facultyValue) {
+              console.log("Faculty deselected, clearing related fields");
+              updateRow("faculty", "");
+              // Always reset student count when faculty is deselected
+              setLocalStudentCount(0);
+              updateRow("students", 0);
+              updateRow("institution_type", "");
+              setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
+              return;
+            }
+            
+            // Set faculty value
+            updateRow("faculty", facultyValue);
+            setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
+            
+            // If faculty count is zero, ensure student count is also zero
+            if (localFacultyCount === 0) {
+              console.log("Faculty selected but count is zero, ensuring student count is zero");
+              setLocalStudentCount(0);
+              updateRow("students", 0);
+              return;
+            }
+            
+            // If we have all required data, trigger the fetch
+            if (
+              designations.length > 0 && 
+              projectNames.length > 0 &&
+              row.start_date &&
+              row.end_date &&
+              row.state && 
+              row.department
+            ) {
+              console.log("All dependencies available, fetching student data immediately");
+              setTimeout(() => {
+                fetchStudentSystemActorRatio();
+              }, 200);
+            } else {
+              console.log("Cannot fetch student data, missing dependencies");
+            }
+          }}
+          // Use localFacultyCount instead of row.facultyCount
+          isDisabled={!localFacultyCount || localFacultyCount <= 0}
+        />
+        {console.log("Faculty render - localFacultyCount:", localFacultyCount, "row.facultyCount:", row.facultyCount, "disabled:", !localFacultyCount || localFacultyCount <= 0)}
+        {errors.faculty && <span className="error">{errors.faculty}</span>}
+      </td>
+
       {/* Gender */}
       <td>
         <Select
@@ -573,19 +845,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
           onChange={handleGenderChange}
         />
         {errors.gender && <span className="error">{errors.gender}</span>}
-      </td>
-
-      {/* Students */}
-      <td>
-        <input
-          className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
-          type="number"
-          value={row.students}
-          onChange={(e) =>
-            handleInputChange("students", parseInt(e.target.value, 10))
-          }
-        />
-        {errors.students && <span className="error">{errors.students}</span>}
       </td>
 
       {/* Institution Type */}
@@ -603,6 +862,22 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         {errors.institution_type && (
           <span className="error">{errors.institution_type}</span>
         )}
+      </td>
+
+      {/* Students */}
+      <td>
+        <input
+          className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
+          type="number"
+          value={localStudentCount !== null ? localStudentCount : row.students}
+          onChange={(e) => {
+            const newValue = parseInt(e.target.value, 10) || 0;
+            setLocalStudentCount(newValue);
+            handleInputChange("students", newValue);
+          }}
+        />
+        {console.log("Students render - localStudentCount:", localStudentCount, "row.students:", row.students)}
+        {errors.students && <span className="error">{errors.students}</span>}
       </td>
     </tr>
   );

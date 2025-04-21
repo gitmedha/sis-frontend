@@ -11,9 +11,8 @@ const AddStudentOutreach = (props) => {
   const userId = localStorage.getItem("user_id");
   const [rows, setRows] = useState([
     {
-      id: 1,
       start_date: "",
-      end_date:"",
+      end_date: "",
       category: "",
       department: "",
       gender: "",
@@ -27,64 +26,28 @@ const AddStudentOutreach = (props) => {
   ]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
 
-  // Add a new row
-  const addRow = () => {
-    if (rows.length >= 10) {
-      setAlert("You can't add more than 10 items.", "error");
-    } else {
-      const newRow = {
-        id: rows.length + 1,
-        category: "",
-        department: "",
-        gender: "",
-        institution_type: "",
-        quarter: "",
-        month: "",
-        state: "",
-        students: 0,
-        year_fy: "",
-      };
-      setRows([...rows, newRow]);
-    }
-  };
-
-  // Delete a row
-  const deleteRow = (id) => {
-    if (rows.length === 1) return; // Prevent deleting the last row
-    const updatedRows = rows.filter((row) => row.id !== id);
-    setRows(updatedRows);
-  };
-
   // Update a row
-  const updateRow = (id, field, value) => {
-    console.log(id,field,value, 'parent')
-    const updatedRows = rows.map((row) =>
-      row.id === id ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
+  const updateRow = (field, value) => {
+    console.log(field, value, 'field, value');
+    const updatedRow = { ...rows[0], [field]: value };
+    setRows([updatedRow]);
   };
-
-  console.log(rows ,'parent')
 
   // Validate all rows
   const validateRows = () => {
-    for (const row of rows) {
-      if (
-        !row.category ||
-        !row.department ||
-        !row.gender ||
-        !row.institution_type ||
-        !row.quarter ||
-        !row.month ||
-        !row.state ||
-        !row.year_fy ||
-        isNaN(row.students) ||
-        row.students < 0
-      ) {
-        return false; // Validation failed
-      }
-    }
-    return true; // All rows are valid
+    const row = rows[0];
+    return (
+      row.category &&
+      row.department &&
+      row.gender &&
+      row.institution_type &&
+      row.quarter &&
+      row.month &&
+      row.state &&
+      row.year_fy &&
+      !isNaN(row.students) &&
+      row.students >= 0
+    );
   };
 
   // Enable/disable Save button based on validation
@@ -122,7 +85,6 @@ const AddStudentOutreach = (props) => {
     // Reset form after submission
     setRows([
       {
-        id: 1,
         category: "",
         department: "",
         gender: "",
@@ -136,7 +98,6 @@ const AddStudentOutreach = (props) => {
     ]);
     onHide("studentOutreach", data);
   };
-
   return (
     <Modal
       centered
@@ -162,44 +123,28 @@ const AddStudentOutreach = (props) => {
       </Modal.Header>
       <Modal.Body className="bg-white">
         <div id="CreateOptsData">
-          <div className="adddeletebtn">
-            {rows.length > 1 && (
-              <button className="unset" onClick={() => deleteRow(rows.length)}>
-                <FaMinusCircle
-                  style={iconStyles}
-                  size={40}
-                  className="ml-2 mr-3"
-                />
-              </button>
-            )}
-            {rows.length < 10 && (
-              <button className="unset" onClick={addRow}>
-                <FaPlusCircle style={iconStyles} size={40} className="ml-2" />
-              </button>
-            )}
-          </div>
           <div className="table-container">
             <table className="create_data_table">
               <thead>
                 <tr>
-                <th>Financial Year *</th>
                   <th>Start Date</th>
                   <th>End Date</th>
+                  <th>Financial Year *</th>
                   <th>Quarter</th>
                   <th>Month</th>
                   <th>Category</th>
-                  <th>Faculty</th>
                   <th>State</th>
                   <th>Department</th>
+                  <th>Faculty</th>
                   <th>Gender</th>
-                  <th>Students</th>
                   <th>Institution Type</th>
+                  <th>Students</th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
+                {rows.map((row, index) => (
                   <StudentOutreachRowdata
-                    key={row.id}
+                    key={index}
                     row={row}
                     setRows={setRows}
                     updateRow={updateRow}
