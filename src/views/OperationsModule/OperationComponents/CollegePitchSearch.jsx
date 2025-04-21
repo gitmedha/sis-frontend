@@ -8,55 +8,71 @@ import {
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 
 const Section = styled.div`
   padding-bottom: 30px;
-
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
   }
+`;
 
-  .section-header {
+const SearchRow = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+`;
+
+const SearchFieldContainer = styled.div`
+  flex: 0 0 200px;
+`;
+
+const SearchValueContainer = styled.div`
+  flex: 0 0 300px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+  
+  svg {
+    cursor: pointer;
+    font-size: 20px;
     color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
+    &:hover {
+      color: #16574a;
+    }
   }
 `;
 
 const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
-  let options = [
+  const options = [
     { key: 0, value: "area", label: "Medha Area" },
     { key: 1, value: "program_name", label: "Program Name" },
   ];
 
   const [medhaAreaOptions, setMedhaAreaOptions] = useState([]);
   const [programNameOptions, setProgramOptions] = useState([]);
-  const [selectedSearchFields, setSelectedSearchFields] = useState([null]); // Track selected fields for each counter
+  const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
   const [disabled, setDisabled] = useState(true);
-  const [counter, setCounter] = useState(1); // Counter for dynamic search fields
+  const [counter, setCounter] = useState(1);
 
   const initialValues = {
-    searches: [
-      {
-        search_by_field: "",
-        search_by_value: "",
-      },
-    ],
+    searches: Array(counter).fill({
+      search_by_field: "",
+      search_by_value: "",
+    }),
   };
 
   const handleSubmit = async (values) => {
     const baseUrl = "college-pitches";
-
-    // Initialize arrays for search fields and values
     const searchFields = [];
     const searchValues = [];
 
-    // Loop through each search field and value
     values.searches.forEach((search) => {
       if (search.search_by_field && search.search_by_value) {
         searchFields.push(search.search_by_field);
@@ -64,24 +80,11 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
       }
     });
 
-    // Construct the payload
-    const payload = {
-      searchFields,
-      searchValues,
-    };
-
-    console.log("Payload:", payload); // Log the payload for debugging
-
-    // Submit the payload to the API
+    const payload = { searchFields, searchValues };
     await searchOperationTab(baseUrl, payload);
-
-    // Store the last searched result in local storage as cache
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
-      JSON.stringify({
-        baseUrl,
-        searchData: payload,
-      })
+      JSON.stringify({ baseUrl, searchData: payload })
     );
   };
 
@@ -100,23 +103,33 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
     setDisabled(false);
 
     if (value === "area") {
-      setDropdownValues("area", index);
+      setDropdownValues("area");
     } else if (value === "program_name") {
-      setDropdownValues("program_name", index);
+      setDropdownValues("program_name");
     }
   };
 
-  const setDropdownValues = async (fieldName, index) => {
+  const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "college-pitches");
-
-      if (fieldName === "area") {
-        setMedhaAreaOptions(data);
-      } else if (fieldName === "program_name") {
-        setProgramOptions(data);
-      }
+      if (fieldName === "area") setMedhaAreaOptions(data);
+      else if (fieldName === "program_name") setProgramOptions(data);
     } catch (error) {
       console.error("error", error);
+    }
+  };
+
+  const addSearchRow = () => {
+    setCounter(counter + 1);
+    setSelectedSearchFields([...selectedSearchFields, null]);
+  };
+
+  const removeSearchRow = () => {
+    if (counter > 1) {
+      setCounter(counter - 1);
+      const newSelectedFields = [...selectedSearchFields];
+      newSelectedFields.pop();
+      setSelectedSearchFields(newSelectedFields);
     }
   };
 
@@ -126,62 +139,66 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
         {(formik) => (
           <Form>
             <Section>
-              <div className="row align-items-center">
-                {Array.from({ length: counter }).map((_, index) => (
-                  <Fragment key={index}>
-                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+              {Array.from({ length: counter }).map((_, index) => (
+                <SearchRow key={index}>
+                  <SearchFieldContainer>
+                    <Input
+                      icon="down"
+                      name={`searches[${index}].search_by_field`}
+                      label="Search Field"
+                      control="lookup"
+                      options={options}
+                      className="form-control"
+                      onChange={(e) => setSearchItem(e.value, index)}
+                    />
+                  </SearchFieldContainer>
+
+                  <SearchValueContainer>
+                    {selectedSearchFields[index] === null && (
+                      <Input
+                        name={`searches[${index}].search_by_value`}
+                        control="input"
+                        label="Search Value"
+                        className="form-control"
+                        disabled
+                      />
+                    )}
+
+                    {selectedSearchFields[index] === "area" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_field`}
-                        label="Search Field"
+                        name={`searches[${index}].search_by_value`}
+                        label="Search Value"
                         control="lookup"
-                        options={options}
+                        options={medhaAreaOptions}
                         className="form-control"
-                        onChange={(e) => setSearchItem(e.value, index)}
+                        disabled={disabled}
                       />
-                    </div>
-                    <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-                      {selectedSearchFields[index] === null && (
-                        <Input
-                          name={`searches[${index}].search_by_value`}
-                          control="input"
-                          label="Search Value"
-                          className="form-control"
-                          disabled
-                        />
-                      )}
+                    )}
 
-                      {selectedSearchFields[index] === "area" && (
-                        <Input
-                          icon="down"
-                          name={`searches[${index}].search_by_value`}
-                          label="Search Value"
-                          control="lookup"
-                          options={medhaAreaOptions}
-                          className="form-control"
-                          disabled={disabled}
-                        />
-                      )}
+                    {selectedSearchFields[index] === "program_name" && (
+                      <Input
+                        icon="down"
+                        name={`searches[${index}].search_by_value`}
+                        label="Search Value"
+                        control="lookup"
+                        options={programNameOptions}
+                        className="form-control"
+                        disabled={disabled}
+                      />
+                    )}
+                  </SearchValueContainer>
 
-                      {selectedSearchFields[index] === "program_name" && (
-                        <Input
-                          icon="down"
-                          name={`searches[${index}].search_by_value`}
-                          label="Search Value"
-                          control="lookup"
-                          options={programNameOptions}
-                          className="form-control"
-                          disabled={disabled}
-                        />
-                      )}
-                    </div>
-                  </Fragment>
-                ))}
+                  {index === counter - 1 && (
+                    <IconContainer>
+                      <FaPlusCircle onClick={addSearchRow} />
+                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} />}
+                    </IconContainer>
+                  )}
+                </SearchRow>
+              ))}
 
-                <div className="col-lg-3">
-                  <FaPlusCircle onClick={() => setCounter(counter + 1)} />
-                </div>
-
+              <div className="row">
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
                     className="btn btn-primary action_button_sec search_bar_action_sec"
@@ -208,6 +225,4 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
   );
 };
 
-export default connect(null, { searchOperationTab, resetSearch })(
-  CollegePitchSearch
-);
+export default connect(null, { searchOperationTab, resetSearch })(CollegePitchSearch);

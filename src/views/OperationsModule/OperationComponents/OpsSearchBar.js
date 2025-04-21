@@ -13,42 +13,53 @@ import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
-
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
-  }
-
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
   }
 `;
 
 const SearchRow = styled.div`
   margin-bottom: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 15px;
+`;
+
+const SearchFieldContainer = styled.div`
+  flex: 0 0 200px;
+`;
+
+const SearchValueContainer = styled.div`
+  flex: 0 0 300px;
 `;
 
 const IconContainer = styled.div`
   display: flex;
   gap: 10px;
-  margin-left: 10px;
+  align-items: center;
+  margin-top: 28px;
   
   svg {
     cursor: pointer;
     font-size: 20px;
     color: #207b69;
-    
     &:hover {
       color: #16574a;
+    }
+  }
+`;
+
+const DateRangeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  
+  > div {
+    flex: 1;
+    &:first-child {
+      margin-right: 15px;
     }
   }
 `;
@@ -60,20 +71,14 @@ const OpsSearchDropdown = function OpsSearchBar({
   let today = new Date();
 
   const initialValues = {
-    searches: [
-      {
-        search_by_field: "",
-        search_by_value: "",
-        search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-        search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-        search_by_value_date_end_from: new Date(
-          new Date(today).setDate(today.getDate())
-        ),
-        search_by_value_date_end_to: new Date(
-          new Date(today).setDate(today.getDate())
-        ),
-      },
-    ],
+    searches: [{
+      search_by_field: "",
+      search_by_value: "",
+      search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_from: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_to: new Date(new Date(today).setDate(today.getDate())),
+    }],
   };
 
   const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
@@ -87,18 +92,14 @@ const OpsSearchDropdown = function OpsSearchBar({
 
   const formatdate = (dateval) => {
     const date = new Date(dateval);
-
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
-
-    const formattedDate = `${yyyy}-${mm}-${dd}`;
-    return formattedDate;
+    return `${yyyy}-${mm}-${dd}`;
   };
 
   const handleSubmit = async (values) => {
-    let baseUrl = "users-ops-activities";
-
+    const baseUrl = "users-ops-activities";
     const searchFields = [];
     const searchValues = [];
 
@@ -109,20 +110,11 @@ const OpsSearchDropdown = function OpsSearchBar({
       }
     });
 
-    const searchData = {
-      searchFields,
-      searchValues,
-    };
-
-    console.log(searchData);
+    const searchData = { searchFields, searchValues };
     await searchOperationTab(baseUrl, searchData);
-
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
-      JSON.stringify({
-        baseUrl: baseUrl,
-        searchData: searchData,
-      })
+      JSON.stringify({ baseUrl, searchData })
     );
   };
 
@@ -134,7 +126,7 @@ const OpsSearchDropdown = function OpsSearchBar({
     { key: 4, value: "program_name", label: "Program Name" },
     { key: 5, value: "start_date", label: "Start Date" },
     { key: 6, value: "end_date", label: "End Date" },
-  ].sort((a, b) => a.label - b.label);
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   const formik = useFormik({
     initialValues,
@@ -142,22 +134,10 @@ const OpsSearchDropdown = function OpsSearchBar({
   });
 
   const activityTypes = [
-    {
-      key: 0,
-      label: "Workshop/Training Session/Activity (In/Off campus)",
-      value: "Workshop/Training Session/Activity (In/Off campus)",
-    },
-    {
-      key: 1,
-      label: "Industry Talk/Expert Talk",
-      value: "Industry Talk/Expert Talk",
-    },
+    { key: 0, label: "Workshop/Training Session/Activity (In/Off campus)", value: "Workshop/Training Session/Activity (In/Off campus)" },
+    { key: 1, label: "Industry Talk/Expert Talk", value: "Industry Talk/Expert Talk" },
     { key: 2, label: "Alumni Engagement", value: "Alumni Engagement" },
-    {
-      key: 3,
-      label: "Industry Visit/Exposure Visit",
-      value: "Industry Visit/Exposure Visit",
-    },
+    { key: 3, label: "Industry Visit/Exposure Visit", value: "Industry Visit/Exposure Visit" },
     { key: 4, label: "Placement Drive", value: "Placement Drive" },
   ];
 
@@ -176,31 +156,21 @@ const OpsSearchDropdown = function OpsSearchBar({
     setDisabled(false);
     setIsFieldEmpty(false);
 
-    if (value.includes("assigned_to")) {
-      setDropdownValues("assigned_to");
-    } else if (value.includes("batch")) {
-      setDropdownValues("batch");
-    } else if (value === "area") {
-      setDropdownValues("area");
-    } else if (value === "program_name") {
-      setDropdownValues("program_name");
-    }
+    if (value.includes("assigned_to")) setDropdownValues("assigned_to");
+    else if (value.includes("batch")) setDropdownValues("batch");
+    else if (value === "area") setDropdownValues("area");
+    else if (value === "program_name") setDropdownValues("program_name");
   };
 
   const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "users-ops-activities");
-
       if (fieldName === "assigned_to") {
         let newSRM = await getAllSearchSrm();
         setAssignedOptions(newSRM);
-      } else if (fieldName === "batch") {
-        setBatchOptions(data);
-      } else if (fieldName === "area") {
-        setAreaOptions(data);
-      } else if (fieldName === "program_name") {
-        setProgramOptions(data);
-      }
+      } else if (fieldName === "batch") setBatchOptions(data);
+      else if (fieldName === "area") setAreaOptions(data);
+      else if (fieldName === "program_name") setProgramOptions(data);
     } catch (error) {
       console.error("error", error);
     }
@@ -217,14 +187,6 @@ const OpsSearchDropdown = function OpsSearchBar({
       const newSelectedFields = [...selectedSearchFields];
       newSelectedFields.pop();
       setSelectedSearchFields(newSelectedFields);
-      
-      // Also remove the corresponding form values
-      const newSearches = [...formik.values.searches];
-      newSearches.pop();
-      formik.setValues({
-        ...formik.values,
-        searches: newSearches
-      });
     }
   };
 
@@ -236,7 +198,7 @@ const OpsSearchDropdown = function OpsSearchBar({
             <Section>
               {Array.from({ length: counter }).map((_, index) => (
                 <SearchRow key={index}>
-                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2 ">
+                  <SearchFieldContainer>
                     <Input
                       icon="down"
                       name={`searches[${index}].search_by_field`}
@@ -246,8 +208,9 @@ const OpsSearchDropdown = function OpsSearchBar({
                       className="form-control"
                       onChange={(e) => setSearchItem(e.value, index)}
                     />
-                  </div>
-                  <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
+                  </SearchFieldContainer>
+
+                  <SearchValueContainer>
                     {selectedSearchFields[index] === null && (
                       <Input
                         name={`searches[${index}].search_by_value`}
@@ -320,8 +283,8 @@ const OpsSearchDropdown = function OpsSearchBar({
                     )}
 
                     {selectedSearchFields[index] === "start_date" && (
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="mr-3">
+                      <DateRangeContainer>
+                        <div>
                           <Input
                             name={`searches[${index}].search_by_value_date`}
                             label="From"
@@ -332,7 +295,7 @@ const OpsSearchDropdown = function OpsSearchBar({
                             disabled={disabled}
                           />
                         </div>
-                        <div className="ml-2">
+                        <div>
                           <Input
                             name={`searches[${index}].search_by_value_date_to`}
                             label="To"
@@ -343,12 +306,12 @@ const OpsSearchDropdown = function OpsSearchBar({
                             disabled={disabled}
                           />
                         </div>
-                      </div>
+                      </DateRangeContainer>
                     )}
 
                     {selectedSearchFields[index] === "end_date" && (
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="mr-3">
+                      <DateRangeContainer>
+                        <div>
                           <Input
                             name={`searches[${index}].search_by_value_date_end_from`}
                             label="From"
@@ -359,7 +322,7 @@ const OpsSearchDropdown = function OpsSearchBar({
                             disabled={disabled}
                           />
                         </div>
-                        <div className="ml-2">
+                        <div>
                           <Input
                             name={`searches[${index}].search_by_value_date_end_to`}
                             label="To"
@@ -370,9 +333,10 @@ const OpsSearchDropdown = function OpsSearchBar({
                             disabled={disabled}
                           />
                         </div>
-                      </div>
+                      </DateRangeContainer>
                     )}
-                  </div>
+                  </SearchValueContainer>
+
                   {index === counter - 1 && (
                     <IconContainer>
                       <FaPlusCircle onClick={addSearchRow} />
@@ -402,16 +366,14 @@ const OpsSearchDropdown = function OpsSearchBar({
                 </div>
               </div>
 
-              <div className="row align-items-center">
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
-                  {isFieldEmpty && (
-                    <p style={{ color: "red" }}>
-                      Please select any field first.
-                    </p>
-                  )}
+              {isFieldEmpty && (
+                <div className="row">
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                    <p style={{ color: "red" }}>Please select any field first.</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </Section>
           </Form>
         )}
@@ -420,6 +382,4 @@ const OpsSearchDropdown = function OpsSearchBar({
   );
 };
 
-export default connect(null, { searchOperationTab, resetSearch })(
-  OpsSearchDropdown
-);
+export default connect(null, { searchOperationTab, resetSearch })(OpsSearchDropdown);
