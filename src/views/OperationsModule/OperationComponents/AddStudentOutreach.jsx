@@ -12,6 +12,8 @@ const AddStudentOutreach = (props) => {
   const [rows, setRows] = useState([
     {
       id: 1,
+      start_date: "",
+      end_date:"",
       category: "",
       department: "",
       gender: "",
@@ -55,11 +57,14 @@ const AddStudentOutreach = (props) => {
 
   // Update a row
   const updateRow = (id, field, value) => {
+    console.log(id,field,value, 'parent')
     const updatedRows = rows.map((row) =>
       row.id === id ? { ...row, [field]: value } : row
     );
     setRows(updatedRows);
   };
+
+  console.log(rows ,'parent')
 
   // Validate all rows
   const validateRows = () => {
@@ -177,10 +182,13 @@ const AddStudentOutreach = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Financial Year *</th>
+                <th>Financial Year *</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
                   <th>Quarter</th>
                   <th>Month</th>
                   <th>Category</th>
+                  <th>Faculty</th>
                   <th>State</th>
                   <th>Department</th>
                   <th>Gender</th>
@@ -193,6 +201,7 @@ const AddStudentOutreach = (props) => {
                   <StudentOutreachRowdata
                     key={row.id}
                     row={row}
+                    setRows={setRows}
                     updateRow={updateRow}
                   />
                 ))}
