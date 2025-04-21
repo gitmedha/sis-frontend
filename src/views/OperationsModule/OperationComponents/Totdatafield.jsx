@@ -111,6 +111,7 @@ const Totdatafield = (props) => {
   useEffect(()=>{
     fetchAllStudents()
   },[])
+  console.log(props,'props')
   return (
     <>
       {!showModal.dataAndEdit &&(
@@ -286,6 +287,8 @@ const Totdatafield = (props) => {
             )}
           </Styled>
         </Modal>
+        
+        
       )}
       {
         showModal.dataAndEdit && 

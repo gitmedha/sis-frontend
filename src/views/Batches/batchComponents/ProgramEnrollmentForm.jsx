@@ -62,8 +62,8 @@ const ProgramEnrollmentForm = (props) => {
     if(props.programEnrollment){
       setCourseName(programEnrollment.course_name_in_current_sis)
     }
-    let data=await filterInstitution('');
-    setInstitutionOptions(data);
+    // let data=await filterI
+    
   },[props.programEnrollment])
 
   const prepareLookUpFields = async () => {
@@ -154,8 +154,9 @@ const ProgramEnrollmentForm = (props) => {
 
   useEffect(() => {
     getAllBatches().then((data) => {
+      console.log(data);
       setBatchOptions(
-        data?.data?.data?.batches.map((batches) => ({
+        data?.data?.data?.batchesConnection.values.map((batches) => ({
           key: batches.name,
           label: batches.name,
           value: batches.id,
@@ -446,13 +447,14 @@ const ProgramEnrollmentForm = (props) => {
                     <div className="col-md-6 col-sm-12 mt-2">
                       {!lookUpLoading ? (
                         <Input
-                          control="lookup"
+                          control="lookupAsync"
 
                           name="institution"
                           label="Institution"
                           required
-                          // filterData={filterInstitution}
-                          options={institutionOptions}
+                          filterData={filterInstitution}
+                          defaultOptions={props.id ? institutionOptions : true}
+                          // options={institutionOptions}
                           className="form-control"
                           placeholder="Institution"
                         />

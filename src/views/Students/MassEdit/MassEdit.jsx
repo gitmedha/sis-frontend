@@ -15,7 +15,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import Select ,{ components } from "react-select";
+import Select, { components } from "react-select";
 import moment from "moment";
 import CheckBoxForm from "../StudentComponents/CheckBoxForm";
 import AlumMassEdit from "./AlumMassEdit";
@@ -51,6 +51,7 @@ const MassEdit = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
+  const [commentRequired, setCommentRequired] = useState(false);
   const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(
     props.alumniService ? props.alumniService.fee_submission_date : null
   );
@@ -73,6 +74,7 @@ const MassEdit = (props) => {
   const [massEditCheck, setMassEditCheck] = useState(false);
   const [studentInput, setStudentInput] = useState("");
   const [status, setStatus] = useState("");
+  const [role, setRole] = useState([]);
 
   useEffect(() => {
     if (props.alumniService) {
@@ -95,6 +97,7 @@ const MassEdit = (props) => {
       setCategoryOptions(
         data.category.map((item) => ({ value: item.value, label: item.value }))
       );
+      setRole(data.role);
       setProgramOptions(
         data.program_mode.map((item) => ({
           value: item.value,
@@ -149,9 +152,10 @@ const MassEdit = (props) => {
     category: "",
     subcategory: "",
     assigned_to: "",
-    location:"",
+    location: "",
     program_mode: "",
-    comments: ""
+    comments: "",
+    role: "",
   };
 
   const handleClose = () => {
@@ -173,7 +177,7 @@ const MassEdit = (props) => {
         ? moment(values.fee_submission_date).format("YYYY-MM-DD")
         : null;
       let feeAmount = values.fee_amount;
-       let receiptNumber=values.receipt_number ?values.receipt_number:""
+      let receiptNumber = values.receipt_number ? values.receipt_number : "";
       let comments = values.comments ? values.comments : "";
       return {
         student: obj.id,
@@ -188,6 +192,7 @@ const MassEdit = (props) => {
         receipt_number: receiptNumber,
         start_date: startDate,
         type: values.type,
+        role:values.role
       };
     });
     props.uploadAlumniData(newdata);
@@ -267,39 +272,46 @@ const MassEdit = (props) => {
   const handleChange = (selectedOptions) => {
     setStudents(selectedOptions);
   };
-  useEffect(()=>{
+  useEffect(() => {
     let fee_submission_date = Yup.string()
-    .nullable()
-    .required("Contribution submission date is required.");
-  let fee_amount = Yup.string()
-    .nullable()
-    .required("Contribution amount is required.");
-  let receipt_number = Yup.string()
-    .nullable()
-    .required("Receipt number is required.");
-  let fieldsRequired = status === "Paid";
-  setFeeFieldsRequired(fieldsRequired);
-  if (fieldsRequired) {
-    setValidationRules(
-      AlumniServiceValidations.shape({
-        fee_submission_date,
-        fee_amount,
-        receipt_number,
-      })
-    );
-  } else {
-    setValidationRules(
-      AlumniServiceValidations.omit([
-        "fee_submission_date",
-        "fee_amount",
-        "receipt_number",
-      ])
-    );
-  }
+      .nullable()
+      .required("Contribution submission date is required.");
+    let comments = Yup.string().nullable().required("Comment is required.");
+    let fee_amount = Yup.string()
+      .nullable()
+      .required("Contribution amount is required.");
+    let receipt_number = Yup.string()
+      .nullable()
+      .required("Receipt number is required.");
+    let fieldsRequired = status === "Paid";
+    setFeeFieldsRequired(fieldsRequired);
+    if (fieldsRequired) {
+      setValidationRules(
+        AlumniServiceValidations.shape({
+          fee_submission_date,
+          fee_amount,
+          receipt_number,
+        })
+      );
+    }
+    if (commentRequired) {
+      setValidationRules(
+        AlumniServiceValidations.shape({
+          comments,
+        })
+      );
+    } else {
+      setValidationRules(
+        AlumniServiceValidations.omit([
+          "fee_submission_date",
+          "fee_amount",
+          "receipt_number",
+          "comments",
+        ])
+      );
+    }
+  }, [status, commentRequired]);
 
-  },[status])
-  
-  
   return (
     <Modal
       centered
@@ -323,9 +335,8 @@ const MassEdit = (props) => {
           </h1>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-white" >
-        
-          {/* <CheckBoxForm
+      <Modal.Body className="bg-white">
+        {/* <CheckBoxForm
             bulkAdd="Bulk Add"
             bulkcheck={bulkAddCheck}
             masscheck={massEditCheck}
@@ -333,21 +344,18 @@ const MassEdit = (props) => {
             setBulkAddCheck={setBulkAddCheck}
             setMassEditCheck={setMassEditCheck}
           /> */}
-        
-        
 
-        
-          <Formik
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-            validationSchema={validationRules}
-          >
-            {({ values }) => (
-              <Form>
-                <Section>
-                  <div className="row form_sec">
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {/* <Input
+        <Formik
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validationSchema={validationRules}
+        >
+          {({ values }) => (
+            <Form>
+              <Section>
+                <div className="row form_sec">
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {/* <Input
                       name="student_ids"
                       control="lookupAsync"
                       label="Student"
@@ -358,112 +366,131 @@ const MassEdit = (props) => {
                       defaultOptions={ studentOptions}
                       required={true}
                     /> */}
-                      <label className="leading-24">Student</label>
-                      <Select
-                         isMulti
-                         name="student_ids"
-                         options={studentOptions}
-                         closeMenuOnSelect={false}
-                        //  components={customComponents}
-                         isOptionDisabled={() => students.length >= 10}
-                         className="basic-multi-select"
-                         classNamePrefix="select"
-                         onInputChange={handleInputChange}
-                         onChange={handleChange}
-                         value={students}
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {assigneeOptions.length ? (
-                        <Input
-                          control="lookupAsync"
-                          name="assigned_to"
-                          label="Assigned To"
-                          required
-                          className="form-control"
-                          placeholder="Assigned To"
-                          filterData={filterAssignedTo}
-                          defaultOptions={assigneeOptions}
-                        />
-                      ) : (
-                        <Skeleton count={1} height={45} />
-                      )}
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    <label className="leading-24">Student</label>
+                    <Select
+                      isMulti
+                      name="student_ids"
+                      options={studentOptions}
+                      closeMenuOnSelect={false}
+                      //  components={customComponents}
+                      isOptionDisabled={() => students.length >= 10}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onInputChange={handleInputChange}
+                      onChange={handleChange}
+                      value={students}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {assigneeOptions.length ? (
                       <Input
-                        name="category"
-                        label="Category"
-                        placeholder="Category"
-                        control="lookup"
-                        icon="down"
-                        className="form-control"
-                        options={categoryOptions}
-                        onChange={(e) => setSelectedCategory(e.value)}
+                        control="lookupAsync"
+                        name="assigned_to"
+                        label="Assigned To"
                         required
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      {selectedCategory && (
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="type"
-                          label="Subcategory"
-                          options={typeOptions.filter(
-                            (option) => option.category === selectedCategory
-                          )}
-                          className="form-control"
-                          placeholder="Subcategory"
-                          required
-                        />
-                      )}
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        control="lookup"
-                        icon="down"
-                        name="program_mode"
-                        label="Program Mode"
-                        options={programOptions}
                         className="form-control"
-                        placeholder="Program Mode"
-                        required
+                        placeholder="Assigned To"
+                        filterData={filterAssignedTo}
+                        defaultOptions={assigneeOptions}
                       />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    ) : (
+                      <Skeleton count={1} height={45} />
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="category"
+                      label="Category"
+                      placeholder="Category"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={categoryOptions}
+                      onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    {selectedCategory && (
                       <Input
                         icon="down"
                         control="lookup"
-                        name="location"
-                        label="Location"
-                        options={locationOptions}
+                        name="type"
+                        label="Subcategory"
+                        options={typeOptions.filter(
+                          (option) => option.category === selectedCategory
+                        )}
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value;
+                          setCommentRequired(
+                            value.toLowerCase() === "workshop"
+                          );
+                        }}
                         className="form-control"
-                        placeholder="Location"
+                        placeholder="Subcategory"
                         required
                       />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="start_date"
-                        label="Start Date"
-                        placeholder="Start Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                        required
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="end_date"
-                        label="End Date"
-                        placeholder="End Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                    )}
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="role"
+                      label="Role"
+                      placeholder="Role"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={role}
+                      // onChange={(e) => setSelectedCategory(e.value)}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      control="lookup"
+                      icon="down"
+                      name="program_mode"
+                      label="Program Mode"
+                      options={programOptions}
+                      className="form-control"
+                      placeholder="Program Mode"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="location"
+                      label="Location"
+                      options={locationOptions}
+                      className="form-control"
+                      placeholder="Location"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="start_date"
+                      label="Start Date"
+                      placeholder="Start Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="end_date"
+                      label="End Date"
+                      placeholder="End Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="status"
                       label="Status"
@@ -476,34 +503,34 @@ const MassEdit = (props) => {
                       required={feeFieldsRequired}
                       onChange={(e) => setStatus(e.value)}
                     />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="fee_submission_date"
-                        label="Contribution Submission Date"
-                        placeholder="Contribution Submission Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                        onInput={(value) => setFeeSubmissionDateValue(value)}
-                        required={feeFieldsRequired}
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        min={0}
-                        type="number"
-                        name="fee_amount"
-                        label="Contribution Amount"
-                        placeholder="Contribution Amount"
-                        control="input"
-                        className="form-control"
-                        autoComplete="off"
-                        onInput={(e) => setFeeAmountValue(e.target.value)}
-                        required={feeFieldsRequired}
-                      />
-                    </div>
-                    <div className="col-md-6 col-sm-12 mt-2">
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="fee_submission_date"
+                      label="Contribution Submission Date"
+                      placeholder="Contribution Submission Date"
+                      control="datepicker"
+                      className="form-control"
+                      autoComplete="off"
+                      onInput={(value) => setFeeSubmissionDateValue(value)}
+                      required={feeFieldsRequired}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      min={0}
+                      type="number"
+                      name="fee_amount"
+                      label="Contribution Amount"
+                      placeholder="Contribution Amount"
+                      control="input"
+                      className="form-control"
+                      autoComplete="off"
+                      onInput={(e) => setFeeAmountValue(e.target.value)}
+                      required={feeFieldsRequired}
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="receipt_number"
                       label="Receipt Number"
@@ -515,42 +542,42 @@ const MassEdit = (props) => {
                     />
                   </div>
 
-                    <div className="col-md-12 col-sm-12 mt-2">
-                      <Textarea
-                        name="comments"
-                        label="Comments"
-                        placeholder="Comments"
-                        control="input"
-                        className="form-control"
-                        autoComplete="off"
-                      ></Textarea>
-                    </div>
-                  </div>
-                </Section>
-
-                <div className="row justify-content-end mt-1">
-                  <div className="col-auto p-0">
-                    <button
-                      type="button"
-                      onClick={handleClose}
-                      className="btn btn-secondary btn-regular collapse_form_buttons"
-                    >
-                      CANCEL
-                    </button>
-                  </div>
-                  <div className="col-auto p-0">
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-regular collapse_form_buttons"
-                    >
-                      SAVE
-                    </button>
+                  <div className="col-md-12 col-sm-12 mt-2">
+                    <Textarea
+                      name="comments"
+                      label="Comments"
+                      placeholder="Comments"
+                      control="input"
+                      required={commentRequired}
+                      className="form-control"
+                      autoComplete="off"
+                    ></Textarea>
                   </div>
                 </div>
-              </Form>
-            )}
-          </Formik>
-        
+              </Section>
+
+              <div className="row justify-content-end mt-1">
+                <div className="col-auto p-0">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="btn btn-secondary btn-regular collapse_form_buttons"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+                <div className="col-auto p-0">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                  >
+                    SAVE
+                  </button>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Modal.Body>
     </Modal>
   );

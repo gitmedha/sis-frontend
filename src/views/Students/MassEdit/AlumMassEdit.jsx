@@ -114,7 +114,6 @@ const statusOption = [
   { value: "Unpaid", label: "Unpaid" },
 ];
 
-
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
@@ -137,6 +136,7 @@ const AlumMassEdit = (props) => {
   const [noDataBool, setNoDataBool] = useState(false);
   const [searchDisabled, setSearchDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(true);
+  const [role, setRole] = useState([]);
   // const [selectedTypes, setSelectedTypes] = useState([]);
 
   const filterStudent = async (filterValue) => {
@@ -193,6 +193,7 @@ const AlumMassEdit = (props) => {
                 start_date: val.start_date,
                 type: val.type,
                 student_id: obj.value,
+                role:obj.role,
                 id: Number(val.id),
               })
             );
@@ -225,6 +226,7 @@ const AlumMassEdit = (props) => {
             label: item.value,
           }))
         );
+        setRole(data.role);
       });
 
       getStudentsPickList().then((data) => {
@@ -274,6 +276,7 @@ const AlumMassEdit = (props) => {
     category: null,
     type: "",
     status: "",
+    role: "",
   };
 
   const onSubmit = async (values) => {
@@ -295,16 +298,22 @@ const AlumMassEdit = (props) => {
         assigned_to: filteredData.assigned_to || obj.assigned_to,
         category: filteredData.category || obj.category,
         comments: filteredData.comments || obj.comments,
-        end_date: moment(new Date(filteredData.end_date || obj.end_date)).format('YYYY-MM-DD'),
+        end_date: moment(
+          new Date(filteredData.end_date || obj.end_date)
+        ).format("YYYY-MM-DD"),
         fee_amount: filteredData.fee_amount || obj.fee_amount,
-        fee_submission_date: moment(new Date(filteredData.fee_submission_date || obj.fee_submission_date)).format('YYYY-MM-DD'),
+        fee_submission_date: moment(
+          new Date(filteredData.fee_submission_date || obj.fee_submission_date)
+        ).format("YYYY-MM-DD"),
         location: filteredData.location || obj.location,
         program_mode: filteredData.program_mode || obj.program_mode,
         receipt_number: filteredData.receipt_number || obj.receipt_number,
-        start_date: moment(new Date(filteredData.start_date || obj.start_date)).format('YYYY-MM-DD'),
+        start_date: moment(
+          new Date(filteredData.start_date || obj.start_date)
+        ).format("YYYY-MM-DD"),
       };
 
-      return filteredData; 
+      return filteredData;
     });
     props.handelSubmitMassEdit(data, "AlumniBulkEdit");
   };
@@ -376,8 +385,6 @@ const AlumMassEdit = (props) => {
         }
       ),
   });
-  
-  
 
   const handelCancel = (key) => {
     if (key === "cross") {
@@ -443,13 +450,13 @@ const AlumMassEdit = (props) => {
     setStudents(selectedOptions);
   };
   const initialValuesStudent = {
-    start_date:  null ,
-    end_date:  null,
+    start_date: null,
+    end_date: null,
     student_ids: [],
   };
 
   useEffect(async () => {
-    if (startDate ) {
+    if (startDate) {
       setTypeOptions([]);
       let data = await getStudentAlumniRange(startDate);
       setAlumData(data);
@@ -488,7 +495,6 @@ const AlumMassEdit = (props) => {
     setSelectedOptions(selected);
 
     const matchingData = findMatchingData(alumData, selected, "type");
-
 
     let values = matchingData.map((obj) => ({
       label: `${obj.student.full_name} (${obj.student.student_id})`,
@@ -562,7 +568,7 @@ const AlumMassEdit = (props) => {
               </button>
             </div>
           </Modal.Header>
-          <Modal.Body className="bg-white" style={{minHeight:"300px"}}>
+          <Modal.Body className="bg-white" style={{ minHeight: "300px" }}>
             <Formik
               initialValues={initialValuesStudent}
               // validationSchema={validationSchema}
@@ -580,8 +586,9 @@ const AlumMassEdit = (props) => {
                         className="form-control text-uppercase "
                         required
                         onChange={(e) => {
-                          setFieldValue('start_date',e.target.value)
-                          handleDatechange(e, "startDate")}}
+                          setFieldValue("start_date", e.target.value);
+                          handleDatechange(e, "startDate");
+                        }}
                       />
                     </div>
                     <div className="col-md-5 col-sm-12 mt-2">
@@ -594,8 +601,9 @@ const AlumMassEdit = (props) => {
                         required
                         min={startDate}
                         onChange={(e) => {
-                          setFieldValue('end_date',e.target.value)
-                          handleDatechange(e, "endDate")}}
+                          setFieldValue("end_date", e.target.value);
+                          handleDatechange(e, "endDate");
+                        }}
                       />
                     </div>
                   </div>
@@ -654,7 +662,7 @@ const AlumMassEdit = (props) => {
                       value={students}
                     />
                   </div>
-                  <div className="d-flex justify-content-end   mt-4 pt-2" >
+                  <div className="d-flex justify-content-end   mt-4 pt-2">
                     <button
                       type="submit"
                       onClick={() => props.onHide()}
@@ -762,6 +770,20 @@ const AlumMassEdit = (props) => {
                           />
                         )}
                       </div>
+
+                      <div className="col-md-6 col-sm-12 mt-2">
+                        <Input
+                          name="role"
+                          label="Role"
+                          placeholder="Role"
+                          control="lookup"
+                          icon="down"
+                          className="form-control"
+                          options={role}
+                          // onChange={(e) => setSelectedCategory(e.value)}
+                          // required
+                        />
+                      </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           control="lookup"
@@ -792,7 +814,7 @@ const AlumMassEdit = (props) => {
                           control="datepicker"
                           onChange={(date) => {
                             // const updatedDate = moment(date).startOf('day').add(5, 'hours').toDate();
-                            setFieldValue('start_date', date);
+                            setFieldValue("start_date", date);
                           }}
                           className="form-control"
                           autoComplete="off"
@@ -803,7 +825,15 @@ const AlumMassEdit = (props) => {
                           name="end_date"
                           label="End Date"
                           placeholder="End Date"
-                          onChange={(date) => setFieldValue('end_date',moment(date).startOf('day').add(24, 'hours').toDate())}
+                          onChange={(date) =>
+                            setFieldValue(
+                              "end_date",
+                              moment(date)
+                                .startOf("day")
+                                .add(24, "hours")
+                                .toDate()
+                            )
+                          }
                           control="datepicker"
                           className="form-control"
                           autoComplete="off"
@@ -876,7 +906,7 @@ const AlumMassEdit = (props) => {
                     <div className="col-auto p-0">
                       <button
                         type="button"
-                        onClick={()=>props.onHide()}
+                        onClick={() => props.onHide()}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
