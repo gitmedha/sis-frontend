@@ -71,6 +71,77 @@ const MentorBulkrow = (props) => {
     location: "",
   });
   const [programOptions, setProgramOptions] = useState([]);
+  const [specify_others, setspecify_others] = useState(false);
+
+  const mentorDomainOptions = [
+    "3D Modeling & CAD Design",
+    "Accounting & Bookkeeping",
+    "Affiliate Marketing",
+    "AR/VR Development",
+    "Artificial Intelligence",
+    "Brand Consulting",
+    "Business Analysis & Market Research",
+    "Business Strategy & Startup Mentorship",
+    "Cake Decorating & Baking",
+    "Calligraphy",
+    "Candle Making",
+    "Career Counseling",
+    "Cloud Computing",
+    "Content Writer",
+    "Cybersecurity",
+    "Dance Instructor",
+    "Data Science & Machine Learning",
+    "DevOps & System Administration",
+    "Digital Marketing (SEO, PPC, Social Media)",
+    "E-commerce (Dropshipping, Print-on-Demand)",
+    "Email Marketing",
+    "Embroidery & Textile Designing",
+    "Ethical Hacking",
+    "Event Management",
+    "Fashion Designing & Styling",
+    "Financial Consulting & Planning",
+    "Fitness Coach",
+    "Floristry & Bouquet Arrangement",
+    "Food Blogging",
+    "Freelance Writing (Blogs, Articles, Copywriting)",
+    "Game Development",
+    "Graphic Design",
+    "Handmade Crafts & DIY Art",
+    "Illustration & Digital Art",
+    "Interior Decoration & Home Styling",
+    "IT Support & Networking",
+    "Jewellery Illustrator",
+    "Jewelry Making & Beading",
+    "Language Translation",
+    "Leather Crafting",
+    "Legal Consulting & Contract Drafting",
+    "Mehndi (Henna) Artist",
+    "Music Production & Audio Editing",
+    "Online Tutoring",
+    "Organic Gardening & Urban Farming",
+    "Origami Artist",
+    "Others",
+    "Photography & Videography",
+    "Podcast",
+    "Pottery",
+    "Radio Jockey",
+    "Social Media Influencing",
+    "Software Development",
+    "Stock Trading & Crypto Investing",
+    "Student",
+    "Tattoo Artist",
+    "Travel Blogging & Local Tour Guide",
+    "UI/UX Design",
+    "Video Editing & Animation",
+    "Virtual Assistance",
+    "Voice Acting & Dubbing",
+    "Voice-over Artist",
+    "Yoga Instructor",
+    "YouTuber"
+  ].map(domain => ({
+    label: domain,
+    value: domain
+  }));
 
   const handleInputChange = (id, data, value) => {
     const input = value.current;
@@ -225,6 +296,29 @@ const MentorBulkrow = (props) => {
           />
         </td>
         <td>
+          <Select
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.mentor_domain
+                ? `border-red`
+                : ""
+            }`}
+            options={mentorDomainOptions}
+            onChange={(selectedOption) => {
+              // Clear specify_others if not "Others" is selected
+              if (selectedOption?.value == "Others") {
+                // props.updateRow(row.id, "specify_others", "");
+                props.returnother('Others')
+                setspecify_others(true);
+              }
+              else{
+                props.updateRow(row.id, "mentor_domain", selectedOption?.value || "");
+              }
+            }}
+            value={mentorDomainOptions.find(option => option.value === row.mentor_domain)}
+            // placeholder="Select Mentor Domain"
+          />
+        </td>
+        {specify_others && (<td>
           <input
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.mentor_domain
@@ -238,8 +332,7 @@ const MentorBulkrow = (props) => {
               props.updateRow(row.id, "mentor_domain", e.target.value)
             }
           />
-        </td>
-
+        </td>)}
         <td>
           <input
              className={`table-input h-2 ${
