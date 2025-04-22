@@ -30,19 +30,11 @@ const AddStudentOutreach = (props) => {
 
   // Update a row
   const updateRow = (field, value) => {
-    console.log(field, value, 'field, value');
-    // Use functional update to ensure we always get the latest state
     setRows(prevRows => {
       const updatedRow = { ...prevRows[0], [field]: value };
-      console.log("About to update rows with:", updatedRow);
       return [updatedRow];
     });
   };
-
-  // Debug effect to monitor rows changes
-  useEffect(() => {
-    console.log("Rows state updated:", rows);
-  }, [rows]);
 
   // Validate all rows
   const validateRows = () => {
@@ -112,7 +104,6 @@ const AddStudentOutreach = (props) => {
     ]);
     onHide("studentOutreach", data);
   };
-  console.log(rows, 'rows')
   return (
     <Modal
       centered
@@ -181,7 +172,7 @@ const AddStudentOutreach = (props) => {
               className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
-              disabled={isSaveDisabled}
+              disabled={disableSaveButton || isSaveDisabled}
             >
               SAVE
             </button>
