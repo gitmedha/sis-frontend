@@ -25,10 +25,10 @@ const AddStudentOutreach = (props) => {
     },
   ]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(false);
 
   // Update a row
   const updateRow = (field, value) => {
-    console.log(field, value, 'field, value');
     const updatedRow = { ...rows[0], [field]: value };
     setRows([updatedRow]);
   };
@@ -78,7 +78,6 @@ const AddStudentOutreach = (props) => {
       updated_by_frontend: null,
     }));
 
-    console.log("Payload for POST request:", data);
     // Call your API here
     // Example: axios.post('/api/student-outreach', payload)
 
@@ -148,6 +147,7 @@ const AddStudentOutreach = (props) => {
                     row={row}
                     setRows={setRows}
                     updateRow={updateRow}
+                    setIsSaveDisabled={setIsSaveDisabled}
                   />
                 ))}
               </tbody>
@@ -165,7 +165,7 @@ const AddStudentOutreach = (props) => {
               className="btn btn-primary btn-regular mx-0 bulk_add_button"
               type="submit"
               onClick={onSubmit}
-              disabled={disableSaveButton}
+              disabled={isSaveDisabled}
             >
               SAVE
             </button>
