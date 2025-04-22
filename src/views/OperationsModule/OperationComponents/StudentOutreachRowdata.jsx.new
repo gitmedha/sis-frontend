@@ -13,10 +13,12 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
 
   // Initialize localStudentCount when row.students changes outside this component
   useEffect(() => {
+    console.log("row.students changed externally:", row.students);
     
     // Only update localStudentCount from row.students during initialization
     // or when localStudentCount is 0 (to prevent overwriting calculated values)
     if (row.students !== undefined && localStudentCount === 0) {
+      console.log("Updating localStudentCount from row.students:", row.students);
       setLocalStudentCount(row.students);
     } else {
       console.log("Not updating localStudentCount - current value:", localStudentCount);
@@ -274,16 +276,20 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
               designations: designationType
             }
           }).then(response => {
+            console.log(`Full response for ${designationType}:`, JSON.stringify(response.data));
             
             // Extract values array
             const values = response.data?.data?.studentSystemActorRatiosConnection?.values || [];
+            console.log(`Found ${values.length} ratio values for ${designationType}`);
             
             if (values.length > 0) {
               const ratioData = values[0];
+              console.log(`Detailed ratio data for ${designationType}:`, ratioData);
               
               // If we found an institution_type, store it
               if (ratioData.institution_type) {
                 foundInstitutionType = ratioData.institution_type;
+                console.log("Found institution type:", foundInstitutionType);
               }
               
               if (ratioData.student_system_actor_ratio) {
@@ -291,6 +297,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
                 const parsedRatio = parseFloat(ratioData.student_system_actor_ratio);
                 
                 if (!isNaN(parsedRatio) && parsedRatio > 0) {
+                  console.log(`Valid ratio found for ${designationType}: ${parsedRatio}`);
                   return {
                     designationType,
                     count,
@@ -320,13 +327,35 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       // Wait for all API calls to complete
       const results = await Promise.all(promises);
       
+      // Process results
+      console.log("Processing API results:", results);
       let anyValidRatioFound = false;
 
       // Check if we have any valid ratio results
       const validResults = results.filter(result => result !== null);
+      console.log(`Found ${validResults.length} valid results out of ${results.length} total`);
+
+      // If we have Faculty selected but no valid Faculty ratio, use a default ratio
+      if (row.faculty === "Faculty" && 
+          !validResults.some(r => r && r.designationType === "Faculty") && 
+          designationCounts["Faculty"] > 0) {
+        console.log("No valid Faculty ratio found but Faculty is selected - using default ratio of 30");
+        
+        // Add a synthetic result for Faculty with a reasonable default ratio
+        validResults.push({
+          designationType: "Faculty",
+          count: designationCounts["Faculty"],
+          ratio: 30, // Default ratio of 30 students per faculty
+          institution_type: row.department.includes("Higher Education") ? "University" : "College"
+        });
+        
+        console.log("Added default Faculty ratio:", validResults[validResults.length - 1]);
+      }
+
       for (const result of validResults) {
         if (result) {
           const { designationType, count, ratio, institution_type } = result;
+          console.log(`Processing result for ${designationType}:`, { count, ratio, institution_type });
           totalRatios[designationType] = ratio;
           
           // If we found an institution_type and haven't set one yet, use this one
@@ -336,6 +365,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
           
           // Calculate students for this designation type
           const studentsForThisType = count * ratio;
+          console.log(`Calculated ${studentsForThisType} students for ${designationType} (${count} × ${ratio})`);
           
           if (!isNaN(studentsForThisType) && isFinite(studentsForThisType) && studentsForThisType > 0) {
             anyValidRatioFound = true;
@@ -358,15 +388,23 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       // But only if we actually got data from the API
       if (anyValidRatioFound || results.length > 0) {
         const roundedStudents = totalStudents > 0 ? Math.round(totalStudents) : 0;
+        console.log("Setting student count based on calculation:", roundedStudents);
         
-        // Always update the student count regardless of value
-        setLocalStudentCount(roundedStudents);
-        updateRow("students", roundedStudents);
+        // Update both row state and local state
+        // But avoid needlessly setting to zero if we already have a value
+        if (roundedStudents > 0 || localStudentCount === 0) {
+          console.log("Updating student count to:", roundedStudents);
+          setLocalStudentCount(roundedStudents);
+          updateRow("students", roundedStudents);
+        } else {
+          console.log("Keeping existing student count:", localStudentCount, "instead of setting to zero");
+        }
         
         // Create a local variable to track the expected update
         const studentUpdatePromise = new Promise(resolve => {
           // Wait slightly to allow state update
           setTimeout(() => {
+            console.log("After student update, values are - row.students:", row.students, "localStudentCount:", localStudentCount); 
             resolve();
           }, 100);
         });
@@ -378,8 +416,10 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       
       // Update institution type if available, or clear it if not found
       if (foundInstitutionType) {
+        console.log("Setting institution type to:", foundInstitutionType);
         updateRow("institution_type", foundInstitutionType);
       } else {
+        console.log("No institution type found, clearing field");
         updateRow("institution_type", "");
       }
       
@@ -579,7 +619,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       updateRow("students", 0);
     }
   }, [localFacultyCount]);
-console.log(row, 'row')
+
   return (
     <tr>
       {/* Start Date */}
@@ -809,4 +849,4 @@ console.log(row, 'row')
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default StudentOutreachRowdata;
+export default StudentOutreachRowdata; 
