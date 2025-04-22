@@ -8,20 +8,8 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
   const [designations, setDesignations] = useState([]);
   const [projectNames, setProjectNames] = useState([]);
   const [studentSystemActorRatio, setStudentSystemActorRatio] = useState(null);
-  const [localFacultyCount, setLocalFacultyCount] = useState(0);
-  const [localStudentCount, setLocalStudentCount] = useState(0);
 
-  // Initialize localStudentCount when row.students changes outside this component
-  useEffect(() => {
-    
-    // Only update localStudentCount from row.students during initialization
-    // or when localStudentCount is 0 (to prevent overwriting calculated values)
-    if (row.students !== undefined && localStudentCount === 0) {
-      setLocalStudentCount(row.students);
-    } else {
-      console.log("Not updating localStudentCount - current value:", localStudentCount);
-    }
-  }, [row.students]);
+
 
   // State to department/project mapping
   const STATE_DEPARTMENT_MAP = {
@@ -360,7 +348,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         const roundedStudents = totalStudents > 0 ? Math.round(totalStudents) : 0;
         
         // Always update the student count regardless of value
-        setLocalStudentCount(roundedStudents);
         updateRow("students", roundedStudents);
         
         // Create a local variable to track the expected update
@@ -373,14 +360,14 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         
         await studentUpdatePromise;
       } else {
-        console.log("No valid student ratio found, not updating student count");
       }
       
       // Update institution type if available, or clear it if not found
       if (foundInstitutionType) {
         updateRow("institution_type", foundInstitutionType);
       } else {
-        updateRow("institution_type", "");
+        // Don't reset institution_type if we don't have a value - this prevents clearing other fields
+        // updateRow("institution_type", "");
       }
       
     } catch (error) {
@@ -395,12 +382,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       setDesignations([]);
       setProjectNames([]);
       
-      // Reset faculty-related fields
-      updateRow("faculty", "");
-      updateRow("facultyCount", 0);
-      
       // Explicitly reset student count
-      setLocalStudentCount(0);
       updateRow("students", 0);
       updateRow("institution_type", "");
       
@@ -408,7 +390,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
     }
 
     try {
-      console.log("Fetching faculty count from API...");
       const response = await api.post("/graphql", {
         query: COUNT_USERS_TOTS,
         variables: {
@@ -423,8 +404,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       const designationsArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.designation) || [];
       const projectNamesArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.project_name) || [];
       
-      console.log("API returned designations:", designationsArray);
-      console.log("API returned projectNames:", projectNamesArray);
+      
       
       // Update state only if we have values
       if (designationsArray.length > 0) {
@@ -432,27 +412,27 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       } else {
         setDesignations([]);
         // No designations means no faculty
-        updateRow("faculty", "");
+        updateRow("faculty", 0);
       }
       
       if (projectNamesArray.length > 0) {
         setProjectNames(projectNamesArray);
       } else {
         setProjectNames([]);
-        // No project names means no faculty
-        updateRow("faculty", "");
+        updateRow("faculty", 0);
       }
       
       const count = response.data?.data?.usersTotsConnection?.aggregate?.count || 0;
-      console.log("Faculty count from API:", count);
       
       // If count is 0, clear faculty selection and student count
       if (count === 0) {
-        updateRow("faculty", "");
+        updateRow("faculty", 0);
         // Explicitly reset student count when faculty count is zero
-        setLocalStudentCount(0);
         updateRow("students", 0);
-        updateRow("institution_type", "");
+        // Only clear institution type if it's empty
+        if (!row.institution_type) {
+          updateRow("institution_type", "");
+        }
       }
       
       return count;
@@ -463,67 +443,23 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       setProjectNames([]);
       updateRow("faculty", "");
       // Explicitly reset student count on error
-      setLocalStudentCount(0);
       updateRow("students", 0);
       updateRow("institution_type", "");
       return 0;
     }
   };
 
-  // Memoized faculty options with count
-  const facultyOptions = useMemo(() => {
-    console.log("Updating faculty options with count:", localFacultyCount);
-    console.log("Faculty count type:", typeof localFacultyCount);
-    console.log("Is faculty dropdown disabled?", !localFacultyCount || localFacultyCount <= 0);
-    return [
-      {
-        value: "Faculty",
-        label: `Faculty (${localFacultyCount || 0})`,
-      },
-    ];
-  }, [localFacultyCount]);
+  
 
   // Call fetchFacultyCount when relevant filters change
   useEffect(() => {
-    console.log("Department/State/Date dependencies changed, updating faculty count");
-    console.log("Current dependencies:", {
-      start_date: row.start_date,
-      end_date: row.end_date,
-      state: row.state,
-      department: row.department
-    });
-    
     const fetchCount = async () => {
       if (row.start_date && row.end_date && row.state && row.department) {
         const count = await fetchFacultyCount();
-        console.log(`Faculty count updated to ${count}, type: ${typeof count}`);
-        
+        console.log(count, 'count')
         // Update faculty count state
-        setLocalFacultyCount(count);
-        updateRow("facultyCount", count);
+        updateRow("faculty", count);
         
-        console.log("After updateRow call, facultyCount:", row.facultyCount);
-        
-        // Auto-select Faculty if count is greater than 0 and faculty is not already selected
-        if (count > 0 && !row.faculty) {
-          console.log("Auto-selecting Faculty since we have faculty count");
-          console.log("Current student count:", localStudentCount);
-          
-          // Important: Don't reset student count when auto-selecting faculty
-          const currentStudentCount = localStudentCount;
-          
-          updateRow("faculty", "Faculty");
-          
-          // If we had a non-zero student count, restore it 
-          // This prevents auto-faculty selection from resetting the student count
-          if (currentStudentCount > 0) {
-            console.log("Preserving existing student count:", currentStudentCount);
-            setTimeout(() => {
-              setLocalStudentCount(currentStudentCount);
-              updateRow("students", currentStudentCount);
-            }, 100);
-          }
-        }
       }
     };
     fetchCount();
@@ -531,54 +467,26 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
 
   // Trigger fetch when faculty is selected or any required parameter changes
   useEffect(() => {
-    console.log("Dependencies changed - current state:", {
-      faculty: row.faculty,
-      facultyCount: localFacultyCount,
-      start_date: !!row.start_date,
-      end_date: !!row.end_date,
-      state: !!row.state,
-      department: !!row.department,
-      studentCount: localStudentCount
-    });
-    
-    // ONLY reset values if faculty is specifically deselected or removed
-    // Don't reset when other dependencies change
-    if (!row.faculty) {
-      console.log("Faculty deselected or not set, clearing student count");
-      setLocalStudentCount(0);
+    // Only reset values if faculty is explicitly zero, not for any positive value
+    if (row.faculty === 0) {
       updateRow("students", 0);
       updateRow("institution_type", "");
       return;
     }
     
-    // Only trigger new data fetch if we have all dependencies
-    if (row.faculty && 
+    // Only trigger new data fetch if we have all dependencies and faculty is positive
+    if (row.faculty > 0 && 
         row.start_date && row.end_date && 
         row.state && row.department && 
         designations.length > 0 && projectNames.length > 0) {
-      
-      console.log("All dependencies present, triggering student data fetch");
       
       // Use a slight delay to ensure the faculty value is processed
       setTimeout(() => {
         fetchStudentSystemActorRatio();
       }, 200);
-    } else {
-      console.log("Not all dependencies available for student data fetch");
     }
   }, [row.faculty, row.start_date, row.end_date, row.state, row.department, designations.length, projectNames.length]);
 
-  // Add a useEffect to ensure student count is zero when faculty count is zero
-  useEffect(() => {
-    console.log("Faculty count changed:", localFacultyCount);
-    
-    // If faculty count is zero or not present, ensure student count is also zero
-    if (localFacultyCount === 0) {
-      console.log("Faculty count is zero, resetting student count to zero");
-      setLocalStudentCount(0);
-      updateRow("students", 0);
-    }
-  }, [localFacultyCount]);
 console.log(row, 'row')
   return (
     <tr>
@@ -698,62 +606,16 @@ console.log(row, 'row')
 
       {/* Faculty dropdown */}
       <td>
-        <Select
-          className={`table-input ${errors.faculty ? "border-red" : ""}`}
-          classNamePrefix="select"
-          isClearable={true}
-          name="faculty"
-          options={facultyOptions}
-          value={facultyOptions.find((option) => option.value === row.faculty)}
-          onChange={(selectedOption) => {
-            const facultyValue = selectedOption ? selectedOption.value : "";
-            console.log("Faculty selected manually:", facultyValue, "current student count:", localStudentCount);
-            
-            // Reset faculty-related fields when deselected
-            if (!facultyValue) {
-              console.log("Faculty deselected, clearing related fields");
-              updateRow("faculty", "");
-              // Always reset student count when faculty is deselected
-              setLocalStudentCount(0);
-              updateRow("students", 0);
-              updateRow("institution_type", "");
-              setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
-              return;
-            }
-            
-            // Set faculty value
-            updateRow("faculty", facultyValue);
-            setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
-            
-            // If faculty count is zero, ensure student count is also zero
-            if (localFacultyCount === 0) {
-              console.log("Faculty selected but count is zero, ensuring student count is zero");
-              setLocalStudentCount(0);
-              updateRow("students", 0);
-              return;
-            }
-            
-            // If we have all required data, trigger the fetch
-            if (
-              designations.length > 0 && 
-              projectNames.length > 0 &&
-              row.start_date &&
-              row.end_date &&
-              row.state && 
-              row.department
-            ) {
-              console.log("All dependencies available, fetching student data immediately");
-              setTimeout(() => {
-                fetchStudentSystemActorRatio();
-              }, 200);
-            } else {
-              console.log("Cannot fetch student data, missing dependencies");
-            }
+        <input
+          className={`table-input h-2 ${errors.faculty ? "border-red" : ""}`}
+          type="number"
+          min="0"
+          value={row.faculty !== undefined ? row.faculty : 0}
+          onChange={(e) => {
+            updateRow("faculty", parseInt(e.target.value) || 0);
           }}
-          // Use localFacultyCount instead of row.facultyCount
-          isDisabled={!localFacultyCount || localFacultyCount <= 0}
+          readOnly
         />
-        {console.log("Faculty render - localFacultyCount:", localFacultyCount, "row.facultyCount:", row.facultyCount, "disabled:", !localFacultyCount || localFacultyCount <= 0)}
         {errors.faculty && <span className="error">{errors.faculty}</span>}
       </td>
 
@@ -783,6 +645,7 @@ console.log(row, 'row')
           onChange={(e) =>
             handleInputChange("institution_type", e.target.value)
           }
+          readOnly
         />
         {errors.institution_type && (
           <span className="error">{errors.institution_type}</span>
@@ -794,14 +657,13 @@ console.log(row, 'row')
         <input
           className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
           type="number"
-          value={localStudentCount !== null ? localStudentCount : row.students}
+          value={row.students !== null ? row.students : 0}
           onChange={(e) => {
             const newValue = parseInt(e.target.value, 10) || 0;
-            setLocalStudentCount(newValue);
             handleInputChange("students", newValue);
           }}
+          readOnly
         />
-        {console.log("Students render - localStudentCount:", localStudentCount, "row.students:", row.students)}
         {errors.students && <span className="error">{errors.students}</span>}
       </td>
     </tr>

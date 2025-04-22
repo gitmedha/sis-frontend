@@ -20,6 +20,7 @@ const AddStudentOutreach = (props) => {
       quarter: "",
       month: "",
       state: "",
+      faculty: 0,
       students: 0,
       year_fy: "",
     },
@@ -29,9 +30,19 @@ const AddStudentOutreach = (props) => {
 
   // Update a row
   const updateRow = (field, value) => {
-    const updatedRow = { ...rows[0], [field]: value };
-    setRows([updatedRow]);
+    console.log(field, value, 'field, value');
+    // Use functional update to ensure we always get the latest state
+    setRows(prevRows => {
+      const updatedRow = { ...prevRows[0], [field]: value };
+      console.log("About to update rows with:", updatedRow);
+      return [updatedRow];
+    });
   };
+
+  // Debug effect to monitor rows changes
+  useEffect(() => {
+    console.log("Rows state updated:", rows);
+  }, [rows]);
 
   // Validate all rows
   const validateRows = () => {
@@ -44,6 +55,8 @@ const AddStudentOutreach = (props) => {
       row.quarter &&
       row.month &&
       row.state &&
+      !isNaN(row.faculty) &&
+      row.faculty >= 0 &&
       row.year_fy &&
       !isNaN(row.students) &&
       row.students >= 0
@@ -71,6 +84,7 @@ const AddStudentOutreach = (props) => {
       quarter: row.quarter,
       month: row.month,
       state: row.state,
+      faculty: row.faculty,
       students: row.students,
       year_fy: row.year_fy,
       isactive: true,
@@ -91,12 +105,14 @@ const AddStudentOutreach = (props) => {
         quarter: "",
         month: "",
         state: "",
+        faculty: 0,
         students: 0,
         year_fy: "",
       },
     ]);
     onHide("studentOutreach", data);
   };
+  console.log(rows, 'rows')
   return (
     <Modal
       centered
