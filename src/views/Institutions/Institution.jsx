@@ -175,7 +175,7 @@ const Institute = (props) => {
     setShowDeleteAlert(true);
     console.log(instituteData);
     let studentData = {
-      module_name: "institute",
+      module_name: "Institutions",
       activity: "Institute Data Deleted",
       event_id: instituteID,
       updatedby: userId,

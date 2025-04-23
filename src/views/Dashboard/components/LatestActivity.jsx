@@ -70,7 +70,7 @@ const LatestActivity=(props)=> {
             let formattedValue;
         
             // Handle specific cases for "batch" and "opportunity"
-            if (value.toLowerCase() === 'Institutes' || value.toLowerCase() === 'institution' ) {
+            if (value.toLowerCase() === 'institute' || value.toLowerCase() === 'institution' ) {
               formattedValue = 'Institutions';
             }
             if (value.toLowerCase() === 'batch') {
