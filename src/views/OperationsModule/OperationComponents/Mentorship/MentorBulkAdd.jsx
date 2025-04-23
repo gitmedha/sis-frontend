@@ -24,6 +24,77 @@ const MentorBulkAdd = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
+  const [specify_others, setSpecifyOthers] = useState(false);
+  const mentorDomainOptions = [
+    "3D Modeling & CAD Design",
+    "Accounting & Bookkeeping",
+    "Affiliate Marketing",
+    "AR/VR Development",
+    "Artificial Intelligence",
+    "Brand Consulting",
+    "Business Analysis & Market Research",
+    "Business Strategy & Startup Mentorship",
+    "Cake Decorating & Baking",
+    "Calligraphy",
+    "Candle Making",
+    "Career Counseling",
+    "Cloud Computing",
+    "Content Writer",
+    "Cybersecurity",
+    "Dance Instructor",
+    "Data Science & Machine Learning",
+    "DevOps & System Administration",
+    "Digital Marketing (SEO, PPC, Social Media)",
+    "E-commerce (Dropshipping, Print-on-Demand)",
+    "Email Marketing",
+    "Embroidery & Textile Designing",
+    "Ethical Hacking",
+    "Event Management",
+    "Fashion Designing & Styling",
+    "Financial Consulting & Planning",
+    "Fitness Coach",
+    "Floristry & Bouquet Arrangement",
+    "Food Blogging",
+    "Freelance Writing (Blogs, Articles, Copywriting)",
+    "Game Development",
+    "Graphic Design",
+    "Handmade Crafts & DIY Art",
+    "Illustration & Digital Art",
+    "Interior Decoration & Home Styling",
+    "IT Support & Networking",
+    "Jewellery Illustrator",
+    "Jewelry Making & Beading",
+    "Language Translation",
+    "Leather Crafting",
+    "Legal Consulting & Contract Drafting",
+    "Mehndi (Henna) Artist",
+    "Music Production & Audio Editing",
+    "Online Tutoring",
+    "Organic Gardening & Urban Farming",
+    "Origami Artist",
+    "Others",
+    "Photography & Videography",
+    "Podcast",
+    "Pottery",
+    "Radio Jockey",
+    "Social Media Influencing",
+    "Software Development",
+    "Stock Trading & Crypto Investing",
+    "Student",
+    "Tattoo Artist",
+    "Travel Blogging & Local Tour Guide",
+    "UI/UX Design",
+    "Video Editing & Animation",
+    "Virtual Assistance",
+    "Voice Acting & Dubbing",
+    "Voice-over Artist",
+    "Yoga Instructor",
+    "YouTuber"
+  ].map(domain => ({
+    label: domain,
+    value: domain
+  }));
+
   const [classValue, setclassValue] = useState({});
   const [data, setData] = useState([
     {
@@ -96,12 +167,11 @@ const MentorBulkAdd = (props) => {
         if(key =='contact' && obj[key].length <10){
           const value = obj[key];
           result[key] = true;
-        }else{
+        }else {
           const value = obj[key];
-        const isEmpty = isEmptyValue(value);
-        result[key] = isEmpty;
+          const isEmpty = isEmptyValue(value);
+          result[key] = isEmpty;
         }
-        
       }
     }
 
@@ -321,61 +391,29 @@ const MentorBulkAdd = (props) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   let isEmptyValuFound = false;
-
-  //   for (let row of rows) {
-  //     for (let key in row) {
-     
-  //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //      if((key =="contact" && row[key].length < 10 )){
-  //       isEmptyValuFound=true
-  //      }
-  //      if((key =="email" && (!emailRegex.test(row[key]) ))){
-  //       isEmptyValuFound=true
-  //      }
-  //       if (
-          /* !(key == "social_media_profile_link") */
-  //       ) {
-  //         if (isEmptyValue(row[key])) {
-  //           isEmptyValuFound = true;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   setDisableSaveButton(isEmptyValuFound);
-  // }, [rows]);
-
   useEffect(() => {
-    let isEmptyValueFound = false;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+    let isEmptyValuFound = false;
+
     for (let row of rows) {
-      // Check required fields only
-      if (
-        isEmptyValue(row.mentor_name) ||
-        isEmptyValue(row.contact) ||
-        row.contact?.length < 10 || // Phone number validation
-        isEmptyValue(row.email) ||
-        !emailRegex.test(row.email) || // Email format validation
-        isEmptyValue(row.mentor_domain) ||
-        isEmptyValue(row.mentor_company_name) ||
-        isEmptyValue(row.designation) ||
-        isEmptyValue(row.mentor_state) ||
-        isEmptyValue(row.mentor_area) ||
-        isEmptyValue(row.outreach) ||
-        isEmptyValue(row.onboarding_date) ||
-        isEmptyValue(row.assigned_to) ||
-        isEmptyValue(row.medha_area) ||
-        isEmptyValue(row.program_name) ||
-        isEmptyValue(row.status)
-      ) {
-        isEmptyValueFound = true;
-        break; // No need to check further if one invalid field is found
+      for (let key in row) {
+     
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+       if((key =="contact" && row[key].length < 10 )){
+        isEmptyValuFound=true
+       }
+       if((key =="email" && (!emailRegex.test(row[key]) ))){
+        isEmptyValuFound=true
+       }
+        if (
+          !(key == "social_media_profile_link") 
+        ) {
+          if (isEmptyValue(row[key])) {
+            isEmptyValuFound = true;
+          }
+        }
       }
     }
-    
-    setDisableSaveButton(isEmptyValueFound);
+    setDisableSaveButton(isEmptyValuFound);
   }, [rows]);
 
   useEffect(() => {
@@ -428,6 +466,9 @@ const MentorBulkAdd = (props) => {
   };
   const onCancel = () => {
     setshowLimit(false);
+  };
+  const returnother = (value) => {
+    setSpecifyOthers(value === "Others");
   };
 
   return (
@@ -496,11 +537,14 @@ const MentorBulkAdd = (props) => {
                   <th>Mentor Name *</th>
                   <th>Contact *</th>
                   <th>Email *</th>
+                  
                   <th>Mentor's Domain *</th>
+                  {specify_others && <th>Specify Others</th> }
+                  
                   <th>Mentor's Company Name * </th>
                   <th>Designation/Title *</th>
                   <th>Mentor's State *</th>
-                  <th>Mentor’s Area* </th>
+                  <th>Mentor's City * </th>
                   <th>Outreach (Offline/Online) *</th>
                   <th>Onboarding Date *</th> 
                   <th>Social Media Link </th>
@@ -520,6 +564,7 @@ const MentorBulkAdd = (props) => {
               <tbody>
                 {rows.map((row) => (
                   <MentorBulkrow
+                    key={row.id}
                     handleInputChange={handleInputChange}
                     handleChange={handleChange}
                     row={row}
@@ -531,6 +576,8 @@ const MentorBulkAdd = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    returnother={returnother}
+                    specify_others={specify_others}
                   />
                 ))}
               </tbody>
