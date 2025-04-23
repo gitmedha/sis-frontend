@@ -1,13 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Select from "react-select";
-import { COUNT_USERS_TOTS, GET_STUDENT_SYSTEM_ACTOR_RATIO } from "../../../graphql/operations"; // Added new import
+import {
+  COUNT_USERS_TOTS,
+  GET_STUDENT_SYSTEM_ACTOR_RATIO,
+} from "../../../graphql/operations"; // Added new import
 import api from "../../../apis";
 
-const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
+const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) => {
   const [errors, setErrors] = useState({});
   const [designations, setDesignations] = useState([]);
   const [projectNames, setProjectNames] = useState([]);
-  const [studentSystemActorRatio, setStudentSystemActorRatio] = useState(null);
 
   // State to department/project mapping
   const STATE_DEPARTMENT_MAP = {
@@ -16,8 +18,10 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       { value: "DHE Samarth, Haryana", label: "DHE Samarth, Haryana" },
       { value: "DTE, Haryana", label: "DTE, Haryana" },
       { value: "SDIT, Haryana", label: "SDIT, Haryana" },
-      { value: "Department of Higher Education", label: "Department of Higher Education" },
-
+      {
+        value: "Department of Higher Education",
+        label: "Department of Higher Education",
+      },
     ],
     Bihar: [
       {
@@ -98,7 +102,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
   // Function to determine financial year based on date (assuming Indian FY: April-March)
   const getFinancialYear = (dateString) => {
     if (!dateString) return "";
-
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
@@ -131,227 +134,290 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
 
     const date = new Date(dateString);
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     return monthNames[date.getMonth()];
   };
 
   // Handle input change for text and number fields
   const handleInputChange = (field, value) => {
-    updateRow(row.id, field, value);
+    updateRow(field, value);
     setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
   };
 
   // Handle Select change for gender
   const handleGenderChange = (selectedOption) => {
-    updateRow(row.id, "gender", selectedOption ? selectedOption.value : "");
+    updateRow("gender", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, gender: "" }));
   };
 
   // Handle Select change for month
   const handleMonthChange = (selectedOption) => {
-    updateRow(row.id, "month", selectedOption ? selectedOption.value : "");
+    updateRow("month", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, month: "" }));
   };
 
   // Handle state change
   const handleStateChange = (selectedOption) => {
     const stateValue = selectedOption ? selectedOption.value : "";
-    console.log("Selected state:", stateValue); // Debugging
 
-    updateRow(row.id, "state", stateValue);
-    // updateRow(row.id, "department", ""); // Reset department
+    updateRow("state", stateValue);
+    // updateRow("department", ""); // Reset department
     setErrors((prev) => ({ ...prev, state: "", department: "" }));
   };
 
   const handleDepartmentChange = (selectedOption) => {
-    updateRow(row.id, "department", selectedOption ? selectedOption.value : "");
+    updateRow("department", selectedOption ? selectedOption.value : "");
     setErrors((prev) => ({ ...prev, department: "" }));
   };
 
   const handleQuarterChange = (selectedOption) => {
-    updateRow(row.id, "quarter", selectedOption ? selectedOption.value : "");
+    updateRow("quarter", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, quarter: "" }));
   };
 
   // Handle date changes and update financial year and quarter automatically
   const handleDateChange = (field, value) => {
     setErrors((prev) => ({ ...prev, [field]: "" }));
-  
+
     if (field === "start_date" && value) {
       const fy = getFinancialYear(value);
       // Update both fields at once
-      setRows(prev => prev.map(row => 
-        row.id === row.id 
-          ? { ...row, start_date: value, year_fy: fy }
-          : row
-      ));
+      setRows((prev) =>
+        prev.map((prevRow) => ({ ...prevRow, start_date: value, year_fy: fy }))
+      );
     } else {
-      updateRow(row.id, field, value);
+      updateRow(field, value);
     }
   };
 
   const handleEndDateChange = (value) => {
     setErrors((prev) => ({ ...prev, end_date: "" }));
-  
+
     if (value) {
       const quarter = getQuarterFromDate(value);
       const month = getMonthFromDate(value);
       // Single atomic update for end_date, quarter, and month
-      setRows(prevRows => prevRows.map(prevRow => 
-        prevRow.id === row.id 
-          ? { ...prevRow, end_date: value, quarter: quarter, month: month }
-          : prevRow
-      ));
+      setRows((prevRows) =>
+        prevRows.map((prevRow) => ({
+          ...prevRow,
+          end_date: value,
+          quarter: quarter,
+          month: month,
+        }))
+      );
     } else {
       // Just update end_date if no quarter calculation needed
-      updateRow(row.id, "end_date", value);
+      updateRow("end_date", value);
     }
   };
 
   // Handle Select change for category
   const handleCategoryChange = (selectedOption) => {
-    updateRow(row.id, "category", selectedOption ? selectedOption.value : "");
+    updateRow("category", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, category: "" }));
   };
 
   // Function to fetch student system actor ratio
   const fetchStudentSystemActorRatio = async () => {
-    if (!row.department) {
+    const facultyNum = Number(row.faculty);
+
+    // Immediately exit if faculty is 0 or not positive
+    if (facultyNum <= 0) {
+      // Just exit without modifying any values - the useEffect will handle this
+      return;
+    }
+
+    if (!row.department || !projectNames[0]) {
       return;
     }
 
     try {
-      // Use the first value from projectNames state array
-      const projectName = projectNames.length > 0 ? projectNames[0] : "";
-      
-      if (!projectName) {
-        console.log("Missing project name");
-        return;
-      }
-
       // Special designations list
-      const specialDesignations = ["TPO", "Principal", "TCAPO", "ESI", "Instructor"];
-      
+      const specialDesignations = [
+        "TPO",
+        "Principal",
+        "TCAPO",
+        "ESI",
+        "Instructor",
+      ];
+
       // Count designations from the response data
       const designationCounts = {};
-      
-      // Log raw designations for debugging
-      console.log("Raw designations array:", designations);
-      
+
       // Count each designation type from the values array
       if (Array.isArray(designations)) {
-        designations.forEach(designation => {
+        designations.forEach((designation) => {
           // Skip empty designations
-          if (!designation) return;
-          
+          if (!designation) {
+            return;
+          }
+
           // Categorize as special designation or Faculty
-          const category = specialDesignations.includes(designation) ? designation : "Faculty";
+          const category = specialDesignations.includes(designation)
+            ? designation
+            : "Faculty";
           designationCounts[category] = (designationCounts[category] || 0) + 1;
         });
       }
-      
-      console.log("Designation counts:", designationCounts);
-      
-      // Ensure we have TPO and Principal in the counts
-      if (designations.includes("TPO") && !designationCounts["TPO"]) {
-        designationCounts["TPO"] = designations.filter(d => d === "TPO").length;
-      }
-      
-      if (designations.includes("Principal") && !designationCounts["Principal"]) {
-        designationCounts["Principal"] = designations.filter(d => d === "Principal").length;
-      }
-      
-      console.log("Final designation counts:", designationCounts);
-      
+
       // Calculate total students based on each designation type
       let totalStudents = 0;
       let totalRatios = {};
+      let foundInstitutionType = "";
       let promises = [];
-      
+
       // List of designations we'll query
       const designationsToQuery = Object.keys(designationCounts);
-      console.log("Designations to query:", designationsToQuery);
-      
+
       // Prepare all API calls in parallel
       for (const designationType of designationsToQuery) {
         const count = designationCounts[designationType] || 0;
-        console.log(`Preparing API call for ${designationType} with count ${count}`);
-        
+
         if (count > 0) {
-          const promise = api.post("/graphql", {
-            query: GET_STUDENT_SYSTEM_ACTOR_RATIO,
-            variables: {
-              project_name: projectName,
-              designations: designationType
-            }
-          }).then(response => {
-            console.log(`API response for ${designationType}:`, response.data);
-            const ratioData = response.data?.data?.studentSystemActorRatiosConnection?.values?.[0];
-            
-            if (ratioData && ratioData.student_system_actor_ratio) {
-              return {
-                designationType,
-                count,
-                ratio: ratioData.student_system_actor_ratio
-              };
-            }
-            console.log(`No ratio found for ${designationType}`);
-            return null;
-          }).catch(error => {
-            console.error(`Error fetching ratio for ${designationType}:`, error);
-            return null;
-          });
-          
+          const promise = api
+            .post("/graphql", {
+              query: GET_STUDENT_SYSTEM_ACTOR_RATIO,
+              variables: {
+                project_name: projectNames[0],
+                designations: designationType,
+              },
+            })
+            .then((response) => {
+              // Extract values array
+              const values =
+                response.data?.data?.studentSystemActorRatiosConnection
+                  ?.values || [];
+
+              if (values.length > 0) {
+                const ratioData = values[0];
+
+                // If we found an institution_type, store it
+                if (ratioData.institution_type) {
+                  foundInstitutionType = ratioData.institution_type;
+                }
+
+                if (ratioData.student_system_actor_ratio) {
+                  // Parse ratio as a number to ensure it's valid
+                  const parsedRatio = parseFloat(
+                    ratioData.student_system_actor_ratio
+                  );
+
+                  if (!isNaN(parsedRatio) && parsedRatio > 0) {
+                    return {
+                      designationType,
+                      count,
+                      ratio: parsedRatio,
+                      institution_type: ratioData.institution_type || "",
+                    };
+                  } else {
+                    console.warn(
+                      `Invalid ratio value for ${designationType}: ${ratioData.student_system_actor_ratio}`
+                    );
+                  }
+                } else {
+                  console.warn(
+                    `No student_system_actor_ratio field found for ${designationType}`
+                  );
+                }
+              } else {
+                console.warn(`No ratio data found for ${designationType}`);
+              }
+
+              return null;
+            })
+            .catch((error) => {
+              console.error(
+                `Error fetching ratio for ${designationType}:`,
+                error
+              );
+              return null;
+            });
+
           promises.push(promise);
         }
       }
-      
-      console.log(`Created ${promises.length} API call promises`);
-      
+
       // Wait for all API calls to complete
       const results = await Promise.all(promises);
-      console.log("API call results:", results);
-      
-      // Process results
-      for (const result of results) {
+
+      let anyValidRatioFound = false;
+
+      // Check if we have any valid ratio results
+      const validResults = results.filter((result) => result !== null);
+      for (const result of validResults) {
         if (result) {
-          const { designationType, count, ratio } = result;
+          const { designationType, count, ratio, institution_type } = result;
           totalRatios[designationType] = ratio;
-          
+
+          // If we found an institution_type and haven't set one yet, use this one
+          if (institution_type && !foundInstitutionType) {
+            foundInstitutionType = institution_type;
+          }
+
           // Calculate students for this designation type
           const studentsForThisType = count * ratio;
-          totalStudents += studentsForThisType;
-          
-          console.log(`${designationType}: ${count} × ${ratio} = ${studentsForThisType}`);
+
+          if (
+            !isNaN(studentsForThisType) &&
+            isFinite(studentsForThisType) &&
+            studentsForThisType > 0
+          ) {
+            anyValidRatioFound = true;
+            totalStudents += studentsForThisType;
+          } else {
+            console.warn(
+              `Invalid student calculation for ${designationType}: ${count} × ${ratio} = ${studentsForThisType}`
+            );
+          }
         }
       }
-      
-      console.log("Total students calculation:", totalStudents);
-      
-      // Store the ratio data for reference
-      setStudentSystemActorRatio({ 
-        student_system_actor_ratio: totalRatios,
-        project_name: projectName
-      });
-      
-      // Update the students count
-      if (totalStudents > 0 && !row.students) {
-        const roundedStudents = Math.round(totalStudents);
-        updateRow(row.id, "students", roundedStudents);
+
+      // Always update the student count, even if it's zero
+      // But only if we actually got data from the API
+      if (anyValidRatioFound || results.length > 0) {
+        const roundedStudents =
+          totalStudents > 0 ? Math.round(totalStudents) : 0;
+
+        // Always update the student count regardless of value
+        updateRow("students", roundedStudents);
+
+        // Create a local variable to track the expected update
+        const studentUpdatePromise = new Promise((resolve) => {
+          // Wait slightly to allow state update
+          setTimeout(() => {
+            resolve();
+          }, 100);
+        });
+
+        await studentUpdatePromise;
+      } else {
+      }
+
+      // Update institution type if available, or clear it if not found
+      if (foundInstitutionType) {
+        updateRow("institution_type", foundInstitutionType);
+      } else {
+        // Don't reset institution_type if we don't have a value - this prevents clearing other fields
+        // updateRow("institution_type", "");
       }
     } catch (error) {
       console.error("Error calculating students from ratios:", error);
-      setStudentSystemActorRatio(null);
     }
   };
 
   const fetchFacultyCount = async () => {
-    if (!row.start_date || !row.end_date || !row.state) {
-      return 0;
-    }
-
     try {
       const response = await api.post("/graphql", {
         query: COUNT_USERS_TOTS,
@@ -364,82 +430,142 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
       });
 
       // Extract designations and project names from the response
-      const designationsArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.designation) || [];
-      const projectNamesArray = response.data?.data?.usersTotsConnection?.values?.map(item => item.project_name) || [];
-      
-      setDesignations(designationsArray);
-      setProjectNames(projectNamesArray);
-      
-      // Log the arrays for debugging
-      console.log("Designations:", designationsArray);
-      console.log("Project Names:", projectNamesArray);
+      const designationsArray =
+        response.data?.data?.usersTotsConnection?.values?.map(
+          (item) => item.designation
+        ) || [];
+      const projectNamesArray =
+        response.data?.data?.usersTotsConnection?.values?.map(
+          (item) => item.project_name
+        ) || [];
 
-      // If we have designations and project names, set the first ones as default
-      if (designationsArray.length > 0 && !row.designation) {
-        updateRow(row.id, "designation", designationsArray[0]);
-      }
-      
-      if (projectNamesArray.length > 0 && !row.project_name) {
-        updateRow(row.id, "project_name", projectNamesArray[0]);
+      // Update state only if we have values
+      if (designationsArray.length > 0) {
+        setDesignations(designationsArray);
+      } else {
+        setDesignations([]);
       }
 
-      return response.data?.data?.usersTotsConnection?.aggregate?.count || 0;
+      if (projectNamesArray.length > 0) {
+        setProjectNames(projectNamesArray);
+      } else {
+        setProjectNames([]);
+      }
+
+      const count =
+        response.data?.data?.usersTotsConnection?.aggregate?.count || 0;
+
+      // If count is 0, explicitly reset all values immediately
+      if (count === 0) {
+        setDesignations([]);
+        setProjectNames([]);
+
+        // First update faculty to 0
+        updateRow("faculty", 0);
+        
+        // Disable the save button
+        if (setIsSaveDisabled) {
+          setIsSaveDisabled(true);
+        }
+        
+        // Then update students and institution_type in a separate update
+        // This ensures the faculty=0 useEffect will run first
+        setTimeout(() => {
+          setRows((prevRows) =>
+            prevRows.map((prevRow) => ({
+              ...prevRow,
+              students: 0,
+              institution_type: "",
+            }))
+          );
+        }, 10);
+      }
+
+      return count;
     } catch (error) {
       console.error("Error fetching faculty count:", error);
-      return 0;
     }
   };
 
-  // Memoized faculty options with count
-  const facultyOptions = useMemo(() => {
-    return [
-      {
-        value: "Faculty",
-        label: `Faculty (${row.facultyCount || 0})`,
-      },
-    ];
-  }, [row.facultyCount]);
-
-  // Function to trigger when filters change
-  const updateFacultyCount = async () => {
-    if (row.start_date && row.end_date && row.state) {
-      const count = await fetchFacultyCount();
-      // updateRow(row.id, "facultyCount", count);
-    }
-  };
-
-  // Call updateFacultyCount when relevant filters change
+  // Modified with AbortController
   useEffect(() => {
     const fetchCount = async () => {
-      if (row.start_date && row.end_date && row.state && row.department) {
-        const count = await fetchFacultyCount();
-        updateRow(row.id, "facultyCount", count);
+      try {
+        if (row.start_date && row.end_date && row.state && row.department) {
+          const count = await fetchFacultyCount();
+          updateRow("faculty", count);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Faculty count error:", error);
+        }
       }
     };
+
     fetchCount();
   }, [row.start_date, row.end_date, row.state, row.department]);
 
-  // Call fetchStudentSystemActorRatio when faculty is selected and we have designations/projectNames
   useEffect(() => {
-    if (row.faculty && designations.length > 0 && projectNames.length > 0) {
-      fetchStudentSystemActorRatio();
+    const facultyNum = Number(row.faculty);
+
+    // If faculty is 0, reset students and institution_type and disable save button
+    if (facultyNum === 0) {
+      console.log("Faculty is zero, resetting student values");
+      // Use setRows to directly update the state in the parent component
+      setRows((prevRows) =>
+        prevRows.map((prevRow) => ({
+          ...prevRow,
+          students: 0,
+          institution_type: "",
+        }))
+      );
+      // Disable the save button when faculty is 0
+      if (setIsSaveDisabled) {
+        setIsSaveDisabled(true);
+      }
+      return;
+    } else {
+      // Enable the save button when faculty is not 0
+      if (setIsSaveDisabled) {
+        setIsSaveDisabled(false);
+      }
     }
-  }, [row.faculty, designations, projectNames]);
 
+    // Only run if faculty is positive and all dependencies exist
+    if (
+      facultyNum > 0 &&
+      row.start_date &&
+      row.end_date &&
+      row.state &&
+      row.department &&
+      designations.length > 0 &&
+      projectNames.length > 0
+    ) {
+      const fetchData = async () => {
+        try {
+          // Double-check faculty is still positive before fetching
+          if (Number(row.faculty) <= 0) return;
+          
+          // Fetch student data
+          await fetchStudentSystemActorRatio();
+        } catch (error) {
+          console.error("Error fetching student data:", error);
+        }
+      };
+
+      // Add a small delay to ensure all state updates have processed
+      const timerId = setTimeout(() => {
+        fetchData();
+      }, 200);
+
+      // Clean up timeout on unmount or when dependencies change
+      return () => clearTimeout(timerId);
+    }
+  }, [row.faculty]);
+
+  console.log(row, "row");
   return (
-    <tr key={row.id}>
-      {/* Financial Year - Now read-only as it's auto-determined */}
-      <td>
-        <input
-          className={`table-input h-2 ${errors.year_fy ? "border-red" : ""}`}
-          type="text"
-          value={row.year_fy || ""}
-          onChange={(e) => handleInputChange("year_fy", e.target.value)}
-          readOnly
-        />
-        {errors.year_fy && <span className="error">{errors.year_fy}</span>}
-      </td>
-
+    <tr>
       {/* Start Date */}
       <td>
         <input
@@ -460,6 +586,18 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
           onChange={(e) => handleEndDateChange(e.target.value)}
         />
         {errors.end_date && <span className="error">{errors.end_date}</span>}
+      </td>
+
+      {/* Financial Year - Now read-only as it's auto-determined */}
+      <td>
+        <input
+          className={`table-input h-2 ${errors.year_fy ? "border-red" : ""}`}
+          type="text"
+          value={row.year_fy || ""}
+          onChange={(e) => handleInputChange("year_fy", e.target.value)}
+          readOnly
+        />
+        {errors.year_fy && <span className="error">{errors.year_fy}</span>}
       </td>
 
       {/* Quarter - Now read-only as it's determined by end date */}
@@ -509,24 +647,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         {errors.category && <span className="error">{errors.category}</span>}
       </td>
 
-      {/* Faculty dropdown */}
-      <td>
-        <Select
-          className={`table-input ${errors.faculty ? "border-red" : ""}`}
-          classNamePrefix="select"
-          isClearable={true}
-          name="faculty"
-          options={facultyOptions}
-          value={facultyOptions.find((option) => option.value === row.faculty)}
-          onChange={(selectedOption) => {
-            updateRow(row.id, "faculty", selectedOption?.value || "");
-            setErrors((prevErrors) => ({ ...prevErrors, faculty: "" }));
-          }}
-          isDisabled={!row.facultyCount} // Disable if no faculty count
-        />
-        {errors.faculty && <span className="error">{errors.faculty}</span>}
-      </td>
-
       {/* State */}
       <td>
         <Select
@@ -560,6 +680,21 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         )}
       </td>
 
+      {/* Faculty dropdown */}
+      <td>
+        <input
+          className={`table-input h-2 ${errors.faculty ? "border-red" : ""}`}
+          type="number"
+          min="0"
+          value={row.faculty !== undefined ? row.faculty : 0}
+          onChange={(e) => {
+            updateRow("faculty", parseInt(e.target.value) || 0);
+          }}
+          readOnly
+        />
+        {errors.faculty && <span className="error">{errors.faculty}</span>}
+      </td>
+
       {/* Gender */}
       <td>
         <Select
@@ -575,19 +710,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
         {errors.gender && <span className="error">{errors.gender}</span>}
       </td>
 
-      {/* Students */}
-      <td>
-        <input
-          className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
-          type="number"
-          value={row.students}
-          onChange={(e) =>
-            handleInputChange("students", parseInt(e.target.value, 10))
-          }
-        />
-        {errors.students && <span className="error">{errors.students}</span>}
-      </td>
-
       {/* Institution Type */}
       <td>
         <input
@@ -599,10 +721,26 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows }) => {
           onChange={(e) =>
             handleInputChange("institution_type", e.target.value)
           }
+          readOnly
         />
         {errors.institution_type && (
           <span className="error">{errors.institution_type}</span>
         )}
+      </td>
+
+      {/* Students */}
+      <td>
+        <input
+          className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
+          type="number"
+          value={row.students !== null ? row.students : 0}
+          onChange={(e) => {
+            const newValue = parseInt(e.target.value, 10) || 0;
+            handleInputChange("students", newValue);
+          }}
+          readOnly
+        />
+        {errors.students && <span className="error">{errors.students}</span>}
       </td>
     </tr>
   );

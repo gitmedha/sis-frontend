@@ -528,6 +528,7 @@ export const GET_STUDENT_SYSTEM_ACTOR_RATIO = `
         student_system_actor_ratio
         project_name
         designations
+        institution_type
       }
     }
   }
