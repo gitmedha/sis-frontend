@@ -63,6 +63,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
 
   const categoryOptions = [
     { value: "Student Outreach", label: "Student Outreach" },
+    { value: "Placements", label: "Placements" },
   ];
 
   // Month options for the Select component
@@ -561,7 +562,20 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
       // Clean up timeout on unmount or when dependencies change
       return () => clearTimeout(timerId);
     }
-  }, [row.faculty]);
+  }, [row.faculty, row.category]);
+
+  // Handle category changes
+  useEffect(() => {
+    console.log("Category changed to:", row.category);
+    
+    // Always reset students when category is not Student Outreach
+    if (row.category !== "Student Outreach") {
+      // Only reset if previously had a value, keep 0 if already 0
+      if (row.students > 0) {
+        updateRow("students", 0);
+      }
+    }
+  }, [row.category]);
 
   console.log(row, "row");
   return (
@@ -680,20 +694,22 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         )}
       </td>
 
-      {/* Faculty dropdown */}
-      <td>
-        <input
-          className={`table-input h-2 ${errors.faculty ? "border-red" : ""}`}
-          type="number"
-          min="0"
-          value={row.faculty !== undefined ? row.faculty : 0}
-          onChange={(e) => {
-            updateRow("faculty", parseInt(e.target.value) || 0);
-          }}
-          readOnly
-        />
-        {errors.faculty && <span className="error">{errors.faculty}</span>}
-      </td>
+      {/* Faculty dropdown - only show for Student Outreach */}
+      {row.category === "Student Outreach" && (
+        <td>
+          <input
+            className={`table-input h-2 ${errors.faculty ? "border-red" : ""}`}
+            type="number"
+            min="0"
+            value={row.faculty !== undefined ? row.faculty : 0}
+            onChange={(e) => {
+              updateRow("faculty", parseInt(e.target.value) || 0);
+            }}
+            readOnly
+          />
+          {errors.faculty && <span className="error">{errors.faculty}</span>}
+        </td>
+      )}
 
       {/* Gender */}
       <td>
@@ -728,18 +744,30 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         )}
       </td>
 
-      {/* Students */}
+      {/* Students - behavior differs based on category */}
       <td>
-        <input
-          className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
-          type="number"
-          value={row.students !== null ? row.students : 0}
-          onChange={(e) => {
-            const newValue = parseInt(e.target.value, 10) || 0;
-            handleInputChange("students", newValue);
-          }}
-          readOnly
-        />
+        {row.category === "Student Outreach" ? (
+          /* For Student Outreach: Read-only calculated field */
+          <input
+            className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
+            type="number"
+            value={row.students !== null ? row.students : 0}
+            readOnly
+          />
+        ) : (
+          /* For other categories: User-editable input */
+          <input
+            className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
+            type="number"
+            min="0"
+            // Force 0 for non-Student Outreach categories when first changed
+            value={row.category !== "Student Outreach" && row.students > 1000 ? 0 : (row.students || 0)}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value, 10) || 0;
+              handleInputChange("students", newValue);
+            }}
+          />
+        )}
         {errors.students && <span className="error">{errors.students}</span>}
       </td>
     </tr>

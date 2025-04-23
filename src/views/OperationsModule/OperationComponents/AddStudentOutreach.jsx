@@ -27,9 +27,15 @@ const AddStudentOutreach = (props) => {
   ]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
   const [isSaveDisabled, setIsSaveDisabled] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState("");
 
   // Update a row
   const updateRow = (field, value) => {
+    // Track category changes
+    if (field === "category") {
+      setCurrentCategory(value);
+    }
+    
     setRows(prevRows => {
       const updatedRow = { ...prevRows[0], [field]: value };
       return [updatedRow];
@@ -39,20 +45,29 @@ const AddStudentOutreach = (props) => {
   // Validate all rows
   const validateRows = () => {
     const row = rows[0];
-    return (
+    
+    // Base validation for all categories
+    const baseValidation = 
       row.category &&
       row.department &&
       row.gender &&
-      row.institution_type &&
       row.quarter &&
       row.month &&
       row.state &&
-      !isNaN(row.faculty) &&
-      row.faculty >= 0 &&
       row.year_fy &&
       !isNaN(row.students) &&
-      row.students >= 0
-    );
+      row.students > 0;
+      
+    // For Student Outreach category, also validate faculty and institution_type
+    if (row.category === "Student Outreach") {
+      return baseValidation && 
+        row.institution_type &&
+        !isNaN(row.faculty) &&
+        row.faculty > 0;
+    }
+    
+    // For other categories, base validation is sufficient
+    return baseValidation;
   };
 
   // Enable/disable Save button based on validation
@@ -87,9 +102,11 @@ const AddStudentOutreach = (props) => {
     // Call your API here
     // Example: axios.post('/api/student-outreach', payload)
 
-    // Reset form after submission
+    // Reset form after submission - clear ALL fields
     setRows([
       {
+        start_date: "",
+        end_date: "",
         category: "",
         department: "",
         gender: "",
@@ -102,8 +119,43 @@ const AddStudentOutreach = (props) => {
         year_fy: "",
       },
     ]);
+    
+    // Reset save button states
+    setDisableSaveButton(true);
+    setIsSaveDisabled(false);
+    
+    // Call onHide with data
     onHide("studentOutreach", data);
   };
+
+  // Create a function to handle the close button click
+  const handleClose = () => {
+    // Reset form 
+    setRows([
+      {
+        start_date: "",
+        end_date: "",
+        category: "",
+        department: "",
+        gender: "",
+        institution_type: "",
+        quarter: "",
+        month: "",
+        state: "",
+        faculty: 0,
+        students: 0,
+        year_fy: "",
+      },
+    ]);
+    
+    // Reset save button states
+    setDisableSaveButton(true);
+    setIsSaveDisabled(false);
+    
+    // Close the modal
+    onHide();
+  };
+
   return (
     <Modal
       centered
@@ -141,7 +193,7 @@ const AddStudentOutreach = (props) => {
                   <th>Category</th>
                   <th>State</th>
                   <th>Department</th>
-                  <th>Faculty</th>
+                  {currentCategory === "Student Outreach" && <th>Faculty</th>}
                   <th>Gender</th>
                   <th>Institution Type</th>
                   <th>Students</th>
@@ -163,7 +215,7 @@ const AddStudentOutreach = (props) => {
           <div className="d-flex justify-content-end between_class bulk_add_actions">
             <button
               type="button"
-              onClick={onHide}
+              onClick={handleClose}
               className="btn btn-danger btn-regular mr-2 bulk_add_button"
             >
               CLOSE
