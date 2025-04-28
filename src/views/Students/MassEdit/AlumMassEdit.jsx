@@ -114,7 +114,6 @@ const statusOption = [
   { value: "Unpaid", label: "Unpaid" },
 ];
 
-
 const AlumMassEdit = (props) => {
   const [studentOptions, setStudentOptions] = useState([]);
   const [students, setStudents] = useState([]);
@@ -126,6 +125,8 @@ const AlumMassEdit = (props) => {
   const [typeOptions, setTypeOptions] = useState(null);
   const [locationOptions, setLocationOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [isdisabledStudentlist, setisdisabledStudentlist] = useState(true);
   const [startDate, setStartDate] = useState(null);
@@ -138,7 +139,11 @@ const AlumMassEdit = (props) => {
   const [searchDisabled, setSearchDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(true);
   const [role, setRole] = useState([]);
-  // const [selectedTypes, setSelectedTypes] = useState([]);
+  const [isCategoryEnabled, setIsCategoryEnabled] = useState(false);
+  const [isSubCategoryEnabled, setIsSubCategoryEnabled] = useState(false);
+  const [isStudentEnabled, setIsStudentEnabled] = useState(false);
+  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
+  const [uniqueCategories, setUniqueCategories] = useState([]);
 
   const filterStudent = async (filterValue) => {
     try {
@@ -335,6 +340,234 @@ const AlumMassEdit = (props) => {
     });
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        const data = await getAlumniServicePickList();
+        if (isMounted) {
+          setTypeOptions(
+            data.subcategory.map((item) => ({
+              key: item.value,
+              value: item.value,
+              label: item.value,
+              category: item.category,
+            }))
+          );
+          setCategoryOptions(
+            data.category.map((item) => ({
+              value: item.value,
+              label: item.value,
+            }))
+          );
+          setRole(data.role);
+        }
+      } catch (error) {
+        console.error("Error fetching alumni service data:", error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (selectedCategory && typeOptions) {
+      const filtered = typeOptions.filter(
+        (option) => option.category === selectedCategory
+      );
+      setSubCategoryOptions(filtered);
+    } else {
+      setSubCategoryOptions([]);
+    }
+  }, [selectedCategory, typeOptions]);
+
+  useEffect(async () => {
+    if (startDate) {
+      try {
+        const data = await getStudentAlumniRange(startDate);
+        // If end date is selected, filter the data by date range
+        let filteredData = data;
+        if (endDate) {
+          filteredData = data.filter(item => {
+            const itemDate = new Date(item.start_date);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            return itemDate >= start && itemDate <= end;
+          });
+        }
+        
+        setAlumData(filteredData);
+        
+        // Get unique categories
+        const categories = [...new Set(filteredData.map(item => item.category))]
+          .map(category => ({
+            value: category,
+            label: category
+          }));
+        setUniqueCategories(categories);
+        
+        // Enable category selection
+        setIsCategoryEnabled(true);
+        setIsSubCategoryEnabled(false);
+        setIsStudentEnabled(false);
+        setSelectedCategory("");
+        setSelectedSubCategory("");
+        setFilteredStudents([]);
+      } catch (error) {
+        console.error("Error fetching alumni data:", error);
+      }
+    }
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    if (selectedCategory && alumData) {
+      // Get unique sub-categories for selected category
+      const subCategories = [...new Set(
+        alumData
+          .filter(item => item.category === selectedCategory)
+          .map(item => item.type)
+      )].map(type => ({
+        value: type,
+        label: type
+      }));
+      
+      setSubCategoryOptions(subCategories);
+      setIsSubCategoryEnabled(true);
+      setIsStudentEnabled(false);
+      setSelectedSubCategory("");
+      
+      // Filter students by category
+      const filtered = alumData.filter(item => item.category === selectedCategory);
+      setFilteredStudents(filtered);
+    } else {
+      setSubCategoryOptions([]);
+      setIsSubCategoryEnabled(false);
+      setFilteredStudents([]);
+    }
+  }, [selectedCategory, alumData]);
+
+  useEffect(() => {
+    if (selectedSubCategory && alumData) {
+      // Filter students by sub-category
+      const filtered = alumData.filter(item => item.type === selectedSubCategory);
+      setFilteredStudents(filtered);
+      setIsStudentEnabled(true);
+    } else if (selectedCategory) {
+      // If no sub-category selected but category is selected, show all students for that category
+      const filtered = alumData.filter(item => item.category === selectedCategory);
+      setFilteredStudents(filtered);
+      setIsStudentEnabled(false);
+    }
+  }, [selectedSubCategory, selectedCategory, alumData]);
+
+  const handleDatechange = async (event, key) => {
+    if (key === "endDate") {
+      setEndDate(event.target.value);
+      // When end date changes, fetch or filter data based on date range
+      if (startDate && event.target.value) {
+        let dataToFilter;
+        
+        // If we don't have alumData yet, fetch it
+        if (!alumData || alumData.length === 0) {
+          try {
+            const data = await getStudentAlumniRange(startDate);
+            dataToFilter = data;
+            setAlumData(data);
+          } catch (error) {
+            console.error("Error fetching alumni data:", error);
+            return;
+          }
+        } else {
+          dataToFilter = alumData;
+        }
+
+        // Filter the data by date range
+        const filteredData = dataToFilter.filter(item => {
+          const itemDate = new Date(item.start_date);
+          const start = new Date(startDate);
+          const end = new Date(event.target.value);
+          return itemDate >= start && itemDate <= end;
+        });
+        
+        // Update unique categories based on filtered data
+        const categories = [...new Set(filteredData.map(item => item.category))]
+          .map(category => ({
+            value: category,
+            label: category
+          }));
+        setUniqueCategories(categories);
+        
+        // If a category was selected, update its sub-categories
+        if (selectedCategory) {
+          const subCategories = [...new Set(
+            filteredData
+              .filter(item => item.category === selectedCategory)
+              .map(item => item.type)
+          )].map(type => ({
+            value: type,
+            label: type
+          }));
+          setSubCategoryOptions(subCategories);
+          
+          // Update filtered students
+          if (selectedSubCategory) {
+            const filtered = filteredData.filter(item => item.type === selectedSubCategory);
+            setFilteredStudents(filtered);
+          } else {
+            const filtered = filteredData.filter(item => item.category === selectedCategory);
+            setFilteredStudents(filtered);
+          }
+        }
+      }
+    } else {
+      // When start date changes, reset everything
+      setStartDate(event.target.value);
+      setAlumniDisable(true);
+      setSearchNextBool(true);
+      setSelectedOptions([]);
+      setStudentOptions([]);
+      setStudents([]);
+      setisdisabledStudentlist(true);
+      setSelectedCategory("");
+      setSelectedSubCategory("");
+      setIsCategoryEnabled(false);
+      setIsSubCategoryEnabled(false);
+      setIsStudentEnabled(false);
+      setFilteredStudents([]);
+      setSubCategoryOptions([]);
+      setUniqueCategories([]);
+    }
+  };
+
+  const handleCategoryChange = (selected) => {
+    if (!selected) {
+      setSelectedCategory("");
+      setSelectedSubCategory("");
+      setIsSubCategoryEnabled(false);
+      setIsStudentEnabled(false);
+      setFilteredStudents([]);
+      return;
+    }
+
+    setSelectedCategory(selected.value);
+    setSelectedSubCategory("");
+  };
+
+  const handleSubCategoryChange = (selected) => {
+    if (!selected) {
+      setSelectedSubCategory("");
+      setIsStudentEnabled(false);
+      return;
+    }
+
+    setSelectedSubCategory(selected.value);
+  };
+
   const validations = Yup.object({
     start_date: Yup.date()
       .nullable()
@@ -386,9 +619,7 @@ const AlumMassEdit = (props) => {
         }
       ),
   });
-  
-  
-  
+
   const handelCancel = (key) => {
     if (key === "cross") {
       props.handelCancel();
@@ -458,32 +689,6 @@ const AlumMassEdit = (props) => {
     student_ids: [],
   };
 
-  useEffect(async () => {
-    if (startDate) {
-      setTypeOptions([]);
-      let data = await getStudentAlumniRange(startDate);
-      setAlumData(data);
-      let uniqueStudentsMap = new Map();
-      data.forEach((obj) => {
-        if (!uniqueStudentsMap.has(obj.student?.id)) {
-          uniqueStudentsMap.set(obj?.student?.id, obj);
-        }
-      });
-      const uniqueTypes = [
-        ...new Set(
-          Array.from(uniqueStudentsMap.values()).map((student) => student.type)
-        ),
-      ].map((type) => ({
-        label: type,
-        value: type,
-        type: type,
-      }));
-
-      setTypeOptions(uniqueTypes);
-      setAlumniDisable(false);
-    }
-  }, [startDate, endDate]);
-
   const handleTypeChange = (selected) => {
     if (!selectedOptions || selectedOptions.length === 0) {
       setStudentOptions([]);
@@ -497,8 +702,10 @@ const AlumMassEdit = (props) => {
     }
     setSelectedOptions(selected);
 
-    const matchingData = findMatchingData(alumData, selected, "type");
-
+    // Use filteredStudents if category/sub-category is selected, otherwise use all alumData
+    const dataToFilter = selectedCategory || selectedSubCategory ? filteredStudents : alumData;
+    
+    const matchingData = findMatchingData(dataToFilter, selected, "type");
 
     let values = matchingData.map((obj) => ({
       label: `${obj.student.full_name} (${obj.student.student_id})`,
@@ -524,19 +731,7 @@ const AlumMassEdit = (props) => {
   const handleSearchStudent = () => {
     setisdisabledStudentlist(false);
   };
-  const handleDatechange = (event, key) => {
-    if (key === "endDate") {
-      setEndDate(event.target.value);
-    } else {
-      setStartDate(event.target.value);
-    }
-    setAlumniDisable(true);
-    setSearchNextBool(true);
-    setSelectedOptions([]);
-    setStudentOptions([]);
-    setStudents([]);
-    setisdisabledStudentlist(true);
-  };
+
   return (
     <Modal
       centered
@@ -575,7 +770,6 @@ const AlumMassEdit = (props) => {
           <Modal.Body className="bg-white" style={{ minHeight: "300px" }}>
             <Formik
               initialValues={initialValuesStudent}
-              // validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
               {({ values, setFieldValue }) => (
@@ -587,7 +781,7 @@ const AlumMassEdit = (props) => {
                         type="date"
                         name="start_date"
                         placeholder="DD/MM/YYYY"
-                        className="form-control text-uppercase "
+                        className="form-control text-uppercase"
                         required
                         onChange={(e) => {
                           setFieldValue("start_date", e.target.value);
@@ -611,62 +805,58 @@ const AlumMassEdit = (props) => {
                       />
                     </div>
                   </div>
+
                   <div className="mt-2">
-                    <label className="leading-24">Alumni Service</label>
+                    <label className="leading-24">Category</label>
                     <Select
-                      isMulti
-                      isDisabled={alumniDisable || typeOptions?.length == 0}
-                      onChange={(selectedOptions) => {
-                        handleTypeChange(selectedOptions);
-                        if (selectedOptions?.length === 0) {
-                          setStudents([]);
-                          setStudentOptions([]);
-                          setisdisabledStudentlist(true);
-                          setSearchNextBool(true);
-                          setSearchDisabled(true);
-                        }
-                      }}
-                      // components={customComponents}
-                      options={typeOptions || []}
+                      isDisabled={!isCategoryEnabled}
+                      options={uniqueCategories}
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      value={selectedOptions}
+                      onChange={handleCategoryChange}
+                      value={selectedCategory ? { value: selectedCategory, label: selectedCategory } : null}
                     />
-                    {selectedOptions?.length === 0 &&
-                    typeOptions?.length === 0 ? (
-                      <label className="text-danger">No Data Found</label>
-                    ) : (
-                      ""
-                    )}
                   </div>
+
+                  <div className="mt-2">
+                    <label className="leading-24">Sub-category</label>
+                    <Select
+                      isDisabled={!isSubCategoryEnabled}
+                      options={subCategoryOptions}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      onChange={handleSubCategoryChange}
+                      value={selectedSubCategory ? { value: selectedSubCategory, label: selectedSubCategory } : null}
+                    />
+                  </div>
+
                   <div className="mt-2">
                     <label className="leading-24">Student</label>
                     <Select
                       isMulti
+                      isDisabled={!isStudentEnabled}
                       name="student_ids"
-                      options={studentOptions}
+                      options={filteredStudents.map(obj => ({
+                        label: `${obj.student.full_name} (${obj.student.student_id})`,
+                        value: Number(obj.student.id)
+                      }))}
                       closeMenuOnSelect={false}
-                      // components={customComponents}
-                      isOptionDisabled={() => students?.length >= 10}
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      isDisabled={isdisabledStudentlist}
-                      // onInputChange={(e) => setStudentInput(e)}
+                      isOptionDisabled={() => students?.length >= 10}
                       onChange={(value) => {
                         handleselectChange(value);
-                        if (value?.length == 0) {
-                          setSearchDisabled(true);
-                          setNextDisabled(true);
-                        }
                         if (value?.length > 0) {
                           setNextDisabled(false);
+                        } else {
+                          setNextDisabled(true);
                         }
                       }}
-                      // onChange={handleselectChange}
                       value={students}
                     />
                   </div>
-                  <div className="d-flex justify-content-end   mt-4 pt-2" >
+
+                  <div className="d-flex justify-content-end mt-4 pt-2">
                     <button
                       type="submit"
                       onClick={() => props.onHide()}
@@ -674,25 +864,14 @@ const AlumMassEdit = (props) => {
                     >
                       Cancel
                     </button>
-                    {searchNextBool ? (
-                      <button
-                        type="button"
-                        onClick={handelSearch}
-                        disabled={selectedOptions?.length === 0}
-                        className="btn btn-primary mt-3 no-decoration "
-                      >
-                        Search
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleSubmit()}
-                        disabled={students?.length === 0}
-                        className="btn btn-primary mt-3 no-decoration "
-                      >
-                        Next
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleSubmit()}
+                      disabled={students?.length === 0}
+                      className="btn btn-primary mt-3 no-decoration"
+                    >
+                      Next
+                    </button>
                   </div>
                 </Form>
               )}
@@ -756,23 +935,22 @@ const AlumMassEdit = (props) => {
                           icon="down"
                           className="form-control"
                           options={categoryOptions}
-                          onChange={(e) => setSelectedCategory(e.value)}
+                          onChange={handleCategoryChange}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
-                        {selectedCategory && (
-                          <Input
-                            icon="down"
-                            control="lookup"
-                            name="type"
-                            label="Subcategory"
-                            options={typeOptions.filter(
-                              (option) => option.category === selectedCategory
-                            )}
-                            className="form-control"
-                            placeholder="Subcategory"
-                          />
-                        )}
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="type"
+                          label="Subcategory"
+                          options={typeOptions.filter(
+                            (option) => option.category === selectedCategory
+                          )}
+                          className="form-control"
+                          placeholder="Subcategory"
+                          onChange={handleSubCategoryChange}
+                        />
                       </div>
 
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -910,7 +1088,7 @@ const AlumMassEdit = (props) => {
                     <div className="col-auto p-0">
                       <button
                         type="button"
-                        onClick={()=>props.onHide()}
+                        onClick={() => props.onHide()}
                         className="btn btn-secondary btn-regular collapse_form_buttons"
                       >
                         CANCEL
