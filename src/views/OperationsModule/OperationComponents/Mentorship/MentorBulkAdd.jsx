@@ -321,19 +321,20 @@ const MentorBulkAdd = (props) => {
     });
   }, []);
 
+  
   useEffect(() => {
     let isEmptyValuFound = false;
-
+  
     for (let row of rows) {
       for (let key in row) {
      
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-       if((key =="contact" && row[key].length < 10 )){
-        isEmptyValuFound=true
-       }
-       if((key =="email" && (!emailRegex.test(row[key]) ))){
-        isEmptyValuFound=true
-       }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if((key =="contact" && row[key].length < 10 )){
+          isEmptyValuFound=true
+        }
+        if((key =="email" && (!emailRegex.test(row[key]) ))){
+          isEmptyValuFound=true
+        }
         if (
           !(key == "social_media_profile_link") 
         ) {
