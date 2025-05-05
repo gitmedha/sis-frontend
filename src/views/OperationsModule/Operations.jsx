@@ -1316,23 +1316,7 @@ const Operations = ({
             setAlert("Unable to create TOT data.", "error");
           });
       }
-      if (key === "mentorship") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Mentorship Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateMentorship(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
+
 
       if (key === "pitching") {
         datavaluesforlatestcreate = {
