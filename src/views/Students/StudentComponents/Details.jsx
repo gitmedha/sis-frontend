@@ -154,7 +154,7 @@ const Details = (props) => {
             <DetailField label="Created By" value={created_by_frontend?.username ? `${created_by_frontend?.username} (${created_by_frontend?.email})`:''} />
             <DetailField label="Created at" value={moment(created_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="How did you hear about us?" value={how_did_you_hear_about_us?.toLowerCase() === 'other' ? how_did_you_hear_about_us_other : how_did_you_hear_about_us} />
-            <DetailField label="Your plan after your current course" value={your_plan_after_your_current_course?your_plan_after_your_current_course:''} />
+            <DetailField label="Your plan after your current course ?" value={your_plan_after_your_current_course?your_plan_after_your_current_course:''} />
 
           </div>
           <div className="col-md-4">
