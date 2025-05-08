@@ -3,11 +3,10 @@ import { Modal } from "react-bootstrap";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { connect } from "react-redux";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-import StudentOutreachRowdata from "./StudentOutreachRowdata";
-
+// import StudentOutreachRowdata from "./StudentOutreachRowdata";
+import StudentOutreachRowdata from "./StudentOutreach/StudentOutreachRowdata";
 const AddStudentOutreach = (props) => {
   const { onHide, show, setAlert } = props;
-  const iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const userId = localStorage.getItem("user_id");
   const [rows, setRows] = useState([
     {
@@ -90,6 +89,16 @@ const AddStudentOutreach = (props) => {
     console.log("Validation result:", isValid, rows[0]);
     setDisableSaveButton(!isValid);
   }, [rows]);
+<<<<<<< Updated upstream
+=======
+  // Effect to reset isSaveDisabled when category changes
+  useEffect(() => {
+    // Only apply the faculty=0 condition for Student Outreach
+    if (rows[0].category !== "Student Outreach") {
+      setIsSaveDisabled(false);
+    }
+  }, [rows[0].category]);
+>>>>>>> Stashed changes
 
   // Effect to reset isSaveDisabled when category changes
   useEffect(() => {
@@ -124,8 +133,7 @@ const AddStudentOutreach = (props) => {
       updated_by_frontend: null,
     }));
 
-    // Call your API here
-    // Example: axios.post('/api/student-outreach', payload)
+   
 
     // Reset form after submission - clear ALL fields
     setRows([
@@ -151,7 +159,7 @@ const AddStudentOutreach = (props) => {
     setDisableSaveButton(true);
     setIsSaveDisabled(false);
     
-    // Call onHide with data
+    // Call onHide with data to make the api call
     onHide("studentOutreach", data);
   };
 

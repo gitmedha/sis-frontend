@@ -535,7 +535,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data, "studentOutreach");
           setOpts(data.data.data.activeStudentOutreaches.values);
           setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
         })
@@ -1074,7 +1073,6 @@ const Operations = ({
         });
     }
     if (key == "studentOutreach") {
-      console.log('hello')
       const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
