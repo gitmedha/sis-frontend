@@ -57,7 +57,7 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
+import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
@@ -535,7 +535,6 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data, "studentOutreach");
           setOpts(data.data.data.activeStudentOutreaches.values);
           setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
         })
@@ -1074,7 +1073,6 @@ const Operations = ({
         });
     }
     if (key == "studentOutreach") {
-      console.log('hello')
       const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");

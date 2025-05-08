@@ -541,7 +541,6 @@ export const bulkCreateUsersTots = async (data) => {
 };
 export const bulkCreateStudentOutreach = async (data) => {
   try {
-    console.log('hello student outreach')
     const response = await api.post("/student-outreaches/createBulkOutreach", data);
     return response;
   } catch (error) {
