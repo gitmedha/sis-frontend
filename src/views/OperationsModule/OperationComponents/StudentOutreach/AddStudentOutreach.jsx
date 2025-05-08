@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { connect } from "react-redux";
-import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { setAlert } from "../../../../store/reducers/Notifications/actions";
 // import StudentOutreachRowdata from "./StudentOutreachRowdata";
-import StudentOutreachRowdata from "./StudentOutreach/StudentOutreachRowdata";
+import StudentOutreachRowdata from "./StudentOutreachRowdata";
 const AddStudentOutreach = (props) => {
   const { onHide, show, setAlert } = props;
   const userId = localStorage.getItem("user_id");
@@ -89,8 +89,6 @@ const AddStudentOutreach = (props) => {
     console.log("Validation result:", isValid, rows[0]);
     setDisableSaveButton(!isValid);
   }, [rows]);
-<<<<<<< Updated upstream
-=======
   // Effect to reset isSaveDisabled when category changes
   useEffect(() => {
     // Only apply the faculty=0 condition for Student Outreach
@@ -98,7 +96,6 @@ const AddStudentOutreach = (props) => {
       setIsSaveDisabled(false);
     }
   }, [rows[0].category]);
->>>>>>> Stashed changes
 
   // Effect to reset isSaveDisabled when category changes
   useEffect(() => {

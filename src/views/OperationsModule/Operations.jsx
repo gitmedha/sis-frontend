@@ -57,7 +57,7 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
+import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
