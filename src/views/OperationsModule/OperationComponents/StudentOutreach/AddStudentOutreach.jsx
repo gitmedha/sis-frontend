@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { connect } from "react-redux";
-import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { setAlert } from "../../../../store/reducers/Notifications/actions";
+// import StudentOutreachRowdata from "./StudentOutreachRowdata";
 import StudentOutreachRowdata from "./StudentOutreachRowdata";
-
 const AddStudentOutreach = (props) => {
   const { onHide, show, setAlert } = props;
-  const iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const userId = localStorage.getItem("user_id");
   const [rows, setRows] = useState([
     {
@@ -23,6 +22,8 @@ const AddStudentOutreach = (props) => {
       faculty: 0,
       students: 0,
       year_fy: "",
+      male: 0,
+      female: 0,
     },
   ]);
   const [disableSaveButton, setDisableSaveButton] = useState(true);
@@ -34,6 +35,10 @@ const AddStudentOutreach = (props) => {
     // Track category changes
     if (field === "category") {
       setCurrentCategory(value);
+      // If changing to a non-Student Outreach category, make sure save button isn't disabled
+      if (value !== "Student Outreach") {
+        setIsSaveDisabled(false);
+      }
     }
     
     setRows(prevRows => {
@@ -46,35 +51,59 @@ const AddStudentOutreach = (props) => {
   const validateRows = () => {
     const row = rows[0];
     
+    // Check if we have dates filled
+    const areDatesValid = row.start_date && row.end_date;
+    
     // Base validation for all categories
-    const baseValidation = 
+    let baseValidation = 
+      areDatesValid &&
       row.category &&
       row.department &&
-      row.gender &&
       row.quarter &&
       row.month &&
       row.state &&
-      row.year_fy &&
-      !isNaN(row.students) &&
-      row.students > 0;
+      row.year_fy;
       
-    // For Student Outreach category, also validate faculty and institution_type
+    // For Student Outreach category
     if (row.category === "Student Outreach") {
       return baseValidation && 
+        row.gender &&
         row.institution_type &&
         !isNaN(row.faculty) &&
-        row.faculty > 0;
+        row.faculty > 0 &&
+        !isNaN(row.students) &&
+        row.students > 0;
     }
     
-    // For other categories, base validation is sufficient
-    return baseValidation;
+    // For other categories, also validate male and female counts
+    return baseValidation && 
+      row.institution_type &&
+      !isNaN(row.male) &&
+      !isNaN(row.female) &&
+      (row.male > 0 || row.female > 0); // At least one must be greater than 0
   };
 
   // Enable/disable Save button based on validation
   useEffect(() => {
     const isValid = validateRows();
+    console.log("Validation result:", isValid, rows[0]);
     setDisableSaveButton(!isValid);
   }, [rows]);
+  // Effect to reset isSaveDisabled when category changes
+  useEffect(() => {
+    // Only apply the faculty=0 condition for Student Outreach
+    if (rows[0].category !== "Student Outreach") {
+      setIsSaveDisabled(false);
+    }
+  }, [rows[0].category]);
+
+  // Effect to reset isSaveDisabled when category changes
+  useEffect(() => {
+    // Only apply the faculty=0 condition for Student Outreach
+    if (rows[0].category !== "Student Outreach") {
+      setIsSaveDisabled(false);
+    }
+  }, [rows[0].category]);
 
   // Handle form submission
   const onSubmit = () => {
@@ -94,13 +123,14 @@ const AddStudentOutreach = (props) => {
       faculty: row.faculty,
       students: row.students,
       year_fy: row.year_fy,
+      male: row.male,
+      female: row.female,
       isactive: true,
       created_by_frontend: Number(userId),
       updated_by_frontend: null,
     }));
 
-    // Call your API here
-    // Example: axios.post('/api/student-outreach', payload)
+   
 
     // Reset form after submission - clear ALL fields
     setRows([
@@ -117,6 +147,8 @@ const AddStudentOutreach = (props) => {
         faculty: 0,
         students: 0,
         year_fy: "",
+        male: 0,
+        female: 0,
       },
     ]);
     
@@ -124,7 +156,7 @@ const AddStudentOutreach = (props) => {
     setDisableSaveButton(true);
     setIsSaveDisabled(false);
     
-    // Call onHide with data
+    // Call onHide with data to make the api call
     onHide("studentOutreach", data);
   };
 
@@ -145,6 +177,8 @@ const AddStudentOutreach = (props) => {
         faculty: 0,
         students: 0,
         year_fy: "",
+        male: 0,
+        female: 0,
       },
     ]);
     
@@ -194,9 +228,16 @@ const AddStudentOutreach = (props) => {
                   <th>State</th>
                   <th>Department</th>
                   {currentCategory === "Student Outreach" && <th>Faculty</th>}
-                  <th>Gender</th>
+                  {currentCategory === "Student Outreach" ? (
+                    <th>Gender</th>
+                  ) : (
+                    <>
+                      <th>Male</th>
+                      <th>Female</th>
+                    </>
+                  )}
                   <th>Institution Type</th>
-                  <th>Students</th>
+                  {currentCategory === "Student Outreach" && <th>Students</th>}
                 </tr>
               </thead>
               <tbody>

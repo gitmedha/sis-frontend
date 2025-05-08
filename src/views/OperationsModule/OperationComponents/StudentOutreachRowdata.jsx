@@ -14,36 +14,36 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
   // State to department/project mapping
   const STATE_DEPARTMENT_MAP = {
     Haryana: [
-      { value: "DST, Haryana", label: "DST, Haryana" },
-      { value: "DHE Samarth, Haryana", label: "DHE Samarth, Haryana" },
-      { value: "DTE, Haryana", label: "DTE, Haryana" },
-      { value: "SDIT, Haryana", label: "SDIT, Haryana" },
-      {
-        value: "Department of Higher Education",
-        label: "Department of Higher Education",
-      },
+      {value: "Department of Higher Education",label: "Department of Higher Education",},
+      { value: "Department of Technical Education,Haryana", label: "Department of Technical Education,Haryana" },
+      { value: "Dual System of Training,Haryana", label: "Dual System of Training,Haryana" },
+      { value: "Skill Development of Industrial Training,Haryana", label: "Skill Development of Industrial Training,Haryana" },
     ],
-    Bihar: [
-      {
-        value: "Project Swayam, Labor and Resource Department, Bihar",
-        label: "Project Swayam, Labor and Resource Department, Bihar",
-      },
-    ],
+    Bihar: [{value: "Department of Labor and Resource,Bihar",label: "Department of Labor and Resource,Bihar",},],
     UttarPradesh: [
-      {
-        value: "DVEDSE (ITI transformation)",
-        label: "DVEDSE (ITI transformation)",
-      },
-      { value: "DSE (Svapoorna)", label: "DSE (Svapoorna)" },
-      { value: "ISTEUP (Polytechnic)", label: "ISTEUP (Polytechnic)" },
+      {value: "DVEDSE,UP",label: "DVEDSE,UP",},
+      { value: "Department of Secondary Education,UP(Svapoorna)", label: "Department of Secondary Education,UP(Svapoorna)" },
+      { value: "ISTE,UP", label: "ISTE,UP" },
+      { value: "STPC,UP", label: "STPC,UP" },
+
     ],
-    Uttarkhand: [
-      { value: "UKWDP", label: "UKWDP" },
-      {
-        value: "Dakshtata -Skill Development & Employment (Ongoing 2024-28)",
-        label: "Dakshtata -Skill Development & Employment (Ongoing 2024-28)",
-      },
-    ],
+    Uttarkhand: [{ value: "UKWDP,Uttarkhand", label: "UKWDP,Uttarkhand" },],};
+
+  // Add this mapping near the top of your component
+  const INSTITUTION_TYPE_OPTIONS_MAP = {
+    Haryana: {
+      "Department of Higher Education": [{ value: "Higher Education", label: "Higher Education" },],
+      "Department of Technical Education,Haryana":[{value:"Polytechnic",label:"Polytechnic"}],
+      "Dual System of Training,Haryana":[{ value: "ITI", label: "ITI" },],
+      "Skill Development of Industrial Training,Haryana":[{ value: "ITI", label: "ITI" },],
+},
+    Bihar:{"Department of Labor and Resource,Bihar":[{value:"Department of Labor and Resource,Bihar",label:"ITI",}],},
+    UttarPradesh:{"DVEDSE,UP":[{value: "ITI", label: "ITI" },],
+      "Department of Secondary Education,UP(Svapoorna)": [{ value: "Secondary Education", label: "Secondary Education" },],
+      "ISTE,UP": [{ value: "Polytechnic", label: "Polytechnic" },],
+      "STPC,UP": [{ value: "Technical", label: "Technical" },],
+    },
+    Uttarkhand: {"UKWDP,Uttarkhand": [{ value: "ITI", label: "ITI" },],}
   };
 
   // Gender options for the Select component
@@ -64,7 +64,7 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
   const categoryOptions = [
     { value: "Student Outreach", label: "Student Outreach" },
     { value: "Placements", label: "Placements" },
-  ];
+  ];  
 
   // Month options for the Select component
   const monthOptions = [
@@ -161,6 +161,13 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
   const handleGenderChange = (selectedOption) => {
     updateRow("gender", selectedOption ? selectedOption.value : "");
     setErrors((prevErrors) => ({ ...prevErrors, gender: "" }));
+  };
+
+  // Handle numeric input for male and female fields
+  const handleMaleFemaleChange = (field, value) => {
+    const numValue = parseFloat(value) || 0;
+    updateRow(field, numValue);
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
   };
 
   // Handle Select change for month
@@ -464,8 +471,8 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         // First update faculty to 0
         updateRow("faculty", 0);
         
-        // Disable the save button
-        if (setIsSaveDisabled) {
+        // Disable the save button only for Student Outreach category
+        if (setIsSaveDisabled && row.category === "Student Outreach") {
           setIsSaveDisabled(true);
         }
         
@@ -509,9 +516,9 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
   useEffect(() => {
     const facultyNum = Number(row.faculty);
 
-    // If faculty is 0, reset students and institution_type and disable save button
-    if (facultyNum === 0) {
-      console.log("Faculty is zero, resetting student values");
+    // If faculty is 0 and category is "Student Outreach", reset students and disable save button
+    if (facultyNum === 0 && row.category === "Student Outreach") {
+      console.log("Faculty is zero for Student Outreach, resetting student values");
       // Use setRows to directly update the state in the parent component
       setRows((prevRows) =>
         prevRows.map((prevRow) => ({
@@ -520,21 +527,23 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
           institution_type: "",
         }))
       );
-      // Disable the save button when faculty is 0
+      // Disable the save button when faculty is 0 for Student Outreach
       if (setIsSaveDisabled) {
         setIsSaveDisabled(true);
       }
       return;
-    } else {
-      // Enable the save button when faculty is not 0
-      if (setIsSaveDisabled) {
-        setIsSaveDisabled(false);
-      }
+    } else if (setIsSaveDisabled && row.category === "Student Outreach") {
+      // Enable the save button when faculty is not 0 for Student Outreach
+      setIsSaveDisabled(false);
+    } else if (setIsSaveDisabled && row.category !== "Student Outreach") {
+      // For non-Student Outreach, don't disable save button based on faculty
+      setIsSaveDisabled(false);
     }
 
     // Only run if faculty is positive and all dependencies exist
     if (
       facultyNum > 0 &&
+      row.category === "Student Outreach" &&
       row.start_date &&
       row.end_date &&
       row.state &&
@@ -576,6 +585,25 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
       }
     }
   }, [row.category]);
+
+  const getInstitutionTypeOptions = () => {
+    if (
+      row.state &&
+      row.department &&
+      INSTITUTION_TYPE_OPTIONS_MAP[row.state] &&
+      INSTITUTION_TYPE_OPTIONS_MAP[row.state][row.department]
+    ) {
+      return INSTITUTION_TYPE_OPTIONS_MAP[row.state][row.department];
+    }
+    // Default options if no mapping found
+    return [
+      { value: "option1", label: "Option 1" },
+      { value: "option2", label: "Option 2" },
+      { value: "option3", label: "Option 3" },
+      { value: "option4", label: "Option 4" },
+      { value: "option5", label: "Option 5" },
+    ];
+  };
 
   console.log(row, "row");
   return (
@@ -711,65 +739,95 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         </td>
       )}
 
-      {/* Gender */}
-      <td>
-        <Select
-          className={`table-input ${errors.gender ? "border-red" : ""}`}
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="gender"
-          options={genderOptions}
-          value={genderOptions.find((option) => option.value === row.gender)}
-          onChange={handleGenderChange}
-        />
-        {errors.gender && <span className="error">{errors.gender}</span>}
-      </td>
+      {/* Gender or Male/Female fields based on category */}
+      {row.category === "Student Outreach" ? (
+        <td>
+          <Select
+            className={`table-input ${errors.gender ? "border-red" : ""}`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="gender"
+            options={genderOptions}
+            value={genderOptions.find((option) => option.value === row.gender)}
+            onChange={handleGenderChange}
+          />
+          {errors.gender && <span className="error">{errors.gender}</span>}
+        </td>
+      ) : (
+        <>
+          <td>
+            <input
+              className={`table-input h-2 ${errors.male ? "border-red" : ""}`}
+              type="number"
+              min="0"
+              step="0.01"
+              value={row.male || 0}
+              onChange={(e) => handleMaleFemaleChange("male", e.target.value)}
+            />
+            {errors.male && <span className="error">{errors.male}</span>}
+          </td>
+          <td>
+            <input
+              className={`table-input h-2 ${errors.female ? "border-red" : ""}`}
+              type="number"
+              min="0"
+              step="0.01"
+              value={row.female || 0}
+              onChange={(e) => handleMaleFemaleChange("female", e.target.value)}
+            />
+            {errors.female && <span className="error">{errors.female}</span>}
+          </td>
+        </>
+      )}
 
       {/* Institution Type */}
       <td>
-        <input
-          className={`table-input h-2 ${
-            errors.institution_type ? "border-red" : ""
-          }`}
-          type="text"
-          value={row.institution_type}
-          onChange={(e) =>
-            handleInputChange("institution_type", e.target.value)
-          }
-          readOnly
-        />
+        {row.category !== "Student Outreach" ? (
+          <Select
+            className={`table-input ${errors.institution_type ? "border-red" : ""}`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution_type"
+            options={getInstitutionTypeOptions()}
+            value={getInstitutionTypeOptions().find(
+              (option) => option.value === row.institution_type
+            )}
+            onChange={(selectedOption) =>
+              handleInputChange("institution_type", selectedOption ? selectedOption.value : "")
+            }
+          />
+        ) : (
+          <input
+            className={`table-input h-2 ${
+              errors.institution_type ? "border-red" : ""
+            }`}
+            type="text"
+            value={row.institution_type}
+            onChange={(e) =>
+              handleInputChange("institution_type", e.target.value)
+            }
+            readOnly
+          />
+        )}
         {errors.institution_type && (
           <span className="error">{errors.institution_type}</span>
         )}
       </td>
 
-      {/* Students - behavior differs based on category */}
-      <td>
-        {row.category === "Student Outreach" ? (
-          /* For Student Outreach: Read-only calculated field */
+      {/* Students - only show when category is Student Outreach */}
+      {row.category === "Student Outreach" && (
+        <td>
           <input
             className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
             type="number"
             value={row.students !== null ? row.students : 0}
             readOnly
           />
-        ) : (
-          /* For other categories: User-editable input */
-          <input
-            className={`table-input h-2 ${errors.students ? "border-red" : ""}`}
-            type="number"
-            min="0"
-            // Force 0 for non-Student Outreach categories when first changed
-            value={row.category !== "Student Outreach" && row.students > 1000 ? 0 : (row.students || 0)}
-            onChange={(e) => {
-              const newValue = parseInt(e.target.value, 10) || 0;
-              handleInputChange("students", newValue);
-            }}
-          />
-        )}
-        {errors.students && <span className="error">{errors.students}</span>}
-      </td>
+          {errors.students && <span className="error">{errors.students}</span>}
+        </td>
+      )}
     </tr>
   );
 };
