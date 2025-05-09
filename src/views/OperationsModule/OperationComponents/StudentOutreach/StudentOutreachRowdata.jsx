@@ -5,9 +5,9 @@ import NumberField from "./FormFields/NumberField";
 import TextField from "./FormFields/TextField";
 import useFacultyData from "./hooks/useFacultyData";
 import useStudentData from "./hooks/useStudentData";
+import useMaleFemaleData from "./hooks/useMaleFemaleData";
 import useFormValidation from "./hooks/useFormValidation";
 import { 
-  genderOptions, 
   quarterOptions, 
   categoryOptions, 
   monthOptions, 
@@ -45,6 +45,14 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
     updateRow,
     setRows,
     setIsSaveDisabled
+  );
+  
+  // Get male/female data pre-population
+  useMaleFemaleData(
+    row.category,
+    projectNames,
+    updateRow,
+    row.students
   );
 
   // Get department options based on selected state
@@ -120,12 +128,6 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
     const numValue = parseFloat(value) || 0;
     updateRow(field, numValue);
     setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
-  };
-
-  // Handle Select change for gender
-  const handleGenderChange = (selectedOption) => {
-    updateRow("gender", selectedOption ? selectedOption.value : "");
-    setErrors((prevErrors) => ({ ...prevErrors, gender: "" }));
   };
 
   // Handle Select change for month
@@ -277,39 +279,27 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         </td>
       )}
 
-      {/* Gender or Male/Female fields based on category */}
-      {row.category === "Student Outreach" ? (
-        <td>
-          <SelectField
-            name="gender"
-            options={genderOptions}
-            value={row.gender}
-            onChange={handleGenderChange}
-            error={errors.gender}
-          />
-        </td>
-      ) : (
-        <>
-          <td>
-            <NumberField
-              name="male"
-              value={row.male}
-              onChange={(value) => handleMaleFemaleChange("male", value)}
-              error={errors.male}
-              step={0.01}
-            />
-          </td>
-          <td>
-            <NumberField
-              name="female"
-              value={row.female}
-              onChange={(value) => handleMaleFemaleChange("female", value)}
-              error={errors.female}
-              step={0.01}
-            />
-          </td>
-        </>
-      )}
+      {/* Male/Female fields */}
+      <td>
+        <NumberField
+          name="male"
+          value={row.male}
+          onChange={(value) => handleMaleFemaleChange("male", value)}
+          error={errors.male}
+          step={0.01}
+          isReadOnly={row.category === "Student Outreach"}
+        />
+      </td>
+      <td>
+        <NumberField
+          name="female"
+          value={row.female}
+          onChange={(value) => handleMaleFemaleChange("female", value)}
+          error={errors.female}
+          step={0.01}
+          isReadOnly={row.category === "Student Outreach"}
+        />
+      </td>
 
       {/* Institution Type */}
       <td>

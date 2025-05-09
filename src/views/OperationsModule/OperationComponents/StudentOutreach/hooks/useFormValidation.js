@@ -51,11 +51,6 @@ const useFormValidation = (row, setDisableSaveButton) => {
 
     // Category-specific validations
     if (row.category === "Student Outreach") {
-      if (!row.gender) {
-        newErrors.gender = "Gender is required";
-        isValid = false;
-      }
-
       if (!row.institution_type) {
         newErrors.institution_type = "Institution type is required";
         isValid = false;
@@ -68,6 +63,24 @@ const useFormValidation = (row, setDisableSaveButton) => {
 
       if (isNaN(row.students) || row.students <= 0) {
         newErrors.students = "Students must be greater than 0";
+        isValid = false;
+      }
+      
+      // For Student Outreach, validate both male and female fields
+      if (isNaN(row.male) || row.male < 0) {
+        newErrors.male = "Male count must be a valid number";
+        isValid = false;
+      }
+      
+      if (isNaN(row.female) || row.female < 0) {
+        newErrors.female = "Female count must be a valid number";
+        isValid = false;
+      }
+      
+      // Ensure at least one gender has a value
+      if (row.male === 0 && row.female === 0) {
+        newErrors.male = "At least one gender count must be greater than 0";
+        newErrors.female = "At least one gender count must be greater than 0";
         isValid = false;
       }
     } else {

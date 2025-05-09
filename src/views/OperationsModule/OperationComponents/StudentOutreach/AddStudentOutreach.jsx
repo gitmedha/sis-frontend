@@ -14,7 +14,6 @@ const AddStudentOutreach = (props) => {
       end_date: "",
       category: "",
       department: "",
-      gender: "",
       institution_type: "",
       quarter: "",
       month: "",
@@ -67,7 +66,6 @@ const AddStudentOutreach = (props) => {
     // For Student Outreach category
     if (row.category === "Student Outreach") {
       return baseValidation && 
-        row.gender &&
         row.institution_type &&
         !isNaN(row.faculty) &&
         row.faculty > 0 &&
@@ -89,13 +87,6 @@ const AddStudentOutreach = (props) => {
     console.log("Validation result:", isValid, rows[0]);
     setDisableSaveButton(!isValid);
   }, [rows]);
-  // Effect to reset isSaveDisabled when category changes
-  useEffect(() => {
-    // Only apply the faculty=0 condition for Student Outreach
-    if (rows[0].category !== "Student Outreach") {
-      setIsSaveDisabled(false);
-    }
-  }, [rows[0].category]);
 
   // Effect to reset isSaveDisabled when category changes
   useEffect(() => {
@@ -115,7 +106,6 @@ const AddStudentOutreach = (props) => {
     const data = rows.map((row) => ({
       category: row.category,
       department: row.department,
-      gender: row.gender,
       institution_type: row.institution_type,
       quarter: row.quarter,
       month: row.month,
@@ -130,8 +120,6 @@ const AddStudentOutreach = (props) => {
       updated_by_frontend: null,
     }));
 
-   
-
     // Reset form after submission - clear ALL fields
     setRows([
       {
@@ -139,7 +127,6 @@ const AddStudentOutreach = (props) => {
         end_date: "",
         category: "",
         department: "",
-        gender: "",
         institution_type: "",
         quarter: "",
         month: "",
@@ -169,7 +156,6 @@ const AddStudentOutreach = (props) => {
         end_date: "",
         category: "",
         department: "",
-        gender: "",
         institution_type: "",
         quarter: "",
         month: "",
@@ -228,14 +214,8 @@ const AddStudentOutreach = (props) => {
                   <th>State</th>
                   <th>Department</th>
                   {currentCategory === "Student Outreach" && <th>Faculty</th>}
-                  {currentCategory === "Student Outreach" ? (
-                    <th>Gender</th>
-                  ) : (
-                    <>
-                      <th>Male</th>
-                      <th>Female</th>
-                    </>
-                  )}
+                  <th>Male</th>
+                  <th>Female</th>
                   <th>Institution Type</th>
                   {currentCategory === "Student Outreach" && <th>Students</th>}
                 </tr>
