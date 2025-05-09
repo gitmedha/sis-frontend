@@ -268,12 +268,17 @@ const Operations = ({
       {
         Header: "Department",
         accessor: "department",
-        width: 150
+        width: 100
       },
       {
-        Header: "Gender",
-        accessor: "gender",
-        width: 100
+        Header: "male",
+        accessor: "male",
+        width: 50
+      },
+      {
+        Header: "female",
+        accessor: "female",
+        width: 50
       },
       {
         Header: "Students",
