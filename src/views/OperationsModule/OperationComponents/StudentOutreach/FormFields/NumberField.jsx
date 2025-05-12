@@ -23,6 +23,7 @@ const NumberField = ({
         onChange={(e) => onChange(e.target.value)}
         readOnly={isReadOnly}
         onBlur={onBlur}
+        style={{ height: '38px', padding: '8px 12px' }}
       />
       <div style={{ minHeight: '20px' }}>
         {error && <span className="error">{error}</span>}
