@@ -50,32 +50,29 @@ const AddStudentOutreach = (props) => {
   const validateRows = () => {
     const row = rows[0];
     
-    // Check if we have dates filled
-    const areDatesValid = row.start_date && row.end_date;
-    
     // Base validation for all categories
     let baseValidation = 
-      areDatesValid &&
       row.category &&
       row.department &&
       row.quarter &&
       row.month &&
       row.state &&
-      row.year_fy;
+      row.year_fy &&
+      row.institution_type;
       
     // For Student Outreach category
     if (row.category === "Student Outreach") {
       return baseValidation && 
-        row.institution_type &&
+        row.start_date &&
+        row.end_date &&
         !isNaN(row.faculty) &&
         row.faculty > 0 &&
         !isNaN(row.students) &&
         row.students > 0;
     }
     
-    // For other categories, also validate male and female counts
+    // For other categories, validate male and female counts
     return baseValidation && 
-      row.institution_type &&
       !isNaN(row.male) &&
       !isNaN(row.female) &&
       (row.male > 0 || row.female > 0); // At least one must be greater than 0
@@ -205,12 +202,12 @@ const AddStudentOutreach = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th>Category</th>
+                  {currentCategory === "Student Outreach" && <th>Start Date</th>}
+                  {currentCategory === "Student Outreach" && <th>End Date</th>}
                   <th>Financial Year *</th>
                   <th>Quarter</th>
                   <th>Month</th>
-                  <th>Category</th>
                   <th>State</th>
                   <th>Department</th>
                   {currentCategory === "Student Outreach" && <th>Faculty</th>}

@@ -6,7 +6,8 @@ const TextField = ({
   onChange, 
   error,
   isReadOnly = false,
-  className = '' 
+  className = '',
+  onBlur
 }) => {
   return (
     <div className={`text-field-container ${className}`}>
@@ -17,8 +18,11 @@ const TextField = ({
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         readOnly={isReadOnly}
+        onBlur={onBlur}
       />
-      {error && <span className="error">{error}</span>}
+      <div style={{ minHeight: '20px' }}>
+        {error && <span className="error">{error}</span>}
+      </div>
     </div>
   );
 };

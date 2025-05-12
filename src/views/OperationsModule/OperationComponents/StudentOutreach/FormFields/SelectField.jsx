@@ -9,7 +9,8 @@ const SelectField = ({
   onChange, 
   error, 
   isDisabled = false,
-  className = ''
+  className = '',
+  onBlur
 }) => {
   const currentValue = options.find(option => option.value === value) || null;
   
@@ -26,8 +27,11 @@ const SelectField = ({
         value={currentValue}
         onChange={onChange}
         isDisabled={isDisabled}
+        onMenuClose={onBlur}
       />
-      {error && <span className="error">{error}</span>}
+      <div style={{ minHeight: '20px' }}>
+        {error && <span className="error">{error}</span>}
+      </div>
     </div>
   );
 };
