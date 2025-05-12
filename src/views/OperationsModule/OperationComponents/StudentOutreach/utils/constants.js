@@ -86,4 +86,16 @@ export const INSTITUTION_TYPE_OPTIONS_MAP = {
   Uttarkhand: {
     "UKWDP,Uttarkhand": [{ value: "ITI", label: "ITI" }],
   }
+};
+
+// Generate financial year options for dropdown (last 10 years)
+export const getFinancialYearOptions = () => {
+  const options = [];
+  const now = new Date();
+  let year = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+  for (let i = 0; i < 10; i++) {
+    const fy = `${year - i}-${year - i + 1}`;
+    options.push({ value: fy, label: fy });
+  }
+  return options;
 }; 
