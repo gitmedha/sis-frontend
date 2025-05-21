@@ -1,9 +1,5 @@
 // Gender options for Select components
-export const genderOptions = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-  { value: "Other", label: "Other" },
-];
+// ... existing code ...
 
 export const quarterOptions = [
   { value: "Q1", label: "Q1" },
@@ -16,6 +12,13 @@ export const quarterOptions = [
 export const categoryOptions = [
   { value: "Student Outreach", label: "Student Outreach" },
   { value: "Placements", label: "Placements" },
+  { value: "Internship", label: "Internship" },
+  { value: "Apprenticeship", label: "Apprenticeship" },
+  { value: "  Indirect Placements", label: "  Indirect Placements" },
+  { value: "Self-employed", label: "Self-employed" },
+  { value: "Students moving to a higher degree", label: "Students moving to a higher degree" },
+  { value: "Moving from one year to another", label: "Moving from one year to another" },
+  { value: "Other - (Graduating from the course/Not participating in labour force)", label: "Other - (Graduating from the course/Not participating in labour force)" },
 ];  
 
 // Month options for the Select component
@@ -83,4 +86,16 @@ export const INSTITUTION_TYPE_OPTIONS_MAP = {
   Uttarkhand: {
     "UKWDP,Uttarkhand": [{ value: "ITI", label: "ITI" }],
   }
+};
+
+// Generate financial year options for dropdown (last 10 years)
+export const getFinancialYearOptions = () => {
+  const options = [];
+  const now = new Date();
+  let year = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
+  for (let i = 0; i < 10; i++) {
+    const fy = `${year - i}-${year - i + 1}`;
+    options.push({ value: fy, label: fy });
+  }
+  return options;
 }; 

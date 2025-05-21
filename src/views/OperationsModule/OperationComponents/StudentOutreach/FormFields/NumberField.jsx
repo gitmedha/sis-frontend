@@ -8,7 +8,8 @@ const NumberField = ({
   min = 0,
   step = 1,
   isReadOnly = false,
-  className = '' 
+  className = '',
+  onBlur
 }) => {
   return (
     <div className={`number-field-container ${className}`}>
@@ -21,8 +22,12 @@ const NumberField = ({
         value={value !== undefined ? value : 0}
         onChange={(e) => onChange(e.target.value)}
         readOnly={isReadOnly}
+        onBlur={onBlur}
+        style={{ height: '38px', padding: '8px 12px' }}
       />
-      {error && <span className="error">{error}</span>}
+      <div style={{ minHeight: '20px' }}>
+        {error && <span className="error">{error}</span>}
+      </div>
     </div>
   );
 };
