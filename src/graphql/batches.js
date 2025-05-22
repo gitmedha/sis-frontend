@@ -16,6 +16,8 @@ export const batchesFields = `
   seats_available
   certificates_generated_at
   certificates_emailed_at
+  manual_email_sent
+  reminder_sent
   grant {
     id
     name
