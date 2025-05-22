@@ -92,6 +92,7 @@ const studentOutreachesFields = `
     male
     female
     students
+    faculty
     created_by_frontend {
       id
       username

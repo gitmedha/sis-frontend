@@ -271,16 +271,6 @@ const Operations = ({
         width: 100
       },
       {
-        Header: "male",
-        accessor: "male",
-        width: 50
-      },
-      {
-        Header: "female",
-        accessor: "female",
-        width: 50
-      },
-      {
         Header: "Students",
         accessor: "students",
         width: 100
@@ -1112,6 +1102,7 @@ const Operations = ({
   };
 
   const showRowData = (key, data) => {
+    console.log('Data being set for', key, ':', data); // Add this line
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
   };
