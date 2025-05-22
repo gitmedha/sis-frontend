@@ -859,7 +859,6 @@ export const getOpsPickList = async () => {
     });
 };
 
-
 export const getAllInstitute = async () => {
   try {
     let count = 0;
@@ -889,7 +888,6 @@ export const getAllInstitute = async () => {
     console.error(err);
   }
 };
-
 
 export const getAllBatchs = async () => {
   try {

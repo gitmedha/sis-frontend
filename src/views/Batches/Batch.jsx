@@ -341,6 +341,18 @@ const Batch = (props) => {
       .catch((err) => {});
   };
 
+  const triggerManualReminder = async(id)=>{
+    NP.start();
+    sendReminder(id).then(()=> {
+      setAlert("Reminder sent successfully.", "success");
+    }).catch(err => {
+      setAlert("Unable to send reminder.", "error");
+    }).finally(() => {
+      NP.done();
+      window.location.reload();
+    });
+  }
+
   //for sending pre batch links to students
 
   const preBatchLinks = async () => {
@@ -484,10 +496,10 @@ const Batch = (props) => {
                       </Dropdown.Item>
                     )}
                   <Dropdown.Item
-                      onClick={() => sendReminder(batch.id)}
+                      onClick={() => triggerManualReminder(batch.id)}
                       className="d-flex align-items-center"
                     >
-                      <FaCheckCircle size="20" color={'#207B69'} className="mr-2" />
+                      <FaCheckCircle size="20" color={batch?.manual_email_sent ?'#207B69':'#E0E0E8'} className="mr-2" />
                       <span>&nbsp;&nbsp;Send Reminder</span>
                     </Dropdown.Item>
                     {batch?.status === "Complete" &&
