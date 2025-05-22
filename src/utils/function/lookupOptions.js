@@ -11,6 +11,7 @@ import {
   GET_ALL_USERS,
   GET_USERS_BY_ROLE,
   GET_ALL_STUDENT,
+  GET_USERS_BY_ROLE_SEARCH,
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -29,7 +30,7 @@ export const batchLookUpOptions = async () => {
   let data = await queryBuilder({
     query: GET_ASSIGNEES_LIST_OPTS,
   });
-  let assigneesOptions = data.data.users.map((assignee) => ({
+  let assigneesOptions = data?.data?.users.map((assignee) => ({
     label: `${assignee.username} (${assignee.email})`,
     value: assignee.id,
   }));
@@ -37,7 +38,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_PROGRAMS,
   });
-  let programOptions = data.data.programs.map((program) => ({
+  let programOptions = data?.data?.programs.map((program) => ({
     label: program.name,
     value: Number(program.id),
   }));
@@ -45,7 +46,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_GRANTS,
   });
-  let grantOptions = data.data.grants.map((grant) => ({
+  let grantOptions = data?.data?.grants.map((grant) => ({
     label: `${grant.name} | ${grant.donor}`,
     value: Number(grant.id),
   }));
@@ -54,7 +55,7 @@ export const batchLookUpOptions = async () => {
     query: GET_ALL_INSTITUTES,
   });
 
-  let instituteOptions = data.data.institutionsConnection.values.map((institution) => ({
+  let instituteOptions = data?.data?.institutionsConnection?.values?.map((institution) => ({
     label: institution.name,
     value: Number(institution.id),
   }));
@@ -62,7 +63,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_STUDENTS,
   });
-  let studentOptions = data.data.students.map((student) => ({
+  let studentOptions = data?.data?.students.map((student) => ({
     label: student.full_name,
     value: Number(student.id),
   }));
@@ -70,7 +71,7 @@ export const batchLookUpOptions = async () => {
   data = await queryBuilder({
     query: GET_ALL_BATCHES,
   });
-  let batchOptions = data.data.batches.map((batches) => ({
+  let batchOptions = data?.data?.batchesConnection?.values?.map((batches) => ({
     label: batches.name,
     value: Number(batches.id),
   }));
@@ -92,7 +93,7 @@ export const getDefaultAssigneeOptions = async () => {
     query: GET_ALL_USERS
   });
   let userIdFound = false;
-  let filteredData = data.data.users.map(user => {
+  let filteredData = data?.data?.users.map(user => {
     if (userId === user.id) {
       userIdFound = true;
     }
@@ -121,7 +122,7 @@ export const getDefaultAssignee = async (id) => {
     query: GET_ALL_USERS
   });
   let userIdFound = false;
-  let filteredData = data.data.users.map(user => {
+  let filteredData = data?.data?.users.map(user => {
     if (userId === user.id) {
       userIdFound = true;
     }
@@ -149,7 +150,7 @@ export const getAllMedhaUsers = async () => {
     query: GET_ALL_USERS
   });
   let userIdFound = false;
-  let filteredData = data.data.users.map(user => {
+  let filteredData = data?.data?.users.map(user => {
     return {
       name: user.username,
       id: user.id,
@@ -165,7 +166,7 @@ export const filterAssignedTo = async (newValue) => {
       name: newValue.trim()
     },
   });
-  return data.data.users.map(user => ({
+  return data?.data?.users.map(user => ({
     label:`${user.username} (${user.email})`,
     value: user.id,
   }));
@@ -178,9 +179,23 @@ export const getAllSrm =async(role)=>{
       role:1
     },
   });
-  return data.data.users.map(user => ({
+  return data?.data?.users.map(user => ({
     label: `${user.username} (${user.email})`,
     value: user.id,
+  }));
+}
+
+export const getAllSearchSrm =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE_SEARCH,
+    variables:{
+      role:1,
+      blocked: false, 
+    },
+  });
+  return data?.data?.users.map(user => ({
+    label: `${user.username}`,
+    value: user.username,
   }));
 }
 export const getAllSrmbyname =async(role)=>{
@@ -190,17 +205,18 @@ export const getAllSrmbyname =async(role)=>{
       role:1
     },
   });
-  return data.data.users.map(user => ({
+  return data?.data?.users.map(user => ({
     label: `${user.username}`,
     value: user.id,
   }));
 }
 
+
 export const getAllStudents =async()=>{
   let data=await queryBuilder({
     query:GET_ALL_STUDENT,
   })
-  return data.data.users.map(user => ({
+  return data?.data?.users.map(user => ({
     label: `(${user.full_name})`,
     value: user.id,
   }));
