@@ -120,75 +120,78 @@ const StudentOutreachDataField = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                Student Outreaches Details
+                Student Outreach Details
               </h1>
             </Modal.Title>
           </Modal.Header>
           <Styled>
             <Modal.Body className="bg-white">
               <h4 className="section-header ">Basic Info</h4>
-              <div className="row  ">
+              <div className="row">
                 <div className="col-md-6 col-sm-12">
-                  <DetailField label="finacial year" value={props?.year_fy} />
-                  <DetailField label="Quarter" value={props?.quarter} />
-                  <DetailField label="Month" value={props?.month} />
-                  <DetailField label="Category" value={props?.category} />
-
-                  <DetailField label="State" value={props?.state} />
+                  <div style={{ height: '45px' }}><DetailField label="Finacial year" value={props?.year_fy} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Quarter" value={props?.quarter} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Month" value={props?.month} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Category" value={props?.category} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="State" value={props?.state} /></div>
+                  {props?.faculty > 0 && <div style={{ height: '45px' }}><DetailField label="Faculty" value={props?.faculty} /></div>}
                 </div>
 
                 <div className="col-md-6 col-sm-12">
-                  <DetailField label="Department" value={props?.department} />
-                  <DetailField
-                    label="Institution Type"
-                    value={props.institution_type}
-                  />
-                  <DetailField label="Gender" value={props?.gender} />
-
-                  <DetailField label="Students" value={props?.students} />
-
-                  <DetailField
-                    label="Gender"
-                    value={props?.gender ? props?.gender : ""}
-                    Bold={""}
-                  />
+                  <div style={{ height: '45px' }}><DetailField label="Department" value={props?.department} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Institution Type" value={props.institution_type} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Male" value={props?.male} /></div>
+                  <div style={{ height: '45px' }}><DetailField label="Female" value={props?.female} /></div>
+                  <div style={{ height: '45px' }}>
+                    <DetailField 
+                      label="Students" 
+                      value={props?.students === 0 ? "NA" : props?.students} 
+                    />
+                  </div>
                 </div>
               </div>
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
               <h3 className="section-header ">Other Info</h3>
               <div className="row">
                 <div className="col-md-6 detail-field">
-                  <DetailField
-                    label="Updated By"
-                    value={
-                      props.updated_by_frontend?.username ? props.updated_by_frontend?.username : ""
-                    }
-                  />
-                  <DetailField
-                    label="Updated At"
-                    value={moment(
-                      props.updated_at
-                        ? props.updated_at
-                        : props.created_at
-                    ).format("DD MMM YYYY, h:mm a")}
-                  />
+                  <div style={{ height: '45px' }}>
+                    <DetailField
+                      label="Updated By"
+                      value={
+                        props.updated_by_frontend?.username ? props.updated_by_frontend?.username : ""
+                      }
+                    />
+                  </div>
+                  <div style={{ height: '45px' }}>
+                    <DetailField
+                      label="Updated At"
+                      value={moment(
+                        props.updated_at
+                          ? props.updated_at
+                          : props.created_at
+                      ).format("DD MMM YYYY, h:mm a")}
+                    />
+                  </div>
                 </div>
                 <div className="col-md-6 detail-field">
-                  <DetailField
-                    label="Created By"
-                    value={
-                      props.created_by_frontend?.username
-                        ? props.created_by_frontend?.username
-                        : ""
-                    }
-                  />
-                  <DetailField
-                    style={{ marginLeft: "4px" }}
-                    label="Created At"
-                    value={moment(props.created_at).format(
-                      "DD MMM YYYY, h:mm a"
-                    )}
-                  />
+                  <div style={{ height: '45px' }}>
+                    <DetailField
+                      label="Created By"
+                      value={
+                        props.created_by_frontend?.username
+                          ? props.created_by_frontend?.username
+                          : ""
+                      }
+                    />
+                  </div>
+                  <div style={{ height: '45px' }}>
+                    <DetailField
+                      label="Created At"
+                      value={moment(props.created_at).format(
+                        "DD MMM YYYY, h:mm a"
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
             </Modal.Body>
