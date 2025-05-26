@@ -39,8 +39,8 @@ const AddStudentOutreach = (props) => {
         setIsSaveDisabled(false);
       }
     }
-    
-    setRows(prevRows => {
+
+    setRows((prevRows) => {
       const updatedRow = { ...prevRows[0], [field]: value };
       return [updatedRow];
     });
@@ -49,9 +49,9 @@ const AddStudentOutreach = (props) => {
   // Validate all rows
   const validateRows = () => {
     const row = rows[0];
-    
+
     // Base validation for all categories
-    let baseValidation = 
+    let baseValidation =
       row.category &&
       row.department &&
       row.quarter &&
@@ -59,23 +59,27 @@ const AddStudentOutreach = (props) => {
       row.state &&
       row.year_fy &&
       row.institution_type;
-      
+
     // For Student Outreach category
     if (row.category === "Student Outreach") {
-      return baseValidation && 
+      return (
+        baseValidation &&
         row.start_date &&
         row.end_date &&
         !isNaN(row.faculty) &&
         row.faculty > 0 &&
         !isNaN(row.students) &&
-        row.students > 0;
+        row.students > 0
+      );
     }
-    
+
     // For other categories, validate male and female counts
-    return baseValidation && 
+    return (
+      baseValidation &&
       !isNaN(row.male) &&
       !isNaN(row.female) &&
-      (row.male > 0 || row.female > 0); // At least one must be greater than 0
+      (row.male > 0 || row.female > 0)
+    ); // At least one must be greater than 0
   };
 
   // Enable/disable Save button based on validation
@@ -116,37 +120,36 @@ const AddStudentOutreach = (props) => {
       created_by_frontend: Number(userId),
       updated_by_frontend: null,
     }));
+    // Call onHide with data to make the api call
+    onHide("studentOutreach", data);
 
     // Reset form after submission - clear ALL fields
-    setRows([
-      {
-        start_date: "",
-        end_date: "",
-        category: "",
-        department: "",
-        institution_type: "",
-        quarter: "",
-        month: "",
-        state: "",
-        faculty: 0,
-        students: 0,
-        year_fy: "",
-        male: 0,
-        female: 0,
-      },
-    ]);
-    
+    // setRows([
+    //   {
+    //     start_date: "",
+    //     end_date: "",
+    //     category: "",
+    //     department: "",
+    //     institution_type: "",
+    //     quarter: "",
+    //     month: "",
+    //     state: "",
+    //     faculty: 0,
+    //     students: 0,
+    //     year_fy: "",
+    //     male: 0,
+    //     female: 0,
+    //   },
+    // ]);
+
     // Reset save button states
     setDisableSaveButton(true);
     setIsSaveDisabled(false);
-    
-    // Call onHide with data to make the api call
-    onHide("studentOutreach", data);
   };
 
   // Create a function to handle the close button click
   const handleClose = () => {
-    // Reset form 
+    // Reset form
     setRows([
       {
         start_date: "",
@@ -164,14 +167,38 @@ const AddStudentOutreach = (props) => {
         female: 0,
       },
     ]);
-    
+
     // Reset save button states
     setDisableSaveButton(true);
     setIsSaveDisabled(false);
-    
+
     // Close the modal
     onHide();
   };
+ useEffect(() => {
+  if (show) {
+    setRows([
+      {
+        start_date: "",
+        end_date: "",
+        category: "",
+        department: "",
+        institution_type: "",
+        quarter: "",
+        month: "",
+        state: "",
+        faculty: 0,
+        students: 0,
+        year_fy: "",
+        male: 0,
+        female: 0,
+      },
+    ]);
+    setCurrentCategory("");
+    setDisableSaveButton(true);
+    setIsSaveDisabled(false);
+  }
+}, [show]);
 
   return (
     <Modal
@@ -203,7 +230,9 @@ const AddStudentOutreach = (props) => {
               <thead>
                 <tr>
                   <th>Category</th>
-                  {currentCategory === "Student Outreach" && <th>Start Date</th>}
+                  {currentCategory === "Student Outreach" && (
+                    <th>Start Date</th>
+                  )}
                   {currentCategory === "Student Outreach" && <th>End Date</th>}
                   <th>Financial Year *</th>
                   <th>Quarter</th>
@@ -214,7 +243,7 @@ const AddStudentOutreach = (props) => {
                   <th>Male</th>
                   <th>Female</th>
                   <th>Institution Type</th>
-                  {currentCategory === "Student Outreach" && <th>Students</th>}
+                  <th>Students</th>
                 </tr>
               </thead>
               <tbody>

@@ -190,6 +190,16 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
     }
   }, [row.category]);
 
+  // Auto-calculate students for non-Student Outreach
+  useEffect(() => {
+    if (row.category !== "Student Outreach") {
+      const total = (parseFloat(row.male) || 0) + (parseFloat(row.female) || 0);
+      if (row.students !== total) {
+        updateRow("students", total);
+      }
+    }
+  }, [row.male, row.female, row.category]);
+
   return (
     <tr>
       {/* Category - always first */}
@@ -387,13 +397,24 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         )}
       </td>
 
-      {/* Students - only show when category is Student Outreach */}
-      {row.category === "Student Outreach" && (
+      {/* Students field - always render, but logic differs by category */}
+      {row.category === "Student Outreach" ? (
         <td>
           <NumberField
             name="students"
             value={row.students}
-            onChange={() => {}} // No handler as it's read-only
+            onChange={() => {}} // Read-only
+            error={errors.students}
+            onBlur={() => handleBlur('students')}
+            isReadOnly={true}
+          />
+        </td>
+      ) : (
+        <td>
+          <NumberField
+            name="students"
+            value={row.students}
+            onChange={() => {}} // Read-only, auto-calculated
             error={errors.students}
             onBlur={() => handleBlur('students')}
             isReadOnly={true}
