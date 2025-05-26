@@ -24,7 +24,6 @@ import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBu
 import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
-// import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
 import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
@@ -55,13 +54,11 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-// import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
-// import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptionsMain = [
@@ -79,7 +76,6 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -119,7 +115,6 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
-    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -132,7 +127,6 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
-    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -226,61 +220,7 @@ const Operations = ({
     []
   );
 
-  const columnsStudentOutreach = useMemo(
-    () => [
-      {
-        Header: "Financial Year",
-        accessor: "year_fy",
-        width: 120 // Fixed width in pixels
-      },
-      {
-        Header: "Quarter",
-        accessor: "quarter",
-        width: 80
-      },
-      {
-        Header: "Month",
-        accessor: "month",
-        width: 100
-      },
-      {
-        Header: "Category",
-        accessor: "category",
-        width: 200,
-        cell: ({ value }) => (
-          <div style={{ 
-            width: '100%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}>
-            {value}
-          </div>
-        )
-      },
-      {
-        Header: "State",
-        accessor: "state",
-        width: 120
-      },
-      {
-        Header: "Department",
-        accessor: "department",
-        width: 150
-      },
-      {
-        Header: "Gender",
-        accessor: "gender",
-        width: 100
-      },
-      {
-        Header: "Students",
-        accessor: "students",
-        width: 100
-      },
-    ],
-    []
-  );
+  
 
   const columnsMentor = useMemo(
     () => [
@@ -679,40 +619,6 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
-              sortByField = sortBy[0].id;
-              break;
-
-            default:
-              sortByField = "user_name";
-              break;
-          }
-
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        } else {
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex
-          );
-        }
-      }
-      if (activeTab.key === "studentOutreach") {
-        if (sortBy.length) {
-          let sortByField = "full_name";
-          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "year_fy":
-            case "quarter":
-            case "month":
-            case "category":
               sortByField = sortBy[0].id;
               break;
 
