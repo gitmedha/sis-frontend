@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendReminder } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -279,6 +279,18 @@ const Batch = (props) => {
     });
   }
 
+  const triggerManualReminder = async(id)=>{
+    NP.start();
+    sendReminder(id).then(()=> {
+      setAlert("Reminder sent successfully.", "success");
+    }).catch(err => {
+      setAlert("Unable to send reminder.", "error");
+    }).finally(() => {
+      NP.done();
+      window.location.reload();
+    });
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -312,6 +324,13 @@ const Batch = (props) => {
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => triggerManualReminder(batch.id)}
+                      className="d-flex align-items-center"
+                    >
+                      <FaCheckCircle size="20" color={batch?.manual_email_sent ?'#207B69':'#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Send Reminder</span>
+                    </Dropdown.Item>
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {
