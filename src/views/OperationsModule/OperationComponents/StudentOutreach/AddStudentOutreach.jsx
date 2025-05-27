@@ -33,14 +33,20 @@ const AddStudentOutreach = (props) => {
   const updateRow = (field, value) => {
     // Track category changes
     if (field === "category") {
+      const oldCategory = rows[0].category;
       setCurrentCategory(value);
+      
       // If changing to a non-Student Outreach category, make sure save button isn't disabled
       if (value !== "Student Outreach") {
         setIsSaveDisabled(false);
       }
+      
+      // If the category has changed, the row will be reset in StudentOutreachRowdata component
+      // We just need to make sure the validation state is properly updated
+      setDisableSaveButton(true); // Disable save until the user fills in the required fields
     }
-
-    setRows((prevRows) => {
+    
+    setRows(prevRows => {
       const updatedRow = { ...prevRows[0], [field]: value };
       return [updatedRow];
     });
