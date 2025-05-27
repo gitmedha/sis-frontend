@@ -169,9 +169,60 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
 
   // Handle Select change for category
   const handleCategoryChange = (selectedOption) => {
-    updateRow("category", selectedOption ? selectedOption.value : "");
-    setErrors((prevErrors) => ({ ...prevErrors, category: "" }));
-    setTouched((prev) => ({ ...prev, category: true }));
+    const newCategory = selectedOption ? selectedOption.value : "";
+    
+    // Reset relevant fields when category changes
+    if (newCategory !== row.category) {
+      // Common fields to reset for any category change
+      const resetData = {
+        faculty: 0,
+        students: 0,
+        male: 0,
+        female: 0,
+        start_date: "",
+        end_date: "",
+        institution_type: "",
+        state:""
+      };
+      
+      // Update the category first
+      updateRow("category", newCategory);
+      
+      // Then reset all the relevant fields using setRows to do it atomically
+      setRows((prevRows) => {
+        return prevRows.map(prevRow => ({
+          ...prevRow,
+          ...resetData
+        }));
+      });
+    } else {
+      // If just reselecting the same category, just update normally
+      updateRow("category", newCategory);
+    }
+    
+    setErrors((prevErrors) => ({ 
+      ...prevErrors, 
+      category: "",
+      faculty: "",
+      students: "",
+      male: "",
+      female: "",
+      start_date: "",
+      end_date: "",
+      institution_type: ""
+    }));
+    
+    setTouched((prev) => ({ 
+      ...prev, 
+      category: true,
+      faculty: false,
+      students: false,
+      male: false,
+      female: false,
+      start_date: false,
+      end_date: false,
+      institution_type: false
+    }));
   };
 
   // Handle institution type change
@@ -189,6 +240,16 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
       }
     }
   }, [row.category]);
+
+  // Auto-calculate students for non-Student Outreach
+  useEffect(() => {
+    if (row.category !== "Student Outreach") {
+      const total = (parseFloat(row.male) || 0) + (parseFloat(row.female) || 0);
+      if (row.students !== total) {
+        updateRow("students", total);
+      }
+    }
+  }, [row.male, row.female, row.category]);
 
   return (
     <tr>
@@ -387,13 +448,24 @@ const StudentOutreachRowdata = ({ row, updateRow, setRows, setIsSaveDisabled }) 
         )}
       </td>
 
-      {/* Students - only show when category is Student Outreach */}
-      {row.category === "Student Outreach" && (
+      {/* Students field - always render, but logic differs by category */}
+      {row.category === "Student Outreach" ? (
         <td>
           <NumberField
             name="students"
             value={row.students}
-            onChange={() => {}} // No handler as it's read-only
+            onChange={() => {}} // Read-only
+            error={errors.students}
+            onBlur={() => handleBlur('students')}
+            isReadOnly={true}
+          />
+        </td>
+      ) : (
+        <td>
+          <NumberField
+            name="students"
+            value={row.students}
+            onChange={() => {}} // Read-only, auto-calculated
             error={errors.students}
             onBlur={() => handleBlur('students')}
             isReadOnly={true}
