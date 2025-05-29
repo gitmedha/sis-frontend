@@ -1215,23 +1215,6 @@ const Operations = ({
             setAlert("Unable to create TOT data.", "error");
           });
       }
-      if (key === "mentorship") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Mentorship Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        // await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateMentorship(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
 
       if (key === "pitching") {
         datavaluesforlatestcreate = {
@@ -1286,40 +1269,6 @@ const Operations = ({
           });
       }
 
-      if (key === "pitching") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "College Pitching Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        // await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateCollegePitch(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
-      if (key === "upskilling") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Students Upskilling Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        // await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateStudentsUpskillings(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
       getoperations();
     } catch (err) {
       if (key === "my_data") {
