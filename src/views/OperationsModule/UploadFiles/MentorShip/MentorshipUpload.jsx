@@ -292,7 +292,7 @@ const MentorshipUpload = (props) => {
       ) {
         notFoundData.push({
           index: index + 1,
-          assigned_to: newItem["Assigned To"],
+          assigned_to: newItem["Assigned To"] || "",
           mentor_name: newItem["Mentor Name"] || "",
           email: newItem["Email ID"] || "",
           mentor_domain: newItem["Mentor's Domain"] || "",
@@ -307,9 +307,13 @@ const MentorshipUpload = (props) => {
           status: newItem["Status"] || "",
           program_name: newItem["Medha Program Name"] || "",
           contact: newItem["Contact"] || "",
-          validation_error: `Invalid ${
-            !isValidContact(newItem["Contact"]) ? "Phone Number" : ""
-          } ${!isValidEmail(newItem["Email ID"]) ? "Email" : ""}`,
+          isAssignedToInvalid: !srmcheck,
+          isMentorNameInvalid: !newItem["Mentor Name"],
+          isEmailInvalid: !newItem["Email ID"] || !isValidEmail(newItem["Email ID"]),
+          isDomainInvalid: !newItem["Mentor's Domain"],
+          isContactInvalid: !isValidContact(newItem["Contact"]),
+          isCompanyNameInvalid: !newItem["Mentor's Company Name"],
+          isDesignationInvalid: !newItem["Designation/Title"]
         });
       } else {
         formattedData.push({
