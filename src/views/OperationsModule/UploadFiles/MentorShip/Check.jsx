@@ -63,26 +63,22 @@ const Check = (props) => {
                     {props.notUploadedData.map((obj, i) => (
                       <tr key={i}>
                         <td>{obj.index}</td>
-                        <td className={!obj.assigned_to ? "text-danger" : ""}>
+                        <td className={obj.isAssignedToInvalid ? "text-danger" : ""}>
                           {obj.assigned_to || "No data"}
                         </td>
-                        <td className={!obj.mentor_name ? "text-danger" : ""}>
+                        <td className={obj.isMentorNameInvalid ? "text-danger" : ""}>
                           {obj.mentor_name || "No data"}
                         </td>
-                        <td className={!obj.email ? "text-danger" : ""}>
+                        <td className={obj.isEmailInvalid ? "text-danger" : ""}>
                           {obj.email || "No data"}
                         </td>
-                        <td className={!obj.mentor_domain ? "text-danger" : ""}>
+                        <td className={obj.isDomainInvalid ? "text-danger" : ""}>
                           {obj.mentor_domain || "No data"}
                         </td>
-                        <td
-                          className={
-                            !obj.mentor_company_name ? "text-danger" : ""
-                          }
-                        >
+                        <td className={obj.isCompanyNameInvalid ? "text-danger" : ""}>
                           {obj.mentor_company_name || "No data"}
                         </td>
-                        <td className={!obj.designation ? "text-danger" : ""}>
+                        <td className={obj.isDesignationInvalid ? "text-danger" : ""}>
                           {obj.designation || "No data"}
                         </td>
                         <td className={!obj.mentor_area ? "text-danger" : ""}>
@@ -94,9 +90,7 @@ const Check = (props) => {
                         <td className={!obj.outreach ? "text-danger" : ""}>
                           {obj.outreach || "No data"}
                         </td>
-                        <td
-                          className={!obj.onboarding_date ? "text-danger" : ""}
-                        >
+                        <td className={!obj.onboarding_date ? "text-danger" : ""}>
                           {obj.onboarding_date || "No data"}
                         </td>
                         <td>
@@ -111,7 +105,7 @@ const Check = (props) => {
                         <td className={!obj.program_name ? "text-danger" : ""}>
                           {obj.program_name || "No data"}
                         </td>
-                        <td className={!isValidContact(obj.contact) ? "text-danger" : ""}>
+                        <td className={obj.isContactInvalid ? "text-danger" : ""}>
                           {obj.contact || "No data"}
                         </td>
                       </tr>
