@@ -430,7 +430,7 @@ const Institutions = (props) => {
           <Avatar
             name={institution.name}
             logo={institution.logo}
-            style={{ width: "35px", height: "35px" }}
+            style={{ width: "5px", height: "5px" }}
           />
         ),
         status: (
