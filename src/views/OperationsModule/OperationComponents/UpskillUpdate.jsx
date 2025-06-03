@@ -25,7 +25,7 @@ import {
 } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -248,24 +248,24 @@ const UpskillUpdate = (props) => {
 
     newObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-  //   const dataValues = {
-  //     category: props.category,
-  //     program_name: props.program_name,
-  //     sub_category: props.sub_category,
-  //     certificate_received: props.certificate_received,
-  //     issued_org: props.issued_org,
-  //     course_name: props.course_name,
-  //     student_id: Number(props.student_id.id),
-  //     start_date: formatDateStringToIndianStandardTime(props.start_date),
-  //     end_date: formatDateStringToIndianStandardTime(props.end_date),
-  //     published_at: new Date(props.published_at),
-  //     assigned_to: Number(props?.assigned_to?.id),
-  //     institution: Number(props?.institution?.id),
-  //     batch: Number(props?.batch?.id)
-  // };
+    const dataValues = {
+      category: props.category,
+      program_name: props.program_name,
+      sub_category: props.sub_category,
+      certificate_received: props.certificate_received,
+      issued_org: props.issued_org,
+      course_name: props.course_name,
+      student_id: Number(props.student_id.id),
+      start_date: formatDateStringToIndianStandardTime(props.start_date),
+      end_date: formatDateStringToIndianStandardTime(props.end_date),
+      published_at: new Date(props.published_at),
+      assigned_to: Number(props?.assigned_to?.id),
+      institution: Number(props?.institution?.id),
+      batch: Number(props?.batch?.id)
+  };
 
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
 
     const value = await updateStudetnsUpskills(Number(props.id), newObject);
     refreshTableOnDataSaving();
@@ -313,7 +313,7 @@ const UpskillUpdate = (props) => {
     initialValues["sub_category"] = props.sub_category;
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
-    initialValues["course_name"] = props["course_name"];
+    initialValues["course_name"] = props.course_name;
     initialValues["student_id"] = Number(props.student_id.id);
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date
@@ -322,7 +322,7 @@ const UpskillUpdate = (props) => {
       props.end_date
     );
     initialValues["published_at"] = new Date(props.published_at);
-    initialValues["assigned_to"] = Number(props?.assigned_to?.id);
+    initialValues["assigned_to"] = props?.assigned_to?.id;
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
   }

@@ -15,6 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import { searchStudents, searchEmployers } from "./employerAction";
+import { createLatestAcivity, findDifferences, findEmployerDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -129,8 +130,16 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setotherrejection(rejectionfeild);
   }, [employmentConnection]);
-
+  let propgramEnrollemntData={};
+  
   const onSubmit = async (values) => {
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Employer",activity:"Employment Connection Updated",event_id:props.employer.id,updatedby:userId ,changes_in:findEmployerDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Employer",activity:"Employment Connection Created",event_id:props.employer.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
@@ -564,7 +573,7 @@ const EnrollmentConnectionForm = (props) => {
                   )}
                 </div>
               </Section>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

@@ -292,7 +292,8 @@ const UserTot = (props) => {
           contact: "",
           designation: "",
           start_date:"",
-          end_date:""
+          end_date:"",
+          email:" "
         },
       ]);
     } catch (error) {

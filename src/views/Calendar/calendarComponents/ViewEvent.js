@@ -10,6 +10,7 @@ import NP from "nprogress";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { isAdmin } from "../../../common/commonFunctions";
 import { connect } from "react-redux";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -50,9 +51,12 @@ function ViewEvent(props) {
   } = props;
 
   const userEmail = localStorage.getItem("user_email");
+  const userId = localStorage.getItem("user_id");
   const handleDelete = async () => {
     try {
       NP.start();
+      let datavaluesforlatestcreate={module_name:"calender",activity:"Calendar Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+      await createLatestAcivity(datavaluesforlatestcreate);
       await deleteEvent(event.id);
       NP.done();
       setAlert("Event cancelled successfully.", "success");

@@ -368,6 +368,26 @@ export const sendEmailOnCreateBatch = async (batchInfo) => {
   });
 };
 
+export const sendPreBatchLinks = async(id) =>{
+  try{
+    const data = await api.get(`batch/${id}/send-pre-batch-link`);
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+}
+
+export const sendPostBatchLinks = async(id)=>{
+  try{
+    const data = await api.get(`batch/${id}/send-post-batch-link`);
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+}
+
 export const sendReminder = async(id)=>{
   let url = `${process.env.REACT_APP_STRAPI_API_BASEURL}/batch/sendReminderEmail/${id}`;
   return await api.get(url).then(data => {

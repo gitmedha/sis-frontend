@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import PropTypes from "prop-types";
 
 const TabPicker = ({ moduleName,options, setActiveTab = () => {} }) => {
@@ -8,12 +8,15 @@ const TabPicker = ({ moduleName,options, setActiveTab = () => {} }) => {
   const additionalClass = isFewOptions ? "few-options" : "";
 
 
-
   const changeTab = (tab) => {
     
     setActive(tab.key);
     setActiveTab(tab);
   };
+
+  useEffect(() => {
+    setActive(options[0].key);
+  }, [options]);
 
   return (
     <div className={`${tabClass} ${additionalClass} my-3 latto-regular`}>
