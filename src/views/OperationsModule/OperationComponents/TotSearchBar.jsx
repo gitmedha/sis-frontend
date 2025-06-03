@@ -38,12 +38,40 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     { key: 4, value: "trainer_1.username", label: "Trainer 1" },
     { key: 5, value: "trainer_2.username", label: "Trainer 2" },
     {key:6, value:"start_date", label: "Start Date" },
-    {key:7, value:"end_date", label: "End Date"}
+    {key:7, value:"end_date", label: "End Date"},
+    {key:8, value:'gender', label:'Gender'},
+    {key:9, value:'age', label:'Age'},
   ];
 
   const [cityOptions, setCityOptions] = useState([]);
   const [projectNameOptions, setProjectNameOptions] = useState([]);
   const [partnerDeptOptions, setParnterDeptOptions] = useState([]);
+  const [genderOptions,setGenderOptions] = useState([]);
+  const [ageOptions] = useState([{
+    key: 0,
+    label: "18-25",
+    value: "18-25",
+  },
+  {
+    key: 1,
+    label: "26-35",
+    value: "26-35",
+  },
+  {
+    key: 2,
+    label: "36-45",
+    value: "36-45",
+  },
+  {
+    key: 3,
+    label: "46-55",
+    value: "46-55",
+  },
+  {
+    key: 4,
+    label: "56+",
+    value: "56+",
+  }]);
 
   const [projectTypeOptions] = useState([
     {
@@ -212,11 +240,15 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     } else if (value === "state") {
       setDropdownValues("state");
     }
+    else if (value ==="gender"){
+      setDropdownValues("gender");
+    }
   };
 
   const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "users-tots");
+      console.log(data);
 
       if (fieldName === "city") {
         setCityOptions(data);
@@ -231,6 +263,10 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       } else if (fieldName === "state") {
         setStateOptions(data);
       }
+       else if (fieldName === "gender") {
+        setGenderOptions(data);
+      }
+      
     } catch (error) {
       console.error(error);
     }
@@ -268,7 +304,28 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                       disabled={true}
                     />
                   )}
-
+                  {selectedSearchField === "age" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={ageOptions}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
+                {selectedSearchField === "gender" && (
+                    <Input
+                      icon="down"
+                      name="search_by_value"
+                      label="Search Value"
+                      control="lookup"
+                      options={genderOptions}
+                      className="form-control"
+                      disabled={disabled ? true : false}
+                    />
+                  )}
                   {selectedSearchField === "city" && (
                     <Input
                       icon="down"

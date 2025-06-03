@@ -216,6 +216,14 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+      {
+        Header:'Gender',
+        accessor:'gender'
+      },
+      {
+        Header:'Age',
+        accessor:'age'
+      }
     ],
     []
   );
