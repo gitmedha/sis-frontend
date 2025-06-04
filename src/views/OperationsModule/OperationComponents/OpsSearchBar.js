@@ -198,6 +198,7 @@ const OpsSearchDropdown = function OpsSearchBar({
             <Section>
               {Array.from({ length: counter }).map((_, index) => (
                 <SearchRow key={index}>
+                  <div className="col-lg-2 col-md-4 col-sm-6">
                   <SearchFieldContainer>
                     <Input
                       icon="down"
@@ -209,7 +210,9 @@ const OpsSearchDropdown = function OpsSearchBar({
                       onChange={(e) => setSearchItem(e.value, index)}
                     />
                   </SearchFieldContainer>
-
+                  </div>
+                  
+                  <div className="col-lg-4 col-md-4 col-sm-6">
                   <SearchValueContainer>
                     {selectedSearchFields[index] === null && (
                       <Input
@@ -336,11 +339,13 @@ const OpsSearchDropdown = function OpsSearchBar({
                       </DateRangeContainer>
                     )}
                   </SearchValueContainer>
+                  </div>
+                  
 
                   {index === counter - 1 && (
                     <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} />
-                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} />}
+                      <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
                     </IconContainer>
                   )}
                 </SearchRow>
