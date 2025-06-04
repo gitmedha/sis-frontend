@@ -260,7 +260,6 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       case "trainer_2.username": return trainerTwoOptions;
       case "state": return stateOptions;
       case "gender": return genderOptions;
-      case "age": return ageOptions;
       default: return [];
     }
   };
@@ -290,10 +289,19 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </SearchFieldContainer>
 
                   <SearchValueContainer>
+                     {selectedSearchFields[index] === null && (
+                                          <Input
+                                            name={`searches[${index}].search_by_value`}
+                                            control="input"
+                                            label="Search Value"
+                                            className="form-control"
+                                            disabled
+                                          />
+                                        )}
                     {selectedSearchFields[index] && 
                       !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
                       <Input
-                        icon={["age", "gender", "city", "project_name", "partner_dept", 
+                        icon={["gender", "city", "project_name", "partner_dept", 
                               "project_type", "trainer_1.username", "trainer_2.username", 
                               "state"].includes(selectedSearchFields[index]) ? "down" : undefined}
                         name={`searches[${index}].search_by_value`}
@@ -390,6 +398,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </button>
                 </div>
               </div>
+            
             </Section>
           </Form>
         )}
