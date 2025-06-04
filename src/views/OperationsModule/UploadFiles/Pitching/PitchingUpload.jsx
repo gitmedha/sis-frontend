@@ -132,7 +132,6 @@ const PitchingUpload = (props) => {
   };
 
   const handleFileChange = (event) => {
-    console.log("File input change detected");
     const fileInput = event.target;
     const file = fileInput.files[0];
 
@@ -164,7 +163,6 @@ const PitchingUpload = (props) => {
   };
 
   const convertExcel = (excelData) => {
-    console.log("Converting Excel data");
     const workbook = XLSX.read(excelData, { type: "binary" });
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
@@ -181,7 +179,6 @@ const PitchingUpload = (props) => {
   };
 
   const processFileData = (jsonData) => {
-    console.log("Processing file data", jsonData);
     const validRecords = [];
     const invalidRecords = [];
     for (const row of jsonData) {
@@ -231,7 +228,6 @@ const PitchingUpload = (props) => {
   };
 
   const processParsedData = async (data) => {
-    console.log("Processing parsed data", data);
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
@@ -283,7 +279,6 @@ const PitchingUpload = (props) => {
         !isValidProgramName(newItem["Program name"]) ||
         (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
-        console.log("Validation failed for row", index + 1, "with data:", newItem);
         const errors = [];
         if (!newItem["Student Name"]) errors.push("Student Name is required");
         if (!newItem["Course Name"]) errors.push("Course Name is required");
@@ -310,7 +305,6 @@ const PitchingUpload = (props) => {
           error: errors.join(", ")
         });
       } else {
-        console.log("Validation successful for row", index + 1, "with data:", newItem);
         formattedData.push({
           date_of_pitching: Date || "",
           student_name: newItem["Student Name"] || "",
@@ -327,12 +321,9 @@ const PitchingUpload = (props) => {
         });
       }
     });
-    console.log("notFoundData",notFoundData);
     
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
-    console.log("Formatted Data:", formattedData);
-    console.log("Not Uploaded Data:", notFoundData);
   };
   
 
