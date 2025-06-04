@@ -1,39 +1,70 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Input } from "../../../utils/Form";
-import { Formik, Form } from "formik";
+import { Formik, Form, useFormik } from "formik";
 import styled from "styled-components";
 import {
   searchOperationTab,
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
-import * as Yup from "yup";
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { getAllSearchSrm } from "src/utils/function/lookupOptions";
-import { FaPlusCircle } from "react-icons/fa";
 
 const Section = styled.div`
   padding-bottom: 30px;
-
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
   }
+`;
 
-  .section-header {
+const SearchRow = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+`;
+
+const SearchFieldContainer = styled.div`
+  flex: 0 0 200px;
+`;
+
+const SearchValueContainer = styled.div`
+  flex: 0 0 300px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+  
+  svg {
+    cursor: pointer;
+    font-size: 20px;
     color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
+    &:hover {
+      color: #16574a;
+    }
   }
 `;
 
-const UpSkillSearchBar = function UpSkillSearch({
-  searchOperationTab,
-  resetSearch,
-}) {
+const DateRangeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  
+  > div {
+    flex: 1;
+    &:first-child {
+      margin-right: 15px;
+    }
+  }
+`;
+
+const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
   let options = [
     { key: 1, value: "assigned_to.username", label: "Assigned to" },
     { key: 3, value: "course_name", label: "Course Name" },
@@ -43,7 +74,7 @@ const UpSkillSearchBar = function UpSkillSearch({
     { key: 0, value: "student_id.full_name", label: "Student Name" },
     { key: 4, value: "program_name", label: "Program Name" },
     { key: 7, value: "category", label: "Category" },
-  ].sort((a, b) => a.label - b.label);
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   const [studentNameOptions, setStudentNameOptions] = useState([]);
   const [assignedToOptions, setAssignedToOptions] = useState([]);
@@ -51,88 +82,40 @@ const UpSkillSearchBar = function UpSkillSearch({
   const [courseNameOptions, setCourseNameOptions] = useState([]);
   const [programNameOptions, setProgramOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
-
-  const [selectedSearchFields, setSelectedSearchFields] = useState([null]); // Track selected fields for each counter
+  const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
   const [disabled, setDisabled] = useState(true);
-  const [counter, setCounter] = useState(1); // Counter for dynamic search fields
+  const [counter, setCounter] = useState(1);
+  const [isFieldEmpty, setIsFieldEmpty] = useState(false);
 
   let today = new Date();
   const initialValues = {
-    searches: [
-      {
-        search_by_field: "",
-        search_by_value: "",
-        search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-        search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-        search_by_value_date_end_from: new Date(
-          new Date(today).setDate(today.getDate())
-        ),
-        search_by_value_date_end_to: new Date(
-          new Date(today).setDate(today.getDate())
-        ),
-      },
-    ],
-  };
-
-  const formatDate = (dateval) => {
-    const date = new Date(dateval);
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const dd = String(date.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
+    searches: [{
+      search_by_field: "",
+      search_by_value: "",
+      search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_from: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_to: new Date(new Date(today).setDate(today.getDate())),
+    }],
   };
 
   const handleSubmit = async (values) => {
     const baseUrl = "students-upskillings";
-
-    // Initialize arrays for search fields and values
     const searchFields = [];
     const searchValues = [];
 
-    // Loop through each search field and value
     values.searches.forEach((search) => {
       if (search.search_by_field && search.search_by_value) {
         searchFields.push(search.search_by_field);
         searchValues.push(search.search_by_value);
-      } else if (
-        search.search_by_field === "start_date" &&
-        search.search_by_value_date &&
-        search.search_by_value_date_to
-      ) {
-        const startDate = formatDate(search.search_by_value_date);
-        const endDate = formatDate(search.search_by_value_date_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
-      } else if (
-        search.search_by_field === "end_date" &&
-        search.search_by_value_date_end_from &&
-        search.search_by_value_date_end_to
-      ) {
-        const startDate = formatDate(search.search_by_value_date_end_from);
-        const endDate = formatDate(search.search_by_value_date_end_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
       }
     });
 
-    // Construct the payload
-    const payload = {
-      searchFields,
-      searchValues,
-    };
-
-    console.log("Payload:", payload); // Log the payload for debugging
-
-    // Submit the payload to the API
-    await searchOperationTab(baseUrl, payload);
-
-    // Store the last searched result in local storage as cache
+    const searchData = { searchFields, searchValues };
+    await searchOperationTab(baseUrl, searchData);
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
-      JSON.stringify({
-        baseUrl,
-        searchData: payload,
-      })
+      JSON.stringify({ baseUrl, searchData })
     );
   };
 
@@ -142,6 +125,7 @@ const UpSkillSearchBar = function UpSkillSearch({
     setSelectedSearchFields([null]);
     setDisabled(true);
     setCounter(1);
+    setIsFieldEmpty(false);
   };
 
   const setSearchItem = (value, index) => {
@@ -149,6 +133,7 @@ const UpSkillSearchBar = function UpSkillSearch({
     newSelectedSearchFields[index] = value;
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
+    setIsFieldEmpty(false);
 
     if (value === "student_id.full_name") {
       setDropdownValues("student_id", index);
@@ -188,16 +173,30 @@ const UpSkillSearchBar = function UpSkillSearch({
     }
   };
 
+  const addSearchRow = () => {
+    setCounter(counter + 1);
+    setSelectedSearchFields([...selectedSearchFields, null]);
+  };
+
+  const removeSearchRow = () => {
+    if (counter > 1) {
+      setCounter(counter - 1);
+      const newSelectedFields = [...selectedSearchFields];
+      newSelectedFields.pop();
+      setSelectedSearchFields(newSelectedFields);
+    }
+  };
+
   return (
     <Fragment>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {(formik) => (
           <Form>
             <Section>
-              <div className="row align-items-center">
-                {Array.from({ length: counter }).map((_, index) => (
-                  <Fragment key={index}>
-                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+              {Array.from({ length: counter }).map((_, index) => (
+                <SearchRow key={index}>
+                  <div className="col-lg-2 col-md-4 col-sm-6">
+                    <SearchFieldContainer>
                       <Input
                         icon="down"
                         name={`searches[${index}].search_by_field`}
@@ -207,70 +206,20 @@ const UpSkillSearchBar = function UpSkillSearch({
                         className="form-control"
                         onChange={(e) => setSearchItem(e.value, index)}
                       />
-                    </div>
-                    <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
+                    </SearchFieldContainer>
+                  </div>
+
+                  <div className="col-lg-3 col-md-4 col-sm-6">
+                    <SearchValueContainer>
                       {selectedSearchFields[index] === null && (
                         <Input
                           name={`searches[${index}].search_by_value`}
                           control="input"
                           label="Search Value"
                           className="form-control"
+                          onClick={() => setIsFieldEmpty(true)}
                           disabled
                         />
-                      )}
-
-                      {selectedSearchFields[index] === "start_date" && (
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="mr-3">
-                            <Input
-                              name={`searches[${index}].search_by_value_date`}
-                              label="From"
-                              placeholder="Start Date"
-                              control="datepicker"
-                              className="form-control"
-                              autoComplete="off"
-                              disabled={disabled}
-                            />
-                          </div>
-                          <div className="ml-2">
-                            <Input
-                              name={`searches[${index}].search_by_value_date_to`}
-                              label="To"
-                              placeholder="End Date"
-                              control="datepicker"
-                              className="form-control"
-                              autoComplete="off"
-                              disabled={disabled}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {selectedSearchFields[index] === "end_date" && (
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="mr-3">
-                            <Input
-                              name={`searches[${index}].search_by_value_date_end_from`}
-                              label="From"
-                              placeholder="Start Date"
-                              control="datepicker"
-                              className="form-control"
-                              autoComplete="off"
-                              disabled={disabled}
-                            />
-                          </div>
-                          <div className="ml-2">
-                            <Input
-                              name={`searches[${index}].search_by_value_date_end_to`}
-                              label="To"
-                              placeholder="End Date"
-                              control="datepicker"
-                              className="form-control"
-                              autoComplete="off"
-                              disabled={disabled}
-                            />
-                          </div>
-                        </div>
                       )}
 
                       {selectedSearchFields[index] === "student_id.full_name" && (
@@ -344,14 +293,73 @@ const UpSkillSearchBar = function UpSkillSearch({
                           disabled={disabled}
                         />
                       )}
-                    </div>
-                  </Fragment>
-                ))}
 
-                <div className="col-lg-3">
-                  <FaPlusCircle onClick={() => setCounter(counter + 1)} />
-                </div>
+                      {selectedSearchFields[index] === "start_date" && (
+                        <DateRangeContainer>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                        </DateRangeContainer>
+                      )}
 
+                      {selectedSearchFields[index] === "end_date" && (
+                        <DateRangeContainer>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_from`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                        </DateRangeContainer>
+                      )}
+                    </SearchValueContainer>
+                  </div>
+
+                  {index === counter - 1 && (
+                    <IconContainer>
+                      <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                    </IconContainer>
+                  )}
+                </SearchRow>
+              ))}
+
+              <div className="row">
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
                     className="btn btn-primary action_button_sec search_bar_action_sec"
@@ -370,6 +378,15 @@ const UpSkillSearchBar = function UpSkillSearch({
                   </button>
                 </div>
               </div>
+
+              {isFieldEmpty && (
+                <div className="row">
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                    <p style={{ color: "red" }}>Please select any field first.</p>
+                  </div>
+                </div>
+              )}
             </Section>
           </Form>
         )}
@@ -378,6 +395,4 @@ const UpSkillSearchBar = function UpSkillSearch({
   );
 };
 
-export default connect(null, { searchOperationTab, resetSearch })(
-  UpSkillSearchBar
-);
+export default connect(null, { searchOperationTab, resetSearch })(UpskillSearchBar);
