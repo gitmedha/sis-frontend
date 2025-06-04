@@ -248,6 +248,7 @@ assigned_to {
 }
 mentor_name
 email
+specify_other
 mentor_domain
 mentor_company_name
 designation

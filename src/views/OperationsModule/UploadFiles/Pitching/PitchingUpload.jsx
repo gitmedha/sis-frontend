@@ -279,6 +279,15 @@ const PitchingUpload = (props) => {
         !isValidProgramName(newItem["Program name"]) ||
         (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
+        const errors = [];
+        if (!newItem["Student Name"]) errors.push("Student Name is required");
+        if (!newItem["Course Name"]) errors.push("Course Name is required");
+        if (!phoneValid) errors.push("Phone number must be 10 digits");
+        if (!instituteId) errors.push("Invalid Institution name");
+        if (!emailValid) errors.push("Invalid Email format");
+        if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
+        if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
+
         notFoundData.push({
           index: index + 1,
           date_of_pitching: Date || "",
@@ -293,9 +302,7 @@ const PitchingUpload = (props) => {
           remarks: newItem["Remarks"] || "",
           srm_name: newItem["SRM Name"] || "",
           medha_area: newItem["Medha Area"] || "",
-          error: `Invalid ${!phoneValid ? "Phone" : ""} ${
-            !whatsappValid ? "WhatsApp Number" : ""
-          } ${!emailValid ? "Email" : ""}`.trim(),
+          error: errors.join(", ")
         });
       } else {
         formattedData.push({
@@ -314,7 +321,7 @@ const PitchingUpload = (props) => {
         });
       }
     });
-  
+    
     setExcelData(formattedData);
     setNotuploadedData(notFoundData);
   };
