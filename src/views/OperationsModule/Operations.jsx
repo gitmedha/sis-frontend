@@ -225,10 +225,6 @@ const Operations = ({
         Header:'Gender',
         accessor:'gender'
       },
-      {
-        Header:'Age',
-        accessor:'age'
-      }
     ],
     []
   );
