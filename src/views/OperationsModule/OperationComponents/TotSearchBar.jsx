@@ -62,20 +62,14 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     { key: 7, value: "start_date", label: "Start Date" },
     { key: 8, value: "end_date", label: "End Date" },
     { key: 9, value: "gender", label: "Gender" },
-    { key: 10, value: "age", label: "Age" },
+    { key: 10, value: "user_name", label: "Participent Name" },
   ];
 
   const [cityOptions, setCityOptions] = useState([]);
   const [projectNameOptions, setProjectNameOptions] = useState([]);
   const [partnerDeptOptions, setParnterDeptOptions] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
-  const [ageOptions] = useState([
-    { key: 0, label: "18-25", value: "18-25" },
-    { key: 1, label: "26-35", value: "26-35" },
-    { key: 2, label: "36-45", value: "36-45" },
-    { key: 3, label: "46-55", value: "46-55" },
-    { key: 4, label: "56+", value: "56+" }
-  ]);
+ const [userOptions, setUserOptions] = useState([]);
 
   const [trainerOneOptions, setTrainerOneOptions] = useState([]);
   const [trainerTwoOptions, setTrainerTwoOptions] = useState([]);
@@ -209,7 +203,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
 
-    if (["city", "project_name", "partner_dept", "trainer_1.username", "trainer_2.username", "state", "gender", "age"].includes(value)) {
+    if (["city", "project_name", "partner_dept", "trainer_1.username", "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
       setDropdownValues(value);
     }
   };
@@ -226,6 +220,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
         "trainer_2.username": setTrainerTwoOptions,
         state: setStateOptions,
         gender: setGenderOptions,
+        user_name: setUserOptions,
       };
 
       if (setters[fieldName]) {
@@ -260,6 +255,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       case "trainer_2.username": return trainerTwoOptions;
       case "state": return stateOptions;
       case "gender": return genderOptions;
+      case "user_name": return userOptions;
       default: return [];
     }
   };
@@ -301,7 +297,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                     {selectedSearchFields[index] && 
                       !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
                       <Input
-                        icon={["gender", "city", "project_name", "partner_dept", 
+                        icon={["user_name","gender", "city", "project_name", "partner_dept", 
                               "project_type", "trainer_1.username", "trainer_2.username", 
                               "state"].includes(selectedSearchFields[index]) ? "down" : undefined}
                         name={`searches[${index}].search_by_value`}
