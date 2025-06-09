@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 import { Anchor } from "../../../../components/content/Utils";
 import UpdateMentorship from "./UpdateMentorship";
 import DetailField from "src/components/content/DetailField";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -79,8 +79,8 @@ const MentorshipdataField = (props) => {
   };
 
   const deleteEntry = async () => {
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Data Delete",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const data = await deactivate_mentorship(Number(props.id));
     if (data.status === 200) {
       setAlert("Entry Deleted Successfully.", "success");
@@ -156,10 +156,10 @@ const MentorshipdataField = (props) => {
                   <DetailField
                     className=""
                     Bold={""}
-                    label="Onboarding Date"
+                    label="Outreach Date"
                     value={
-                      moment(props.outreach).format("DD MMM YYYY")
-                        ? moment(props.start_date).format("DD MMM YYYY")
+                      moment(props.outreach).format("DD-MM-YYYY")
+                        ? moment(props.start_date).format("DD-MM-YYYY")
                         : ""
                     }
                   />
@@ -202,8 +202,8 @@ const MentorshipdataField = (props) => {
                     Bold={""}
                     label="Onboarding Date"
                     value={
-                      moment(props.onboarding_date).format("DD MMM YYYY")
-                        ? moment(props.end_date).format("DD MMM YYYY")
+                      moment(props.onboarding_date).format("DD-MM-YYYY")
+                        ? moment(props.end_date).format("DD-MM-YYYY")
                         : ""
                     }
                   />
@@ -213,6 +213,14 @@ const MentorshipdataField = (props) => {
                     label="Mentor's Domain"
                     value={props.mentor_domain}
                   />
+                  {props.mentor_domain === 'Others' && (
+                    <DetailField
+                      className=""
+                      Bold={''}
+                      label="Specify Others"
+                      value={props.specify_other}
+                    />
+                  )}
                   <DetailField
                     className=""
                     Bold={""}
@@ -260,7 +268,7 @@ const MentorshipdataField = (props) => {
                   <div className="col-md-6 col-sm-12">
                     <DetailField
                       Bold={""}
-                      label="Mentor Area"
+                      label="Mentor's Area"
                       value={props.mentor_area}
                     />
                   </div>

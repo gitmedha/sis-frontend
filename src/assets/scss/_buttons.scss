@@ -50,3 +50,7 @@ button {
   @extend.latto-regular;
   @extend.text-capitalize;
 }
+
+.no-decoration {
+  text-transform: none !important;
+}

@@ -31,6 +31,7 @@ import { isAdmin, isMedhavi, isSRM } from "../../common/commonFunctions";
 import StudentsSearchBar from "./StudentComponents/StudentsSearchBar";
 import ModalShowmassedit from "./MassEdit/ModalShowmassedit";
 import ModaltoSelectBulkMassEdit from "./MassEdit/ModaltoSelectBulkMassEdit";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -650,7 +651,16 @@ const Students = (props) => {
   const createStudentApi = (dataToSave) => {
     nProgress.start();
     createStudent(dataToSave)
-      .then((data) => {
+      .then(async(data) => {
+        
+          let studentData = {
+            module_name: "student",
+            activity: "Student Data Created",
+            event_id: data.data.data.createStudent.student.id,
+            updatedby: userId,
+            changes_in: {name:data.data.data.createStudent.student.full_name},
+        }
+        await createLatestAcivity(studentData)
         setAlert("Student created successfully.", "success");
         history.push(`/student/${data.data.data.createStudent.student.id}`);
       })

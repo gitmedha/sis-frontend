@@ -276,7 +276,7 @@ const ProgramEnrollments = (props) => {
   return (
     <div className="container-fluid my-3">
       <div className="row">
-      {((props.batch.status == 'Enrollment Ongoing'|| props.batch.status == "In Progress") &&
+      {((props.batch?.status == 'Enrollment Ongoing'|| props.batch?.status == "In Progress") &&
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"

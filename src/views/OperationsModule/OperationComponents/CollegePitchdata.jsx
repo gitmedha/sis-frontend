@@ -9,6 +9,7 @@ import CollepitchesEdit from "./CollegepitchesEdit";
 import { deactivate_user_college_pitch } from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -44,7 +45,7 @@ const CollegePitchdata = (props) => {
     dataAndEdit:false,
     delete:false
   });
-
+  const userId = localStorage.getItem("user_id");
   const [operationdata, setoperationdata] = useState(props);
   const hideShowModal1 = async (data) => {
     if (!data || data.isTrusted) {
@@ -79,6 +80,8 @@ const CollegePitchdata = (props) => {
   }
 
   const deleteEntry=async()=>{
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"COLLEGE Pitches Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+      await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_college_pitch(Number(props.id))
     if(data.status===200){
      setAlert("Entry Deleted Successfully.", "success");

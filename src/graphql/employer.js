@@ -55,6 +55,26 @@ export const employerFields = `
   }
 `;
 
+export const IndustryFields = `
+  id
+  industry_name
+  sub_industry
+  category
+  active
+`;
+
+export const GET_ALL_INDUSTRY =`
+query IndustryConnection {
+  industries(publicationState: PREVIEW) {
+    industry_name
+    sub_industry
+    category
+    i_name
+  }
+}
+
+
+`
 
 
 export const GET_ALL_EMPLOYERS = `
