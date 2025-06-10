@@ -119,7 +119,7 @@ const MentorshipdataField = (props) => {
               id="contained-modal-title-vcenter"
               className="d-flex align-items-center"
             >
-              <h1 className="text--primary bebas-thick mb-0">Field Details</h1>
+              <h1 className="text--primary bebas-thick mb-0">Mentorship Details</h1>
             </Modal.Title>
           </Modal.Header>
           <Styled>
