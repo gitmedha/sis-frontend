@@ -5,23 +5,34 @@ import Modal from 'react-bootstrap/Modal';
 const Deletepopup = (props) => {
     const handleClose = () => props.setShowModal();
 
-  return (
-    <>
-      <Modal show={true} className='' >
-        <Modal.Header >
-          <Modal.Title className=' text-heading text--xl'>Are you sure you want to delete?</Modal.Title>
-        </Modal.Header>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="danger" onClick={()=>props.deleteEntry()} >
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  )
+    return (
+        <Modal show={true} centered>
+            <Modal.Body className="text-center p-4">
+            <h4 className="mb-3 fw-semibold">Delete Confirmation</h4>
+                <p className="mb-4">
+                    You're going to delete the data permanently.
+                    <br />
+                    Are you sure?
+                </p>
+                <div className="d-flex justify-content-center gap-3">
+                    <Button 
+                        variant="outline-secondary" 
+                        onClick={handleClose}
+                        className="px-4"
+                    >
+                        No, Keep It
+                    </Button>
+                    <Button 
+                        variant="danger" 
+                        onClick={props.deleteEntry}
+                        className="px-4"
+                    >
+                        Yes, Delete!
+                    </Button>
+                </div>
+            </Modal.Body>
+        </Modal>
+    );
 }
 
-export default Deletepopup
+export default Deletepopup;
