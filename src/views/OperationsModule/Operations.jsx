@@ -81,6 +81,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -120,6 +121,7 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -132,6 +134,7 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -704,6 +707,40 @@ const Operations = ({
             case "partner_dept":
             case "age":
             case "gender":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
