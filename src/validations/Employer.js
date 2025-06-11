@@ -73,7 +73,8 @@ export const EmploymentConnectionValidations = Yup.object({
 });
 
 export const EmployerValidations = Yup.object({
-    name:Yup.string().required('Name is required.') // Check for required input
+    name:Yup.string().required('Name is required.') 
+    // Check for required input
     .test(
       'no-trailing-space',
       'Please remove extra space.',
@@ -112,6 +113,7 @@ export const EmployerValidations = Yup.object({
       (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
     ),
     district,
+    outsourced: Yup.string().required('Outsourced is required.'),
 });
 
 export const ContactValidations = Yup.object({
