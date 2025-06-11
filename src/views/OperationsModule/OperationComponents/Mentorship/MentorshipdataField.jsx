@@ -213,6 +213,14 @@ const MentorshipdataField = (props) => {
                     label="Mentor's Domain"
                     value={props.mentor_domain}
                   />
+                  {props.mentor_domain === 'Others' && (
+                    <DetailField
+                      className=""
+                      Bold={''}
+                      label="Specify Others"
+                      value={props.specify_other}
+                    />
+                  )}
                   <DetailField
                     className=""
                     Bold={""}
@@ -260,7 +268,7 @@ const MentorshipdataField = (props) => {
                   <div className="col-md-6 col-sm-12">
                     <DetailField
                       Bold={""}
-                      label="Mentor’s Area"
+                      label="Mentor's Area"
                       value={props.mentor_area}
                     />
                   </div>

@@ -55,17 +55,22 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     { key: 0, value: "city", label: "City" },
     { key: 1, value: "project_name", label: "Project Name" },
     { key: 2, value: "partner_dept", label: "Project Department" },
-    { key: 6, value: "state", label: "State" },
-    { key: 3, value: "project_type", label: "Project Type" },
-    { key: 4, value: "trainer_1.username", label: "Trainer 1" },
-    { key: 5, value: "trainer_2.username", label: "Trainer 2" },
-    { key: 6, value: "start_date", label: "Start Date" },
-    { key: 7, value: "end_date", label: "End Date" },
+    { key: 3, value: "state", label: "State" },
+    { key: 4, value: "project_type", label: "Project Type" },
+    { key: 5, value: "trainer_1.username", label: "Trainer 1" },
+    { key: 6, value: "trainer_2.username", label: "Trainer 2" },
+    { key: 7, value: "start_date", label: "Start Date" },
+    { key: 8, value: "end_date", label: "End Date" },
+    { key: 9, value: "gender", label: "Gender" },
+    { key: 10, value: "user_name", label: "Participent Name" },
   ];
 
   const [cityOptions, setCityOptions] = useState([]);
   const [projectNameOptions, setProjectNameOptions] = useState([]);
   const [partnerDeptOptions, setParnterDeptOptions] = useState([]);
+  const [genderOptions, setGenderOptions] = useState([]);
+ const [userOptions, setUserOptions] = useState([]);
+
   const [trainerOneOptions, setTrainerOneOptions] = useState([]);
   const [trainerTwoOptions, setTrainerTwoOptions] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
@@ -99,6 +104,11 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
   const validate = Yup.object().shape({
     searches: Yup.array().of(
       Yup.object().shape({
+        search_by_field: Yup.string().required("Field is required"),
+        search_by_value: Yup.mixed().when("search_by_field", {
+          is: (field) => !["start_date", "end_date"].includes(field),
+          then: Yup.mixed().required("Value is required")
+        }),
         search_by_value_date: Yup.date().when("search_by_field", {
           is: "start_date",
           then: Yup.date().required("Start date is required"),
@@ -180,7 +190,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const clear = async (formik) => {
-    formik.setValues(initialValues);
+    formik.resetForm();
     await resetSearch();
     setSelectedSearchFields([null]);
     setDisabled(true);
@@ -193,30 +203,29 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
 
-    if (value === "city") {
-      setDropdownValues("city");
-    } else if (value === "project_name") {
-      setDropdownValues("project_name");
-    } else if (value === "partner_dept") {
-      setDropdownValues("partner_dept");
-    } else if (value === "trainer_1.username") {
-      setDropdownValues("trainer_1.username");
-    } else if (value === "trainer_2.username") {
-      setDropdownValues("trainer_2.username");
-    } else if (value === "state") {
-      setDropdownValues("state");
+    if (["city", "project_name", "partner_dept", "trainer_1.username", "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
+      setDropdownValues(value);
     }
   };
 
   const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "users-tots");
-      if (fieldName === "city") setCityOptions(data);
-      else if (fieldName === "project_name") setProjectNameOptions(data);
-      else if (fieldName === "partner_dept") setParnterDeptOptions(data);
-      else if (fieldName === "trainer_1.username") setTrainerOneOptions(data);
-      else if (fieldName === "trainer_2.username") setTrainerTwoOptions(data);
-      else if (fieldName === "state") setStateOptions(data);
+
+      const setters = {
+        city: setCityOptions,
+        project_name: setProjectNameOptions,
+        partner_dept: setParnterDeptOptions,
+        "trainer_1.username": setTrainerOneOptions,
+        "trainer_2.username": setTrainerTwoOptions,
+        state: setStateOptions,
+        gender: setGenderOptions,
+        user_name: setUserOptions,
+      };
+
+      if (setters[fieldName]) {
+        setters[fieldName](data);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -233,6 +242,21 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       const newSelectedFields = [...selectedSearchFields];
       newSelectedFields.pop();
       setSelectedSearchFields(newSelectedFields);
+    }
+  };
+
+  const getOptionsForField = (field) => {
+    switch (field) {
+      case "city": return cityOptions;
+      case "project_name": return projectNameOptions;
+      case "partner_dept": return partnerDeptOptions;
+      case "project_type": return projectTypeOptions;
+      case "trainer_1.username": return trainerOneOptions;
+      case "trainer_2.username": return trainerTwoOptions;
+      case "state": return stateOptions;
+      case "gender": return genderOptions;
+      case "user_name": return userOptions;
+      default: return [];
     }
   };
 
@@ -261,95 +285,27 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </SearchFieldContainer>
 
                   <SearchValueContainer>
-                    {selectedSearchFields[index] === null && (
+                     {selectedSearchFields[index] === null && (
+                                          <Input
+                                            name={`searches[${index}].search_by_value`}
+                                            control="input"
+                                            label="Search Value"
+                                            className="form-control"
+                                            disabled
+                                          />
+                                        )}
+                    {selectedSearchFields[index] && 
+                      !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
                       <Input
-                        name={`searches[${index}].search_by_value`}
-                        control="input"
-                        label="Search Value"
-                        className="form-control"
-                        disabled
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "city" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={cityOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "project_name" && (
-                      <Input
-                        icon="down"
+                        icon={["user_name","gender", "city", "project_name", "partner_dept", 
+                              "project_type", "trainer_1.username", "trainer_2.username", 
+                              "state"].includes(selectedSearchFields[index]) ? "down" : undefined}
                         name={`searches[${index}].search_by_value`}
                         label="Search Value"
-                        control="lookup"
-                        options={projectNameOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "partner_dept" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={partnerDeptOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "project_type" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={projectTypeOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "trainer_1.username" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={trainerOneOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "trainer_2.username" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={trainerTwoOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "state" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={stateOptions}
+                        control={["age", "gender"].includes(selectedSearchFields[index]) ? 
+                                "lookup" : 
+                                (getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input")}
+                        options={getOptionsForField(selectedSearchFields[index])}
                         className="form-control"
                         disabled={disabled}
                       />
@@ -438,6 +394,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </button>
                 </div>
               </div>
+            
             </Section>
           </Form>
         )}

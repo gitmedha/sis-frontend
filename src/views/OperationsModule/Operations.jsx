@@ -224,6 +224,10 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+      {
+        Header:'Gender',
+        accessor:'gender'
+      },
     ],
     []
   );
@@ -701,6 +705,8 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
+            case "age":
+            case "gender":
               sortByField = sortBy[0].id;
               break;
 
