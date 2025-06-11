@@ -293,13 +293,7 @@ const UserTot = (props) => {
           contact: "",
           designation: "",
           start_date:"",
-<<<<<<< HEAD
-          end_date:"",
-          email:" ",
-          institution: ""
-=======
           end_date:""
->>>>>>> a1d6a61dd8eee7ebccd8cfd8e480ffd91a3738ac
         },
       ]);
     } catch (error) {
