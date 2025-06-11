@@ -76,6 +76,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Career Progression", key: "career_progression"}
 ];
 
 const Styled = styled.div`
@@ -1066,6 +1067,9 @@ const Operations = ({
     }
 
     if (activeTabMain.key === "systemAdoption") {
+      console.log("tabPickerOptions3[0]", tabPickerOptions3[0]);
+      console.log("active",activeTabMain )
+      console.log("tabPickerOptions3",tabPickerOptions3);
       setActiveTab(tabPickerOptions3[0]);
     }
     if (activeTabMain.key === "coreProgramme") {

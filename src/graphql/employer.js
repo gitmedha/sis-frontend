@@ -53,6 +53,7 @@ export const employerFields = `
     full_name
     designation
   }
+  outsourced
 `;
 
 
