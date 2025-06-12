@@ -10,9 +10,7 @@ const Deletepopup = (props) => {
             <Modal.Body className="text-center p-4">
             <h4 className="mb-3 fw-semibold">Delete Confirmation</h4>
                 <p className="mb-4">
-                    You're going to delete the data permanently.
-                    <br />
-                    Are you sure?
+                Are you sure you want to delete this data permanently?
                 </p>
                 <div className="d-flex justify-content-center gap-3">
                     <Button 
