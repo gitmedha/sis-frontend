@@ -309,7 +309,7 @@ const getDepartmentOptions = (state) => {
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
-        <td>
+        {/* <td>
           <input
             className="table-input h-2"
             type="text"
@@ -317,11 +317,34 @@ const getDepartmentOptions = (state) => {
             ref={college}
             onChange={(e) => handleInputChange(row.id, "college",college)}
           />
+        </td> */}
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.colege
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution"
+            options={props.institutiondata}
+            onChange={(e) => props.handleChange(e, "college", row.id)}
+            onInputChange={(inputValue) => {
+              props.filterInstitution(inputValue).then((data) => {
+                props.setInstitutionOptions(data);
+              });
+            }}
+          />
         </td>
         <td>
-          
           <Select
-            className="table-input h-2"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.project_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -333,16 +356,12 @@ const getDepartmentOptions = (state) => {
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "partner_dept", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.partner_dept
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -352,15 +371,12 @@ const getDepartmentOptions = (state) => {
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "module_name", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input h-2"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.module_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -414,14 +430,14 @@ const getDepartmentOptions = (state) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="tariner_1"
+            name="trainer_1"
             options={srmOption}
             onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
           />
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className="table-input h-2"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -431,8 +447,8 @@ const getDepartmentOptions = (state) => {
           />
         </td>
         <td>
-            <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.certificate_given
                 ? `border-red`
                 : "table-input h-2"
@@ -446,8 +462,8 @@ const getDepartmentOptions = (state) => {
           />
         </td>
         <td>
-        <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.project_type
                 ? `border-red`
                 : "table-input h-2"
@@ -459,19 +475,7 @@ const getDepartmentOptions = (state) => {
             options={projecttypeoptions}
             onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
-          
         </td>
-        {/* <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "new_entry", e.target.value)
-            }
-          />
-        </td> */}
-
-        
       </tr>
     </>
   );
