@@ -113,7 +113,8 @@ const Table = ({
   onPageSizeChange = () => {},
   paginationPageIndex = 0,
   onPageIndexChange = () => {},
-  collapse_tab_name = null
+  collapse_tab_name = null,
+  allDataCount = null
 }) => {
   const tableInstance = useTable(
     {
@@ -361,6 +362,7 @@ const Table = ({
             pageIndex={pageIndex}
             pageLimit={pageSize}
             setPageLimit={setPageSize}
+            allDataCount={allDataCount}
           />
         </StickyPagination>
       )}

@@ -1388,6 +1388,7 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
+                  allDataCount={optsAggregate.count}
                 />
               </>
             ) : activeTab.key == "upskilling" ? (
