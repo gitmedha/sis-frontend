@@ -419,7 +419,7 @@ useEffect(() => {
                     <Section>
                       <h3 className="section-header">Basic Info</h3>
                       <div className="row">
-                        <div className="col-md-6 col-sm-12">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           {!lookUpLoading ? (
                             <Input
                               name="student_id"
@@ -438,7 +438,7 @@ useEffect(() => {
                           )}
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookup"
                             name="certificate_received"
@@ -449,7 +449,8 @@ useEffect(() => {
                             options={certificateoptions}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="assigned_to"
@@ -462,7 +463,7 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="batch"
@@ -470,11 +471,12 @@ useEffect(() => {
                             required
                             filterData={filterBatch}
                             defaultOptions={batchOptions}
-                            className="form-control1"
+                            className="form-control"
                             placeholder="Batch"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="program_name"
                             control="lookup"
@@ -486,7 +488,7 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="institution"
@@ -499,22 +501,23 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="start_date"
-                            label="Start Date "
-                            // required
+                            label="Start Date"
+                            required
                             placeholder="Start Date"
                             control="datepicker"
                             className="form-control"
                             autoComplete="off"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="end_date"
                             label="End Date"
-                            // required
+                            required
                             placeholder="End Date"
                             control="datepicker"
                             className="form-control"
@@ -522,7 +525,7 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="course_name"
                             control="lookup"
@@ -533,7 +536,8 @@ useEffect(() => {
                             placeholder="Course Name"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="category"
                             control="lookup"
@@ -544,18 +548,20 @@ useEffect(() => {
                             options={categoryOptions}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="sub_category"
                             label="Sub Category"
                             control="lookup"
                             icon="down"
                             className="form-control"
-                            placeholder="Category"
+                            placeholder="Sub Category"
                             options={subcategory}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             icon="down"
                             control="input"

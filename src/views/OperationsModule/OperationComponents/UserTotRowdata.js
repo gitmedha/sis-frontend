@@ -22,7 +22,44 @@ const certificateoptions = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
+
 const UserTotRowdata = (props) => {
+  const [selectedState, setSelectedState] = useState(null);
+
+  const stateWiseProjects = {
+  "Uttarakhand": [
+    { value: "Dakshata", label: "Dakshata", department: "Department of Skill Development and Employment" }
+  ],
+  "Haryana": [
+    { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
+    { value: "Dual System of Training", label: "Dual System of Training", department: "Skill Development of Industrial Training" },
+    { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
+  ],
+  "Uttar Pradesh": [
+    { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
+    { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
+    { value: "ITI transformation", label: "ITI transformation", department: "DVEDSE" }
+  ],
+  "Bihar": [
+    { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
+  ]
+};
+
+const getProjectOptions = (state) => {
+  return stateWiseProjects[state].map((proj) => ({
+    value: proj.value,
+    label: proj.label,
+  }));
+};
+
+const getDepartmentOptions = (state) => {
+  return stateWiseProjects[state].map((proj) => ({
+    value: proj.department,
+    label: proj.department,
+  }));
+
+}
   const [rows, setRows] = useState([
     {
       id: 1,
@@ -62,7 +99,6 @@ const UserTotRowdata = (props) => {
   const designation=useRef(null)
   const college =useRef(null)
   const [state,setstate]=useState(true)
- 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -235,7 +271,17 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            onChange={(e) => {
+              console.log(e, "state")
+              if(['Uttarakhand', 'Haryana','Uttar Pradesh','Bihar'].includes(e.value)){
+                setSelectedState(e.value);
+              }
+              else {
+              setSelectedState(null);
+              onStateChange(e, row.id, "state")
+            }
+              
+            }}
           />
         </td>
         <td>
@@ -263,7 +309,7 @@ const UserTotRowdata = (props) => {
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
-        <td>
+        {/* <td>
           <input
             className="table-input h-2"
             type="text"
@@ -271,48 +317,66 @@ const UserTotRowdata = (props) => {
             ref={college}
             onChange={(e) => handleInputChange(row.id, "college",college)}
           />
+        </td> */}
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.colege
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="institution"
+            options={props.institutiondata}
+            onChange={(e) => props.handleChange(e, "college", row.id)}
+            onInputChange={(inputValue) => {
+              props.filterInstitution(inputValue).then((data) => {
+                props.setInstitutionOptions(data);
+              });
+            }}
+          />
         </td>
         <td>
-          
           <Select
-            className="table-input h-2"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.project_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="project_name"
-            options={projectName}
-            onChange={(e) => props.handleChange(e, "project_name", row.id)}
+            options={selectedState ?getProjectOptions(selectedState): projectName}
+            onChange={(e) => {
+              props.handleChange(e, "project_name", row.id)
+            }}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "partner_dept", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.partner_dept
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="partner_dept"
-            options={partnerDept}
+            options={selectedState ? getDepartmentOptions(selectedState):partnerDept}
             onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "module_name", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input h-2"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.module_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -366,14 +430,14 @@ const UserTotRowdata = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="tariner_1"
+            name="trainer_1"
             options={srmOption}
             onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
           />
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className="table-input h-2"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -383,8 +447,8 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-            <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.certificate_given
                 ? `border-red`
                 : "table-input h-2"
@@ -398,8 +462,8 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-        <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.project_type
                 ? `border-red`
                 : "table-input h-2"
@@ -411,19 +475,7 @@ const UserTotRowdata = (props) => {
             options={projecttypeoptions}
             onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
-          
         </td>
-        {/* <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "new_entry", e.target.value)
-            }
-          />
-        </td> */}
-
-        
       </tr>
     </>
   );
