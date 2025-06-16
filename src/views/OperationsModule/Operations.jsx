@@ -81,6 +81,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Career Progression", key: "career_progression"},
   { title: "Student Outreach", key: "studentOutreach" },
 ];
 
