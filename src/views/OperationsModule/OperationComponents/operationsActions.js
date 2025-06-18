@@ -882,8 +882,8 @@ export const getAllInstitute = async () => {
         ...instituteData,
         ...batchResponse.data.data.institutionsConnection.values,
       ];
-      return instituteData;
     }
+    return instituteData;
   } catch (err) {
     console.error(err);
   }
