@@ -55,27 +55,21 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     { key: 0, value: "city", label: "City" },
     { key: 1, value: "project_name", label: "Project Name" },
     { key: 2, value: "partner_dept", label: "Project Department" },
-    { key: 3, value: "state", label: "State" },
-    { key: 4, value: "project_type", label: "Project Type" },
-    { key: 5, value: "trainer_1.username", label: "Trainer 1" },
-    { key: 6, value: "trainer_2.username", label: "Trainer 2" },
-    { key: 7, value: "start_date", label: "Start Date" },
-    { key: 8, value: "end_date", label: "End Date" },
-    { key: 9, value: "gender", label: "Gender" },
-    { key: 10, value: "age", label: "Age" },
+    { key: 6, value: "state", label: "State" },
+    { key: 3, value: "project_type", label: "Project Type" },
+    { key: 4, value: "trainer_1.username", label: "Trainer 1" },
+    { key: 5, value: "trainer_2.username", label: "Trainer 2" },
+    {key:6, value:"start_date", label: "Start Date" },
+    {key:7, value:"end_date", label: "End Date"},
+    {key:8, value:'gender', label: 'Gender'},
+    {key:9, value:'user_name', label: 'Participant Name'},
+
   ];
 
   const [cityOptions, setCityOptions] = useState([]);
   const [projectNameOptions, setProjectNameOptions] = useState([]);
   const [partnerDeptOptions, setParnterDeptOptions] = useState([]);
-  const [genderOptions, setGenderOptions] = useState([]);
-  const [ageOptions] = useState([
-    { key: 0, label: "18-25", value: "18-25" },
-    { key: 1, label: "26-35", value: "26-35" },
-    { key: 2, label: "36-45", value: "36-45" },
-    { key: 3, label: "46-55", value: "46-55" },
-    { key: 4, label: "56+", value: "56+" }
-  ]);
+ const [userOptions, setUserOptions] = useState([]);
 
   const [trainerOneOptions, setTrainerOneOptions] = useState([]);
   const [trainerTwoOptions, setTrainerTwoOptions] = useState([]);
@@ -83,6 +77,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
   const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
   const [disabled, setDisabled] = useState(true);
   const [counter, setCounter] = useState(1);
+  const [genderOptions,setGenderOptions] = useState([]);
 
   const projectTypeOptions = [
     { key: 0, label: "External", value: "External" },
@@ -209,9 +204,16 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
 
-    if (["city", "project_name", "partner_dept", "trainer_1.username", "trainer_2.username", "state", "gender", "age"].includes(value)) {
+    if (["city", "project_name", "partner_dept", "trainer_1.username", "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
       setDropdownValues(value);
     }
+    else if (value === "gender"){
+        setDropdownValues("gender");
+    }
+    else if (value === "user_name"){
+        setDropdownValues("user_name");
+    }
+    
   };
 
   const setDropdownValues = async (fieldName) => {
@@ -226,6 +228,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
         "trainer_2.username": setTrainerTwoOptions,
         state: setStateOptions,
         gender: setGenderOptions,
+        user_name: setUserOptions,
       };
 
       if (setters[fieldName]) {
@@ -260,7 +263,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       case "trainer_2.username": return trainerTwoOptions;
       case "state": return stateOptions;
       case "gender": return genderOptions;
-      case "age": return ageOptions;
+      case "user_name": return userOptions;
       default: return [];
     }
   };
@@ -290,10 +293,19 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </SearchFieldContainer>
 
                   <SearchValueContainer>
+                     {selectedSearchFields[index] === null && (
+                                          <Input
+                                            name={`searches[${index}].search_by_value`}
+                                            control="input"
+                                            label="Search Value"
+                                            className="form-control"
+                                            disabled
+                                          />
+                                        )}
                     {selectedSearchFields[index] && 
                       !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
                       <Input
-                        icon={["age", "gender", "city", "project_name", "partner_dept", 
+                        icon={["user_name","gender", "city", "project_name", "partner_dept", 
                               "project_type", "trainer_1.username", "trainer_2.username", 
                               "state"].includes(selectedSearchFields[index]) ? "down" : undefined}
                         name={`searches[${index}].search_by_value`}
@@ -390,6 +402,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </button>
                 </div>
               </div>
+            
             </Section>
           </Form>
         )}

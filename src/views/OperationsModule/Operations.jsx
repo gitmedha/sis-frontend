@@ -81,6 +81,8 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Career Progression", key: "career_progression"},
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -120,6 +122,7 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
@@ -132,6 +135,7 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -225,10 +229,6 @@ const Operations = ({
         Header:'Gender',
         accessor:'gender'
       },
-      {
-        Header:'Age',
-        accessor:'age'
-      }
     ],
     []
   );
@@ -708,6 +708,40 @@ const Operations = ({
             case "partner_dept":
             case "age":
             case "gender":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -1285,50 +1319,7 @@ const Operations = ({
       }
 
 
-      if (key === "pitching") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "College Pitching Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateCollegePitch(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
-      if (key === "upskilling") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Students Upskilling Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateStudentsUpskillings(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
-      if (key == "studentOutreach") {
-        const value = await bulkCreateStudentOutreach(data)
-          .then((data) => {
-            setAlert("data created successfully.", "success");
-            // history.push(`/student/${data.data.data.createStudent.student.id}`);
-          })
-          .catch((err) => {
-            setAlert("Unable to create upskilling data.", "error");
-          });
-      }
+     
       getoperations();
     } catch (err) {
       if (key === "my_data") {
@@ -1540,6 +1531,7 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
+                  allDataCount={optsAggregate.count}
                 />
               </>
             ) : activeTab.key == "studentOutreach" ? (

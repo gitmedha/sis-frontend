@@ -253,7 +253,7 @@ const PitchingUpload = (props) => {
       const updatedby = Number(userId);
   
       const normalizeString = (str) =>
-        str.replace(/\s+/g, " ").replace(/\n/g, "").trim();
+        str && typeof str === 'string' ? str.replace(/\s+/g, " ").replace(/\n/g, "").trim() : '';
   
       const institute = instituteOptions.find(
         (institute) => institute.name === normalizeString(newItem["Institution"])
@@ -279,11 +279,13 @@ const PitchingUpload = (props) => {
         !isValidProgramName(newItem["Program name"]) ||
         (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
+        console.log("Validation failed for row", index + 1, "with data:", newItem);
         const errors = [];
         if (!newItem["Student Name"]) errors.push("Student Name is required");
         if (!newItem["Course Name"]) errors.push("Course Name is required");
         if (!phoneValid) errors.push("Phone number must be 10 digits");
-        if (!instituteId) errors.push("Invalid Institution name");
+        if (!newItem["Institution"] || typeof newItem["Institution"] !== 'string') errors.push("Invalid or empty Institution name");
+        else if (!instituteId) errors.push("Institution name not found");
         if (!emailValid) errors.push("Invalid Email format");
         if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
         if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
@@ -338,25 +340,31 @@ const PitchingUpload = (props) => {
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setUploadNew(true);
-      props.uploadExcel(excelData, "pitching");
+      if (!uploadNew) {
+        props.uploadExcel(excelData, "pitching");
+      }
     }
   };
 
   const uploadNewData = () => {
     setShowForm(true);
-    setUploadNew(!uploadNew);
+    setUploadNew(false);
     setFileName("");
     setNextDisabled(false);
     setUploadSuccesFully("");
+    setExcelData([]);
+    setNotuploadedData([]);
   };
 
   const hideShowModal = () => {
     setShowModalPitching(false);
     setUploadSuccesFully("");
     setShowForm(true);
-    setFileName(""); // Reset the file name display
-    setNextDisabled(false); // Optionally disable the next button
+    setFileName("");
+    setNextDisabled(false);
     setUploadSuccesFully("");
+    setExcelData([]);
+    setNotuploadedData([]);
   };
   return (
     <>
