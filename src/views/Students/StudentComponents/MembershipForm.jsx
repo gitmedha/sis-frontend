@@ -4,18 +4,13 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-import { AlumniServiceValidations } from "../../../validations/Student";
-import {
-  getStudentsPickList,
-  getAlumniServicePickList,
-} from "./StudentActions";
+import { MemberShipValidations } from "../../../validations/Student";
 import Textarea from "../../../utils/Form/Textarea";
 import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
-// import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -36,191 +31,85 @@ const Section = styled.div`
   }
 `;
 
-const statusOption = [
-  { value: "Paid", label: "Paid" },
-  { value: "Unpaid", label: "Unpaid" },
+const statusOptions = [
+  { value: "Active", label: "Active" },
+  { value: "Cancelled", label: "Cancelled" },
+  { value: "Ended", label: "Ended" },
 ];
 
-const AlumniServiceForm = (props) => {
+const yesNoOptions = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+];
+
+const MembershipForm = (props) => {
   let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [locationOptions, setLocationOptions] = useState([]);
-  const [feeSubmissionDateValue, setFeeSubmissionDateValue] = useState(
-    props.alumniService ? props.alumniService.fee_submission_date : null
-  );
-  const [feeAmountValue, setFeeAmountValue] = useState(
-    props.alumniService ? props.alumniService.fee_amount : ""
-  );
-  const [receiptNumberValue, setReceiptNumberValue] = useState(
-    props.alumniService ? props.alumniService.receipt_number : ""
-  );
-  const [validationRules, setValidationRules] = useState(
-    AlumniServiceValidations
-  );
-  const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
-  const [commentRequired,setCommentRequired]=useState(false);
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [programOptions, setProgramOptions] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [status, setStatus] = useState("");
-  const [role,setRole]=useState([]);
-  const userId = Number(localStorage.getItem("user_id"))
-
-  useEffect(() => {
-    if (props.alumniService) {
-      setSelectedCategory(
-        props.alumniService ? props.alumniService.category : ""
-      );
-    }
-  }, [props.alumniService, show]);
-
-  useEffect(() => {
-    getAlumniServicePickList().then((data) => {
-      setTypeOptions(
-        data.subcategory.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-          category: item.category,
-        }))
-      );
-      setCategoryOptions(
-        data.category.map((item) => ({ value: item.value, label: item.value }))
-      );
-      setProgramOptions(
-        data.program_mode.map((item) => ({
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setRole(data.role);
-    });
-  }, []);
+  const [validationRules, setValidationRules] = useState(MemberShipValidations);
+  const [membershipStatus, setMembershipStatus] = useState("");
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-
-    getStudentsPickList().then((data) => {
-      setLocationOptions(
-        data.alumni_service_location.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
   }, []);
 
   useEffect(() => {
-    let fee_submission_date = Yup.string()
-      .nullable()
-      .required("Contribution submission date is required.");
-    let comments=Yup.string().nullable().required("Comment is required.");
-    let fee_amount = Yup.string()
-      .nullable()
-      .required("Contribution amount is required.");
-    let receipt_number = Yup.string()
-      .nullable()
-      .required("Receipt number is required.");
-    let fieldsRequired = status === "Paid";
-
-    if (!fieldsRequired && props.alumniService) {
-      if (Object.keys(props.alumniService).length) {
-        fieldsRequired =
-          props.alumniService.status === "Paid" && status !== "Unpaid";
-      }
-    }
-    setFeeFieldsRequired(fieldsRequired);
-    if (fieldsRequired ) {
+    if (membershipStatus === "Cancelled") {
       setValidationRules(
-        AlumniServiceValidations.shape({
-          fee_submission_date,
-          fee_amount,
-          receipt_number,
-          comments
+        MemberShipValidations.shape({
+          reason_for_cancellation: Yup.string().required(
+            "Reason for cancellation is required."
+          ),
         })
       );
-      
-    }
-    if (commentRequired ) {
+    } else {
       setValidationRules(
-        AlumniServiceValidations.shape({
-          comments
-        })
-      ); 
-    }
-    else {
-      setValidationRules(
-        AlumniServiceValidations.omit([
-          "fee_submission_date",
-          "fee_amount",
-          "receipt_number",
-          "comments"
-        ])
+        MemberShipValidations.omit(["reason_for_cancellation"])
       );
     }
-  }, [status, props.alumniService,commentRequired]);
-
-  useEffect(() => {
-    setFeeSubmissionDateValue(
-      props.alumniService ? props.alumniService.fee_submission_date : null
-    );
-    setFeeAmountValue(
-      props.alumniService ? props.alumniService.fee_amount : ""
-    );
-    setReceiptNumberValue(
-      props.alumniService ? props.alumniService.receipt_number : ""
-    );
-  }, [props]);
+  }, [membershipStatus]);
 
   let initialValues = {
-    alumni_service_student: props.student.full_name,
-    location: "",
-    program_mode: "",
+    student: props.student.full_name,
+    medhavi_member: null,
+    membership_fee: "",
+    medhavi_member_id: "",
+    date_of_payment: null,
+    date_of_avail: null,
+    date_of_settlement: null,
     receipt_number: "",
-    fee_amount: "",
-    comments: "",
-    start_date: null,
-    end_date: null,
-    fee_submission_date: null,
+    tenure_completion_date: null,
+    membership_status: "",
+    reason_for_cancellation: "",
     assigned_to: localStorage.getItem("user_id"),
-    category: null,
-    type: "",
-    role:""
   };
 
-  if (props.alumniService) {
-    initialValues = { ...initialValues, ...props.alumniService };
-    initialValues["assigned_to"] = props.alumniService?.assigned_to?.id;
-    initialValues["start_date"] = props.alumniService.start_date
-      ? new Date(props.alumniService.start_date)
+  if (props.membership) {
+    initialValues = { ...initialValues, ...props.membership };
+    initialValues["assigned_to"] = props.membership?.assigned_to?.id;
+    initialValues["date_of_payment"] = props.membership.date_of_payment
+      ? new Date(props.membership.date_of_payment)
       : null;
-    initialValues["end_date"] = props.alumniService.end_date
-      ? new Date(props.alumniService.end_date)
+    initialValues["date_of_avail"] = props.membership.date_of_avail
+      ? new Date(props.membership.date_of_avail)
       : null;
-    initialValues["fee_submission_date"] = props.alumniService
-      .fee_submission_date
-      ? new Date(props.alumniService.fee_submission_date)
+    initialValues["date_of_settlement"] = props.membership.date_of_settlement
+      ? new Date(props.membership.date_of_settlement)
       : null;
-    initialValues["category"] = props.alumniService.category
-      ? props.alumniService.category
+    initialValues["tenure_completion_date"] = props.membership.tenure_completion_date
+      ? new Date(props.membership.tenure_completion_date)
       : null;
-      initialValues["role"]=props.alumniService?.role
+    setMembershipStatus(props.membership.membership_status);
   }
 
   const handleClose = () => {
-    setSelectedCategory("");
     onHide();
   };
 
   const onSubmit = async (values) => {
-    setSelectedCategory("");
     onHide(values);
   };
-
 
   return (
     <Modal
@@ -238,10 +127,10 @@ const AlumniServiceForm = (props) => {
           className="d-flex align-items-center"
         >
           <h1 className="text--primary bebas-thick mb-0">
-            {props.alumniService && props.alumniService.id
+            {props.membership && props.membership.id
               ? "Update"
               : "Add New"}{" "}
-            Alumni Engagement
+            Membership
           </h1>
         </Modal.Title>
       </Modal.Header>
@@ -257,7 +146,7 @@ const AlumniServiceForm = (props) => {
                 <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="alumni_service_student"
+                      name="student"
                       control="input"
                       label="Student"
                       className="form-control capitalize"
@@ -279,135 +168,35 @@ const AlumniServiceForm = (props) => {
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      name="category"
-                      label="Category"
-                      placeholder="Category"
+                      name="medhavi_member"
+                      label="Medhavi Member"
+                      placeholder="Medhavi Member"
                       control="lookup"
                       icon="down"
                       className="form-control"
-                      options={categoryOptions}
-                      onChange={(e) => setSelectedCategory(e.value)}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {selectedCategory && (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="type"
-                        label="Subcategory"
-                        options={typeOptions.filter(
-                          (option) => option.category === selectedCategory
-                        )}
-                        onChange={(selectedOption) => {
-                          const value = selectedOption?.value; 
-                          setCommentRequired(value.toLowerCase() === "workshop"); 
-                        }}
-                        className="form-control"
-                        placeholder="Subcategory"
-                        required
-                      />
-                    )}
-                  </div>
-
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="role"
-                      label="Role"
-                      placeholder="Role"
-                      control="lookup"
-                      icon="down"
-                      className="form-control"
-                      options={role}
-                      // onChange={(e) => setSelectedCategory(e.value)}
+                      options={yesNoOptions}
                       required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
-                      control="lookup"
-                      icon="down"
-                      name="program_mode"
-                      label="Program Mode"
-                      options={programOptions}
-                      className="form-control"
-                      placeholder="Program Mode"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="location"
-                      label="Location"
-                      options={locationOptions}
-                      className="form-control"
-                      placeholder="Location"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="start_date"
-                      label="Start Date"
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="end_date"
-                      label="End Date"
-                      placeholder="End Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="status"
-                      label="Status"
-                      placeholder="Status"
-                      control="lookup"
-                      className="form-control"
-                      autoComplete="off"
-                      icon="down"
-                      options={statusOption}
-                      required={feeFieldsRequired}
-                      onChange={(e) => setStatus(e.value)}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="fee_submission_date"
-                      label="Contribution Submission Date"
-                      placeholder="Contribution Submission Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                      onInput={(value) => setFeeSubmissionDateValue(value)}
-                      required={feeFieldsRequired}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      min={0}
-                      type="number"
-                      name="fee_amount"
-                      label="Contribution Amount"
-                      placeholder="Contribution Amount"
+                      name="medhavi_member_id"
+                      label="Medhavi Member ID"
+                      placeholder="Medhavi Member ID"
                       control="input"
                       className="form-control"
-                      autoComplete="off"
-                      onInput={(e) => setFeeAmountValue(e.target.value)}
-                      required={feeFieldsRequired}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="membership_fee"
+                      label="Membership Fee (₹)"
+                      placeholder="Membership Fee"
+                      control="input"
+                      type="number"
+                      className="form-control"
+                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -417,24 +206,73 @@ const AlumniServiceForm = (props) => {
                       placeholder="Receipt Number"
                       control="input"
                       className="form-control"
-                      autoComplete="off"
-                      onInput={(e) => setReceiptNumberValue(e.target.value)}
-                      required={feeFieldsRequired}
+                      required
                     />
                   </div>
-
-                  <div className="col-md-12 col-sm-12 mt-2">
-                    <Textarea
-                      name="comments"
-                      label="Comments"
-                      placeholder="Comments"
-                      control="input"
-                      required={commentRequired}
-                      // onInput={(e)=>setCommentRequired(true)}
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="date_of_payment"
+                      label="Date of Payment"
+                      placeholder="Date of Payment"
+                      control="datepicker"
                       className="form-control"
-                      autoComplete="off"
-                    ></Textarea>
+                      required
+                    />
                   </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="date_of_avail"
+                      label="Date of Avail"
+                      placeholder="Date of Avail"
+                      control="datepicker"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="date_of_settlement"
+                      label="Date of Settlement"
+                      placeholder="Date of Settlement"
+                      control="datepicker"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="tenure_completion_date"
+                      label="Tenure Completion Date"
+                      placeholder="Tenure Completion Date"
+                      control="datepicker"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      name="membership_status"
+                      label="Membership Status"
+                      placeholder="Membership Status"
+                      control="lookup"
+                      icon="down"
+                      className="form-control"
+                      options={statusOptions}
+                      onChange={(e) => setMembershipStatus(e.value)}
+                      required
+                    />
+                  </div>
+                  {membershipStatus === "Cancelled" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Textarea
+                        name="reason_for_cancellation"
+                        label="Reason for Cancellation"
+                        placeholder="Reason for Cancellation"
+                        control="input"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
               </Section>
 
@@ -465,4 +303,4 @@ const AlumniServiceForm = (props) => {
   );
 };
 
-export default AlumniServiceForm;
+export default MembershipForm;

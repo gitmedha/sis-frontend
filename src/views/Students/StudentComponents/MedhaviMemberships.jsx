@@ -1,66 +1,67 @@
 import moment from 'moment';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Table from "../../../components/content/Table";
-import CreateAlumniServiceForm from "./AlumniServiceForm";
-import UpdateAlumniServiceForm from "./AlumniServiceForm";
-import { getStudentAlumniServices, createAlumniService, updateAlumniService, deleteAlumniService } from "./StudentActions";
+import MembershipForm from "./MembershipForm";
+import { getStudentMedhaviMemberships, createMembership, updateMembership, deleteMembership } from "./StudentActions";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { connect } from "react-redux";
 import NP from "nprogress";
-import AlumniService from "./AlumniService";
+import MembershipView from "./MembershipView";
 
 const MedhaviMemberships = (props) => {
-  let { id, student, onDataUpdate } = props;
+  let { id, student, onDataUpdate ,membershipsStudent} = props;
   const [createModalShow, setCreateModalShow] = useState(false);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const {setAlert} = props;
-  const [alumniServicesAggregate, setAlumniServicesAggregate] = useState([]);
+  const { setAlert } = props;
+  const [membershipsAggregate, setMembershipsAggregate] = useState({ count: 0 });
   const [paginationPageSize, setPaginationPageSize] = useState(10);
-  const [alumniServicesTableData, setAlumniServicesTableData] = useState([]);
-  const [alumniServices, setAlumniServices] = useState([]);
-  const [selectedAlumniService, setSelectedAlumniService] = useState({});
+  const [membershipsTableData, setMembershipsTableData] = useState([]);
+  const [memberships, setMemberships] = useState([]);
+  const [selectedMembership, setSelectedMembership] = useState({});
 
-  const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
-    NP.start();
-    await getStudentAlumniServices(Number(id), limit, offset, sortBy, sortOrder)
-    .then(data => {
-      setAlumniServices(data.data.data.alumniServicesConnection.values);
-      setAlumniServicesAggregate(data?.data?.data?.alumniServicesConnection?.aggregate);
-    })
-    .catch(err => {
-    
-    })
-    .finally(() => {
-      NP.done();
-    });
-  };
+  const fetchStudentMemberships = async (limit = paginationPageSize, offset = 0, sortBy = 'updated_at', sortOrder = 'asc') => {
+  NP.start();
+  try {
+    const data = await getStudentMedhaviMemberships(id, limit, offset, sortBy, sortOrder);
+    setMemberships(data.values || []);
+    setMembershipsAggregate(data.aggregate || { count: 0 });
+  } catch (err) {
+    setAlert("Unable to fetch memberships.", "error");
+  } finally {
+    NP.done();
+  }
+};
 
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
-      let sortByField = 'certification_date_formatted';
+      let sortByField = 'date_of_avail';
       let sortOrder = sortBy[0].desc === true ? 'desc' : 'asc';
       switch (sortBy[0].id) {
-        case 'type':
-        case 'location':
-        case 'start_date':
-        case 'end_date':
-        case 'fee_submission_date':
+        case 'medhavi_member_id':
+        case 'membership_status':
+        case 'date_of_payment':
+        case 'date_of_avail':
+        case 'date_of_settlement':
           sortByField = sortBy[0].id;
           break;
 
-        case 'start_date_formatted':
-          sortByField = 'start_date';
+        case 'date_of_payment_formatted':
+          sortByField = 'date_of_payment';
           break;
 
-        case 'end_date_formatted':
-          sortByField = 'end_date';
+        case 'date_of_avail_formatted':
+          sortByField = 'date_of_avail';
           break;
 
-        case 'fee_submission_date_formatted':
-          sortByField = 'fee_submission_date';
+        case 'date_of_settlement_formatted':
+          sortByField = 'date_of_settlement';
+          break;
+
+        case 'tenure_completion_date_formatted':
+          sortByField = 'tenure_completion_date';
           break;
 
         case 'assigned_to':
@@ -71,54 +72,62 @@ const MedhaviMemberships = (props) => {
           sortByField = 'updated_at';
           break;
       }
-      fetchStudentAlumniServices(pageSize, pageSize * pageIndex, sortByField, sortOrder);
+      fetchStudentMemberships(pageSize, pageSize * pageIndex, sortByField, sortOrder);
     } else {
-      fetchStudentAlumniServices(pageSize, pageSize * pageIndex);
+      fetchStudentMemberships(pageSize, pageSize * pageIndex);
     }
   }, []);
 
   useEffect(() => {
-    let data = alumniServices.map(alumniService => {
-      return {
-        ...alumniService,
-        start_date_formatted: alumniService.start_date ? moment(alumniService.start_date).format('DD MMM YYYY') : '',
-        end_date_formatted: alumniService.end_date ? moment(alumniService.end_date).format('DD MMM YYYY') : '',
-        fee_submission_date_formatted: alumniService.fee_submission_date ? moment(alumniService.fee_submission_date).format('DD MMM YYYY') : '',
-        updated_at: moment(alumniService.updated_at).format("DD MMM YYYY"),
-      };
-    });
-    setAlumniServicesTableData(data);
-  }, [alumniServices]);
+  const formattedData = memberships.map(membership => ({
+    ...membership,
+    medhavi_member: membership.medhavi_member ? "Yes" : "No",
+    date_of_payment_formatted: membership.date_of_payment 
+      ? moment(membership.date_of_payment).format('DD MMM YYYY') 
+      : '',
+    date_of_avail_formatted: membership.date_of_avail 
+      ? moment(membership.date_of_avail).format('DD MMM YYYY') 
+      : '',
+    date_of_settlement_formatted: membership.date_of_settlement 
+      ? moment(membership.date_of_settlement).format('DD MMM YYYY') 
+      : '',
+    tenure_completion_date_formatted: membership.tenure_completion_date 
+      ? moment(membership.tenure_completion_date).format('DD MMM YYYY') 
+      : '',
+    updated_at: moment(membership.updated_at).format("DD MMM YYYY"),
+  }));
+  setMembershipsTableData(formattedData);
+}, [memberships]);
 
   const columns = useMemo(
     () => [
       {
-        Header: 'Category',
-        accessor: 'category',
+        Header: 'Medhavi Member',
+        accessor: 'medhavi_member',
       },
       {
-        Header: 'Subcategory',
-        accessor: 'type',
+        Header: 'Member ID',
+        accessor: 'medhavi_member_id',
       },
       {
-        Header: 'Location',
-        accessor: 'location',
+        Header: 'Status',
+        accessor: 'membership_status',
       },
       {
-        Header: 'Start Date',
-        accessor: 'start_date_formatted',
+        Header: 'Date of Payment',
+        accessor: 'date_of_payment_formatted',
       },
       {
-        Header: 'End Date',
-        accessor: 'end_date_formatted',
+        Header: 'Date of Avail',
+        accessor: 'date_of_avail_formatted',
       },
       {
-        Header: 'Contribution Submission Date',
-        accessor: 'fee_submission_date_formatted',
+        Header: 'Date of Settlement',
+        accessor: 'date_of_settlement_formatted',
       },
       {
-        Header: 'Assigned To',
-        accessor: 'assigned_to.username',
+        Header: 'Tenure Completion',
+        accessor: 'tenure_completion_date_formatted',
       },
       {
         Header: 'Updated At',
@@ -133,8 +142,8 @@ const MedhaviMemberships = (props) => {
     []
   );
 
-  const handleRowClick = alumniService => {
-    setSelectedAlumniService(alumniService);
+  const handleRowClick = membership => {
+    setSelectedMembership(membership);
     setViewModalShow(true);
   }
 
@@ -151,6 +160,9 @@ const MedhaviMemberships = (props) => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
   }
+  const formatDateForGraphQL = (date) => {
+  return date ? moment(date).format('YYYY-MM-DD') : null;
+};
 
   const hideCreateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -158,25 +170,36 @@ const MedhaviMemberships = (props) => {
       return;
     }
 
-    // need to remove some data from the payload that's not accepted by the API
-    let {id, alumni_service_student, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
-    dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
-    dataToSave['student'] = student.id;
-    
+    // Prepare data for API
+    let { id, student: studentName, date_of_payment_formatted, date_of_avail_formatted, 
+          date_of_settlement_formatted, tenure_completion_date_formatted, ...dataToSave } = data;
 
-     NP.start();
-     createAlumniService(dataToSave).then(data => {
-      setAlert("Alumni Engagement created successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to create Alumni Engagement.", "error");
-    }).finally(() => {
-      NP.done();
-      fetchStudentAlumniServices();
-      onDataUpdate();
-    });
+    dataToSave['date_of_payment'] = data.date_of_payment 
+  ? moment(data.date_of_payment).toISOString() 
+  : null;
+dataToSave['date_of_avail'] = data.date_of_avail 
+  ? moment(data.date_of_avail).toISOString() 
+  : null;
+dataToSave['date_of_settlement'] = data.date_of_settlement 
+  ? moment(data.date_of_settlement).toISOString() 
+  : null;
+dataToSave['tenure_completion_date'] = formatDateForGraphQL(data.tenure_completion_date) 
+    dataToSave['studentID'] = id;
+    dataToSave['membership_fee'] = Number(data.membership_fee);
+
+    NP.start();
+    createMembership(dataToSave)
+      .then(data => {
+        setAlert("Membership created successfully.", "success");
+      })
+      .catch(err => {
+        setAlert("Unable to create Membership.", "error");
+      })
+      .finally(() => {
+        NP.done();
+        fetchStudentMemberships();
+        onDataUpdate();
+      });
     setCreateModalShow(false);
   };
 
@@ -186,47 +209,53 @@ const MedhaviMemberships = (props) => {
       return;
     }
 
-    // need to remove some data from the payload that's not accepted by the API
-    let {id, alumni_service_student, created_at, updated_at, start_date_formatted, end_date_formatted, fee_submission_date_formatted, status_badge, ...dataToSave} = data;
-    dataToSave['start_date'] = data.start_date ? moment(data.start_date).format("YYYY-MM-DD") : null;
-    dataToSave['end_date'] = data.end_date ? moment(data.end_date).format("YYYY-MM-DD") : null;
-    dataToSave['fee_submission_date'] = data.fee_submission_date ? moment(data.fee_submission_date).format("YYYY-MM-DD") : null;
-    dataToSave["fee_amount"] = data.fee_amount ? Number(data.fee_amount) : null;
+    // Prepare data for API
+    let { id, student: studentName, created_at, updated_at, date_of_payment_formatted, 
+          date_of_avail_formatted, date_of_settlement_formatted, tenure_completion_date_formatted, ...dataToSave } = data;
+    
+    dataToSave['date_of_payment'] = data.date_of_payment ? moment(data.date_of_payment).format("YYYY-MM-DD") : null;
+    dataToSave['date_of_avail'] = data.date_of_avail ? moment(data.date_of_avail).format("YYYY-MM-DD") : null;
+    dataToSave['date_of_settlement'] = data.date_of_settlement ? moment(data.date_of_settlement).format("YYYY-MM-DD") : null;
+    dataToSave['tenure_completion_date'] = data.tenure_completion_date ? moment(data.tenure_completion_date).format("YYYY-MM-DD") : null;
     dataToSave['student'] = student.id;
-   
+    dataToSave['membership_fee'] = Number(data.membership_fee);
 
     NP.start();
-    updateAlumniService(Number(id), dataToSave).then(data => {
-      setAlert("Alumni Engagement updated successfully.", "success");
-    }).catch(err => {
-      
-      setAlert("Unable to update Alumni Engagement.", "error");
-    }).finally(() => {
-      NP.done();
-      fetchStudentAlumniServices();
-      onDataUpdate();
-    });
+    updateMembership(Number(id), dataToSave)
+      .then(data => {
+        setAlert("Membership updated successfully.", "success");
+      })
+      .catch(err => {
+        setAlert("Unable to update Membership.", "error");
+      })
+      .finally(() => {
+        NP.done();
+        fetchStudentMemberships();
+        onDataUpdate();
+      });
     setUpdateModalShow(false);
   };
 
   const handleDelete = async () => {
     NP.start();
-    deleteAlumniService(selectedAlumniService.id).then(data => {
-      setAlert("Alumni Engagement deleted successfully.", "success");
-    }).catch(err => {
-     
-      setAlert("Unable to delete Alumni Engagement.", "error");
-    }).finally(() => {
-      setShowDeleteAlert(false);
-      fetchStudentAlumniServices();
-      onDataUpdate();
-      NP.done();
-    });
+    deleteMembership(selectedMembership.id)
+      .then(data => {
+        setAlert("Membership deleted successfully.", "success");
+      })
+      .catch(err => {
+        setAlert("Unable to delete Membership.", "error");
+      })
+      .finally(() => {
+        setShowDeleteAlert(false);
+        fetchStudentMemberships();
+        onDataUpdate();
+        NP.done();
+      });
   };
 
   const hideModal = () => {
     hideViewModal();
-    fetchStudentAlumniServices();
+    fetchStudentMemberships();
   }
 
   return (
@@ -237,31 +266,44 @@ const MedhaviMemberships = (props) => {
             className="btn btn-primary"
             onClick={() => setCreateModalShow(true)}
           >
-            + Add More
+            + Add Membership
           </button>
         </div>
       </div>
-      <Table columns={columns} data={alumniServicesTableData} onRowClick={handleRowClick} totalRecords={alumniServicesAggregate.count} fetchData={fetchData} showPagination={alumniServicesAggregate.count > 10 ? true: false} paginationPageSize={paginationPageSize} onPageSizeChange={setPaginationPageSize}/>
-      <AlumniService
+      <Table 
+        columns={columns} 
+        data={membershipsTableData} 
+        onRowClick={handleRowClick} 
+        totalRecords={membershipsAggregate.count} 
+        fetchData={fetchData} 
+        showPagination={membershipsAggregate.count > 10} 
+        paginationPageSize={paginationPageSize} 
+        onPageSizeChange={setPaginationPageSize}
+      />
+      
+      <MembershipView
         show={viewModalShow}
         onHide={hideViewModal}
         handleEdit={handleViewEdit}
         handleDelete={handleViewDelete}
         student={student}
-        alumniService={selectedAlumniService}
+        membership={selectedMembership}
         onUpdate={hideModal}
       />
-      <CreateAlumniServiceForm
+      
+      <MembershipForm
         show={createModalShow}
         onHide={hideCreateModal}
         student={student}
       />
-      <UpdateAlumniServiceForm
+      
+      {/* <UpdateMembershipForm
         show={updateModalShow}
         onHide={hideUpdateModal}
         student={student}
-        alumniService={selectedAlumniService}
-      />
+        membership={selectedMembership}
+      /> */}
+      
       <SweetAlert
         danger
         showCancel
@@ -270,7 +312,7 @@ const MedhaviMemberships = (props) => {
         onConfirm={() => handleDelete()}
         onCancel={() => setShowDeleteAlert(false)}
         title={
-          <span className="text--primary latto-bold">Delete Medhavi Membership?</span>
+          <span className="text--primary latto-bold">Delete Membership?</span>
         }
         customButtons={
           <>
@@ -286,8 +328,8 @@ const MedhaviMemberships = (props) => {
           </>
         }
       >
-        <p>Type: {selectedAlumniService.type}</p>
-        <p>Assigned To: {selectedAlumniService?.assigned_to?.username}</p>
+        <p>Member ID: {selectedMembership.medhavi_member_id}</p>
+        <p>Status: {selectedMembership.membership_status}</p>
       </SweetAlert>
     </div>
   );
