@@ -27,6 +27,7 @@ import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
 import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
 import MedhaviMemberships from "./StudentComponents/MedhaviMemberships";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 
@@ -55,6 +56,7 @@ const Student = (props) => {
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = student;
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -226,7 +228,18 @@ const memberships = await getStudentMedhaviMemberships(studentId);
     await getEmploymentConnections();
     await getAlumniServices();
   }, [studentId]);
-
+  const deleteStudentProfile=async()=>{
+    console.log(student);
+    let studentData = {
+      module_name: "students",
+      activity: "Student Data Deleted",
+      event_id: student.id,
+      updatedby: userId,
+      changes_in: {name:`${student.full_name }- ${student.student_id}`},
+    };
+    await createLatestAcivity(studentData);
+    setShowDeleteAlert(true)
+  }
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -242,7 +255,7 @@ const memberships = await getStudentMedhaviMemberships(studentId);
             >
               EDIT
             </button>
-            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary action_button_sec">
+            {(isSRM() || isAdmin()) && <button onClick={() =>deleteStudentProfile()} className="btn--primary action_button_sec">
               DELETE
             </button>}
           </div>

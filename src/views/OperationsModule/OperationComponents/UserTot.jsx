@@ -37,7 +37,8 @@ const UserTot = (props) => {
       designation: "",
       start_date:"",
       end_date:"",
-      email:""
+      email:"",
+      institution: ""
     },
     // Add more initial rows as needed
   ]);
@@ -61,7 +62,7 @@ const UserTot = (props) => {
       designation: "",
       start_date:"",
       end_date:"",
-      email:""
+      email:"",
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -292,7 +293,9 @@ const UserTot = (props) => {
           contact: "",
           designation: "",
           start_date:"",
-          end_date:""
+          end_date:"",
+          email:" ",
+          institution: ""
         },
       ]);
     } catch (error) {
@@ -336,7 +339,7 @@ const UserTot = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
@@ -474,6 +477,8 @@ const UserTot = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

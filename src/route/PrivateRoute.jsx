@@ -7,7 +7,7 @@ export const PrivateRoute = ({ children, ...rest }) => {
     if (rest.location.pathname) {
       localStorage.setItem('next_url', rest.location.pathname);
     }
-    return <Redirect to={{pathname: '/login'}} />
+    return <Redirect to={{pathname: '/'}} />
   }
   return (
     <Route
