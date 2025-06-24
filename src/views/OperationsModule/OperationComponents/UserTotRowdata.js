@@ -29,17 +29,17 @@ const UserTotRowdata = (props) => {
 
   const stateWiseProjects = {
   "Uttarakhand": [
-    { value: "Dakshata", label: "Dakshata", department: "Department of Skill Development and Employment" }
+    { value: "Dakshata", label: "Dakshata", department: "Employment Directorate of Training and Employment" }
   ],
   "Haryana": [
     { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
-    { value: "Dual System of Training", label: "Dual System of Training", department: "Skill Development of Industrial Training" },
+    { value: "Dual System of Training", label: "Dual System of Training", department: "Department of Skill Development and Industrial Training" },
     { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
   ],
   "Uttar Pradesh": [
     { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
     { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
-    { value: "ITI transformation", label: "ITI transformation", department: "DVEDSE" }
+    { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
   ],
   "Bihar": [
     { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }

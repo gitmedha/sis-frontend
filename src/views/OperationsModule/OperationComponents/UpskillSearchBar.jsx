@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Input } from "../../../utils/Form";
-import { Formik, Form, useFormik } from "formik";
+import { Formik, Form } from "formik";
 import styled from "styled-components";
 import {
   searchOperationTab,
@@ -65,7 +65,7 @@ const DateRangeContainer = styled.div`
 `;
 
 const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
-  let options = [
+  const options = [
     { key: 1, value: "assigned_to.username", label: "Assigned to" },
     { key: 3, value: "course_name", label: "Course Name" },
     { key: 6, value: "end_date", label: "End Date" },
@@ -99,6 +99,14 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
     }],
   };
 
+  const formatDate = (dateVal) => {
+    const date = new Date(dateVal);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const handleSubmit = async (values) => {
     const baseUrl = "students-upskillings";
     const searchFields = [];
@@ -108,6 +116,24 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
       if (search.search_by_field && search.search_by_value) {
         searchFields.push(search.search_by_field);
         searchValues.push(search.search_by_value);
+      } else if (
+        search.search_by_field === "start_date" &&
+        search.search_by_value_date &&
+        search.search_by_value_date_to
+      ) {
+        const startDate = formatDate(search.search_by_value_date);
+        const endDate = formatDate(search.search_by_value_date_to);
+        searchFields.push(search.search_by_field);
+        searchValues.push({ start: startDate, end: endDate });
+      } else if (
+        search.search_by_field === "end_date" &&
+        search.search_by_value_date_end_from &&
+        search.search_by_value_date_end_to
+      ) {
+        const startDate = formatDate(search.search_by_value_date_end_from);
+        const endDate = formatDate(search.search_by_value_date_end_to);
+        searchFields.push(search.search_by_field);
+        searchValues.push({ start: startDate, end: endDate });
       }
     });
 
@@ -136,21 +162,21 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
     setIsFieldEmpty(false);
 
     if (value === "student_id.full_name") {
-      setDropdownValues("student_id", index);
+      setDropdownValues("student_id");
     } else if (value === "assigned_to.username") {
-      setDropdownValues("assigned_to", index);
+      setDropdownValues("assigned_to");
     } else if (value === "institution.name") {
-      setDropdownValues("institution", index);
+      setDropdownValues("institution");
     } else if (value === "course_name") {
-      setDropdownValues("course_name", index);
+      setDropdownValues("course_name");
     } else if (value === "program_name") {
-      setDropdownValues("program_name", index);
+      setDropdownValues("program_name");
     } else if (value === "category") {
-      setDropdownValues("category", index);
+      setDropdownValues("category");
     }
   };
 
-  const setDropdownValues = async (fieldName, index) => {
+  const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "students-upskillings");
 
@@ -195,6 +221,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
             <Section>
               {Array.from({ length: counter }).map((_, index) => (
                 <SearchRow key={index}>
+                  {/* Search Field Column */}
                   <div className="col-lg-2 col-md-4 col-sm-6">
                     <SearchFieldContainer>
                       <Input
@@ -209,7 +236,8 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                     </SearchFieldContainer>
                   </div>
 
-                  <div className="col-lg-3 col-md-4 col-sm-6">
+                  {/* Search Value Column */}
+                  <div className="col-lg-4 col-md-6 col-sm-6">
                     <SearchValueContainer>
                       {selectedSearchFields[index] === null && (
                         <Input
@@ -350,15 +378,19 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                     </SearchValueContainer>
                   </div>
 
+                  {/* Add/Remove Icons Column */}
                   {index === counter - 1 && (
-                    <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
-                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
-                    </IconContainer>
+                    <div className="col-lg-1 col-md-2 col-sm-12">
+                      <IconContainer>
+                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                      </IconContainer>
+                    </div>
                   )}
                 </SearchRow>
               ))}
 
+              {/* Action Buttons Row */}
               <div className="row">
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
@@ -379,6 +411,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                 </div>
               </div>
 
+              {/* Error Message Row */}
               {isFieldEmpty && (
                 <div className="row">
                   <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>

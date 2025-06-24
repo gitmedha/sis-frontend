@@ -60,7 +60,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     { key: 8, value: "medha_area", label: "Medha Area" },
     { key: 9, value: "program_name", label: "Program Name" },
     { key: 10, value: "status", label: "Status" },
-  ];
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   const [mentorNameOption, setMentorNameOption] = useState([]);
   const [areaOption, setAreaOption] = useState([]);
@@ -166,147 +166,157 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
             <Section>
               {Array.from({ length: counter }).map((_, index) => (
                 <SearchRow key={index}>
-                  <SearchFieldContainer>
-                    <Input
-                      icon="down"
-                      name={`searches[${index}].search_by_field`}
-                      label="Search Field"
-                      control="lookup"
-                      options={options}
-                      className="form-control"
-                      onChange={(e) => setSearchItem(e.value, index)}
-                    />
-                  </SearchFieldContainer>
-
-                  <SearchValueContainer>
-                    {selectedSearchFields[index] === null && (
-                      <Input
-                        name={`searches[${index}].search_by_value`}
-                        control="input"
-                        label="Search Value"
-                        className="form-control"
-                        disabled
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "mentor_name" && (
+                  {/* Search Field Column */}
+                  <div className="col-lg-2 col-md-4 col-sm-6">
+                    <SearchFieldContainer>
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
+                        name={`searches[${index}].search_by_field`}
+                        label="Search Field"
                         control="lookup"
-                        options={mentorNameOption}
+                        options={options}
                         className="form-control"
-                        disabled={disabled}
+                        onChange={(e) => setSearchItem(e.value, index)}
                       />
-                    )}
+                    </SearchFieldContainer>
+                  </div>
 
-                    {selectedSearchFields[index] === "mentor_domain" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={mentorDomain}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                  {/* Search Value Column */}
+                  <div className="col-lg-4 col-md-6 col-sm-6">
+                    <SearchValueContainer>
+                      {selectedSearchFields[index] === null && (
+                        <Input
+                          name={`searches[${index}].search_by_value`}
+                          control="input"
+                          label="Search Value"
+                          className="form-control"
+                          disabled
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "mentor_company_name" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={mentorCompanyName}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "mentor_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorNameOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "designation" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={designationOption}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "mentor_domain" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorDomain}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "mentor_area" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={areaOption}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "mentor_company_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={mentorCompanyName}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "mentor_state" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={stateOption}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "designation" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={designationOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "medha_area" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={medhaArea}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "mentor_area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={areaOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "program_name" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={programName}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
+                      {selectedSearchFields[index] === "mentor_state" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={stateOption}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
-                    {selectedSearchFields[index] === "status" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={status}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-                  </SearchValueContainer>
+                      {selectedSearchFields[index] === "medha_area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={medhaArea}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
 
+                      {selectedSearchFields[index] === "program_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={programName}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "status" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={status}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+                    </SearchValueContainer>
+                  </div>
+
+                  {/* Add/Remove Icons Column */}
                   {index === counter - 1 && (
-                    <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} />
-                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} />}
-                    </IconContainer>
+                    <div className="col-lg-1 col-md-2 col-sm-12">
+                      <IconContainer>
+                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                      </IconContainer>
+                    </div>
                   )}
                 </SearchRow>
               ))}
 
+              {/* Action Buttons Row */}
               <div className="row">
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
