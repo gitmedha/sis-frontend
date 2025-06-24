@@ -29,7 +29,7 @@ const UserTotRowdata = (props) => {
 
   const stateWiseProjects = {
   "Uttarakhand": [
-    { value: "Dakshata", label: "Dakshata", department: "Employment Directorate of Training and Employment" }
+    { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
   ],
   "Haryana": [
     { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
