@@ -252,3 +252,5 @@ export const AlumniServiceValidations = Yup.object({
     return schema.min(new Date(start), "End date can't be before Start date")
   })
 });
+
+export const MemberShipValidations = Yup.object({});
