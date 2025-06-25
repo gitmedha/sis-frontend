@@ -244,7 +244,27 @@ updatedby {
 
 `
 
-
+const ecosystemFields = `
+  activity_type
+  date_of_activity
+  topic
+  govt_dept_partner_with
+  type_of_partner
+  employer_name_external_party_ngo_partner_with
+  attended_students
+  male_participants
+  female_participants
+  medha_poc_1
+  medha_poc_2
+  created_at
+  updated_at
+  CreatedBy {
+    username
+  }
+  UpdatedBy {
+    username
+  }
+`;
 
 
 export const GET_OPERATIONS = `
@@ -289,6 +309,24 @@ export const GET_USERSTOTS = `
         ) {
             values {
                 ${usersTotsFields}
+            },
+            aggregate {
+                count
+            },
+        }
+    }
+`;
+
+export const GET_ECOSYSTEM_DATA = `
+    query GET_ECOSYSTEM_DATA($limit: Int, $start: Int, $sort: String) {
+        activeEcosystemData: ecosystemDataConnection(
+            sort: $sort,    
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+            ${ecosystemFields}
             },
             aggregate {
                 count

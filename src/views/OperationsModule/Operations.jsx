@@ -12,6 +12,7 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
+  GET_ECOSYSTEM_DATA
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -35,6 +36,7 @@ import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
+import EcosystemSearchBar from "./layout/EcosystemSearchBar";
 import {
   sortAscending,
   resetSearch,
@@ -60,6 +62,7 @@ import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -76,6 +79,7 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Ecosystem", key:'ecosystem'}
 ];
 
 const Styled = styled.div`
@@ -120,6 +124,7 @@ const Operations = ({
     alumniQueriesdata: false,
     collegePitches: false,
     mentorship: false,
+    ecosystemData:false
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -132,6 +137,7 @@ const Operations = ({
     alumniQueriesdata: {},
     collegePitches: {},
     mentorship: {},
+    ecosystemData:{}
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -219,6 +225,47 @@ const Operations = ({
     ],
     []
   );
+
+  const columnsEcosystem = useMemo(() => [
+  {
+    Header: "Activity Type",
+    accessor: "activity_type",
+  },
+  {
+    Header: "Date of Activity",
+    accessor: "date_of_activity",
+    Cell: ({ value }) => value ? new Date(value).toLocaleDateString("en-IN") : "",
+  },
+  {
+    Header: "Type of Partner",
+    accessor: "type_of_partner",
+  },
+   {
+    Header: "Topic",
+    accessor: "topic",
+  },
+  {
+    Header: "Total Students Attended",
+    accessor: "attended_students",
+  },
+  {
+    Header: "Male Participants",
+    accessor: "male_participants",
+  },
+  {
+    Header: "Female Participants",
+    accessor: "female_participants",
+  },
+  {
+    Header: "Medha POC 1",
+    accessor: "medha_poc_1",
+  },
+  {
+    Header: "Medha POC 2",
+    accessor: "medha_poc_2",
+  },
+], []);
+
 
   
 
@@ -438,6 +485,27 @@ const Operations = ({
           setLoading(false);
           nProgress.done();
         });
+    }
+    if(activeTab.key === "ecosystem") {
+            await resetSearch();
+          api
+        .post("/graphql", {
+          query: GET_ECOSYSTEM_DATA,
+          variables,
+        })
+        .then((data) => {
+          setOpts(data.data.data.activeEcosystemData.values);
+          setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+
+
     }
     if (activeTab.key === "useTot") {
       await resetSearch();
@@ -800,7 +868,6 @@ const Operations = ({
     },
     [activeTab, activeStatus]
   );
-
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
   }, [activeTab.key, activeStatus]);
@@ -1390,6 +1457,24 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ):activeTab.key === "ecosystem" ? (
+              <>
+                <EcosystemSearchBar />
+              <Table
+                  onRowClick={(data) => showRowData("ecosystemData", data)}
+                  columns={columnsEcosystem}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              
+              </>
             ) : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
@@ -1542,6 +1627,17 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
+          {
+           showModal.ecosystemData && (isSRM() || isAdmin() || isMedhavi()) && (
+            <EcosystemDataField
+            {...optsdata.ecosystemData}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("ecosystemData", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
+            />
+           )
+          }
           
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
