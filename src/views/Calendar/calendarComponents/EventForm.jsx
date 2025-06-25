@@ -19,6 +19,7 @@ import {
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import NP from "nprogress";
+import { compareObjects, createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -115,12 +116,52 @@ export const EventForm = (props) => {
     }
   }, []);
 
+  function findDifferencesFormatted(obj1, obj2) {
+    const differences = {};
+  
+    // Helper to parse dates and compare
+    function areDatesEqual(date1, date2) {
+      const parsedDate1 = new Date(date1).getTime();
+      const parsedDate2 = new Date(date2).getTime();
+      return parsedDate1 === parsedDate2;
+    }
+  
+    // Loop through keys in obj2 to identify differences or new values
+    for (const key in obj2) {
+      if (key === "assgined_to") {
+        // Handle "assgined_to" (compare by id)
+        const id1 = obj1.assgined_to?.id || obj1.assgined_to;
+        const id2 = obj2.assgined_to?.id || obj2.assgined_to;
+        if (id1.toString() !== id2.toString()) {
+          differences[key] = { previous_value: id1, newValue: id2 };
+        }
+      } else if (key === "start_date" || key === "end_date") {
+        // Handle date comparison
+        if (!areDatesEqual(obj1[key], obj2[key])) {
+          differences[key] = { previous_value: obj1[key] || null, newValue: obj2[key] };
+        }
+      } else {
+        // Generic comparison
+        if (obj1[key] !== obj2[key]) {
+          differences[key] = { previous_value: obj1[key] || null, newValue: obj2[key] };
+        }
+      }
+    }
+  
+    return differences;
+  }
+
   const handleSubmit = async (values) => {
     try {
       NP.start();
       setIsLoading(true);
       if (props.eventData) {
         values.name = values.alumni_service;
+        console.log(props.eventData);
+        console.log(values);
+        console.log(compareObjects(initialValues,values));
+        let datavaluesforlatestcreate={module_name:"calender",activity:"Calendar Data Updated",event_id:"",updatedby:userId ,changes_in:findDifferencesFormatted(props.eventData,values)};
+        await createLatestAcivity(datavaluesforlatestcreate);
         await updateEvent(values, props.eventData.id);
         setIsLoading(false);
 
@@ -130,6 +171,8 @@ export const EventForm = (props) => {
         await props.onRefresh();
         props.onHide();
       } else {
+        let datavaluesforlatestcreate={module_name:"calender",activity:"Calendar Data Created",event_id:"",updatedby:userId ,changes_in:{name:values.alumni_service}};
+        await createLatestAcivity(datavaluesforlatestcreate);
         await createEvent(values);
         setIsLoading(false);
         setAlert("Event created successfully.", "success");

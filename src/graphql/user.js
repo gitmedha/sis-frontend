@@ -35,3 +35,16 @@ export const GET_USERS_BY_ROLE =`
     }
   }
 `
+
+export const GET_USERS_BY_ROLE_SEARCH = `
+  query GET_ALL_USERS($roleid: Int, $blocked: Boolean) {
+    users(
+      sort: "username:asc"
+      where: { role: $roleid, blocked: $blocked }
+    ) {
+      id
+      username
+      email
+    }
+  }
+`
