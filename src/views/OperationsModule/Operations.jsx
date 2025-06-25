@@ -467,6 +467,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
+    console.log("variables", activeTab.key);
     if (activeTab.key === "my_data") {
       await resetSearch();
       await api
@@ -486,14 +487,18 @@ const Operations = ({
           nProgress.done();
         });
     }
+
     if(activeTab.key === "ecosystem") {
             await resetSearch();
-          api
+             variables.isactive = true;
+              delete variables.isActive;
+          await api
         .post("/graphql", {
           query: GET_ECOSYSTEM_DATA,
           variables,
         })
         .then((data) => {
+          console.log("data",data)
           setOpts(data.data.data.activeEcosystemData.values);
           setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
         })
@@ -644,6 +649,7 @@ const Operations = ({
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
+      console.log("activeTab", activeTab);
       if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -658,6 +664,40 @@ const Operations = ({
 
             default:
               sortByField = "assigned_to.username";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "ecosystem") {
+        if (sortBy.length) {
+          let sortByField = "activity_type";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "activity_type":
+            case "date_of_activity":
+            case "type_of_partner":
+            case "topic":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "activity_type";
               break;
           }
 
@@ -1276,6 +1316,16 @@ const Operations = ({
         mentorship: false,
         upskill: false,
         pitching: false,
+      });
+    }
+    if(activeTab.key ==="ecosystem") {
+      setUploadModal({  
+        myData: false,
+        tot: false,
+        mentorship: false,
+        upskill: false,
+        pitching: false,
+        ecosystem: true,
       });
     }
     if (activeTab.key == "useTot") {

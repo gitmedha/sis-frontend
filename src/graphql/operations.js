@@ -319,7 +319,7 @@ export const GET_USERSTOTS = `
 
 export const GET_ECOSYSTEM_DATA = `
     query GET_ECOSYSTEM_DATA($limit: Int, $start: Int, $sort: String) {
-        activeEcosystemData: ecosystemDataConnection(
+        activeEcosystemData: ecosystemsConnection(
             sort: $sort,    
             start: $start,
             limit: $limit,
