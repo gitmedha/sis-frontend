@@ -31,7 +31,7 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -193,6 +193,8 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -510,11 +512,13 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
+                          control="lookupAsync"
                           name="college"
                           label="College"
                           onKeyPress={handleKeyPress}
                           className="form-control"
+                          defaultOptions={institutionOptions}
+                          filterData={filterInstitution}
                           placeholder="College"
                         />
                       </div>

@@ -29,7 +29,7 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-    table-layout: fixed; /* Ensure table takes up available space */
+    table-layout: auto; /* Ensure table takes up available space */
 
     thead {
       th {
@@ -113,7 +113,8 @@ const Table = ({
   onPageSizeChange = () => {},
   paginationPageIndex = 0,
   onPageIndexChange = () => {},
-  collapse_tab_name = null
+  collapse_tab_name = null,
+  allDataCount = null
 }) => {
   const tableInstance = useTable(
     {
@@ -190,8 +191,10 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th className="hash-column">#</th>}
-                  {headerGroup.headers.map((column) => (
+                  {indexes && <th>#</th>}
+                  {headerGroup.headers.map((column) => 
+                     (
+                    
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
@@ -361,6 +364,7 @@ const Table = ({
             pageIndex={pageIndex}
             pageLimit={pageSize}
             setPageLimit={setPageSize}
+            allDataCount={allDataCount}
           />
         </StickyPagination>
       )}

@@ -25,7 +25,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import * as Yup from "yup";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -62,6 +62,7 @@ const AllumuniEdit = (props) => {
   const [batchOptions, setBatchOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [queryTypes, setQueryType] = useState([]);
+  const userId = localStorage.getItem("user_id");
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -159,6 +160,8 @@ const AllumuniEdit = (props) => {
       : null;
 
     delete newObject["published_at"];
+    let datavaluesforlatestcreate={module_name:"operations",activity:"Alumni Query data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateAlumniQuery(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);

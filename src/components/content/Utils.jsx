@@ -15,6 +15,8 @@ const ProgressBarContainer = styled.div`
   span {
     font-size: 12px !important;
   }
+  padding-left: 20px; // Adjust this value to match the alignment of the text above
+  padding-right: 2px
 `;
 
 const badgeStyle = {
@@ -109,7 +111,6 @@ const StudentModal = (props) => {
       });
       setDetails(data.data.student);
     } catch (err) {
-     
     } finally {
       setLoading(false);
     }
@@ -212,7 +213,12 @@ export const Anchor = (props) => {
   const { text, href, ...otherProps } = props;
   return (
     <div className="h-100 d-flex align-items-center">
-      <a href={href} className="mb-0" style={{ color: "#00ADEF" }} {...otherProps}>
+      <a
+        href={href}
+        className="mb-0"
+        style={{ color: "#00ADEF" }}
+        {...otherProps}
+      >
         {text}
       </a>
     </div>
