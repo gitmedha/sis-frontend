@@ -96,6 +96,7 @@ export const InstituteValidations = Yup.object({
   medha_area,
   contacts,
   district,
+  source: Yup.string().required('Source is required.'),
 });
 
 export const ContactValidations = Yup.object({
