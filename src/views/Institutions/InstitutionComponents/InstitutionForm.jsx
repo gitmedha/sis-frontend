@@ -52,6 +52,20 @@ const InstitutionForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate, setDuplicate] = useState(false);
+  const [sourceOptions] = useState([
+    {
+      key:0,
+      label:'Core Programs',
+      value:'Core Programs'
+    },
+    {
+      key:1,
+      label:'System Adoption',
+      value:'System Adoption'
+    }
+  ]);
+
+  const [source, setSource] = useState(sourceOptions[0].value);
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
@@ -179,6 +193,7 @@ const InstitutionForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
+    source:""
   };
 
   if (props.id) {
@@ -302,6 +317,19 @@ const InstitutionForm = (props) => {
                       ) : (
                         <Skeleton count={1} height={45} />
                       )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        control="lookup"
+                        name="source"
+                        label="Source"
+                        required
+                        options={sourceOptions}
+                        className="form-control"
+                        placeholder="Source"
+                        onChange={(e) => setSource(e.target.value)}
+                        value={source}
+                      />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
                       {institutionTypeOpts.length ? (
