@@ -176,6 +176,7 @@ const Student = (props) => {
   const getMemberships = async ()=>{
     try{
 const memberships = await getStudentMedhaviMemberships(studentId);
+console.log("memberships", memberships);
       if(memberships.data.data.medhaviMembershipsConnection.values.length > 0){
         setStudentMedhaviMemberships(memberships.data.data.medhaviMembershipsConnection.values);  
         setStudentMedhaviMembershipsAggregate(memberships.data.data.medhaviMembershipsConnection.aggregate);
@@ -219,13 +220,19 @@ const memberships = await getStudentMedhaviMemberships(studentId);
       break;
   }
 
-  useEffect(async () => {
-    // await testOperationsActions();
+  useEffect(() => {
+    async function componentMount (){
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
     await getAlumniServices();
-  }, [studentId]);
+    await getMemberships();
+
+    }
+    componentMount();
+    // await testOperationsActions();
+    
+  }, []);
 
   if (isLoading) {
     return <SkeletonLoader />;

@@ -25,9 +25,9 @@ const MedhaviMemberships = (props) => {
   const fetchStudentMemberships = async (limit = paginationPageSize, offset = 0, sortBy = 'updated_at', sortOrder = 'asc') => {
   NP.start();
   try {
-    const data = await getStudentMedhaviMemberships(id, limit, offset, sortBy, sortOrder);
-    setMemberships(data.values || []);
-    setMembershipsAggregate(data.aggregate || { count: 0 });
+    const {data:{data:{medhaviMembershipsConnection:{values:memberships, aggregate}}} }= await getStudentMedhaviMemberships(id, limit, offset, sortBy, sortOrder);
+    setMemberships(memberships || []);
+    setMembershipsAggregate(aggregate|| { count: 0 });
   } catch (err) {
     setAlert("Unable to fetch memberships.", "error");
   } finally {
@@ -65,7 +65,7 @@ const MedhaviMemberships = (props) => {
           break;
 
         case 'assigned_to':
-          sortByField = 'assigned_to.name';
+          sortByField = 'assigned_to.username';
           break;
 
         default:
@@ -115,28 +115,27 @@ const MedhaviMemberships = (props) => {
       },
       {
         Header: 'Date of Payment',
-        accessor: 'date_of_payment_formatted',
+        accessor: 'date_of_payment',
       },
       {
         Header: 'Date of Avail',
-        accessor: 'date_of_avail_formatted',
+        accessor: 'date_of_avail',
       },
       {
         Header: 'Date of Settlement',
-        accessor: 'date_of_settlement_formatted',
+        accessor: 'date_of_settlement',
       },
       {
         Header: 'Tenure Completion',
-        accessor: 'tenure_completion_date_formatted',
+        accessor: 'tenure_completion_date',
       },
       {
         Header: 'Updated At',
         accessor: 'updated_at',
       },
       {
-        Header: '',
-        accessor: 'link',
-        disableSortBy: true,
+        Header: 'Assigned To',
+        accessor: 'assigned_to.name',
       },
     ],
     []
@@ -184,8 +183,10 @@ dataToSave['date_of_settlement'] = data.date_of_settlement
   ? moment(data.date_of_settlement).toISOString() 
   : null;
 dataToSave['tenure_completion_date'] = formatDateForGraphQL(data.tenure_completion_date) 
-    dataToSave['studentID'] = id;
+    dataToSave['studentID'] = student.id;
     dataToSave['membership_fee'] = Number(data.membership_fee);
+
+    console.log("Data to save:", dataToSave);
 
     NP.start();
     createMembership(dataToSave)
