@@ -11,8 +11,6 @@ import MembershipView from "./MembershipView";
 
 const MedhaviMemberships = (props) => {
   let { id, student, onDataUpdate ,membershipsStudent} = props;
-  const [createModalShow, setCreateModalShow] = useState(false);
-  const [updateModalShow, setUpdateModalShow] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const { setAlert } = props;
@@ -21,6 +19,8 @@ const MedhaviMemberships = (props) => {
   const [membershipsTableData, setMembershipsTableData] = useState([]);
   const [memberships, setMemberships] = useState([]);
   const [selectedMembership, setSelectedMembership] = useState({});
+  const [showFormModal, setShowFormModal] = useState(false);
+const [formMode, setFormMode] = useState('create');
 
   const fetchStudentMemberships = async (limit = paginationPageSize, offset = 0, sortBy = 'updated_at', sortOrder = 'asc') => {
   NP.start();
@@ -34,7 +34,6 @@ const MedhaviMemberships = (props) => {
     NP.done();
   }
 };
-
   const fetchData = useCallback((pageIndex, pageSize, sortBy) => {
     if (sortBy.length) {
       let sortByField = 'date_of_avail';
@@ -81,7 +80,7 @@ const MedhaviMemberships = (props) => {
   useEffect(() => {
   const formattedData = memberships.map(membership => ({
     ...membership,
-    medhavi_member: membership.medhavi_member ? "Yes" : "No",
+    medhavi_member: membership.medhavi_member,
     date_of_payment_formatted: membership.date_of_payment 
       ? moment(membership.date_of_payment).format('DD MMM YYYY') 
       : '',
@@ -135,7 +134,7 @@ const MedhaviMemberships = (props) => {
       },
       {
         Header: 'Assigned To',
-        accessor: 'assigned_to.name',
+        accessor: 'assigned_to.username',
       },
     ],
     []
@@ -151,91 +150,16 @@ const MedhaviMemberships = (props) => {
   }
 
   const handleViewEdit = () => {
-    setViewModalShow(false);
-    setUpdateModalShow(true);
+  setViewModalShow(false);
+  setFormMode('update');
+  setShowFormModal(true);
   }
 
   const handleViewDelete = () => {
     setViewModalShow(false);
     setShowDeleteAlert(true);
   }
-  const formatDateForGraphQL = (date) => {
-  return date ? moment(date).format('YYYY-MM-DD') : null;
-};
 
-  const hideCreateModal = async (data) => {
-    if (!data || data.isTrusted) {
-      setCreateModalShow(false);
-      return;
-    }
-
-    // Prepare data for API
-    let { id, student: studentName, date_of_payment_formatted, date_of_avail_formatted, 
-          date_of_settlement_formatted, tenure_completion_date_formatted, ...dataToSave } = data;
-
-    dataToSave['date_of_payment'] = data.date_of_payment 
-  ? moment(data.date_of_payment).toISOString() 
-  : null;
-dataToSave['date_of_avail'] = data.date_of_avail 
-  ? moment(data.date_of_avail).toISOString() 
-  : null;
-dataToSave['date_of_settlement'] = data.date_of_settlement 
-  ? moment(data.date_of_settlement).toISOString() 
-  : null;
-dataToSave['tenure_completion_date'] = formatDateForGraphQL(data.tenure_completion_date) 
-    dataToSave['studentID'] = student.id;
-    dataToSave['membership_fee'] = Number(data.membership_fee);
-
-    console.log("Data to save:", dataToSave);
-
-    NP.start();
-    createMembership(dataToSave)
-      .then(data => {
-        setAlert("Membership created successfully.", "success");
-      })
-      .catch(err => {
-        setAlert("Unable to create Membership.", "error");
-      })
-      .finally(() => {
-        NP.done();
-        fetchStudentMemberships();
-        onDataUpdate();
-      });
-    setCreateModalShow(false);
-  };
-
-  const hideUpdateModal = async (data) => {
-    if (!data || data.isTrusted) {
-      setUpdateModalShow(false);
-      return;
-    }
-
-    // Prepare data for API
-    let { id, student: studentName, created_at, updated_at, date_of_payment_formatted, 
-          date_of_avail_formatted, date_of_settlement_formatted, tenure_completion_date_formatted, ...dataToSave } = data;
-    
-    dataToSave['date_of_payment'] = data.date_of_payment ? moment(data.date_of_payment).format("YYYY-MM-DD") : null;
-    dataToSave['date_of_avail'] = data.date_of_avail ? moment(data.date_of_avail).format("YYYY-MM-DD") : null;
-    dataToSave['date_of_settlement'] = data.date_of_settlement ? moment(data.date_of_settlement).format("YYYY-MM-DD") : null;
-    dataToSave['tenure_completion_date'] = data.tenure_completion_date ? moment(data.tenure_completion_date).format("YYYY-MM-DD") : null;
-    dataToSave['student'] = student.id;
-    dataToSave['membership_fee'] = Number(data.membership_fee);
-
-    NP.start();
-    updateMembership(Number(id), dataToSave)
-      .then(data => {
-        setAlert("Membership updated successfully.", "success");
-      })
-      .catch(err => {
-        setAlert("Unable to update Membership.", "error");
-      })
-      .finally(() => {
-        NP.done();
-        fetchStudentMemberships();
-        onDataUpdate();
-      });
-    setUpdateModalShow(false);
-  };
 
   const handleDelete = async () => {
     NP.start();
@@ -259,13 +183,69 @@ dataToSave['tenure_completion_date'] = formatDateForGraphQL(data.tenure_completi
     fetchStudentMemberships();
   }
 
+  const handleAddMembership = () => {
+  setSelectedMembership({});
+  setFormMode('create');
+  setShowFormModal(true);
+};
+
+
+const prepareMembershipData = (data, student) => {
+  const formatDateForAPI = (date, useCurrentAsDefault = false) => {
+    if (date) {
+      return moment(date).toISOString();
+    }
+    return useCurrentAsDefault ? moment().toISOString() : null;
+  };
+
+
+  return {
+    ...data,
+    date_of_payment: formatDateForAPI(data.date_of_payment, true),
+    date_of_avail: formatDateForAPI(data.date_of_avail,true),
+    date_of_settlement: formatDateForAPI(data.date_of_settlement,true),
+    tenure_completion_date:moment(data.tenure_completion_data).format("YYYY-MM-DD"),
+    studentID: student.id,
+    membership_fee: Number(data.membership_fee),
+    assigned_to: data.assigned_to || localStorage.getItem("user_id")
+  };
+};
+const hideFormModal = async (data) => {
+  if (!data || data.isTrusted) {
+    setShowFormModal(false);
+    return;
+  }
+
+ const dataToSave = prepareMembershipData(data, student);
+ delete dataToSave.student;
+
+  NP.start();
+  try {
+    if (formMode === 'create') {
+      await createMembership(dataToSave);
+      setAlert("Membership created successfully.", "success");
+    } else {
+      console.log("Selected Membership ID:", selectedMembership.id);
+      await updateMembership(selectedMembership.id, dataToSave);
+      setAlert("Membership updated successfully.", "success");
+    }
+    fetchStudentMemberships();
+    onDataUpdate();
+  } catch (err) {
+    setAlert(`Unable to ${formMode} membership.`, "error");
+  } finally {
+    NP.done();
+    setShowFormModal(false);
+  }
+};
+
   return (
     <div className="container-fluid my-3">
       <div className="row">
         <div className="col-md-6 col-sm-12 mb-4">
           <button
             className="btn btn-primary"
-            onClick={() => setCreateModalShow(true)}
+            onClick={() => handleAddMembership()}
           >
             + Add Membership
           </button>
@@ -293,18 +273,12 @@ dataToSave['tenure_completion_date'] = formatDateForGraphQL(data.tenure_completi
       />
       
       <MembershipForm
-        show={createModalShow}
-        onHide={hideCreateModal}
-        student={student}
+      show={showFormModal}
+      onHide={hideFormModal}
+      student={student}
+      membership={formMode === 'update' ? selectedMembership : null}
       />
-      
-      {/* <UpdateMembershipForm
-        show={updateModalShow}
-        onHide={hideUpdateModal}
-        student={student}
-        membership={selectedMembership}
-      /> */}
-      
+
       <SweetAlert
         danger
         showCancel
