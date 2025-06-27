@@ -257,7 +257,7 @@ export const AlumniServiceValidations = Yup.object({
 });
 
 export const MemberShipValidations = Yup.object({
-  medhavi_member: Yup.boolean().required("Please select Yes or No."),
+  medhavi_member: Yup.string().required("Please select Yes or No."),
 
   membership_fee: Yup.number()
     .required("Membership fee is required.")
