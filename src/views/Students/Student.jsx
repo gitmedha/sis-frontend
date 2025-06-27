@@ -178,6 +178,7 @@ const Student = (props) => {
   const getMemberships = async ()=>{
     try{
 const memberships = await getStudentMedhaviMemberships(studentId);
+console.log("memberships", memberships);
       if(memberships.data.data.medhaviMembershipsConnection.values.length > 0){
         setStudentMedhaviMemberships(memberships.data.data.medhaviMembershipsConnection.values);  
         setStudentMedhaviMembershipsAggregate(memberships.data.data.medhaviMembershipsConnection.aggregate);
@@ -221,15 +222,20 @@ const memberships = await getStudentMedhaviMemberships(studentId);
       break;
   }
 
-  useEffect(async () => {
-    // await testOperationsActions();
+  useEffect(() => {
+    async function componentMount (){
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
     await getAlumniServices();
-  }, [studentId]);
-  const deleteStudentProfile=async()=>{
-    console.log(student);
+    await getMemberships();
+
+    }
+    componentMount();
+    
+  }, []);
+
+   const deleteStudentProfile=async()=>{
     let studentData = {
       module_name: "students",
       activity: "Student Data Deleted",
@@ -240,6 +246,7 @@ const memberships = await getStudentMedhaviMemberships(studentId);
     await createLatestAcivity(studentData);
     setShowDeleteAlert(true)
   }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {

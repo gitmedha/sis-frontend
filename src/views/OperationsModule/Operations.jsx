@@ -1478,6 +1478,57 @@ const Operations = ({
         return ""; // Fallback in case the tab doesn't match
     }
   };
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy",
+        width: 120 // Fixed width in pixels
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter",
+        width: 80
+      },
+      {
+        Header: "Month",
+        accessor: "month",
+        width: 100
+      },
+      {
+        Header: "Category",
+        accessor: "category",
+        width: 200,
+        cell: ({ value }) => (
+          <div style={{
+            width: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {value}
+          </div>
+        )
+      },
+      {
+        Header: "State",
+        accessor: "state",
+        width: 120
+      },
+      {
+        Header: "Department",
+        accessor: "department",
+        width: 100
+      },
+      {
+        Header: "Students",
+        accessor: "students",
+        width: 100
+      },
+    ],
+    []
+  );
+ 
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>

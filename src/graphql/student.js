@@ -776,7 +776,7 @@ query GET_STUDENT_MEDHAVI_MEMBERSHIPS ($stdID: String, $limit: Int, $start: Int,
     limit: $limit,
     where: {
       studentID: {
-        student_id: $stdID
+        id: $stdID
       }
     }
   ) {
