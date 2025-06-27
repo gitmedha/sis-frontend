@@ -26,10 +26,11 @@ const certificateoptions = [
 
 const UserTotRowdata = (props) => {
   const [selectedState, setSelectedState] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
 
   const stateWiseProjects = {
   "Uttarakhand": [
-    { value: "Dakshata", label: "Dakshata", department: "Employment Directorate of Training and Employment" }
+    { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
   ],
   "Haryana": [
     { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
@@ -53,11 +54,13 @@ const getProjectOptions = (state) => {
   }));
 };
 
-const getDepartmentOptions = (state) => {
-  return stateWiseProjects[state].map((proj) => ({
-    value: proj.department,
-    label: proj.department,
-  }));
+const getDepartmentOptions = (state,selectedProjectName) => {
+  return stateWiseProjects[state]
+    .filter(proj => proj.value === selectedProjectName)
+    .map((proj) => ({
+      value: proj.department,
+      label: proj.department,
+    }));
 
 }
   const [rows, setRows] = useState([
@@ -98,6 +101,7 @@ const getDepartmentOptions = (state) => {
   const userName=useRef(null)
   const designation=useRef(null)
   const college =useRef(null)
+
   const [state,setstate]=useState(true)
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -272,7 +276,7 @@ const getDepartmentOptions = (state) => {
             name="state"
             options={props.statedata}
             onChange={(e) => {
-              console.log(e, "state")
+
               if(['Uttarakhand', 'Haryana','Uttar Pradesh','Bihar'].includes(e.value)){
                 setSelectedState(e.value);
               }
@@ -328,6 +332,9 @@ const getDepartmentOptions = (state) => {
             name="project_name"
             options={selectedState ?getProjectOptions(selectedState): projectName}
             onChange={(e) => {
+              if(selectedState){
+                setSelectedProjectName(e.value);
+              }
               props.handleChange(e, "project_name", row.id)
             }}
           />
@@ -347,8 +354,8 @@ const getDepartmentOptions = (state) => {
             isClearable={true}
             isSearchable={true}
             name="partner_dept"
-            options={selectedState ? getDepartmentOptions(selectedState):partnerDept}
-            onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
+            options={selectedState ? getDepartmentOptions(selectedState,selectedProjectName):partnerDept}
+            onChange={(e) =>  props.handleChange(e, "partner_dept", row.id)}
           />
         </td>
         <td>
