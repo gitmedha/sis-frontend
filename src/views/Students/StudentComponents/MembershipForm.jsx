@@ -61,7 +61,7 @@ const MembershipForm = (props) => {
   let initialValues = {
     student: student.full_name,
     medhavi_member: "",
-    membership_fee: "",
+    membership_fee: 99,
     medhavi_member_id: "",
     date_of_payment: null,
     date_of_avail: null,
