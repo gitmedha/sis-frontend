@@ -12,6 +12,7 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
+  GET_ECOSYSTEM_DATA,
   GET_STUDENT_OUTREACHES,
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -37,6 +38,7 @@ import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
+import EcosystemSearchBar from "./layout/EcosystemSearchBar";
 import {
   sortAscending,
   resetSearch,
@@ -65,6 +67,7 @@ import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -81,6 +84,9 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Ecosystem", key:'ecosystem'},
+  {title:"Career Progression", key: "career_progression"},
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -120,11 +126,13 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
     collegePitches: false,
     mentorship: false,
+    ecosystemData:false
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -132,11 +140,13 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
     collegePitches: {},
     mentorship: {},
+    ecosystemData:{}
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -229,56 +239,48 @@ const Operations = ({
     []
   );
 
-  const columnsStudentOutreach = useMemo(
-    () => [
-      {
-        Header: "Financial Year",
-        accessor: "year_fy",
-        width: 120 // Fixed width in pixels
-      },
-      {
-        Header: "Quarter",
-        accessor: "quarter",
-        width: 80
-      },
-      {
-        Header: "Month",
-        accessor: "month",
-        width: 100
-      },
-      {
-        Header: "Category",
-        accessor: "category",
-        width: 200,
-        cell: ({ value }) => (
-          <div style={{ 
-            width: '100%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}>
-            {value}
-          </div>
-        )
-      },
-      {
-        Header: "State",
-        accessor: "state",
-        width: 120
-      },
-      {
-        Header: "Department",
-        accessor: "department",
-        width: 100
-      },
-      {
-        Header: "Students",
-        accessor: "students",
-        width: 100
-      },
-    ],
-    []
-  );
+  const columnsEcosystem = useMemo(() => [
+  {
+    Header: "Activity Type",
+    accessor: "activity_type",
+  },
+  {
+    Header: "Date of Activity",
+    accessor: "date_of_activity",
+    Cell: ({ value }) => value ? new Date(value).toLocaleDateString("en-IN") : "",
+  },
+  {
+    Header: "Type of Partner",
+    accessor: "type_of_partner",
+  },
+   {
+    Header: "Topic",
+    accessor: "topic",
+  },
+  {
+    Header: "Total Students Attended",
+    accessor: "attended_students",
+  },
+  {
+    Header: "Male Participants",
+    accessor: "male_participants",
+  },
+  {
+    Header: "Female Participants",
+    accessor: "female_participants",
+  },
+  {
+    Header: "Medha POC 1",
+    accessor: "medha_poc_1",
+  },
+  {
+    Header: "Medha POC 2",
+    accessor: "medha_poc_2",
+  },
+], []);
+
+
+  
 
   const columnsMentor = useMemo(
     () => [
@@ -478,6 +480,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
+    console.log("variables", activeTab.key);
     if (activeTab.key === "my_data") {
       await resetSearch();
       await api
@@ -496,6 +499,31 @@ const Operations = ({
           setLoading(false);
           nProgress.done();
         });
+    }
+
+    if(activeTab.key === "ecosystem") {
+            await resetSearch();
+             variables.isactive = true;
+              delete variables.isActive;
+          await api
+        .post("/graphql", {
+          query: GET_ECOSYSTEM_DATA,
+          variables,
+        })
+        .then((data) => {
+          console.log("data",data)
+          setOpts(data.data.data.activeEcosystemData.values);
+          setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+
+
     }
     if (activeTab.key === "useTot") {
       await resetSearch();
@@ -659,6 +687,7 @@ const Operations = ({
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
+      console.log("activeTab", activeTab);
       if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -693,6 +722,40 @@ const Operations = ({
           );
         }
       }
+      if (activeTab.key === "ecosystem") {
+        if (sortBy.length) {
+          let sortByField = "activity_type";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "activity_type":
+            case "date_of_activity":
+            case "type_of_partner":
+            case "topic":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "activity_type";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
       if (activeTab.key === "useTot") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -704,6 +767,40 @@ const Operations = ({
             case "partner_dept":
             case "age":
             case "gender":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -885,7 +982,6 @@ const Operations = ({
     },
     [activeTab, activeStatus]
   );
-
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
   }, [activeTab.key, activeStatus]);
@@ -1281,50 +1377,7 @@ const Operations = ({
       }
 
 
-      if (key === "pitching") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "College Pitching Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateCollegePitch(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
-      if (key === "upskilling") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Students Upskilling Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateStudentsUpskillings(data)
-          .then(() => {
-            setAlert("data created successfully.", "success");
-          })
-          .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
-          });
-      }
-      if (key == "studentOutreach") {
-        const value = await bulkCreateStudentOutreach(data)
-          .then((data) => {
-            setAlert("data created successfully.", "success");
-            // history.push(`/student/${data.data.data.createStudent.student.id}`);
-          })
-          .catch((err) => {
-            setAlert("Unable to create upskilling data.", "error");
-          });
-      }
+     
       getoperations();
     } catch (err) {
       if (key === "my_data") {
@@ -1359,6 +1412,16 @@ const Operations = ({
         mentorship: false,
         upskill: false,
         pitching: false,
+      });
+    }
+    if(activeTab.key ==="ecosystem") {
+      setUploadModal({  
+        myData: false,
+        tot: false,
+        mentorship: false,
+        upskill: false,
+        pitching: false,
+        ecosystem: true,
       });
     }
     if (activeTab.key == "useTot") {
@@ -1536,6 +1599,7 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
+                  allDataCount={optsAggregate.count}
                 />
               </>
             ) : activeTab.key == "studentOutreach" ? (
@@ -1556,6 +1620,24 @@ const Operations = ({
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
                 />
+              </>
+            ):activeTab.key === "ecosystem" ? (
+              <>
+                <EcosystemSearchBar />
+              <Table
+                  onRowClick={(data) => showRowData("ecosystemData", data)}
+                  columns={columnsEcosystem}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              
               </>
             ) : activeTab.key == "upskilling" ? (
               <>
@@ -1717,16 +1799,18 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.studentOutreachData &&
-            (isSRM() || isAdmin() || isMedhavi()) && (
-              <StudentOutreachDataField
-                {...optsdata.studentOutreachData}
-                show={showModal.opsdata}
-                onHide={() => hideShowModal("studentOutreachData", false)}
-                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
-                refreshTableOnDeleting={() => refreshTableOnDeleting()}
-              />
-            )}
+          {
+           showModal.ecosystemData && (isSRM() || isAdmin() || isMedhavi()) && (
+            <EcosystemDataField
+            {...optsdata.ecosystemData}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("ecosystemData", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
+            />
+           )
+          }
+          
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}

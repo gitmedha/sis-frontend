@@ -53,7 +53,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
   const options = [
     { key: 0, value: "area", label: "Medha Area" },
     { key: 1, value: "program_name", label: "Program Name" },
-  ];
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   const [medhaAreaOptions, setMedhaAreaOptions] = useState([]);
   const [programNameOptions, setProgramOptions] = useState([]);
@@ -141,63 +141,73 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
             <Section>
               {Array.from({ length: counter }).map((_, index) => (
                 <SearchRow key={index}>
-                  <SearchFieldContainer>
-                    <Input
-                      icon="down"
-                      name={`searches[${index}].search_by_field`}
-                      label="Search Field"
-                      control="lookup"
-                      options={options}
-                      className="form-control"
-                      onChange={(e) => setSearchItem(e.value, index)}
-                    />
-                  </SearchFieldContainer>
-
-                  <SearchValueContainer>
-                    {selectedSearchFields[index] === null && (
-                      <Input
-                        name={`searches[${index}].search_by_value`}
-                        control="input"
-                        label="Search Value"
-                        className="form-control"
-                        disabled
-                      />
-                    )}
-
-                    {selectedSearchFields[index] === "area" && (
+                  {/* Search Field Column */}
+                  <div className="col-lg-2 col-md-4 col-sm-6">
+                    <SearchFieldContainer>
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
+                        name={`searches[${index}].search_by_field`}
+                        label="Search Field"
                         control="lookup"
-                        options={medhaAreaOptions}
+                        options={options}
                         className="form-control"
-                        disabled={disabled}
+                        onChange={(e) => setSearchItem(e.value, index)}
                       />
-                    )}
+                    </SearchFieldContainer>
+                  </div>
 
-                    {selectedSearchFields[index] === "program_name" && (
-                      <Input
-                        icon="down"
-                        name={`searches[${index}].search_by_value`}
-                        label="Search Value"
-                        control="lookup"
-                        options={programNameOptions}
-                        className="form-control"
-                        disabled={disabled}
-                      />
-                    )}
-                  </SearchValueContainer>
+                  {/* Search Value Column */}
+                  <div className="col-lg-4 col-md-6 col-sm-6">
+                    <SearchValueContainer>
+                      {selectedSearchFields[index] === null && (
+                        <Input
+                          name={`searches[${index}].search_by_value`}
+                          control="input"
+                          label="Search Value"
+                          className="form-control"
+                          disabled
+                        />
+                      )}
 
+                      {selectedSearchFields[index] === "area" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={medhaAreaOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "program_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={programNameOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+                    </SearchValueContainer>
+                  </div>
+
+                  {/* Add/Remove Icons Column */}
                   {index === counter - 1 && (
-                    <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} />
-                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} />}
-                    </IconContainer>
+                    <div className="col-lg-1 col-md-2 col-sm-12">
+                      <IconContainer>
+                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                      </IconContainer>
+                    </div>
                   )}
                 </SearchRow>
               ))}
 
+              {/* Action Buttons Row */}
               <div className="row">
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
