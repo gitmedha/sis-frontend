@@ -48,6 +48,7 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateEcosystem
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -1086,6 +1087,17 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key === "ecosystem") {
+      try {
+          await bulkCreateEcosystem(data)
+      }
+      catch (error) {
+        console.error("Error creating ecosystem data:", error);
+        setAlert("Unable to create ecosystem data.", "error");
+        return;
+      }
+    
+    }
 
     setModalShow(false);
     getoperations();
@@ -1609,6 +1621,7 @@ const Operations = ({
             )}
           </div>
         </div>
+        { /* Modal for Create Operation Form */ }
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1665,7 +1678,9 @@ const Operations = ({
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : (
+          ) : activeTab.key === "ecosystem" ? (
+
+          ):(
             ""
           )}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
