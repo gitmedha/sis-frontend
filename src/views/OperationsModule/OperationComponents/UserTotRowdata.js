@@ -11,7 +11,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
-import { getTotPickList } from "./operationsActions";
+import { getTotPickList,getCollegesByProjectName } from "./operationsActions";
 
 
 const projecttypeoptions = [
@@ -99,6 +99,10 @@ const getDepartmentOptions = (state) => {
   const designation=useRef(null)
   const college =useRef(null)
   const [state,setstate]=useState(true)
+  const [filteredColleges, setFilteredColleges] = useState([]);
+  const [collegeName, setCollegeName] = useState("");
+  const [selectedProjectName,setSelectedProjectName] = useState(null);
+ 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -204,6 +208,33 @@ const getDepartmentOptions = (state) => {
       .join(' ');
   };
 
+  const handleProjectChange = async (selectedOption, rowId) => {
+    props.handleChange(selectedOption, "project_name", rowId);
+    setSelectedProjectName(selectedOption);
+    
+    if (selectedOption && selectedOption.value) {
+      try {
+        // Fetch colleges filtered by project name
+        const colleges = await getCollegesByProjectName(selectedOption.value);
+        setFilteredColleges(colleges);
+        
+        // Clear the currently selected college if it's not in the filtered list
+        const currentCollege = row.college;
+        if (currentCollege && !colleges.some(c => c.value === currentCollege)) {
+          props.updateRow(rowId, "college", "");
+        }
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+        setFilteredColleges([]);
+      }
+    } else {
+      // If no project is selected, show empty colleges
+      setFilteredColleges([]);
+      props.updateRow(rowId, "college", ""); 
+    }
+  };
+
+  console.log("row", row);
   return (
     <>
       <tr key={row.id}>
@@ -309,15 +340,22 @@ const getDepartmentOptions = (state) => {
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
-        {/* <td>
-          <input
+        <td>
+          <Select
             className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            ref={college}
-            onChange={(e) => handleInputChange(row.id, "college",college)}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id)
+              setCollegeName(e.value);
+            }}
+            isDisabled={!selectedProjectName}
           />
-        </td> */}
+        </td> 
         <td>
           <Select
             className={`table-input ${
@@ -350,9 +388,7 @@ const getDepartmentOptions = (state) => {
             isSearchable={true}
             name="project_name"
             options={selectedState ?getProjectOptions(selectedState): projectName}
-            onChange={(e) => {
-              props.handleChange(e, "project_name", row.id)
-            }}
+            onChange={(e) => handleProjectChange(e, row.id)}
           />
         </td>
         <td>

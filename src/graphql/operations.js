@@ -896,3 +896,27 @@ export const SEARCH_BY_PROGRAMS = `
     }
   }
 `;
+
+
+export const GET_COLLEGES_BY_PROJECT_NAME = `
+  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
+  institutionsConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      project_name: $project_name,
+      source: "System Adoption"
+    }
+  ) {
+    values {
+      id
+      name
+      source
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
