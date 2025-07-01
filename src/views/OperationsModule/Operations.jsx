@@ -498,9 +498,18 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log("data",data)
-          setOpts(data.data.data.activeEcosystemData.values);
-          setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
+          setOpts(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.values;
+            }
+            return [];
+          });
+          setoptsAggregate(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.aggregate;
+            }
+            return [];
+          });
         })
         .catch((error) => {
           return Promise.reject(error);
