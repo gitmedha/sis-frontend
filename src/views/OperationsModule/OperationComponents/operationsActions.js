@@ -27,7 +27,9 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
+  GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
+import { Label } from "@material-ui/icons";
 
 export const searchPrograms = async function (searchValue) {
   try {
@@ -872,3 +874,20 @@ export const getAllBatchs = async () => {
     console.error(err); 
   }
 };
+
+export const getCollegesByProjectName = async (projectName) => {
+  try {
+    const response = await api.post("/graphql", {
+      query: GET_COLLEGES_BY_PROJECT_NAME,
+      variables: { project_name:projectName },
+    });
+    return response?.data?.data?.institutionsConnection?.values?.map(college=>({
+      label: college.name,
+      value:college.name
+    }))
+
+  } catch (error) {
+    console.error("Error fetching colleges by project name:", error);
+    throw error;
+  }
+}
