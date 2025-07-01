@@ -602,6 +602,18 @@ export const bulkCreateAlumniQueries = async (data) => {
   }
 };
 
+export const bulkCreateEcosystem = async (data) => {
+  try {   
+    const response = await api.post(
+      "/ecosystems/create-bulk-ecosystem",
+      data
+    );    
+return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+
 export const deactivate_user_ops = async (id) => {
   let data = { isactive: false };
 

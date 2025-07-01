@@ -50,7 +50,8 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
-  bulkCreateStudentOutreach
+  bulkCreateStudentOutreach,
+  bulkCreateEcosystem
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -60,6 +61,7 @@ import MentorshipdataField from "./OperationComponents/Mentorship/Mentorshipdata
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
+import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
@@ -511,9 +513,18 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log("data",data)
-          setOpts(data.data.data.activeEcosystemData.values);
-          setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
+          setOpts(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.values;
+            }
+            return [];
+          });
+          setoptsAggregate(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.aggregate;
+            }
+            return [];
+          });
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -1161,6 +1172,17 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key === "ecosystem") {
+      try {
+          await bulkCreateEcosystem(data)
+      }
+      catch (error) {
+        console.error("Error creating ecosystem data:", error);
+        setAlert("Unable to create ecosystem data.", "error");
+        return;
+      }
+    
+    }
 
     setModalShow(false);
     getoperations();
@@ -1765,6 +1787,7 @@ const Operations = ({
             )}
           </div>
         </div>
+        { /* Modal for Create Operation Form */ }
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1829,7 +1852,13 @@ const Operations = ({
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : (
+          ) : activeTab.key === "ecosystem" ? (
+            <EcosystemBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ):(
             ""
           )}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
