@@ -64,6 +64,7 @@ import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
+import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1679,7 +1680,11 @@ const Operations = ({
               ModalShow={() => setModalShow(false)}
             />
           ) : activeTab.key === "ecosystem" ? (
-
+            <EcosystemBulkAdd
+            show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
           ):(
             ""
           )}
