@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { getFieldValues } from "./opportunityAction";
 import api from "../../../apis";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -46,7 +47,7 @@ function OpportunitySearchBar({
     { key: 2, label: "Area", value: "medha_area" },
     { key: 3, label: "Type", value: "type" },
     { key: 4, label: "Employer Name", value: "employer" },
-    { key: 5, label: "Role", value: "role_or_designation" },
+    { key: 5, label: "Role/Desigination", value: "role_or_designation" },
   ]);
 
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
@@ -189,8 +190,14 @@ function OpportunitySearchBar({
         clearInterval(interval);
         handleLoaderForSearch();
 
-        await setSearchValueOptions(data);
-        await setDefaultSearchArray(data);
+        if (selectedSearchField === "assigned_to") {
+          let newSRM = await getAllSearchSrm();
+          await setSearchValueOptions(newSRM);
+          await setDefaultSearchArray(newSRM);
+        } else {
+          await setSearchValueOptions(data);
+          await setDefaultSearchArray(data);
+        }
       } catch (error) {
         console.error("error", error);
       }
@@ -217,7 +224,6 @@ function OpportunitySearchBar({
                   options={opportunityOptions}
                   className="form-control"
                   onChange={(e) => handleOpportunityOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               <div

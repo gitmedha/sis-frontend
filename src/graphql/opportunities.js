@@ -17,6 +17,7 @@ state
 pin_code
 medha_area
 district
+experience_required
 job_description_file {
   id
   url

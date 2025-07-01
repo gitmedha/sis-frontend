@@ -64,44 +64,38 @@ const isValidContact = (contact) => {
                   </thead>
                   <tbody>
                     {props?.notFoundData?.map((obj, i) => (
-                      <tr key={i}>
+                      <tr key={i} className={obj.error ? "table-danger" : ""}>
                         <td>{obj.index}</td>
-                        <td className={!obj.date_of_pitching ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Date of Pitching") ? "text-danger" : ""}>
                           {obj.date_of_pitching || "No data"}
                         </td>
-                        <td className={!obj.student_name ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Student Name") ? "text-danger" : ""}>
                           {obj.student_name || "No data"}
                         </td>
-                        <td className={!obj.course_name ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Course Name") ? "text-danger" : ""}>
                           {obj.course_name || "No data"}
                         </td>
-                        <td className={obj.course_year  ? "" : "text-danger"}>
+                        <td className={obj.error?.includes("Course Year") ? "text-danger" : ""}>
                           {obj.course_year || "No data"}
                         </td>
-                        <td className={(obj.institution) ? "" : "text-danger"}>
+                        <td className={obj.error?.includes("Institution") ? "text-danger" : ""}>
                           {obj.institution || "No data"}
                         </td>
-                        <td className={(obj.program_name) ? "" : "text-danger"}>
+                        <td className={obj.error?.includes("Program name") ? "text-danger" : ""}>
                           {obj.program_name || "No data"}
                         </td>
-                        <td className={!isValidContact(obj.phone) ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Phone") ? "text-danger" : ""}>
                           {obj.phone || "No data"}
                         </td>
-                        <td className={!isValidContact(obj.whatsapp_number) ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("WhatsApp") ? "text-danger" : ""}>
                           {obj.whatsapp_number || "No data"}
                         </td>
-                        <td className={!isValidEmail(obj.email) ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Email") ? "text-danger" : ""}>
                           {obj.email || "No data"}
                         </td>
-                        <td className={!obj.remarks ? "text-danger" : ""}>
-                          {obj.remarks || "No data"}
-                        </td>
-                        <td className={!obj.srm_name ? "text-danger" : ""}>
-                          {obj.srm_name || "No data"}
-                        </td>
-                        <td className={!obj.medha_area ? "text-danger" : ""}>
-                          {obj.medha_area || "No data"}
-                        </td>
+                        <td>{obj.remarks || "No data"}</td>
+                        <td>{obj.srm_name || "No data"}</td>
+                        <td>{obj.medha_area || "No data"}</td>
                       </tr>
                     ))}
                   </tbody>
