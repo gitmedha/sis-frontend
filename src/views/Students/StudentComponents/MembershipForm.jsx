@@ -10,7 +10,7 @@ import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-import * as Yup from "yup";
+import moment from "moment";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -38,14 +38,13 @@ const statusOptions = [
 ];
 
 const yesNoOptions = [
-  { value: true, label: "Yes" },
-  { value: false, label: "No" },
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: "No" },
 ];
 
 const MembershipForm = (props) => {
-  let { onHide, show } = props;
+  let { onHide, show ,membership,student} = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [validationRules, setValidationRules] = useState(MemberShipValidations);
   const [membershipStatus, setMembershipStatus] = useState("");
 
   useEffect(() => {
@@ -54,26 +53,15 @@ const MembershipForm = (props) => {
     });
   }, []);
 
-  useEffect(() => {
-    if (membershipStatus === "Cancelled") {
-      setValidationRules(
-        MemberShipValidations.shape({
-          reason_for_cancellation: Yup.string().required(
-            "Reason for cancellation is required."
-          ),
-        })
-      );
-    } else {
-      setValidationRules(
-        MemberShipValidations.omit(["reason_for_cancellation"])
-      );
-    }
-  }, [membershipStatus]);
+
+ const calculateInitialTenureDate = (availDate) => {
+    return availDate ? moment(availDate).add(3, 'years').toDate() : null;
+  };
 
   let initialValues = {
-    student: props.student.full_name,
-    medhavi_member: null,
-    membership_fee: "",
+    student: student.full_name,
+    medhavi_member: "",
+    membership_fee: 99,
     medhavi_member_id: "",
     date_of_payment: null,
     date_of_avail: null,
@@ -85,22 +73,20 @@ const MembershipForm = (props) => {
     assigned_to: localStorage.getItem("user_id"),
   };
 
-  if (props.membership) {
-    initialValues = { ...initialValues, ...props.membership };
-    initialValues["assigned_to"] = props.membership?.assigned_to?.id;
-    initialValues["date_of_payment"] = props.membership.date_of_payment
-      ? new Date(props.membership.date_of_payment)
-      : null;
-    initialValues["date_of_avail"] = props.membership.date_of_avail
-      ? new Date(props.membership.date_of_avail)
-      : null;
-    initialValues["date_of_settlement"] = props.membership.date_of_settlement
-      ? new Date(props.membership.date_of_settlement)
-      : null;
-    initialValues["tenure_completion_date"] = props.membership.tenure_completion_date
-      ? new Date(props.membership.tenure_completion_date)
-      : null;
-    setMembershipStatus(props.membership.membership_status);
+  if (membership) {
+    initialValues = { 
+      medhavi_member:membership.medhavi_member,
+      assigned_to: membership?.assigned_to?.id,
+      date_of_payment: membership.date_of_payment ? new Date(membership.date_of_payment) : null,
+      date_of_avail: membership.date_of_avail ? new Date(membership.date_of_avail) : null,
+      date_of_settlement: membership.date_of_settlement ? new Date(membership.date_of_settlement) : null,
+      tenure_completion_date: calculateInitialTenureDate(membership.date_of_avail),
+      membership_fee: membership.membership_fee,
+      medhavi_member_id: membership.medhavi_member_id,
+      receipt_number: membership.receipt_number,
+      membership_status: membership.membership_status,
+      reason_for_cancellation: membership.reason_for_cancellation || "",
+    };
   }
 
   const handleClose = () => {
@@ -111,6 +97,14 @@ const MembershipForm = (props) => {
     onHide(values);
   };
 
+  const handleDateOfAvailChange = (date, setFieldValue) => {
+    if (date) {
+      const tenureDate = moment(date).add(3, 'years').toDate();
+      setFieldValue('tenure_completion_date', tenureDate);
+    } else {
+      setFieldValue('tenure_completion_date', null);
+    }
+  };
   return (
     <Modal
       centered
@@ -138,10 +132,14 @@ const MembershipForm = (props) => {
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={validationRules}
+          validationSchema={MemberShipValidations}
+          enableReinitialize
         >
-          {({ values }) => (
+          {({ values,setFieldValue}) => (
             <Form>
+              {
+                console.log(values, "values in membership form")
+              }
               <Section>
                 <div className="row form_sec">
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -227,6 +225,7 @@ const MembershipForm = (props) => {
                       control="datepicker"
                       className="form-control"
                       required
+                      onInput={(date) => handleDateOfAvailChange(date, setFieldValue)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
@@ -243,10 +242,18 @@ const MembershipForm = (props) => {
                     <Input
                       name="tenure_completion_date"
                       label="Tenure Completion Date"
-                      placeholder="Tenure Completion Date"
+                      placeholder="Auto-calculated as 3 years after avail date"
                       control="datepicker"
                       className="form-control"
+                      readOnly={true}
+                      disabled={true}
+                      value={values.tenure_completion_date ? 
+                        moment(values.tenure_completion_date).format('YYYY-MM-DD') : 
+                        ''}
                     />
+                    <small className="text-muted">
+                      Automatically calculated as 3 years after Date of Avail
+                    </small>
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
