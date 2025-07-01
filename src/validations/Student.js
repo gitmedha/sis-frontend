@@ -255,3 +255,61 @@ export const AlumniServiceValidations = Yup.object({
       return schema.min(new Date(start), "End date can't be before Start date");
     }),
 });
+
+export const MemberShipValidations = Yup.object({
+  medhavi_member: Yup.string().required("Please select Yes or No."),
+
+  membership_fee: Yup.number()
+    .required("Membership fee is required.")
+    .oneOf([99], "Membership fee should be 99/-"),
+
+  medhavi_member_id: Yup.string()
+    .required("Medhavi Member ID is required.")
+    .matches(/^[a-zA-Z0-9]+$/, "Only alphabets and numbers are allowed."),
+
+  date_of_payment: Yup.date()
+    .required("Date of payment is required.")
+    .nullable(),
+
+  date_of_avail: Yup.date()
+    .required("Date of avail is required.")
+    .nullable(),
+
+  date_of_settlement: Yup.date()
+    .required("Date of settlement is required.")
+    .nullable(),
+
+  receipt_number: Yup.string()
+    .required("Receipt number is required.")
+    .matches(/^[a-zA-Z0-9]+$/, "Only alphabets and numbers are allowed."),
+
+  tenure_completion_date: Yup.date()
+    .nullable()
+    .test(
+      "tenure-date-check",
+      "Tenure completion date should be 3 years after Date of Avail.",
+      function (value) {
+        const { date_of_avail } = this.parent;
+        if (date_of_avail && value) {
+          const expectedDate = new Date(date_of_avail);
+          expectedDate.setFullYear(expectedDate.getFullYear() + 3);
+          return (
+            value.toDateString() === expectedDate.toDateString()
+          );
+        }
+        return true;
+      }
+    ),
+
+  membership_status: Yup.string()
+    .required("Membership status is required.")
+    .oneOf(["Active", "Cancelled", "Ended"], "Invalid status selection."),
+
+  reason_for_cancellation: Yup.string()
+    .nullable()
+    .when("membership_status", {
+      is: "Cancelled",
+      then: Yup.string().required("Reason for cancellation is required."),
+      otherwise: Yup.string().nullable(),
+    }),
+});

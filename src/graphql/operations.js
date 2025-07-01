@@ -272,7 +272,30 @@ updatedby {
     username
 }
 
+`
+
+const ecosystemFields = `
+  activity_type
+  date_of_activity
+  topic
+  govt_dept_partner_with
+  type_of_partner
+  employer_name_external_party_ngo_partner_with
+  attended_students
+  male_participants
+  female_participants
+  medha_poc_1
+  medha_poc_2
+  created_at
+  updated_at
+  CreatedBy {
+    username
+  }
+  UpdatedBy {
+    username
+  }
 `;
+
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -320,29 +343,24 @@ export const GET_USERSTOTS = `
     }
 `;
 
-export const GET_STUDENT_OUTREACHES = `
-  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
-    allStudentOutreaches: studentOutreachesConnection {
-      aggregate {
-        count
-      }
+export const GET_ECOSYSTEM_DATA = `
+    query GET_ECOSYSTEM_DATA($limit: Int, $start: Int, $sort: String) {
+        activeEcosystemData: ecosystemsConnection(
+            sort: $sort,    
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+            ${ecosystemFields}
+            },
+            aggregate {
+                count
+            },
+        }
     }
-
-    activeStudentOutreaches: studentOutreachesConnection(
-      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
-      start: $start,     # Pagination offset (e.g., 20)
-      limit: $limit,     # Number of records per page (e.g., 10)
-      where: { isactive: true } 
-    ) {
-      values {
-        ${studentOutreachesFields}
-      },
-      aggregate {
-        count # Total count of active records
-      },
-    }
-  }
 `;
+
 
 export const GET_STUDENTS_UPSKILLINGS = `
     query GET_STUDENTS_UPSKILLINGS($limit: Int, $start: Int, $sort: String) {
@@ -878,3 +896,29 @@ export const SEARCH_BY_PROGRAMS = `
     }
   }
 `;
+
+
+export const GET_STUDENT_OUTREACHES = `
+  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
+    allStudentOutreaches: studentOutreachesConnection {
+      aggregate {
+        count
+      }
+    }
+ 
+    activeStudentOutreaches: studentOutreachesConnection(
+      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
+      start: $start,     # Pagination offset (e.g., 20)
+      limit: $limit,     # Number of records per page (e.g., 10)
+      where: { isactive: true }
+    ) {
+      values {
+        ${studentOutreachesFields}
+      },
+      aggregate {
+        count # Total count of active records
+      },
+    }
+  }
+`;
+ 
