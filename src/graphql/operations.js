@@ -922,3 +922,50 @@ export const GET_STUDENT_OUTREACHES = `
   }
 `;
  
+
+export const UPDATE_ECOSYSTEM = `
+mutation UpdateEcosystem($id: ID!, $data: EcosystemInput!) {
+  updateEcosystem(id: $id, data: $data) {
+    data {
+      id
+      attributes {
+        activity_type
+        date_of_activity
+        topic
+        govt_dept_partner_with
+        type_of_partner
+        employer_name_external_party_ngo_partner_with
+        attended_students
+        male_participants
+        female_participants
+        medha_poc_1
+        medha_poc_2
+        isactive
+        updatedBy {
+          id
+          username
+        }
+      }
+    }
+  }
+}
+
+
+`
+
+export const DELETE_ECOSYSTEM = `
+mutation DeleteEcosystem($id: ID!) {
+  deleteEcosystem(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`
+export const DEACTIVATE_ECOSYSTEM_ENTRY =   `
+    mutation DEACTIVATE_ECOSYSTEM_ENTRY($id:ID){
+    updateEcosystem(id:$id){
+
+    }
+}
+`
