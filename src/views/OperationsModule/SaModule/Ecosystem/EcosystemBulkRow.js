@@ -2,9 +2,27 @@ import React from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+const customSelectStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    minHeight: '38px',
+    height: '38px',
+    boxShadow: state.isFocused ? '0 0 0 1px #2684FF' : provided.boxShadow,
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: '38px',
+    padding: '0 8px',
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: '38px',
+  }),
+};
+
 
 const EcosystemBulkrow = (props) => {
-  const { row, updateRow, activityTypeOptions, partnerTypeOptions } = props;
+  const { row, updateRow, activityTypeOptions, partnerTypeOptions, classValue } = props;
 
   const handleChange = (field, value) => {
     updateRow(row.id, field, value);
@@ -18,12 +36,21 @@ const EcosystemBulkrow = (props) => {
     updateRow(row.id, field, e.target.value);
   };
 
+  const getInputClass = (field) => {
+    return classValue[field] ? "form-control error-border" : "form-control";
+  };
+
+  const getSelectClass = (field) => {
+    return classValue[field] ? "error-border" : "";
+  };
+
   return (
     <tr>
       {/* Activity Type */}
       <td>
         <Select
-          className="basic-single"
+          styles={customSelectStyles}
+          className={`${getSelectClass("activity_type")}`}
           classNamePrefix="select"
           value={activityTypeOptions.find(
             (option) => option.value === row.activity_type
@@ -36,20 +63,22 @@ const EcosystemBulkrow = (props) => {
 
       {/* Date of Activity */}
       <td>
-        <DatePicker
-          selected={row.date_of_activity ? new Date(row.date_of_activity) : null}
-          onChange={(date) => handleDateChange(date, "date_of_activity")}
-          dateFormat="dd/MM/yyyy"
-          placeholderText="Select date"
-          className="form-control"
-        />
+        <div className={getSelectClass("date_of_activity")}>
+          <DatePicker
+            selected={row.date_of_activity ? new Date(row.date_of_activity) : null}
+            onChange={(date) => handleDateChange(date, "date_of_activity")}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Select date"
+            className="form-control"
+          />
+        </div>
       </td>
 
       {/* Topic */}
       <td>
         <input
           type="text"
-          className="form-control"
+          className={getInputClass("topic")}
           value={row.topic || ""}
           onChange={(e) => handleInputChange(e, "topic")}
         />
@@ -68,7 +97,9 @@ const EcosystemBulkrow = (props) => {
       {/* Type of Partner */}
       <td>
         <Select
-          className="basic-single"
+        styles={customSelectStyles}
+
+          className={`${getSelectClass("type_of_partner")}`}
           classNamePrefix="select"
           value={partnerTypeOptions.find(
             (option) => option.value === row.type_of_partner
@@ -96,7 +127,7 @@ const EcosystemBulkrow = (props) => {
         <input
           type="number"
           min="0"
-          className="form-control"
+          className={getInputClass("attended_students")}
           value={row.attended_students || ""}
           onChange={(e) => handleInputChange(e, "attended_students")}
         />
@@ -107,7 +138,7 @@ const EcosystemBulkrow = (props) => {
         <input
           type="number"
           min="0"
-          className="form-control"
+          className={getInputClass("male_participants")}
           value={row.male_participants || ""}
           onChange={(e) => handleInputChange(e, "male_participants")}
         />
@@ -118,7 +149,7 @@ const EcosystemBulkrow = (props) => {
         <input
           type="number"
           min="0"
-          className="form-control"
+          className={getInputClass("female_participants")}
           value={row.female_participants || ""}
           onChange={(e) => handleInputChange(e, "female_participants")}
         />
@@ -128,7 +159,7 @@ const EcosystemBulkrow = (props) => {
       <td>
         <input
           type="text"
-          className="form-control"
+          className={getInputClass("medha_poc_1")}
           value={row.medha_poc_1 || ""}
           onChange={(e) => handleInputChange(e, "medha_poc_1")}
         />
