@@ -838,10 +838,17 @@ mutation DeleteEcosystem($id: ID!) {
   }
 }
 `
-export const DEACTIVATE_ECOSYSTEM_ENTRY =   `
-    mutation DEACTIVATE_ECOSYSTEM_ENTRY($id:ID){
-    updateEcosystem(id:$id){
 
+export const DEACTIVATE_ECOSYSTEM_ENTRY = `
+  mutation DEACTIVATE_ECOSYSTEM_ENTRY($id: ID!, $data: EcosystemInput!) {
+    updateEcosystem(id: $id, data: $data) {
+      data {
+        id
+        attributes {
+          isactive
+        }
+      }
     }
-}
-`
+  }
+`;
+

@@ -1,6 +1,7 @@
 import {
   DELETE_ECOSYSTEM,
-  UPDATE_ECOSYSTEM
+  UPDATE_ECOSYSTEM,
+  DEACTIVATE_ECOSYSTEM_ENTRY
 } from '../../../graphql/operations';
 import api from '../../../apis'
 export const getFieldValues = async (id) => {
@@ -11,9 +12,23 @@ export const getFieldValues = async (id) => {
     const data = await response.json();
     return data;
 }
-export const deactivate_ecosystem_entry = async (id) => {
-  
-}
+export const deactivateEcosystemEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: DEACTIVATE_ECOSYSTEM_ENTRY,
+      variables: {
+        id,
+        data: {
+          isactive: false
+        }
+      }
+    });
+    return response.data.data.updateEcosystem;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 export const updateEcosystemEntry = async (id, data) => {
   try{
