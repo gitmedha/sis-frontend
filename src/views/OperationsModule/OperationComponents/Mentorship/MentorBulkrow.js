@@ -262,7 +262,7 @@ const MentorBulkrow = (props) => {
             // value={Father}
             onKeyPress={handleKeyPress}
             onChange={(e) =>
-              props.updateRow(row.id, "mentor_name", e.target.value)
+              props.updateRow(row.id, "mentor_name", capitalizeFirstLetter(e.target.value))
             }
           />
         </td>
@@ -329,7 +329,7 @@ const MentorBulkrow = (props) => {
             // disabled={email ? true :false}
             defaultValue={email}
             onChange={(e) =>
-              props.updateRow(row.id, "mentor_domain", e.target.value)
+              props.updateRow(row.id, "mentor_domain", capitalizeFirstLetter(e.target.value))
             }
           />
         </td>)}
@@ -344,7 +344,7 @@ const MentorBulkrow = (props) => {
             // disabled={email ? true :false}
             defaultValue={email}
             onChange={(e) =>
-              props.updateRow(row.id, "mentor_company_name", e.target.value)
+              props.updateRow(row.id, "mentor_company_name", capitalizeFirstLetter(e.target.value))
             }
           />
         </td>
@@ -358,7 +358,7 @@ const MentorBulkrow = (props) => {
             type="text"
             // ref={conclusion}
             onChange={(e) =>
-              props.updateRow(row.id, "designation", e.target.value)
+              props.updateRow(row.id, "designation", capitalizeFirstLetter(e.target.value))
             }
           />
         </td>
