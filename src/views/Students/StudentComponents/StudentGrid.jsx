@@ -171,6 +171,9 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
     }
     window.addEventListener('resize', updateSize);
     updateSize();
+    return () => {
+      window.removeEventListener('resize', updateSize);
+    };
   }, []);
 
   const handleBoxClick = boxNumber => {
