@@ -245,6 +245,7 @@ updatedby {
 `
 
 const ecosystemFields = `
+    id
   activity_type
   date_of_activity
   topic
@@ -254,7 +255,7 @@ const ecosystemFields = `
   attended_students
   male_participants
   female_participants
-  medha_poc_1
+  medha_poc_1 
   medha_poc_2
   created_at
   updated_at
@@ -800,11 +801,15 @@ export const SEARCH_BY_PROGRAMS = `
 `
 
 export const UPDATE_ECOSYSTEM = `
-mutation UpdateEcosystem($id: ID!, $data: EcosystemInput!) {
-  updateEcosystem(id: $id, data: $data) {
-    data {
-      id
-      attributes {
+  mutation UPDATE_ECOSYSTEM($data: editEcosystemInput!, $id: ID!) {
+    updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      ecosystem {
+        id
         activity_type
         date_of_activity
         topic
@@ -817,17 +822,15 @@ mutation UpdateEcosystem($id: ID!, $data: EcosystemInput!) {
         medha_poc_1
         medha_poc_2
         isactive
-        updatedBy {
+        UpdatedBy {
           id
           username
         }
       }
     }
   }
-}
+`;
 
-
-`
 
 export const DELETE_ECOSYSTEM = `
 mutation DeleteEcosystem($id: ID!) {
@@ -840,15 +843,19 @@ mutation DeleteEcosystem($id: ID!) {
 `
 
 export const DEACTIVATE_ECOSYSTEM_ENTRY = `
-  mutation DEACTIVATE_ECOSYSTEM_ENTRY($id: ID!, $data: EcosystemInput!) {
-    updateEcosystem(id: $id, data: $data) {
-      data {
-        id
-        attributes {
-          isactive
-        }
+  mutation DEACTIVATE_ECOSYSTEM_ENTRY($id: ID!, $data: editEcosystemInput!) {
+   updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      ecosystem {
+        isactive
       }
     }
+    
   }
 `;
 

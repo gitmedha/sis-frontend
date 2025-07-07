@@ -80,7 +80,7 @@ const EcosystemDataField = (props) => {
       delete: false
     });
   };
-
+console.log(props,"props")
   const deleteEntry = async () => {
     const data = await deactivateEcosystemEntry(Number(props.id));
     if (data.status === 200) {
