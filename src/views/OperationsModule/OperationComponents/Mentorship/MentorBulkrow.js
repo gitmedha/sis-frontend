@@ -72,6 +72,10 @@ const MentorBulkrow = (props) => {
   });
   const [programOptions, setProgramOptions] = useState([]);
   const [specify_others, setspecify_others] = useState(false);
+  const [mentorName, setMentorName] = useState(row.mentor_name || "");
+  const [mentorCompanyName, setMentorCompanyName] = useState(row.mentor_company_name || "");
+  const [designation, setDesignation] = useState(row.designation || "");
+  const [specifyOther, setSpecifyOther] = useState("");
 
   const mentorDomainOptions = [
     "3D Modeling & CAD Design",
@@ -152,8 +156,10 @@ const MentorBulkrow = (props) => {
   };
 
   useEffect(() => {
-    
-  }, [name]);
+    setMentorName(row.mentor_name || "");
+    setMentorCompanyName(row.mentor_company_name || "");
+    setDesignation(row.designation || "");
+  }, [row.mentor_name, row.mentor_company_name, row.designation]);
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -251,19 +257,19 @@ const MentorBulkrow = (props) => {
       <tr key={row.id}>
         <td>
           <input
-            // className="table-input h-2 mentor_name"
             className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.mentor_name
                 ? `border-red`
                 : ""
             }`}
             type="text"
-            // disabled={Father ? true : false}
-            // value={Father}
             onKeyPress={handleKeyPress}
-            onChange={(e) =>
-              props.updateRow(row.id, "mentor_name", capitalizeFirstLetter(e.target.value))
-            }
+            value={mentorName}
+            onChange={e => {
+              const capitalized = capitalizeFirstLetter(e.target.value);
+              setMentorName(capitalized);
+              props.updateRow(row.id, "mentor_name", capitalized);
+            }}
           />
         </td>
         <td>
@@ -283,7 +289,6 @@ const MentorBulkrow = (props) => {
                 props.updateRow(row.id, "contact", e.target.value)
               // handleChangeInput('mobileno', e.target.value);
             }}}
-            // onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
         <td>
@@ -304,9 +309,7 @@ const MentorBulkrow = (props) => {
             }`}
             options={mentorDomainOptions}
             onChange={(selectedOption) => {
-              // Clear specify_others if not "Others" is selected
               if (selectedOption?.value == "Others") {
-                // props.updateRow(row.id, "specify_others", "");
                 props.returnother('Others')
                 setspecify_others(true);
                 props.updateRow(row.id, "mentor_domain",  "Others");
@@ -316,7 +319,6 @@ const MentorBulkrow = (props) => {
               }
             }}
             value={mentorDomainOptions.find(option => option.value === row.mentor_domain)}
-            // placeholder="Select Mentor Domain"
           />
         </td>
         {specify_others && (<td>
@@ -327,11 +329,12 @@ const MentorBulkrow = (props) => {
                 : ""
             }`}
             type="text"
-            // disabled={email ? true :false}
-            defaultValue={email}
-            onChange={(e) =>
-              props.updateRow(row.id, "specify_other", capitalizeFirstLetter(e.target.value))
-            }
+            value={specifyOther}
+            onChange={e => {
+              const capitalized = capitalizeFirstLetter(e.target.value);
+              setSpecifyOther(capitalized);
+              props.updateRow(row.id, "specify_other", capitalized);
+            }}
           />
         </td>)}
         <td>
@@ -342,11 +345,12 @@ const MentorBulkrow = (props) => {
                 : ""
             }`}
             type="text"
-            // disabled={email ? true :false}
-            defaultValue={email}
-            onChange={(e) =>
-              props.updateRow(row.id, "mentor_company_name", capitalizeFirstLetter(e.target.value))
-            }
+            value={mentorCompanyName}
+            onChange={e => {
+              const capitalized = capitalizeFirstLetter(e.target.value);
+              setMentorCompanyName(capitalized);
+              props.updateRow(row.id, "mentor_company_name", capitalized);
+            }}
           />
         </td>
         <td>
@@ -357,10 +361,12 @@ const MentorBulkrow = (props) => {
                 : ""
             }`}
             type="text"
-            // ref={conclusion}
-            onChange={(e) =>
-              props.updateRow(row.id, "designation", capitalizeFirstLetter(e.target.value))
-            }
+            value={designation}
+            onChange={e => {
+              const capitalized = capitalizeFirstLetter(e.target.value);
+              setDesignation(capitalized);
+              props.updateRow(row.id, "designation", capitalized);
+            }}
           />
         </td>
         <td>
@@ -408,7 +414,6 @@ const MentorBulkrow = (props) => {
             isSearchable={true}
             name="batch"
             options={options}
-            // filterData={filterProgram}
             onChange={(e) => props.handleChange(e, "outreach", row.id)}
           />
         </td>
@@ -469,13 +474,11 @@ const MentorBulkrow = (props) => {
             classNamePrefix="select"
             isSearchable={true}
             options={mentorAreaOptions}
-            // isDisabled={!isEmptyValue(area)? true :false}
             onChange={(e) => props.handleChange(e, "medha_area", row.id)}
           />
         </td>
          <td>
           <Select
-            // className="basic-single table-input"
             className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.program_name
                 ? `border-red`
@@ -502,7 +505,6 @@ const MentorBulkrow = (props) => {
             isSearchable={true}
             name="batch"
             options={statusOption}
-            // filterData={filterProgram}
             onChange={(e) => props.handleChange(e, "status", row.id)}
           />
         </td>
