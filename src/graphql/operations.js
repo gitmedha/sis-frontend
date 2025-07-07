@@ -854,8 +854,7 @@ export const DEACTIVATE_ECOSYSTEM_ENTRY = `
       ecosystem {
         isactive
       }
-    }
-    
+    } 
   }
 `;
 
