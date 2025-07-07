@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
   GET_COLLEGE_PITCHES,
-  GET_DTE_SAMARTH_SDITS,
+  // GET_DTE_SAMARTH_SDITS,
   GET_MENTORSHIP,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
@@ -23,12 +23,12 @@ import { isAdmin, isMedhavi, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
-import Dtesamarth from "./OperationComponents/Dtesamarth";
+// import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
 import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
-import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
+// import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
@@ -607,24 +607,24 @@ const Operations = ({
         });
     }
     if (activeTab.key === "dtesamarth") {
-      await resetSearch();
+      // await resetSearch();
 
-      await api
-        .post("/graphql", {
-          query: GET_DTE_SAMARTH_SDITS,
-          variables,
-        })
-        .then((data) => {
-          setOpts(data.data.data.dteSamarthSditsConnection.values);
-          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
-        })
-        .catch((error) => {
-          return Promise.reject(error);
-        })
-        .finally(() => {
-          setLoading(false);
-          nProgress.done();
-        });
+      // await api
+      //   .post("/graphql", {
+      //     query: GET_DTE_SAMARTH_SDITS,
+      //     variables,
+      //   })
+      //   .then((data) => {
+      //     setOpts(data.data.data.dteSamarthSditsConnection.values);
+      //     setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
+      //   })
+      //   .catch((error) => {
+      //     return Promise.reject(error);
+      //   })
+      //   .finally(() => {
+      //     setLoading(false);
+      //     nProgress.done();
+      //   });
     }
     if (activeTab.key === "alumniQueries") {
       await resetSearch();
@@ -872,36 +872,36 @@ const Operations = ({
         }
       }
       if (activeTab.key == "dtesamarth") {
-        if (sortBy.length) {
-          let sortByField;
-          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "student_name":
-            case "institution_name":
-            case "course_name":
-              sortByField = sortBy[0].id;
-              break;
+        // if (sortBy.length) {
+        //   let sortByField;
+        //   let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+        //   switch (sortBy[0].id) {
+        //     case "student_name":
+        //     case "institution_name":
+        //     case "course_name":
+        //       sortByField = sortBy[0].id;
+        //       break;
 
-            default:
-              break;
-          }
+        //     default:
+        //       break;
+        //   }
 
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        } else {
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex
-          );
-        }
+        //   getoperations(
+        //     activeStatus,
+        //     activeTab.key,
+        //     pageSize,
+        //     pageSize * pageIndex,
+        //     sortByField,
+        //     sortOrder
+        //   );
+        // } else {
+        //   getoperations(
+        //     activeStatus,
+        //     activeTab.key,
+        //     pageSize,
+        //     pageSize * pageIndex
+        //   );
+        // }
       }
       if (activeTab.key === "alumniQueries") {
         if (sortBy.length) {
@@ -1824,11 +1824,12 @@ const Operations = ({
             )
           ) : activeTab.key == "dtesamarth" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
-              <Dtesamarth
-                show={modalShow}
-                onHide={hideCreateModal}
-                ModalShow={() => setModalShow(false)}
-              />
+              // <Dtesamarth
+              //   show={modalShow}
+              //   onHide={hideCreateModal}
+              //   ModalShow={() => setModalShow(false)}
+              // />
+              <></>
             )
           ) : activeTab.key == "alumniQueries" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1901,11 +1902,12 @@ const Operations = ({
             />
           )}
           {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
-            <Dtesamarthdatafield
-              {...optsdata.sditdata}
-              show={showModal.opsdata}
-              onHide={() => hideShowModal("sditdata", false)}
-            />
+            // <Dtesamarthdatafield
+            //   {...optsdata.sditdata}
+            //   show={showModal.opsdata}
+            //   onHide={() => hideShowModal("sditdata", false)}
+            // />
+            <></>
           )}
           {showModal.alumniQueriesdata &&
             (isSRM() || isAdmin() || isMedhavi()) && (

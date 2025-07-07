@@ -1,19 +1,36 @@
 import {
   DELETE_ECOSYSTEM,
-  UPDATE_ECOSYSTEM
+  UPDATE_ECOSYSTEM,
+  DEACTIVATE_ECOSYSTEM_ENTRY
 } from '../../../graphql/operations';
 import api from '../../../apis'
-export const getFieldValues = async (id) => {
-  const response = await fetch(`/api/sa/ecosystem/${id}/fields`, {});
-  if (!response.ok) {       
-    throw new Error(`Error fetching field values: ${response.statusText}`);
-  } 
-    const data = await response.json();
+
+export const getFieldValues = async (searchField, baseURL) => {
+  try {
+    const data = await api.get(`/${baseURL}/distinct/${searchField}`);
+
     return data;
-}
-export const deactivate_ecosystem_entry = async (id) => {
-  
-}
+  } catch (error) {
+    return console.error("error", error);
+  }
+};
+export const deactivateEcosystemEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: DEACTIVATE_ECOSYSTEM_ENTRY,
+      variables: {
+        id,
+        data: {
+          isactive: false
+        }
+      }
+    });
+    return response.data.data.updateEcosystem;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 
 export const updateEcosystemEntry = async (id, data) => {
   try{

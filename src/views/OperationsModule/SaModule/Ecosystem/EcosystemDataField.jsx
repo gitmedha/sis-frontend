@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { setAlert } from "../../../../store/reducers/Notifications/actions";
 import Deletepopup from "../../OperationComponents/Deletepopup";
 import EcosystemEdit from "./EcosystemEdit";
-import { deactivate_ecosystem_entry } from "../actions";
+import { deactivateEcosystemEntry } from "../actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -80,9 +80,9 @@ const EcosystemDataField = (props) => {
       delete: false
     });
   };
-
+console.log(props,"props")
   const deleteEntry = async () => {
-    const data = await deactivate_ecosystem_entry(Number(props.id));
+    const data = await deactivateEcosystemEntry(Number(props.id));
     if (data.status === 200) {
       setAlert("Entry Deleted Successfully.", "success");
       refreshTableOnDeleting();
