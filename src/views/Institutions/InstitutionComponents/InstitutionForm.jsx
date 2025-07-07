@@ -18,6 +18,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import api from "../../../apis";
+import { createLatestAcivity, findDifferences, findDifferencesInstitute } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -51,6 +52,20 @@ const InstitutionForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate, setDuplicate] = useState(false);
+  const [sourceOptions] = useState([
+    {
+      key:0,
+      label:'Core Programs',
+      value:'Core Programs'
+    },
+    {
+      key:1,
+      label:'System Adoption',
+      value:'System Adoption'
+    }
+  ]);
+
+  const [source, setSource] = useState(sourceOptions[0].value);
   const userId = parseInt(localStorage.getItem("user_id"));
 
   useEffect(() => {
@@ -153,6 +168,12 @@ const InstitutionForm = (props) => {
       values.logo = logo;
     }
     setDisableSaveButton(true);
+    let propgramEnrollemntData={};
+    if(props.id ){
+      propgramEnrollemntData={module_name:"institution",activity:"Institution Data Updated",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    
     await onHide(values);
     setDisableSaveButton(false);
   };
@@ -172,6 +193,7 @@ const InstitutionForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
+    source:""
   };
 
   if (props.id) {
@@ -295,6 +317,19 @@ const InstitutionForm = (props) => {
                       ) : (
                         <Skeleton count={1} height={45} />
                       )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        control="lookup"
+                        name="source"
+                        label="Source"
+                        required
+                        options={sourceOptions}
+                        className="form-control"
+                        placeholder="Source"
+                        onChange={(e) => setSource(e.target.value)}
+                        value={source}
+                      />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
                       {institutionTypeOpts.length ? (
@@ -672,7 +707,7 @@ const InstitutionForm = (props) => {
                     : null}
                 </div>
 
-                <div className="row justify-content-end mt-1">
+                <div className="row justify-content-end mt-3">
                   <div className="col-auto p-0">
                     <button
                       type="button"

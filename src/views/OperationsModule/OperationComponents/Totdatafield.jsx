@@ -18,7 +18,7 @@ import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -94,8 +94,8 @@ const Totdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_tots(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
@@ -111,6 +111,7 @@ const Totdatafield = (props) => {
   useEffect(()=>{
     fetchAllStudents()
   },[])
+  console.log(props,'props')
   return (
     <>
       {!showModal.dataAndEdit &&(
@@ -142,7 +143,7 @@ const Totdatafield = (props) => {
                     label="Participant Name"
                     value={props?.user_name}
                   />
-                   <DetailField
+                  <DetailField
                     label="Email id"
                     value={props?.email}
                   />
@@ -286,6 +287,8 @@ const Totdatafield = (props) => {
             )}
           </Styled>
         </Modal>
+        
+        
       )}
       {
         showModal.dataAndEdit && 

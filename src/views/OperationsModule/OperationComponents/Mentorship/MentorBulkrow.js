@@ -309,6 +309,7 @@ const MentorBulkrow = (props) => {
                 // props.updateRow(row.id, "specify_others", "");
                 props.returnother('Others')
                 setspecify_others(true);
+                props.updateRow(row.id, "mentor_domain",  "Others");
               }
               else{
                 props.updateRow(row.id, "mentor_domain", selectedOption?.value || "");
@@ -329,7 +330,7 @@ const MentorBulkrow = (props) => {
             // disabled={email ? true :false}
             defaultValue={email}
             onChange={(e) =>
-              props.updateRow(row.id, "mentor_domain", capitalizeFirstLetter(e.target.value))
+              props.updateRow(row.id, "specify_other", capitalizeFirstLetter(e.target.value))
             }
           />
         </td>)}

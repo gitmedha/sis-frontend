@@ -247,6 +247,9 @@ const MentorBulkAdd = (props) => {
         );
       });
     }
+    if (key === 'mentor_domain') {
+      setSpecifyOthers(options?.value === 'Others');
+    }
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {

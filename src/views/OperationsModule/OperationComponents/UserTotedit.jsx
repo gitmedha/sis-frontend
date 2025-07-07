@@ -42,7 +42,6 @@ const UserTotedit = (props) => {
   let { onHide, show } = props;
 
   const [assigneeOptions, setAssigneeOptions] = useState([]);
-
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
@@ -76,7 +75,7 @@ const UserTotedit = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
@@ -137,7 +136,6 @@ const UserTotedit = (props) => {
       );
     });
   };
-
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
 
@@ -315,9 +313,21 @@ const UserTotedit = (props) => {
 
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
+                          control="lookupAsync"
+                          name="college"
+                          label="College Name 11"
+                          filterData={filterInstitution}
+                          defaultOptions={institutionOptions}
+                          placeholder="College Name"
+                          className="form-control"
+                          isClearable
+                        />
+                      </div>
+
+                      <div className="col-md-6 col-sm-12 mb-2">
+                        <Input
                           name="start_date"
                           label="Start Date "
-                          //
                           placeholder="Date of Birth"
                           control="datepicker"
                           className="form-control"

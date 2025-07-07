@@ -7,11 +7,13 @@ import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
   GET_COLLEGE_PITCHES,
-  GET_DTE_SAMARTH_SDITS,
+  // GET_DTE_SAMARTH_SDITS,
   GET_MENTORSHIP,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
+  GET_ECOSYSTEM_DATA,
+  GET_STUDENT_OUTREACHES,
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -21,11 +23,12 @@ import { isAdmin, isMedhavi, isSRM } from "../../common/commonFunctions";
 import OperationCreateform from "./OperationComponents/OperationCreateform";
 import UserTot from "./OperationComponents/UserTot";
 import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBulkcreate";
-import Dtesamarth from "./OperationComponents/Dtesamarth";
+// import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
+import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
-import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
+// import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
 import CollegePitchdata from "./OperationComponents/CollegePitchdata";
 import AllumuniBulkAdd from "./OperationComponents/AllumuniBulkAdd";
@@ -35,6 +38,7 @@ import UpskillSearchBar from "./OperationComponents/UpskillSearchBar";
 import TotSearchBar from "./OperationComponents/TotSearchBar";
 import CollegePitchSearch from "./OperationComponents/CollegePitchSearch";
 import AlumniSearchBar from "./OperationComponents/AlumniSearchBar";
+import EcosystemSearchBar from "./layout/EcosystemSearchBar";
 import {
   sortAscending,
   resetSearch,
@@ -46,6 +50,8 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateStudentOutreach,
+  bulkCreateEcosystem
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -54,12 +60,16 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
+import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
+import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -76,6 +86,9 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
+  {title:"Ecosystem", key:'ecosystem'},
+  {title:"Career Progression", key: "career_progression"},
+  { title: "Student Outreach", key: "studentOutreach" },
 ];
 
 const Styled = styled.div`
@@ -115,11 +128,13 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
     collegePitches: false,
     mentorship: false,
+    ecosystemData:false
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -127,11 +142,13 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
     collegePitches: {},
     mentorship: {},
+    ecosystemData:{}
   });
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
@@ -216,9 +233,54 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+      {
+        Header:'Gender',
+        accessor:'gender'
+      },
     ],
     []
   );
+
+  const columnsEcosystem = useMemo(() => [
+  {
+    Header: "Activity Type",
+    accessor: "activity_type",
+  },
+  {
+    Header: "Date of Activity",
+    accessor: "date_of_activity",
+    Cell: ({ value }) => value ? new Date(value).toLocaleDateString("en-IN") : "",
+  },
+  {
+    Header: "Type of Partner",
+    accessor: "type_of_partner",
+  },
+   {
+    Header: "Topic",
+    accessor: "topic",
+  },
+  {
+    Header: "Total Students Attended",
+    accessor: "attended_students",
+  },
+  {
+    Header: "Male Participants",
+    accessor: "male_participants",
+  },
+  {
+    Header: "Female Participants",
+    accessor: "female_participants",
+  },
+  {
+    Header: "Medha POC 1",
+    accessor: "medha_poc_1",
+  },
+  {
+    Header: "Medha POC 2",
+    accessor: "medha_poc_2",
+  },
+], []);
+
 
   
 
@@ -420,6 +482,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
+    console.log("variables", activeTab.key);
     if (activeTab.key === "my_data") {
       await resetSearch();
       await api
@@ -438,6 +501,40 @@ const Operations = ({
           setLoading(false);
           nProgress.done();
         });
+    }
+
+    if(activeTab.key === "ecosystem") {
+            await resetSearch();
+             variables.isactive = true;
+              delete variables.isActive;
+          await api
+        .post("/graphql", {
+          query: GET_ECOSYSTEM_DATA,
+          variables,
+        })
+        .then((data) => {
+          setOpts(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.values;
+            }
+            return [];
+          });
+          setoptsAggregate(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.aggregate;
+            }
+            return [];
+          });
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+
+
     }
     if (activeTab.key === "useTot") {
       await resetSearch();
@@ -463,6 +560,31 @@ const Operations = ({
         });
     }
 
+    if (activeTab.key === "studentOutreach") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_STUDENT_OUTREACHES,
+          variables,
+        })
+        .then((data) => {
+          setOpts(data.data.data.activeStudentOutreaches.values);
+          setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
+        })
+        .catch((error) => {
+          console.error(
+            "API Error:",
+            error.response ? error.response.data : error.message
+          );
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
 
     if (activeTab.key === "upskilling") {
       await resetSearch();
@@ -484,26 +606,26 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key === "dtesamarth") {
-      await resetSearch();
+    // if (activeTab.key === "dtesamarth") {
+    //   await resetSearch();
 
-      await api
-        .post("/graphql", {
-          query: GET_DTE_SAMARTH_SDITS,
-          variables,
-        })
-        .then((data) => {
-          setOpts(data.data.data.dteSamarthSditsConnection.values);
-          setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
-        })
-        .catch((error) => {
-          return Promise.reject(error);
-        })
-        .finally(() => {
-          setLoading(false);
-          nProgress.done();
-        });
-    }
+    //   await api
+    //     .post("/graphql", {
+    //       query: GET_DTE_SAMARTH_SDITS,
+    //       variables,
+    //     })
+    //     .then((data) => {
+    //       setOpts(data.data.data.dteSamarthSditsConnection.values);
+    //       setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
+    //     })
+    //     .catch((error) => {
+    //       return Promise.reject(error);
+    //     })
+    //     .finally(() => {
+    //       setLoading(false);
+    //       nProgress.done();
+    //     });
+    // }
     if (activeTab.key === "alumniQueries") {
       await resetSearch();
 
@@ -576,6 +698,7 @@ const Operations = ({
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
+      console.log("activeTab", activeTab);
       if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -610,6 +733,40 @@ const Operations = ({
           );
         }
       }
+      if (activeTab.key === "ecosystem") {
+        if (sortBy.length) {
+          let sortByField = "activity_type";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "activity_type":
+            case "date_of_activity":
+            case "type_of_partner":
+            case "topic":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "activity_type";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
       if (activeTab.key === "useTot") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -619,6 +776,42 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
+            case "age":
+            case "gender":
+              sortByField = sortBy[0].id;
+              break;
+
+            default:
+              sortByField = "user_name";
+              break;
+          }
+
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "studentOutreach") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "year_fy":
+            case "quarter":
+            case "month":
+            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -678,38 +871,38 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "dtesamarth") {
-        if (sortBy.length) {
-          let sortByField;
-          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "student_name":
-            case "institution_name":
-            case "course_name":
-              sortByField = sortBy[0].id;
-              break;
+      // if (activeTab.key == "dtesamarth") {
+      //   if (sortBy.length) {
+      //     let sortByField;
+      //     let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+      //     switch (sortBy[0].id) {
+      //       case "student_name":
+      //       case "institution_name":
+      //       case "course_name":
+      //         sortByField = sortBy[0].id;
+      //         break;
 
-            default:
-              break;
-          }
+      //       default:
+      //         break;
+      //     }
 
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        } else {
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex
-          );
-        }
-      }
+      //     getoperations(
+      //       activeStatus,
+      //       activeTab.key,
+      //       pageSize,
+      //       pageSize * pageIndex,
+      //       sortByField,
+      //       sortOrder
+      //     );
+      //   } else {
+      //     getoperations(
+      //       activeStatus,
+      //       activeTab.key,
+      //       pageSize,
+      //       pageSize * pageIndex
+      //     );
+      //   }
+      // }
       if (activeTab.key === "alumniQueries") {
         if (sortBy.length) {
           let sortByField;
@@ -800,7 +993,6 @@ const Operations = ({
     },
     [activeTab, activeStatus]
   );
-
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
   }, [activeTab.key, activeStatus]);
@@ -864,7 +1056,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -883,7 +1075,7 @@ const Operations = ({
         updatedby: userId,
         changes_in: { name: "N/A" },
       };
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateAlumniQueries(data)
         .then((data) => {
           setAlert("Alumni data created successfully.", "success");
@@ -902,7 +1094,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateCollegePitch(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -921,7 +1113,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateStudentsUpskillings(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -941,8 +1133,18 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
+    if (key == "studentOutreach") {
+      const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
           // history.push(`/student/${data.data.data.createStudent.student.id}`);
@@ -960,7 +1162,7 @@ const Operations = ({
         updatedby: userId,
         changes_in: newValues,
       };
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateMentorship(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -970,12 +1172,24 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key === "ecosystem") {
+      try {
+          await bulkCreateEcosystem(data)
+      }
+      catch (error) {
+        console.error("Error creating ecosystem data:", error);
+        setAlert("Unable to create ecosystem data.", "error");
+        return;
+      }
+    
+    }
 
     setModalShow(false);
     getoperations();
   };
 
   const showRowData = (key, data) => {
+    console.log('Data being set for', key, ':', data); // Add this line
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
   };
@@ -1100,7 +1314,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
       }
@@ -1112,13 +1326,30 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
           .then(() => {
             setAlert("data created successfully.", "success");
           })
           .catch((err) => {
             setAlert("Unable to create TOT data.", "error");
+          });
+      }
+      if (key === "mentorship") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Mentorship Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateMentorship(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
           });
       }
 
@@ -1130,7 +1361,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateCollegePitch(data)
           .then(() => {
             setAlert("data created successfully.", "success");
@@ -1147,7 +1378,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateStudentsUpskillings(data)
           .then(() => {
             setAlert("data created successfully.", "success");
@@ -1156,25 +1387,19 @@ const Operations = ({
             setAlert("Unable to create Mentorship data.", "error");
           });
       }
-      
-      if (key === "mentorship") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Mentorship Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        // await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateMentorship(data)
-          .then(() => {
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
             setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
           })
           .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
+            setAlert("Unable to create TOT data.", "error");
           });
       }
 
+
+     
       getoperations();
     } catch (err) {
       if (key === "my_data") {
@@ -1211,6 +1436,16 @@ const Operations = ({
         pitching: false,
       });
     }
+    if(activeTab.key ==="ecosystem") {
+      setUploadModal({  
+        myData: false,
+        tot: false,
+        mentorship: false,
+        upskill: false,
+        pitching: false,
+        ecosystem: true,
+      });
+    }
     if (activeTab.key == "useTot") {
       setUploadModal({
         tot: true,
@@ -1238,15 +1473,15 @@ const Operations = ({
         upskill: true,
       });
     }
-    // if (activeTab.key == "collegePitches") {
-    //   setUploadModal({
-    //     tot: false,
-    //     myData: false,
-    //     mentorship: false,
-    //     upskill: false,
-    //     pitching: true,
-    //   });
-    // }
+    if (activeTab.key == "collegePitches") {
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        pitching: true,
+      });
+    }
   };
 
   const SampleFile = () => {
@@ -1265,6 +1500,57 @@ const Operations = ({
         return ""; // Fallback in case the tab doesn't match
     }
   };
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy",
+        width: 120 // Fixed width in pixels
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter",
+        width: 80
+      },
+      {
+        Header: "Month",
+        accessor: "month",
+        width: 100
+      },
+      {
+        Header: "Category",
+        accessor: "category",
+        width: 200,
+        cell: ({ value }) => (
+          <div style={{
+            width: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {value}
+          </div>
+        )
+      },
+      {
+        Header: "State",
+        accessor: "state",
+        width: 120
+      },
+      {
+        Header: "Department",
+        accessor: "department",
+        width: 100
+      },
+      {
+        Header: "Students",
+        accessor: "students",
+        width: 100
+      },
+    ],
+    []
+  );
+ 
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1309,9 +1595,8 @@ const Operations = ({
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
-                  // activeTab.key == "collegePitches"
-                   ? (
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches" ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -1329,9 +1614,8 @@ const Operations = ({
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
-                  // activeTab.key == "collegePitches" 
-                  ? (
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
@@ -1388,7 +1672,45 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
+                  allDataCount={optsAggregate.count}
                 />
+              </>
+            ) : activeTab.key == "studentOutreach" ? (
+              <>
+                <StudentOutreachSearchBar />
+                <Table
+                  onRowClick={(data) =>
+                    showRowData("studentOutreachData", data)
+                  }
+                  columns={columnsStudentOutreach}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
+            ):activeTab.key === "ecosystem" ? (
+              <>
+                <EcosystemSearchBar />
+              <Table
+                  onRowClick={(data) => showRowData("ecosystemData", data)}
+                  columns={columnsEcosystem}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              
               </>
             ) : activeTab.key == "upskilling" ? (
               <>
@@ -1407,9 +1729,11 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) : activeTab.key == "dtesamarth" ? (
-              <></>
-            ) : activeTab.key == "alumniQueries" ? (
+            ) 
+            // : activeTab.key == "dtesamarth" ? (
+            //   <></>
+            // ) 
+            : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
                 <Table
@@ -1465,6 +1789,7 @@ const Operations = ({
             )}
           </div>
         </div>
+        { /* Modal for Create Operation Form */ }
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1483,6 +1808,14 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
+          ) : activeTab.key == "studentOutreach" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AddStudentOutreach
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
           ) : activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
@@ -1491,15 +1824,17 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
-          ) : activeTab.key == "dtesamarth" ? (
-            (isSRM() || isAdmin() || isMedhavi()) && (
-              <Dtesamarth
-                show={modalShow}
-                onHide={hideCreateModal}
-                ModalShow={() => setModalShow(false)}
-              />
-            )
-          ) : activeTab.key == "alumniQueries" ? (
+          ) 
+          // : activeTab.key == "dtesamarth" ? (
+          //   (isSRM() || isAdmin() || isMedhavi()) && (
+          //     <Dtesamarth
+          //       show={modalShow}
+          //       onHide={hideCreateModal}
+          //       ModalShow={() => setModalShow(false)}
+          //     />
+          //   )
+          // ) 
+          : activeTab.key == "alumniQueries" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <AllumuniBulkAdd
                 show={modalShow}
@@ -1521,7 +1856,13 @@ const Operations = ({
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : (
+          ) : activeTab.key === "ecosystem" ? (
+            <EcosystemBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ):(
             ""
           )}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1542,6 +1883,17 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
+          {
+           showModal.ecosystemData && (isSRM() || isAdmin() || isMedhavi()) && (
+            <EcosystemDataField
+            {...optsdata.ecosystemData}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("ecosystemData", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
+            />
+           )
+          }
           
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
@@ -1552,13 +1904,13 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
+          {/* {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Dtesamarthdatafield
               {...optsdata.sditdata}
               show={showModal.opsdata}
               onHide={() => hideShowModal("sditdata", false)}
             />
-          )}
+          )} */}
           {showModal.alumniQueriesdata &&
             (isSRM() || isAdmin() || isMedhavi()) && (
               <Alumuniqueriesdata
