@@ -345,22 +345,7 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
-        <td>
-          <Select
-            className="table-input h-2"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="college"
-            options={filteredColleges}
-            value={filteredColleges.find(option => option.value === collegeName) || null}
-            onChange={(e) => {
-              props.handleChange(e, "college", row.id)
-              setCollegeName(e.value);
-            }}
-            isDisabled={!selectedProjectName}
-          />
-        </td> 
+        
         <td>
           <Select
             className={`table-input ${
@@ -517,9 +502,38 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
         </td>
+        <td>
+           <Select
+            className={`table-input  h-2`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="New Entry"
+            options={certificateoptions}
+            onChange={(e) => props.handleChange(e, "new_entry", row.id)}
+          />
+        </td>
       </tr>
     </>
   );
 };
 
 export default UserTotRowdata;
+
+
+// // <td>
+//           <Select
+//             className="table-input h-2"
+//             classNamePrefix="select"
+//             isClearable={true}
+//             isSearchable={true}
+//             name="college"
+//             options={filteredColleges}
+//             value={filteredColleges.find(option => option.value === collegeName) || null}
+//             onChange={(e) => {
+//               props.handleChange(e, "college", row.id)
+//               setCollegeName(e.value);
+//             }}
+//             isDisabled={!selectedProjectName}
+//           />
+//         </td> 
