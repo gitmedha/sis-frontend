@@ -267,6 +267,30 @@ const ecosystemFields = `
   }
 `;
 
+const curriculumInterventionFields = `
+    id
+    module_created_for
+    module_developed_revised
+    start_date
+    end_date
+    module_name
+    govt_dept_partnered_with
+    medha_poc{
+        id
+        username
+    }
+    created_at
+    updated_at
+    CreatedBy {
+      id
+      username
+    }
+    UpdatedBy {
+      id
+      username
+    }
+    isactive
+`;
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -852,6 +876,77 @@ export const DEACTIVATE_ECOSYSTEM_ENTRY = `
     )
        {
       ecosystem {
+        isactive
+      }
+    } 
+  }
+`;
+
+export const GET_CURRICULUM_INTERVENTIONS = `
+    query GET_CURRICULUM_INTERVENTIONS($limit: Int, $start: Int, $sort: String) {
+        activeCurriculumInterventions: curriculaConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${curriculumInterventionFields}
+            },
+            aggregate {
+                count
+            },
+        }
+    }
+`;
+
+export const UPDATE_CURRICULUM_INTERVENTION = `
+  mutation UPDATE_CURRICULUM_INTERVENTION($data: editCurriculumInterventionInput!, $id: ID!) {
+    updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      curriculumIntervention {
+        id
+        module_created_for
+        module_developed_revised
+        start_date
+        end_date
+        module_name
+        govt_dept_partnered_with
+        medha_poc
+        created_at
+        updated_at
+        created_by { id username }
+        updated_by { id username }
+        isactive
+      }
+    }
+  }
+`;
+
+export const DELETE_CURRICULUM_INTERVENTION = `
+mutation DeleteCurriculumIntervention($id: ID!) {
+  deleteCurriculumIntervention(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`;
+
+export const DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY = `
+  mutation DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY($id: ID!, $data: editCurriculumInterventionInput!) {
+   updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      curriculumIntervention {
         isactive
       }
     } 

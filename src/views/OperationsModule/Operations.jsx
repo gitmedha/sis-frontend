@@ -12,7 +12,8 @@ import {
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
-  GET_ECOSYSTEM_DATA
+  GET_ECOSYSTEM_DATA,
+  GET_CURRICULUM_INTERVENTIONS
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -48,7 +49,8 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
-  bulkCreateEcosystem
+  bulkCreateEcosystem,
+  bulkCreateCurriculumIntervention
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -65,6 +67,9 @@ import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
+import CurriculumInterventionSearchBar from "./SaModule/CurriculumIntervention/CurriculumInterventionSearchBar";
+import CurriculumInterventionDataField from "./SaModule/CurriculumIntervention/CurriculumInterventionDataField";
+import CurriculumInterventionBulkAdd from "./SaModule/CurriculumIntervention/CurriculumInterventionBulkAdd";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -81,7 +86,8 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  {title:"Ecosystem", key:'ecosystem'}
+  { title: "Ecosystem", key: "ecosystem" },
+  { title: "Curriculum Intervention", key: "curriculumIntervention" }
 ];
 
 const Styled = styled.div`
@@ -453,6 +459,20 @@ const Operations = ({
     ],
     []
   );
+  const columnsCurriculumIntervention = useMemo(() => [
+    { Header: "Module Created For", accessor: "module_created_for" },
+    { Header: "Module Developed / Revised", accessor: "module_developed_revised" },
+    { Header: "Start Date", accessor: "start_date" },
+    { Header: "End Date", accessor: "end_date" },
+    { Header: "Module Name", accessor: "module_name" },
+    { Header: "Govt. Department Partnered With", accessor: "govt_dept_partnered_with" },
+    { Header: "Medha POC", accessor: "medha_poc.username" },
+    { Header: "Assigned To", accessor: "assigned_to.username" },
+    { Header: "Created At", accessor: "created_at" },
+    { Header: "Updated At", accessor: "updated_at" },
+    { Header: "Created By", accessor: "created_by.username" },
+    { Header: "Updated By", accessor: "updated_by.username" },
+  ], []);
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -650,6 +670,38 @@ const Operations = ({
           nProgress.done();
         });
     }
+    if (activeTab.key === "curriculumIntervention") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_CURRICULUM_INTERVENTIONS,
+          variables,
+        })
+        .then((data) => {
+          console.log(data?.data?.data?.activeCurriculumInterventions.values)
+          setOpts(() => {
+            if (data?.data?.data?.activeCurriculumInterventions) {
+              return data.data.data.activeCurriculumInterventions.values;
+            }
+            return [];
+          });
+          // setoptsAggregate(() => {
+          //   if (data?.data?.data?.activeCurriculumInterventions) {
+          //     return data.data.data.activeCurriculumInterventions.aggregate;
+          //   }
+          //   return [];
+          // });
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {
@@ -780,6 +832,37 @@ const Operations = ({
               break;
           }
 
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "curriculumIntervention") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "module_name":
+            case "govt_dept_partnered_with":
+            case "medha_poc":
+              sortByField = sortBy[0].id;
+              break;
+            default:
+              sortByField = "module_name";
+              break;
+          }
           getoperations(
             activeStatus,
             activeTab.key,
@@ -1099,6 +1182,16 @@ const Operations = ({
       }
     
     }
+   
+    if (key === "curriculum") {
+      try{
+        await bulkCreateCurriculumIntervention(data)
+      }catch(error){
+        console.error("Error creating curriculum intervention data:", error);
+        setAlert("Unable to create curriculum intervention data.", "error");
+        return;
+      }
+    }
 
     setModalShow(false);
     getoperations();
@@ -1107,6 +1200,10 @@ const Operations = ({
   const showRowData = (key, data) => {
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
+    if (key === "curriculumInterventionData") {
+      setShowModal({ ...showModal, curriculumInterventionData: true });
+      setOptsdata({ ...optsdata, curriculumInterventionData: data });
+    }
   };
 
   const arrangeRows = async (startFrom) => {
@@ -1377,6 +1474,26 @@ const Operations = ({
         upskill: true,
       });
     }
+    if (activeTab.key === "ecosystem") {
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        pitching: false,
+        ecosystem: true,
+      });
+    }
+    if (activeTab.key === "curriculumIntervention") {
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        pitching: false,
+        curriculumIntervention: true,
+      });
+    }
     // if (activeTab.key == "collegePitches") {
     //   setUploadModal({
     //     tot: false,
@@ -1448,7 +1565,9 @@ const Operations = ({
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
+                  activeTab.key == "upskilling" ||
+                  activeTab.key === "ecosystem" ||
+                  activeTab.key === "curriculumIntervention"
                   // activeTab.key == "collegePitches"
                    ? (
                     <button
@@ -1617,6 +1736,21 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ) : activeTab.key === "curriculumIntervention" ? (
+              <>
+                <CurriculumInterventionSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
+                  columns={columnsCurriculumIntervention}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
             ) : (
               ""
             )}
@@ -1685,6 +1819,13 @@ const Operations = ({
             show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
+            />
+          ) : activeTab.key === "curriculumIntervention" ? (
+            <CurriculumInterventionBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+              refreshTableOnDataSaving={refreshTableOnDataSaving}
             />
           ):(
             ""
@@ -1765,7 +1906,15 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-
+          {showModal.curriculumInterventionData && (
+            <CurriculumInterventionDataField
+              {...optsdata.curriculumInterventionData}
+              show={showModal.curriculumInterventionData}
+              onHide={() => setShowModal({ ...showModal, curriculumInterventionData: false })}
+              refreshTableOnDataSaving={refreshTableOnDataSaving}
+              refreshTableOnDeleting={refreshTableOnDeleting}
+            />
+          )}
           {uploadModal.myData && (
             <>
               <UploadFile

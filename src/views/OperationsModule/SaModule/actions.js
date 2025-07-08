@@ -1,7 +1,12 @@
 import {
   DELETE_ECOSYSTEM,
   UPDATE_ECOSYSTEM,
-  DEACTIVATE_ECOSYSTEM_ENTRY
+  DEACTIVATE_ECOSYSTEM_ENTRY,
+  // Curriculum Intervention operations
+  GET_CURRICULUM_INTERVENTIONS,
+  UPDATE_CURRICULUM_INTERVENTION,
+  DELETE_CURRICULUM_INTERVENTION,
+  DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY
 } from '../../../graphql/operations';
 import api from '../../../apis'
 
@@ -57,6 +62,53 @@ export const deleteEcosystemEntry = async (id) => {
     });
 
     return response.data.data.deleteEcosystem.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+// Curriculum Intervention actions
+export const deactivateCurriculumInterventionEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY,
+      variables: {
+        id,
+        data: {
+          isactive: false
+        }
+      }
+    });
+    return response.data.data.updateCurriculumIntervention;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updateCurriculumInterventionEntry = async (id, data) => {
+  try{
+    const response = await api.post('/graphql', {
+      query:UPDATE_CURRICULUM_INTERVENTION,
+       variables: {
+        id,
+        data,
+      }
+    })
+    return response.data.data.updateCurriculumIntervention;
+  }catch(err){
+    return Promise.reject(err)
+  }
+}
+
+export const deleteCurriculumInterventionEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query:DELETE_CURRICULUM_INTERVENTION,
+      variables: {
+        id,
+      },
+    });
+    return response.data.data.deleteCurriculumIntervention.data;
   } catch (error) {
     return Promise.reject(error);
   }
