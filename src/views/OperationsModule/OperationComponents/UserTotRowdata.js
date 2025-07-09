@@ -11,7 +11,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
-import { getTotPickList } from "./operationsActions";
+import { getTotPickList,getCollegesByProjectName } from "./operationsActions";
 
 
 const projecttypeoptions = [
@@ -26,7 +26,6 @@ const certificateoptions = [
 
 const UserTotRowdata = (props) => {
   const [selectedState, setSelectedState] = useState(null);
-  const [selectedProjectName, setSelectedProjectName] = useState(null);
 
   const stateWiseProjects = {
   "Uttarakhand": [
@@ -56,7 +55,7 @@ const getProjectOptions = (state) => {
 
 const getDepartmentOptions = (state,selectedProjectName) => {
   return stateWiseProjects[state]
-    .filter(proj => proj.value === selectedProjectName)
+    .filter(proj => proj.value === selectedProjectName?.value)
     .map((proj) => ({
       value: proj.department,
       label: proj.department,
@@ -103,6 +102,10 @@ const getDepartmentOptions = (state,selectedProjectName) => {
   const college =useRef(null)
 
   const [state,setstate]=useState(true)
+  const [filteredColleges, setFilteredColleges] = useState([]);
+  const [collegeName, setCollegeName] = useState("");
+  const [selectedProjectName,setSelectedProjectName] = useState(null);
+ 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -208,6 +211,41 @@ const getDepartmentOptions = (state,selectedProjectName) => {
       .join(' ');
   };
 
+  const handleProjectChange = async (selectedOption, rowId) => {
+    console.log("selectedOption",selectedOption);
+    props.handleChange(selectedOption, "project_name", rowId);
+    setSelectedProjectName(selectedOption);
+    
+    if (selectedOption && selectedOption.value && selectedState) {
+      try {
+        // Fetch colleges filtered by both state and project name
+        const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
+        setFilteredColleges(colleges);
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+        setFilteredColleges([]);
+      }
+    } else {
+      setFilteredColleges([]);
+      props.updateRow(rowId, "college", ""); 
+    }
+  };
+
+  const handleStateChange = (e, rowId) => {
+    if(['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
+      setSelectedState(e.value);
+      // Reset project and college when state changes
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      props.updateRow(rowId, "project_name", "");
+      props.updateRow(rowId, "college", "");
+    } else {
+      setSelectedState(null);
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      onStateChange(e, rowId, "state");
+    }
+  };
   return (
     <>
       <tr key={row.id}>
@@ -275,17 +313,7 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => {
-
-              if(['Uttarakhand', 'Haryana','Uttar Pradesh','Bihar'].includes(e.value)){
-                setSelectedState(e.value);
-              }
-              else {
-              setSelectedState(null);
-              onStateChange(e, row.id, "state")
-            }
-              
-            }}
+            onChange={(e) => handleStateChange(e, row.id)}
           />
         </td>
         <td>
@@ -313,15 +341,22 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             onChange={(e) => handleInputChange(row.id, "designation",designation)}
           />
         </td>
-        {/* <td>
-          <input
+        <td>
+          <Select
             className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            ref={college}
-            onChange={(e) => handleInputChange(row.id, "college",college)}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id)
+              setCollegeName(e.value);
+            }}
+            isDisabled={!selectedProjectName}
           />
-        </td> */}
+        </td> 
         <td>
           <Select
             className={`table-input ${
@@ -353,13 +388,8 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             isClearable={true}
             isSearchable={true}
             name="project_name"
-            options={selectedState ?getProjectOptions(selectedState): projectName}
-            onChange={(e) => {
-              if(selectedState){
-                setSelectedProjectName(e.value);
-              }
-              props.handleChange(e, "project_name", row.id)
-            }}
+            options={['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState) ? getProjectOptions(selectedState) :  projectName}
+            onChange={(e) => handleProjectChange(e, row.id)}
           />
         </td>
         <td>
@@ -373,7 +403,7 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             isClearable={true}
             isSearchable={true}
             name="partner_dept"
-            options={selectedState ? getDepartmentOptions(selectedState,selectedProjectName):partnerDept}
+            options={['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState) ? getDepartmentOptions(selectedState,selectedProjectName):partnerDept}
             onChange={(e) =>  props.handleChange(e, "partner_dept", row.id)}
           />
         </td>
