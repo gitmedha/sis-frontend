@@ -240,9 +240,9 @@ const Operations = ({
         accessor: "end_date",
       },
       {
-        Header:'Gender',
-        accessor:'gender'
-      },
+        Header:"Gender",
+        accessor:"gender"
+      }
     ],
     []
   );
@@ -828,42 +828,7 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
-            case "age":
             case "gender":
-              sortByField = sortBy[0].id;
-              break;
-
-            default:
-              sortByField = "user_name";
-              break;
-          }
-
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        } else {
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex
-          );
-        }
-      }
-      if (activeTab.key === "studentOutreach") {
-        if (sortBy.length) {
-          let sortByField = "full_name";
-          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "year_fy":
-            case "quarter":
-            case "month":
-            case "category":
               sortByField = sortBy[0].id;
               break;
 
@@ -1365,7 +1330,6 @@ const Operations = ({
           }
           startFrom++;
         }
-
         setSearchedData(filteredArray);
       }
     },
@@ -1773,7 +1737,7 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
-                  allDataCount={optsAggregate.count}
+                  // allDataCount={optsAggregate.count}
                 />
               </>
             ) : activeTab.key == "studentOutreach" ? (
@@ -1916,23 +1880,18 @@ const Operations = ({
               />
             )
           ) : // useTot  ---upskilling ---dtesamarth
-          activeTab.key == "useTot" ? (
-            (isSRM() || isAdmin() || isMedhavi()) && (
-              <UserTot
-                show={modalShow}
-                onHide={hideCreateModal}
-                ModalShow={() => setModalShow(false)}
-              />
-            )
-          ) : activeTab.key == "studentOutreach" ? (
-            (isSRM() || isAdmin() || isMedhavi()) && (
-              <AddStudentOutreach
-                show={modalShow}
-                onHide={hideCreateModal}
-                ModalShow={() => setModalShow(false)}
-              />
-            )
-          ) : activeTab.key == "upskilling" ? (
+          
+          // activeTab.key == "useTot" ? (
+          //   (isSRM() || isAdmin() || isMedhavi()) && (
+          //     <UserTot
+          //       show={modalShow}
+          //       onHide={hideCreateModal}
+          //       ModalShow={() => setModalShow(false)}
+          //     />
+          //   )
+          // ) 
+          // : 
+          activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
                 show={modalShow}
