@@ -190,9 +190,10 @@ function StudentsSearchBar({
   };
 
   useEffect(() => {
+    let interval;
     const setSearchValueDropDown = async () => {
       try {
-        const interval = setInterval(() => {
+        interval = setInterval(() => {
           // Simulate progress update
           setProgress((prevProgress) =>
             prevProgress >= 90 ? 0 : prevProgress + 5
@@ -225,6 +226,9 @@ function StudentsSearchBar({
       setDisbaled(false);
       setSearchValueDropDown();
     }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [selectedSearchField]);
 
   const filteredStudentsOptions =

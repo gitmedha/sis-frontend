@@ -196,7 +196,7 @@ const Totdatafield = (props) => {
                     label="Trainer 2"
                     value={props.trainer_2?.username}
                   />
-                  <DetailField label="New Entry" value={props?.new_entry} />
+                  <DetailField label="New Entry" value={props?.new_entry ?"Yes":"No"} />
                   <DetailField
                     Bold={""}
                     label="End Date"

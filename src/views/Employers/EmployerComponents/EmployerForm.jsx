@@ -380,7 +380,8 @@ const EmployerForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
-    medha_partner:""
+    medha_partner:"",
+    outsourced:"",
   };
 
   if (props.id) {
@@ -546,6 +547,26 @@ const EmployerForm = (props) => {
                         label="Email"
                         control="input"
                         placeholder="Email"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="outsourced"
+                        label="Outsourced"
+                        control="lookup"
+                        options={[{
+                          key:0,
+                          label:'System Adoption',
+                          value:'System Adoption'
+                        },
+                      {
+                          key:1,
+                          label:'Core Programs',
+                          value:'Core Programs'
+                      }]}
                         className="form-control"
                         required
                       />

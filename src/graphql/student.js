@@ -198,6 +198,25 @@ const employmentConnectionFields = `
     }
   }
 `;
+const medhaviMembershipFields = `
+        id
+        medhavi_member
+        medhavi_member_id
+        membership_fee
+        date_of_payment
+        date_of_avail
+        date_of_settlement
+        receipt_number
+        tenure_completion_date
+        membership_status
+        reason_for_cancellation
+        assigned_to {
+          id
+          username
+        }
+        created_at
+        updated_at
+`;
 
 export const GET_STUDENTS = `
   query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String) {
@@ -749,3 +768,74 @@ query GET_STUDENT_ALUMNI_SERVICES_RANGE($id: Int, $startDate: String, $limit: In
 }
 `;
 
+export const GET_STUDENT_MEDHAVI_MEMBERSHIPS = `
+query GET_STUDENT_MEDHAVI_MEMBERSHIPS ($stdID: String, $limit: Int, $start: Int, $sort: String){
+  medhaviMembershipsConnection  (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      studentID: {
+        id: $stdID
+      }
+    }
+  ) {
+    values {
+      ${medhaviMembershipFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const CREATE_MEDHAVI_MEMBERSHIP = `
+  mutation CREATE_MEDHAVI_MEMBERSHIP (
+    $data: MedhaviMembershipInput!
+  ) {
+    createMedhaviMembership (
+      input: {
+        data: $data
+      }
+    ) {
+      medhaviMembership {
+        ${medhaviMembershipFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_MEDHAVI_MEMBERSHIP = `
+  mutation UPDATE_MEDHAVI_MEMBERSHIP (
+    $data: editMedhaviMembershipInput!
+    $id: ID!
+  ) {
+    updateMedhaviMembership(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      medhaviMembership {
+        ${medhaviMembershipFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_MEDHAVI_MEMBERSHIP = `
+  mutation DELETE_MEDHAVI_MEMBERSHIP(
+    $id: ID!
+  ) {
+    deleteMedhaviMembership (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      medhaviMembership {
+        id
+      }
+    }
+  }
+`;
