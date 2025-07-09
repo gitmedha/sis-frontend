@@ -26,6 +26,7 @@ const certificateoptions = [
 
 const UserTotRowdata = (props) => {
   const [selectedState, setSelectedState] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
 
   const stateWiseProjects = {
   "Uttarakhand": [
@@ -104,7 +105,6 @@ const getDepartmentOptions = (state,selectedProjectName) => {
   const [state,setstate]=useState(true)
   const [filteredColleges, setFilteredColleges] = useState([]);
   const [collegeName, setCollegeName] = useState("");
-  const [selectedProjectName,setSelectedProjectName] = useState(null);
  
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -212,9 +212,7 @@ const getDepartmentOptions = (state,selectedProjectName) => {
   };
 
   const handleProjectChange = async (selectedOption, rowId) => {
-    console.log("selectedOption",selectedOption);
     props.handleChange(selectedOption, "project_name", rowId);
-    setSelectedProjectName(selectedOption);
     
     if (selectedOption && selectedOption.value && selectedState) {
       try {
@@ -513,9 +511,21 @@ const getDepartmentOptions = (state,selectedProjectName) => {
             onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
         </td>
+        <td>
+           <Select
+            className={`table-input  h-2`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="New Entry"
+            options={certificateoptions}
+            onChange={(e) => props.handleChange(e, "new_entry", row.id)}
+          />
+        </td>
       </tr>
     </>
   );
 };
 
 export default UserTotRowdata;
+

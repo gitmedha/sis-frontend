@@ -604,6 +604,26 @@ export const bulkCreateAlumniQueries = async (data) => {
   }
 };
 
+export const bulkCreateEcosystem = async (data) => {
+  try {   
+    const response = await api.post(
+      "/ecosystems/create-bulk-ecosystem",
+      data
+    );    
+return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+export const bulkCreateCurriculumIntervention = async (data) => {
+  try {
+    const response = await api.post('/curricula/bulk-create', data);
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+
 export const deactivate_user_ops = async (id) => {
   let data = { isactive: false };
 
@@ -940,3 +960,21 @@ export const getCollegesByProjectName = async (projectName) => {
     throw error;
   }
 }
+
+export const searchCurriculumInterventions = async (searchParams) => {
+  try {
+    const response = await api.post('/curriculum-interventions/search-ops', searchParams);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCurriculumInterventionFieldValues = async (field) => {
+  try {
+    const response = await api.get(`/curriculum-interventions/distinct/${field}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

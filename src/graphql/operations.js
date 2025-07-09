@@ -275,6 +275,7 @@ updatedby {
 `
 
 const ecosystemFields = `
+    id
   activity_type
   date_of_activity
   topic
@@ -284,7 +285,7 @@ const ecosystemFields = `
   attended_students
   male_participants
   female_participants
-  medha_poc_1
+  medha_poc_1 
   medha_poc_2
   created_at
   updated_at
@@ -296,6 +297,30 @@ const ecosystemFields = `
   }
 `;
 
+const curriculumInterventionFields = `
+    id
+    module_created_for
+    module_developed_revised
+    start_date
+    end_date
+    module_name
+    govt_dept_partnered_with
+    medha_poc{
+        id
+        username
+    }
+    created_at
+    updated_at
+    CreatedBy {
+      id
+      username
+    }
+    UpdatedBy {
+      id
+      username
+    }
+    isactive
+`;
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -895,7 +920,8 @@ export const SEARCH_BY_PROGRAMS = `
       }
     }
   }
-`
+`;
+
 
 export const GET_COLLEGES_BY_PROJECT_NAME = `
   query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
@@ -919,3 +945,156 @@ export const GET_COLLEGES_BY_PROJECT_NAME = `
   }
 }
 `;
+export const GET_STUDENT_OUTREACHES = `
+  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
+    allStudentOutreaches: studentOutreachesConnection {
+      aggregate {
+        count
+      }
+    }
+ 
+    activeStudentOutreaches: studentOutreachesConnection(
+      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
+      start: $start,     # Pagination offset (e.g., 20)
+      limit: $limit,     # Number of records per page (e.g., 10)
+      where: { isactive: true }
+    ) {
+      values {
+        ${studentOutreachesFields}
+      },
+      aggregate {
+        count # Total count of active records
+      },
+    }
+  }
+`;
+ 
+
+export const UPDATE_ECOSYSTEM = `
+  mutation UPDATE_ECOSYSTEM($data: editEcosystemInput!, $id: ID!) {
+    updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      ecosystem {
+        id
+        activity_type
+        date_of_activity
+        topic
+        govt_dept_partner_with
+        type_of_partner
+        employer_name_external_party_ngo_partner_with
+        attended_students
+        male_participants
+        female_participants
+        medha_poc_1
+        medha_poc_2
+        isactive
+        UpdatedBy {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+
+export const DELETE_ECOSYSTEM = `
+mutation DeleteEcosystem($id: ID!) {
+  deleteEcosystem(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`
+export const DEACTIVATE_ECOSYSTEM_ENTRY = `
+  mutation DEACTIVATE_ECOSYSTEM_ENTRY($id: ID!, $data: editEcosystemInput!) {
+   updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      ecosystem {
+        isactive
+      }
+    } 
+  }
+`;
+
+export const GET_CURRICULUM_INTERVENTIONS = `
+    query GET_CURRICULUM_INTERVENTIONS($limit: Int, $start: Int, $sort: String) {
+        activeCurriculumInterventions: curriculaConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${curriculumInterventionFields}
+            },
+            aggregate {
+                count
+            },
+        }
+    }
+`;
+
+export const UPDATE_CURRICULUM_INTERVENTION = `
+  mutation UPDATE_CURRICULUM_INTERVENTION($data: editCurriculumInterventionInput!, $id: ID!) {
+    updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      curriculumIntervention {
+        id
+        module_created_for
+        module_developed_revised
+        start_date
+        end_date
+        module_name
+        govt_dept_partnered_with
+        medha_poc
+        created_at
+        updated_at
+        created_by { id username }
+        updated_by { id username }
+        isactive
+      }
+    }
+  }
+`;
+
+export const DELETE_CURRICULUM_INTERVENTION = `
+mutation DeleteCurriculumIntervention($id: ID!) {
+  deleteCurriculumIntervention(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`;
+
+export const DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY = `
+  mutation DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY($id: ID!, $data: editCurriculumInterventionInput!) {
+   updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      curriculumIntervention {
+        isactive
+      }
+    } 
+  }
+`;
+

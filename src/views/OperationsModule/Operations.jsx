@@ -7,13 +7,14 @@ import { useHistory } from "react-router-dom";
 import {
   GET_ALUMNI_QUERIES,
   GET_COLLEGE_PITCHES,
-  GET_DTE_SAMARTH_SDITS,
+  // GET_DTE_SAMARTH_SDITS,
   GET_MENTORSHIP,
   GET_OPERATIONS,
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
   GET_ECOSYSTEM_DATA,
   GET_STUDENT_OUTREACHES,
+  GET_CURRICULUM_INTERVENTIONS
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
 import Table from "../../components/content/Table";
@@ -50,7 +51,9 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
-  bulkCreateStudentOutreach
+  bulkCreateStudentOutreach,
+  bulkCreateEcosystem,
+  bulkCreateCurriculumIntervention
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -60,6 +63,7 @@ import MentorshipdataField from "./OperationComponents/Mentorship/Mentorshipdata
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
 import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
+import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
 import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
@@ -68,6 +72,9 @@ import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
 import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
+import CurriculumInterventionSearchBar from "./SaModule/CurriculumIntervention/CurriculumInterventionSearchBar";
+import CurriculumInterventionDataField from "./SaModule/CurriculumIntervention/CurriculumInterventionDataField";
+import CurriculumInterventionBulkAdd from "./SaModule/CurriculumIntervention/CurriculumInterventionBulkAdd";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -87,6 +94,7 @@ const tabPickerOptions3 = [
   {title:"Ecosystem", key:'ecosystem'},
   {title:"Career Progression", key: "career_progression"},
   { title: "Student Outreach", key: "studentOutreach" },
+  { title: "Curriculum Intervention", key: "curriculumIntervention" }
 ];
 
 const Styled = styled.div`
@@ -464,6 +472,20 @@ const Operations = ({
     ],
     []
   );
+  const columnsCurriculumIntervention = useMemo(() => [
+    { Header: "Module Created For", accessor: "module_created_for" },
+    { Header: "Module Developed / Revised", accessor: "module_developed_revised" },
+    { Header: "Start Date", accessor: "start_date" },
+    { Header: "End Date", accessor: "end_date" },
+    { Header: "Module Name", accessor: "module_name" },
+    { Header: "Govt. Department Partnered With", accessor: "govt_dept_partnered_with" },
+    { Header: "Medha POC", accessor: "medha_poc.username" },
+    { Header: "Assigned To", accessor: "assigned_to.username" },
+    { Header: "Created At", accessor: "created_at" },
+    { Header: "Updated At", accessor: "updated_at" },
+    { Header: "Created By", accessor: "created_by.username" },
+    { Header: "Updated By", accessor: "updated_by.username" },
+  ], []);
   const getoperations = async (
     status = "All",
     selectedTab,
@@ -511,9 +533,18 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log("data",data)
-          setOpts(data.data.data.activeEcosystemData.values);
-          setoptsAggregate(data.data.data.activeEcosystemData.aggregate);
+          setOpts(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.values;
+            }
+            return [];
+          });
+          setoptsAggregate(()=>{
+            if(data?.data?.data?.activeEcosystemData) {
+              return data.data.data.activeEcosystemData.aggregate;
+            }
+            return [];
+          });
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -668,6 +699,38 @@ const Operations = ({
         .then((data) => {
           setOpts(data.data.data.activeMentoshipData.values);
           setoptsAggregate(data.data.data.activeMentoshipData.aggregate);
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
+    if (activeTab.key === "curriculumIntervention") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_CURRICULUM_INTERVENTIONS,
+          variables,
+        })
+        .then((data) => {
+          console.log(data?.data?.data?.activeCurriculumInterventions.values)
+          setOpts(() => {
+            if (data?.data?.data?.activeCurriculumInterventions) {
+              return data.data.data.activeCurriculumInterventions.values;
+            }
+            return [];
+          });
+          // setoptsAggregate(() => {
+          //   if (data?.data?.data?.activeCurriculumInterventions) {
+          //     return data.data.data.activeCurriculumInterventions.aggregate;
+          //   }
+          //   return [];
+          // });
         })
         .catch((error) => {
           return Promise.reject(error);
@@ -860,16 +923,47 @@ const Operations = ({
           );
         }
       }
+      if (activeTab.key === "curriculumIntervention") {
+        if (sortBy.length) {
+          let sortByField = "full_name";
+          let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "module_name":
+            case "govt_dept_partnered_with":
+            case "medha_poc":
+              sortByField = sortBy[0].id;
+              break;
+            default:
+              sortByField = "module_name";
+              break;
+          }
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
       // if (activeTab.key == "dtesamarth") {
-      //   if (sortBy.length) {
-      //     let sortByField;
-      //     let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-      //     switch (sortBy[0].id) {
-      //       case "student_name":
-      //       case "institution_name":
-      //       case "course_name":
-      //         sortByField = sortBy[0].id;
-      //         break;
+        // if (sortBy.length) {
+        //   let sortByField;
+        //   let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
+        //   switch (sortBy[0].id) {
+        //     case "student_name":
+        //     case "institution_name":
+        //     case "course_name":
+        //       sortByField = sortBy[0].id;
+        //       break;
 
       //       default:
       //         break;
@@ -1161,6 +1255,27 @@ const Operations = ({
           setAlert("Unable to create upskilling data.", "error");
         });
     }
+    if (key === "ecosystem") {
+      try {
+          await bulkCreateEcosystem(data)
+      }
+      catch (error) {
+        console.error("Error creating ecosystem data:", error);
+        setAlert("Unable to create ecosystem data.", "error");
+        return;
+      }
+    
+    }
+   
+    if (key === "curriculum") {
+      try{
+        await bulkCreateCurriculumIntervention(data)
+      }catch(error){
+        console.error("Error creating curriculum intervention data:", error);
+        setAlert("Unable to create curriculum intervention data.", "error");
+        return;
+      }
+    }
 
     setModalShow(false);
     getoperations();
@@ -1170,6 +1285,10 @@ const Operations = ({
     console.log('Data being set for', key, ':', data); // Add this line
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
+    if (key === "curriculumInterventionData") {
+      setShowModal({ ...showModal, curriculumInterventionData: true });
+      setOptsdata({ ...optsdata, curriculumInterventionData: data });
+    }
   };
 
   const arrangeRows = async (startFrom) => {
@@ -1478,6 +1597,57 @@ const Operations = ({
         return ""; // Fallback in case the tab doesn't match
     }
   };
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy",
+        width: 120 // Fixed width in pixels
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter",
+        width: 80
+      },
+      {
+        Header: "Month",
+        accessor: "month",
+        width: 100
+      },
+      {
+        Header: "Category",
+        accessor: "category",
+        width: 200,
+        cell: ({ value }) => (
+          <div style={{
+            width: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {value}
+          </div>
+        )
+      },
+      {
+        Header: "State",
+        accessor: "state",
+        width: 120
+      },
+      {
+        Header: "Department",
+        accessor: "department",
+        width: 100
+      },
+      {
+        Header: "Students",
+        accessor: "students",
+        width: 100
+      },
+    ],
+    []
+  );
+ 
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1523,7 +1693,11 @@ const Operations = ({
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
-                  activeTab.key == "collegePitches" ? (
+                  // activeTab.key == "collegePitches" ||
+                  activeTab.key === "ecosystem" ||
+                  activeTab.key === "curriculumIntervention"
+                  // activeTab.key == "collegePitches"
+                   ? (
                     <button
                       className="btn btn-primary ops_action_button"
                       onClick={() => {
@@ -1657,11 +1831,10 @@ const Operations = ({
                 />
               </>
             ) 
-            : 
-            // activeTab.key == "dtesamarth" ? (
+            // : activeTab.key == "dtesamarth" ? (
             //   <></>
-            // ) : 
-            activeTab.key == "alumniQueries" ? (
+            // ) 
+            : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
                 <Table
@@ -1712,11 +1885,27 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
+            ) : activeTab.key === "curriculumIntervention" ? (
+              <>
+                <CurriculumInterventionSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
+                  columns={columnsCurriculumIntervention}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
             ) : (
               ""
             )}
           </div>
         </div>
+        { /* Modal for Create Operation Form */ }
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           {activeTab.key == "my_data" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1762,7 +1951,6 @@ const Operations = ({
           //     />
           //   )
           // ) 
-          
           : activeTab.key == "alumniQueries" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <AllumuniBulkAdd
@@ -1785,7 +1973,20 @@ const Operations = ({
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
-          ) : (
+          ) : activeTab.key === "ecosystem" ? (
+            <EcosystemBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+            />
+          ) : activeTab.key === "curriculumIntervention" ? (
+            <CurriculumInterventionBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+              refreshTableOnDataSaving={refreshTableOnDataSaving}
+            />
+          ):(
             ""
           )}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
@@ -1863,7 +2064,15 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-
+          {showModal.curriculumInterventionData && (
+            <CurriculumInterventionDataField
+              {...optsdata.curriculumInterventionData}
+              show={showModal.curriculumInterventionData}
+              onHide={() => setShowModal({ ...showModal, curriculumInterventionData: false })}
+              refreshTableOnDataSaving={refreshTableOnDataSaving}
+              refreshTableOnDeleting={refreshTableOnDeleting}
+            />
+          )}
           {uploadModal.myData && (
             <>
               <UploadFile

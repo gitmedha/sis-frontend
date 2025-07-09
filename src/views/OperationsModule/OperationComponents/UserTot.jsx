@@ -38,7 +38,8 @@ const UserTot = (props) => {
       start_date:"",
       end_date:"",
       email:"",
-      institution: ""
+      institution: "",
+      new_entry:""
     },
     // Add more initial rows as needed
   ]);
@@ -63,6 +64,7 @@ const UserTot = (props) => {
       start_date:"",
       end_date:"",
       email:"",
+      new_entry:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -84,7 +86,8 @@ const UserTot = (props) => {
     designation: "",
     start_date:"",
     end_date:"",
-    email:""
+    email:"",
+    new_entry:""
   });
   // 
   const [showLimit, setshowLimit] = useState(false);
@@ -459,7 +462,7 @@ const UserTot = (props) => {
                   <th>Trainer 2 </th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
-                  {/* <th>New Entry</th> */}
+                  <th>New Entry</th>
                 </tr>
               </thead>
               <tbody>

@@ -102,7 +102,7 @@ const EcosystemEdit = (props) => {
       govt_dept_partner_with: props.govt_dept_partner_with || "",
       type_of_partner: props.type_of_partner || "",
       employer_name_external_party_ngo_partner_with: 
-        props.employer_name_external_party_ngo_partner_with || "",
+      props.employer_name_external_party_ngo_partner_with || "",
       attended_students: props.attended_students || "",
       male_participants: props.male_participants || "",
       female_participants: props.female_participants || "",
