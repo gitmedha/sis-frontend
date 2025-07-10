@@ -172,7 +172,10 @@ const Operations = ({
     mentorship: false,
     upskill: false,
     pitching: false,
+    ecosystem: false,
+    curriculumIntervention: false,
   });
+  // console.log("uploadModal",uploadModal);
   const userId = localStorage.getItem("user_id");
 
   const columns = useMemo(
@@ -279,11 +282,11 @@ const Operations = ({
   },
   {
     Header: "Medha POC 1",
-    accessor: "medha_poc_1",
+    accessor: "medha_poc_1.username",
   },
   {
     Header: "Medha POC 2",
-    accessor: "medha_poc_2",
+    accessor: "medha_poc_2.username",
   },
 ], []);
 
@@ -502,7 +505,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
-    console.log("variables", activeTab.key);
+   
     if (activeTab.key === "my_data") {
       await resetSearch();
       await api
@@ -718,7 +721,7 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data?.data?.data?.activeCurriculumInterventions.values)
+          // console.log(data?.data?.data?.activeCurriculumInterventions.values)
           setOpts(() => {
             if (data?.data?.data?.activeCurriculumInterventions) {
               return data.data.data.activeCurriculumInterventions.values;
@@ -750,7 +753,7 @@ const Operations = ({
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      console.log("activeTab", activeTab);
+      // console.log("activeTab", activeTab);
       if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -1093,6 +1096,7 @@ const Operations = ({
 
   //it refreshes table on saving event
   const refreshTableOnDataSaving = async () => {
+    console.log("refreshTableOnDataSaving");
     if (isSearching) {
       const { baseUrl, searchedProp, searchValue } = await JSON.parse(
         localStorage.getItem("prevSearchedPropsAndValues")
@@ -1533,16 +1537,6 @@ const Operations = ({
         pitching: false,
       });
     }
-    if(activeTab.key ==="ecosystem") {
-      setUploadModal({  
-        myData: false,
-        tot: false,
-        mentorship: false,
-        upskill: false,
-        pitching: false,
-        ecosystem: true,
-      });
-    }
     if (activeTab.key == "useTot") {
       setUploadModal({
         tot: true,
@@ -1692,10 +1686,7 @@ const Operations = ({
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" ||
-                  // activeTab.key == "collegePitches" ||
-                  activeTab.key === "ecosystem" ||
-                  activeTab.key === "curriculumIntervention"
+                  activeTab.key == "upskilling" 
                   // activeTab.key == "collegePitches"
                    ? (
                     <button
@@ -2010,7 +2001,7 @@ const Operations = ({
            showModal.ecosystemData && (isSRM() || isAdmin() || isMedhavi()) && (
             <EcosystemDataField
             {...optsdata.ecosystemData}
-              show={showModal.opsdata}
+              show={showModal.ecosystemData}
               onHide={() => hideShowModal("ecosystemData", false)}
               refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
