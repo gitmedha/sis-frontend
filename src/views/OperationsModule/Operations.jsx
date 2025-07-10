@@ -1881,17 +1881,23 @@ const Operations = ({
             )
           ) : // useTot  ---upskilling ---dtesamarth
           
-          // activeTab.key == "useTot" ? (
-          //   (isSRM() || isAdmin() || isMedhavi()) && (
-          //     <UserTot
-          //       show={modalShow}
-          //       onHide={hideCreateModal}
-          //       ModalShow={() => setModalShow(false)}
-          //     />
-          //   )
-          // ) 
-          // : 
-          activeTab.key == "upskilling" ? (
+          activeTab.key == "useTot" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <UserTot
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "studentOutreach" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AddStudentOutreach
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
                 show={modalShow}
