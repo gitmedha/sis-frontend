@@ -255,8 +255,14 @@ const ecosystemFields = `
   attended_students
   male_participants
   female_participants
-  medha_poc_1 
-  medha_poc_2
+  medha_poc_1 {
+    id
+    username
+  }
+  medha_poc_2 {
+    id
+    username
+  }
   created_at
   updated_at
   CreatedBy {
@@ -843,8 +849,14 @@ export const UPDATE_ECOSYSTEM = `
         attended_students
         male_participants
         female_participants
-        medha_poc_1
-        medha_poc_2
+        medha_poc_1 {
+          id
+          username
+        }
+        medha_poc_2 {
+          id
+          username
+        }
         isactive
         UpdatedBy {
           id
