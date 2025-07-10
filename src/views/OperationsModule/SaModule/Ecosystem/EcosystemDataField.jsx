@@ -51,12 +51,13 @@ const EcosystemDataField = (props) => {
   }, [props]);
 
   const hideShowModal = async (data) => {
-    if (!data || data.isTrusted) {
-      setShowModal(false);
-      onHide();
-      return;
+    setShowModal({ dataAndEdit: false, delete: false });
+    if (typeof refreshTableOnDataSaving === "function") {
+      await refreshTableOnDataSaving();
     }
-    onHide();
+    if (typeof onHide === "function") {
+      onHide();
+    }
   };
 
   const handleDeleteModal = () => {
@@ -80,7 +81,6 @@ const EcosystemDataField = (props) => {
       delete: false
     });
   };
-console.log(props,"props")
   const deleteEntry = async () => {
     const data = await deactivateEcosystemEntry(Number(props.id));
     if (data.status === 200) {
@@ -177,14 +177,14 @@ console.log(props,"props")
               <div className="row">
                 <div className="col-md-6 col-sm-12">
                   <DetailField
-                    label="Primary POC"
-                    value={props?.medha_poc_1}
+                    label="Medha POC 1"
+                    value={props?.medha_poc_1?.username}
                   />
                 </div>
                 <div className="col-md-6 col-sm-12">
                   <DetailField
-                    label="Secondary POC"
-                    value={props?.medha_poc_2}
+                    label="Medha POC 2"
+                    value={props?.medha_poc_2?.username}
                   />
                 </div>
               </div>
@@ -236,7 +236,7 @@ console.log(props,"props")
       {showModal.dataAndEdit && (
         <EcosystemEdit 
           {...ecosystemData} 
-          show={showModal} 
+          show={showModal.dataAndEdit}          
           onHide={hideShowModal} 
           refreshTableOnDataSaving={refreshTableOnDataSaving}
         />

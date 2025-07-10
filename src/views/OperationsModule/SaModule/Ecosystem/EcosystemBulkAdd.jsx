@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { checkEmptyValuesandplaceNA } from "../../../../utils/function/OpsModulechecker";
 import EcosystemBulkrow from "./EcosystemBulkRow";
 import moment from "moment";
+import {getAllMedhaUsers} from "../../../../utils/function/lookupOptions";
 
 const StyledModal = styled(Modal)`
   .modal-body {
@@ -69,14 +70,25 @@ const EcosystemBulkAdd = (props) => {
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   
   const activityTypeOptions = [
-    "Workshop", "Seminar", "Training", "Meeting", 
-    "Conference", "Networking Event", "Other"
+    "Industry Talk", "Placement Drive", "Workplace Exposure"
   ].map(type => ({ label: type, value: type }));
 
   const partnerTypeOptions = [
-    "Government", "Employer", "NGO", 
-    "Educational Institution", "Other"
+    "Government", "Private Entity", "NGO", 
+    "Academician", "Freelancer", "Researcher"
   ].map(type => ({ label: type, value: type }));
+  const govtDeptPartnerWithOptions = [
+    "Department of Skill Development and Employment",
+    "Directorate of Technical Education",
+    "Skill Development of Industrial Training",
+    "Department of Higher Education",
+    "Department of Technical Education",
+    "Department of Secondary Education",
+    "DVEDSE",
+    "Department of Labor and Resource"
+  ].sort((a, b) => a.localeCompare(b))
+   .map(type => ({ label: type, value: type }));
+
 
   const [classValue, setClassValue] = useState({});
   const [rows, setRows] = useState([{
@@ -94,7 +106,6 @@ const EcosystemBulkAdd = (props) => {
     medha_poc_2: ""
   }]);
 
-  console.log("rows",rows)
 
   const [newRow, setNewRow] = useState({
     id: 1,
@@ -112,6 +123,7 @@ const EcosystemBulkAdd = (props) => {
   });
 
   const [showLimit, setShowLimit] = useState(false);
+  const [medhaUsers, setMedhaUsers] = useState([]);
   
   const requiredFields = [
     'activity_type', 
@@ -124,7 +136,6 @@ const EcosystemBulkAdd = (props) => {
   ];
 
   function checkEmptyValues(obj) {
-    console.log("obj", obj)
     const result = {};
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
@@ -152,7 +163,6 @@ const EcosystemBulkAdd = (props) => {
     const hasEmptyRequiredFields = requiredFields.some(field => 
       emptyValues[field] || lastRow[field] === ""
     );
-console.log("emptyValues",emptyValues)
     if (hasEmptyRequiredFields) {
       // Highlight empty required fields
       const errorFields = {};
@@ -228,6 +238,14 @@ console.log("emptyValues",emptyValues)
     setDisableSaveButton(hasEmptyRequiredFields);
   }, [rows]);
 
+  useEffect(() => {
+    const fetchMedhaUsers = async () => {
+      const medhaUsers = await getAllMedhaUsers();
+      setMedhaUsers([...medhaUsers]);
+    };
+    fetchMedhaUsers();
+  }, []);
+
   return (
     <StyledModal
       centered
@@ -283,8 +301,8 @@ console.log("emptyValues",emptyValues)
               <th>Total Attended Students *</th>
               <th>Male Participants *</th>
               <th>Female Participants *</th>
-              <th>Primary POC *</th>
-              <th>Secondary POC</th>
+              <th>Medha POC 1</th>
+              <th>Medha POC 2</th>
             </tr>
           </thead>
           <tbody>
@@ -296,6 +314,9 @@ console.log("emptyValues",emptyValues)
                 classValue={classValue[`class${row.id - 1}`] || {}}
                 activityTypeOptions={activityTypeOptions}
                 partnerTypeOptions={partnerTypeOptions}
+                govtDeptPartnerWithOptions={govtDeptPartnerWithOptions}
+                medhaPOC1Options={medhaUsers.map(user => ({ label: user.name, value: user.id }))}
+                medhaPOC2Options={medhaUsers.map(user => ({ label: user.name, value: user.id }))}
               />
             ))}
           </tbody>
