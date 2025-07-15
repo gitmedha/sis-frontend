@@ -38,19 +38,39 @@ export const deactivateEcosystemEntry = async (id) => {
 
 
 export const updateEcosystemEntry = async (id, data) => {
-  try{
+  try {
+    // Prepare the data for the mutation
+    const payload = {
+      ...data,
+      // Ensure medha_poc values are IDs
+      medha_poc_1: data.medha_poc_1?.id || data.medha_poc_1,
+      medha_poc_2: data.medha_poc_2?.id || data.medha_poc_2,
+    };
+
     const response = await api.post('/graphql', {
-      query:UPDATE_ECOSYSTEM,
-       variables: {
-        id,
-        data,
+      query: UPDATE_ECOSYSTEM,
+      variables: {
+        id: Number(id),
+        data: payload
       }
-    })
-return response.data.data.ecosystemConnections.values;
-  }catch(err){
-  return Promise.reject(err)
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return {
+      status: 200,
+      data: response.data.data.updateEcosystem.ecosystem
+    };
+
+  } catch (err) {
+    return {
+      status: err.response?.status || 500,
+      error: err.message || "Failed to update ecosystem entry"
+    };
   }
-}
+};
 
 export const deleteEcosystemEntry = async (id) => {
   try {

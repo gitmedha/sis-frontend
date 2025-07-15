@@ -22,8 +22,7 @@ const customSelectStyles = {
 
 
 const EcosystemBulkrow = (props) => {
-  const { row, updateRow, activityTypeOptions, partnerTypeOptions, classValue } = props;
-
+  const { row, updateRow, activityTypeOptions, partnerTypeOptions, classValue, govtDeptPartnerWithOptions, medhaPOC1Options, medhaPOC2Options } = props;
   const handleChange = (field, value) => {
     updateRow(row.id, field, value);
   };
@@ -86,11 +85,16 @@ const EcosystemBulkrow = (props) => {
 
       {/* Government Department Partner */}
       <td>
-        <input
-          type="text"
-          className="form-control"
-          value={row.govt_dept_partner_with || ""}
-          onChange={(e) => handleInputChange(e, "govt_dept_partner_with")}
+        <Select
+          styles={customSelectStyles}
+          className={`${getSelectClass("govt_dept_partner_with")}`}
+          classNamePrefix="select"
+          value={govtDeptPartnerWithOptions.find(
+            (option) => option.value === row.govt_dept_partner_with
+          )}
+          onChange={(option) => handleChange("govt_dept_partner_with", option?.value)}
+          options={govtDeptPartnerWithOptions}
+          isClearable={true}
         />
       </td>
 
@@ -157,21 +161,31 @@ const EcosystemBulkrow = (props) => {
 
       {/* Primary POC */}
       <td>
-        <input
-          type="text"
-          className={getInputClass("medha_poc_1")}
-          value={row.medha_poc_1 || ""}
-          onChange={(e) => handleInputChange(e, "medha_poc_1")}
+        <Select
+          styles={customSelectStyles}
+          className={`${getSelectClass("medha_poc_1")}`}
+          classNamePrefix="select"
+          value={medhaPOC1Options.find(
+            (option) => option.value === row.medha_poc_1
+          )}
+          onChange={(option) => handleChange("medha_poc_1", option?.value)}
+          options={medhaPOC1Options}
+          isClearable={true}
         />
       </td>
 
       {/* Secondary POC */}
       <td>
-        <input
-          type="text"
-          className="form-control"
-          value={row.medha_poc_2 || ""}
-          onChange={(e) => handleInputChange(e, "medha_poc_2")}
+        <Select
+          styles={customSelectStyles}
+          className={`${getSelectClass("medha_poc_2")}`}
+          classNamePrefix="select"
+          value={medhaPOC2Options.find(
+            (option) => option.value === row.medha_poc_2
+          )}
+          onChange={(option) => handleChange("medha_poc_2", option?.value)}
+          options={medhaPOC2Options}
+          isClearable={true}
         />
       </td>
     </tr>
