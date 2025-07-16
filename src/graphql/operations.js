@@ -965,3 +965,134 @@ export const DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY = `
   }
 `;
 
+// PMus GraphQL operations
+export const GET_PMUS = `
+  query GET_PMUS($limit: Int, $start: Int, $sort: String) {
+    pmusesConnection(
+      sort: $sort,
+      start: $start,
+      limit: $limit
+    ) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_COUNT = `
+  query GET_PMUS_COUNT {
+    pmusesConnection {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_BY_ID = `
+  query GET_PMUS_BY_ID($id: ID!) {
+    pmus(id: $id) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const CREATE_PMUS = `
+  mutation CREATE_PMUS($data: PMUSInput!) {
+    createPmus(input: { data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const UPDATE_PMUS = `
+  mutation UPDATE_PMUS($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const DELETE_PMUS = `
+  mutation DELETE_PMUS($id: ID!) {
+    deletePmus(input: { where: { id: $id } }) {
+      pmus {
+        id
+      }
+    }
+  }
+`;
+
+export const CREATE_BULK_PMUS = `
+  mutation CREATE_BULK_PMUS($data: [PMUSInput]!) {
+    createBulkPmus(input: { data: $data }) {
+      pmuses {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const SEARCH_PMUS = `
+  query SEARCH_PMUS($searchFields: [String], $searchValues: [JSON]) {
+    searchOps(
+      searchFields: $searchFields,
+      searchValues: $searchValues
+    ) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const GET_PMUS_DISTINCT_FIELD = `
+  query GET_PMUS_DISTINCT_FIELD($field: String!) {
+    findDistinctField(field: $field) {
+      values
+    }
+  }
+`;
+
