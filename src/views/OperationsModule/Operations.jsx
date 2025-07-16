@@ -1721,7 +1721,7 @@ const Operations = ({
                   columns={columnsUserTot}
                   data={isSearching ? (isFound ? searchedData : []) : opts}
                   totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
+                    isSearching ? searchedData.length : optsAggregate.count
                   }
                   fetchData={isSearching ? fetchSearchedData : fetchData}
                   paginationPageSize={paginationPageSize}
