@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { checkEmptyValuesandplaceNA } from "../../../../utils/function/OpsModulechecker";
 import CurriculumInterventionBulkRow from "./CurriculumInterventionBulkRow";
 import moment from "moment";
+import { getAllMedhaUsers } from "../../../../utils/function/lookupOptions";
 
 const StyledModal = styled(Modal)`
   .modal-body {
@@ -90,6 +91,24 @@ const CurriculumBulkAdd = (props) => {
     medha_poc: ""  });
 
   const [showLimit, setShowLimit] = useState(false);
+  const [medhaPocOptions, setMedhaPocOptions] = useState([]);
+  const [deptOptions, setDeptOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const medhaUsers = await getAllMedhaUsers();
+      setMedhaPocOptions(medhaUsers.map(user => ({ label: user.name, value: user.id })));
+      // Department options (static, but sorted)
+      const departments = [
+        "Department of Education",
+        "Ministry of Skill Development",
+        "State Education Board",
+        "Other"
+      ].sort((a, b) => a.localeCompare(b)).map(type => ({ label: type, value: type }));
+      setDeptOptions(departments);
+    };
+    fetchOptions();
+  }, []);
   
   const requiredFields = [
     'module_created_for',
@@ -275,6 +294,8 @@ const CurriculumBulkAdd = (props) => {
                       row={row}
                       updateRow={updateRow}
                       classValue={classValue[`class${row.id - 1}`] || {}}
+                      medhaPocOptions={medhaPocOptions}
+                      deptOptions={deptOptions}
                     />
                   ))}
                 </tbody>
