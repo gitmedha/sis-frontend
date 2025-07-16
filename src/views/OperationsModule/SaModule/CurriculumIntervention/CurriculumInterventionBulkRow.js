@@ -22,7 +22,7 @@ const customSelectStyles = {
 };
 
 const CurriculumInterventionBulkRow = (props) => {
-  const { row, updateRow, classValue, medhaPocOptions, deptOptions } = props;
+  const { row, updateRow, classValue, medhaPocOptions } = props;
 
   const handleChange = (field, value) => {
     updateRow(row.id, field, value);
@@ -46,15 +46,27 @@ const CurriculumInterventionBulkRow = (props) => {
 
   // Dropdown options - static for module fields
   const moduleCreatedForOptions = [
-    { label: "UG", value: "UG" },
-    { label: "PG", value: "PG" },
-    { label: "Diploma", value: "Diploma" }
+    { label: "Medha", value: "Medha" },
+    { label: "External Party", value: "External Party" },
+    { label: "Internal Party", value: "Internal Party" }
   ];
 
   const moduleDevelopedRevisedOptions = [
     { label: "Developed", value: "Developed" },
     { label: "Revised", value: "Revised" }
   ];
+
+  const govtDeptPartnerWithOptions = [
+    "Department of Skill Development and Employment",
+    "Directorate of Technical Education",
+    "Skill Development of Industrial Training",
+    "Department of Higher Education",
+    "Department of Technical Education",
+    "Department of Secondary Education",
+    "DVEDSE",
+    "Department of Labor and Resource"
+  ].sort((a, b) => a.localeCompare(b))
+   .map(type => ({ label: type, value: type }));
 
   return (
     <tr>
@@ -121,9 +133,9 @@ const CurriculumInterventionBulkRow = (props) => {
           styles={customSelectStyles}
           className={`${getSelectClass("govt_dept_partnered_with")}`}
           classNamePrefix="select"
-          value={deptOptions.find(option => option.value === row.govt_dept_partnered_with)}
+          value={govtDeptPartnerWithOptions.find(option => option.value === row.govt_dept_partnered_with)}
           onChange={option => handleChange("govt_dept_partnered_with", option?.value)}
-          options={deptOptions}
+          options={govtDeptPartnerWithOptions}
           isClearable={true}
         />
       </td>
