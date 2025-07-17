@@ -13,6 +13,7 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -153,6 +154,10 @@ const OpportunityForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    let propgramEnrollemntData={};
+    
+    propgramEnrollemntData={module_name:"Employer ",activity:"Create Opprtunity",event_id:props.employer.id,updatedby:userId ,changes_in:{}};
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
@@ -305,8 +310,8 @@ const OpportunityForm = (props) => {
                         name="salary"
                         type="number"
                         control="input"
-                        label="Monthly Salary Offered"
-                        placeholder="Monthly Salary Offered"
+                        label="Monthly Salary Offered "
+                        placeholder="Monthly Salary Offered "
                         className="form-control"
                         required
                       />
@@ -423,7 +428,7 @@ const OpportunityForm = (props) => {
                 </Section>
               </div>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

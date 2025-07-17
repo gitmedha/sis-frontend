@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Input } from "../../../utils/Form";
 import { getFieldValues } from "./employerAction";
 import api from "../../../apis";
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -177,9 +178,16 @@ function EmployerSearchBar({
         );
         clearInterval(interval);
         handleLoaderForSearch();
-
-        await setSearchValueOptions(data);
-        await setDefaultSearchArray(data);
+        if (selectedSearchField === "assigned_to") {
+          let newSRM = await getAllSearchSrm();
+          await setSearchValueOptions(newSRM);
+          await setDefaultSearchArray(newSRM);
+        } else {
+          await setSearchValueOptions(data);
+          await setDefaultSearchArray(data);
+        }
+        // await setSearchValueOptions(data);
+        // await setDefaultSearchArray(data);
       } catch (error) {
         console.error("error", error);
       }
@@ -206,7 +214,6 @@ function EmployerSearchBar({
                   options={employersOptions}
                   className="form-control"
                   onChange={(e) => handleBatchOptions(e.value)}
-                  isDisabled={isDisable}
                 />
               </div>
               <div

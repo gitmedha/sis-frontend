@@ -21,12 +21,14 @@ import api from "../../../apis";
 import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
 import Select, { components } from "react-select";
 import { GET_ALL_INDUSTRY, GET_PICKLIST } from "src/graphql";
-
-// import {
-//   compareObjects,
-//   createLatestAcivity,
-//   findDifferences,
-// } from "src/utils/LatestChange/Api";
+import { restructureData } from "src/utils/function/indtsryValues";
+import DropdownTreeSelect from "react-dropdown-tree-select";
+import "react-dropdown-tree-select/dist/styles.css";
+import {
+  compareObjects,
+  createLatestAcivity,
+  findDifferences,
+} from "src/utils/LatestChange/Api";
 import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
 const Section = styled.div`
   padding-top: 15px;
@@ -350,7 +352,17 @@ const EmployerForm = (props) => {
     if (logo) {
       values.logo = logo;
     }
-    // await createLatestAcivity(EmployerEnrollmentData);
+    let EmployerEnrollmentData = {};
+    if (props.id) {
+      EmployerEnrollmentData = {
+        module_name: "employer",
+        activity: "Employer Data Update",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects(props, values),
+      };
+    }
+    await createLatestAcivity(EmployerEnrollmentData);
     onHide(values);
   };
   const logoUploadHandler = ({ id }) => setLogo(id);
@@ -368,7 +380,8 @@ const EmployerForm = (props) => {
     city: "",
     medha_area: "",
     district: "",
-    medha_partner:""
+    medha_partner:"",
+    outsourced:"",
   };
 
   if (props.id) {
@@ -483,6 +496,7 @@ const EmployerForm = (props) => {
                       )}
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
+                      {/* industry */}
                       <label className="text-heading leading-24">
                         Industry <span class="required">*</span>
                       </label>
@@ -490,6 +504,7 @@ const EmployerForm = (props) => {
                       <Field
                         name="industry"
                         defaultValue={props.industry}
+                      
                         onChange={(value) => setFieldValue("industry", value)}
                         data={industryOptions}
                         error={errors.industry}
@@ -532,6 +547,26 @@ const EmployerForm = (props) => {
                         label="Email"
                         control="input"
                         placeholder="Email"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="outsourced"
+                        label="Outsourced"
+                        control="lookup"
+                        options={[{
+                          key:0,
+                          label:'System Adoption',
+                          value:'System Adoption'
+                        },
+                      {
+                          key:1,
+                          label:'Core Programs',
+                          value:'Core Programs'
+                      }]}
                         className="form-control"
                         required
                       />

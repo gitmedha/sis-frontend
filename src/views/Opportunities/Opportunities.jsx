@@ -14,6 +14,7 @@ import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import { Badge } from "../../components/content/Utils";
 import OpportunitySearchBar from "./OpportunityComponents/OpportunitySearchBar";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const tabPickerOptions = [
     { title: "My Data", key: "my_data" },
@@ -429,7 +430,10 @@ const opportunityQuery = `query GET_OPPORTUNITIES(
     let {show, ...dataToSave} = data;
 
     nProgress.start();
-    createOpportunity(dataToSave).then(data => {
+    createOpportunity(dataToSave).then(async(data) => {
+      console.log(data.data.data.createOpportunity.opportunity);
+      let propgramEnrollemntData={module_name:"opportunity",activity:"Opportunity Data Created",event_id:data.data.data.createOpportunity.opportunity.id,updatedby:userId ,changes_in:{name:data.data.data.createOpportunity.opportunity.role_or_designation}};
+      await createLatestAcivity(propgramEnrollemntData);
       setAlert("Opportunity created successfully.", "success");
       history.push(`/opportunity/${data.data.data.createOpportunity.opportunity.id}`);
     }).catch(err => {

@@ -11,8 +11,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
-import { getTotPickList } from "./operationsActions";
-
+import { getTotPickList, getCollegesByProjectName } from "./operationsActions";
 
 const projecttypeoptions = [
   { value: 'External', label: "External" },
@@ -22,32 +21,46 @@ const certificateoptions = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
 const UserTotRowdata = (props) => {
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      user_name: "",
-      trainer_1: "",
-      project_name: "",
-      certificate_given: "",
-      module_name: "",
-      project_type: "",
-      new_entry: "",
-      trainer_2: "",
-      partner_dept: "",
-      college: "",
-      city: "",
-      state: "",
-      age: "",
-      gender: "",
-      contact: "",
-      designation: "",
-      start_date: "",
-      end_date: "",
-      email:""
-    },
-    // Add more initial rows as needed
-  ]);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
+
+  const stateWiseProjects = {
+    "Uttarakhand": [
+      { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
+    ],
+    "Haryana": [
+      { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
+      { value: "Dual System of Training", label: "Dual System of Training", department: "Department of Skill Development and Industrial Training" },
+      { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
+    ],
+    "Uttar Pradesh": [
+      { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
+      { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
+      { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
+    ],
+    "Bihar": [
+      { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
+    ]
+  };
+
+  const getProjectOptions = (state) => {
+    return stateWiseProjects[state].map((proj) => ({
+      value: proj.value,
+      label: proj.label,
+    }));
+  };
+
+  const getDepartmentOptions = (state, selectedProjectName) => {
+    return stateWiseProjects[state]
+      .filter(proj => proj.value === selectedProjectName?.value)
+      .map((proj) => ({
+        value: proj.department,
+        label: proj.department,
+      }));
+  };
+
   const [row, setRowData] = useState(props.row);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState(new Date());
@@ -55,14 +68,17 @@ const UserTotRowdata = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
-  const [moduleName,setModuleName]=useState([])
-  const [partnerDept,setPartnerDept]=useState([])
-  const [projectName,setProjectName]=useState([])
-  const userName=useRef(null)
-  const designation=useRef(null)
-  const college =useRef(null)
-  const [state,setstate]=useState(true)
- 
+  const [moduleName, setModuleName] = useState([]);
+  const [partnerDept, setPartnerDept] = useState([]);
+  const [projectName, setProjectName] = useState([]);
+  const userName = useRef(null);
+  const designation = useRef(null);
+  const college = useRef(null);
+
+  const [state, setstate] = useState(true);
+  const [filteredColleges, setFilteredColleges] = useState([]);
+  const [collegeName, setCollegeName] = useState("");
+
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -76,29 +92,30 @@ const UserTotRowdata = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    props.handleChange(value, "state",row.id)
-    setstate(false)
-
+    props.handleChange(value, "state", row.id);
+    setstate(false);
   };
+
   useEffect(() => {
-    let srmData=async()=>{
+    let srmData = async () => {
       let data = await getAllSrm();
-    setsrmOption(data);
-    getStateDistricts().then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-    }
-    srmData()
+      setsrmOption(data);
+      getStateDistricts().then((data) => {
+        setAreaOptions([]);
+        setAreaOptions(
+          data?.data?.data?.geographiesConnection.groupBy.district
+            .map((area) => ({
+              key: area.id,
+              label: area.key,
+              value: area.key,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        );
+      });
+    };
+    srmData();
   }, []);
+
   useEffect(() => {
     getStudentsPickList().then((data) => {
       setGenderOptions(
@@ -109,15 +126,13 @@ const UserTotRowdata = (props) => {
         }))
       );
     });
-   
   }, [props]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
     });
-    getTotPickList().then(data=>{
-      // setModuleName(data.module_name.map(item))
+    getTotPickList().then(data => {
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
@@ -139,20 +154,19 @@ const UserTotRowdata = (props) => {
           label: item,
         }))
       );
-    })
+    });
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    
   };
-  const handleInputChange = (id,data,value) => {
+
+  const handleInputChange = (id, data, value) => {
     const input = value.current;
     if (input) {
-      input.value = capitalizeFirstLetter(input.value);;
-      props.updateRow(id,data,input.value)
+      input.value = capitalizeFirstLetter(input.value);
+      props.updateRow(id, data, input.value);
     }
-   
   };
 
   const capitalizeFirstLetter = (text) => {
@@ -168,10 +182,42 @@ const UserTotRowdata = (props) => {
       .join(' ');
   };
 
+  const handleProjectChange = async (selectedOption, rowId) => {
+    props.handleChange(selectedOption, "project_name", rowId);
+    setSelectedProjectName(selectedOption);
+
+    if (selectedOption && selectedOption.value && selectedState) {
+      try {
+        const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
+        setFilteredColleges(colleges);
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+        setFilteredColleges([]);
+      }
+    } else {
+      setFilteredColleges([]);
+      props.updateRow(rowId, "college", "");
+    }
+  };
+
+  const handleStateChange = (e, rowId) => {
+    if (['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
+      setSelectedState(e.value);
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      props.updateRow(rowId, "project_name", "");
+      props.updateRow(rowId, "college", "");
+    } else {
+      setSelectedState(null);
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      onStateChange(e, rowId, "state");
+    }
+  };
+
   return (
     <>
       <tr key={row.id}>
-        {/* <td>{row.id}</td> */}
         <td>
           <input
             className={`table-input h-2 ${
@@ -182,7 +228,7 @@ const UserTotRowdata = (props) => {
             type="text"
             onKeyPress={handleKeyPresscharandspecialchar}
             ref={userName}
-            onChange={(e) => handleInputChange(row.id, "user_name",userName)}
+            onChange={(e) => handleInputChange(row.id, "user_name", userName)}
           />
         </td>
         <td>
@@ -192,7 +238,7 @@ const UserTotRowdata = (props) => {
             onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
           />
         </td>
-         <td>
+        <td>
           <input
             className="table-input h-2"
             type="number"
@@ -222,10 +268,9 @@ const UserTotRowdata = (props) => {
             onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
           />
         </td>
-        
         <td>
           <Select
-            className={`table-input  ${
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.state
                 ? `border-red`
                 : "table-input h-2"
@@ -235,12 +280,12 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            onChange={(e) => handleStateChange(e, row.id)}
           />
         </td>
         <td>
           <Select
-            className={`table-input  ${
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.area
                 ? `border-red`
                 : "table-input h-2"
@@ -254,65 +299,76 @@ const UserTotRowdata = (props) => {
             onChange={(e) => props.handleChange(e, "city", row.id)}
           />
         </td>
-         <td>
+        <td>
           <input
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
             ref={designation}
-            onChange={(e) => handleInputChange(row.id, "designation",designation)}
+            onChange={(e) => handleInputChange(row.id, "designation", designation)}
           />
         </td>
         <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            ref={college}
-            onChange={(e) => handleInputChange(row.id, "college",college)}
-          />
-        </td>
-        <td>
-          
           <Select
             className="table-input h-2"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id);
+              setCollegeName(e.value);
+            }}
+            isDisabled={!selectedProjectName}
+          />
+        </td>
+        <td>
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.project_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="project_name"
-            options={projectName}
-            onChange={(e) => props.handleChange(e, "project_name", row.id)}
+            options={
+              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
+                ? getProjectOptions(selectedState)
+                : projectName
+            }
+            onChange={(e) => handleProjectChange(e, row.id)}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            onChange={(e) =>
-              props.updateRow(row.id, "partner_dept", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.partner_dept
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="partner_dept"
-            options={partnerDept}
+            options={
+              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
+                ? getDepartmentOptions(selectedState, selectedProjectName)
+                : partnerDept
+            }
             onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
           />
         </td>
         <td>
-          {/* <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "module_name", e.target.value)
-            }
-          /> */}
           <Select
-            className="table-input h-2"
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.module_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -324,15 +380,13 @@ const UserTotRowdata = (props) => {
         <td>
           <input
             type="date"
-            className={`table-input h-2  ${
+            className={`table-input h-2 ${
               props.classValue[`class${row.id - 1}`]?.start_date
                 ? `border-red`
                 : "table-input h-2"
             }`}
             defaultValue={startDate}
             onChange={(e) => {
-             
-
               setStartDate(e.target.value);
               props.updateRow(row.id, "start_date", e.target.value);
             }}
@@ -366,14 +420,14 @@ const UserTotRowdata = (props) => {
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="tariner_1"
+            name="trainer_1"
             options={srmOption}
             onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
           />
         </td>
         <td>
           <Select
-            className="basic-single table-input "
+            className="table-input h-2"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
@@ -383,8 +437,8 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-            <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.certificate_given
                 ? `border-red`
                 : "table-input h-2"
@@ -398,8 +452,8 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-        <Select
-            className={`table-input   ${
+          <Select
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.project_type
                 ? `border-red`
                 : "table-input h-2"
@@ -411,19 +465,18 @@ const UserTotRowdata = (props) => {
             options={projecttypeoptions}
             onChange={(e) => props.handleChange(e, "project_type", row.id)}
           />
-          
         </td>
-        {/* <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) =>
-              props.updateRow(row.id, "new_entry", e.target.value)
-            }
+        <td>
+          <Select
+            className={`table-input h-2`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="New Entry"
+            options={certificateoptions}
+            onChange={(e) => props.handleChange(e, "new_entry", row.id)}
           />
-        </td> */}
-
-        
+        </td>
       </tr>
     </>
   );

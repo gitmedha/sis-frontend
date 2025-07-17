@@ -118,7 +118,7 @@ const range = (from, to, step = 1) => {
   return range;
 }
 
-const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit}) => {
+const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nextPage, previousPage, pageIndex, pageLimit, setPageLimit,allDataCount=null}) => {
   const currentPage = pageIndex + 1;
 
   const fetchPageNumbers = () => {
@@ -147,7 +147,7 @@ const Pagination = ({totalRecords, totalPages, pageNeighbours = 2, gotoPage, nex
     <Styled>
       <div className="row d-flex align-items-center justify-content-center w-100">
       <div className="col-md-2" >
-          <span className="count" >Total Records: &nbsp; {totalRecords} </span>
+          <span className="count" >Total Records: &nbsp; {allDataCount ? allDataCount:totalRecords} </span>
         </div>
         <div className="col-md-7">
           <nav>

@@ -129,9 +129,14 @@ const alumniServicesFields = `
   receipt_number
   program_mode
   category
+  student{
+    id
+    full_name
+  }
   fee_amount
   comments
   status
+  role
   created_at
   updated_at
 `;
@@ -193,6 +198,25 @@ const employmentConnectionFields = `
     }
   }
 `;
+const medhaviMembershipFields = `
+        id
+        medhavi_member
+        medhavi_member_id
+        membership_fee
+        date_of_payment
+        date_of_avail
+        date_of_settlement
+        receipt_number
+        tenure_completion_date
+        membership_status
+        reason_for_cancellation
+        assigned_to {
+          id
+          username
+        }
+        created_at
+        updated_at
+`;
 
 export const GET_STUDENTS = `
   query GET_STUDENTS($id: Int, $limit: Int, $start: Int, $sort: String, $status:String, $state:String, $area:String) {
@@ -228,6 +252,16 @@ export const GET_STUDENT = `
     }
   }
 `;
+
+export const GET_STUDENT_BY_STUID = `
+  query GET_STUDENT_BY_STUID($student_id: String!) {
+    student(student_id: $student_id) {
+      ${studentFields}
+    }
+  }
+`;
+
+
 
 export const CREATE_STUDENT = `
   mutation CREATE_STUDENT(
@@ -373,6 +407,30 @@ export const GET_STUDENT_EMPLOYMENT_CONNECTIONS = `
   }
 `;
 
+export const GET_STUDENT_EMPLOYMENT_CONNECTIONS_RANGE = `
+  query GET_STUDENT_EMPLOYMENT_CONNECTIONS_RANGE ($id: Int,$startDate: String, $endDate: String, $limit: Int, $start: Int, $sort: String){
+    employmentConnectionsConnection (
+      sort: $sort
+      start: $start
+      limit: $limit
+      where: {
+        student: {
+          id: $id
+        }
+        start_date_gte: $startDate
+      end_date_lte: $endDate
+      }
+    ) {
+      values {
+        ${employmentConnectionFields}
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
 export const CREATE_EMPLOYMENT_CONNECTION = `
   mutation CREATE_EMPLOYMENT_CONNECTION (
     $data: EmploymentConnectionInput!
@@ -454,6 +512,9 @@ query GET_STUDENT_ALUMNI_SERVICES ($id: Int, $limit: Int, $start: Int, $sort: St
   }
 }
 `;
+
+
+
 
 export const CREATE_ALUMNI_SERVICE = `
   mutation CREATE_ALUMNI_SERVICE (
@@ -682,6 +743,8 @@ query GET_STUDENT_ALUMNI_SERVICES( $startDate: String, $limit: Int, $start: Int,
 }
 `;
 
+
+
 export const GET_STUDENT_ALUMNI_SERVICES_RANGE = `
 query GET_STUDENT_ALUMNI_SERVICES_RANGE($id: Int, $startDate: String, $limit: Int, $start: Int, $sort: String) {
   alumniServicesConnection (
@@ -705,3 +768,74 @@ query GET_STUDENT_ALUMNI_SERVICES_RANGE($id: Int, $startDate: String, $limit: In
 }
 `;
 
+export const GET_STUDENT_MEDHAVI_MEMBERSHIPS = `
+query GET_STUDENT_MEDHAVI_MEMBERSHIPS ($stdID: String, $limit: Int, $start: Int, $sort: String){
+  medhaviMembershipsConnection  (
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      studentID: {
+        id: $stdID
+      }
+    }
+  ) {
+    values {
+      ${medhaviMembershipFields}
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const CREATE_MEDHAVI_MEMBERSHIP = `
+  mutation CREATE_MEDHAVI_MEMBERSHIP (
+    $data: MedhaviMembershipInput!
+  ) {
+    createMedhaviMembership (
+      input: {
+        data: $data
+      }
+    ) {
+      medhaviMembership {
+        ${medhaviMembershipFields}
+      }
+    }
+  }
+`;
+
+export const UPDATE_MEDHAVI_MEMBERSHIP = `
+  mutation UPDATE_MEDHAVI_MEMBERSHIP (
+    $data: editMedhaviMembershipInput!
+    $id: ID!
+  ) {
+    updateMedhaviMembership(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      medhaviMembership {
+        ${medhaviMembershipFields}
+      }
+    }
+  }
+`;
+
+export const DELETE_MEDHAVI_MEMBERSHIP = `
+  mutation DELETE_MEDHAVI_MEMBERSHIP(
+    $id: ID!
+  ) {
+    deleteMedhaviMembership (
+      input:{
+        where: { id: $id }
+      }
+    ){
+      medhaviMembership {
+        id
+      }
+    }
+  }
+`;
