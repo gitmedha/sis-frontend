@@ -16,7 +16,7 @@ import { deleteEmployer, updateEmployer, getEmployerEmploymentConnections } from
 import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
-import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import { FaBlackTie, FaBriefcase, FaUserTie, FaAward } from "react-icons/fa";
 import Tooltip from "../../components/content/Tooltip";
 import styled from 'styled-components';
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
@@ -105,6 +105,8 @@ const Employer = (props) => {
   const updateOpportunitiesBadge = (opportunities) => {
     let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
     let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    let freelanceOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'freelance');
+    let appreciationshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'apprenticeship');
     setOpportunitiesBadge(
       <>
        <Tooltip  placement="top" title="Internships">
@@ -114,8 +116,15 @@ const Employer = (props) => {
       <Tooltip placement="top" title="Jobs">
         <FaBriefcase width="15" color="#D7D7E0" />
       </Tooltip>
-      <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
-
+      <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+      <Tooltip placement="top" title="Freelance">
+        <FaUserTie width="15" color="#D7D7E0" className="ml-2" />
+      </Tooltip>
+      <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{freelanceOpportunities.length}</span>
+      <Tooltip placement="top" title="Appreciationship">
+        <FaAward width="15" color="#D7D7E0" className="ml-2" />
+      </Tooltip>
+      <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{appreciationshipOpportunities.length}</span>
       </>
     );
   }
