@@ -96,7 +96,7 @@ const CurriculumInterventionBulkRow = (props) => {
       </td>
       {/* Start Date */}
       <td>
-        <div className={getSelectClass("start_date")}> 
+        <div className={`date-picker-ui ${getSelectClass("start_date")}`}> 
           <DatePicker
             selected={row.start_date ? new Date(row.start_date) : null}
             onChange={date => handleDateChange(date, "start_date")}
@@ -108,7 +108,7 @@ const CurriculumInterventionBulkRow = (props) => {
       </td>
       {/* End Date */}
       <td>
-        <div className={getSelectClass("end_date")}> 
+        <div className={`date-picker-ui ${getSelectClass("end_date")}`}> 
           <DatePicker
             selected={row.end_date ? new Date(row.end_date) : null}
             onChange={date => handleDateChange(date, "end_date")}
