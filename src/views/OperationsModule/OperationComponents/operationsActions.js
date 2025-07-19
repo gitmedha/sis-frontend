@@ -522,6 +522,14 @@ export const updateCollegePitch = async (id, data) => {
     .catch((error) => Promise.reject(error));
 };
 
+export const bulkCreatePmus = async (data) => {
+  try {
+    const response = await api.post("/pmuses/createBulkPmus", data);
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
 export const bulkCreateOpsActivities = async (data) => {
   try {
     const response = await api.post(

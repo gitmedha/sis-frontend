@@ -6,7 +6,9 @@ import {
   GET_CURRICULUM_INTERVENTIONS,
   UPDATE_CURRICULUM_INTERVENTION,
   DELETE_CURRICULUM_INTERVENTION,
-  DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY
+  DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY,
+  UPDATE_PMUS_ENTRY,
+  DEACTIVATE_PMUS_ENTRY
 } from '../../../graphql/operations';
 import api from '../../../apis'
 
@@ -129,6 +131,37 @@ export const deleteCurriculumInterventionEntry = async (id) => {
       },
     });
     return response.data.data.deleteCurriculumIntervention.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const deactivatePmusEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: DEACTIVATE_PMUS_ENTRY,
+      variables: {
+        id,
+        data: {
+          isactive: false
+        }
+      }
+    });
+    return response.data.data.updatePmus;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updatePmusEntry = async (id, data) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: UPDATE_PMUS_ENTRY,
+      variables: {
+        id,
+        data,
+      }
+    });
   } catch (error) {
     return Promise.reject(error);
   }
