@@ -321,6 +321,22 @@ export const GET_OPERATIONS = `
     } 
 `;
 
+export const UPDATE_PMUS_ENTRY = `
+  mutation UPDATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
 
 
 
@@ -1096,3 +1112,31 @@ export const GET_PMUS_DISTINCT_FIELD = `
   }
 `;
 
+export const GET_PMUS_DATA = `
+  query GetPMusData($where: JSON) {
+    pmusesConnection(where: $where) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const DEACTIVATE_PMUS_ENTRY = `
+  mutation DEACTIVATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        isactive
+      }
+    }
+  }
+`;
