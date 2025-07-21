@@ -619,7 +619,6 @@ const AlumMassEdit = (props) => {
         }
       ),
   });
-
   const handelCancel = (key) => {
     if (key === "cross") {
       props.handelCancel();
