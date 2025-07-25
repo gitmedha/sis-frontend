@@ -156,6 +156,7 @@ const Operations = ({
     mentorship: {},
     ecosystemData:{}
   });
+  
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
@@ -1768,9 +1769,12 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) : activeTab.key == "dtesamarth" ? (
-              <></>
-            ) : activeTab.key == "alumniQueries" ? (
+            ) 
+            : 
+            // activeTab.key == "dtesamarth" ? (
+            //   <></>
+            // ) : 
+            activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
                 <Table
@@ -1867,6 +1871,7 @@ const Operations = ({
               />
             )
           ) : // useTot  ---upskilling ---dtesamarth
+          
           activeTab.key == "useTot" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <UserTot
@@ -1875,7 +1880,9 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
-          ) : activeTab.key == "upskilling" ? (
+          ) 
+          : 
+          activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
                 show={modalShow}

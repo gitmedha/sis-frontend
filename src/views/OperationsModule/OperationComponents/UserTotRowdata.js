@@ -11,7 +11,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
-import { getTotPickList } from "./operationsActions";
+import { getTotPickList,getCollegesByProjectName } from "./operationsActions";
 
 
 const projecttypeoptions = [
@@ -22,7 +22,46 @@ const certificateoptions = [
   { value: true, label: "Yes" },
   { value: false, label: "No" },
 ];
+
+
 const UserTotRowdata = (props) => {
+  const [selectedState, setSelectedState] = useState(null);
+
+  const stateWiseProjects = {
+  "Uttarakhand": [
+    { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
+  ],
+  "Haryana": [
+    { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
+    { value: "Dual System of Training", label: "Dual System of Training", department: "Department of Skill Development and Industrial Training" },
+    { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
+  ],
+  "Uttar Pradesh": [
+    { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
+    { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
+    { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
+  ],
+  "Bihar": [
+    { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
+  ]
+};
+
+const getProjectOptions = (state) => {
+  return stateWiseProjects[state].map((proj) => ({
+    value: proj.value,
+    label: proj.label,
+  }));
+};
+
+const getDepartmentOptions = (state,selectedProjectName) => {
+  return stateWiseProjects[state]
+    .filter(proj => proj.value === selectedProjectName?.value)
+    .map((proj) => ({
+      value: proj.department,
+      label: proj.department,
+    }));
+
+}
   const [rows, setRows] = useState([
     {
       id: 1,
@@ -61,7 +100,11 @@ const UserTotRowdata = (props) => {
   const userName=useRef(null)
   const designation=useRef(null)
   const college =useRef(null)
+
   const [state,setstate]=useState(true)
+  const [filteredColleges, setFilteredColleges] = useState([]);
+  const [collegeName, setCollegeName] = useState("");
+  const [selectedProjectName,setSelectedProjectName] = useState(null);
  
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -168,6 +211,41 @@ const UserTotRowdata = (props) => {
       .join(' ');
   };
 
+  const handleProjectChange = async (selectedOption, rowId) => {
+    console.log("selectedOption",selectedOption);
+    props.handleChange(selectedOption, "project_name", rowId);
+    setSelectedProjectName(selectedOption);
+    
+    if (selectedOption && selectedOption.value && selectedState) {
+      try {
+        // Fetch colleges filtered by both state and project name
+        const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
+        setFilteredColleges(colleges);
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+        setFilteredColleges([]);
+      }
+    } else {
+      setFilteredColleges([]);
+      props.updateRow(rowId, "college", ""); 
+    }
+  };
+
+  const handleStateChange = (e, rowId) => {
+    if(['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
+      setSelectedState(e.value);
+      // Reset project and college when state changes
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      props.updateRow(rowId, "project_name", "");
+      props.updateRow(rowId, "college", "");
+    } else {
+      setSelectedState(null);
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      onStateChange(e, rowId, "state");
+    }
+  };
   return (
     <>
       <tr key={row.id}>
@@ -235,7 +313,7 @@ const UserTotRowdata = (props) => {
             isSearchable={true}
             name="state"
             options={props.statedata}
-            onChange={(e) => onStateChange(e, row.id, "state")}
+            onChange={(e) => handleStateChange(e, row.id)}
           />
         </td>
         <td>
@@ -264,12 +342,19 @@ const UserTotRowdata = (props) => {
           />
         </td>
         <td>
-          <input
+          <Select
             className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            ref={college}
-            onChange={(e) => handleInputChange(row.id, "college",college)}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id)
+              setCollegeName(e.value);
+            }}
+            isDisabled={!selectedProjectName}
           />
         </td>
         <td>
@@ -280,8 +365,8 @@ const UserTotRowdata = (props) => {
             isClearable={true}
             isSearchable={true}
             name="project_name"
-            options={projectName}
-            onChange={(e) => props.handleChange(e, "project_name", row.id)}
+            options={['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState) ? getProjectOptions(selectedState) :  projectName}
+            onChange={(e) => handleProjectChange(e, row.id)}
           />
         </td>
         <td>
@@ -299,8 +384,8 @@ const UserTotRowdata = (props) => {
             isClearable={true}
             isSearchable={true}
             name="partner_dept"
-            options={partnerDept}
-            onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
+            options={['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState) ? getDepartmentOptions(selectedState,selectedProjectName):partnerDept}
+            onChange={(e) =>  props.handleChange(e, "partner_dept", row.id)}
           />
         </td>
         <td>

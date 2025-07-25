@@ -27,7 +27,9 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
+  GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
+import { Label } from "@material-ui/icons";
 
 export const searchPrograms = async function (searchValue) {
   try {
