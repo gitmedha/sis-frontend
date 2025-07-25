@@ -133,6 +133,7 @@ const Operations = ({
     collegePitches: {},
     mentorship: {},
   });
+  
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
