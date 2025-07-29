@@ -57,7 +57,8 @@ import TotUpload from "./UploadFiles/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-import AddStudentOutreach from "./OperationComponents/AddStudentOutreach";
+import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
+import StudentOutreachRowdata from "./OperationComponents/StudentOutreach/StudentOutreachRowdata";
 import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
@@ -499,32 +500,32 @@ const Operations = ({
         });
     }
 
-    if (activeTab.key === "studentOutreach") {
-      await resetSearch();
-      variables.isactive = true;
-      delete variables.isActive;
-      await api
-        .post("/graphql", {
-          query: GET_STUDENT_OUTREACHES,
-          variables,
-        })
-        .then((data) => {
-          console.log(data, "studentOutreach");
-          setOpts(data.data.data.activeStudentOutreaches.values);
-          setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
-        })
-        .catch((error) => {
-          console.error(
-            "API Error:",
-            error.response ? error.response.data : error.message
-          );
-          return Promise.reject(error);
-        })
-        .finally(() => {
-          setLoading(false);
-          nProgress.done();
-        });
-    }
+    // if (activeTab.key === "studentOutreach") {
+    //   await resetSearch();
+    //   variables.isactive = true;
+    //   delete variables.isActive;
+    //   await api
+    //     .post("/graphql", {
+    //       query: GET_STUDENT_OUTREACHES,
+    //       variables,
+    //     })
+    //     .then((data) => {
+    //       console.log(data, "studentOutreach");
+    //       setOpts(data.data.data.activeStudentOutreaches.values);
+    //       setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
+    //     })
+    //     .catch((error) => {
+    //       console.error(
+    //         "API Error:",
+    //         error.response ? error.response.data : error.message
+    //       );
+    //       return Promise.reject(error);
+    //     })
+    //     .finally(() => {
+    //       setLoading(false);
+    //       nProgress.done();
+    //     });
+    // }
 
     if (activeTab.key === "upskilling") {
       await resetSearch();
@@ -1204,7 +1205,7 @@ const Operations = ({
   const closeUpload = () => {
     setUploadModal(false);
   };
-
+console.log("tabkey",activeTab);
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
       <Styled>
@@ -1454,7 +1455,7 @@ const Operations = ({
               <AddStudentOutreach
                 show={modalShow}
                 onHide={hideCreateModal}
-                ModalShow={() => setModalShow(false)}
+                // ModalShow={() => setModalShow(false)}
               />
             )
           ) : activeTab.key == "upskilling" ? (
@@ -1516,16 +1517,16 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.studentOutreachData &&
+          {/* {showModal.studentOutreachData &&
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentOutreachDataField
-                {...optsdata.studentOutreachData}
-                show={showModal.opsdata}
-                onHide={() => hideShowModal("studentOutreachData", false)}
-                refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
-                refreshTableOnDeleting={() => refreshTableOnDeleting()}
+              {...optsdata.studentOutreachData}
+              show={showModal?.studentOutreachData}
+              onHide={() => hideShowModal("studentOutreachData", false)}
+              refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+              refreshTableOnDeleting={() => refreshTableOnDeleting()}
               />
-            )}
+            )} */}
           {showModal.upskilldata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Upskillingdatafield
               {...optsdata.upskilldata}

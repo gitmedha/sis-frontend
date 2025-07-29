@@ -88,9 +88,11 @@ const studentOutreachesFields = `
     category
     state
     department
-    gender
     institution_type
+    male
+    female
     students
+    faculty
     created_by_frontend {
       id
       username
@@ -100,6 +102,7 @@ const studentOutreachesFields = `
       username
     }
     published_at
+   
     
 `;
 
@@ -528,6 +531,21 @@ export const GET_STUDENT_SYSTEM_ACTOR_RATIO = `
         project_name
         designations
         institution_type
+      }
+    }
+  }
+`;
+
+export const GET_MALE_FEMALE_RATIO = `
+  query GET_MALE_FEMALE_RATIO($project_name: String!) {
+    studentSystemActorRatiosConnection(
+      where: {
+        project_name: $project_name
+      }
+    ) {
+      values {
+        male
+        female
       }
     }
   }
