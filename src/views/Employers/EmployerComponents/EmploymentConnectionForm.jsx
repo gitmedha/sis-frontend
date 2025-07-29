@@ -322,12 +322,7 @@ const EnrollmentConnectionForm = (props) => {
 
 
   const handleStatusChange = async (value) => {
-<<<<<<< HEAD
     setSelectedStatus(value);
-
-=======
-    setSelectedStatus(value); 
->>>>>>> 79af6252e6a065c2441daa1d7df84133c87b6282
     if (value === "Rejected by Employer") {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
@@ -506,10 +501,6 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Source"
                     />
                   </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> fa52689818e70035a2f3b0144f042e1aab4f9de3
                   {isRejected ||
                     (initialValues.reason_if_rejected &&
                       initialValues.reason_if_rejected.length) ? (
