@@ -327,7 +327,7 @@ const EnrollmentConnectionForm = (props) => {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
       setRejected(true);
-    } else if (value === "Offer Rejected by Student") {
+    } else if (value === "Rejected by Student") {
       setRejected(true);
     } else {
       setRejected(false);
