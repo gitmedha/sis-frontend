@@ -405,7 +405,7 @@ const EnrollmentConnectionForm = (props) => {
 
   const handleStatusChange = async (value) => {
     setSelectedStatus(value);
-
+    console.log(value);
     if (value === "Rejected by Employer") {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
@@ -595,7 +595,7 @@ const EnrollmentConnectionForm = (props) => {
                         name="reason_if_rejected"
                         label="Reason if Rejected"
                         required={
-                          selectedStatus === "Offer Rejected by Student"
+                          selectedStatus === "Rejected by Student"
                         }
                         options={rejectionreason}
                         className="form-control"
