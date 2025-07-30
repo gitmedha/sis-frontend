@@ -511,7 +511,7 @@ const EnrollmentConnectionForm = (props) => {
                         name="reason_if_rejected"
                         label="Reason if Rejected"
                         required={
-                          selectedStatus === "Offer Rejected by Student"
+                          selectedStatus === "Rejected by Student"
                         }
                         options={rejectionreason}
                         className="form-control"
