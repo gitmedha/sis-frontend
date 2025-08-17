@@ -73,23 +73,11 @@ const statusOption = [
   { value: "Dropped out", label: "Dropped out" },
 ];
 
-const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
-  {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
-  },
-  {
-    value: "Workshop/Training Session/Activity (In/Off campus)",
-    label: "Workshop/Training Session/Activity (In/Off campus)",
-  },
-  { value: "Alumni Engagement", label: "Alumni Engagement" },
-  { value: "Placement Drive", label: "Placement Drive" },
-];
 
 const UpdateMentorship = (props) => {
   let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [showSpecifyOthers, setShowSpecifyOthers] = useState(props.mentor_domain === 'Others');
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [districtOption, setDistrictOptions] = useState([]);
@@ -197,6 +185,7 @@ const UpdateMentorship = (props) => {
     medha_area: "",
     status: "",
     program_name: "",
+    specify_other: "",
   };
 
   if (props) {
@@ -215,6 +204,7 @@ const UpdateMentorship = (props) => {
     initialValues["outreach"] = props.outreach;
     initialValues["contact"] = props.contact;
     initialValues["social_media_profile_link"] = props.social_media_profile_link;
+    initialValues["specify_other"] = props.specify_other;
   }
 
   useEffect(async () => {
@@ -403,6 +393,10 @@ const UpdateMentorship = (props) => {
                             className="form-control"
                             placeholder="Mentor's Domain"
                             required
+                            onChange={(e) => {
+                              setFieldValue('mentor_domain', e.target.value);
+                              setShowSpecifyOthers(e.target.value === 'Others');
+                            }}
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -436,6 +430,19 @@ const UpdateMentorship = (props) => {
                             required
                           />
                         </div>
+                        {showSpecifyOthers && (
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              icon="down"
+                              control="input"
+                              name="specify_other"
+                              label="Specify Others"
+                              className="form-control"
+                              placeholder="Specify Others"
+                              required
+                            />
+                          </div>
+                        )}
                       </div>
                     </Section>
                     <Section>
