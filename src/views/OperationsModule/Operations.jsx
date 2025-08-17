@@ -1649,12 +1649,13 @@ const Operations = ({
                       <FaPlus size="12" color="#fff" />
                     </span>
                   </button>
-
+                {console.log(activeTab.key)
+                }
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
-                  // activeTab.key == "collegePitches"
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches"
                    ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -1673,8 +1674,8 @@ const Operations = ({
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
-                  // activeTab.key == "collegePitches" 
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches" 
                   ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>

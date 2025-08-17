@@ -121,8 +121,8 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setShowEndDate(
       selectedStatus === "Internship Complete" ||
-        selectedStatus === "Offer Accepted by Student" ||
-        selectedOpportunityType === "Apprenticeship"
+      selectedStatus === "Offer Accepted by Student" ||
+      selectedOpportunityType === "Apprenticeship"
     );
     setEndDateMandatory(selectedStatus === "Internship Complete");
   }, [selectedStatus, selectedOpportunityType]);
@@ -288,12 +288,11 @@ const EnrollmentConnectionForm = (props) => {
 
   const handleStatusChange = async (value) => {
     setSelectedStatus(value);
-
     if (value === "Rejected by Employer") {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
       setRejected(true);
-    } else if (value === "Offer Rejected by Student") {
+    } else if (value === "Rejected by Student") {
       setRejected(true);
     } else {
       setRejected(false);
@@ -469,8 +468,8 @@ const EnrollmentConnectionForm = (props) => {
                   </div>
 
                   {isRejected ||
-                  (initialValues.reason_if_rejected &&
-                    initialValues.reason_if_rejected.length) ? (
+                    (initialValues.reason_if_rejected &&
+                      initialValues.reason_if_rejected.length) ? (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         icon="down"
@@ -478,7 +477,7 @@ const EnrollmentConnectionForm = (props) => {
                         name="reason_if_rejected"
                         label="Reason if Rejected"
                         required={
-                          selectedStatus === "Offer Rejected by Student"
+                          selectedStatus === "Rejected by Student"
                         }
                         options={rejectionreason}
                         className="form-control"
@@ -497,8 +496,8 @@ const EnrollmentConnectionForm = (props) => {
                     <div></div>
                   )}
                   {ifSelectedOthers ||
-                  (initialValues.reason_if_rejected_other &&
-                    initialValues.reason_if_rejected_other.length) ? (
+                    (initialValues.reason_if_rejected_other &&
+                      initialValues.reason_if_rejected_other.length) ? (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         name="reason_if_rejected_other"
@@ -542,7 +541,7 @@ const EnrollmentConnectionForm = (props) => {
                 </div>
               </Section>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"
