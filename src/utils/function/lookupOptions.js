@@ -155,6 +155,7 @@ export const getAllMedhaUsers = async () => {
       id: user.id,
     }
   });
+  console.log("filteredData",filteredData);
   return filteredData;
 }
 

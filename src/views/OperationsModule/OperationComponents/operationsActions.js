@@ -27,6 +27,7 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
+  GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
 
 export const searchPrograms = async function (searchValue) {
@@ -503,6 +504,14 @@ export const updateCollegePitch = async (id, data) => {
     .catch((error) => Promise.reject(error));
 };
 
+export const bulkCreatePmus = async (data) => {
+  try {
+    const response = await api.post("/pmuses/createBulkPmus", data);
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
 export const bulkCreateOpsActivities = async (data) => {
   try {
     const response = await api.post(
@@ -571,6 +580,26 @@ export const bulkCreateAlumniQueries = async (data) => {
       "/alumni-queries/create-bulk-alumni-queries",
       data
     );
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+
+export const bulkCreateEcosystem = async (data) => {
+  try {   
+    const response = await api.post(
+      "/ecosystems/create-bulk-ecosystem",
+      data
+    );    
+return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+export const bulkCreateCurriculumIntervention = async (data) => {
+  try {
+    const response = await api.post('/curricula/bulk-create', data);
     return response;
   } catch (error) {
     return console.error(error);
@@ -872,3 +901,39 @@ export const getAllBatchs = async () => {
     console.error(err); 
   }
 };
+
+
+export const searchCurriculumInterventions = async (searchParams) => {
+  try {
+    const response = await api.post('/curriculum-interventions/search-ops', searchParams);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCurriculumInterventionFieldValues = async (field) => {
+  try {
+    const response = await api.get(`/curriculum-interventions/distinct/${field}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCollegesByProjectName = async (projectName) => {
+  try {
+    const response = await api.post("/graphql", {
+      query: GET_COLLEGES_BY_PROJECT_NAME,
+      variables: { project_name:projectName },
+    });
+    return response?.data?.data?.institutionsConnection?.values?.map(college=>({
+      label: college.name,
+      value:college.name
+    }))
+
+  } catch (error) {
+    console.error("Error fetching colleges by project name:", error);
+    throw error;
+  }
+}
