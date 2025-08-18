@@ -231,145 +231,46 @@ export const RowsData = (props) => {
         />
       </td>
 
-      <td>
-        <Select
-          className="basic-single table-input"
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="student"
-          options={studenTypeOption}
-          onChange={(e) => handleStudentType(e, row.id)}
-        />
-      </td>
+        <td>
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="organization"
+            options={props.organizationOptions}
+onChange={(selected) => {
+  console.log(selected);
+  props.handleChange(
+    selected ? selected.value : null,
+    "organization",
+    row.id
+  );
+}}
 
-      <td>
-        <Select
-          className={`table-input ${
-            props.classValue[`class${row.id - 1}`]?.batch ? `border-red` : ""
-          }`}
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          isDisabled={studentType}
-          name="batch"
-          options={props.batchbdata}
-          onChange={(e) => props.handleChange(e, "batch", row.id)}
-          onInputChange={(inputValue) => {
-            props.filterBatch(inputValue).then((data) => {
-              props.setBatchOptions(data);
-            });
-          }}
-        />
-      </td>
-      <td>
-        <Select
-          className="basic-single table-input"
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="batch"
-          options={programOptions}
-          filterData={filterProgram}
-          onChange={(e) => props.handleChange(e, "program_name", row.id)}
-        />
-      </td>
+            onInputChange={inputValue => {
+              props.filterOrganization(inputValue).then(data => {
+                props.setOrganizationOptions(data);
+              });
+            }}
+          />
+        </td>
 
-      <td>
-        <input
-          type="date"
-          className={`table-input h-2 ${
-            props.classValue[`class${row.id - 1}`]?.start_date
-              ? `border-red`
-              : ""
-          }`}
-          defaultValue={startDate}
-          onChange={(e) => {
-            setStartDate(e.target.value);
-            props.updateRow(row.id, "start_date", e.target.value);
-          }}
-        />
-      </td>
-      <td>
-        <input
-          type="date"
-          className={`table-input h-2 ${
-            props.classValue[`class${row.id - 1}`]?.end_date ? `border-red` : ""
-          }`}
-          min={startDate}
-          value={endDate}
-          disabled={!startDate ? true : false}
-          onChange={(event) => {
-            const date = event.target.value;
-            setEndDate(date);
-            props.updateRow(row.id, "end_date", date);
-          }}
-        />
-      </td>
-      <td>
-        <input
-          className={`table-input h-2 ${
-            props.classValue[`class${row.id - 1}`]?.topic ? "border-red" : ""
-          }`}
-          type="text"
-          ref={topic}
-          onChange={(e) => handleInputChange(row.id, "topic", topic)}
-          // onChange={(e) => props.updateRow(row.id, "topic", e.target.value)}
-        />
-      </td>
-      <td>
-        <Select
-          className="basic-single table-input donor"
-          classNamePrefix="select"
-          isSearchable={true}
-          name="area"
-          options={options}
-          onChange={(e) => props.handleChange(e, "donor", row.id)}
-        />
-      </td>
-      <td>
-        <input
-          className="table-input h-2"
-          type="text"
-          onKeyPress={handleKeyPresscharandspecialchar}
-          ref={guestname}
-          onChange={(e) => handleInputChange(row.id, "guest", guestname)}
-        />
-      </td>
-
-      <td>
-        <input
-          className="table-input h-2"
-          type="text"
-          onKeyPress={handleKeyPresscharandspecialchar}
-          ref={guestDesignation}
-          onChange={(e) =>
-            handleInputChange(row.id, "designation", guestDesignation)
-          }
-        />
-      </td>
-
-      <td>
-        <input
-          className="table-input h-2"
-          type="text"
-          ref={org}
-          onChange={(e) => handleInputChange(row.id, "organization", org)}
-        />
-      </td>
-      <td>
-        <input
-          className={`table-input h-2 ${
-            props.classValue[`class${row.id - 1}`]?.students_attended
-              ? `border-red`
-              : ""
-          }`}
-          type="number"
-          onChange={(e) =>
-            props.updateRow(row.id, "students_attended", e.target.value)
-          }
-        />
-      </td>
+        <td>
+          <input
+            className={`table-input h-2 ${
+              props.classValue[`class${row.id - 1}`]?.students_attended
+                ? `border-red`
+                : ""
+            }`}
+            type="number"
+            onChange={(e) =>
+              props.updateRow(row.id, "students_attended", e.target.value)
+            }
+          />
+        </td>
+        
+      
     </>
   );
 };

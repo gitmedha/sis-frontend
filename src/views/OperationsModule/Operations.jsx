@@ -156,6 +156,7 @@ const Operations = ({
     mentorship: {},
     ecosystemData:{}
   });
+  
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
@@ -1646,12 +1647,13 @@ const Operations = ({
                       <FaPlus size="12" color="#fff" />
                     </span>
                   </button>
-
+                {console.log(activeTab.key)
+                }
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
-                  activeTab.key == "upskilling" 
-                  // activeTab.key == "collegePitches"
+                  activeTab.key == "upskilling" ||
+                  activeTab.key == "collegePitches"
                    ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -1750,25 +1752,29 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ):activeTab.key === "ecosystem" ? (
-              <>
-                <EcosystemSearchBar />
-              <Table
-                  onRowClick={(data) => showRowData("ecosystemData", data)}
-                  columns={columnsEcosystem}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
+            )
+            
+            // :activeTab.key === "ecosystem" ? (
+            //   <>
+            //     <EcosystemSearchBar />
+            //   <Table
+            //       onRowClick={(data) => showRowData("ecosystemData", data)}
+            //       columns={columnsEcosystem}
+            //       data={isSearching ? (isFound ? searchedData : []) : opts}
+            //       totalRecords={
+            //         isSearching ? opsData.length : optsAggregate.count
+            //       }
+            //       fetchData={isSearching ? fetchSearchedData : fetchData}
+            //       paginationPageSize={paginationPageSize}
+            //       onPageSizeChange={setPaginationPageSize}
+            //       paginationPageIndex={paginationPageIndex}
+            //       onPageIndexChange={setPaginationPageIndex}
+            //     />
               
-              </>
-            ) : activeTab.key == "upskilling" ? (
+            //   </>
+            // ) 
+            
+            : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
                 <Table

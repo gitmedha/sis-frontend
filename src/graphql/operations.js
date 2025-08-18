@@ -929,53 +929,6 @@ export const SEARCH_BY_PROGRAMS = `
 `;
 
 
-export const GET_COLLEGES_BY_PROJECT_NAME = `
-  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
-  institutionsConnection(
-    sort: $sort,
-    start: $start,
-    limit: $limit,
-    where: {
-      project_name: $project_name,
-      source: "System Adoption"
-    }
-  ) {
-    values {
-      id
-      name
-      source
-    }
-    aggregate {
-      count
-    }
-  }
-}
-`;
-export const GET_STUDENT_OUTREACHES = `
-  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
-    allStudentOutreaches: studentOutreachesConnection {
-      aggregate {
-        count
-      }
-    }
- 
-    activeStudentOutreaches: studentOutreachesConnection(
-      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
-      start: $start,     # Pagination offset (e.g., 20)
-      limit: $limit,     # Number of records per page (e.g., 10)
-      where: { isactive: true }
-    ) {
-      values {
-        ${studentOutreachesFields}
-      },
-      aggregate {
-        count # Total count of active records
-      },
-    }
-  }
-`;
- 
-
 export const UPDATE_ECOSYSTEM = `
   mutation UPDATE_ECOSYSTEM($data: editEcosystemInput!, $id: ID!) {
     updateEcosystem(
@@ -1240,4 +1193,81 @@ export const GET_PMUS_DISTINCT_FIELD = `
     }
   }
 `;
+
+export const GET_PMUS_DATA = `
+  query GetPMusData($where: JSON) {
+    pmusesConnection(where: $where) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const DEACTIVATE_PMUS_ENTRY = `
+  mutation DEACTIVATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        isactive
+      }
+    }
+  }
+`;
+
+
+export const GET_COLLEGES_BY_PROJECT_NAME = `
+  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
+  institutionsConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      project_name: $project_name,
+      source: "System Adoption"
+    }
+  ) {
+    values {
+      id
+      name
+      source
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const SEARCH_EMPLOYERS = `
+  query SEARCH_EMPLOYERS($query:String,$limit:Int,$sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+
 
