@@ -76,8 +76,8 @@ const Check = (props) => {
                         <td className={obj.isDomainInvalid ? "text-danger" : ""}>
                           {obj.mentor_domain || "No data"}
                         </td>
-                        <td className={obj.mentor_domain =='Others' && obj.specify_others =='' ? "text-danger" : ""}>
-                          {obj.specify_others || "No data"}
+                        <td className={obj.mentor_domain =='Others' && obj.specify_other =='' ? "text-danger" : ""}>
+                          {obj.specify_other || "No data"}
                         </td>
                         <td className={obj.isCompanyNameInvalid ? "text-danger" : ""}>
                           {obj.mentor_company_name || "No data"}
