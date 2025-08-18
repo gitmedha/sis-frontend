@@ -92,9 +92,9 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  { title: "Ecosystem", key: "ecosystem" },
-  { title: "Curriculum Intervention", key: "curriculumIntervention" },
-  { title: "PMUs", key: "pmus" } // Add PMUs tab
+  // { title: "Ecosystem", key: "ecosystem" },
+  // { title: "Curriculum Intervention", key: "curriculumIntervention" },
+  // { title: "PMUs", key: "pmus" }
 
 ];
 
@@ -1735,25 +1735,29 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ):activeTab.key === "ecosystem" ? (
-              <>
-                <EcosystemSearchBar />
-              <Table
-                  onRowClick={(data) => showRowData("ecosystemData", data)}
-                  columns={columnsEcosystem}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
+            )
+            
+            // :activeTab.key === "ecosystem" ? (
+            //   <>
+            //     <EcosystemSearchBar />
+            //   <Table
+            //       onRowClick={(data) => showRowData("ecosystemData", data)}
+            //       columns={columnsEcosystem}
+            //       data={isSearching ? (isFound ? searchedData : []) : opts}
+            //       totalRecords={
+            //         isSearching ? opsData.length : optsAggregate.count
+            //       }
+            //       fetchData={isSearching ? fetchSearchedData : fetchData}
+            //       paginationPageSize={paginationPageSize}
+            //       onPageSizeChange={setPaginationPageSize}
+            //       paginationPageIndex={paginationPageIndex}
+            //       onPageIndexChange={setPaginationPageIndex}
+            //     />
               
-              </>
-            ) : activeTab.key == "upskilling" ? (
+            //   </>
+            // ) 
+            
+            : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
                 <Table
@@ -1826,37 +1830,42 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) : activeTab.key === "curriculumIntervention" ? (
-              <>
-                <CurriculumInterventionSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
-                  columns={columnsCurriculumIntervention}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
-              </>
-            ) : activeTab.key === "pmus" ? (
-              <>
-              <PmusSearchBar />
-              <Table
-                onRowClick={(data) => showRowData("pmusData", data)}
-                columns={columnsPmus}
-                data={isSearching ? (isFound ? searchedData : []) : opts}
-                totalRecords={isSearching ? opsData.length : optsAggregate.count}
-                fetchData={isSearching ? fetchSearchedData : fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
-              </>
-            ) : (
+            ) 
+            // : activeTab.key === "curriculumIntervention" ? (
+            //   <>
+            //     <CurriculumInterventionSearchBar />
+            //     <Table
+            //       onRowClick={(data) => showRowData("curriculumInterventionData", data)}
+            //       columns={columnsCurriculumIntervention}
+            //       data={isSearching ? (isFound ? searchedData : []) : opts}
+            //       totalRecords={isSearching ? opsData.length : optsAggregate.count}
+            //       fetchData={isSearching ? fetchSearchedData : fetchData}
+            //       paginationPageSize={paginationPageSize}
+            //       onPageSizeChange={setPaginationPageSize}
+            //       paginationPageIndex={paginationPageIndex}
+            //       onPageIndexChange={setPaginationPageIndex}
+            //     />
+            //   </>
+            // ) 
+            
+            // : activeTab.key === "pmus" ? (
+            //   <>
+            //   <PmusSearchBar />
+            //   <Table
+            //     onRowClick={(data) => showRowData("pmusData", data)}
+            //     columns={columnsPmus}
+            //     data={isSearching ? (isFound ? searchedData : []) : opts}
+            //     totalRecords={isSearching ? opsData.length : optsAggregate.count}
+            //     fetchData={isSearching ? fetchSearchedData : fetchData}
+            //     paginationPageSize={paginationPageSize}
+            //     onPageSizeChange={setPaginationPageSize}
+            //     paginationPageIndex={paginationPageIndex}
+            //     onPageIndexChange={setPaginationPageIndex}
+            //   />
+            //   </>
+            // ) 
+            
+            : (
               ""
             )}
           </div>
