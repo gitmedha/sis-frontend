@@ -359,6 +359,17 @@ const CollepitchesEdit = (props) => {
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
+                            name="pitch_date"
+                            label="Pitch Date"
+                            control="datepicker"
+                            icon="down"
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Pitch Date"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
                             icon="down"
                             control="input"
                             name="phone"
