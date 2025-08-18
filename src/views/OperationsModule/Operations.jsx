@@ -92,15 +92,9 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-<<<<<<< HEAD
-  { title: "Ecosystem", key: "ecosystem" },
-  { title: "Curriculum Intervention", key: "curriculumIntervention" },
-  { title: "PMUs", key: "pmus" } // Add PMUs tab
-=======
   // { title: "Ecosystem", key: "ecosystem" },
   // { title: "Curriculum Intervention", key: "curriculumIntervention" },
   // { title: "PMUs", key: "pmus" }
->>>>>>> cce8304589273c17a7b3c9be998c9f9d1bf825df
 
 ];
 
@@ -1741,27 +1735,6 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-<<<<<<< HEAD
-            ):activeTab.key === "ecosystem" ? (
-              <>
-                <EcosystemSearchBar />
-              <Table
-                  onRowClick={(data) => showRowData("ecosystemData", data)}
-                  columns={columnsEcosystem}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={
-                    isSearching ? opsData.length : optsAggregate.count
-                  }
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
-              
-              </>
-            ) : activeTab.key == "upskilling" ? (
-=======
             )
             
             // :activeTab.key === "ecosystem" ? (
@@ -1785,7 +1758,6 @@ const Operations = ({
             // ) 
             
             : activeTab.key == "upskilling" ? (
->>>>>>> cce8304589273c17a7b3c9be998c9f9d1bf825df
               <>
                 <UpskillSearchBar />
                 <Table
@@ -1858,39 +1830,6 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-<<<<<<< HEAD
-            ) : activeTab.key === "curriculumIntervention" ? (
-              <>
-                <CurriculumInterventionSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
-                  columns={columnsCurriculumIntervention}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
-              </>
-            ) : activeTab.key === "pmus" ? (
-              <>
-              <PmusSearchBar />
-              <Table
-                onRowClick={(data) => showRowData("pmusData", data)}
-                columns={columnsPmus}
-                data={isSearching ? (isFound ? searchedData : []) : opts}
-                totalRecords={isSearching ? opsData.length : optsAggregate.count}
-                fetchData={isSearching ? fetchSearchedData : fetchData}
-                paginationPageSize={paginationPageSize}
-                onPageSizeChange={setPaginationPageSize}
-                paginationPageIndex={paginationPageIndex}
-                onPageIndexChange={setPaginationPageIndex}
-              />
-              </>
-            ) : (
-=======
             ) 
             // : activeTab.key === "curriculumIntervention" ? (
             //   <>
@@ -1927,7 +1866,6 @@ const Operations = ({
             // ) 
             
             : (
->>>>>>> cce8304589273c17a7b3c9be998c9f9d1bf825df
               ""
             )}
           </div>
