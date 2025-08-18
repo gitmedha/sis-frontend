@@ -247,7 +247,6 @@ const CollepitchesEdit = (props) => {
       console.error(error);
     }
   };
-
   return (
     <>
       {initialValues && props && (
@@ -338,6 +337,17 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="College Name"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="pitch_date"
+                            label="Pitch Date"
+                            control="datepicker"
+                            icon="down"
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Pitch Date"
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
