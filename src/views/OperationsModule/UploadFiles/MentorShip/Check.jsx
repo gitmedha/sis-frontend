@@ -46,6 +46,7 @@ const Check = (props) => {
                       <th>Mentor Name</th>
                       <th>Email</th>
                       <th>Mentor Domain</th>
+                      <th>Specify Other's</th>
                       <th>Mentor Company Name</th>
                       <th>Designation</th>
                       <th>Mentor Area</th>
@@ -74,6 +75,9 @@ const Check = (props) => {
                         </td>
                         <td className={obj.isDomainInvalid ? "text-danger" : ""}>
                           {obj.mentor_domain || "No data"}
+                        </td>
+                        <td className={obj.mentor_domain =='Others' && obj.specify_others =='' ? "text-danger" : ""}>
+                          {obj.specify_others || "No data"}
                         </td>
                         <td className={obj.isCompanyNameInvalid ? "text-danger" : ""}>
                           {obj.mentor_company_name || "No data"}
