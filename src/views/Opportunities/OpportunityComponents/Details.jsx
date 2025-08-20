@@ -103,6 +103,7 @@ const Details = (props) => {
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
             <DetailField label="Skills Required" className="capitalize" value={skills_required} />
+            <DetailField label="Experience Required" value={props.experience_required ? props.experience_required :""} />
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="Job Description File Upload"  value=

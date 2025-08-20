@@ -15,7 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
-// import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -220,15 +220,15 @@ const AlumniServiceForm = (props) => {
     setSelectedCategory("");
 
 
-    // let propgramEnrollemntData={};
-    // if(props.alumniService ){
-    //   propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Updated",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
+    let propgramEnrollemntData={};
+    if(props.alumniService ){
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Updated",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
       
-    // }else {
-    //   propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:values.alumni_service_student}};
-    // }
+    }else {
+      propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:values.alumni_service_student}};
+    }
 
-    // await createLatestAcivity(propgramEnrollemntData);
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 

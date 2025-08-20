@@ -29,3 +29,21 @@ query GET_ALL_ADDRESS {
 `;
 
 
+
+export const GET_ALL_CITIES = `
+  query GET_GEOGRAPHIES($state: String, $start: Int, $limit: Int) {
+    geographies(
+      where: { state: $state }, 
+      start: $start, 
+      limit: $limit
+    ) {
+      city
+      state  # Optionally, return the state field as well if needed for clarity
+    }
+    geographiesConnection {
+      aggregate {
+        count
+      }
+    }
+  }
+`;

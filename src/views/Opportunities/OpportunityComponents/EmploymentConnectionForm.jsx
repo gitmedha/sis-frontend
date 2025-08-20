@@ -10,6 +10,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import { searchStudents } from "./opportunityAction";
+import { createLatestAcivity, findDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -104,6 +105,15 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+
+    let propgramEnrollemntData={};
+    if(props.employmentConnection ){
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Updated",event_id:props.opportunity.id,updatedby:userId ,changes_in:findDifferences(props.employmentConnection,values)};
+      
+    }else {
+      propgramEnrollemntData={module_name:"Opportunity",activity:"Employment Connection Created",event_id:props.opportunity.id,updatedby:userId ,changes_in:values};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
@@ -244,7 +254,7 @@ const EnrollmentConnectionForm = (props) => {
       setRejected(true);
     } else if (value === "Student Dropped Out") {
       setRejected(true);
-    } else if (value === "Offer Rejected by Student") {
+    } else if (value === "Rejected by Student") {
       setRejected(true);
     } else {
       setRejected(false);
@@ -405,7 +415,7 @@ const EnrollmentConnectionForm = (props) => {
                         name="reason_if_rejected"
                         label="Reason if Rejected"
                         required={
-                          selectedStatus === "Offer Rejected by Student"
+                          selectedStatus === "Rejected by Student"
                         }
                         options={rejectionreason}
                         className="form-control"
