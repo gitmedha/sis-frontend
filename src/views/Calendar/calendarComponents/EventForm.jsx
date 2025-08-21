@@ -59,6 +59,7 @@ export const EventForm = (props) => {
   const [alumniServiceOptions, setAlumniServiceOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [locationOptions, setLocationOptions] = useState([]);
+  const [blocked, setBlocked] = useState(false);
 
   const initialValues = {};
 
@@ -157,9 +158,6 @@ export const EventForm = (props) => {
       setIsLoading(true);
       if (props.eventData) {
         values.name = values.alumni_service;
-        console.log(props.eventData);
-        console.log(values);
-        console.log(compareObjects(initialValues,values));
         let datavaluesforlatestcreate={module_name:"calender",activity:"Calendar Data Updated",event_id:"",updatedby:userId ,changes_in:findDifferencesFormatted(props.eventData,values)};
         await createLatestAcivity(datavaluesforlatestcreate);
         await updateEvent(values, props.eventData.id);
@@ -185,6 +183,20 @@ export const EventForm = (props) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+      let userID = props.eventData.assgined_to.id
+      function findUser(users, searchTerm) {
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
+
 
   return (
     <Modal
@@ -226,6 +238,7 @@ export const EventForm = (props) => {
                       placeholder="Assigned To"
                       filterData={filterAssignedTo}
                       defaultOptions={assigneeOptions}
+                      isDisabled={blocked}
                       onChange={(e) => {
                         setFieldValue("name", e.label.split("(")[0].trim());
                         setFieldValue("assgined_to", Number(e.value));

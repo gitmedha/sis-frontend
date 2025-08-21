@@ -2,11 +2,12 @@ export const GET_ALL_USERS = `
 query GET_ALL_USERS {
   users(
     sort: "username:asc"
-    where: {_or: [{ blocked_null: "true" }, { blocked_contains: "false" }] }
+    where: {_or: [{ blocked_null: "false" }, { blocked_contains: "true" }] }
   ) {
     id
     username
     email
+    blocked
   }
 }
 `;
@@ -20,6 +21,7 @@ query GET_ALL_USERS($name:String) {
     id
     username
     email
+    blocked
   }
 }
 `;
@@ -32,6 +34,7 @@ export const GET_USERS_BY_ROLE =`
       id,
       username,
       email,
+      blocked
     }
   }
 `
@@ -45,6 +48,7 @@ export const GET_USERS_BY_ROLE_SEARCH = `
       id
       username
       email
+      blocked
     }
   }
 `

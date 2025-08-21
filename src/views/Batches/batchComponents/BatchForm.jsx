@@ -67,6 +67,7 @@ const BatchForm = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [modeOfPayment, setModeOfPayment] = useState("");
+  const [blocked, setBlocked] = useState(false)
   const AssignmentFileCertification = [
     { key: true, value: true, label: "Yes" },
     { key: false, value: false, label: "No" },
@@ -242,7 +243,6 @@ const BatchForm = (props) => {
       }
       
       const data = await getAllInstitutions();
-      console.log(data.data.data.institutionsConnection.values);
       setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
@@ -260,7 +260,6 @@ const BatchForm = (props) => {
      
       
       const data = await getAllInstitutions();
-      console.log(data.data.data.institutionsConnection.values);
       setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
@@ -342,6 +341,19 @@ const BatchForm = (props) => {
     }
   };
 
+  useEffect(() => {
+    let userID = props?.assigned_to?.id;
+    function findUser(users, searchTerm) {        
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
+
   return (
     <Modal
       centered
@@ -392,6 +404,7 @@ const BatchForm = (props) => {
                       label="Assigned To"
                       required
                       className="form-control"
+                      isDisabled={blocked}
                       placeholder="Assigned To"
                       filterData={filterAssignedTo}
                       defaultOptions={assigneeOptions}
