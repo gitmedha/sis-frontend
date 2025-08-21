@@ -64,36 +64,49 @@ const Institutions = (props) => {
 
     prevIsSearchEnableRef.current = isSearchEnable;
   }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
+ 
+   const getDisplayValue = (value) => {
+  if (value && typeof value === 'object' && 'props' in value && 'value' in value.props) {
+    return value.props.value || "N/A";
+  }
+  return value || "N/A";
+};
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Name",
-        accessor: "avatar",
-      },
-      {
-        Header: "Area",
-        accessor: "medha_area",
-      },
-      {
-        Header: "State",
-        accessor: "state",
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-      },
-      {
-        Header: "Assigned To",
-        accessor: "assigned_to.username",
-      },
-    ],
-    []
-  );
+const columns = useMemo(
+  () => [
+    {
+      Header: "Name",
+      accessor: "avatar",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Area",
+      accessor: "medha_area",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "State",
+      accessor: "state",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Type",
+      accessor: "type",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Assigned To",
+      accessor: "assigned_to.username",
+      Cell: ({ row }) => getDisplayValue(row.original.assigned_to?.username)
+    },
+  ],
+  []
+);
  
   const getInstitutionsBySearchFilter = async (
     selectedTab,
