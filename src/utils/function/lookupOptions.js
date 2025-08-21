@@ -101,6 +101,7 @@ export const getDefaultAssigneeOptions = async () => {
     return {
       label: `${user.username} (${user.email})`,
       value: user.id,
+      blocked: user.blocked || false, // Ensure blocked status is included
     }
   });
   if (!userIdFound) {
@@ -156,7 +157,6 @@ export const getAllMedhaUsers = async () => {
       id: user.id,
     }
   });
-  console.log("filteredData",filteredData);
   return filteredData;
 }
 
@@ -191,7 +191,7 @@ export const getAllSearchSrm =async(role)=>{
     query:GET_USERS_BY_ROLE_SEARCH,
     variables:{
       role:1,
-      blocked: false, 
+       
     },
   });
   return data?.data?.users.map(user => ({

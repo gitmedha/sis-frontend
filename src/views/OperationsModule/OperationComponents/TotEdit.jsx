@@ -32,6 +32,7 @@ import {
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
 import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { filter } from "lodash";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -93,7 +94,7 @@ const TotEdit = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.institution) {
+    if (props.college) {
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
@@ -107,9 +108,12 @@ const TotEdit = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const { data } = await searchInstitutions(filterValue);
+      
+      
+      const { data } = await searchInstitutions(props.college || filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
+        
         return {
           ...institution,
           label: institution.name,
@@ -241,6 +245,7 @@ const TotEdit = (props) => {
     initialValues["gender"] = props.gender;
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
+     initialValues["college"] = props.college;
     initialValues["trainer_1"] = props.trainer_1?.id;
     initialValues["trainer_2"] = props.trainer_2?.id;
     initialValues["city"] = props.city;
@@ -249,8 +254,8 @@ const TotEdit = (props) => {
   }
 
   useEffect(() => {
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
+    if (props.college) {
+      filterInstitution(props.college).then((data) => {
         setInstitutionOptions(data);
       });
     }
@@ -515,7 +520,7 @@ const TotEdit = (props) => {
                           control="lookupAsync"
                           name="college"
                           label="College"
-                          onKeyPress={handleKeyPress}
+                          // onKeyPress={handleKeyPress}
                           className="form-control"
                           defaultOptions={institutionOptions}
                           filterData={filterInstitution}

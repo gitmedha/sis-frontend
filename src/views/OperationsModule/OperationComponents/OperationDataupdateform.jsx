@@ -88,6 +88,7 @@ const OperationDataupdateform = (props) => {
   const [disablevalue, setdisablevalue] = useState(false);
   const [activityoption, setActivityOption] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -348,8 +349,20 @@ const OperationDataupdateform = (props) => {
 
     setProgramName(data);
 
-    
+
   }, []);
+
+   useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      function findUser(users, searchTerm) {
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
 
   return (
     <>
@@ -407,6 +420,7 @@ const OperationDataupdateform = (props) => {
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
+                          
                           {assigneeOptions.length && (
                             <Input
                               control="lookupAsync"
@@ -416,7 +430,10 @@ const OperationDataupdateform = (props) => {
                               placeholder="Assigned To"
                               filterData={filterAssignedTo}
                               defaultOptions={assigneeOptions}
+                              isDisabled={blocked}
                             />
+                          
+                            
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -449,14 +466,15 @@ const OperationDataupdateform = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           {institutionOptions.length && (
                             <Input
-                              control="lookup"
+                              control="lookupAsync"
                               name="institution"
                               label="Institution"
-                              // filterData={filterInstitution}
-                              Options={institutionOptions}
+                              filterData={filterInstitution}
+                              // Options={institutionOptions}
+                              defaultOptions={institutionOptions}
                               placeholder="Institution"
                               className="form-control"
-                              // isClearable
+                            // isClearable
                             />
                           )}
                         </div>

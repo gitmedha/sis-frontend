@@ -130,8 +130,6 @@ export const getSearchOps = async (searchField, value) => {
     Authorization: `Bearer ${authToken}`,
     "Content-Type": "application/json",
   };
-
-  console.log(searchField);
   return await api
     .post(
       "/users-ops-activities/search",
@@ -443,7 +441,7 @@ export const updateMentorshipData = async (id, data) => {
     });
 };
 
-export const updateUserTot = async (id,data) => {
+export const updateUserTot = async (id, data) => {
   return await api
     .post("/graphql", {
       query: UPDATE_USER_TOT,
@@ -456,8 +454,7 @@ export const updateUserTot = async (id,data) => {
     .catch((error) => Promise.reject(error));
 };
 
-export const updateStudentOutreach = async (id,data) => {
-  console.log(data, id,'data')
+export const updateStudentOutreach = async (id, data) => {  
   return await api
     .post("/graphql", {
       query: UPDATE_STUDENT_OUTREACH,
@@ -605,12 +602,12 @@ export const bulkCreateAlumniQueries = async (data) => {
 };
 
 export const bulkCreateEcosystem = async (data) => {
-  try {   
+  try {
     const response = await api.post(
       "/ecosystems/create-bulk-ecosystem",
       data
-    );    
-return response;
+    );
+    return response;
   } catch (error) {
     return console.error(error);
   }
@@ -662,7 +659,6 @@ export const deactivate_user_tots = async (id) => {
 };
 
 export const deactivate_student_outreach = async (id) => {
-  console.log(id,'id')
   let data = { isactive: false };
 
   return await api
@@ -940,7 +936,7 @@ export const getAllBatchs = async () => {
       return batchData;
     }
   } catch (err) {
-    console.error(err); 
+    console.error(err);
   }
 };
 
@@ -948,11 +944,11 @@ export const getCollegesByProjectName = async (projectName) => {
   try {
     const response = await api.post("/graphql", {
       query: GET_COLLEGES_BY_PROJECT_NAME,
-      variables: { project_name:projectName },
+      variables: { project_name: projectName },
     });
-    return response?.data?.data?.institutionsConnection?.values?.map(college=>({
+    return response?.data?.data?.institutionsConnection?.values?.map(college => ({
       label: college.name,
-      value:college.name
+      value: college.name
     }))
 
   } catch (error) {
@@ -979,17 +975,17 @@ export const getCurriculumInterventionFieldValues = async (field) => {
   }
 };
 
-export const getOrgsPicklist = async (field, table)=>{
+export const getOrgsPicklist = async (field, table) => {
   try {
-       const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
-       return response.data;
+    const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
+    return response.data;
   } catch (error) {
     console.error("Error fetching organization picklist:", error);
     throw error;
-   
+
   }
 }
- 
+
 export const searchEmployers = async function (searchValue) {
   try {
     const { data } = await api.post("/graphql", {
@@ -1000,7 +996,7 @@ export const searchEmployers = async function (searchValue) {
         query: searchValue,
       },
     });
- 
+
     return data;
   } catch (error) {
     console.error(error.message);

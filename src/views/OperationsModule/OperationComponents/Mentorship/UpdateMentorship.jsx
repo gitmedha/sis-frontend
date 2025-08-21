@@ -83,6 +83,7 @@ const UpdateMentorship = (props) => {
   const [districtOption, setDistrictOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [programeName, setProgramName] = useState([]);
+  const [blocked, setBlocked] = useState(false);
   const userId = localStorage.getItem("user_id");
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -231,6 +232,22 @@ const UpdateMentorship = (props) => {
   //     }),
   // });
 
+  useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      
+      function findUser(users, searchTerm) {
+          
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
+
   return (
     <>
       {initialValues && props && (
@@ -296,6 +313,7 @@ const UpdateMentorship = (props) => {
                               placeholder="Assigned To"
                               filterData={filterAssignedTo}
                               defaultOptions={assigneeOptions}
+                              isDisabled={blocked}
                             />
                           )}
                         </div>

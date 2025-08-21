@@ -25,7 +25,6 @@ const Style = styled.div`
 const CheckTot = (props) => {
   let { onHide } = props;
   const pattern = /^[0-9]{10}$/;
-  console.log("props.notUploadedData", props.notUploadedData);
 
   return (
     <>
@@ -92,14 +91,15 @@ const CheckTot = (props) => {
                           <td className={obj.state ? "" : "text-danger"}>{obj.state ? obj.state : "Please select from dropdown"}</td>
                           <td className={obj.city ? "" : "text-danger"}>{obj.city ? obj.city : "Please select from dropdown"}</td>
                           <td>{obj.designation}</td>
+                          
+                          
                           <td className={obj.college?.notFound ? "text-danger" : ""}>{
                             obj.college.value
                               ? obj.college.value
-                              : "Please select from dropdown"
+                              : obj.college ? obj.college : "Please select from dropdown"
 
                           }
-                            {console.log(obj.college.notFound, obj.college)}
-
+                       
                           </td>
                           <td
                             className={obj.project_name?.notFound || !obj.project_name ? "text-danger" : ""}
