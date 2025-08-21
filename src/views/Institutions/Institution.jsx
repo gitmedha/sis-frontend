@@ -169,6 +169,13 @@ const Institute = (props) => {
     getProgramEnrollments();
   }, [instituteID]);
 
+   const getDisplayValue = (value) => {
+  if (value && typeof value === 'object' && 'props' in value && 'value' in value.props) {
+    return value.props.value || "N/A";
+  }
+  return value || "N/A";
+};
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -204,7 +211,7 @@ const Institute = (props) => {
               />
             }
           >
-            <Details {...instituteData} />
+            <Details {...instituteData} getDisplayValue={getDisplayValue}/>
           </Collapsible>
           <Collapsible title="Address">
             <Address {...instituteData} id={rest.id} />

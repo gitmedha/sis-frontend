@@ -26,20 +26,22 @@ const Details = (props) => {
     });
   }, [])
 
+  
+
   return (
     <div className="container-fluid my-3">
       <div className="row latto-regular">
         <div className="col-6 col-md-4">
-          <DetailField label="Name" className="capitalize" value={name} />
-          <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
+          <DetailField label="Name" className="capitalize" value={props.getDisplayValue(name)} />
+          <DetailField label="Type" value={<Badge value={props.getDisplayValue(type)} pickList={pickList.type} />} />
           <DetailField label="Website" value={<a href={website} target="_blank" rel="noreferrer" className="latto-regular">{website}</a>} />
           <DetailField label="Email" value={<a target="_blank" href={`mailto:${email}`} rel="noreferrer">{email}</a>} />
           <DetailField label="Created By" value={created_by_frontend?.username ?`${created_by_frontend?.username} (${created_by_frontend?.email})`: ''} />
           <DetailField label="Created At" value={created_at ? moment(created_at).format("DD MMM YYYY, h:mm a"): ''} />
         </div>
         <div className="col-6 offset-md-2 col-md-4">
-          <DetailField label="Assigned To" className="capitalize" value={assigned_to?.username} />
-          <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
+          <DetailField label="Assigned To" className="capitalize" value={props.getDisplayValue(assigned_to?.username)} />
+          <DetailField label="Status" value={<Badge value={props.getDisplayValue(status)} pickList={pickList.status} />} />
           <DetailField label="Phone number" value={<a href="tel:+91">{phone}</a>} />
           <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
           <DetailField label="Updated At" value={updated_at ? moment(updated_at).format("DD MMM YYYY, h:mm a"): ''} />
