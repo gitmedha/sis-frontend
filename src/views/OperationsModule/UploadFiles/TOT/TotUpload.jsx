@@ -250,21 +250,21 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
 
-  useEffect(() => {
-    const getdata = async () => {
-      const data = await getAllSrmbyname();
-      setAssigneeOption(data);
+  // useEffect(() => {
+  //   const getdata = async () => {
+  //     const data = await getAllSrmbyname();
+  //     setAssigneeOption(data);
 
-      const instituteData = await getAllInstitute();
-      console.log(instituteData);
+  //     const instituteData = await getAllInstitute();
+  //     console.log(instituteData);
       
-      setInstituteOptions(instituteData)
+  //     setInstituteOptions(instituteData)
       
       
-    };
+  //   };
 
-    getdata();
-  }, [props]);
+  //   getdata();
+  // }, [props]);
 
   const handleFileChange = (event) => {
     const fileInput = event.target;
@@ -366,7 +366,10 @@ const TotUpload = (props) => {
 
   useEffect(() => {
     getTotPickList().then((data) => {
+      console.log(data);
+      
       // setModuleName(data.module_name.map(item))
+      setInstituteOptions(data.TOT_college)
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
@@ -489,13 +492,13 @@ const TotUpload = (props) => {
         (state) => state === newItem["State"]
       )?.id;
       console.log("Looking for:", newItem["College Name"]);
-      console.log("Available names:", instituteOptions.map(i => i.name));
+      console.log("Available names:", instituteOptions.map(i => i));
       
       const targetCollege = newItem["College Name"].trim().toLowerCase();
 
 const instituteCheck = instituteOptions.find(
-  (i) =>  i.name.trim().toLowerCase() === targetCollege
-)?.name;
+  (i) =>  i.trim().toLowerCase() === targetCollege
+);
 
 console.log("Matched:", instituteCheck);
 
