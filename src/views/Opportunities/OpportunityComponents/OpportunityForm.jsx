@@ -66,6 +66,7 @@ const OpportunityForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem("user_id"));
+  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
   const [blocked, setBlocked] = useState(false)
 
   const [initialValues, setInitialValues] = useState({
@@ -87,6 +88,7 @@ const OpportunityForm = (props) => {
     medha_area: "",
     district: "",
     experience_required: "",
+    earning_type: "",
   });
 
   useEffect(() => {
@@ -151,6 +153,13 @@ const OpportunityForm = (props) => {
             value: item.value,
           };
         })
+      );
+      setEarningTypeOptions(
+        data.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
       );
     });
 
@@ -230,6 +239,10 @@ const OpportunityForm = (props) => {
       values.role_or_designation[0].toUpperCase() +
       values.role_or_designation.slice(1);
     delete values.updated_at;
+    // If type is not Freelance, remove earning_type
+  if (values.type !== 'Freelance') {
+    delete values.earning_type;
+  }
     values.skills_required = values.skills_required
       .split(",")
       .map((word) => {
@@ -400,6 +413,19 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  {values.type === "Freelance" && (
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="earning_type"
+                        control="lookup"
+                        label="Earning Type"
+                        placeholder="Earning Type"
+                        options={earningTypeOptions}
+                        className="form-control"
+                        required
+                      />
+                    </div> )}
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="number_of_opportunities"
