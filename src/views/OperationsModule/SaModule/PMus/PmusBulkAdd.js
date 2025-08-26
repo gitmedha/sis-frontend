@@ -6,9 +6,9 @@ import { setAlert } from "../../../../store/reducers/Notifications/actions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { connect } from "react-redux";
 import { checkEmptyValuesandplaceNA } from "../../../../utils/function/OpsModulechecker";
-import EcosystemBulkrow from "./EcosystemBulkRow";
+import PmusBulkrow from "./PMusBulkRow.js";
 import moment from "moment";
-import {getAllMedhaUsers} from "../../../../utils/function/lookupOptions";
+import { getAllMedhaUsers } from "../../../../utils/function/lookupOptions";
 
 const StyledModal = styled(Modal)`
   .modal-body {
@@ -33,7 +33,7 @@ const StyledModal = styled(Modal)`
   }
 
   .table-container {
-    min-width: 1500px;
+    min-width: 1000px;
   }
 
   .create_data_table {
@@ -41,7 +41,7 @@ const StyledModal = styled(Modal)`
     border-collapse: collapse;
 
     th, td {
-      min-width: 180px;
+      min-width: 200px;
       padding: 8px 12px;
     }
 
@@ -63,76 +63,40 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-
-const EcosystemBulkAdd = (props) => {
-  let { onHide, show } = props;
+const PmusBulkAdd = (props) => {
+  let { onHide, show, refreshTableOnDataSaving } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   
-  const activityTypeOptions = [
-    "Industry Talk", "Placement Drive", "Workplace Exposure"
-  ].map(type => ({ label: type, value: type }));
-
-  const partnerTypeOptions = [
-    "Government", "Private Entity", "NGO", 
-    "Academician", "Freelancer", "Researcher"
-  ].map(type => ({ label: type, value: type }));
-  const govtDeptPartnerWithOptions = [
-    "Department of Skill Development and Employment",
-    "Directorate of Technical Education",
-    "Skill Development of Industrial Training",
-    "Department of Higher Education",
-    "Department of Technical Education",
-    "Department of Secondary Education",
-    "DVEDSE",
-    "Department of Labor and Resource"
-  ].sort((a, b) => a.localeCompare(b))
-   .map(type => ({ label: type, value: type }));
-
+  const stateOptions = [
+    "Uttar Pradesh", "Delhi", "Haryana", "Uttarakhand", "Bihar"
+  ].map(state => ({ label: state, value: state }));
 
   const [classValue, setClassValue] = useState({});
   const [rows, setRows] = useState([{
     id: 1,
-    activity_type: "",
-    date_of_activity: "",
-    topic: "",
-    govt_dept_partner_with: "",
-    type_of_partner: "",
-    employer_name_external_party_ngo_partner_with: "",
-    attended_students: "",
-    male_participants: "",
-    female_participants: "",
-    medha_poc_1: "",
-    medha_poc_2: ""
+    year: "",
+    pmu: "",
+    State: "",
+    medha_poc: ""
   }]);
-
 
   const [newRow, setNewRow] = useState({
     id: 1,
-    activity_type: "",
-    date_of_activity: "",
-    topic: "",
-    govt_dept_partner_with: "",
-    type_of_partner: "",
-    employer_name_external_party_ngo_partner_with: "",
-    attended_students: "",
-    male_participants: "",
-    female_participants: "",
-    medha_poc_1: "",
-    medha_poc_2: ""
+    year: "",
+    pmu: "",
+    State: "",
+    medha_poc: ""
   });
 
   const [showLimit, setShowLimit] = useState(false);
   const [medhaUsers, setMedhaUsers] = useState([]);
   
   const requiredFields = [
-    'activity_type', 
-    'topic', 
-    'type_of_partner',
-    'attended_students',
-    'male_participants',
-    'female_participants',
-    'medha_poc_1'
+    'year', 
+    'pmu', 
+    'State',
+    'medha_poc'
   ];
 
   function checkEmptyValues(obj) {
@@ -159,12 +123,11 @@ const EcosystemBulkAdd = (props) => {
     const lastRow = rows[rows.length - 1];
     const emptyValues = checkEmptyValues(lastRow);
     
-    // Check if required fields are empty
     const hasEmptyRequiredFields = requiredFields.some(field => 
       emptyValues[field] || lastRow[field] === ""
     );
+    
     if (hasEmptyRequiredFields) {
-      // Highlight empty required fields
       const errorFields = {};
       requiredFields.forEach(field => {
         if (emptyValues[field] || lastRow[field] === "") {
@@ -186,7 +149,7 @@ const EcosystemBulkAdd = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      setClassValue({}); // Reset error highlights
+      setClassValue({});
     }
   };
 
@@ -211,10 +174,10 @@ const EcosystemBulkAdd = (props) => {
       
       formattedRow.createdby = Number(userId);
       formattedRow.updatedby = Number(userId);
-      formattedRow.isActive = true;
+      formattedRow.isactive = true;
       
-      if (formattedRow.date_of_activity) {
-        formattedRow.date_of_activity = moment(formattedRow.date_of_activity)
+      if (formattedRow.year) {
+        formattedRow.year = moment(formattedRow.year)
           .format("YYYY-MM-DD");
       }
       
@@ -222,7 +185,7 @@ const EcosystemBulkAdd = (props) => {
     });
 
     try {
-      onHide("ecosystem", data);
+      onHide("pmus", data);
       setRows([{ ...newRow, id: 1 }]);
     } catch (error) {
       setAlert("Failed to save data", "danger");
@@ -263,89 +226,73 @@ const EcosystemBulkAdd = (props) => {
         <Modal.Title className="d-flex align-items-center justify-content-between">
           <div className="d-flex">
             <h2 className="text--primary bebas-thick mb-0">
-              {props.id ? props.id : "Add Ecosystem Activity Data"}
+              {props.id ? props.id : "Add PMUs Data"}
             </h2>
           </div>
         </Modal.Title>
       </Modal.Header>
       
       <Modal.Body className="bg-white">
-  <div id="CreateOptsData" className="d-flex flex-column h-100">
-    
-    {/* Add/Delete buttons - fixed top */}
-    <div className="adddeletebtn d-flex justify-content-end">
-      {rows.length > 1 && (
-        <button className="unset" onClick={() => deleteRow(rows.length)}>
-          <FaMinusCircle style={iconStyles} size={40} className="ml-2 mr-3" />
-        </button>
-      )}
-      {rows.length < 10 && (
-        <button className="unset" onClick={addRow}>
-          <FaPlusCircle style={iconStyles} size={40} className="ml-2" />
-        </button>
-      )}
-    </div>
+        <div id="CreateOptsData" className="d-flex flex-column h-100">
+          <div className="adddeletebtn d-flex justify-content-end">
+            {rows.length > 1 && (
+              <button className="unset" onClick={() => deleteRow(rows.length)}>
+                <FaMinusCircle style={iconStyles} size={40} className="ml-2 mr-3" />
+              </button>
+            )}
+            {rows.length < 10 && (
+              <button className="unset" onClick={addRow}>
+                <FaPlusCircle style={iconStyles} size={40} className="ml-2" />
+              </button>
+            )}
+          </div>
 
-    {/* Scrollable table */}
-    <div className="table-scroll-container">
-      <div className="table-container">
-        <table className="create_data_table">
-          <thead>
-            <tr>
-              <th>Activity Type *</th>
-              <th>Date of Activity</th>
-              <th>Topic *</th>
-              <th>Government Department Partner</th>
-              <th>Type of Partner *</th>
-              <th>Employer/External Party/NGO Partner</th>
-              <th>Total Attended Students *</th>
-              <th>Male Participants *</th>
-              <th>Female Participants *</th>
-              <th>Medha POC 1</th>
-              <th>Medha POC 2</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <EcosystemBulkrow
-                key={row.id}
-                row={row}
-                updateRow={updateRow}
-                classValue={classValue[`class${row.id - 1}`] || {}}
-                activityTypeOptions={activityTypeOptions}
-                partnerTypeOptions={partnerTypeOptions}
-                govtDeptPartnerWithOptions={govtDeptPartnerWithOptions}
-                medhaPOC1Options={medhaUsers.map(user => ({ label: user.name, value: user.id }))}
-                medhaPOC2Options={medhaUsers.map(user => ({ label: user.name, value: user.id }))}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          <div className="table-scroll-container">
+            <div className="table-container">
+              <table className="create_data_table">
+                <thead>
+                  <tr>
+                    <th>Year *</th>
+                    <th>PMU Name *</th>
+                    <th>State *</th>
+                    <th>Medha POC *</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <PmusBulkrow
+                      key={row.id}
+                      row={row}
+                      updateRow={updateRow}
+                      classValue={classValue[`class${row.id - 1}`] || {}}
+                      stateOptions={stateOptions}
+                      medhaPocOptions={medhaUsers.map(user => ({ label: user.name, value: user.id }))}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-    {/* Save/Cancel buttons - fixed bottom */}
-    <div className="d-flex justify-content-end between_class bulk_add_actions" style={{bottom:-28}}>
-      <Button
-        variant="danger"
-        className="btn-regular mr-2 bulk_add_button"
-        onClick={onHide}
-      >
-        CLOSE
-      </Button>
-      <Button
-        variant="primary"
-        className="btn-regular mx-0 bulk_add_button"
-        onClick={onSubmit}
-        disabled={disableSaveButton}
-      >
-        SAVE
-      </Button>
-    </div>
-  </div>
-</Modal.Body>
-
-
+          <div className="d-flex justify-content-end between_class bulk_add_actions" style={{bottom:-28}}>
+            <Button
+              variant="danger"
+              className="btn-regular mr-2 bulk_add_button"
+              onClick={onHide}
+            >
+              CLOSE
+            </Button>
+            <Button
+              variant="primary"
+              className="btn-regular mx-0 bulk_add_button"
+              onClick={onSubmit}
+              disabled={disableSaveButton}
+            >
+              SAVE
+            </Button>
+          </div>
+        </div>
+      </Modal.Body>
     </StyledModal>
   );
 };
@@ -356,4 +303,4 @@ const mapActionsToProps = {
   setAlert,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(EcosystemBulkAdd);
+export default connect(mapStateToProps, mapActionsToProps)(PmusBulkAdd);

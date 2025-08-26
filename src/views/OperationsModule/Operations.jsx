@@ -53,7 +53,8 @@ import {
   bulkCreateUsersTots,
   bulkCreateStudentOutreach,
   bulkCreateEcosystem,
-  bulkCreateCurriculumIntervention
+  bulkCreateCurriculumIntervention,
+  bulkCreatePmus
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -75,6 +76,11 @@ import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 import CurriculumInterventionSearchBar from "./SaModule/CurriculumIntervention/CurriculumInterventionSearchBar";
 import CurriculumInterventionDataField from "./SaModule/CurriculumIntervention/CurriculumInterventionDataField";
 import CurriculumInterventionBulkAdd from "./SaModule/CurriculumIntervention/CurriculumInterventionBulkAdd";
+// Add these imports with other imports
+import { GET_PMUS_DATA } from "../../graphql";
+import PmusSearchBar from "./SaModule/PMus/PmusSearchBar";
+import PmusDataField from "./SaModule/PMus/PmusDataField";
+import PmusBulkAdd from "./SaModule/PMus/PmusBulkAdd";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -140,7 +146,8 @@ const Operations = ({
     alumniQueriesdata: false,
     collegePitches: false,
     mentorship: false,
-    ecosystemData:false
+    ecosystemData:false,
+    pmusData: false // Add PMUs data modal
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -156,6 +163,7 @@ const Operations = ({
     mentorship: {},
     ecosystemData:{}
   });
+  
   const [optsAggregate, setoptsAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
@@ -172,8 +180,32 @@ const Operations = ({
     mentorship: false,
     upskill: false,
     pitching: false,
+    ecosystem: false,
+    curriculumIntervention: false,
+    pmusData: false
   });
+  // console.log("uploadModal",uploadModal);
   const userId = localStorage.getItem("user_id");
+
+  const columnsPmus = useMemo(() => [
+    {
+      Header: "PMU Name",
+      accessor: "pmu",
+    },
+    {
+      Header: "State",
+      accessor: "State",
+    },
+    {
+      Header: "Year",
+      accessor: "year",
+      Cell: ({ value }) => value ? new Date(value).getFullYear() : "",
+    },
+    {
+      Header: "Medha POC",
+      accessor: "medha_poc.username",
+    }
+  ], []);
 
   const columns = useMemo(
     () => [
@@ -279,11 +311,11 @@ const Operations = ({
   },
   {
     Header: "Medha POC 1",
-    accessor: "medha_poc_1",
+    accessor: "medha_poc_1.username",
   },
   {
     Header: "Medha POC 2",
-    accessor: "medha_poc_2",
+    accessor: "medha_poc_2.username",
   },
 ], []);
 
@@ -502,7 +534,7 @@ const Operations = ({
       sort: `${sortBy}:${sortOrder}`,
       isActive: true,
     };
-    console.log("variables", activeTab.key);
+   
     if (activeTab.key === "my_data") {
       await resetSearch();
       await api
@@ -718,7 +750,7 @@ const Operations = ({
           variables,
         })
         .then((data) => {
-          console.log(data?.data?.data?.activeCurriculumInterventions.values)
+          // console.log(data?.data?.data?.activeCurriculumInterventions.values)
           setOpts(() => {
             if (data?.data?.data?.activeCurriculumInterventions) {
               return data.data.data.activeCurriculumInterventions.values;
@@ -740,6 +772,37 @@ const Operations = ({
           nProgress.done();
         });
     }
+    if (activeTab.key === "pmus") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_PMUS_DATA,
+          variables,
+        })
+        .then((data) => {
+          setOpts(() => {
+            if (data?.data?.data?.activePmusData) {
+              return data.data.data.activePmusData.values;
+            }
+            return [];
+          });
+          setoptsAggregate(() => {
+            if (data?.data?.data?.activePmusData) {
+              return data.data.data.activePmusData.aggregate;
+            }
+            return [];
+          });
+        })
+        .catch((error) => {
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
   };
 
   useEffect(() => {
@@ -750,7 +813,7 @@ const Operations = ({
 
   const fetchData = useCallback(
     (pageIndex, pageSize, sortBy) => {
-      console.log("activeTab", activeTab);
+      // console.log("activeTab", activeTab);
       if (activeTab.key === "my_data") {
         if (sortBy.length) {
           let sortByField = "full_name";
@@ -802,6 +865,38 @@ const Operations = ({
               break;
           }
 
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+          );
+        } else {
+          getoperations(
+            activeStatus,
+            activeTab.key,
+            pageSize,
+            pageSize * pageIndex
+          );
+        }
+      }
+      if (activeTab.key === "pmus") {
+        if (sortBy.length) {
+          let sortByField = "pmu";
+          let sortOrder = sortBy[0].desc ? "desc" : "asc";
+          switch (sortBy[0].id) {
+            case "pmu":
+            case "State":
+            case "year":
+            case "medha_poc.username":
+              sortByField = sortBy[0].id;
+              break;
+            default:
+              sortByField = "pmu";
+              break;
+          }
           getoperations(
             activeStatus,
             activeTab.key,
@@ -1058,6 +1153,7 @@ const Operations = ({
 
   //it refreshes table on saving event
   const refreshTableOnDataSaving = async () => {
+    console.log("refreshTableOnDataSaving");
     if (isSearching) {
       const { baseUrl, searchedProp, searchValue } = await JSON.parse(
         localStorage.getItem("prevSearchedPropsAndValues")
@@ -1114,6 +1210,16 @@ const Operations = ({
         .catch((err) => {
           setAlert("Unable to create field data .", "error");
         });
+    }
+    if (key === "pmus") {
+      try {
+        await bulkCreatePmus(data);
+        setAlert("PMUs data created successfully", "success");
+      } catch (error) {
+        console.error("Error creating PMUs data:", error);
+        setAlert("Unable to create PMUs data", "error");
+        return;
+      }
     }
     if (key == "alum") {
       datavaluesforlatestcreate = {
@@ -1497,14 +1603,14 @@ const Operations = ({
         pitching: false,
       });
     }
-    if(activeTab.key ==="ecosystem") {
-      setUploadModal({  
-        myData: false,
+    if (activeTab.key == "pmus") {
+      setUploadModal({
         tot: false,
+        myData: false,
         mentorship: false,
         upskill: false,
         pitching: false,
-        ecosystem: true,
+        pmus: true
       });
     }
     if (activeTab.key == "useTot") {
@@ -1652,7 +1758,8 @@ const Operations = ({
                       <FaPlus size="12" color="#fff" />
                     </span>
                   </button>
-
+                {console.log(activeTab.key)
+                }
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
@@ -1777,7 +1884,9 @@ const Operations = ({
                 />
               
               </>
-            ) : activeTab.key == "upskilling" ? (
+            )
+            
+            : activeTab.key == "upskilling" ? (
               <>
                 <UpskillSearchBar />
                 <Table
@@ -1849,22 +1958,42 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) : activeTab.key === "curriculumIntervention" ? (
-              <>
-                <CurriculumInterventionSearchBar />
-                <Table
-                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
-                  columns={columnsCurriculumIntervention}
-                  data={isSearching ? (isFound ? searchedData : []) : opts}
-                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
-                  fetchData={isSearching ? fetchSearchedData : fetchData}
-                  paginationPageSize={paginationPageSize}
-                  onPageSizeChange={setPaginationPageSize}
-                  paginationPageIndex={paginationPageIndex}
-                  onPageIndexChange={setPaginationPageIndex}
-                />
-              </>
-            ) : (
+            ) 
+            // : activeTab.key === "curriculumIntervention" ? (
+            //   <>
+            //     <CurriculumInterventionSearchBar />
+            //     <Table
+            //       onRowClick={(data) => showRowData("curriculumInterventionData", data)}
+            //       columns={columnsCurriculumIntervention}
+            //       data={isSearching ? (isFound ? searchedData : []) : opts}
+            //       totalRecords={isSearching ? opsData.length : optsAggregate.count}
+            //       fetchData={isSearching ? fetchSearchedData : fetchData}
+            //       paginationPageSize={paginationPageSize}
+            //       onPageSizeChange={setPaginationPageSize}
+            //       paginationPageIndex={paginationPageIndex}
+            //       onPageIndexChange={setPaginationPageIndex}
+            //     />
+            //   </>
+            // ) 
+            
+            // : activeTab.key === "pmus" ? (
+            //   <>
+            //   <PmusSearchBar />
+            //   <Table
+            //     onRowClick={(data) => showRowData("pmusData", data)}
+            //     columns={columnsPmus}
+            //     data={isSearching ? (isFound ? searchedData : []) : opts}
+            //     totalRecords={isSearching ? opsData.length : optsAggregate.count}
+            //     fetchData={isSearching ? fetchSearchedData : fetchData}
+            //     paginationPageSize={paginationPageSize}
+            //     onPageSizeChange={setPaginationPageSize}
+            //     paginationPageIndex={paginationPageIndex}
+            //     onPageIndexChange={setPaginationPageIndex}
+            //   />
+            //   </>
+            // ) 
+            
+            : (
               ""
             )}
           </div>
@@ -1881,16 +2010,16 @@ const Operations = ({
             )
           ) : // useTot  ---upskilling ---dtesamarth
           
-          // activeTab.key == "useTot" ? (
-          //   (isSRM() || isAdmin() || isMedhavi()) && (
-          //     <UserTot
-          //       show={modalShow}
-          //       onHide={hideCreateModal}
-          //       ModalShow={() => setModalShow(false)}
-          //     />
-          //   )
-          // ) 
-          // : 
+          activeTab.key == "useTot" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <UserTot
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) 
+          : 
           activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
@@ -1944,9 +2073,26 @@ const Operations = ({
               ModalShow={() => setModalShow(false)}
               refreshTableOnDataSaving={refreshTableOnDataSaving}
             />
+          ): activeTab.key === "pmus" ? (
+            <PmusBulkAdd
+              show={modalShow}
+              onHide={hideCreateModal}
+              ModalShow={() => setModalShow(false)}
+              refreshTableOnDataSaving={refreshTableOnDataSaving}
+
+            />
           ):(
             ""
           )}
+          {showModal.pmusData && (isSRM() || isAdmin() || isMedhavi()) && (
+  <PmusDataField
+    {...optsdata.pmusData}
+    show={showModal.pmusData}
+    onHide={() => hideShowModal("pmusData", false)}
+    refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
+    refreshTableOnDeleting={() => refreshTableOnDeleting()}
+  />
+)}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Opsdatafeilds
               {...optsdata.opsdata}
@@ -1969,7 +2115,7 @@ const Operations = ({
            showModal.ecosystemData && (isSRM() || isAdmin() || isMedhavi()) && (
             <EcosystemDataField
             {...optsdata.ecosystemData}
-              show={showModal.opsdata}
+              show={showModal.ecosystemData}
               onHide={() => hideShowModal("ecosystemData", false)}
               refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
               refreshTableOnDeleting={() => refreshTableOnDeleting()}

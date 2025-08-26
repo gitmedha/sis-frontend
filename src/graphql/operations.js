@@ -285,8 +285,14 @@ const ecosystemFields = `
   attended_students
   male_participants
   female_participants
-  medha_poc_1 
-  medha_poc_2
+  medha_poc_1 {
+    id
+    username
+  }
+  medha_poc_2 {
+    id
+    username
+  }
   created_at
   updated_at
   CreatedBy {
@@ -344,6 +350,26 @@ export const GET_OPERATIONS = `
         }
     } 
 `;
+
+export const UPDATE_PMUS_ENTRY = `
+  mutation UPDATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+
+
+
 
 export const GET_USERSTOTS = `
     query GET_USERSTOTS($limit:Int, $start:Int, $sort:String) {
@@ -923,53 +949,6 @@ export const SEARCH_BY_PROGRAMS = `
 `;
 
 
-export const GET_COLLEGES_BY_PROJECT_NAME = `
-  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
-  institutionsConnection(
-    sort: $sort,
-    start: $start,
-    limit: $limit,
-    where: {
-      project_name: $project_name,
-      source: "System Adoption"
-    }
-  ) {
-    values {
-      id
-      name
-      source
-    }
-    aggregate {
-      count
-    }
-  }
-}
-`;
-export const GET_STUDENT_OUTREACHES = `
-  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
-    allStudentOutreaches: studentOutreachesConnection {
-      aggregate {
-        count
-      }
-    }
- 
-    activeStudentOutreaches: studentOutreachesConnection(
-      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
-      start: $start,     # Pagination offset (e.g., 20)
-      limit: $limit,     # Number of records per page (e.g., 10)
-      where: { isactive: true }
-    ) {
-      values {
-        ${studentOutreachesFields}
-      },
-      aggregate {
-        count # Total count of active records
-      },
-    }
-  }
-`;
- 
-
 export const UPDATE_ECOSYSTEM = `
   mutation UPDATE_ECOSYSTEM($data: editEcosystemInput!, $id: ID!) {
     updateEcosystem(
@@ -989,8 +968,14 @@ export const UPDATE_ECOSYSTEM = `
         attended_students
         male_participants
         female_participants
-        medha_poc_1
-        medha_poc_2
+        medha_poc_1 {
+          id
+          username
+        }
+        medha_poc_2 {
+          id
+          username
+        }
         isactive
         UpdatedBy {
           id
@@ -1098,3 +1083,186 @@ export const DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY = `
   }
 `;
 
+// PMus GraphQL operations
+export const GET_PMUS = `
+  query GET_PMUS($limit: Int, $start: Int, $sort: String) {
+    pmusesConnection(
+      sort: $sort,
+      start: $start,
+      limit: $limit
+    ) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_COUNT = `
+  query GET_PMUS_COUNT {
+    pmusesConnection {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_BY_ID = `
+  query GET_PMUS_BY_ID($id: ID!) {
+    pmus(id: $id) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const CREATE_PMUS = `
+  mutation CREATE_PMUS($data: PMUSInput!) {
+    createPmus(input: { data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const UPDATE_PMUS = `
+  mutation UPDATE_PMUS($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const DELETE_PMUS = `
+  mutation DELETE_PMUS($id: ID!) {
+    deletePmus(input: { where: { id: $id } }) {
+      pmus {
+        id
+      }
+    }
+  }
+`;
+
+export const CREATE_BULK_PMUS = `
+  mutation CREATE_BULK_PMUS($data: [PMUSInput]!) {
+    createBulkPmus(input: { data: $data }) {
+      pmuses {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const SEARCH_PMUS = `
+  query SEARCH_PMUS($searchFields: [String], $searchValues: [JSON]) {
+    searchOps(
+      searchFields: $searchFields,
+      searchValues: $searchValues
+    ) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const GET_PMUS_DISTINCT_FIELD = `
+  query GET_PMUS_DISTINCT_FIELD($field: String!) {
+    findDistinctField(field: $field) {
+      values
+    }
+  }
+`;
+
+export const GET_PMUS_DATA = `
+  query GetPMusData($where: JSON) {
+    pmusesConnection(where: $where) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const DEACTIVATE_PMUS_ENTRY = `
+  mutation DEACTIVATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        isactive
+      }
+    }
+  }
+`;
+
+
+export const GET_COLLEGES_BY_PROJECT_NAME = `
+  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
+  institutionsConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      project_name: $project_name,
+      source: "System Adoption"
+    }
+  ) {
+    values {
+      id
+      name
+      source
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;

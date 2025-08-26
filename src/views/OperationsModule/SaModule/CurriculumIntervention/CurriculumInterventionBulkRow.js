@@ -22,7 +22,7 @@ const customSelectStyles = {
 };
 
 const CurriculumInterventionBulkRow = (props) => {
-  const { row, updateRow, classValue } = props;
+  const { row, updateRow, classValue, medhaPocOptions } = props;
 
   const handleChange = (field, value) => {
     updateRow(row.id, field, value);
@@ -44,11 +44,11 @@ const CurriculumInterventionBulkRow = (props) => {
     return classValue[field] ? "error-border" : "";
   };
 
-  // Dropdown options - same as in EcosystemBulkrow structure
+  // Dropdown options - static for module fields
   const moduleCreatedForOptions = [
-    { label: "UG", value: "UG" },
-    { label: "PG", value: "PG" },
-    { label: "Diploma", value: "Diploma" }
+    { label: "Medha", value: "Medha" },
+    { label: "External Party", value: "External Party" },
+    { label: "Internal Party", value: "Internal Party" }
   ];
 
   const moduleDevelopedRevisedOptions = [
@@ -56,24 +56,17 @@ const CurriculumInterventionBulkRow = (props) => {
     { label: "Revised", value: "Revised" }
   ];
 
-  const govtDeptPartneredWithOptions = [
-    { label: "Department of Education", value: "Department of Education" },
-    { label: "Ministry of Skill Development", value: "Ministry of Skill Development" },
-    { label: "State Education Board", value: "State Education Board" },
-    { label: "Other", value: "Other" }
-  ];
-
-  const medhaPocOptions = [
-    { id: 319,label: "John Doe", value: "John Doe" },
-    { id: 320,label: "Jane Smith", value: "Jane Smith" },
-    { id: 321,label: "Robert Johnson", value: "Robert Johnson" }
-  ];
-
-  const assignedToOptions = [
-    { label: "Team A", value: "Team A" },
-    { label: "Team B", value: "Team B" },
-    { label: "External Consultant", value: "External Consultant" }
-  ];
+  const govtDeptPartnerWithOptions = [
+    "Department of Skill Development and Employment",
+    "Directorate of Technical Education",
+    "Skill Development of Industrial Training",
+    "Department of Higher Education",
+    "Department of Technical Education",
+    "Department of Secondary Education",
+    "DVEDSE",
+    "Department of Labor and Resource"
+  ].sort((a, b) => a.localeCompare(b))
+   .map(type => ({ label: type, value: type }));
 
   return (
     <tr>
@@ -89,8 +82,7 @@ const CurriculumInterventionBulkRow = (props) => {
           isClearable={true}
         />
       </td>
-
-      {/* Module Developed/Revised */}
+      {/* Module Developed / Revised */}
       <td>
         <Select
           styles={customSelectStyles}
@@ -102,10 +94,9 @@ const CurriculumInterventionBulkRow = (props) => {
           isClearable={true}
         />
       </td>
-
       {/* Start Date */}
       <td>
-        <div className={getSelectClass("start_date")}>
+        <div className={`date-picker-ui ${getSelectClass("start_date")}`}> 
           <DatePicker
             selected={row.start_date ? new Date(row.start_date) : null}
             onChange={date => handleDateChange(date, "start_date")}
@@ -115,10 +106,9 @@ const CurriculumInterventionBulkRow = (props) => {
           />
         </div>
       </td>
-
       {/* End Date */}
       <td>
-        <div className={getSelectClass("end_date")}>
+        <div className={`date-picker-ui ${getSelectClass("end_date")}`}> 
           <DatePicker
             selected={row.end_date ? new Date(row.end_date) : null}
             onChange={date => handleDateChange(date, "end_date")}
@@ -128,31 +118,27 @@ const CurriculumInterventionBulkRow = (props) => {
           />
         </div>
       </td>
-
-      {/* Name of the Module */}
+      {/* Module Name */}
       <td>
         <input
           type="text"
           className={getInputClass("module_name")}
           value={row.module_name || ""}
           onChange={e => handleInputChange(e, "module_name")}
-          placeholder="Enter module name"
         />
       </td>
-
       {/* Govt. Department Partnered With */}
       <td>
         <Select
           styles={customSelectStyles}
-          className="form-control"
+          className={`${getSelectClass("govt_dept_partnered_with")}`}
           classNamePrefix="select"
-          value={govtDeptPartneredWithOptions.find(option => option.value === row.govt_dept_partnered_with)}
+          value={govtDeptPartnerWithOptions.find(option => option.value === row.govt_dept_partnered_with)}
           onChange={option => handleChange("govt_dept_partnered_with", option?.value)}
-          options={govtDeptPartneredWithOptions}
+          options={govtDeptPartnerWithOptions}
           isClearable={true}
         />
       </td>
-
       {/* Medha POC */}
       <td>
         <Select
@@ -160,24 +146,11 @@ const CurriculumInterventionBulkRow = (props) => {
           className={`${getSelectClass("medha_poc")}`}
           classNamePrefix="select"
           value={medhaPocOptions.find(option => option.value === row.medha_poc)}
-          onChange={option => handleChange("medha_poc", option?.id)}
+          onChange={option => handleChange("medha_poc", option?.value)}
           options={medhaPocOptions}
           isClearable={true}
         />
       </td>
-
-      {/* Assigned To */}
-      {/* <td>
-        <Select
-          styles={customSelectStyles}
-          className="form-control"
-          classNamePrefix="select"
-          value={assignedToOptions.find(option => option.value === row.assigned_to)}
-          onChange={option => handleChange("assigned_to", option?.value)}
-          options={assignedToOptions}
-          isClearable={true}
-        />
-      </td> */}
     </tr>
   );
 };

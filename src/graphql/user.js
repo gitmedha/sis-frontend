@@ -45,6 +45,7 @@ export const GET_USERS_BY_ROLE_SEARCH = `
       id
       username
       email
+      blocked
     }
   }
 `

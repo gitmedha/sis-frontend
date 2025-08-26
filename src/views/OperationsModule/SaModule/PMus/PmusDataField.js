@@ -6,8 +6,8 @@ import { isAdmin, isMedhavi, isSRM } from "../../../../common/commonFunctions";
 import styled from "styled-components";
 import { setAlert } from "../../../../store/reducers/Notifications/actions";
 import Deletepopup from "../../OperationComponents/Deletepopup";
-import EcosystemEdit from "./EcosystemEdit";
-import { deactivateEcosystemEntry } from "../actions";
+import PmusEdit from "./PMUsEdit";
+import { deactivatePmusEntry } from "../actions";
 
 const Styled = styled.div`
   .icon-box {
@@ -37,17 +37,17 @@ const Styled = styled.div`
   }
 `;
 
-const EcosystemDataField = (props) => {
+const PmusDataField = (props) => {
   const { onHide, refreshTableOnDataSaving, refreshTableOnDeleting } = props;
   const [showModal, setShowModal] = useState({
     dataAndEdit: false,
     delete: false
   });
-  const [ecosystemData, setEcosystemData] = useState(props);
+  const [pmusData, setPmusData] = useState(props);
   const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
-    setEcosystemData(props);
+    setPmusData(props);
   }, [props]);
 
   const hideShowModal = async (data) => {
@@ -81,8 +81,9 @@ const EcosystemDataField = (props) => {
       delete: false
     });
   };
+
   const deleteEntry = async () => {
-    const data = await deactivateEcosystemEntry(Number(props.id));
+    const data = await deactivatePmusEntry(Number(props.id));
     if (data.status === 200) {
       setAlert("Entry Deleted Successfully.", "success");
       refreshTableOnDeleting();
@@ -111,86 +112,40 @@ const EcosystemDataField = (props) => {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                Ecosystem Activity Details
+                PMU Details
               </h1>
             </Modal.Title>
           </Modal.Header>
           <Styled>
             <Modal.Body className="bg-white">
-              <h4 className="section-header">Activity Info</h4>
+              <h4 className="section-header">PMU Information</h4>
               <div className="row">
                 <div className="col-md-6 col-sm-12">
                   <DetailField
-                    label="Activity Type"
-                    value={props?.activity_type}
-                  />
-                  <DetailField
-                    label="Date of Activity"
+                    label="Year"
                     value={
-                      moment(props?.date_of_activity).format("DD MMM YYYY") || ""
+                      moment(props?.year).format("YYYY") || ""
                     }
                   />
                   <DetailField
-                    label="Topic"
-                    value={props?.topic}
-                  />
-                  <DetailField
-                    label="Government Department Partner"
-                    value={props?.govt_dept_partner_with}
+                    label="PMU Name"
+                    value={props?.pmu}
                   />
                 </div>
                 <div className="col-md-6 col-sm-12">
                   <DetailField
-                    label="Type of Partner"
-                    value={props?.type_of_partner}
+                    label="State"
+                    value={props?.State}
                   />
                   <DetailField
-                    label="Employer/External Party/NGO Partner"
-                    value={props?.employer_name_external_party_ngo_partner_with}
-                  />
-                  <DetailField
-                    label="Total Attended Students"
-                    value={props?.attended_students}
+                    label="Medha POC"
+                    value={props?.medha_poc?.username}
                   />
                 </div>
               </div>
 
               <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
-              <h4 className="section-header">Participants Info</h4>
-              <div className="row">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Male Participants"
-                    value={props?.male_participants}
-                  />
-                </div>
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Female Participants"
-                    value={props?.female_participants}
-                  />
-                </div>
-              </div>
-
-              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
-              <h4 className="section-header">Medha POC</h4>
-              <div className="row">
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Medha POC 1"
-                    value={props?.medha_poc_1?.username}
-                  />
-                </div>
-                <div className="col-md-6 col-sm-12">
-                  <DetailField
-                    label="Medha POC 2"
-                    value={props?.medha_poc_2?.username}
-                  />
-                </div>
-              </div>
-
-              <hr className="mb-4 opacity-1" style={{ color: "#C4C4C4" }} />
-              <h4 className="section-header">System Info</h4>
+              <h4 className="section-header">System Information</h4>
               <div className="row">
                 <div className="col-md-6">
                   <DetailField
@@ -234,8 +189,8 @@ const EcosystemDataField = (props) => {
         </Modal>
       )}
       {showModal.dataAndEdit && (
-        <EcosystemEdit 
-          {...ecosystemData} 
+        <PmusEdit 
+          {...pmusData} 
           show={showModal.dataAndEdit}          
           onHide={hideShowModal} 
           refreshTableOnDataSaving={refreshTableOnDataSaving}
@@ -251,4 +206,4 @@ const EcosystemDataField = (props) => {
   );
 };
 
-export default EcosystemDataField;
+export default PmusDataField;

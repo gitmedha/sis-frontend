@@ -30,7 +30,6 @@ import {
   UPDATE_MENTORSHIP,
   GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
-import { Label } from "@material-ui/icons";
 
 export const searchPrograms = async function (searchValue) {
   try {
@@ -522,6 +521,14 @@ export const updateCollegePitch = async (id, data) => {
     .catch((error) => Promise.reject(error));
 };
 
+export const bulkCreatePmus = async (data) => {
+  try {
+    const response = await api.post("/pmuses/createBulkPmus", data);
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
 export const bulkCreateOpsActivities = async (data) => {
   try {
     const response = await api.post(
@@ -551,7 +558,7 @@ export const bulkCreateStudentOutreach = async (data) => {
 };
 export const bulkCreateMentorship = async (data) => {
   try {
-    const response = await api.post("/mentorships/createBulkmentorship", data);
+    const response = await api.post("/mentorship/createBulkmentorship", data);
     return response;
   } catch (error) {
     return console.error(error);

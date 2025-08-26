@@ -6,7 +6,9 @@ import {
   GET_CURRICULUM_INTERVENTIONS,
   UPDATE_CURRICULUM_INTERVENTION,
   DELETE_CURRICULUM_INTERVENTION,
-  DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY
+  DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY,
+  UPDATE_PMUS_ENTRY,
+  DEACTIVATE_PMUS_ENTRY
 } from '../../../graphql/operations';
 import api from '../../../apis'
 
@@ -38,19 +40,39 @@ export const deactivateEcosystemEntry = async (id) => {
 
 
 export const updateEcosystemEntry = async (id, data) => {
-  try{
+  try {
+    // Prepare the data for the mutation
+    const payload = {
+      ...data,
+      // Ensure medha_poc values are IDs
+      medha_poc_1: data.medha_poc_1?.id || data.medha_poc_1,
+      medha_poc_2: data.medha_poc_2?.id || data.medha_poc_2,
+    };
+
     const response = await api.post('/graphql', {
-      query:UPDATE_ECOSYSTEM,
-       variables: {
-        id,
-        data,
+      query: UPDATE_ECOSYSTEM,
+      variables: {
+        id: Number(id),
+        data: payload
       }
-    })
-return response.data.data.ecosystemConnections.values;
-  }catch(err){
-  return Promise.reject(err)
+    });
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return {
+      status: 200,
+      data: response.data.data.updateEcosystem.ecosystem
+    };
+
+  } catch (err) {
+    return {
+      status: err.response?.status || 500,
+      error: err.message || "Failed to update ecosystem entry"
+    };
   }
-}
+};
 
 export const deleteEcosystemEntry = async (id) => {
   try {
@@ -109,6 +131,37 @@ export const deleteCurriculumInterventionEntry = async (id) => {
       },
     });
     return response.data.data.deleteCurriculumIntervention.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const deactivatePmusEntry = async (id) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: DEACTIVATE_PMUS_ENTRY,
+      variables: {
+        id,
+        data: {
+          isactive: false
+        }
+      }
+    });
+    return response.data.data.updatePmus;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const updatePmusEntry = async (id, data) => {
+  try {
+    const response = await api.post('/graphql', {
+      query: UPDATE_PMUS_ENTRY,
+      variables: {
+        id,
+        data,
+      }
+    });
   } catch (error) {
     return Promise.reject(error);
   }

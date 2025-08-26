@@ -11,7 +11,7 @@ import {
   GET_ALL_USERS,
   GET_USERS_BY_ROLE,
   GET_ALL_STUDENT,
-  GET_USERS_BY_ROLE_SEARCH,
+  GET_USERS_BY_ROLE_SEARCH
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {
@@ -156,6 +156,7 @@ export const getAllMedhaUsers = async () => {
       id: user.id,
     }
   });
+  console.log("filteredData",filteredData);
   return filteredData;
 }
 
@@ -185,19 +186,6 @@ export const getAllSrm =async(role)=>{
   }));
 }
 
-export const getAllSearchSrm =async(role)=>{
-  let data =await queryBuilder({
-    query:GET_USERS_BY_ROLE_SEARCH,
-    variables:{
-      role:1,
-      blocked: false, 
-    },
-  });
-  return data?.data?.users.map(user => ({
-    label: `${user.username}`,
-    value: user.username,
-  }));
-}
 export const getAllSrmbyname =async(role)=>{
   let data =await queryBuilder({
     query:GET_USERS_BY_ROLE,
@@ -219,5 +207,19 @@ export const getAllStudents =async()=>{
   return data?.data?.users.map(user => ({
     label: `(${user.full_name})`,
     value: user.id,
+  }));
+}
+
+export const getAllSearchSrm =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE_SEARCH,
+    variables:{
+      role:1,
+       
+    },
+  });
+  return data?.data?.users.map(user => ({
+    label: `${user.username}`,
+    value: user.username,
   }));
 }
