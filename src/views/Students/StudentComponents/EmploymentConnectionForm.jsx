@@ -44,6 +44,7 @@ const EnrollmentConnectionForm = (props) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
+  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [sourceOptions, setSourceOptions] = useState([]);
   const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
@@ -77,6 +78,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected: "",
     reason_if_rejected_other: "",
     assigned_to: userId,
+    earning_type: "",
   };
 
   if (props.employmentConnection) {
@@ -227,6 +229,9 @@ const EnrollmentConnectionForm = (props) => {
       };
     }
     await createLatestAcivity(propgramEnrollemntData);
+    if(selectedOpportunityType !== 'Freelance'){
+      delete values.earning_type;
+  }
     onHide(values);
   };
 
@@ -282,6 +287,13 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
+      setEarningTypeOptions(
+        data.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
 
     if (props.employmentConnection) {
@@ -317,7 +329,9 @@ const EnrollmentConnectionForm = (props) => {
           item["applicable-to"].includes(selectedOpportunityType) ||
           item["applicable-to"] === "Both"
       );
+      
     }
+    
     // if(selectedOpportunityType === 'Apprenticeship'){
     //   filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Apprenticeship');
     // }
@@ -419,7 +433,7 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setotherrejection(false);
   }, [employmentConnection]);
-
+console.log(statusOptions,'statusOptions')
   return (
     <Modal
       centered
@@ -522,6 +536,22 @@ const EnrollmentConnectionForm = (props) => {
                       </>
                     )}
                   </div>
+
+                  {selectedOpportunityType === "Freelance" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="earning_type"
+                        label="Earning Type"
+                        options={earningTypeOptions}
+                        className="form-control"
+                        placeholder="Earning Type"
+                        required
+                      />
+                    </div>
+                  )}
+                  
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       icon="down"
@@ -656,6 +686,7 @@ const EnrollmentConnectionForm = (props) => {
                     </div>
                   )}
                 </div>
+                 
               </Section>
 
               <div className="row justify-content-end mt-5">
