@@ -56,6 +56,7 @@ const StudentForm = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [blocked, setBlocked] = useState(false)
   const [showCVSubLabel, setShowCVSubLabel] = useState(
     props.CV && props.CV.url
   );
@@ -134,6 +135,22 @@ const StudentForm = (props) => {
 
     setShowCVSubLabel(props.CV && props.CV.url);
   }, [props]);
+  useEffect(() => {
+    
+    let userID = props?.assigned_to?.id;
+    
+    function findUser(users, searchTerm) {
+        
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
+
 
   const onStateChange = (value) => {
     setDistrictOptions([]);
@@ -177,11 +194,11 @@ const StudentForm = (props) => {
     values.name_of_parent_or_guardian = capitalizeFirstLetter(
       values.name_of_parent_or_guardian
     );
-    console.log(values.full_name);
+    // console.log(values.full_name);
     setDisableSaveButton(true);
     let studentData = {};
     let StudentValues=await onHide(values); 
-    console.log(StudentValues);
+    // console.log(StudentValues);
     if (props.student_id) {
       let updatedvalue=initialValues;
     updatedvalue.full_name=capitalizeFirstLetter(initialValues.full_name);
@@ -189,7 +206,7 @@ const StudentForm = (props) => {
       initialValues.name_of_parent_or_guardian
     );
       let changes_in=compareObjects( values,studentData);
-      console.log(changes_in);
+      // console.log(changes_in);
       studentData = {
         module_name: "student",
         activity: "Student Data Updated",
@@ -300,12 +317,13 @@ const StudentForm = (props) => {
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
-                      {/* {statusOptions.length ? ( */}
+                      
                       <Input
                         control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
                         required
+                        isDisabled={blocked}
                         className="form-control capitalize"
                         placeholder="Assigned To"
                         filterData={filterAssignedTo}

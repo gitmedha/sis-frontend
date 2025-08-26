@@ -52,6 +52,7 @@ const InstitutionForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate, setDuplicate] = useState(false);
+  const [blocked, setBlocked] = useState(false)
   const [sourceOptions] = useState([
     {
       key:0,
@@ -239,6 +240,18 @@ const InstitutionForm = (props) => {
     }
   };
 
+  useEffect(() => {
+    let userID = props?.assigned_to?.id;
+    function findUser(users, searchTerm) {
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
+
   return (
     <Modal
       centered
@@ -312,6 +325,7 @@ const InstitutionForm = (props) => {
                           className="form-control"
                           placeholder="Assigned To"
                           filterData={filterAssignedTo}
+                          isDisabled={blocked}
                           defaultOptions={assigneeOptions}
                         />
                       ) : (

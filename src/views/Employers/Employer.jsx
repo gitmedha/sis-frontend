@@ -21,6 +21,8 @@ import EmployerForm from "./EmployerComponents/EmployerForm";
 import Opportunities from "./EmployerComponents/Opportunities";
 import { getEmployerOpportunities } from "../Students/StudentComponents/StudentActions";
 import { FaBlackTie, FaBriefcase } from "react-icons/fa";
+import {ReactComponent as ApprenticeshipIcon} from "../../assets/images/Apprenticeship.svg";
+import {ReactComponent as FreelanceIcon} from "../../assets/images/Freelance.svg";
 import Tooltip from "../../components/content/Tooltip";
 import styled from "styled-components";
 import EmploymentConnections from "./EmployerComponents/EmploymentConnections";
@@ -126,34 +128,29 @@ const Employer = (props) => {
   };
 
   const updateOpportunitiesBadge = (opportunities) => {
-    let jobOpportunities = opportunities.filter(
-      (opportunity) => opportunity.type.toLowerCase() === "job"
-    );
-    let internshipOpportunities = opportunities.filter(
-      (opportunity) => opportunity.type.toLowerCase() === "internship"
-    );
+    let jobOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'job');
+    let internshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'internship');
+    let freelanceOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'freelance');
+    let apprenticeshipOpportunities = opportunities.filter(opportunity => opportunity.type.toLowerCase() === 'apprenticeship');
     setOpportunitiesBadge(
       <>
-        <Tooltip placement="top" title="Internships">
-          <FaBlackTie width="15" color="#D7D7E0" className="ml-2" />
-        </Tooltip>
-        <span
-          style={{
-            margin: "0 20px 0 10px",
-            color: "#FFFFFF",
-            fontSize: "16px",
-          }}
-        >
-          {internshipOpportunities.length}
-        </span>
-        <Tooltip placement="top" title="Jobs">
-          <FaBriefcase width="15" color="#D7D7E0" />
-        </Tooltip>
-        <span
-          style={{ margin: "0 0 0 10px", color: "#FFFFFF", fontSize: "16px" }}
-        >
-          {jobOpportunities.length}
-        </span>
+       <Tooltip  placement="top" title="Internships">
+        <FaBlackTie width={22} height={22} color="#D7D7E0" className="ml-2" />
+      </Tooltip>
+        <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{internshipOpportunities.length}</span>
+      <Tooltip placement="top" title="Jobs">
+        <FaBriefcase width={22} height={22} color="#D7D7E0" />
+      </Tooltip>
+      <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{jobOpportunities.length}</span>
+      <Tooltip placement="top" title="Freelance">
+          <FreelanceIcon style={{ width: 22, height: 22, marginLeft: '8px', fill: "#D7D7E0" }} />
+      </Tooltip>
+      <span style={{margin: '0 20px 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{freelanceOpportunities.length}</span>
+     <Tooltip placement="top" title="Apprenticeship">
+       <ApprenticeshipIcon style={{ width: 22, height: 22, marginLeft: '8px', fill: "#D7D7E0" }} />
+      </Tooltip>
+
+      <span style={{margin: '0 0 0 10px', color: "#FFFFFF", fontSize: '16px'}}>{apprenticeshipOpportunities.length}</span>
       </>
     );
   };

@@ -66,6 +66,7 @@ const OpportunityForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem("user_id"));
+  const [blocked, setBlocked] = useState(false)
 
   const [initialValues, setInitialValues] = useState({
     employer: "",
@@ -318,6 +319,20 @@ const OpportunityForm = (props) => {
     });
   };
 
+    useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      function findUser(users, searchTerm) {
+          
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
+
   return (
     <Modal
       centered
@@ -404,6 +419,7 @@ const OpportunityForm = (props) => {
                         label="Assigned To"
                         filterData={filterAssignedTo}
                         defaultOptions={assigneeOptions}
+                        isDisabled={blocked}
                         className="form-control"
                         placeholder="Assigned To"
                         required

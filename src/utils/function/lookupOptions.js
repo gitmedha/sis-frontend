@@ -101,6 +101,7 @@ export const getDefaultAssigneeOptions = async () => {
     return {
       label: `${user.username} (${user.email})`,
       value: user.id,
+      blocked: user.blocked || false, // Ensure blocked status is included
     }
   });
   if (!userIdFound) {
@@ -156,7 +157,6 @@ export const getAllMedhaUsers = async () => {
       id: user.id,
     }
   });
-  console.log("filteredData",filteredData);
   return filteredData;
 }
 
@@ -186,6 +186,19 @@ export const getAllSrm =async(role)=>{
   }));
 }
 
+export const getAllSearchSrm =async(role)=>{
+  let data =await queryBuilder({
+    query:GET_USERS_BY_ROLE_SEARCH,
+    variables:{
+      role:1,
+       
+    },
+  });
+  return data?.data?.users.map(user => ({
+    label: `${user.username}`,
+    value: user.username,
+  }));
+}
 export const getAllSrmbyname =async(role)=>{
   let data =await queryBuilder({
     query:GET_USERS_BY_ROLE,
@@ -207,19 +220,5 @@ export const getAllStudents =async()=>{
   return data?.data?.users.map(user => ({
     label: `(${user.full_name})`,
     value: user.id,
-  }));
-}
-
-export const getAllSearchSrm =async(role)=>{
-  let data =await queryBuilder({
-    query:GET_USERS_BY_ROLE_SEARCH,
-    variables:{
-      role:1,
-       
-    },
-  });
-  return data?.data?.users.map(user => ({
-    label: `${user.username}`,
-    value: user.username,
   }));
 }

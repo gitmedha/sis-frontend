@@ -132,7 +132,7 @@ const Upskillingdatafield = (props) => {
                 <DetailField
                     
                     label="Student Name"
-                    value={<Anchor text={props.student_id.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
+                    value={<Anchor text={props.student_id?.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
                   
                   <DetailField

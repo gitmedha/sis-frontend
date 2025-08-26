@@ -351,26 +351,6 @@ export const GET_OPERATIONS = `
     } 
 `;
 
-export const UPDATE_PMUS_ENTRY = `
-  mutation UPDATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
-    updatePmus(input: { where: { id: $id }, data: $data }) {
-      pmus {
-        id
-        year
-        pmu
-        State
-        medha_poc { id username }
-        created_at
-        updated_at
-      }
-    }
-  }
-`;
-
-
-
-
-
 export const GET_USERSTOTS = `
     query GET_USERSTOTS($limit:Int, $start:Int, $sort:String) {
         allUserstots: usersTotsConnection(where: { isactive: true }) {
@@ -1266,3 +1246,50 @@ export const GET_COLLEGES_BY_PROJECT_NAME = `
   }
 }
 `;
+
+export const SEARCH_EMPLOYERS = `
+  query SEARCH_EMPLOYERS($query:String,$limit:Int,$sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`
+
+export const GET_STUDENT_OUTREACHES = `
+  query GET_STUDENT_OUTREACHES($limit: Int, $start: Int, $sort: String) {
+    allStudentOutreaches: studentOutreachesConnection {
+      aggregate {
+        count
+      }
+    }
+ 
+    activeStudentOutreaches: studentOutreachesConnection(
+      sort: $sort,       # Sorting criteria (e.g., "year_fy:desc")
+      start: $start,     # Pagination offset (e.g., 20)
+      limit: $limit,     # Number of records per page (e.g., 10)
+      where: { isactive: true }
+    ) {
+      values {
+        ${studentOutreachesFields}
+      },
+      aggregate {
+        count # Total count of active records
+      },
+    }
+  }
+`;
+

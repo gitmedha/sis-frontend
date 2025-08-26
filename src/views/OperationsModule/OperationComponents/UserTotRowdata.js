@@ -75,10 +75,10 @@ const UserTotRowdata = (props) => {
   const designation = useRef(null);
   const college = useRef(null);
 
-  const [state,setstate]=useState(true)
+  const [state, setstate] = useState(true);
   const [filteredColleges, setFilteredColleges] = useState([]);
   const [collegeName, setCollegeName] = useState("");
- 
+
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
       setAreaOptions([]);
@@ -154,20 +154,19 @@ const UserTotRowdata = (props) => {
           label: item,
         }))
       );
-    })
+    });
   }, []);
 
   const updateRow = (id, field, value) => {
     row[field] = value;
-    
   };
-  const handleInputChange = (id,data,value) => {
+
+  const handleInputChange = (id, data, value) => {
     const input = value.current;
     if (input) {
-      input.value = capitalizeFirstLetter(input.value);;
-      props.updateRow(id,data,input.value)
+      input.value = capitalizeFirstLetter(input.value);
+      props.updateRow(id, data, input.value);
     }
-   
   };
 
   const capitalizeFirstLetter = (text) => {
@@ -184,14 +183,11 @@ const UserTotRowdata = (props) => {
   };
 
   const handleProjectChange = async (selectedOption, rowId) => {
-     if(selectedState){
-                setSelectedProjectName(selectedOption.value);
-              }
     props.handleChange(selectedOption, "project_name", rowId);
-    
+    setSelectedProjectName(selectedOption);
+
     if (selectedOption && selectedOption.value && selectedState) {
       try {
-        // Fetch colleges filtered by both state and project name
         const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
         setFilteredColleges(colleges);
       } catch (error) {
@@ -205,9 +201,8 @@ const UserTotRowdata = (props) => {
   };
 
   const handleStateChange = (e, rowId) => {
-    if(['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
+    if (['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
       setSelectedState(e.value);
-      // Reset project and college when state changes
       setSelectedProjectName(null);
       setFilteredColleges([]);
       props.updateRow(rowId, "project_name", "");
@@ -290,7 +285,7 @@ const UserTotRowdata = (props) => {
         </td>
         <td>
           <Select
-            className={`table-input  ${
+            className={`table-input ${
               props.classValue[`class${row.id - 1}`]?.area
                 ? `border-red`
                 : "table-input h-2"
@@ -304,34 +299,29 @@ const UserTotRowdata = (props) => {
             onChange={(e) => props.handleChange(e, "city", row.id)}
           />
         </td>
-         <td>
+        <td>
           <input
             className="table-input h-2"
             type="text"
             onKeyPress={handleKeyPress}
             ref={designation}
-            onChange={(e) => handleInputChange(row.id, "designation",designation)}
+            onChange={(e) => handleInputChange(row.id, "designation", designation)}
           />
         </td>
-        
         <td>
           <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.colege
-                ? `border-red`
-                : "table-input h-2"
-            }`}
+            className="table-input h-2"
             classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
-            name="institution"
-            options={props.institutiondata}
-            onChange={(e) => props.handleChange(e, "college", row.id)}
-            onInputChange={(inputValue) => {
-              props.filterInstitution(inputValue).then((data) => {
-                props.setInstitutionOptions(data);
-              });
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id);
+              setCollegeName(e.value);
             }}
+            isDisabled={!selectedProjectName}
           />
         </td>
         <td>
@@ -493,21 +483,3 @@ const UserTotRowdata = (props) => {
 };
 
 export default UserTotRowdata;
-
-
-// // <td>
-//           <Select
-//             className="table-input h-2"
-//             classNamePrefix="select"
-//             isClearable={true}
-//             isSearchable={true}
-//             name="college"
-//             options={filteredColleges}
-//             value={filteredColleges.find(option => option.value === collegeName) || null}
-//             onChange={(e) => {
-//               props.handleChange(e, "college", row.id)
-//               setCollegeName(e.value);
-//             }}
-//             isDisabled={!selectedProjectName}
-//           />
-//         </td> 
