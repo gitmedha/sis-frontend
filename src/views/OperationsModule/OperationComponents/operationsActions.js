@@ -548,7 +548,7 @@ export const bulkCreateStudentOutreach = async (data) => {
 };
 export const bulkCreateMentorship = async (data) => {
   try {
-    const response = await api.post("/mentorships/createBulkmentorship", data);
+    const response = await api.post("/mentorship/createBulkmentorship", data);
     return response;
   } catch (error) {
     return console.error(error);

@@ -11,7 +11,7 @@ import {
   GET_ALL_USERS,
   GET_USERS_BY_ROLE,
   GET_ALL_STUDENT,
-  GET_USERS_BY_ROLE_SEARCH,
+  GET_USERS_BY_ROLE_SEARCH
 } from "../../graphql";
 
 export const batchLookUpOptions = async () => {

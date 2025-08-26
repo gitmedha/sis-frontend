@@ -1752,27 +1752,25 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            )
-            
-            // :activeTab.key === "ecosystem" ? (
-            //   <>
-            //     <EcosystemSearchBar />
-            //   <Table
-            //       onRowClick={(data) => showRowData("ecosystemData", data)}
-            //       columns={columnsEcosystem}
-            //       data={isSearching ? (isFound ? searchedData : []) : opts}
-            //       totalRecords={
-            //         isSearching ? opsData.length : optsAggregate.count
-            //       }
-            //       fetchData={isSearching ? fetchSearchedData : fetchData}
-            //       paginationPageSize={paginationPageSize}
-            //       onPageSizeChange={setPaginationPageSize}
-            //       paginationPageIndex={paginationPageIndex}
-            //       onPageIndexChange={setPaginationPageIndex}
-            //     />
+            ):activeTab.key === "ecosystem" ? (
+              <>
+                <EcosystemSearchBar />
+              <Table
+                  onRowClick={(data) => showRowData("ecosystemData", data)}
+                  columns={columnsEcosystem}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               
-            //   </>
-            // ) 
+              </>
+            )
             
             : activeTab.key == "upskilling" ? (
               <>
