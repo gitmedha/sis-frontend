@@ -22,7 +22,7 @@ import {
   getAllInstitute,
   getTotPickList,
 } from "../../OperationComponents/operationsActions";
-import CheckTot from "./CheckTot";
+import checkQuery from "./checkQuery";
 import { isNumber, set } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
@@ -222,12 +222,7 @@ const Styled = styled.div`
   }
 `;
 
-const options = [
-  { value: "feild_activity", label: "Field Activity" },
-  { value: "collegePitch", label: "Pitching" },
-];
-
-const TotUpload = (props) => {
+const QueryUpload = (props) => {
   const { onHide } = props;
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
@@ -723,7 +718,7 @@ const instituteCheck = instituteOptions.find(
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setUploadNew(true);
-      props.uploadExcel(excelData, "tot");
+      props.uploadExcel(excelData, "alumniQuery");
     }
   };
 
@@ -743,7 +738,7 @@ const instituteCheck = instituteOptions.find(
             id="contained-modal-title-vcenter"
             className="d-flex align-items-center"
           >
-            <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
+            <h1 className="text--primary bebas-thick mb-0">Upload Alumni Query</h1>
           </Modal.Title>
         </Modal.Header>
         <Styled>
@@ -893,7 +888,7 @@ const instituteCheck = instituteOptions.find(
         </Styled>
       </Modal>
 
-      <CheckTot
+      <checkQuery
         show={showModalTOT}
         onHide={() => hideShowModal()}
         notUploadedData={notUploadedData}
@@ -904,4 +899,4 @@ const instituteCheck = instituteOptions.find(
   );
 };
 
-export default TotUpload;
+export default QueryUpload;
