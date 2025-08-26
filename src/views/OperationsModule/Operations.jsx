@@ -75,6 +75,7 @@ import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
 import CurriculumInterventionSearchBar from "./SaModule/CurriculumIntervention/CurriculumInterventionSearchBar";
 import CurriculumInterventionDataField from "./SaModule/CurriculumIntervention/CurriculumInterventionDataField";
 import CurriculumInterventionBulkAdd from "./SaModule/CurriculumIntervention/CurriculumInterventionBulkAdd";
+import QueryUpload from "./UploadFiles/AlumniQuery/QueryUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1418,6 +1419,18 @@ const Operations = ({
             setAlert("Unable to create Mentorship data.", "error");
           });
       }
+      if (key === "alumniQuery") {
+        // datavaluesforlatestcreate = {
+        //   module_name: "Operations",
+        //   activity: "Field Activities Upload File",
+        //   event_id: "",
+        //   updatedby: userId,
+        //   changes_in: { changes_in: { name: "N/A" } },
+        // };
+        // await createLatestAcivity(datavaluesforlatestcreate);
+        await api.post("/alumni-queries/create-bulk-alumni-queries", data);
+        setAlert("Data created successfully.", "success");
+      }
 
       if (key === "pitching") {
         datavaluesforlatestcreate = {
@@ -1500,11 +1513,23 @@ const Operations = ({
         mentorship: false,
         upskill: false,
         pitching: false,
+        alumniQueries: false,
       });
     }
     if (activeTab.key == "useTot") {
       setUploadModal({
         tot: true,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        alumniQueries: false,
+        pitching: false,
+      });
+    }
+     if (activeTab.key == "alumniQueries") {
+      setUploadModal({
+        tot: false,
+        alumniQueries: true,
         myData: false,
         mentorship: false,
         upskill: false,
@@ -1515,6 +1540,7 @@ const Operations = ({
       setUploadModal({
         tot: false,
         myData: false,
+        alumniQueries: false,
         mentorship: true,
         upskill: false,
         pitching: false,
@@ -1526,6 +1552,7 @@ const Operations = ({
         myData: false,
         mentorship: false,
         pitching: false,
+        alumniQueries: false,
         upskill: true,
       });
     }
@@ -1535,6 +1562,7 @@ const Operations = ({
         myData: false,
         mentorship: false,
         upskill: false,
+        alumniQueries: false,
         pitching: true,
       });
     }
@@ -1551,6 +1579,9 @@ const Operations = ({
       case "upskilling":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
       case "collegePitches":
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+
+      case "alumniQueries":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
       default:
         return ""; // Fallback in case the tab doesn't match
@@ -1653,7 +1684,7 @@ const Operations = ({
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
-                  activeTab.key == "collegePitches"
+                  activeTab.key == "collegePitches" || activeTab.key =="alumniQueries"
                    ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -1673,6 +1704,7 @@ const Operations = ({
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
+                  activeTab.key =="alumniQueries" || 
                   activeTab.key == "collegePitches" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
@@ -2070,6 +2102,17 @@ const Operations = ({
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={() => closeUpload()}
                 Upskill="yes"
+              />
+            </>
+          )}
+
+          {uploadModal.alumniQueries && (
+            <>
+              <QueryUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={() => closeUpload()}
+                AlumniQuery="yes"
               />
             </>
           )}
