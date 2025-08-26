@@ -22,6 +22,7 @@ export const institutionFields =`
       status
       type
       created_at
+      source
 `
 export const GET_MY_INSTITUTES = `
 query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
@@ -51,6 +52,7 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String) {
     }
     type
     created_at
+    source
   }
 }
 `;
@@ -93,6 +95,7 @@ query GET_INSTITUTES($id: Int, $limit: Int, $start: Int, $sort: String, $state: 
       status
       type
       created_at
+      source
     }
     aggregate {
       count
@@ -125,6 +128,7 @@ mutation CREATE_INSTITUTIONS(
       medha_area
       district
       city
+      source
       logo{
         url
       }
@@ -197,6 +201,7 @@ mutation UPDATE_INSTITUTIONS(
         medha_area
         city
         district
+        source
         contacts {
           full_name
           email
@@ -285,6 +290,7 @@ query INSTITUTION(
       city
       created_at
       updated_at
+      source
       created_by_frontend{
         username
         email
