@@ -155,11 +155,7 @@ export const EmploymentConnectionValidations = Yup.object({
     }),
   work_engagement,
   assigned_to,
-  earning_type: Yup.string().when('opportunity_type', {
-    is: 'Freelance',
-    then: (schema) => schema.required('Earning type is required when type is Freelance.'),
-    otherwise: (schema) => schema.optional(),
-  }),
+  earning_type: Yup.string().required("Earning type is required."),
 
 });
 

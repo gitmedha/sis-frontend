@@ -329,7 +329,9 @@ const EnrollmentConnectionForm = (props) => {
           item["applicable-to"].includes(selectedOpportunityType) ||
           item["applicable-to"] === "Both"
       );
+      
     }
+    
     // if(selectedOpportunityType === 'Apprenticeship'){
     //   filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Apprenticeship');
     // }
@@ -431,7 +433,7 @@ const EnrollmentConnectionForm = (props) => {
   useEffect(() => {
     setotherrejection(false);
   }, [employmentConnection]);
-
+console.log(statusOptions,'statusOptions')
   return (
     <Modal
       centered
