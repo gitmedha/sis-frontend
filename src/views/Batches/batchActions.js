@@ -338,6 +338,8 @@ export const searchPrograms = async(searchValue)=>{
 
 export const searchStudents = async(searchValue)=>{
   try {
+    console.log('searchValue',searchValue);
+    
     const {data}= await api.post('/graphql', {
       query:SEARCH_BY_STUDENTS,
       variables:{

@@ -351,52 +351,21 @@ const QueryUpload = (props) => {
     return null;
   };
 
-  // useEffect(() => {
-  //   getTotPickList().then((data) => {
-
-
-  //     // setModuleName(data.module_name.map(item))
-  //     setInstituteOptions(data.TOT_college)
-  //     setModuleName(
-  //       data.module_name.map((item) => ({
-  //         key: item,
-  //         value: item,
-  //         label: item,
-  //       }))
-  //     );
-  //     setPartnerDept(
-  //       data.partner_dept.map((item) => ({
-  //         key: item,
-  //         value: item,
-  //         label: item,
-  //       }))
-  //     );
-  //     setProjectName(data.project_name.map((item) => item));
-  //   });
-  //   getAddressOptions().then((data) => {
-  //     setStateOptions(
-  //       data?.data?.data?.geographiesConnection.groupBy.state
-  //         .map((state) => ({
-  //           key: state?.id,
-  //           label: state?.key,
-  //           value: state?.key,
-  //         }))
-  //         .sort((a, b) => a.label.localeCompare(b.label))
-  //     );
-  //   });
-  //   getStateDistricts().then((data) => {
-  //     setAreaOptions([]);
-  //     setAreaOptions(
-  //       data?.data?.data?.geographiesConnection.groupBy.district
-  //         .map((area) => ({
-  //           key: area.id,
-  //           label: area.key,
-  //           value: area.key,
-  //         }))
-  //         .sort((a, b) => a.label.localeCompare(b.label))
-  //     );
-  //   });
-  // }, [props]);
+  useEffect(() => {
+ 
+    getStateDistricts().then((data) => {
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.area
+          .map((area) => ({
+            value: area.key
+          }))
+          // .sort((a, b) => a.label.localeCompare(b.label))
+      );
+      // console.log(data?.data?.data?.geographiesConnection.groupBy);
+      
+    });
+  }, [props]);
 
   const capitalize = (s) => {
     return String(s)
@@ -462,139 +431,146 @@ const QueryUpload = (props) => {
     }
     return true;
   };
+const processParsedData = async (data) => {
+  const formattedData = [];
+  const notFoundData = [];
+  const userId = localStorage.getItem("user_id");
 
-  const processParsedData = async (data) => {
-    const formattedData = [];
-    const notFoundData = [];
-    const userId = localStorage.getItem("user_id");
+  // Process each row sequentially to ensure proper async handling
+  for (let index = 0; index < data.length; index++) {
+    const item = data[index];
+    const newItem = {};
+    
+    Object.keys(item).forEach((key) => {
+      newItem[key] = item[key];
+    });
 
-    data.forEach((item, index) => {
-      const newItem = {};
-      Object.keys(item).forEach((key) => {
-        newItem[key] = item[key];
-      });
+    const currentUser = localStorage.getItem("user_id");
+    const StateCheck = stateOptions.find(
+      (state) => state === newItem["State"]
+    )?.id;
 
-      const currentUser = localStorage.getItem("user_id");
-      const StateCheck = stateOptions.find(
-        (state) => state === newItem["State"]
-      )?.id;
+    console.log("areaOptions", areaOptions);
 
-      // const targetCollege = newItem["College Name"].trim().toLowerCase();
+    const areaCheck = areaOptions.find(
+      (area) => area.value.toLowerCase() === newItem["Medha Area"].toLowerCase()
+    );
+    
+    const studentId = newItem["Student ID"];
+    let studentExists = false;
+    let studentIdNum;
 
-      // const instituteCheck = instituteOptions.find(
-      //   (i) => i.trim().toLowerCase() === targetCollege
-      // );
+    // Check if student exists (only if studentId is provided)
+    if (studentId) {
+      try {
+        // Use await properly in the for loop
+        console.log(studentId);
+        
+        const student = await searchStudents(studentId);
+        studentIdNum = parseInt(
+          student.data?.studentsConnection.values[0]?.id,
+          10
+        );
+        console.log(student);
+        
+        studentExists = student?.data?.studentsConnection?.values.length > 0;
 
-      // console.log("Matched:", instituteCheck);
-
-
-      //       console.log("instituteCheck",instituteCheck);
-
-      const areaCheck = areaOptions.find(
-        (area) => area === newItem["Medha Area"]
-      )?.id;
-      const studentId = newItem["Student ID"];
-      let studentExists = false;
-      let studentIdNum;
-      if (studentId) {
-        try {
-          const student = searchStudents(studentId);
-          studentIdNum = parseInt(
-            student.data?.studentsConnection.values[0].id,
-            10
-          );
-          studentExists = student?.data?.studentsConnection?.values.length > 0;
-        } catch (err) {
-          console.error(`Error fetching student with ID: ${studentId}`, err);
-        }
+      } catch (err) {
+        console.error(`Error fetching student with ID: ${studentId}`, err);
+        // If there's an error, assume student doesn't exist
+        studentExists = false;
       }
-      const startDate = excelSerialDateToJSDate(newItem["Query Start date"]);
-      const endDate = excelSerialDateToJSDate(newItem["Query End Date"]);
+    }
 
-      const isStartDateValid = isValidDateFormat(startDate);
-      const isEndDateValid = isValidDateFormat(endDate);
-      const createdby = Number(userId);
-      let parseDate;
-      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
-        const parsedDate1 = moment(new Date(startDate)).unix();
-        const parsedDate2 = moment(new Date(endDate)).unix();
-        if (parsedDate2 < parsedDate1) {
-          parseDate = true;
-        }
+    const startDate = excelSerialDateToJSDate(newItem["Query Start date"]);
+    const endDate = excelSerialDateToJSDate(newItem["Query End Date"]);
+
+    const isStartDateValid = isValidDateFormat(startDate);
+    const isEndDateValid = isValidDateFormat(endDate);
+    const createdby = Number(userId);
+    let parseDate;
+    
+    if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+      const parsedDate1 = moment(new Date(startDate)).unix();
+      const parsedDate2 = moment(new Date(endDate)).unix();
+      if (parsedDate2 < parsedDate1) {
+        parseDate = true;
       }
-      const isValidContact = (contact) => {
-        const pattern = /^[0-9]{10}$/; // 10-digit number regex
-        return contact && pattern.test(contact);
-      };
-      const isValidEmail = (email) => {
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
-        return email && pattern.test(email);
-      };
+    }
+    
+    const isValidContact = (contact) => {
+      const pattern = /^[0-9]{10}$/; // 10-digit number regex
+      return contact && pattern.test(contact);
+    };
+    
+    const isValidEmail = (email) => {
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
+      return email && pattern.test(email);
+    };
 
-
-      if (
-        !isStartDateValid ||
-        !isEndDateValid ||
-        parseDate || areaCheck ||
-        studentExists ||
-        !isValidContact(newItem["Mobile No."]) || // Phone number validation
-        !isValidEmail(newItem["Email ID"]) // Email validation
-      ) {
-        notFoundData.push({
-          father_name: newItem["Father's Name"] || "",
-          email:isValidEmail ? newItem["Email ID"] :{ value: newItem["Email ID"], notFound: true } || "No Data" || "",
-          phone: isValidContact ? newItem["Mobile No."] :{ value: newItem["Mobile No."], notFound: true } || "No Data" || "",
-          location:  areaCheck ? newItem["Medha Area"] :{ value: newItem["Medha Area"], notFound: true } || "No Data" || "",
-          query_type: newItem["Query Type"] || "",
-          query_desc: newItem["Query Description"] || "",
-          conclusion: newItem["Conclusion"] || "",
-          status: newItem["Status"] || "",
-
-          query_start: parseDate
-            ? { value: startDate, notFound: true }
-            : isStartDateValid
-              ? startDate
-              : {
+    if (
+      !isStartDateValid ||
+      !isEndDateValid ||
+      parseDate || 
+      !areaCheck || // Changed this condition - if areaCheck is falsy, it should go to notFoundData
+      !studentExists || // If student doesn't exist, it should go to notFoundData
+      !isValidContact(newItem["Mobile No."]) ||
+      !isValidEmail(newItem["Email ID"])
+    ) {
+      notFoundData.push({
+        father_name: newItem["Father's Name"] || "",
+        email: isValidEmail(newItem["Email ID"]) ? newItem["Email ID"] : { value: newItem["Email ID"], notFound: true } || "No Data",
+        phone: isValidContact(newItem["Mobile No."]) ? newItem["Mobile No."] : { value: newItem["Mobile No."], notFound: true } || "No Data",
+        location: areaCheck ? newItem["Medha Area"] : { value: newItem["Medha Area"], notFound: true } || "No Data",
+        query_type: newItem["Query Type"] || "",
+        query_desc: newItem["Query Description"] || "",
+        conclusion: newItem["Conclusion"] || "",
+        status: newItem["Status"] || "",
+        query_start: parseDate
+          ? { value: startDate, notFound: true }
+          : isStartDateValid
+            ? startDate
+            : {
                 value: newItem["Query Start date"]
                   ? newItem["Query Start date"]
                   : "No data",
                 notFound: true,
               },
-          query_end: parseDate
-            ? { value: endDate, notFound: true }
-            : isEndDateValid
-              ? endDate
-              : {
+        query_end: parseDate
+          ? { value: endDate, notFound: true }
+          : isEndDateValid
+            ? endDate
+            : {
                 value: newItem["Query End Date"] ? newItem["Query End Date"] : "no data",
                 notFound: true,
               },
-          student_name: studentExists
-            ? newItem["Full Name"]
-            : { value: newItem["Full Name"], notFound: true } || "No Data",
-        });
-      } else {
-        formattedData.push({
-          start_date: startDate,
-          end_date: endDate,
-          student_id: studentIdNum || "",
-          student_name: capitalize(newItem["Full Name"]) || "",
-          father_name: newItem["Father's Name"] || "",
-          email: newItem["Email ID"] || "",
-          phone: newItem["Mobile No."] || "",
-          location: newItem["Medha Area"] || "",
-          query_type: newItem["Query Type"] || "",
-          query_desc: newItem["Query Description"] || "",
-          conclusion: newItem["Conclusion"] || "",
-          status: newItem["Status"] || "",
-          createdby: createdby,
-          updatedby: currentUser,
-        });
-      }
-    });
+        student_name: studentExists
+          ? newItem["Full Name"]
+          : { value: newItem["Full Name"], notFound: true } || "No Data",
+      });
+    } else {
+      formattedData.push({
+        start_date: startDate,
+        end_date: endDate,
+        student_id: studentIdNum || "",
+        student_name: capitalize(newItem["Full Name"]) || "",
+        father_name: newItem["Father's Name"] || "",
+        email: newItem["Email ID"] || "",
+        phone: newItem["Mobile No."] || "",
+        location: newItem["Medha Area"] || "",
+        query_type: newItem["Query Type"] || "",
+        query_desc: newItem["Query Description"] || "",
+        conclusion: newItem["Conclusion"] || "",
+        status: newItem["Status"] || "",
+        createdby: createdby,
+        updatedby: currentUser,
+      });
+    }
+  }
 
-    setExcelData(formattedData);
-    setNotuploadedData(notFoundData);
-  };
+  setExcelData(formattedData);
+  setNotuploadedData(notFoundData);
+};
 
   function hasNullValue(arr) {
     for (let i = 0; i < arr.length; i++) {
