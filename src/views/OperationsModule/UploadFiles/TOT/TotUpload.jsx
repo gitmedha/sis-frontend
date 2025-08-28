@@ -12,7 +12,6 @@ import {
   FaRegCheckCircle,
 } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
-// import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import {
   getAddressOptions,
@@ -20,10 +19,11 @@ import {
 } from "../../../Address/addressActions";
 import {
   bulkCreateUsersTots,
+  getAllInstitute,
   getTotPickList,
 } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
-import { isNumber } from "lodash";
+import { isNumber, set } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
 
@@ -232,6 +232,7 @@ const TotUpload = (props) => {
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
   const [assigneOption, setAssigneeOption] = useState([]);
+  const [instituteOptions, setInstituteOptions] = useState([]);
   const [excelData, setExcelData] = useState([]);
   const [check, setCheck] = useState(false);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -249,14 +250,21 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
 
-  useEffect(() => {
-    const getdata = async () => {
-      const data = await getAllSrmbyname();
-      setAssigneeOption(data);
-    };
+  // useEffect(() => {
+  //   const getdata = async () => {
+  //     const data = await getAllSrmbyname();
+  //     setAssigneeOption(data);
 
-    getdata();
-  }, [props]);
+  //     const instituteData = await getAllInstitute();
+  //     console.log(instituteData);
+      
+  //     setInstituteOptions(instituteData)
+      
+      
+  //   };
+
+  //   getdata();
+  // }, [props]);
 
   const handleFileChange = (event) => {
     const fileInput = event.target;
@@ -358,7 +366,10 @@ const TotUpload = (props) => {
 
   useEffect(() => {
     getTotPickList().then((data) => {
+
+      
       // setModuleName(data.module_name.map(item))
+      setInstituteOptions(data.TOT_college)
       setModuleName(
         data.module_name.map((item) => ({
           key: item,
@@ -480,6 +491,18 @@ const TotUpload = (props) => {
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
+      
+      const targetCollege = newItem["College Name"].trim().toLowerCase();
+
+const instituteCheck = instituteOptions.find(
+  (i) =>  i.trim().toLowerCase() === targetCollege
+);
+
+// console.log("Matched:", instituteCheck);
+
+
+//       console.log("instituteCheck",instituteCheck);
+      
       const areaCheck = areaOptions.find(
         (area) => area === newItem["City"]
       )?.id;
@@ -533,7 +556,7 @@ const TotUpload = (props) => {
         !projectNameCheck ||
         parseDate ||
         !newItem["Full Name"] ||
-        !newItem["College Name"]
+        !newItem["College Name"] || !instituteCheck
       ) {
         notFoundData.push({
           index: index + 1,
@@ -576,9 +599,14 @@ const TotUpload = (props) => {
                   : "Please select from dropdown",
                 notFound: true,
               },
-          college: newItem["College Name"]
+          college: instituteCheck 
             ? capitalize(newItem["College Name"])
-            : "Please select from dropdown",
+            :  {
+                value: newItem["College Name"]
+                  ? newItem["College Name"]
+                  : "Please select from dropdown",
+                notFound: true,
+              },
           city: newItem["District where training took place"]
             ? capitalize(newItem["District where training took place"])
             : "",
