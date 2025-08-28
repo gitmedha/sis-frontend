@@ -6,7 +6,7 @@ import {
   getAddressOptions,
   getStateDistricts,
 } from "../../Address/addressActions";
-import { searchBatches, searchInstitutions,getOrgsPicklist,searchEmployers } from "./operationsActions";
+import { searchBatches, searchInstitutions } from "./operationsActions";
 import { connect } from "react-redux";
 import { RowsData } from "./RowsData";
 
@@ -39,7 +39,6 @@ const OperationCreateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate] = useState(new Date());
-  const [organizationOptions, setOrganizationOptions] = useState([]);
 
   const [data, setData] = useState([
     {
@@ -213,7 +212,7 @@ const OperationCreateform = (props) => {
         );
       });
     }
-  updateRow(rowid, key, options ? options.value : null);
+    updateRow(rowid, key, options.value);
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -245,10 +244,6 @@ const OperationCreateform = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    getOrgsPicklist("name", "employers").then((data) => {
-      setOrganizationOptions(data);
-    })
-  
   }, []);
 
   const handleInputChange = (e, index, field) => {
@@ -372,22 +367,6 @@ const OperationCreateform = (props) => {
     }
   };
 
-  const filterOrganization = async (filterValue) => {
-    try { 
-      const { data } = await searchEmployers(filterValue);
-      let filterData = data.employersConnection.values.map((org) => {
-        return {
-          ...org,
-          label: org.name,
-          value: Number(org.id),
-        };
-      });
-      return filterData;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   return (
     <Modal
       centered
@@ -483,15 +462,12 @@ const OperationCreateform = (props) => {
                       updateRow={updateRow}
                       statedata={stateOptions}
                       areaOptions={areaOptions}
-                      organizationOptions={organizationOptions}
                       classValue={classValue}
                       style={{ marginTop: 5 }}
                       filterInstitution={filterInstitution}
-                      filterOrganization={filterOrganization}
                       filterBatch={filterBatch}
                       setInstitutionOptions={setInstitutionOptions}
                       setBatchOptions={setBatchOptions}
-                      setOrganizationOptions={setOrganizationOptions}
                     />
                   </tr>
                 ))}
