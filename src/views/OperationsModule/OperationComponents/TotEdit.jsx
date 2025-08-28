@@ -305,7 +305,7 @@ const TotEdit = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
-    trainer_1: Yup.string().required("Trainer 1 is required"),
+    trainer_1: Yup.string().required("Facilitator 1 is required"),
     // trainer_2: Yup.string()
     //   .required("Trainer 2 is required")
     //   .test("not-same", "Trainers must be different", function (trainer2) {
@@ -410,11 +410,11 @@ const TotEdit = (props) => {
                           icon="down"
                           control="lookup"
                           name="trainer_1"
-                          label="Trainer 1"
+                          label="Facilitator 1"
                           required
                           options={srmOption}
                           className="form-control"
-                          placeholder="Trainer 1"
+                          placeholder="Facilitator 1"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -422,11 +422,11 @@ const TotEdit = (props) => {
                           icon="down"
                           control="lookup"
                           name="trainer_2"
-                          label="Trainer 2"
+                          label="Facilitator 2"
                           required
                           options={srmOption}
                           className="form-control"
-                          placeholder="Trainer 2"
+                          placeholder="Facilitator 2"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">

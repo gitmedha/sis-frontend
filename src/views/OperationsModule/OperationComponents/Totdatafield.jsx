@@ -148,7 +148,7 @@ const Totdatafield = (props) => {
                     value={props?.email}
                   />
                   <DetailField
-                    label="Trainer 1"
+                    label="Facilitator 1"
                     value={props?.trainer_1?.username}
                   />
                   <DetailField
@@ -193,7 +193,7 @@ const Totdatafield = (props) => {
                   /> */}
                   <DetailField label="Module Name" value={props?.module_name} />
                   <DetailField
-                    label="Trainer 2"
+                    label="Facilitator 2"
                     value={props.trainer_2?.username}
                   />
                   <DetailField label="New Entry" value={props?.new_entry ?"Yes":"No"} />

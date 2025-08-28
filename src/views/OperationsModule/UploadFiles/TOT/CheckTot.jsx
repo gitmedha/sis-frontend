@@ -72,8 +72,8 @@ const CheckTot = (props) => {
                         <th>Module Name</th>
                         <th>Start Date </th>
                         <th>End Date </th>
-                        <th>Trainer 1 </th>
-                        <th>Trainer 2 </th>
+                        <th>Facilitator 1 </th>
+                        <th>Facilitator 2 </th>
                         <th>Certificate Given </th>
                         <th>Project Type </th>
                         <th>New Entry </th>
