@@ -26,27 +26,22 @@ import checkQuery from "./checkQuery";
 import { isNumber, set } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
+import { searchStudents } from "src/views/Batches/batchActions";
+import CheckQuery from "./checkQuery";
 
 const expectedColumns = [
+  "Student ID",
+  "Query Start date",
   "Full Name",
-  "Trainer 1",
-  "Project Name",
-  "Certificate Provided",
-  "Program/Module Name",
-  "Project Type",
-  "Trainer 2",
-  "Government Department partnered with",
-  "College Name",
-  "District where training took place",
-  "State",
-  "Age",
-  "Gender",
-  "Contact Number",
-  "Designation",
-  "Start Date",
-  "End Date",
-  "New Entry",
-  "Email id",
+  "Father's Name",
+  "Email ID",
+  "Mobile No.",
+  "Medha Area",
+  "Query Type",
+  "Query Description",
+  "Conclusion",
+  "Status",
+  "Query End Date"
 ];
 
 const Styled = styled.div`
@@ -252,10 +247,10 @@ const QueryUpload = (props) => {
 
   //     const instituteData = await getAllInstitute();
   //     console.log(instituteData);
-      
+
   //     setInstituteOptions(instituteData)
-      
-      
+
+
   //   };
 
   //   getdata();
@@ -337,10 +332,7 @@ const QueryUpload = (props) => {
     }
   };
 
-  const isValidDate = (dateString) => {
-    const date = new Date(dateString);
-    return !isNaN(date.getTime());
-  };
+  
 
   const excelSerialDateToJSDate = (serial) => {
     const excelEpoch = new Date(Date.UTC(1899, 11, 30));
@@ -359,52 +351,52 @@ const QueryUpload = (props) => {
     return null;
   };
 
-  useEffect(() => {
-    getTotPickList().then((data) => {
+  // useEffect(() => {
+  //   getTotPickList().then((data) => {
 
-      
-      // setModuleName(data.module_name.map(item))
-      setInstituteOptions(data.TOT_college)
-      setModuleName(
-        data.module_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setPartnerDept(
-        data.partner_dept.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setProjectName(data.project_name.map((item) => item));
-    });
-    getAddressOptions().then((data) => {
-      setStateOptions(
-        data?.data?.data?.geographiesConnection.groupBy.state
-          .map((state) => ({
-            key: state?.id,
-            label: state?.key,
-            value: state?.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-    getStateDistricts().then((data) => {
-      setAreaOptions([]);
-      setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
-          .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
-  }, [props]);
+
+  //     // setModuleName(data.module_name.map(item))
+  //     setInstituteOptions(data.TOT_college)
+  //     setModuleName(
+  //       data.module_name.map((item) => ({
+  //         key: item,
+  //         value: item,
+  //         label: item,
+  //       }))
+  //     );
+  //     setPartnerDept(
+  //       data.partner_dept.map((item) => ({
+  //         key: item,
+  //         value: item,
+  //         label: item,
+  //       }))
+  //     );
+  //     setProjectName(data.project_name.map((item) => item));
+  //   });
+  //   getAddressOptions().then((data) => {
+  //     setStateOptions(
+  //       data?.data?.data?.geographiesConnection.groupBy.state
+  //         .map((state) => ({
+  //           key: state?.id,
+  //           label: state?.key,
+  //           value: state?.key,
+  //         }))
+  //         .sort((a, b) => a.label.localeCompare(b.label))
+  //     );
+  //   });
+  //   getStateDistricts().then((data) => {
+  //     setAreaOptions([]);
+  //     setAreaOptions(
+  //       data?.data?.data?.geographiesConnection.groupBy.district
+  //         .map((area) => ({
+  //           key: area.id,
+  //           label: area.key,
+  //           value: area.key,
+  //         }))
+  //         .sort((a, b) => a.label.localeCompare(b.label))
+  //     );
+  //   });
+  // }, [props]);
 
   const capitalize = (s) => {
     return String(s)
@@ -471,7 +463,7 @@ const QueryUpload = (props) => {
     return true;
   };
 
-  const processParsedData = (data) => {
+  const processParsedData = async (data) => {
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
@@ -486,53 +478,42 @@ const QueryUpload = (props) => {
       const StateCheck = stateOptions.find(
         (state) => state === newItem["State"]
       )?.id;
-      
-      const targetCollege = newItem["College Name"].trim().toLowerCase();
 
-const instituteCheck = instituteOptions.find(
-  (i) =>  i.trim().toLowerCase() === targetCollege
-);
+      // const targetCollege = newItem["College Name"].trim().toLowerCase();
 
-// console.log("Matched:", instituteCheck);
+      // const instituteCheck = instituteOptions.find(
+      //   (i) => i.trim().toLowerCase() === targetCollege
+      // );
+
+      // console.log("Matched:", instituteCheck);
 
 
-//       console.log("instituteCheck",instituteCheck);
-      
+      //       console.log("instituteCheck",instituteCheck);
+
       const areaCheck = areaOptions.find(
-        (area) => area === newItem["City"]
+        (area) => area === newItem["Medha Area"]
       )?.id;
-      const moduleCheck = moduleName.find(
-        (module) => module.value === newItem["Program/Module Name"]
-      );
-
-      const departMentCheck = partnerDept.find(
-        (department) =>
-          department.value === newItem["Government Department partnered with"]
-      );
-
-      const projectCheck = ["Internal", "External"].find(
-        (project) => project === newItem["Project Type"]
-      );
-      const projectNameCheck = projectName.find(
-        (project) => project === newItem["Project Name"]
-      );
-
-      const trainer_1 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 1"]
-      )?.value;
-
-      const trainer_2 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 2"]
-      )?.value;
-
-      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
-      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
+      const studentId = newItem["Student ID"];
+      let studentExists = false;
+      let studentIdNum;
+      if (studentId) {
+        try {
+          const student = searchStudents(studentId);
+          studentIdNum = parseInt(
+            student.data?.studentsConnection.values[0].id,
+            10
+          );
+          studentExists = student?.data?.studentsConnection?.values.length > 0;
+        } catch (err) {
+          console.error(`Error fetching student with ID: ${studentId}`, err);
+        }
+      }
+      const startDate = excelSerialDateToJSDate(newItem["Query Start date"]);
+      const endDate = excelSerialDateToJSDate(newItem["Query End Date"]);
 
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
       const createdby = Number(userId);
-      const updatedby = Number(userId);
-      const pattern = /^[0-9]{10}$/;
       let parseDate;
       if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
         const parsedDate1 = moment(new Date(startDate)).unix();
@@ -541,126 +522,72 @@ const instituteCheck = instituteOptions.find(
           parseDate = true;
         }
       }
+      const isValidContact = (contact) => {
+        const pattern = /^[0-9]{10}$/; // 10-digit number regex
+        return contact && pattern.test(contact);
+      };
+      const isValidEmail = (email) => {
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
+        return email && pattern.test(email);
+      };
+
 
       if (
-        !departMentCheck ||
-        !projectCheck ||
-        !moduleCheck ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !projectNameCheck ||
-        parseDate ||
-        !newItem["Full Name"] ||
-        !newItem["College Name"] || !instituteCheck
+        parseDate || areaCheck ||
+        studentExists ||
+        !isValidContact(newItem["Mobile No."]) || // Phone number validation
+        !isValidEmail(newItem["Email ID"]) // Email validation
       ) {
         notFoundData.push({
-          index: index + 1,
-          user_name: newItem["Full Name"]
-            ? capitalize(newItem["Full Name"])
-            : "No data",
-          trainer_1: newItem["Trainer 1"],
-          email: newItem["Email id"],
-          project_name: projectCheck
-            ? newItem["Project Name"]
-            : {
-                value: newItem["Project Name"]
-                  ? newItem["Project Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          certificate_given: newItem["Certificate Provided"],
-          module_name: moduleCheck
-            ? newItem["Program/Module Name"]
-            : {
-                value: newItem["Program/Module Name"]
-                  ? newItem["Program/Module Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          project_type: projectCheck
-            ? newItem["Project Type"]
-            : {
-                value: newItem["Project Type"]
-                  ? newItem["Project Type"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          trainer_2: newItem["Trainer 2"],
-          partner_dept: departMentCheck
-            ? newItem["Government Department partnered with"]
-            : {
-                value: newItem["Government Department partnered with"]
-                  ? newItem["Government Department partnered with"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          college: instituteCheck 
-            ? capitalize(newItem["College Name"])
-            :  {
-                value: newItem["College Name"]
-                  ? newItem["College Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          city: newItem["District where training took place"]
-            ? capitalize(newItem["District where training took place"])
-            : "",
-          state: newItem["State"] ? capitalize(newItem["State"]) : "",
-          age: newItem["Age"],
-          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Contact Number"],
-          designation: newItem["Designation"],
-          start_date: parseDate
+          father_name: newItem["Father's Name"] || "",
+          email:isValidEmail ? newItem["Email ID"] :{ value: newItem["Email ID"], notFound: true } || "No Data" || "",
+          phone: isValidContact ? newItem["Mobile No."] :{ value: newItem["Mobile No."], notFound: true } || "No Data" || "",
+          location:  areaCheck ? newItem["Medha Area"] :{ value: newItem["Medha Area"], notFound: true } || "No Data" || "",
+          query_type: newItem["Query Type"] || "",
+          query_desc: newItem["Query Description"] || "",
+          conclusion: newItem["Conclusion"] || "",
+          status: newItem["Status"] || "",
+
+          query_start: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
-            ? startDate
-            : {
-                value: newItem["Start Date"]
-                  ? newItem["Start Date"]
+              ? startDate
+              : {
+                value: newItem["Query Start date"]
+                  ? newItem["Query Start date"]
                   : "No data",
                 notFound: true,
               },
-          end_date: parseDate
+          query_end: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
-            ? endDate
-            : {
-                value: newItem["End Date"] ? newItem["End Date"] : "no data",
+              ? endDate
+              : {
+                value: newItem["Query End Date"] ? newItem["Query End Date"] : "no data",
                 notFound: true,
               },
-          new_entry: newItem["New Entry"],
+          student_name: studentExists
+            ? newItem["Full Name"]
+            : { value: newItem["Full Name"], notFound: true } || "No Data",
         });
       } else {
         formattedData.push({
-          user_name: newItem["Full Name"]
-            ? capitalize(newItem["Full Name"])
-            : "",
-          trainer_1: Number(trainer_1),
-          project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Provided"],
-          module_name: newItem["Program/Module Name"],
-          project_type: newItem["Project Type"],
-          trainer_2: Number(trainer_2),
-          partner_dept: newItem["Government Department partnered with"],
-          college: newItem["College Name"]
-            ? capitalize(newItem["College Name"])
-            : "",
-          city: newItem["District where training took place"]
-            ? capitalize(newItem["District where training took place"])
-            : "",
-          state: newItem["State"] ? capitalize(newItem["State"]) : "",
-          age: newItem["Age"],
-          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Contact Number"],
-          designation: newItem["Designation"]
-            ? capitalize(newItem["Designation"])
-            : "",
           start_date: startDate,
-          email: newItem["Email id"],
           end_date: endDate,
+          student_id: studentIdNum || "",
+          student_name: capitalize(newItem["Full Name"]) || "",
+          father_name: newItem["Father's Name"] || "",
+          email: newItem["Email ID"] || "",
+          phone: newItem["Mobile No."] || "",
+          location: newItem["Medha Area"] || "",
+          query_type: newItem["Query Type"] || "",
+          query_desc: newItem["Query Description"] || "",
+          conclusion: newItem["Conclusion"] || "",
+          status: newItem["Status"] || "",
           createdby: createdby,
           updatedby: currentUser,
-          new_entry: newItem["New Entry"],
         });
       }
     });
@@ -694,6 +621,10 @@ const instituteCheck = instituteOptions.find(
   };
 
   const uploadDirect = () => {
+    console.log("notUploadedData", notUploadedData);
+    console.log(excelData);
+    
+    
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setShowForm(false);
     } else {
@@ -887,8 +818,11 @@ const instituteCheck = instituteOptions.find(
           )}
         </Styled>
       </Modal>
+{console.log(showModalTOT)
+}
+console.log(notUploadedData);
 
-      <checkQuery
+      <CheckQuery
         show={showModalTOT}
         onHide={() => hideShowModal()}
         notUploadedData={notUploadedData}
