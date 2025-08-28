@@ -251,7 +251,7 @@ const MentorshipUpload = (props) => {
       return contact && pattern.test(contact);
     };
 
-    // Function to validate email addresses
+    // Function to validate email addresse
     const isValidEmail = (email) => {
       const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
       return email && pattern.test(email);

@@ -22,9 +22,10 @@ const Style = styled.div`
   overflow: hidden;
 `;
 
-const checkQuery = (props) => {
+const CheckQuery = (props) => {
     let { onHide } = props;
     const pattern = /^[0-9]{10}$/;
+    console.log(props.notUploadedData);
 
     return (
         <>
@@ -59,7 +60,7 @@ const checkQuery = (props) => {
                                             <tr>
                                                 <th>#</th>
                                                 <th>Student Name</th>
-                                                <th>Student ID</th>
+                                                {/* <th>Student ID</th> */}
                                                 <th>Father Name</th>
                                                 <th>Email</th>
                                                 <th>Phone</th>
@@ -69,85 +70,102 @@ const checkQuery = (props) => {
                                                 <th>Query End Date</th>
                                                 <th>Query Description</th>
                                                 <th>Conclusion</th>
-                                                <th>Status</th>  
+                                                <th>Status</th>
+                                                {/* <th>New Entry</th> */}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {props.notUploadedData.map((obj, i) => (
                                                 <tr key={i}>
+                                                    {/* # */}
                                                     <td>{obj.index}</td>
-                                                    <td className={obj.user_name == "No data" ? "text-danger" : ""}>{obj.user_name ? obj.user_name : "no data"}</td>
-                                                    <td className={obj.email == "No data" ? "text-danger" : ""}>{obj.email ? obj.email : "no data"}</td>
-                                                    <td className={""}>{obj.age ? obj.age : "No data"}</td>
-                                                    <td className={obj.gender ? "" : 'text-danger'}>{obj.gender ? obj.gender : "Please select from dropdown"}</td>
-                                                    <td className={!pattern.test(obj.contact) ? "text-danger" : ""}>{obj.contact}</td>
-                                                    <td className={obj.state ? "" : "text-danger"}>{obj.state ? obj.state : "Please select from dropdown"}</td>
-                                                    <td className={obj.city ? "" : "text-danger"}>{obj.city ? obj.city : "Please select from dropdown"}</td>
-                                                    <td>{obj.designation}</td>
 
+                                                    {/* Student Name */}
+                                                    <td className={obj.student_name?.notFound ? "text-danger" : ""}>
+                                                        {obj.student_name?.value
+                                                            ? obj.student_name.value
+                                                            : obj.student_name || "Please select from dropdown"}
+                                                    </td>
 
-                                                    <td className={obj.college?.notFound ? "text-danger" : ""}>{
-                                                        obj.college.value
-                                                            ? obj.college.value
-                                                            : obj.college ? obj.college : "Please select from dropdown"
+                                                    {/* Student ID */}
+                                                    {/* <td className={obj.student_id?.notFound ? "text-danger" : ""}>
+                                                        {obj.student_id?.value
+                                                            ? obj.student_id.value
+                                                            : obj.student_id || "Please provide Student ID"}
+                                                    </td> */}
 
-                                                    }
+                                                    {/* Father Name */}
+                                                    <td className={obj.father_name?.notFound ? "text-danger" : ""}>
+                                                        {obj.father_name?.value
+                                                            ? obj.father_name.value
+                                                            : obj.father_name || "Please provide Father Name"}
+                                                    </td>
 
+                                                    {/* Email */}
+                                                    <td className={obj.email?.notFound ? "text-danger" : ""}>
+                                                        {obj.email?.value
+                                                            ? obj.email.value
+                                                            : obj.email || "Please provide Email"}
                                                     </td>
-                                                    <td
-                                                        className={obj.project_name?.notFound || !obj.project_name ? "text-danger" : ""}
-                                                    >
-                                                        {obj.project_name?.value
-                                                            ? obj.project_name?.value
-                                                            : obj.project_name
-                                                                ? obj.project_name
-                                                                : "Please select from dropdown"}
+
+                                                    {/* Phone */}
+                                                    <td className={obj.phone?.notFound ? "text-danger" : ""}>
+                                                        {obj.phone?.value
+                                                            ? obj.phone.value
+                                                            : obj.phone || "Please provide Phone"}
                                                     </td>
-                                                    <td
-                                                        className={obj.partner_dept.notFound ? "text-danger" : ""}
-                                                    >
-                                                        {obj.partner_dept?.value
-                                                            ? obj.partner_dept?.value
-                                                            : obj.partner_dept
-                                                                ? obj.partner_dept
-                                                                : "Please select from dropdown"}
+
+                                                    {/* Location */}
+                                                    <td className={obj.location?.notFound ? "text-danger" : ""}>
+                                                        {obj.location?.value
+                                                            ? obj.location.value
+                                                            : obj.location || "Please provide Location"}
                                                     </td>
-                                                    <td
-                                                        className={
-                                                            obj.module_name.notFound ? "text-danger" : ""
-                                                        }
-                                                    >
-                                                        {obj.module_name?.value
-                                                            ? obj.module_name?.value
-                                                            : obj.module_name
-                                                                ? obj.module_name
-                                                                : "Please select from dropdown"}
+
+                                                    {/* Query Type */}
+                                                    <td className={obj.query_type?.notFound ? "text-danger" : ""}>
+                                                        {obj.query_type?.value
+                                                            ? obj.query_type.value
+                                                            : obj.query_type || "Please select Query Type"}
                                                     </td>
-                                                    <td className={obj.start_date?.notFound || !obj.start_date ? "text-danger" : ""}>{obj.start_date.value ? obj.start_date.value : obj.start_date ? obj.start_date : "please add start date"}</td>
-                                                    <td className={obj.end_date?.notFound || !obj.end_date ? "text-danger" : ""}>{obj.end_date.value ? obj.end_date.value : obj.end_date ? obj.end_date : "please add start date"}</td>
-                                                    <td className={!obj.trainer_1 ? "text-danger" : ""}>
-                                                        {obj.trainer_1
-                                                            ? obj.trainer_1
-                                                            : "Please select from dropdown"}
+
+                                                    {/* Query Start Date */}
+                                                    <td className={obj.query_start?.notFound ? "text-danger" : ""}>
+                                                        {obj.query_start?.value
+                                                            ? obj.query_start.value
+                                                            : obj.query_start || "Please provide Start Date"}
                                                     </td>
-                                                    <td className={!obj.trainer_2 ? "text-danger" : ""}>
-                                                        {obj.trainer_2
-                                                            ? obj.trainer_2
-                                                            : "Please select from dropdown"}
+
+                                                    {/* Query End Date */}
+                                                    <td className={obj.query_end?.notFound ? "text-danger" : ""}>
+                                                        {obj.query_end?.value
+                                                            ? obj.query_end.value
+                                                            : obj.query_end || "Please provide End Date"}
                                                     </td>
-                                                    <td>{obj.certificate_given}</td>
-                                                    <td
-                                                        className={
-                                                            obj.project_type.notFound ? "text-danger" : ""
-                                                        }
-                                                    >
-                                                        {obj.project_type?.value
-                                                            ? obj.project_type?.value
-                                                            : obj.project_type
-                                                                ? obj.project_type
-                                                                : "Please select from dropdown"}
+
+                                                    {/* Query Description */}
+                                                    <td className={obj.query_desc?.notFound ? "text-danger" : ""}>
+                                                        {obj.query_desc?.value
+                                                            ? obj.query_desc.value
+                                                            : obj.query_desc || "Please provide Query Description"}
                                                     </td>
-                                                    <td>{obj.new_entry}</td>
+
+                                                    {/* Conclusion */}
+                                                    <td className={obj.conclusion?.notFound ? "text-danger" : ""}>
+                                                        {obj.conclusion?.value
+                                                            ? obj.conclusion.value
+                                                            : obj.conclusion || "Please provide Conclusion"}
+                                                    </td>
+
+                                                    {/* Status */}
+                                                    <td className={obj.status?.notFound ? "text-danger" : ""}>
+                                                        {obj.status?.value
+                                                            ? obj.status.value
+                                                            : obj.status || "Please provide Status"}
+                                                    </td>
+
+                                                    {/* New Entry */}
+                                                    {/* <td>{obj.new_entry}</td> */}
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -196,4 +214,4 @@ const checkQuery = (props) => {
     );
 };
 
-export default checkQuery;
+export default CheckQuery;
