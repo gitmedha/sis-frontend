@@ -176,8 +176,7 @@ const Student = (props) => {
   const getMemberships = async ()=>{
     try{
 const memberships = await getStudentMedhaviMemberships(studentId);
-console.log("memberships", memberships);
-      if(memberships.data.data.medhaviMembershipsConnection.values.length > 0){
+      if(memberships.data.data?.medhaviMembershipsConnection?.values.length > 0){
         setStudentMedhaviMemberships(memberships.data.data.medhaviMembershipsConnection.values);  
         setStudentMedhaviMembershipsAggregate(memberships.data.data.medhaviMembershipsConnection.aggregate);
       }else{
@@ -185,6 +184,7 @@ console.log("memberships", memberships);
         setStudentMedhaviMembershipsAggregate({count: 0});
       }
     }catch(err){
+      console.log(err); 
       setAlert("Unable to fetch memberships.", "error");
     }
 
