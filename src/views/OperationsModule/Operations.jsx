@@ -1582,7 +1582,7 @@ const Operations = ({
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
 
       case "alumniQueries":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni+Queries+Template.xlsx";
       default:
         return ""; // Fallback in case the tab doesn't match
     }
