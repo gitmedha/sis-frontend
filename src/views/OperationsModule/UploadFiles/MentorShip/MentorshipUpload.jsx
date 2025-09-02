@@ -25,6 +25,7 @@ const expectedColumns = [
   "Mentor's Area",
   "Mentor's State",
   "Outreach (Offline/Online)",
+  "Specify Others (If Mentor's domain is 'others')",
   "Onboarding Date",
   "Social Media Profile Link",
   "Medha Area",
@@ -84,6 +85,8 @@ const MentorshipUpload = (props) => {
       return false;
     }
     const missingColumns = requiredColumns.filter((col) => {
+      console.log(col);
+
       return !fileColumns.includes(col.trim());
     });
     const extraColumns = fileColumns.filter(
@@ -248,7 +251,7 @@ const MentorshipUpload = (props) => {
       return contact && pattern.test(contact);
     };
 
-    // Function to validate email addresses
+    // Function to validate email addresse
     const isValidEmail = (email) => {
       const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
       return email && pattern.test(email);
@@ -276,6 +279,7 @@ const MentorshipUpload = (props) => {
       const onboardingDate = excelSerialDateToJSDate(
         newItem["Onboarding Date"]
       );
+      const mentorDomainCheck = newItem["Mentor's Domain"] == 'Others'
 
       const createdby = Number(userId);
       const updatedby = Number(userId);
@@ -288,7 +292,8 @@ const MentorshipUpload = (props) => {
         !isValidContact(newItem["Contact"]) || // Phone number validation
         !isValidEmail(newItem["Email ID"]) || // Email validation
         !newItem["Mentor's Company Name"] ||
-        !newItem["Designation/Title"]
+        !newItem["Designation/Title"] || 
+        (newItem["Mentor's Domain"] =="Others" && !newItem["Specify Others (If Mentor's domain is 'others')"] )
       ) {
         notFoundData.push({
           index: index + 1,
@@ -306,6 +311,7 @@ const MentorshipUpload = (props) => {
           medha_area: newItem["Medha Area"] || "",
           status: newItem["Status"] || "",
           program_name: newItem["Medha Program Name"] || "",
+          specify_other: mentorDomainCheck ? newItem["Specify Others (If Mentor's domain is 'others')"] || "" : "",
           contact: newItem["Contact"] || "",
           isAssignedToInvalid: !srmcheck,
           isMentorNameInvalid: !newItem["Mentor Name"],
@@ -329,6 +335,7 @@ const MentorshipUpload = (props) => {
           onboarding_date: onboardingDate || "",
           social_media_profile_link: newItem["Social Media Profile Link"] || "",
           medha_area: newItem["Medha Area"] || "",
+          specify_other: newItem["Specify Others (If Mentor's domain is 'others')"] || "",
           status: newItem["Status"] || "",
           program_name: newItem["Medha Program Name"] || "",
           contact: newItem["Contact"] || "",

@@ -25,7 +25,7 @@ import {
 } from "./operationsActions";
 import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionComponents/instituteActions";
 import { getUpskillingPicklist } from "../../Students/StudentComponents/StudentActions";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -78,6 +78,7 @@ const UpskillUpdate = (props) => {
   const [studentinput] = useState("");
   const [subcategory, setSubcategory] = useState([]);
   const [programeName, setProgramName] = useState([]);
+   const [blocked, setBlocked] = useState(false);
   const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
@@ -122,10 +123,11 @@ const UpskillUpdate = (props) => {
 
   const filterStudent = async (filterValue) => {
     try {
-      const { data } = await searchStudents(filterValue);
-
+      const { data } = await searchStudents(filterValue || props.student_id.id);
+      
       let studentFoundInList = false;
       let filterData = data.studentsConnection.values.map((student) => {
+        
         if (student.id === Number(props?.student_id.id)) {
           studentFoundInList = true;
         }
@@ -143,10 +145,10 @@ const UpskillUpdate = (props) => {
   };
 
   useEffect(() => {
-    filterStudent(studentinput).then((data) => {
+    filterStudent(props.student_id.id).then((data) => {
       setStudentOptions(data);
     });
-  }, [studentinput]);
+  }, [props.student_id.id]);
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.institution.name).then((data) => {
@@ -243,29 +245,29 @@ const UpskillUpdate = (props) => {
   const onSubmit = async (values) => {
     const newObject = { ...values };
 
-    newObject["student_id"] = 57588;
+    newObject["student_id"] = value.student_id;
     newObject["assigned_to"] = Number(values["assigned_to"]);
 
     newObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
     newObject["end_date"] = moment(values["end_date"]).format("YYYY-MM-DD");
-  //   const dataValues = {
-  //     category: props.category,
-  //     program_name: props.program_name,
-  //     sub_category: props.sub_category,
-  //     certificate_received: props.certificate_received,
-  //     issued_org: props.issued_org,
-  //     course_name: props.course_name,
-  //     student_id: Number(props.student_id.id),
-  //     start_date: formatDateStringToIndianStandardTime(props.start_date),
-  //     end_date: formatDateStringToIndianStandardTime(props.end_date),
-  //     published_at: new Date(props.published_at),
-  //     assigned_to: Number(props?.assigned_to?.id),
-  //     institution: Number(props?.institution?.id),
-  //     batch: Number(props?.batch?.id)
-  // };
+    const dataValues = {
+      category: props.category,
+      program_name: props.program_name,
+      sub_category: props.sub_category,
+      certificate_received: props.certificate_received,
+      issued_org: props.issued_org,
+      course_name: props.course_name,
+      student_id: Number(props.student_id.id),
+      start_date: formatDateStringToIndianStandardTime(props.start_date),
+      end_date: formatDateStringToIndianStandardTime(props.end_date),
+      published_at: new Date(props.published_at),
+      assigned_to: Number(props?.assigned_to?.id),
+      institution: Number(props?.institution?.id),
+      batch: Number(props?.batch?.id)
+  };
 
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
-    // await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,dataValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
 
     const value = await updateStudetnsUpskills(Number(props.id), newObject);
     refreshTableOnDataSaving();
@@ -313,8 +315,9 @@ const UpskillUpdate = (props) => {
     initialValues["sub_category"] = props.sub_category;
     initialValues["certificate_received"] = props.certificate_received;
     initialValues["issued_org"] = props.issued_org;
-    initialValues["course_name"] = props["course_name"];
-    initialValues["student_id"] = Number(props.student_id.id);
+    initialValues["course_name"] = props.course_name;
+    
+    initialValues["student_id"] = props.student_id.id;
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date
     );
@@ -322,7 +325,8 @@ const UpskillUpdate = (props) => {
       props.end_date
     );
     initialValues["published_at"] = new Date(props.published_at);
-    initialValues["assigned_to"] = Number(props?.assigned_to?.id);
+    
+    initialValues["assigned_to"] = String(props?.assigned_to?.id);
     initialValues["institution"] = Number(props?.institution?.id);
     initialValues["batch"] = Number(props?.batch?.id);
   }
@@ -340,16 +344,16 @@ useEffect(() => {
 
     const fetchData = async () => {
         try {
-            const programEnrollmentsData = await getProgramEnrollmentsPickList();
-            if (isMounted) {
-                setCourse(
-                    programEnrollmentsData?.course?.map((item) => ({
-                        key: item,
-                        value: item,
-                        label: item,
-                    }))
-                );
-            }
+            // const programEnrollmentsData = await getProgramEnrollmentsPickList();
+            // if (isMounted) {
+            //     setCourse(
+            //         Pitching?.course?.map((item) => ({
+            //             key: item,
+            //             value: item,
+            //             label: item,
+            //         }))
+            //     );
+            // }
 
             const opsPickListData = await getOpsPickList();
             if (isMounted) {
@@ -371,6 +375,22 @@ useEffect(() => {
         isMounted = false; 
     };
 }, []);
+
+useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      
+      function findUser(users, searchTerm) {
+          
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
 
 
   const certificateoptions = [
@@ -419,7 +439,7 @@ useEffect(() => {
                     <Section>
                       <h3 className="section-header">Basic Info</h3>
                       <div className="row">
-                        <div className="col-md-6 col-sm-12">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           {!lookUpLoading ? (
                             <Input
                               name="student_id"
@@ -438,7 +458,7 @@ useEffect(() => {
                           )}
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookup"
                             name="certificate_received"
@@ -449,7 +469,8 @@ useEffect(() => {
                             options={certificateoptions}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="assigned_to"
@@ -459,10 +480,11 @@ useEffect(() => {
                             placeholder="Assigned To"
                             filterData={filterAssignedTo}
                             defaultOptions={assigneeOptions}
+                            isDisabled={blocked}
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="batch"
@@ -470,11 +492,12 @@ useEffect(() => {
                             required
                             filterData={filterBatch}
                             defaultOptions={batchOptions}
-                            className="form-control1"
+                            className="form-control"
                             placeholder="Batch"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="program_name"
                             control="lookup"
@@ -486,7 +509,7 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             control="lookupAsync"
                             name="institution"
@@ -499,22 +522,23 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="start_date"
-                            label="Start Date "
-                            // required
+                            label="Start Date"
+                            required
                             placeholder="Start Date"
                             control="datepicker"
                             className="form-control"
                             autoComplete="off"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="end_date"
                             label="End Date"
-                            // required
+                            required
                             placeholder="End Date"
                             control="datepicker"
                             className="form-control"
@@ -522,10 +546,10 @@ useEffect(() => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="course_name"
-                            control="lookup"
+                            control="input"
                             icon="down"
                             label="Course Name"
                             options={course}
@@ -533,7 +557,8 @@ useEffect(() => {
                             placeholder="Course Name"
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="category"
                             control="lookup"
@@ -544,18 +569,20 @@ useEffect(() => {
                             options={categoryOptions}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             name="sub_category"
                             label="Sub Category"
                             control="lookup"
                             icon="down"
                             className="form-control"
-                            placeholder="Category"
+                            placeholder="Sub Category"
                             options={subcategory}
                           />
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2">
+
+                        <div className="col-md-6 col-sm-12 mb-3">
                           <Input
                             icon="down"
                             control="input"
