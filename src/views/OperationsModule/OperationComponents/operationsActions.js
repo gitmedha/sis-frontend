@@ -28,8 +28,7 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
-  GET_COLLEGES_BY_PROJECT_NAME,
-  SEARCH_EMPLOYERS
+  GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
 
 export const searchPrograms = async function (searchValue) {
@@ -987,18 +986,18 @@ export const getOrgsPicklist = async (field, table) => {
 }
 
 export const searchEmployers = async function (searchValue) {
-  try {
-    const { data } = await api.post("/graphql", {
-      query: SEARCH_EMPLOYERS,
-      variables: {
-        limit: 20,
-        sort: "name:asc",
-        query: searchValue,
-      },
-    });
+  // try {
+  //   const { data } = await api.post("/graphql", {
+  //     query: SEARCH_EMPLOYERS,
+  //     variables: {
+  //       limit: 20,
+  //       sort: "name:asc",
+  //       query: searchValue,
+  //     },
+  //   });
 
-    return data;
-  } catch (error) {
-    console.error(error.message);
-  }
+  //   return data;
+  // } catch (error) {
+  //   console.error(error.message);
+  // }
 };

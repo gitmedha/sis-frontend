@@ -29,6 +29,7 @@ const [formMode, setFormMode] = useState('create');
     setMemberships(memberships || []);
     setMembershipsAggregate(aggregate|| { count: 0 });
   } catch (err) {
+    console.log("errrrrr",err);
     setAlert("Unable to fetch memberships.", "error");
   } finally {
     NP.done();
