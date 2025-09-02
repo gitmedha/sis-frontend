@@ -277,7 +277,6 @@ export const MemberShipValidations = Yup.object({
     .nullable(),
 
   receipt_number: Yup.string()
-    .required("Receipt number is required.")
     .matches(/^[a-zA-Z0-9]+$/, "Only alphabets and numbers are allowed."),
 
   tenure_completion_date: Yup.date()
