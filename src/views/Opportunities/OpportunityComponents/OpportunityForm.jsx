@@ -52,6 +52,8 @@ const OpportunityForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
+
 
   const [initialValues, setInitialValues] = useState({
     employer: '',
@@ -71,7 +73,8 @@ const OpportunityForm = (props) => {
     pin_code: '',
     medha_area: '',
     district:'',
-    experience_required:''
+    experience_required:'',
+    earning_type:''
   });
 
   useEffect(() => {
@@ -131,7 +134,13 @@ const OpportunityForm = (props) => {
           value: item.value,
         };
       }));
-    });
+      setEarningTypeOptions(
+        data.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        })));
+      });
 
     getAllEmployers().then((data) => {
       const employersData = data?.data?.data?.employers.map((employer) => ({
@@ -200,8 +209,7 @@ const OpportunityForm = (props) => {
     }
   }
 
-  const onSubmit = async (values) => {
-    
+  const onSubmit = async (values) => {      
   values.city = values.city[0].toUpperCase() + values.city.slice(1);
   values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
  delete values.updated_at
@@ -220,6 +228,9 @@ const OpportunityForm = (props) => {
     .map((word) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
+    if (values.type !== 'Freelance') {
+      delete values.earning_type;
+  }
     onHide(values);
   };
 
@@ -334,6 +345,22 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  {values.type === "Freelance" && (
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+
+                       icon="down"
+                       name="earning_type"
+                       control="lookup"
+                       label="Earning Type"
+                       placeholder="Earning Type"
+                       options={earningTypeOptions}
+                       className="form-control"
+                       required
+                     />
+
+                   </div> )}
+
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="number_of_opportunities"
