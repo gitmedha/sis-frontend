@@ -373,6 +373,24 @@ const UserTot = (props) => {
     setshowLimit(false);
   };
 
+  const CloneTheValues = () => {
+  if (rows.length >= 10) {
+    setAlert("You can't clone more than 10 items.", "error");
+    return;
+  }
+
+  // Get the last row
+  const lastRow = rows[rows.length - 1];
+
+  // Create a deep copy with new id
+  const clonedRow = {
+    ...lastRow,
+    id: rows.length + 1,  // new unique id
+  };
+
+  setRows([...rows, clonedRow]);
+};
+
   return (
     <Modal
       centered
@@ -478,6 +496,8 @@ const UserTot = (props) => {
                 ))}
               </tbody>
             </table>
+            <div className="d-flex justify-content-end" onClick={()=>CloneTheValues()} style={{position:'relative', left:'246%', marginTop:'15px'}}><button>  Clone </button>
+            </div>
           </div>
           <div className="d-flex justify-content-end between_class bulk_add_actions">
             <button
