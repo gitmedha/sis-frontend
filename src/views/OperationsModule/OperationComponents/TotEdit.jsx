@@ -31,7 +31,8 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { filter } from "lodash";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -93,7 +94,7 @@ const TotEdit = (props) => {
   }, []);
 
   useEffect(() => {
-    if (props.institution) {
+    if (props.college) {
       filterInstitution().then((data) => {
         setInstitutionOptions(data);
       });
@@ -107,9 +108,12 @@ const TotEdit = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const { data } = await searchInstitutions(filterValue);
+      
+      
+      const { data } = await searchInstitutions(props.college || filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
+        
         return {
           ...institution,
           label: institution.name,
@@ -193,6 +197,8 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -239,6 +245,7 @@ const TotEdit = (props) => {
     initialValues["gender"] = props.gender;
     initialValues["published_at"] = new Date(props.published_at);
     initialValues["state"] = props.state;
+     initialValues["college"] = props.college;
     initialValues["trainer_1"] = props.trainer_1?.id;
     initialValues["trainer_2"] = props.trainer_2?.id;
     initialValues["city"] = props.city;
@@ -247,8 +254,8 @@ const TotEdit = (props) => {
   }
 
   useEffect(() => {
-    if (props.institution) {
-      filterInstitution(props.institution.name).then((data) => {
+    if (props.college) {
+      filterInstitution(props.college).then((data) => {
         setInstitutionOptions(data);
       });
     }
@@ -298,7 +305,7 @@ const TotEdit = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
-    trainer_1: Yup.string().required("Trainer 1 is required"),
+    trainer_1: Yup.string().required("Facilitator 1 is required"),
     // trainer_2: Yup.string()
     //   .required("Trainer 2 is required")
     //   .test("not-same", "Trainers must be different", function (trainer2) {
@@ -403,11 +410,11 @@ const TotEdit = (props) => {
                           icon="down"
                           control="lookup"
                           name="trainer_1"
-                          label="Trainer 1"
+                          label="Facilitator 1"
                           required
                           options={srmOption}
                           className="form-control"
-                          placeholder="Trainer 1"
+                          placeholder="Facilitator 1"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -415,11 +422,11 @@ const TotEdit = (props) => {
                           icon="down"
                           control="lookup"
                           name="trainer_2"
-                          label="Trainer 2"
+                          label="Facilitator 2"
                           required
                           options={srmOption}
                           className="form-control"
-                          placeholder="Trainer 2"
+                          placeholder="Facilitator 2"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -510,11 +517,13 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
+                          control="lookupAsync"
                           name="college"
                           label="College"
-                          onKeyPress={handleKeyPress}
+                          // onKeyPress={handleKeyPress}
                           className="form-control"
+                          defaultOptions={institutionOptions}
+                          filterData={filterInstitution}
                           placeholder="College"
                         />
                       </div>

@@ -52,6 +52,7 @@ const Details = (props) => {
     compensation_type,
     salary,
     type,
+    earning_type,
     assigned_to,
     employer,
     created_at,
@@ -80,7 +81,6 @@ const Details = (props) => {
       },
     });
   }
-
   return (
     <Styled>
       <div className="container-fluid my-3">
@@ -99,10 +99,14 @@ const Details = (props) => {
           </div>
           <div className="col-6 offset-md-2 col-md-4">
             <DetailField label="Type" value={<Badge value={type} pickList={pickList.type} />} />
+            {type === "Freelance" && (
+              <DetailField label="Earning Type" value={earning_type ? earning_type : ""} />
+            )}
             <DetailField label="Assigned To" value={assigned_to ? assigned_to.username : ''} />
             <DetailField label="Status" value={<Badge value={status} pickList={pickList.status} />} />
             <DetailField label="Department/Team" value={<Badge value={department_or_team} pickList={pickList.department} />} />
             <DetailField label="Skills Required" className="capitalize" value={skills_required} />
+            <DetailField label="Experience Required" value={props.experience_required ? props.experience_required :""} />
             <DetailField label="Updated By" value={updated_by_frontend?.username ?`${updated_by_frontend?.username} (${updated_by_frontend?.email})`: ''} />
             <DetailField label="Updated at" value={moment(updated_at).format("DD MMM YYYY, h:mm a")} />
             <DetailField label="Job Description File Upload"  value=

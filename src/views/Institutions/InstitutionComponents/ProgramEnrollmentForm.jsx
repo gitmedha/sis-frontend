@@ -10,6 +10,7 @@ import { getProgramEnrollmentsPickList } from "../../Institutions/InstitutionCom
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import { searchStudents, searchBatch } from "./instituteActions";
 import { getAllCourse } from "../../Students/StudentComponents/StudentActions";
+import { createLatestAcivity, findDifferences, findEnrollmentDifferences, findUpdates } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -53,6 +54,7 @@ const ProgramEnrollmentForm = (props) => {
   const [courseLevel, setCourseLevel] = useState("");
   const [courseType, setCourseType] = useState("");
   const [courseName,setCourseName] = useState("");
+  const userId = localStorage.getItem("user_id");
 
   useEffect(()=>{
     if(props.programEnrollment){
@@ -137,6 +139,15 @@ const ProgramEnrollmentForm = (props) => {
   }
 
   const onSubmit = async (values) => {
+    let propgramEnrollemntData={};
+    if(props.programEnrollment ){
+      let data=values;
+      data.institution=data.institution.id;
+      propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Updated",event_id:props.institution.id,updatedby:userId ,changes_in:findUpdates(props.programEnrollment,data)};
+    }else {
+      propgramEnrollemntData={module_name:"Institution",activity:"Program Enrollment Created",event_id:props.institution.id,updatedby:userId ,changes_in:{name:values.program_enrollment_institution}};
+    }
+    await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
@@ -630,7 +641,7 @@ const ProgramEnrollmentForm = (props) => {
                   </div>
                 </Section>
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

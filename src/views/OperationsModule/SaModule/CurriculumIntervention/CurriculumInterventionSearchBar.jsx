@@ -82,7 +82,7 @@ const CurriculumInterventionSearchBar = ({ searchOperationTab, resetSearch }) =>
   };
 
   const handleSubmit = async (values) => {
-    let baseUrl = "curriculum-interventions";
+    let baseUrl = "curricula";
 
     if (["start_date", "end_date", "created_at", "updated_at"].includes(values.search_by_field)) {
       const date1 = formatDate(values.search_by_value_date_from);
@@ -155,7 +155,7 @@ const CurriculumInterventionSearchBar = ({ searchOperationTab, resetSearch }) =>
 
   const setDropdownValues = async (fieldName) => {
     try {
-      const { data } = await getFieldValues(fieldName, "curriculum-interventions");
+      const { data } = await getFieldValues(fieldName, "curricula");
 
       if (fieldName === "module_created_for") {
         setModuleCreatedForOptions(data);

@@ -10,5 +10,5 @@ export const calendarValidations = Yup.object({
       : schema
   ),
   alumni_service: Yup.string().required("Alumni Service is required."),
-  reporting_date: Yup.date()
+  reporting_date: Yup.date(),
 });
