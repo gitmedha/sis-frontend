@@ -10,7 +10,7 @@ import {
   getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-
+import * as Yup from "yup";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import {
@@ -45,6 +45,17 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const collegePitchesValidationSchema = Yup.object().shape({
+  pitch_date: Yup.date().nullable().required("Date of Pitching is required"),
+  student_name: Yup.string().required("Student Name is required"),
+  course_name: Yup.string().required("Course Name is required"),
+  course_year: Yup.number().typeError("Course Year must be a number").required("Course Year is required").min(1900, "Course Year must be after 1900").max(2100, "Course Year must be before 2100"),
+  college_name: Yup.string().required("Institution is required"),
+  program_name: Yup.string().required("Program Name is required"),
+  phone: Yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").min(10, "Phone number must be at least 10 digits").required("Phone is required"),
+  whatsapp: Yup.string().matches(/^[0-9]+$/, "Whatsapp number must be digits only").min(10, "Whatsapp number must be at least 10 digits").required("Whatsapp Number is required"),
+});
 
 const CollepitchesEdit = (props) => {
   let { onHide, show, refreshTableOnDataSaving } = props;
@@ -299,7 +310,7 @@ const CollepitchesEdit = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik onSubmit={onSubmit} initialValues={initialValues} validationSchema={collegePitchesValidationSchema}>
               {({ values, setFieldValue }) => (
                 <Form>
                   <div className="row form_sec">
@@ -327,6 +338,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="Course Name"
+                            required
                           />
                         </div>
 
@@ -342,6 +354,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="Course Year"
+                            required
                           />
                         </div>
 
@@ -355,6 +368,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="College Name"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -366,6 +380,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="Pitch Date"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -377,6 +392,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={mobileNochecker}
                             className="form-control"
                             placeholder="Phone"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -387,6 +403,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={mobileNochecker}
                             className="form-control"
                             placeholder="Whatsapp Number"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">

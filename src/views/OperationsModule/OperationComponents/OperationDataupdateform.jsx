@@ -323,8 +323,8 @@ const OperationDataupdateform = (props) => {
   }, []);
 
   const operationvalidation = Yup.object().shape({
-    start_date: Yup.date().required("Start date is required"),
-    end_date: Yup.date()
+    start_date: Yup.date().nullable().required("Start date is required"),
+    end_date: Yup.date().nullable()
       .required("End date is required")
       .when("start_date", (start, schema) => {
         return schema.min(
@@ -332,6 +332,14 @@ const OperationDataupdateform = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
+    assigned_to: Yup.string().required("Assigned To is required"),
+    activity_type: Yup.string().required("Activity Type is required"),
+    institution: Yup.number().required("Institution is required"),
+    state: Yup.string().required("State is required"),
+    area: Yup.string().required("Medha Area is required"),
+    batch: Yup.number().required("Batch Name is required"),
+    topic: Yup.string().required("Session Topic is required"),
+    students_attended: Yup.number().required("No. Of Participants is required").min(0, "No. Of Participants cannot be negative"),
   });
   useEffect(async () => {
     let activityOption = await getOpsPickList().then((data) => {
@@ -431,6 +439,7 @@ const OperationDataupdateform = (props) => {
                               filterData={filterAssignedTo}
                               defaultOptions={assigneeOptions}
                               isDisabled={blocked}
+                              required
                             />
                           
                             
@@ -459,6 +468,7 @@ const OperationDataupdateform = (props) => {
                               defaultOptions={batchOptions}
                               className="form-control1"
                               placeholder="Batch"
+                              required
                             />
                           )}
                         </div>
@@ -474,6 +484,7 @@ const OperationDataupdateform = (props) => {
                               defaultOptions={institutionOptions}
                               placeholder="Institution"
                               className="form-control"
+                              required
                             // isClearable
                             />
                           )}
@@ -483,7 +494,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             name="start_date"
                             label="Start Date "
-                            //
+                            required
                             placeholder="Date of Birth"
                             control="datepicker"
                             className="form-control"
@@ -494,6 +505,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             name="end_date"
                             label="End Date"
+                            required
                             placeholder="Date of Birth"
                             control="datepicker"
                             className="form-control"
@@ -520,6 +532,7 @@ const OperationDataupdateform = (props) => {
                             label="Topic"
                             className="form-control"
                             placeholder="Topic"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -561,6 +574,7 @@ const OperationDataupdateform = (props) => {
                             className="form-control"
                             autoComplete="off"
                             onKeyPress={numberChecker}
+                            required
                           />
                         </div>
                       </div>
@@ -579,6 +593,7 @@ const OperationDataupdateform = (props) => {
                               onChange={onStateChange}
                               placeholder="State"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <Skeleton count={1} height={45} />
@@ -594,6 +609,7 @@ const OperationDataupdateform = (props) => {
                               options={areaOptions}
                               placeholder="Area"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <>
