@@ -29,7 +29,11 @@ import {
   GET_COURSE,
   GET_STUDENT_ALUMNI_SERVICES_RANGE,
   GET_UNIQUE_STUDENT_ALUMNI,
-  GET_UNIQUE_STUDENT_EMPLOYMENT
+  GET_UNIQUE_STUDENT_EMPLOYMENT,
+  GET_STUDENT_MEDHAVI_MEMBERSHIPS,
+  CREATE_MEDHAVI_MEMBERSHIP,
+  UPDATE_MEDHAVI_MEMBERSHIP,
+  DELETE_MEDHAVI_MEMBERSHIP
 } from "../../../graphql";
 
 export const getAlumniServicePickList = async () => {
@@ -601,3 +605,57 @@ export const getAllCourse = async () => {
 }
 
 
+export const getStudentMedhaviMemberships = async (studentId, limit=100, offset=0, sortBy='created_at', sortOrder = 'desc') => {
+  return await api.post('/graphql', {
+    query: GET_STUDENT_MEDHAVI_MEMBERSHIPS,
+    variables: {
+      stdID: studentId,
+      limit: limit,
+      start: offset,
+      sort: `${sortBy}:${sortOrder}`,
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const createMembership = async (data)=>{
+  return await api.post('/graphql', {
+    query: CREATE_MEDHAVI_MEMBERSHIP,
+    variables: {data},
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+
+}
+
+export const updateMembership = async (id, data) => {
+  return await api.post('/graphql', {
+    query: UPDATE_MEDHAVI_MEMBERSHIP,
+    variables: {
+      id,
+      data
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+export const deleteMembership = async (id) => {
+  return await api.post('/graphql', {
+    query: DELETE_MEDHAVI_MEMBERSHIP,
+    variables: {
+      id
+    },
+  }).then(data => {
+    return data;
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+}
