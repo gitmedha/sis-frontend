@@ -7,6 +7,7 @@ import {
   getStateDistricts,
 } from "../../Address/addressActions";
 import { searchBatches, searchInstitutions } from "./operationsActions";
+import {getOrgsPicklist,searchEmployers} from "./operationsActions"
 import { connect } from "react-redux";
 import { RowsData } from "./RowsData";
 
@@ -29,6 +30,8 @@ const OperationCreateform = (props) => {
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [classValue, setclassValue] = useState({});
+    const [organizationOptions, setOrganizationOptions] = useState([]);
+
 
   const userId = localStorage.getItem("user_id");
 
@@ -212,7 +215,11 @@ const OperationCreateform = (props) => {
         );
       });
     }
-    updateRow(rowid, key, options.value);
+    
+
+
+    updateRow(rowid, key, options ? options.value : null);
+
   };
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
@@ -233,6 +240,10 @@ const OperationCreateform = (props) => {
   };
 
   useEffect(() => {
+     getOrgsPicklist("name", "employers").then((data) => {
+      setOrganizationOptions(data);
+    })
+
     getAddressOptions().then((data) => {
       setStateOptions(
         data?.data?.data?.geographiesConnection.groupBy.state
@@ -245,6 +256,24 @@ const OperationCreateform = (props) => {
       );
     });
   }, []);
+
+
+  
+const filterOrganization = async (filterValue) => {
+    try { 
+      const { data } = await searchEmployers(filterValue);
+      let filterData = data.employersConnection.values.map((org) => {
+        return {
+          ...org,
+          label: org.name,
+          value: Number(org.id),
+        };
+      });
+      return filterData;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleInputChange = (e, index, field) => {
     const { value } = e;
@@ -450,6 +479,9 @@ const OperationCreateform = (props) => {
                 {rows.map((row, id) => (
                   <tr key={id} className="mt-4">
                     <RowsData
+                      organizationOptions={organizationOptions}
+                      filterOrganization={filterOrganization}
+                      setOrganizationOptions={setOrganizationOptions}
                       key={id}
                       handleInputChange={handleInputChange}
                       handleChange={handleChange}

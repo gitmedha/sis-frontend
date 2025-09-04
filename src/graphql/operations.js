@@ -1164,3 +1164,29 @@ export const GET_COLLEGES_BY_PROJECT_NAME = `
   }
 }
 `;
+
+export const SEARCH_EMPLOYERS = `
+  query SEARCH_EMPLOYERS($query:String,$limit:Int,$sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+    
+`
+
+
+
