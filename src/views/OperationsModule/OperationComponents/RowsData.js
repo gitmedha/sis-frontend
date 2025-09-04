@@ -232,30 +232,14 @@ export const RowsData = (props) => {
       </td>
 
         <td>
-          <Select
-            className="basic-single table-input"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="organization"
-            options={props.organizationOptions}
-onChange={(selected) => {
-  console.log(selected);
-  props.handleChange(
-    selected ? selected.value : null,
-    "organization",
-    row.id
-  );
-}}
+          <input
+            className="table-input h-2"
+            type="text"
+            ref={org}
+            onChange={(e) => handleInputChange(row.id, "organization",org)}
 
-            onInputChange={inputValue => {
-              props.filterOrganization(inputValue).then(data => {
-                props.setOrganizationOptions(data);
-              });
-            }}
           />
         </td>
-
         <td>
           <input
             className={`table-input h-2 ${

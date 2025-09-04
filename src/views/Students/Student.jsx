@@ -186,6 +186,7 @@ const memberships = await getStudentMedhaviMemberships(studentId);
         setStudentMedhaviMembershipsAggregate({count: 0});
       }
     }catch(err){
+      console.log(err); 
       setAlert("Unable to fetch memberships.", "error");
     }
 
