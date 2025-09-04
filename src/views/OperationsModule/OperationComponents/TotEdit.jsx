@@ -517,7 +517,7 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="lookupAsync"
+                          control="input"
                           name="college"
                           label="College"
                           // onKeyPress={handleKeyPress}
