@@ -18,7 +18,6 @@ import TotEdit from "./TotEdit";
 import { deactivate_user_tots ,fetchAllStudents} from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -94,7 +93,7 @@ const Totdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
+    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User-TOT Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
     // await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_tots(Number(props.id))
     if(data.status==200){
@@ -142,12 +141,12 @@ const Totdatafield = (props) => {
                     label="Participant Name"
                     value={props?.user_name}
                   />
-                   <DetailField
+                  <DetailField
                     label="Email id"
                     value={props?.email}
                   />
                   <DetailField
-                    label="Trainer 1"
+                    label="Facilitator 1"
                     value={props?.trainer_1?.username}
                   />
                   <DetailField
@@ -192,10 +191,10 @@ const Totdatafield = (props) => {
                   /> */}
                   <DetailField label="Module Name" value={props?.module_name} />
                   <DetailField
-                    label="Trainer 2"
+                    label="Facilitator 2"
                     value={props.trainer_2?.username}
                   />
-                  <DetailField label="New Entry" value={props?.new_entry} />
+                  <DetailField label="New Entry" value={props?.new_entry ?"Yes":"No"} />
                   <DetailField
                     Bold={""}
                     label="End Date"
@@ -286,6 +285,8 @@ const Totdatafield = (props) => {
             )}
           </Styled>
         </Modal>
+        
+        
       )}
       {
         showModal.dataAndEdit && 
