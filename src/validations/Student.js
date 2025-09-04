@@ -82,7 +82,7 @@ const program_mode = Yup.string()
   .nullable()
   .required("Program mode is required.");
 const category = Yup.string().nullable().required("Category is required.");
-const comments=Yup.string().nullable().required("Comment is required.");
+const comments = Yup.string().nullable().required("Comment is required.");
 const subcategory = Yup.string()
   .nullable()
   .required("Subcategory is required.");
@@ -100,7 +100,8 @@ const address = Yup.string().required("Address is required.");
 const pin_code = Yup.string("Should be a number.")
   .matches(pincodeRegExp, "Pincode is not valid")
   .max(6, "Pincode is too long")
-  .nullable().required("Pincode is required")
+  .nullable()
+  .required("Pincode is required");
 const city = Yup.string().required("City is required.");
 const district = Yup.string().required("District is required.");
 const alumni_service_type = Yup.string().required("Type is required.");
@@ -137,7 +138,7 @@ export const EmploymentConnectionValidations = Yup.object({
   reason_if_rejected: Yup.string()
     .nullable()
     .when("status", {
-      is: (status) => status === "Offer Rejected by Student",
+      is: (status) => status === "Rejected by Student",
       then: Yup.string()
         .nullable()
         .required(
@@ -154,6 +155,8 @@ export const EmploymentConnectionValidations = Yup.object({
     }),
   work_engagement,
   assigned_to,
+  earning_type: Yup.string().required("Earning type is required."),
+
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
@@ -165,7 +168,7 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
   reason_if_rejected: Yup.string()
     .nullable()
     .when("status", {
-      is: (status) => status === "Offer Rejected by Student",
+      is: (status) => status === "Rejected by Student",
       then: Yup.string()
         .nullable()
         .required(
@@ -248,9 +251,11 @@ export const AlumniServiceValidations = Yup.object({
   program_mode,
   category,
   comments,
-  end_date:Yup.date().nullable().when("start_date", (start,schema)=>{
-    return schema.min(new Date(start), "End date can't be before Start date")
-  })
+  end_date: Yup.date()
+    .nullable()
+    .when("start_date", (start, schema) => {
+      return schema.min(new Date(start), "End date can't be before Start date");
+    }),
 });
 
 export const MemberShipValidations = Yup.object({
@@ -277,7 +282,6 @@ export const MemberShipValidations = Yup.object({
     .nullable(),
 
   receipt_number: Yup.string()
-    .required("Receipt number is required.")
     .matches(/^[a-zA-Z0-9]+$/, "Only alphabets and numbers are allowed."),
 
   tenure_completion_date: Yup.date()

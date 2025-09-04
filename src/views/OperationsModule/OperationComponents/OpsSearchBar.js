@@ -110,9 +110,7 @@ const OpsSearchDropdown = function OpsSearchBar({
       }
     });
 
-    const searchData = {  searchFields, searchValues  };
-    console.log(searchData);
-    
+    const searchData = { searchFields, searchValues };
     await searchOperationTab(baseUrl, searchData);
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
@@ -167,8 +165,6 @@ const OpsSearchDropdown = function OpsSearchBar({
   const setDropdownValues = async (fieldName) => {
     try {
       const { data } = await getFieldValues(fieldName, "users-ops-activities");
-      console.log(data);
-      
       if (fieldName === "assigned_to") {
         let newSRM = await getAllSearchSrm();
         setAssignedOptions(newSRM);

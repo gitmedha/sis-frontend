@@ -20,6 +20,7 @@ import * as XLSX from "xlsx";
 import { isNumber } from "lodash";
 import moment from "moment";
 import { setAlert } from "src/store/reducers/Notifications/actions";
+import { getAllBatchs, getAllInstitute } from "./operationsActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -364,8 +365,10 @@ const UploadFile = (props) => {
 
   useEffect(() => {
     const getbatch = async () => {
-      getAllBatchs();
-      getAllInstitute();
+      let batchData =getAllBatchs();
+      setBatchOption(batchData)
+      let instituteData =await getAllInstitute();
+      setInstituteOption(instituteData);
       const data = await getAllMedhaUsers();
       setAssigneeOption(data);
     };
@@ -535,68 +538,9 @@ const UploadFile = (props) => {
     setNotuploadedData(notFoundData);
   };
 
-  const getAllBatchs = async () => {
-    try {
-      let count = 0;
-      let batchData = [];
+ 
 
-      // First API call to get the count of batches
-      const countResponse = await api.post("/graphql", {
-        query: GET_BATCHES,
-      });
 
-      count = countResponse.data.data.batchesConnection.aggregate.count;
-
-      for (let i = 0; i < count; i += 500) {
-        const variables = {
-          limit: 500,
-          start: i,
-        };
-
-        const batchResponse = await api.post("/graphql", {
-          query: GET_ALL_BATCHES_UPLOAD_FILE,
-          variables,
-        });
-        batchData = [
-          ...batchData,
-          ...batchResponse.data.data.batches,
-        ];
-        setBatchOption(batchData);
-      }
-    } catch (err) {
-      console.error(err); 
-    }
-  };
-
-  const getAllInstitute = async () => {
-    try {
-      let count = 0;
-      let instituteData = [];
-      const countResponse = await api.post("/graphql", {
-        query: GET_INSTITUTES_COUNT,
-      });
-      count = countResponse.data.data.institutionsConnection.aggregate.count;
-      for (let i = 0; i < count; i += 500) {
-        const variables = {
-          limit: 500,
-          start: i,
-        };
-
-        const batchResponse = await api.post("/graphql", {
-          query: GET_ALL_INSTITUTES,
-          variables,
-        });
-
-        instituteData = [
-          ...instituteData,
-          ...batchResponse.data.data.institutionsConnection.values,
-        ];
-        setInstituteOption(instituteData);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   function hasNullValue(arr) {
     for (let i = 0; i < arr.length; i++) {

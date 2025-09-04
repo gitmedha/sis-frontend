@@ -20,6 +20,7 @@ import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import EmployerSearchBar from "./EmployerComponents/EmployerSearchBar";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import styled from "styled-components";
 
 
@@ -31,9 +32,12 @@ const tabPickerOptions = [
 ];
 
 const TSection = styled.div`
+.flex-row-centered {
+  width:1px !important;
+}
  .latto-bold,.text--sm{
     display: flex !important;
-    font-family: 'Lato', sans-serif !important;
+    font-family: 'Latto', sans-serif !important;
     font-weight: regular !important;
     font-size:14px !important;
     padding: 0px 0px !important;
@@ -43,12 +47,6 @@ const TSection = styled.div`
     background-color: #ffffff !important ;
 
 }
-.hash-column {
-    width: 5rem !important;
-  }
-  table{
-  table-layout: auto;
-  }
 `;
 
 const Employers = (props) => {
@@ -515,13 +513,26 @@ const Employers = (props) => {
 
     nProgress.start();
     createEmployer(dataToSave)
-      .then((data) => {
+      .then(async(data) => {
         if (data.data.errors) {
           setFormErrors(data.data.errors);
         } else {
           setAlert("Employer created successfully.", "success");
           getEmployers();
           setModalShow(false);
+          let EmployerEnrollmentData = {
+            module_name: "employer",
+            activity: "Employer Data Created",
+            event_id: data.data.data.createEmployer.employer.id,
+            updatedby: userId,
+            changes_in: { name: data.data.data.createEmployer.employer.name },
+          };
+    
+          try {
+            await createLatestAcivity(EmployerEnrollmentData);
+          } catch (error) {
+            console.error("Error logging activity:", error);
+          }
           history.push(
             `/employer/${data.data.data.createEmployer.employer.id}`
           );

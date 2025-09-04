@@ -87,7 +87,6 @@ const MembershipForm = (props) => {
       membership_status: membership.membership_status,
       reason_for_cancellation: membership.reason_for_cancellation || "",
     };
-    console.log(initialValues, "initial values in membership form");
   }
 
   const handleClose = () => {
@@ -205,7 +204,6 @@ const MembershipForm = (props) => {
                       placeholder="Receipt Number"
                       control="input"
                       className="form-control"
-                      required
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">

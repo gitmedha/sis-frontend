@@ -358,6 +358,7 @@ query GET_INSTITUTES_COUNT {
       count
     }
   }
+  
 }
 `;
 
