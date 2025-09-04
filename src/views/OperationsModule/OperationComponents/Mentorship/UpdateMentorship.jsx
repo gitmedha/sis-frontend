@@ -49,6 +49,29 @@ const Section = styled.div`
   }
 `;
 
+const mentorshipValidationSchema = Yup.object().shape({
+  mentor_name: Yup.string().required("Mentor Name is required"),
+  contact: Yup.string().matches(/^[0-9]+$/, "Contact number must be digits only").min(10, "Contact number must be at least 10 digits").required("Contact is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
+  mentor_domain: Yup.string().required("Mentor\'s Domain is required"),
+  specify_other: Yup.string().when("mentor_domain", {
+    is: 'Others',
+    then: (schema) => schema.required("Please specify the domain"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  mentor_company_name: Yup.string().required("Mentor\'s Company Name is required"),
+  designation: Yup.string().required("Designation/Title is required"),
+  mentor_state: Yup.string().required("Mentor\'s State is required"),
+  mentor_area: Yup.string().required("Mentor\'s City is required"), // Assuming 'mentor_area' corresponds to Mentor's City
+  outreach: Yup.string().required("Outreach (Offline/Online) is required"),
+  onboarding_date: Yup.date().nullable().required("Onboarding Date is required"),
+  social_media_profile_link: Yup.string().notRequired(), // Social Media Link is optional based on the description
+  assigned_to: Yup.string().required("Assigned To is required"),
+  medha_area: Yup.string().required("Medha Area is required"),
+  program_name: Yup.string().required("Medha Program Name is required"),
+  status: Yup.string().required("Status is required"),
+});
+
 const hideBatchName = [
   "New Enrollments -- CAB",
   "New Enrollments -- Lab",
@@ -282,7 +305,7 @@ const UpdateMentorship = (props) => {
             <Formik
               onSubmit={onSubmit}
               initialValues={initialValues}
-              validationSchema={mentorshipValidations}
+              validationSchema={mentorshipValidationSchema}
             >
               {({ values, setFieldValue }) => (
                 <Form>
@@ -477,6 +500,7 @@ const UpdateMentorship = (props) => {
                               onChange={onStateChange}
                               placeholder="State"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <Skeleton count={1} height={45} />
@@ -492,6 +516,7 @@ const UpdateMentorship = (props) => {
                               options={areaOptions}
                               placeholder="Area"
                               className="form-control"
+                              required
                             />
                           {/* ) : (
                             <>
