@@ -69,6 +69,7 @@ const OpsSearchDropdown = function OpsSearchBar({
   resetSearch,
 }) {
   let today = new Date();
+  const MAX_SEARCH_ROWS = 4;
 
   const initialValues = {
     searches: [{
@@ -164,6 +165,8 @@ const OpsSearchDropdown = function OpsSearchBar({
 
   const setDropdownValues = async (fieldName) => {
     try {
+      console.log("fieldName", fieldName);
+      
       const { data } = await getFieldValues(fieldName, "users-ops-activities");
       if (fieldName === "assigned_to") {
         let newSRM = await getAllSearchSrm();
@@ -342,9 +345,12 @@ const OpsSearchDropdown = function OpsSearchBar({
                   </div>
                   
 
-                  {index === counter - 1 && (
+                   {index === counter - 1 && (
                     <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                      {/* Only show plus icon if we haven't reached the maximum */}
+                      {counter < MAX_SEARCH_ROWS && (
+                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                      )}
                       {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
                     </IconContainer>
                   )}
