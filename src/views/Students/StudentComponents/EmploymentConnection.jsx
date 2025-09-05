@@ -84,6 +84,7 @@ const EmploymentConnection = (props) => {
               <DetailField label="Student" value={student.full_name} />
               <DetailField label="Employer" value={(isSRM() || isAdmin()) ? <Anchor text={employerName} href={`/employer/${ employmentConnection?.opportunity?.employer?.id }`} /> : employerName} />
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
+              {employmentConnection?.opportunity?.type && employmentConnection.opportunity.type === "Freelance" ? <DetailField label="Earning Type" value={employmentConnection.earning_type ? employmentConnection.earning_type :''} /> : ''} 
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
               <DetailField label="Work Engagement" value={employmentConnection.work_engagement} />

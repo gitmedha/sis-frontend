@@ -52,6 +52,7 @@ const Details = (props) => {
     compensation_type,
     salary,
     type,
+    earning_type,
     assigned_to,
     employer,
     created_at,
@@ -87,6 +88,9 @@ const Details = (props) => {
         <div className="row latto-regular">
           <div className="col-6 col-md-4">
             <DetailField label="Role/Designation" className="capitalize" value={role_or_designation} />
+            {type === "Freelance" && (
+              <DetailField label="Earning Type" value={earning_type} />
+            )}
             <DetailField label="Employer" value={<Anchor text={employer ? employer.name : ''} href={`/employer/${employer?.id}`}  />} />
             {/* <DetailField label="Location" value={employer ? employer.address : ''} /> */}
             <DetailField label="No. of openings" value={number_of_opportunities} />

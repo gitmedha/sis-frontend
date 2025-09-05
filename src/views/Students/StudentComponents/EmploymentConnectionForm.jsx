@@ -58,6 +58,7 @@ const EnrollmentConnectionForm = (props) => {
   const [showOther, setShowother] = useState(false);
   const [isRejected, setRejected] = useState(false);
   const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
+  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
 
   const userId = localStorage.getItem("user_id");
   let initialValues = {
@@ -72,6 +73,7 @@ const EnrollmentConnectionForm = (props) => {
     reason_if_rejected: "",
     reason_if_rejected_other: "",
     assigned_to: userId,
+    earning_type: ""
   };
 
   if (props.employmentConnection) {
@@ -165,8 +167,16 @@ const EnrollmentConnectionForm = (props) => {
           label: item.value,
         }))
       );
-    });
+      setEarningTypeOptions(
+        data.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
 
+    });
+    
     if (props.employmentConnection) {
       filterEmployer(
         Number(props.employmentConnection?.opportunity?.employer?.name)
@@ -418,6 +428,20 @@ const EnrollmentConnectionForm = (props) => {
                       onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
+                  {selectedOpportunityType === "Freelance" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="earning_type"
+                        label="Earning Type"
+                        options={earningTypeOptions}
+                        className="form-control"
+                        placeholder="Earning Type"
+                        required
+                      />
+                    </div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"

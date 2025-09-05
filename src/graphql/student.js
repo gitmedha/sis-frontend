@@ -192,6 +192,7 @@ const employmentConnectionFields = `
       name
     }
   }
+  earning_type
 `;
 const medhaviMembershipFields = `
         id
