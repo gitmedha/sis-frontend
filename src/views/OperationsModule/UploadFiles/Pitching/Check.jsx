@@ -16,6 +16,8 @@ const isValidContact = (contact) => {
     const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return email && pattern.test(email);
   };
+  // console.log(obj.error);
+  
 
 
   return (
@@ -64,7 +66,9 @@ const isValidContact = (contact) => {
                   </thead>
                   <tbody>
                     {props?.notFoundData?.map((obj, i) => (
-                      <tr key={i} className={obj.error ? "table-danger" : ""}>
+                      <tr key={i} className={obj.error ? "" : ""}>
+                        {console.log(obj.error)
+                        }
                         <td>{obj.index}</td>
                         <td className={obj.error?.includes("Date of Pitching") ? "text-danger" : ""}>
                           {obj.date_of_pitching || "No data"}
