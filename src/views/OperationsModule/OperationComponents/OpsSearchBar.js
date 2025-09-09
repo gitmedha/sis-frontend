@@ -1,15 +1,17 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { Input } from "../../../utils/Form";
-import { Formik, Form, useFormik } from "formik";
+import { Formik, Form } from "formik";
 import styled from "styled-components";
 import {
   searchOperationTab,
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
-import { getFieldValues } from "./operationsActions";
-import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+import { getAllBatchs, getFieldValues } from "./operationsActions";
 import { getAllSearchSrm } from "src/utils/function/lookupOptions";
+import "./Ops.css";
+import { getAllBatches } from "src/views/Batches/batchActions";
+import Select from "react-select";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -21,9 +23,17 @@ const Section = styled.div`
 const SearchRow = styled.div`
   margin-bottom: 20px;
   display: flex;
-  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
+  .uniform-btn {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
 `;
 
 const SearchFieldContainer = styled.div`
@@ -34,28 +44,12 @@ const SearchValueContainer = styled.div`
   flex: 0 0 300px;
 `;
 
-const IconContainer = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 28px;
-  
-  svg {
-    cursor: pointer;
-    font-size: 20px;
-    color: #207b69;
-    &:hover {
-      color: #16574a;
-    }
-  }
-`;
-
 const DateRangeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  
+
   > div {
     flex: 1;
     &:first-child {
@@ -64,57 +58,420 @@ const DateRangeContainer = styled.div`
   }
 `;
 
-const OpsSearchDropdown = function OpsSearchBar({
-  searchOperationTab,
-  resetSearch,
-}) {
+const MultipleFilterBox = styled.div`
+  .filter-box {
+    border: 1px solid #1a2b3c;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+    max-width: 100%;
+  }
+
+  .filter-title {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    padding: 6px 14px;
+    background: #f8f9fa;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 32px;
+  }
+
+  .chip:hover {
+    background: #e2e6ea;
+  }
+
+  .chip.active {
+    background: #21867a;
+    border-color: #21867a;
+    color: #fff;
+  }
+
+  .filter-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .btn {
+    min-width: 80px;
+    height: 36px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .btn.apply {
+    background: #21867a;
+    color: white;
+  }
+
+  .btn.apply:hover {
+    background: #18645a;
+  }
+
+  .btn.clear {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn.clear:hover {
+    background: #565e64;
+  }
+`;
+
+const activityTypesMain = [
+  { key: 0, label: "Workshop/Training Session/Activity (In/Off campus)", value: "Workshop/Training Session/Activity (In/Off campus)" },
+  { key: 1, label: "Industry Talk/Expert Talk", value: "Industry Talk/Expert Talk" },
+  { key: 2, label: "Alumni Engagement", value: "Alumni Engagement" },
+  { key: 3, label: "Industry Visit/Exposure Visit", value: "Industry Visit/Exposure Visit" },
+  { key: 4, label: "Placement Drive", value: "Placement Drive" },
+];
+
+const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   let today = new Date();
 
   const initialValues = {
-    searches: [{
-      search_by_field: "",
-      search_by_value: "",
-      search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-      search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-      search_by_value_date_end_from: new Date(new Date(today).setDate(today.getDate())),
-      search_by_value_date_end_to: new Date(new Date(today).setDate(today.getDate())),
-    }],
+    search_by_field: "",
+    search_by_value: "",
+    search_by_value_date_from: new Date(today),
+    search_by_value_date_to: new Date(today),
   };
 
-  const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
+  const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
   const [assignedToOptions, setAssignedOptions] = useState([]);
   const [batchOptions, setBatchOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
   const [disabled, setDisabled] = useState(true);
-  const [counter, setCounter] = useState(1);
-
-  const formatdate = (dateval) => {
-    const date = new Date(dateval);
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const dd = String(date.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  };
+  const [onefilter, setOnefilter] = useState(true);
 
   const handleSubmit = async (values) => {
     const baseUrl = "users-ops-activities";
-    const searchFields = [];
-    const searchValues = [];
+    const searchData = {
+      searchFields: [values.search_by_field],
+      searchValues: [values.search_by_value],
+    };
 
-    values.searches.forEach((search) => {
-      if (search.search_by_field && search.search_by_value) {
-        searchFields.push(search.search_by_field);
-        searchValues.push(search.search_by_value);
-      }
-    });
-
-    const searchData = { searchFields, searchValues };
     await searchOperationTab(baseUrl, searchData);
     await localStorage.setItem(
       "prevSearchedPropsAndValues",
       JSON.stringify({ baseUrl, searchData })
+    );
+  };
+
+  const closefilterBox = () => {
+    
+    setOnefilter(true);
+    // clear();
+  };
+
+  const filters = [
+    "Activity Type",
+    "Assigned to",
+    "Batch",
+    "Medha Area",
+    "Program",
+    "Start Date",
+    "End Date",
+  ];
+
+  const FilterBox = ({ closefilterBox, clear }) => {
+    const [activeFilters, setActiveFilters] = useState([]);
+    const [activityTypeOptions, setActivityTypeOptions] = useState([]);
+    const [assignedToOptions, setAssignedToOptions] = useState([]);
+    const [batchOptions, setBatchOptions] = useState([]);
+    const [areaOptions, setAreaOptions] = useState([]);
+    const [programOptions, setProgramOptions] = useState([]);
+    const [filterValues, setFilterValues] = useState({});
+
+    const handleChange = (filter, value) => {
+      setFilterValues((prev) => ({
+        ...prev,
+        [filter]: value,
+      }));
+    };
+    useEffect(() => {
+      activeFilters.forEach(async (filter) => {
+        if (filter === "Activity Type" && activityTypeOptions.length === 0) {
+          // If your activity types are static, you can just set them
+          setActivityTypeOptions([
+            "Workshop/Training Session",
+            "Industry Talk",
+            "Alumni Engagement",
+            "Industry Visit",
+            "Placement Drive",
+          ]);
+        } else if (filter === "Assigned to" && assignedToOptions.length === 0) {
+          const users = await getAllSearchSrm();
+          setAssignedToOptions(users);
+        } else if (filter === "Batch" && batchOptions.length === 0) {
+          const { data } = await getAllBatches();
+         
+          setBatchOptions(data?.data?.batchesConnection?.values);
+        }
+        else if (filter === "Medha Area" && areaOptions.length === 0) {
+          const { data } = await getFieldValues("area", "users-ops-activities");
+          setAreaOptions(data);
+        }
+        else if (filter === "Program Area" && programOptions.length === 0) {
+          const { data } = await getFieldValues("program_name", "users-ops-activities");
+          setProgramOptions(data);
+        }
+      });
+    }, [activeFilters]);
+
+    const toggleFilter = (filter) => {
+      setActiveFilters((prev) =>
+        prev.includes(filter)
+          ? prev.filter((f) => f !== filter)
+          : [...prev, filter]
+      );
+    };
+    const handleApply = async () => {
+      const searchFields = Object.keys(filterValues);
+      const searchValues = Object.values(filterValues);
+
+      const searchData = {
+        searchFields,
+        searchValues,
+      };
+      const baseUrl = "users-ops-activities";
+      
+      await searchOperationTab(baseUrl, searchData);
+      await localStorage.setItem(
+        "prevSearchedPropsAndValues",
+        JSON.stringify({ baseUrl, searchData })
+      );
+      // handleSubmit(searchData);
+      // 👉 call API here if needed, same as in onefilter
+      // searchOperationTab("users-ops-activities", searchData);
+    };
+
+    //  const handleSubmit = async (values) => {
+    //     const baseUrl = "users-ops-activities";
+    //     const searchData = {
+    //       searchFields: [values.search_by_field],
+    //       searchValues: [values.search_by_value],
+    //     };
+
+    //     await searchOperationTab(baseUrl, searchData);
+    //     await localStorage.setItem(
+    //       "prevSearchedPropsAndValues",
+    //       JSON.stringify({ baseUrl, searchData })
+    //     );
+    //   };
+    return (
+      <MultipleFilterBox>
+        <div className="filter-box">
+          <h4 className="filter-title">Add Filter</h4>
+
+          {/* Filter Chips */}
+          <div className="filter-chips">
+            {filters.map((f) => (
+              <button
+                key={f}
+                type="button"
+                className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
+                onClick={() => toggleFilter(f)}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
+          {/* Filter Inputs */}
+          <div className="filter-inputs">
+            {activeFilters.map((f) => {
+              switch (f) {
+                case "Start Date":
+                case "End Date":
+                  return (
+                    <DateRangeContainer key={f}>
+                      <Input
+                        name={`${f}_from`}
+                        control="datepicker"
+                        label={`${f} From`}
+                        className="form-control"
+                      />
+                      <Input
+                        name={`${f}_to`}
+                        control="datepicker"
+                        label={`${f} To`}
+                        className="form-control"
+                      />
+                    </DateRangeContainer>
+                  );
+
+                case "Activity Type":
+                  return (
+                    // <select key={f} className="filter-select" onChange={(e) => handleChange('activity_type', e.target.value)}>
+                    //   <option value="">Select Activity</option>
+                    //   {activityTypesMain.map((opt, idx) => (
+                    //     <option key={idx} value={opt.value}>{opt.value}</option>
+                    //   ))}
+                    // </select>
+
+                    <Select
+                      options={activityTypesMain.map((opt) => ({
+                        label: opt.value,
+                        value: opt.value,
+                      }))}
+                      onChange={(selected) => handleChange("activity_type", selected?.value)}
+                      placeholder="Select Activity..."
+                      isClearable
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "300px",   // 👈 set width here
+                        }),
+                      }}
+                    />
+                  );
+
+                case "Assigned to":
+                  return (
+                    
+                    <Select
+                      options={assignedToOptions.map((opt) => ({
+                        label: opt.value,
+                        value: opt.value,
+                      }))}
+                      onChange={(selected) => handleChange("assigned_to.username", selected?.value)}
+                      placeholder="Select Assigned to..."
+                      isClearable
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "300px",   // 👈 set width here
+                        }),
+                      }}
+                    />
+                  );
+
+                case "Batch":
+                  return (
+                    <Select
+                      options={batchOptions.map((opt) => ({
+                        label: opt.name,
+                        value: opt.name,
+                      }))}
+                      onChange={(selected) => handleChange("batch.name", selected?.value)}
+                      placeholder="Select Batch..."
+                      isClearable
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "300px",   // 👈 set width here
+                        }),
+                      }}
+                    />
+
+                  );
+
+                case "Medha Area":
+                  return (
+                    // <select key={f} className="filter-select" onChange={(e) => handleChange('area', e.target.value)}>
+                    //   {console.log(areaOptions)
+                    //   }
+                    //   <option value="">Select Area</option>
+                    //   {areaOptions.map((opt, idx) => (
+                    //     <option key={idx} value={opt.value}>{opt.value}</option>
+                    //   ))}
+                    // </select>
+                    <Select
+                      options={batchOptions.map((opt) => ({
+                        label: opt.value,
+                        value: opt.value,
+                      }))}
+                      onChange={(selected) => handleChange("area", selected?.value)}
+                      placeholder="Medha Area..."
+                      isClearable
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "300px",   // 👈 set width here
+                        }),
+                      }}
+                    />
+                  );
+
+                case "Program":
+                  return (
+                    // <select key={f} className="filter-select" onChange={(e) => handleChange('program_name', e.target.value)}>
+                    //   <option value="">Select Program</option>
+                    //   {programOptions.map((opt, idx) => (
+                    //     <option key={idx} value={opt.value}>{opt.value}</option>
+                    //   ))}
+                    // </select>
+                    <Select
+                      options={batchOptions.map((opt) => ({
+                        label: opt.value,
+                        value: opt.value,
+                      }))}
+                      onChange={(selected) => handleChange("program_name", selected?.value)}
+                      placeholder="Progrma..."
+                      isClearable
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "300px",   // 👈 set width here
+                        }),
+                      }}
+                    />
+                  );
+
+                default:
+                  return (
+                    <select key={f} className="filter-select">
+                      <option>{f}</option>
+                    </select>
+                  );
+              }
+            })}
+          </div>
+
+
+          {/* Action Buttons */}
+          <div className="filter-actions">
+            <button className="btn apply" type="button" onClick={handleApply}>
+              Apply
+            </button>
+            <button className="btn clear" type="button" onClick={closefilterBox}>
+              Clear
+            </button>
+          </div>
+        </div>
+      </MultipleFilterBox>
     );
   };
 
@@ -128,11 +485,6 @@ const OpsSearchDropdown = function OpsSearchBar({
     { key: 6, value: "end_date", label: "End Date" },
   ].sort((a, b) => a.label.localeCompare(b.label));
 
-  const formik = useFormik({
-    initialValues,
-    onSubmit: handleSubmit,
-  });
-
   const activityTypes = [
     { key: 0, label: "Workshop/Training Session/Activity (In/Off campus)", value: "Workshop/Training Session/Activity (In/Off campus)" },
     { key: 1, label: "Industry Talk/Expert Talk", value: "Industry Talk/Expert Talk" },
@@ -144,79 +496,60 @@ const OpsSearchDropdown = function OpsSearchBar({
   const clear = async (formik) => {
     formik.setValues(initialValues);
     await resetSearch();
-    setSelectedSearchFields([null]);
+    setSelectedSearchField(null);
     setDisabled(true);
-    setCounter(1);
   };
 
-  const setSearchItem = (value, index) => {
-    const newSelectedSearchFields = [...selectedSearchFields];
-    newSelectedSearchFields[index] = value;
-    setSelectedSearchFields(newSelectedSearchFields);
+  const setSearchItem = async (value) => {
+    setSelectedSearchField(value);
     setDisabled(false);
     setIsFieldEmpty(false);
 
-    if (value.includes("assigned_to")) setDropdownValues("assigned_to");
-    else if (value.includes("batch")) setDropdownValues("batch");
-    else if (value === "area") setDropdownValues("area");
-    else if (value === "program_name") setDropdownValues("program_name");
-  };
+    if (value.includes("assigned_to")) {
+      let newSRM = await getAllSearchSrm();
+      setAssignedOptions(newSRM);
+    } else if (value.includes("batch")) {
+      const data = await getAllBatchs();
 
-  const setDropdownValues = async (fieldName) => {
-    try {
-      const { data } = await getFieldValues(fieldName, "users-ops-activities");
-      if (fieldName === "assigned_to") {
-        let newSRM = await getAllSearchSrm();
-        setAssignedOptions(newSRM);
-      } else if (fieldName === "batch") setBatchOptions(data);
-      else if (fieldName === "area") setAreaOptions(data);
-      else if (fieldName === "program_name") setProgramOptions(data);
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  const addSearchRow = () => {
-    setCounter(counter + 1);
-    setSelectedSearchFields([...selectedSearchFields, null]);
-  };
-
-  const removeSearchRow = () => {
-    if (counter > 1) {
-      setCounter(counter - 1);
-      const newSelectedFields = [...selectedSearchFields];
-      newSelectedFields.pop();
-      setSelectedSearchFields(newSelectedFields);
+      const reformatted = data.map(item => ({
+        label: item.name,
+        value: item.name
+      }));
+      setBatchOptions(reformatted);
+    } else if (value === "area") {
+      const { data } = await getFieldValues("area", "users-ops-activities");
+      setAreaOptions(data);
+    } else if (value === "program_name") {
+      const { data } = await getFieldValues("program_name", "users-ops-activities");
+      setProgramOptions(data);
     }
   };
 
   return (
     <Fragment>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {(formik) => (
-          <Form>
-            <Section>
-              {Array.from({ length: counter }).map((_, index) => (
-                <SearchRow key={index}>
-                  <div className="col-lg-2 col-md-4 col-sm-6">
+      {onefilter ? (
+        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          {(formik) => (
+            <Form>
+              <Section>
+                <SearchRow>
                   <SearchFieldContainer>
                     <Input
                       icon="down"
-                      name={`searches[${index}].search_by_field`}
+                      name="search_by_field"
                       label="Search Field"
                       control="lookup"
                       options={options}
                       className="form-control"
-                      onChange={(e) => setSearchItem(e.value, index)}
+                      onChange={(e) => setSearchItem(e.value)}
                     />
                   </SearchFieldContainer>
-                  </div>
-                  
-                  <div className="col-lg-4 col-md-4 col-sm-6">
+
                   <SearchValueContainer>
-                    {selectedSearchFields[index] === null && (
+                    {/* Conditionally render based on selected field */}
+                    {selectedSearchField === null && (
                       <Input
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         control="input"
                         label="Search Value"
                         className="form-control"
@@ -224,11 +557,10 @@ const OpsSearchDropdown = function OpsSearchBar({
                         disabled
                       />
                     )}
-
-                    {selectedSearchFields[index] === "program_name" && (
+                    {selectedSearchField === "program_name" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         label="Search Value"
                         control="lookup"
                         options={programOptions}
@@ -236,23 +568,21 @@ const OpsSearchDropdown = function OpsSearchBar({
                         disabled={disabled}
                       />
                     )}
-
-                    {selectedSearchFields[index] === "activity_type" && (
+                    {selectedSearchField === "activity_type" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         label="Search Value"
                         control="lookup"
-                        options={activityTypes}
+                        options={activityTypesMain}
                         className="form-control"
                         disabled={disabled}
                       />
                     )}
-
-                    {selectedSearchFields[index] === "assigned_to.username" && (
+                    {selectedSearchField === "assigned_to.username" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         label="Search Value"
                         control="lookup"
                         options={assignedToOptions}
@@ -260,11 +590,10 @@ const OpsSearchDropdown = function OpsSearchBar({
                         disabled={disabled}
                       />
                     )}
-
-                    {selectedSearchFields[index] === "batch.name" && (
+                    {selectedSearchField === "batch.name" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         label="Search Value"
                         control="lookup"
                         options={batchOptions}
@@ -272,11 +601,10 @@ const OpsSearchDropdown = function OpsSearchBar({
                         disabled={disabled}
                       />
                     )}
-
-                    {selectedSearchFields[index] === "area" && (
+                    {selectedSearchField === "area" && (
                       <Input
                         icon="down"
-                        name={`searches[${index}].search_by_value`}
+                        name="search_by_value"
                         label="Search Value"
                         control="lookup"
                         options={areaOptions}
@@ -284,105 +612,78 @@ const OpsSearchDropdown = function OpsSearchBar({
                         disabled={disabled}
                       />
                     )}
-
-                    {selectedSearchFields[index] === "start_date" && (
-                      <DateRangeContainer>
-                        <div>
-                          <Input
-                            name={`searches[${index}].search_by_value_date`}
-                            label="From"
-                            placeholder="Start Date"
-                            control="datepicker"
-                            className="form-control"
-                            autoComplete="off"
-                            disabled={disabled}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            name={`searches[${index}].search_by_value_date_to`}
-                            label="To"
-                            placeholder="End Date"
-                            control="datepicker"
-                            className="form-control"
-                            autoComplete="off"
-                            disabled={disabled}
-                          />
-                        </div>
-                      </DateRangeContainer>
-                    )}
-
-                    {selectedSearchFields[index] === "end_date" && (
-                      <DateRangeContainer>
-                        <div>
-                          <Input
-                            name={`searches[${index}].search_by_value_date_end_from`}
-                            label="From"
-                            placeholder="Start Date"
-                            control="datepicker"
-                            className="form-control"
-                            autoComplete="off"
-                            disabled={disabled}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            name={`searches[${index}].search_by_value_date_end_to`}
-                            label="To"
-                            placeholder="End Date"
-                            control="datepicker"
-                            className="form-control"
-                            autoComplete="off"
-                            disabled={disabled}
-                          />
-                        </div>
-                      </DateRangeContainer>
-                    )}
+                    {(selectedSearchField === "start_date" ||
+                      selectedSearchField === "end_date") && (
+                        <DateRangeContainer>
+                          <div>
+                            <Input
+                              name="search_by_value_date_from"
+                              label="From"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              name="search_by_value_date_to"
+                              label="To"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                            />
+                          </div>
+                        </DateRangeContainer>
+                      )}
                   </SearchValueContainer>
-                  </div>
-                  
 
-                  {index === counter - 1 && (
-                    <IconContainer>
-                      <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
-                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
-                    </IconContainer>
-                  )}
+                  <div
+                    className="col-lg-3 col-md-6 col-sm-12 mt-3 d-flex justify-content-around align-items-center"
+                    style={{ gap: "12px" }}
+                  >
+                    <button
+                      className="btn btn-primary uniform-btn"
+                      type="submit"
+                      disabled={disabled}
+                    >
+                      Search
+                    </button>
+                    <button
+                      className="btn btn-primary uniform-btn"
+                      type="button"
+                      onClick={() => setOnefilter(false)}
+                    >
+                      Add Filter
+                    </button>
+                    <button
+                      className="btn btn-secondary uniform-btn"
+                      type="button"
+                      onClick={() => clear(formik)}
+                      disabled={disabled}
+                    >
+                      CLEAR
+                    </button>
+                  </div>
                 </SearchRow>
-              ))}
-
-              <div className="row">
-                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
-                  <button
-                    className="btn btn-primary action_button_sec search_bar_action_sec"
-                    type="submit"
-                    disabled={disabled}
-                  >
-                    FIND
-                  </button>
-                  <button
-                    className="btn btn-secondary action_button_sec search_bar_action_sec"
-                    type="button"
-                    onClick={() => clear(formik)}
-                    disabled={disabled}
-                  >
-                    CLEAR
-                  </button>
-                </div>
-              </div>
-
-              {isFieldEmpty && (
-                <div className="row">
-                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
-                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
-                    <p style={{ color: "red" }}>Please select any field first.</p>
+                {isFieldEmpty && (
+                  <div className="row">
+                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
+                    <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                      <p style={{ color: "red" }}>
+                        Please select any field first.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </Section>
-          </Form>
-        )}
-      </Formik>
+                )}
+              </Section>
+            </Form>
+          )}
+        </Formik>
+      ) : (
+        <FilterBox closefilterBox={closefilterBox} handleSubmit={handleSubmit} clear={clear} />
+      )}
     </Fragment>
   );
 };

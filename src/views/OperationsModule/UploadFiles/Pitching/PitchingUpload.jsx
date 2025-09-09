@@ -7,7 +7,7 @@ import {
   FaRegCheckCircle,
 } from "react-icons/fa";
 import { isAdmin, isSRM } from "src/common/commonFunctions";
-import { getAllSrmbyname } from "src/utils/function/lookupOptions";
+import { getAllMedhaUsers, getAllSrmbyname } from "src/utils/function/lookupOptions";
 import {
   getAddressOptions,
   getStateDistricts,
@@ -21,6 +21,7 @@ import {
   getAllInstitute,
   searchPrograms,
 } from "../../OperationComponents/operationsActions";
+import { create } from "lodash";
 
 const expectedColumns = [
   "Date of Pitching",
@@ -68,6 +69,8 @@ const PitchingUpload = (props) => {
   const [programOption, setProgramOption] = useState([]);
 
   useEffect(async () => {
+     const data = await getAllMedhaUsers();
+          setAssigneeOption(data);
     let instituteData = await getAllInstitute();
     // console.log(instituteData);
     setInstituteOptions(instituteData);
@@ -76,6 +79,16 @@ const PitchingUpload = (props) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const isValidDateFormat = (dateStr) => {
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
+    if (datePattern.test(dateStr)) {
+      const [year, month, day] = dateStr.split("/");
+      return `${year}-${month}-${day}`;
+    }
+
+    return null;
+  };
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
@@ -244,9 +257,11 @@ const PitchingUpload = (props) => {
       });
   
       const currentUser = localStorage.getItem("user_id");
+      console.log(assigneOption);
+      
       const srmcheck = assigneOption.find(
-        (user) => user.label === newItem["Assigned To"]
-      )?.value;
+        (user) => user.name === newItem["SRM Name"]
+      )?.id;
   
       const onboardingDate = excelSerialDateToJSDate(newItem["Onboarding Date"]);
       const createdby = Number(userId);
@@ -263,19 +278,21 @@ const PitchingUpload = (props) => {
       const isValidProgramName = (programName) => {
         return validProgramNames.includes(programName);
       };
-  
+      // let pitchdate = isValidDateFormat(Date);
       const Date = excelSerialDateToJSDate(newItem["Date of Pitching"]);
-  
+      
       const phoneValid = phoneRegex.test(newItem["Phone"]);
       const whatsappValid = phoneRegex.test(newItem["WhatsApp Number"]);
       const emailValid = emailRegex.test(newItem["Email ID"]);
-  
+      console.log(Date,Date.includes("NaN"));
+      console.log(srmcheck);
+      
       if (
         !newItem["Student Name"] ||
         !newItem["Course Name"] ||
         !phoneValid ||
         !instituteId ||
-        !emailValid ||
+        !emailValid ||  Date.includes("NaN") ||
         !isValidProgramName(newItem["Program name"]) ||
         (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
@@ -288,11 +305,12 @@ const PitchingUpload = (props) => {
         else if (!instituteId) errors.push("Institution name not found");
         if (!emailValid) errors.push("Invalid Email format");
         if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
+        if (Date.includes("NaN")) errors.push("Invalid Date of Pitching, expected YYYY/MM/DD");
         if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
 
         notFoundData.push({
           index: index + 1,
-          date_of_pitching: Date || "",
+          date_of_pitching: newItem['Date of Pitching'] || "",
           student_name: newItem["Student Name"] || "",
           course_name: newItem["Course Name"] || "",
           course_year: newItem["Course Year"] || "",
@@ -308,18 +326,20 @@ const PitchingUpload = (props) => {
         });
       } else {
         formattedData.push({
-          date_of_pitching: Date || "",
+          pitch_date: Date || "",
           student_name: newItem["Student Name"] || "",
           course_name: newItem["Course Name"] || "",
           course_year: newItem["Course Year"] || "",
-          institution: newItem["Institution"] || "",
+          college_name: newItem["Institution"] || "",
           program_name: newItem["Program name"] || "",
           phone: newItem["Phone"] || "",
-          whatsapp_number: newItem["WhatsApp Number"] || "",
+          whatsapp: newItem["WhatsApp Number"] || "",
           email: newItem["Email ID"] || "",
           remarks: newItem["Remarks"] || "",
-          srm_name: srmcheck,
-          medha_area: newItem["Medha Area"] || "",
+          srm_name: srmcheck || "",
+          area: newItem["Medha Area"] || "",
+          createdby: createdby,
+          updatedby: updatedby
         });
       }
     });

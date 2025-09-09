@@ -154,13 +154,13 @@ const OpportunityForm = (props) => {
           };
         })
       );
-      setEarningTypeOptions(
-        data.earning_type.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
+      // setEarningTypeOptions(
+      //   data?.earning_type.map((item) => ({
+      //     key: item.value,
+      //     value: item.value,
+      //     label: item.value,
+      //   }))
+      // );
     });
 
     getAllEmployers().then((data) => {
@@ -650,15 +650,8 @@ const OpportunityForm = (props) => {
                 </div>
               </Section>
 
-              <div className="row justify-content-center">
-                <div className="col-auto">
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-regular collapse_form_buttons"
-                  >
-                    SAVE
-                  </button>
-                </div>
+              <div className="row justify-content-end">
+                
                 <div className="col-auto">
                   <button
                     type="button"
@@ -666,6 +659,15 @@ const OpportunityForm = (props) => {
                     className="btn btn-secondary btn-regular collapse_form_buttons"
                   >
                     CANCEL
+                  </button>
+                </div>
+
+                <div className="col-auto">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-regular collapse_form_buttons"
+                  >
+                    SAVE
                   </button>
                 </div>
               </div>

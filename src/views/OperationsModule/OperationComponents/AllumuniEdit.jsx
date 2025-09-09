@@ -245,6 +245,17 @@ const AllumuniEdit = (props) => {
           "Query End date must be greater than or equal to Query start date"
         );
       }),
+    student_name: Yup.string().required("Student Name is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email ID is required"),
+    phone: Yup.string()
+      .matches(/^[0-9]{10}$/, "Phone number is not valid")
+      .required("Phone number is required"),
+    location: Yup.string().required("Medha Area is required"),
+    query_type: Yup.string().required("Query Type is required"),
+    query_desc: Yup.string().required("Query Description is required"),
+    status: Yup.string().required("Status is required"),
   });
 
   return (
@@ -321,7 +332,7 @@ const AllumuniEdit = (props) => {
                           <Input
                             name="email"
                             label="Email ID"
-                            // required
+                            required
                             placeholder="Email"
                             control="input"
                             className="form-control"
@@ -334,6 +345,7 @@ const AllumuniEdit = (props) => {
                             control="input"
                             name="phone"
                             label="Mobile No."
+                            required
                             onKeyPress={mobileNochecker}
                             className="form-control"
                             placeholder="Phone"
@@ -346,6 +358,7 @@ const AllumuniEdit = (props) => {
                             label="Status"
                             control="lookup"
                             options={Statusoptions}
+                            required
                             // onChange={onStateChange}
                             placeholder="Status"
                             className="form-control"
@@ -358,6 +371,7 @@ const AllumuniEdit = (props) => {
                             label="Medha Area"
                             control="lookup"
                             options={areaOptions}
+                            required
                             // onChange={onStateChange}
                             placeholder="Medha Area"
                             className="form-control"
@@ -379,6 +393,7 @@ const AllumuniEdit = (props) => {
                             label="Query Type"
                             control="lookup"
                             options={queryTypes}
+                            required
                             // onChange={onStateChange}
                             placeholder="Query Type"
                             className="form-control"
@@ -390,6 +405,7 @@ const AllumuniEdit = (props) => {
                             control="input"
                             name="query_desc"
                             label="Query Description"
+                            required
                             className="form-control"
                             placeholder="Query Description"
                           />
@@ -401,6 +417,7 @@ const AllumuniEdit = (props) => {
                             label="Query Start Date"
                             placeholder="Query Start"
                             control="datepicker"
+                            required
                             className="form-control"
                             autoComplete="off"
                           />

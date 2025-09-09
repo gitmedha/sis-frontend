@@ -21,6 +21,7 @@ import { isNumber } from "lodash";
 import moment from "moment";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import { getAllBatchs, getAllInstitute } from "./operationsActions";
+import { getAddressOptions, getStateDistricts } from "src/views/Address/addressActions";
 
 const Styled = styled.div`
   .icon-box {
@@ -238,6 +239,8 @@ const UploadFile = (props) => {
   const [showSpinner, setShowSpinner] = useState(true);
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
   const validateColumns = (data, expectedColumns) => {
     if(data.length === 0){
       setNotUploadSuccesFully(
@@ -365,7 +368,8 @@ const UploadFile = (props) => {
 
   useEffect(() => {
     const getbatch = async () => {
-      let batchData =getAllBatchs();
+      let batchData =await getAllBatchs();
+      
       setBatchOption(batchData)
       let instituteData =await getAllInstitute();
       setInstituteOption(instituteData);
@@ -398,8 +402,42 @@ const UploadFile = (props) => {
   };
 
   
+    useEffect(() => {
+      getAddressOptions().then((data) => {
+        setStateOptions(
+          data?.data?.data?.geographiesConnection.groupBy.state
+            .map((state) => ({
+              key: state?.id,
+              label: state?.key,
+              value: state?.key,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label))
+        );
+      });
+      
+      getStateDistricts().then((data) => {
+        
+            setAreaOptions([]);
+            setAreaOptions(
+              data?.data?.data?.geographiesConnection.groupBy.area
+                .map((area) => ({
+                  key: area.id,
+                  label: area.key,
+                  value: area.key,
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label))
+            );
+          });
   
+      // getdata();
+    }, [props]);
   
+    // let areaOptions1 = [];
+    // stateOptions.forEach((state) => {
+    //   areaOptions1.push(...getStateDistricts(state.label));
+    // });
+    // console.log(areaOptions1);
+    
 
 
   const capitalize = (s) => {
@@ -418,6 +456,14 @@ const UploadFile = (props) => {
       Object.keys(item).forEach((key) => {
         newItem[key] = item[key];
       });
+      const StateCheck = stateOptions.find(
+        (state) => state.label === newItem["State"]
+      )?.value;
+      
+      const areaCheck = areaOptions.find(
+        (area) => area.label === newItem["Medha Area"]
+      ).value;
+      
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch Name"]
       );
@@ -439,9 +485,9 @@ const UploadFile = (props) => {
           : true;
       const currentUser = localStorage.getItem("user_id");
 
-      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
+      const startDate = newItem['Start Date']? excelSerialDateToJSDate(newItem["Start Date"]):"";
       // let date=excelSerialDateToJSDate(dateStr)
-      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
+      const endDate = newItem['End Date']? excelSerialDateToJSDate(newItem["End Date"]):"";
 
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
@@ -460,8 +506,8 @@ const UploadFile = (props) => {
         !userId ||
         !isStartDateValid ||
         !isEndDateValid ||
-        !participantCheck ||
-        parseDate || !newItem["Activity Type"]
+        !participantCheck || !StateCheck || !areaCheck ||
+        parseDate || !newItem["Activity Type"] || !newItem["Session Topic"]
       ) {
         notFoundData.push({
           index: index + 1,
@@ -471,18 +517,18 @@ const UploadFile = (props) => {
           batch: batch
             ? batch.name
             : { value: newItem["Batch Name"] ?newItem["Batch Name"] :'Please select from dropdown', notFound: true },
-          state: newItem["State"] || "",
+          state: StateCheck ? newItem['State']:{value: newItem["State"] ?newItem["State"] :'Please select from dropdown', notFound: true} || "",
           start_date: parseDate
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select from dropdown", notFound: true },
+            : { value: newItem["Start Date"] ? newItem["Start Date"] :"Please select a date", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select from dropdown", notFound: true },
-          topic: newItem["Session Topic"] || "",
+            : { value: newItem["End Date"] ? newItem["End Date"] :"Please select a date", notFound: true },
+          topic: newItem["Session Topic"] ? newItem["Session Topic"] :"No data",
           donor: newItem["Project / Funder"] || "",
           guest: newItem["Guest Name "] || "",
           designation: newItem["Guest Designation"] || "",
@@ -495,7 +541,7 @@ const UploadFile = (props) => {
           assigned_to: user
             ? user.name
             : { value: newItem["Assigned To"] ? newItem["Assigned To"] :'Please select from dropdown', notFound: true },
-          area: newItem["Medha Area"] || "",
+          area: areaCheck ? newItem['Medha Area']:{value: newItem["Medha Area"] ?newItem["Medha Area"] :'Please select from dropdown', notFound: true} || "",
         });
       } else {
         formattedData.push({
