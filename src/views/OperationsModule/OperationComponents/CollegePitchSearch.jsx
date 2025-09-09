@@ -11,6 +11,7 @@ import { getFieldValues } from "./operationsActions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import "./ops.css";
 import Select from "react-select";
+import Modal from 'react-bootstrap/Modal'; // Import Modal component
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -69,6 +70,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
   const [disabled, setDisabled] = useState(true);
   const [counter, setCounter] = useState(1);
   const [onefilter, setOnefilter] = useState(true);
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false); // State for "Multiple filter applied" message
 
   const initialValues = {
     searches: Array(counter).fill({
@@ -79,7 +81,14 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
 
    const closefilterBox = () => {
       setOnefilter(true);
-      // clear();
+      setShowAppliedFilterMessage(false); // Hide the message when modal is dismissed
+      // Removed API call and local storage update from here
+    };
+  
+    // New function for clearing filters only within the modal, then closing it
+    const clearModalFiltersAndClose = async () => {
+      // No need to reset filterValues in FilterBox as it will be unmounted
+      closefilterBox(); // Just close the modal, which also hides the message
     };
   
     const filters = [
@@ -88,19 +97,66 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
       "Program Name",
     ];
   
-    const FilterBox = ({ closefilterBox, clear }) => {
-      const [activeFilters, setActiveFilters] = useState([]);
-       const [medhaAreaOptions, setMedhaAreaOptions] = useState([]);
-  const [programNameOptions, setProgramOptions] = useState([]);
-      
-      const [filterValues, setFilterValues] = useState({});
+    const FilterBox = ({ closefilterBox, clear, clearModalFiltersAndClose, setShowAppliedFilterMessage, initialSelectedField, initialFilterValues, formik }) => {
+      const filterMap = {
+        "area": "Medha Area",
+        "program_name": "Program Name",
+      };
+  
+      const [activeFilters, setActiveFilters] = useState(() => {
+        if (initialSelectedField && initialFilterValues[filterMap[initialSelectedField]]) {
+          return [filterMap[initialSelectedField]];
+        }
+        return [];
+      });
+      const [medhaAreaOptions, setMedhaAreaOptions] = useState([]);
+      const [programNameOptions, setProgramOptions] = useState([]);
+  
+      const [filterValues, setFilterValues] = useState(() => {
+        if (initialFilterValues) {
+          return initialFilterValues;
+        }
+        return {};
+      });
+      const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
+      const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
+  
+      // Validation function for all active filters
+      const validateAllFilters = () => {
+        const newErrors = {};
+        let allValid = true;
+  
+        if (activeFilters.length === 0) {
+          setIsApplyDisabled(true);
+          return false;
+        }
+  
+        activeFilters.forEach(filter => {
+          if (!filterValues[filter] || (typeof filterValues[filter] === 'string' && filterValues[filter].trim() === '')) {
+            newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
+            allValid = false;
+          }
+        });
+  
+        setFilterErrors(newErrors);
+        setIsApplyDisabled(!allValid);
+        return allValid;
+      };
   
       const handleChange = (filter, value) => {
-        setFilterValues((prev) => ({
-          ...prev,
-          [filter]: value,
-        }));
+        setFilterValues((prev) => {
+          const updatedValues = {
+            ...prev,
+            [filter]: value,
+          };
+          validateAllFilters(); // Re-validate after updating filter values
+          return updatedValues;
+        });
       };
+      useEffect(() => {
+        validateAllFilters(); // Validate on mount and whenever activeFilters or filterValues change
+      }, [activeFilters, filterValues]);
+  
       useEffect(() => {
         activeFilters.forEach(async (filter) => {
           if (filter === "Medha Area" && medhaAreaOptions.length === 0) {
@@ -126,7 +182,17 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
         );
       };
       const handleApply = async () => {
-        const searchFields = Object.keys(filterValues);
+        // Run validation before applying filters
+        if (!validateAllFilters()) {
+          return; // Stop if validation fails
+        }
+  
+        const backendFieldMap = {
+          "Medha Area": "area",
+          "Program Name": "program_name",
+        };
+  
+        const searchFields = Object.keys(filterValues).map(key => backendFieldMap[key] || key);
         const searchValues = Object.values(filterValues);
   
         const searchData = {
@@ -140,9 +206,8 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
           "prevSearchedPropsAndValues",
           JSON.stringify({ baseUrl, searchData })
         );
-        // handleSubmit(searchData);
-        // 👉 call API here if needed, same as in onefilter
-        // searchOperationTab("users-ops-activities", searchData);
+        closefilterBox(); // Close the modal
+        setShowAppliedFilterMessage(true); // Show the message
       };
   
       //  const handleSubmit = async (values) => {
@@ -159,102 +224,118 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
       //     );
       //   };
       return (
-        <>
-          <div className="filter-box">
-            <h4 className="filter-title">Add Filter</h4>
+        <Modal
+          centered
+          size="lg"
+          show={true} // Modal is always shown when FilterBox is rendered
+          onHide={closefilterBox} // Use the closefilterBox prop to hide the modal
+          animation={false}
+          aria-labelledby="contained-modal-title-vcenter"
+          className="form-modal"
+        >
+          <Modal.Header closeButton className="bg-white">
+            <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">
+              Add Filters
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="bg-light">
+            <div className="filter-box">
+              <h4 className="filter-title">Add Filter</h4>
+
+              {/* Filter Chips */}
+              <div className="filter-chips">
+                {filters.map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
+                    onClick={() => toggleFilter(f)}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+
+              {/* Filter Inputs */}
+              <div className="filter-inputs">
+                {activeFilters.map((f) => {
+                  switch (f) {
+                    
+                    case "Medha Area":
+                      return (
+                        <Fragment>
+                          <Select
+                            options={medhaAreaOptions.map((opt) => ({
+                              label: opt.value,
+                              value: opt.value,
+                            }))}
+                            onChange={(selected) => handleChange("Medha Area", selected?.value)}
+                            placeholder="Select Activity..."
+                            isClearable
+                            isSearchable
+                            value={filterValues["Medha Area"] ? { label: filterValues["Medha Area"], value: filterValues["Medha Area"] } : null}
+                            styles={{
+                              container: (base) => ({
+                                ...base,
+                                width: "300px",   // 👈 set width here
+                              }),
+                            }}
+                          />
+                          {filterErrors["Medha Area"] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors["Medha Area"]}</p>}
+                        </Fragment>
+                      );
   
-            {/* Filter Chips */}
-            <div className="filter-chips">
-              {filters.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
-                  onClick={() => toggleFilter(f)}
-                >
-                  {f}
+                    case "Program Name":
+                      return (
+                        <Fragment>
+                          <Select
+                            options={programNameOptions.map((opt) => ({
+                              label: opt.value,
+                              value: opt.value,
+                            }))}
+                            onChange={(selected) => handleChange("Program Name", selected?.value)}
+                            placeholder="Select Assigned to..."
+                            isClearable
+                            isSearchable
+                            value={filterValues["Program Name"] ? { label: filterValues["Program Name"], value: filterValues["Program Name"] } : null}
+                            styles={{
+                              container: (base) => ({
+                                ...base,
+                                width: "300px",   // 👈 set width here
+                              }),
+                            }}
+                          />
+                          {filterErrors["Program Name"] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors["Program Name"]}</p>}
+                        </Fragment>
+                      );
+                    default:
+                      return (
+                        <select key={f} className="filter-select">
+                          <option>{f}</option>
+                        </select>
+                      );
+                  }
+                })}
+              </div>
+  
+  
+              {/* Action Buttons */}
+              <div className="filter-actions">
+                <button className="btn apply" type="button" onClick={handleApply} disabled={isApplyDisabled}>
+                  Apply
                 </button>
-              ))}
+                <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>
+                  Clear
+                </button>
+              </div>
             </div>
-  
-            {/* Filter Inputs */}
-            <div className="filter-inputs">
-              {activeFilters.map((f) => {
-                switch (f) {
-                  
-                  case "Medha Area":
-                    return (
-                      // <select key={f} className="filter-select" onChange={(e) => handleChange('activity_type', e.target.value)}>
-                      //   <option value="">Select Activity</option>
-                      //   {activityTypesMain.map((opt, idx) => (
-                      //     <option key={idx} value={opt.value}>{opt.value}</option>
-                      //   ))}
-                      // </select>
-  
-                      <Select
-                        options={medhaAreaOptions.map((opt) => ({
-                          label: opt.value,
-                          value: opt.value,
-                        }))}
-                        onChange={(selected) => handleChange("area", selected?.value)}
-                        placeholder="Select Activity..."
-                        isClearable
-                        isSearchable
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "300px",   // 👈 set width here
-                          }),
-                        }}
-                      />
-                    );
-  
-                  case "Program Name":
-                    return (
-                      
-                      <Select
-                        options={programNameOptions.map((opt) => ({
-                          label: opt.value,
-                          value: opt.value,
-                        }))}
-                        onChange={(selected) => handleChange("program_name", selected?.value)}
-                        placeholder="Select Assigned to..."
-                        isClearable
-                        isSearchable
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "300px",   // 👈 set width here
-                          }),
-                        }}
-                      />
-                    );
-                  default:
-                    return (
-                      <select key={f} className="filter-select">
-                        <option>{f}</option>
-                      </select>
-                    );
-                }
-              })}
-            </div>
-  
-  
-            {/* Action Buttons */}
-            <div className="filter-actions">
-              <button className="btn apply" type="button" onClick={handleApply}>
-                Apply
-              </button>
-              <button className="btn clear" type="button" onClick={closefilterBox}>
-                Clear
-              </button>
-            </div>
-          </div>
-        </>
+          </Modal.Body>
+        </Modal>
       );
     };
 
   const handleSubmit = async (values) => {
+    setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
     const baseUrl = "college-pitches";
     const searchFields = [];
     const searchValues = [];
@@ -321,10 +402,10 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
 
   return (
     <Fragment>
-      {onefilter ? (
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {(formik) => (
-            <Form>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {(formik) => (
+          <Form>
+            {onefilter ? (
               <Section>
                 {Array.from({ length: counter }).map((_, index) => (
                   <SearchRow key={index}>
@@ -344,7 +425,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                     </div>
 
                     {/* Search Value Column */}
-                    <div className="">  
+                    <div className="col-lg-3 col-md-4 col-sm-6">  
                       <SearchValueContainer>
                         {selectedSearchFields[index] === null && (
                           <Input
@@ -419,16 +500,44 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                   </SearchRow>
                 ))}
 
+                {showAppliedFilterMessage && (
+                  <p style={{ color: '#257b69', marginTop: '10px' }}>Multiple Filter Applied</p>
+                )}
+
                 {/* Action Buttons Row */}
                 
               </Section>
-            </Form>
-          )}
-        </Formik>
-      ) : (
-        <FilterBox closefilterBox={closefilterBox} handleSubmit={handleSubmit} clear={clear} />
-        // "hello"
-      )}
+            ) : (
+              <FilterBox
+                closefilterBox={closefilterBox}
+                handleSubmit={handleSubmit}
+                clear={clear}
+                initialSelectedField={selectedSearchFields[0]}
+                initialFilterValues={(() => {
+                  const mappedValues = {};
+                  if (selectedSearchFields[0] && formik.values.searches && formik.values.searches.length > 0) {
+                    const singleFilter = formik.values.searches[0];
+                    if (singleFilter.search_by_field && singleFilter.search_by_value) {
+                      const filterMap = {
+                        "area": "Medha Area",
+                        "program_name": "Program Name",
+                      };
+                      const filterKey = filterMap[singleFilter.search_by_field];
+                      if (filterKey) {
+                        mappedValues[filterKey] = singleFilter.search_by_value;
+                      }
+                    }
+                  }
+                  return mappedValues;
+                })()}
+                formik={formik} // Pass formik object directly
+                clearModalFiltersAndClose={clearModalFiltersAndClose}
+                setShowAppliedFilterMessage={setShowAppliedFilterMessage}
+              />
+            )}
+          </Form>
+        )}
+      </Formik>
     </Fragment>
   );
 };

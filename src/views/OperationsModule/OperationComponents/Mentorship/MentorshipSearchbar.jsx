@@ -10,6 +10,7 @@ import {
 import { getFieldValues } from "../operationsActions";
 import { getAllSearchSrm } from "../../../../utils/function/lookupOptions";
 import Select from "react-select";
+import { Modal } from "react-bootstrap";
 // import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 
 const Section = styled.div`
@@ -177,6 +178,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [disabled, setDisabled] = useState(true);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
 
   const initialValues = {
     search_by_field: "",
@@ -186,6 +188,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const handleSubmit = async (values) => {
+    setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
     const baseUrl = "mentorships";
     let searchData;
 
@@ -206,11 +209,19 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       "prevSearchedPropsAndValues",
       JSON.stringify({ baseUrl, searchData })
     );
+    // Removed setShowAppliedFilterMessage(true) and setTimeout here
   };
 
   const closefilterBox = () => {
     setOnefilter(true);
-    // clear(); // Need to pass formik prop if this is used
+    setShowAppliedFilterMessage(false); // Hide the message when modal is dismissed
+    // Removed API call and local storage update from here
+  };
+
+  // New function for clearing filters only within the modal, then closing it
+  const clearModalFiltersAndClose = async () => {
+    // No need to reset filterValues in FilterBox as it will be unmounted
+    closefilterBox(); // Just close the modal, which also hides the message
   };
 
   const filters = [
@@ -223,13 +234,51 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     "Medha Area",
     "Program Name",
     "Status",
-    "Start Date",
-    "End Date",
+    // "Start Date",
+    // "End Date",
   ];
 
-  const FilterBox = ({ closefilterBox, clear }) => {
-    const [activeFilters, setActiveFilters] = useState([]);
-    const [filterValues, setFilterValues] = useState({});
+  const FilterBox = ({
+    closefilterBox,
+    clear,
+    handleSubmit,
+    initialSelectedField,
+    initialFilterValues,
+    formik,
+    clearModalFiltersAndClose,
+    setShowAppliedFilterMessage,
+  }) => {
+    const filterMap = {
+      "mentor_name": "Mentor Name",
+      "mentor_domain": "Mentor Domain",
+      "mentor_company_name": "Mentor Company Name",
+      "designation": "Designation",
+      "mentor_area": "Mentor Area",
+      "mentor_state": "Mentor State",
+      "medha_area": "Medha Area",
+      "program_name": "Program Name",
+      "status": "Status",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+    };
+
+    const [activeFilters, setActiveFilters] = useState(() => {
+      const initialActive = [];
+      if (initialSelectedField) {
+        const mappedKey = filterMap[initialSelectedField];
+        if (mappedKey) {
+          initialActive.push(mappedKey);
+        }
+      }
+      return initialActive;
+    });
+    const [filterValues, setFilterValues] = useState(() => {
+      return initialFilterValues || {};
+    });
+    const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
+    const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
+
+    // Options states for dropdowns
     const [mentorNameOptions, setMentorNameOptions] = useState([]);
     const [mentorDomainOptions, setMentorDomainOptions] = useState([]);
     const [mentorCompanyOptions, setMentorCompanyOptions] = useState([]);
@@ -240,38 +289,120 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     const [programNameOptions, setProgramNameOptions] = useState([]);
     const [statusOptions, setStatusOptions] = useState([]);
 
-    useEffect(() => {
-      activeFilters.forEach(async (filter) => {
-        if (filter === "Mentor Name" && mentorNameOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_name", "mentorship");
-          setMentorNameOptions(data);
-        } else if (filter === "Mentor Domain" && mentorDomainOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_domain", "mentorship");
-          setMentorDomainOptions(data);
-        } else if (filter === "Mentor Company Name" && mentorCompanyOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_company_name", "mentorship");
-          setMentorCompanyOptions(data);
-        } else if (filter === "Designation" && designationOptions.length === 0) {
-          const { data } = await getFieldValues("designation", "mentorship");
-          setDesignationOptions(data);
-        } else if (filter === "Mentor Area" && mentorAreaOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_area", "mentorship");
-          setMentorAreaOptions(data);
-        } else if (filter === "Mentor State" && mentorStateOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_state", "mentorship");
-          setMentorStateOptions(data);
-        } else if (filter === "Medha Area" && medhaAreaOptions.length === 0) {
-          const { data } = await getFieldValues("medha_area", "mentorship");
-          setMedhaAreaOptions(data);
-        } else if (filter === "Program Name" && programNameOptions.length === 0) {
-          const { data } = await getFieldValues("program_name", "mentorship");
-          setProgramNameOptions(data);
-        } else if (filter === "Status" && statusOptions.length === 0) {
-          const { data } = await getFieldValues("status", "mentorship");
-          setStatusOptions(data);
+    // Validation function for all active filters
+    const validateAllFilters = () => {
+      const newErrors = {};
+      let allValid = true;
+
+      if (activeFilters.length === 0) {
+        setIsApplyDisabled(true);
+        return false;
+      }
+
+      activeFilters.forEach((filter) => {
+        if (filter === "Start Date" || filter === "End Date") {
+          const dateFromKey = `${filter} From`;
+          const dateToKey = `${filter} To`;
+          if (!filterValues[dateFromKey] || (filterValues[dateFromKey] instanceof Date && isNaN(filterValues[dateFromKey]))) {
+            newErrors[dateFromKey] = `Please select a valid ${filter.toLowerCase()} from date.`;
+            allValid = false;
+          }
+          if (!filterValues[dateToKey] || (filterValues[dateToKey] instanceof Date && isNaN(filterValues[dateToKey]))) {
+            newErrors[dateToKey] = `Please select a valid ${filter.toLowerCase()} to date.`;
+            allValid = false;
+          }
+        } else if (
+          !filterValues[filter] ||
+          (typeof filterValues[filter] === "string" && filterValues[filter].trim() === "")
+        ) {
+          newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
+          allValid = false;
         }
       });
-    }, [activeFilters]);
+
+      setFilterErrors(newErrors);
+      setIsApplyDisabled(!allValid);
+      return allValid;
+    };
+
+    const handleChange = (filter, value) => {
+      setFilterValues((prev) => {
+        const updatedValues = { ...prev };
+
+        if (filter.includes(" Date")) {
+          updatedValues[filter] = value === "" ? null : new Date(value);
+          if (updatedValues[filter] instanceof Date && isNaN(updatedValues[filter])) {
+            updatedValues[filter] = null; // Ensure Invalid Date is converted to null
+          }
+        } else {
+          updatedValues[filter] = value;
+        }
+
+        validateAllFilters(); // Re-validate after updating filter values
+        return updatedValues;
+      });
+    };
+
+    useEffect(() => {
+      validateAllFilters(); // Validate on mount and whenever activeFilters or filterValues change
+    }, [activeFilters, filterValues]);
+
+    useEffect(() => {
+      activeFilters.forEach(async (filter) => {
+        // Fetch options for Select components
+        const fieldToBackendMap = {
+          "Mentor Name": "mentor_name",
+          "Mentor Domain": "mentor_domain",
+          "Mentor Company Name": "mentor_company_name",
+          "Designation": "designation",
+          "Mentor Area": "mentor_area",
+          "Mentor State": "mentor_state",
+          "Medha Area": "medha_area",
+          "Program Name": "program_name",
+          "Status": "status",
+        };
+
+        const backendFieldName = fieldToBackendMap[filter];
+        if (backendFieldName) {
+          try {
+            const { data } = await getFieldValues(backendFieldName, "mentorship");
+            switch (filter) {
+              case "Mentor Name":
+                setMentorNameOptions(data);
+                break;
+              case "Mentor Domain":
+                setMentorDomainOptions(data);
+                break;
+              case "Mentor Company Name":
+                setMentorCompanyOptions(data);
+                break;
+              case "Designation":
+                setDesignationOptions(data);
+                break;
+              case "Mentor Area":
+                setMentorAreaOptions(data);
+                break;
+              case "Mentor State":
+                setMentorStateOptions(data);
+                break;
+              case "Medha Area":
+                setMedhaAreaOptions(data);
+                break;
+              case "Program Name":
+                setProgramNameOptions(data);
+                break;
+              case "Status":
+                setStatusOptions(data);
+                break;
+              default:
+                break;
+            }
+          } catch (error) {
+            console.error(`Error fetching values for ${filter}:`, error);
+          }
+        }
+      });
+    }, [activeFilters]); // Dependencies for useEffect
 
     const toggleFilter = (filter) => {
       setActiveFilters((prev) =>
@@ -281,278 +412,512 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       );
     };
 
-    const handleChange = (filter, value) => {
-      setFilterValues((prev) => ({
-        ...prev,
-        [filter]: value,
-      }));
-    };
-
     const handleApply = async () => {
-      const searchFields = Object.keys(filterValues);
-      const searchValues = Object.values(filterValues);
+      // Run validation before applying filters
+      if (!validateAllFilters()) {
+        return; // Stop if validation fails
+      }
+
+      const backendFieldMap = {
+        "Mentor Name": "mentor_name",
+        "Mentor Domain": "mentor_domain",
+        "Mentor Company Name": "mentor_company_name",
+        "Designation": "designation",
+        "Mentor Area": "mentor_area",
+        "Mentor State": "mentor_state",
+        "Medha Area": "medha_area",
+        "Program Name": "program_name",
+        "Status": "status",
+        "Start Date From": "start_date_from",
+        "Start Date To": "start_date_to",
+        "End Date From": "end_date_from",
+        "End Date To": "end_date_to",
+      };
+
+      const searchFields = [];
+      const searchValues = [];
+
+      Object.keys(filterValues).forEach((key) => {
+        const backendFieldName = backendFieldMap[key] || key;
+        let value = filterValues[key];
+
+        if (value instanceof Date && !isNaN(value)) {
+          value = value.toISOString(); // Convert valid Date objects to ISO string for API
+        }
+        searchFields.push(backendFieldName);
+        searchValues.push(value);
+      });
 
       const searchData = {
         searchFields,
         searchValues,
       };
       const baseUrl = "mentorships";
+
       await searchOperationTab(baseUrl, searchData);
       await localStorage.setItem(
         "prevSearchedPropsAndValues",
         JSON.stringify({ baseUrl, searchData })
       );
+      closefilterBox(); // Close the modal
+      setShowAppliedFilterMessage(true); // Show the message
+      // Removed setTimeout here
     };
 
     return (
-      <MultipleFilterBox>
-        <div className="filter-box">
-          <h4 className="filter-title">Add Filter</h4>
+      <Modal
+        centered
+        size="lg"
+        show={true} // Modal is always shown when FilterBox is rendered
+        onHide={closefilterBox} // Use the closefilterBox prop to hide the modal
+        animation={false}
+        aria-labelledby="contained-modal-title-vcenter"
+        className="form-modal"
+      >
+        <Modal.Header closeButton className="bg-white">
+          <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">
+            Add Filters
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="bg-light">
+          <div className="filter-box">
+            <h4 className="filter-title">Add Filter</h4>
 
-          {/* Filter Chips */}
-          <div className="filter-chips">
-            {filters.map((f) => (
+            {/* Filter Chips */}
+            <div className="filter-chips">
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
+                  onClick={() => toggleFilter(f)}
+                >
+                  {f}
+                </button>
+              ))}
+              </div>
+            <div className="filter-inputs">
+              {activeFilters.map((f) => {
+                switch (f) {
+                  case "Start Date":
+                  case "End Date":
+                    return (
+                      <Fragment key={f}>
+                        <DateRangeContainer>
+                          <div className="date-input-group">
+                            <label>{`${f} From`}</label>
+                            <input
+                              type="date"
+                              name={`${f} From`}
+                              className="form-control w-300"
+                              onChange={(e) =>
+                                handleChange(`${f} From`, e.target.value)
+                              }
+                              value={
+                                filterValues[`${f} From`] instanceof Date &&
+                                !isNaN(filterValues[`${f} From`])
+                                  ? filterValues[`${f} From`].toISOString().split("T")[0]
+                                  : ""
+                              }
+                            />
+                          </div>
+                          <div className="date-input-group">
+                            <label>{`${f} To`}</label>
+                            <input
+                              type="date"
+                              name={`${f} To`}
+                              className="form-control w-300"
+                              onChange={(e) =>
+                                handleChange(`${f} To`, e.target.value)
+                              }
+                              value={
+                                filterValues[`${f} To`] instanceof Date &&
+                                !isNaN(filterValues[`${f} To`])
+                                  ? filterValues[`${f} To`].toISOString().split("T")[0]
+                                  : ""
+                              }
+                            />
+                          </div>
+                        </DateRangeContainer>
+                        {filterErrors[f] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors[f]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Mentor Name":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={mentorNameOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Mentor Name", selected?.value)
+                          }
+                          placeholder="Select Mentor Name..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Mentor Name"] === "string" &&
+                            filterValues["Mentor Name"] !== ""
+                              ? {
+                                  label: filterValues["Mentor Name"],
+                                  value: filterValues["Mentor Name"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Mentor Name"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Mentor Name"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Mentor Domain":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={mentorDomainOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Mentor Domain", selected?.value)
+                          }
+                          placeholder="Select Mentor Domain..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Mentor Domain"] === "string" &&
+                            filterValues["Mentor Domain"] !== ""
+                              ? {
+                                  label: filterValues["Mentor Domain"],
+                                  value: filterValues["Mentor Domain"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Mentor Domain"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Mentor Domain"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Mentor Company Name":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={mentorCompanyOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Mentor Company Name", selected?.value)
+                          }
+                          placeholder="Select Mentor Company..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Mentor Company Name"] === "string" &&
+                            filterValues["Mentor Company Name"] !== ""
+                              ? {
+                                  label: filterValues["Mentor Company Name"],
+                                  value: filterValues["Mentor Company Name"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Mentor Company Name"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Mentor Company Name"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Designation":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={designationOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Designation", selected?.value)
+                          }
+                          placeholder="Select Designation..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Designation"] === "string" &&
+                            filterValues["Designation"] !== ""
+                              ? {
+                                  label: filterValues["Designation"],
+                                  value: filterValues["Designation"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Designation"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Designation"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Mentor Area":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={mentorAreaOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Mentor Area", selected?.value)
+                          }
+                          placeholder="Select Mentor Area..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Mentor Area"] === "string" &&
+                            filterValues["Mentor Area"] !== ""
+                              ? {
+                                  label: filterValues["Mentor Area"],
+                                  value: filterValues["Mentor Area"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Mentor Area"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Mentor Area"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Mentor State":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={mentorStateOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Mentor State", selected?.value)
+                          }
+                          placeholder="Select Mentor State..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Mentor State"] === "string" &&
+                            filterValues["Mentor State"] !== ""
+                              ? {
+                                  label: filterValues["Mentor State"],
+                                  value: filterValues["Mentor State"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Mentor State"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Mentor State"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Medha Area":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={medhaAreaOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Medha Area", selected?.value)
+                          }
+                          placeholder="Select Medha Area..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Medha Area"] === "string" &&
+                            filterValues["Medha Area"] !== ""
+                              ? {
+                                  label: filterValues["Medha Area"],
+                                  value: filterValues["Medha Area"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Medha Area"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Medha Area"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Program Name":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={programNameOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Program Name", selected?.value)
+                          }
+                          placeholder="Select Program Name..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Program Name"] === "string" &&
+                            filterValues["Program Name"] !== ""
+                              ? {
+                                  label: filterValues["Program Name"],
+                                  value: filterValues["Program Name"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Program Name"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Program Name"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  case "Status":
+                    return (
+                      <Fragment key={f}>
+                        <Select
+                          options={statusOptions.map((opt) => ({
+                            label: opt.value,
+                            value: opt.value,
+                          }))}
+                          onChange={(selected) =>
+                            handleChange("Status", selected?.value)
+                          }
+                          placeholder="Select Status..."
+                          isClearable
+                          isSearchable
+                          value={
+                            typeof filterValues["Status"] === "string" &&
+                            filterValues["Status"] !== ""
+                              ? {
+                                  label: filterValues["Status"],
+                                  value: filterValues["Status"],
+                                }
+                              : null
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "300px",
+                            }),
+                          }}
+                        />
+                        {filterErrors["Status"] && (
+                          <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                            {filterErrors["Status"]}
+                          </p>
+                        )}
+                      </Fragment>
+                    );
+                  default:
+                    return (
+                      <Input
+                        key={f}
+                        name={f.replace(/ /g, "_").toLowerCase()}
+                        control="input"
+                        label={f}
+                        className="form-control"
+                        onChange={(e) =>
+                          handleChange(f.replace(/ /g, "_").toLowerCase(), e.target.value)
+                        }
+                        value={filterValues[f] || ""}
+                      />
+                    );
+                }
+              })}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="filter-actions">
               <button
-                key={f}
+                className="btn apply"
                 type="button"
-                className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
-                onClick={() => toggleFilter(f)}
+                onClick={handleApply}
+                disabled={isApplyDisabled}
               >
-                {f}
+                Apply
               </button>
-            ))}
+              <button
+                className="btn clear"
+                type="button"
+                onClick={clearModalFiltersAndClose}
+              >
+                Clear
+              </button>
+            </div>
           </div>
-
-          {/* Filter Inputs */}
-          <div className="filter-inputs">
-            {activeFilters.map((f) => {
-              switch (f) {
-                case "Start Date":
-                case "End Date":
-                  return (
-                    <DateRangeContainer key={f}>
-                      <Input
-                        name={`${f.replace(/ /g, "_").toLowerCase()}_from`}
-                        control="datepicker"
-                        label={`${f} From`}
-                        className="form-control"
-                        onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase() + "_from", e)}
-                      />
-                      <Input
-                        name={`${f.replace(/ /g, "_").toLowerCase()}_to`}
-                        control="datepicker"
-                        label={`${f} To`}
-                        className="form-control"
-                        onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase() + "_to", e)}
-                      />
-                    </DateRangeContainer>
-                  );
-                case "Mentor Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorNameOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_name", selected?.value)}
-                      placeholder="Select Mentor Name..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Domain":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorDomainOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_domain", selected?.value)}
-                      placeholder="Select Mentor Domain..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Company Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorCompanyOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_company_name", selected?.value)}
-                      placeholder="Select Mentor Company..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Designation":
-                  return (
-                    <Select
-                      key={f}
-                      options={designationOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("designation", selected?.value)}
-                      placeholder="Select Designation..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Area":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorAreaOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_area", selected?.value)}
-                      placeholder="Select Mentor Area..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor State":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorStateOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_state", selected?.value)}
-                      placeholder="Select Mentor State..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Medha Area":
-                  return (
-                    <Select
-                      key={f}
-                      options={medhaAreaOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("medha_area", selected?.value)}
-                      placeholder="Select Medha Area..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Program Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={programNameOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("program_name", selected?.value)}
-                      placeholder="Select Program Name..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Status":
-                  return (
-                    <Select
-                      key={f}
-                      options={statusOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("status", selected?.value)}
-                      placeholder="Select Status..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                default:
-                  return (
-                    <Input
-                      key={f}
-                      name={f.replace(/ /g, "_").toLowerCase()}
-                      control="input"
-                      label={f}
-                      className="form-control"
-                      onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase(), e.target.value)}
-                    />
-                  );
-              }
-            })}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="filter-actions">
-            <button className="btn apply" type="button" onClick={handleApply}>
-              Apply
-            </button>
-            <button className="btn clear" type="button" onClick={closefilterBox}>
-              Clear
-            </button>
-          </div>
-        </div>
-      </MultipleFilterBox>
+        </Modal.Body>
+      </Modal>
     );
   };
 
@@ -562,6 +927,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchField(null);
     setDisabled(true);
     setIsFieldEmpty(false);
+    setShowAppliedFilterMessage(false); // Hide multi-filter applied message on clear
   };
 
   const setSearchItem = async (value) => {
@@ -601,10 +967,10 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 
   return (
     <Fragment>
-      {onefilter ? (
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {(formik) => (
-            <Form>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {(formik) => (
+          <Form>
+            {onefilter ? (
               <Section>
                 <SearchRow>
                   <SearchFieldContainer>
@@ -792,11 +1158,61 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                   </div>
                 )}
               </Section>
-            </Form>
-          )}
-        </Formik>
-      ) : (
-        <FilterBox closefilterBox={closefilterBox} clear={clear} />
+            ) : (
+              <FilterBox
+                closefilterBox={closefilterBox}
+                handleSubmit={handleSubmit}
+                clear={clear}
+                initialSelectedField={selectedSearchField}
+                initialFilterValues={(() => {
+                  const mappedValues = {};
+                  if (formik.values.search_by_field && formik.values.search_by_value) {
+                    const filterMap = {
+                      "mentor_name": "Mentor Name",
+                      "mentor_domain": "Mentor Domain",
+                      "mentor_company_name": "Mentor Company Name",
+                      "designation": "Designation",
+                      "mentor_area": "Mentor Area",
+                      "mentor_state": "Mentor State",
+                      "medha_area": "Medha Area",
+                      "program_name": "Program Name",
+                      "status": "Status",
+                      "start_date": "Start Date",
+                      "end_date": "End Date",
+                    };
+                    const filterKey = filterMap[formik.values.search_by_field];
+                    if (filterKey) {
+                      // Handle date values specifically for pre-population
+                      if (formik.values.search_by_field === "start_date") {
+                        const dateFrom = formik.values.search_by_value_date_from;
+                        const dateTo = formik.values.search_by_value_date_to;
+                        mappedValues["Start Date From"] = dateFrom && dateFrom.toString() !== "Invalid Date" ? new Date(dateFrom) : null;
+                        mappedValues["Start Date To"] = dateTo && dateTo.toString() !== "Invalid Date" ? new Date(dateTo) : null;
+                      } else if (formik.values.search_by_field === "end_date") {
+                        const dateFrom = formik.values.search_by_value_date_from;
+                        const dateTo = formik.values.search_by_value_date_to;
+                        mappedValues["End Date From"] = dateFrom && dateFrom.toString() !== "Invalid Date" ? new Date(dateFrom) : null;
+                        mappedValues["End Date To"] = dateTo && dateTo.toString() !== "Invalid Date" ? new Date(dateTo) : null;
+                      } else {
+                        mappedValues[filterKey] = formik.values.search_by_value;
+                      }
+                    }
+                  }
+                  return mappedValues;
+                })()}
+                formik={formik} // Pass formik object directly
+                clearModalFiltersAndClose={() => {
+                  closefilterBox();
+                  // No need to reset filterValues in FilterBox as it will be unmounted
+                }}
+                setShowAppliedFilterMessage={setShowAppliedFilterMessage}
+              />
+            )}
+          </Form>
+        )}
+      </Formik>
+      {showAppliedFilterMessage && (
+        <p style={{ color: '#257b69', marginTop: '10px' }}>Multiple Filter Applied</p>
       )}
     </Fragment>
   );

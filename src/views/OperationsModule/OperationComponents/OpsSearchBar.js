@@ -176,6 +176,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   const [disabled, setDisabled] = useState(true);
   const [onefilter, setOnefilter] = useState(true);
   const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false); // State for "Multiple filter applied" message
+  const [appliedFiltersSummary, setAppliedFiltersSummary] = useState(""); // New state for filter summary
+  const [persistentFilterValues, setPersistentFilterValues] = useState({}); // New state to persist multi-filter values
 
   const handleSubmit = async (values) => {
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
@@ -209,7 +211,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
 
   // New function for clearing filters only within the modal, then closing it
   const clearModalFiltersAndClose = async () => {
-    // No need to reset filterValues in FilterBox as it will be unmounted
+    setPersistentFilterValues({}); // Clear persistent values
+
     closefilterBox(); // Just close the modal, which also hides the message
   };
 
@@ -223,39 +226,47 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     "End Date",
   ];
 
-  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik }) => {
+  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik: parentFormik, setPersistentFilterValues, excludeFilter }) => {
     const [activeFilters, setActiveFilters] = useState(() => {
-      const initialActive = [];
-      if (initialSelectedField && (initialFilterValues?.search_by_value || (initialSelectedField.includes('_date') && (initialFilterValues?.search_by_value_date_from || initialFilterValues?.search_by_value_date_to)))) {
-        // Convert field name to readable filter name
-        const filterMap = {
+      const initialActive = new Set(); // Use a Set to avoid duplicate filter chips
+      
+      // Populate from initialFilterValues first, which includes persistent filters
+      if (Object.keys(initialFilterValues).length > 0) {
+        for (const key in initialFilterValues) {
+          if (initialFilterValues.hasOwnProperty(key) && initialFilterValues[key] !== null && initialFilterValues[key] !== '') {
+            if (key.includes("Date From")) {
+              initialActive.add(key.replace(" From", "")); // Add "Start Date" or "End Date"
+            } else if (!key.includes("Date To")) { // Avoid adding "Date To" as a separate chip
+              initialActive.add(key);
+            }
+          }
+        }
+      }
+
+      // Then, if a single filter was selected, ensure its chip is active
+      if (initialSelectedField) {
+        const singleFilterMap = {
           "assigned_to.username": "Assigned to",
           "activity_type": "Activity Type",
           "batch.name": "Batch",
           "area": "Medha Area",
           "program_name": "Program",
-          "start_date": "Start Date", // Explicitly map backend field to display label
-          "end_date": "End Date",     // Explicitly map backend field to display label
+          "start_date": "Start Date",
+          "end_date": "End Date",
         };
-        const filterLabel = filterMap[initialSelectedField];
-        if (filterLabel) {
-          initialActive.push(filterLabel);
-        }
-      } else if (initialFilterValues) {
-        // If there are other initialFilterValues, add their keys to activeFilters
-        // These keys should already be in human-readable format from the parent mapping
-        for (const key in initialFilterValues) {
-          if (initialFilterValues.hasOwnProperty(key)) {
-            initialActive.push(key);
-          }
+        const mappedField = singleFilterMap[initialSelectedField];
+        if (mappedField) {
+          initialActive.add(mappedField);
         }
       }
-      return initialActive;
+      return Array.from(initialActive); // Convert Set back to Array
     });
-    const [filterValues, setFilterValues] = useState(() => {
-      // Initialize filterValues directly with initialFilterValues, as it is expected to be pre-mapped
-      return initialFilterValues;
-    });
+    // const [filterValues, setFilterValues] = useState({}); // Removed, now using Formik state
+
+    // useEffect(() => {
+    //   setFilterValues(initialFilterValues);
+    // }, [initialFilterValues]); // Removed
+
     const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
     const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
     
@@ -266,7 +277,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     const [programOptions, setProgramOptions] = useState([]);
 
     // Validation function for all active filters
-    const validateAllFilters = () => {
+    const validateAllFilters = (currentFilterValues) => { // Accept currentFilterValues as argument
       const newErrors = {};
       let allValid = true;
 
@@ -278,13 +289,16 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
 
       activeFilters.forEach(filter => {
         if (filter === "Start Date" || filter === "End Date") {
-          const fromValue = filterValues[`${filter} From`];
-          const toValue = filterValues[`${filter} To`];
+          const fromValue = currentFilterValues[`${filter} From`];
+          const toValue = currentFilterValues[`${filter} To`];
           if (!fromValue || !toValue) {
             newErrors[filter] = "Both Start Date From and To are required.";
             allValid = false;
+          } else if (fromValue instanceof Date && toValue instanceof Date && fromValue > toValue) {
+            newErrors[filter] = `${filter} From date cannot be after ${filter} To date.`;
+            allValid = false;
           }
-        } else if (!filterValues[filter] || (typeof filterValues[filter] === 'string' && filterValues[filter].trim() === '')) {
+        } else if (!currentFilterValues[filter] || (typeof currentFilterValues[filter] === 'string' && currentFilterValues[filter].trim() === '')) {
           newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
           allValid = false;
         }
@@ -295,27 +309,21 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       return allValid;
     };
 
-    const handleChange = (filter, value) => {
-      setFilterValues((prev) => {
-        let newValue = value;
-        // Convert date strings to Date objects if it's a date filter
-        if (filter.includes("Date From") || filter.includes("Date To")) {
-          newValue = value ? new Date(value) : null;
-        }
-        const updatedValues = {
-          ...prev,
-          [filter]: newValue,
-        };
-        // After updating filter values, re-validate
-        // Pass a dummy activeFilters if it's not ready yet, or use the current state
-        validateAllFilters();
-        return updatedValues;
-      });
+    const handleChange = (filter, value, setFieldValue) => {
+      // setFilterValues((prev) => {
+      let newValue = value;
+      // Convert date strings to Date objects if it's a date filter
+      if (filter.includes("Date From") || filter.includes("Date To")) {
+        newValue = value ? new Date(value) : null;
+      }
+      setFieldValue(filter, newValue);
+    //  });
     };
 
-    useEffect(() => {
-      validateAllFilters(); // Validate on mount and whenever activeFilters or filterValues change
-    }, [activeFilters, filterValues]);
+    // Removed useEffect for validation on filterValues change. Now handled by Formik's validation.
+    // useEffect(() => {
+    //   validateAllFilters(); 
+    // }, [activeFilters, filterValues]);
 
     useEffect(() => {
       activeFilters.forEach(async (filter) => {
@@ -325,7 +333,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
         }
 
         // Prevent re-fetching if data is already present from initialFilterValues or previously fetched
-        if (filterValues[fieldName] && filter !== "Activity Type" && filter !== "Project Type") {
+        if (initialFilterValues[filter] && filter !== "Activity Type" && filter !== "Project Type") { // Changed filterValues to initialFilterValues
           return; 
         }
 
@@ -350,63 +358,92 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
           const { data } = await getFieldValues("area", "users-ops-activities");
           setAreaOptions(data);
         }
-        else if (filter === "Program Area" && programOptions.length === 0) {
+        else if (filter === "Program" && programOptions.length === 0) {
           const { data } = await getFieldValues("program_name", "users-ops-activities");
           setProgramOptions(data);
         }
       });
-    }, [activeFilters, filterValues]); // Add filterValues to dependency array
+    }, [activeFilters, initialFilterValues]); // Changed filterValues to initialFilterValues in dependency array
 
     const toggleFilter = (filter) => {
-      setActiveFilters((prev) =>
-        prev.includes(filter)
-          ? prev.filter((f) => f !== filter)
-          : [...prev, filter]
-      );
+      setActiveFilters((prevActiveFilters) => {
+        const newActiveFilters = prevActiveFilters.includes(filter)
+          ? prevActiveFilters.filter((f) => f !== filter)
+          : [...prevActiveFilters, filter];
+
+        // Also update filterValues when a filter is toggled off
+        if (prevActiveFilters.includes(filter)) { // If filter is being deselected
+          // We need to clear values from Formik's state here
+          parentFormik.setFieldValue(filter, null); // Clear parent Formik's state as well
+          if (filter === "Start Date" || filter === "End Date") {
+            parentFormik.setFieldValue(`${filter} From`, null);
+            parentFormik.setFieldValue(`${filter} To`, null);
+          }
+        }
+        return newActiveFilters;
+      });
     };
-    const handleApply = async () => {
-      console.log("FilterBox - filterValues before constructing searchData:", filterValues);
-      const searchFields = [];
-      const searchValues = [];
-      
+    const handleApply = async (formikValues) => { // Accept formikValues as argument
       // Run validation before applying filters
-      if (!validateAllFilters()) {
+      if (!validateAllFilters(formikValues)) { // Pass formikValues to validation
         return; // Stop if validation fails
       }
 
-      for (const filterKey in filterValues) {
-        if (filterValues.hasOwnProperty(filterKey)) {
-          let backendFieldName = filterKey.toLowerCase().replace(/ /g, "_");
-          
-          // Special handling for date fields to match backend expectations
-          if (backendFieldName.includes("start_date_from")) {
-            backendFieldName = "start_date_from";
-          } else if (backendFieldName.includes("start_date_to")) {
-            backendFieldName = "start_date_to";
-          } else if (backendFieldName.includes("end_date_from")) {
-            backendFieldName = "end_date_from";
-          } else if (backendFieldName.includes("end_date_to")) {
-            backendFieldName = "end_date_to";
-          } else if (backendFieldName.includes('assigned_to')) {
-            backendFieldName = 'assigned_to.username';
-          } else if (backendFieldName.includes('medha_area')) {
-            backendFieldName = 'area';
-          } else if (backendFieldName.includes('program_area')) {
-            backendFieldName = 'program_name';
-          } else if (backendFieldName.includes('batch')) {
-            backendFieldName = 'batch.name';
-          }
+      const backendFieldMap = {
+        "Activity Type": "activity_type",
+        "Assigned to": "assigned_to.username",
+        "Batch": "batch.name",
+        "Medha Area": "area",
+        "Program": "program_name",
+        "Start Date From": "start_date_from",
+        "Start Date To": "start_date_to",
+        "End Date From": "end_date_from",
+        "End Date To": "end_date_to",
+      };
 
-          // console.log("Pushing to searchFields:", backendFieldName);
-          // console.log("Pushing to searchValues:", filterValues[filterKey]);
-          searchFields.push(backendFieldName);
-          // Convert Date objects to ISO strings for API compatibility
-          const valueToPush = filterValues[filterKey] instanceof Date 
-            ? filterValues[filterKey].toISOString() 
-            : filterValues[filterKey];
-          searchValues.push(valueToPush);
+      const searchFields = [];
+      const searchValues = [];
+      const appliedFiltersSummaryParts = []; // Array to store parts of the summary string
+
+      Object.keys(formikValues).forEach((key) => { // Iterate over formikValues
+        const backendFieldName = backendFieldMap[key] || key;
+        let value = formikValues[key]; // Use value from formikValues
+        let displayValue = value;
+
+        if (value instanceof Date && !isNaN(value)) {
+          displayValue = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(value); // Format for display
+          value = value.toISOString(); // Convert valid Date objects to ISO string for API
         }
-      }
+        
+        // Add to summary if a value is present
+        if (value !== null && value !== undefined && value !== '') {
+          // Special handling for date ranges to combine them
+          if (key === "Start Date From") {
+            const toKey = "Start Date To";
+            const toValue = formikValues[toKey]; // Use formikValues
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            appliedFiltersSummaryParts.push(`${key.replace(' From', '')}: ${displayValue} - ${formattedTo}`);
+            // Ensure we don't add "Start Date To" separately
+            // delete filterValues[toKey]; // No longer needed as we iterate formikValues directly
+          } else if (key === "End Date From") {
+            const toKey = "End Date To";
+            const toValue = formikValues[toKey]; // Use formikValues
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            appliedFiltersSummaryParts.push(`${key.replace(' From', '')}: ${displayValue} - ${formattedTo}`);
+            // Ensure we don't add "End Date To" separately
+            // delete filterValues[toKey]; // No longer needed as we iterate formikValues directly
+          } else if (key !== "Start Date To" && key !== "End Date To") { // Avoid adding "To" dates if already handled
+            appliedFiltersSummaryParts.push(`${key}: ${displayValue}`);
+          }
+        }
+
+        searchFields.push(backendFieldName);
+        searchValues.push(value);
+      });
 
       const searchData = {
         searchFields,
@@ -421,12 +458,16 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       );
       // Close the modal first
       closefilterBox();
-      // Show the "Multiple filter applied" message after closing the modal
-      setShowAppliedFilterMessage(true);
-      // Hide the message after a few seconds
-      // setTimeout(() => {
-      //   setShowAppliedFilterMessage(false);
-      // }, 3000); // Message will be visible for 3 seconds
+      // Update persistent filter values in parent
+      setPersistentFilterValues(formikValues); // Pass formikValues for persistence
+      // Set the summary message
+      if (appliedFiltersSummaryParts.length > 0) {
+        setAppliedFiltersSummary("Applied: " + appliedFiltersSummaryParts.join(", "));
+        setShowAppliedFilterMessage(true);
+      } else {
+        setAppliedFiltersSummary("");
+        setShowAppliedFilterMessage(false);
+      }
     };
 
     //  const handleSubmit = async (values) => {
@@ -443,215 +484,250 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     //     );
     //   };
     return (
-      <Modal
-        centered
-        size="xl"
-        show={true} // Modal is always shown when FilterBox is rendered
-        onHide={closefilterBox} // Use the closefilterBox prop to hide the modal
-        animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
-        className="form-modal"
+      <Formik
+        initialValues={initialFilterValues}
+        enableReinitialize={true} // Important for updating when initialFilterValues change
+        onSubmit={(values) => handleApply(values)} // Pass values to handleApply
+        validate={(values) => {
+          validateAllFilters(values);
+        }} // Formik's validate prop
       >
-        <Modal.Header closeButton className="bg-white">
-          <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">
-            Add Filters
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="">
-          <MultipleFilterBox>
-            <div className="">
-              {/* <h4 className="filter-title">Add Filter</h4> */}
+        {(formik) => ( // Render prop for Formik
+          <Form>
+            <Modal
+              centered
+              size="xl"
+              show={true} // Modal is always shown when FilterBox is rendered
+              onHide={closefilterBox} // Use the closefilterBox prop to hide the modal
+              animation={false}
+              aria-labelledby="contained-modal-title-vcenter"
+              className="form-modal"
+            >
+              <Modal.Header className="bg-white">
+                <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">
+                  Add Filters
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="">
+                <MultipleFilterBox>
+                  <div className="">
+                    {/* <h4 className="filter-title">Add Filter</h4> */}
 
-              {/* Filter Chips */}
-              <div className="filter-chips">
-                {filters.map((f) => (
-                  <button
-                    key={f}
-                    type="button"
-                    className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
-                    onClick={() => toggleFilter(f)}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-
-              {/* Filter Inputs */}
-              <div className="filter-inputs">
-                {activeFilters.map((f) => {
-                  switch (f) {
-                    case "Start Date":
-                    case "End Date":
-                      return (
-                        <Fragment key={f}>
-                          <DateRangeContainer>
-                            <div className="date-input-group">
-                              <label>{`${f} From`}</label>
-                              <input
-                                type="date"
-                                name={`${f}_from`}
-                                className="form-control w-300"
-                                onChange={(e) => {
-                                  handleChange(`${f} From`, e.target.value);
-                                }}
-                                value={filterValues[`${f} From`]?.toISOString().split('T')[0] || ''}
-                              />
-                            </div>
-                            <div className="date-input-group">
-                              <label>{`${f} To`}</label>
-                              <input
-                                type="date"
-                                name={`${f}_to`}
-                                className="form-control w-300"
-                                
-                                onChange={(e) => {
-                                  handleChange(`${f} To`, e.target.value);
-                                }}
-                                value={filterValues[`${f} To`]?.toISOString().split('T')[0] || ''}
-                              />
-                            </div>
-                          </DateRangeContainer>
-                          {filterErrors[f] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors[f]}</p>}
-                        </Fragment>
-                      );
-
-                    case "Activity Type":
-                      return (
-                        <Select
-                          options={activityTypesMain.map((opt) => ({
-                            label: opt.value,
-                            value: opt.value,
-                          }))}
-                          onChange={(selected) => handleChange("Activity Type", selected?.value)}
-                          placeholder="Select Activity..."
-                          isClearable
-                          isSearchable
-                          value={filterValues["Activity Type"] ? { label: filterValues["Activity Type"], value: filterValues["Activity Type"] } : null}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "300px",   // 👈 set width here
-                            }),
-                          }}
-                        />
-                      );
-
-                    case "Assigned to":
-                      return (
-                        
-                        <Select
-                          options={assignedToOptions.map((opt) => ({
-                            label: opt.value,
-                            value: opt.value,
-                          }))}
-                          onChange={(selected) => handleChange("Assigned to", selected?.value)}
-                          placeholder="Select Assigned to..."
-                          isClearable
-                          isSearchable
-                          value={filterValues["Assigned to"] ? { label: filterValues["Assigned to"], value: filterValues["Assigned to"] } : null}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "300px",   // 👈 set width here
-                            }),
-                          }}
-                        />
-                      );
-
-                    case "Batch":
-                      return (
-                        <Select
-                          options={batchOptions.map((opt) => ({
-                            label: opt.name,
-                            value: opt.name,
-                          }))}
-                          onChange={(selected) => handleChange("Batch", selected?.value)}
-                          placeholder="Select Batch..."
-                          isClearable
-                          isSearchable
-                          value={filterValues["Batch"] ? { label: filterValues["Batch"], value: filterValues["Batch"] } : null}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "300px",   // 👈 set width here
-                            }),
-                          }}
-                        />
-
-                      );
-
-                    case "Medha Area":
-                      return (
-                        <Select
-                          options={areaOptions.map((opt) => ({
-                            label: opt.value,
-                            value: opt.value,
-                          }))}
-                          onChange={(selected) => handleChange("Medha Area", selected?.value)}
-                          placeholder="Medha Area..."
-                          isClearable
-                          isSearchable
-                          value={filterValues["Medha Area"] ? { label: filterValues["Medha Area"], value: filterValues["Medha Area"] } : null}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "300px",   // 👈 set width here
-                            }),
-                          }}
-                        />
-                      );
-
-                    case "Program":
-                      return (
-                        <Select
-                          options={programOptions.map((opt) => ({
-                            label: opt.value,
-                            value: opt.value,
-                          }))}
-                          onChange={(selected) => handleChange("Program", selected?.value)}
-                          placeholder="Progrma..."
-                          isClearable
-                          isSearchable
-                          value={filterValues["Program"] ? { label: filterValues["Program"], value: filterValues["Program"] } : null}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "300px",   // 👈 set width here
-                            }),
-                          }}
-                        />
-                      );
-
-                    default:
-                      return (
-                        <Input
+                    {/* Filter Chips */}
+                    <div className="filter-chips">
+                      {filters.map((f) => (
+                        <button
                           key={f}
-                          name={f.replace(/ /g, "_").toLowerCase()}
-                          control="input"
-                          label={f}
-                          className="form-control"
-                          onChange={(e) => handleChange(f, e.target.value)}
-                          value={filterValues[f] || ''}
-                        />
-                      );
-                  }
-                })}
-              </div>
+                          type="button"
+                          className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
+                          onClick={() => toggleFilter(f)}
+                          disabled={f === excludeFilter} // Disable if this filter is already selected in the single search bar
+                        >
+                          {f}
+                        </button>
+                      ))}
+                    </div>
 
+                    {/* Filter Inputs */}
+                    <div className="filter-inputs">
+                      {activeFilters.map((f) => {
+                        
+                        switch (f) {
+                          case "Start Date":
+                          case "End Date":
+                            
+                            return (
+                              <Fragment key={f}>
+                                <DateRangeContainer>
+                                  <div className="date-input-group">
+                                    <label>{`${f} From`}</label>
+                                    <Input
+                                      control="datepicker"
+                                      name={`${f} From`}
+                                      className="form-control w-300"
+                                      onChange={(date) => {
+                                        handleChange(`${f} From`, date, formik.setFieldValue);
+                                      }}
+                                      value={formik.values[`${f} From`] || null} // Use Formik's value
+                                      showTime={false} // Ensure no time is displayed
+                                    />
+                                  </div>
+                                  <div className="date-input-group">
+                                    <label>{`${f} To`}</label>
+                                    <Input
+                                      control="datepicker"
+                                      name={`${f} To`}
+                                      className="form-control w-300"
+                                      onChange={(date) => {
+                                        handleChange(`${f} To`, date, formik.setFieldValue);
+                                      }}
+                                      minDate={formik.values[`${f} From`] || null} // Set min date to From date
+                                      value={formik.values[`${f} To`] || null} // Use Formik's value
+                                      showTime={false} // Ensure no time is displayed
+                                    />
+                                  </div>
+                                </DateRangeContainer>
+                                {filterErrors[f] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors[f]}</p>}
+                              </Fragment>
+                            );
 
-              {/* Action Buttons */}
-              <div className="filter-actions">
-                <button className="btn apply" type="button" onClick={handleApply} disabled={isApplyDisabled}>
-                  Apply
-                </button>
-                <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>
-                  Clear
-                </button>
-              </div>
-            </div>
-          </MultipleFilterBox>
-        </Modal.Body>
-      </Modal>
+                          case "Activity Type":
+                            return (
+                              <div key={f}>
+                                <label htmlFor="activityTypeSelect">Activity Type</label>
+                                <Select
+                                  id="activityTypeSelect"
+                                  options={activityTypesMain.map((opt) => ({
+                                    label: opt.value,
+                                    value: opt.value,
+                                  }))}
+                                  onChange={(selected) => handleChange("Activity Type", selected?.value, formik.setFieldValue)}
+                                  placeholder="Select Activity..."
+                                  isClearable
+                                  isSearchable
+                                  value={formik.values["Activity Type"] ? { label: formik.values["Activity Type"], value: formik.values["Activity Type"] } : null} // Use Formik's value
+                                  styles={{
+                                    container: (base) => ({
+                                      ...base,
+                                      width: "300px",   // 👈 set width here
+                                    }),
+                                  }}
+                                />
+                              </div>
+                            );
+
+                          case "Assigned to":
+                            return (
+                              <div key={f}>
+                                <label htmlFor="assignedToSelect">Assigned to</label>
+                                <Select
+                                  id="assignedToSelect"
+                                  options={assignedToOptions.map((opt) => ({
+                                    label: opt.value,
+                                    value: opt.value,
+                                  }))}
+                                  onChange={(selected) => handleChange("Assigned to", selected?.value, formik.setFieldValue)}
+                                  placeholder="Select Assigned to..."
+                                  isClearable
+                                  isSearchable
+                                  value={formik.values["Assigned to"] ? { label: formik.values["Assigned to"], value: formik.values["Assigned to"] } : null} // Use Formik's value
+                                  styles={{
+                                    container: (base) => ({
+                                      ...base,
+                                      width: "300px",   // 👈 set width here
+                                    }),
+                                  }}
+                                />
+                              </div>
+                            );
+
+                          case "Batch":
+                            return (
+                              <div key={f}>
+                                <label htmlFor="batchSelect">Batch</label>
+                                <Select
+                                  id="batchSelect"
+                                  options={batchOptions.map((opt) => ({
+                                    label: opt.name,
+                                    value: opt.name,
+                                  }))}
+                                  onChange={(selected) => handleChange("Batch", selected?.value, formik.setFieldValue)}
+                                  placeholder="Select Batch..."
+                                  isClearable
+                                  isSearchable
+                                  value={formik.values["Batch"] ? { label: formik.values["Batch"], value: formik.values["Batch"] } : null} // Use Formik's value
+                                  styles={{
+                                    container: (base) => ({
+                                      ...base,
+                                      width: "300px",   // 👈 set width here
+                                    }),
+                                  }}
+                                />
+                              </div>
+                            );
+
+                          case "Medha Area":
+                            return (
+                              <div key={f}>
+                                <label htmlFor="medhaAreaSelect">Medha Area</label>
+                                <Select
+                                  id="medhaAreaSelect"
+                                  options={areaOptions.map((opt) => ({
+                                    label: opt.value,
+                                    value: opt.value,
+                                  }))}
+                                  onChange={(selected) => handleChange("Medha Area", selected?.value, formik.setFieldValue)}
+                                  placeholder="Medha Area..."
+                                  isClearable
+                                  isSearchable
+                                  value={formik.values["Medha Area"] ? { label: formik.values["Medha Area"], value: formik.values["Medha Area"] } : null} // Use Formik's value
+                                  styles={{
+                                    container: (base) => ({
+                                      ...base,
+                                      width: "300px",   // 👈 set width here
+                                    }),
+                                  }}
+                                />
+                              </div>
+                            );
+
+                          case "Program":
+                            return (
+                              <div key={f}>
+                                <label htmlFor="programSelect">Program</label>
+                                <Select
+                                  id="programSelect"
+                                  options={programOptions.map((opt) => ({
+                                    label: opt.value,
+                                    value: opt.value,
+                                  }))}
+                                  onChange={(selected) => handleChange("Program", selected?.value, formik.setFieldValue)}
+                                  placeholder="Program..."
+                                  isClearable
+                                  isSearchable
+                                  value={formik.values["Program"] ? { label: formik.values["Program"], value: formik.values["Program"] } : null} // Use Formik's value
+                                  styles={{
+                                    container: (base) => ({
+                                      ...base,
+                                      width: "300px",   // 👈 set width here
+                                    }),
+                                  }}
+                                />
+                              </div>
+                            );
+
+                          default:
+                            return (
+                              <Input
+                                key={f}
+                                name={f}
+                                control="input"
+                                label={f}
+                                className="form-control"
+                                onChange={(e) => handleChange(f, e.target.value, formik.setFieldValue)}
+                                value={formik.values[f] || ''} // Use Formik's value
+                              />
+                            );
+                        }
+                      })}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="filter-actions">
+                      <button className="btn apply" type="button" onClick={() => handleApply(formik.values)} disabled={isApplyDisabled}>
+                        Apply
+                      </button>
+                      <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </MultipleFilterBox>
+              </Modal.Body>
+            </Modal>
+          </Form>
+        )}
+      </Formik>
     );
   };
 
@@ -679,6 +755,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchField(null);
     setDisabled(true);
     setShowAppliedFilterMessage(false); // Hide the message on clear
+    setAppliedFiltersSummary(""); // Clear the summary as well
+    setPersistentFilterValues({}); // Clear persistent filter values in the parent
     // Call the API with no search values after clearing
     const baseUrl = "users-ops-activities";
     const searchData = {
@@ -696,7 +774,6 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchField(value);
     setDisabled(false);
     setIsFieldEmpty(false);
-    console.log(value);
     
     // Reset search_by_value and date fields when a new search field is selected,
     // unless the newly selected field is itself a date field.
@@ -826,6 +903,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                 className="form-control"
                                 autoComplete="off"
                                 disabled={disabled}
+                                onChange={(date) => formik.setFieldValue("search_by_value_date_from", date)}
+                                value={formik.values.search_by_value_date_from}
                               />
                             </div>
                             <div>
@@ -836,6 +915,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                 className="form-control"
                                 autoComplete="off"
                                 disabled={disabled}
+                                onChange={(date) => formik.setFieldValue("search_by_value_date_to", date)}
+                                value={formik.values.search_by_value_date_to}
                               />
                             </div>
                           </DateRangeContainer>
@@ -867,8 +948,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       </button>
                     </SearchButtonContainer>
                   </SearchRow>
-                  {showAppliedFilterMessage && (
-                    <p style={{ color: '#257b69', marginTop: '10px' }}>Multiple Filter Applied</p>
+                  {showAppliedFilterMessage && appliedFiltersSummary && (
+                    <p style={{ color: '#257b69', marginTop: '10px' }}>{appliedFiltersSummary}</p>
                   )}
                   {isFieldEmpty && (
                     <div className="row">
@@ -911,9 +992,23 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                         mappedValues[filterKey] = formik.values.search_by_value;
                       }
                     }
-                    return mappedValues;
+                    return { ...persistentFilterValues, ...mappedValues }; // Merge with persistent values
                   })()}
                   formik={formik} // Pass formik object directly
+                  setAppliedFiltersSummary={setAppliedFiltersSummary} // Pass the setter for the summary
+                  setPersistentFilterValues={setPersistentFilterValues} // Pass the setter for persistent values
+                  excludeFilter={(() => {
+                    const singleFilterMap = {
+                      "assigned_to.username": "Assigned to",
+                      "activity_type": "Activity Type",
+                      "batch.name": "Batch",
+                      "area": "Medha Area",
+                      "program_name": "Program",
+                      "start_date": "Start Date",
+                      "end_date": "End Date",
+                    };
+                    return singleFilterMap[selectedSearchField];
+                  })()} // Pass the currently selected single filter to exclude
                 />
               )}
             </Section>
