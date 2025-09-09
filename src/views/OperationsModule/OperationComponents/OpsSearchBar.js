@@ -256,11 +256,44 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       // Initialize filterValues directly with initialFilterValues, as it is expected to be pre-mapped
       return initialFilterValues;
     });
+    const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
+    const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
+    
     const [activityTypeOptions, setActivityTypeOptions] = useState([]);
     const [assignedToOptions, setAssignedToOptions] = useState([]);
     const [batchOptions, setBatchOptions] = useState([]);
     const [areaOptions, setAreaOptions] = useState([]);
     const [programOptions, setProgramOptions] = useState([]);
+
+    // Validation function for all active filters
+    const validateAllFilters = () => {
+      const newErrors = {};
+      let allValid = true;
+
+      if (activeFilters.length === 0) {
+        // If no filters are active, the Apply button should be disabled
+        setIsApplyDisabled(true);
+        return false; // Not all valid
+      }
+
+      activeFilters.forEach(filter => {
+        if (filter === "Start Date" || filter === "End Date") {
+          const fromValue = filterValues[`${filter} From`];
+          const toValue = filterValues[`${filter} To`];
+          if (!fromValue || !toValue) {
+            newErrors[filter] = "Both Start Date From and To are required.";
+            allValid = false;
+          }
+        } else if (!filterValues[filter] || (typeof filterValues[filter] === 'string' && filterValues[filter].trim() === '')) {
+          newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
+          allValid = false;
+        }
+      });
+
+      setFilterErrors(newErrors);
+      setIsApplyDisabled(!allValid);
+      return allValid;
+    };
 
     const handleChange = (filter, value) => {
       setFilterValues((prev) => {
@@ -269,12 +302,21 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
         if (filter.includes("Date From") || filter.includes("Date To")) {
           newValue = value ? new Date(value) : null;
         }
-        return {
+        const updatedValues = {
           ...prev,
           [filter]: newValue,
         };
+        // After updating filter values, re-validate
+        // Pass a dummy activeFilters if it's not ready yet, or use the current state
+        validateAllFilters();
+        return updatedValues;
       });
     };
+
+    useEffect(() => {
+      validateAllFilters(); // Validate on mount and whenever activeFilters or filterValues change
+    }, [activeFilters, filterValues]);
+
     useEffect(() => {
       activeFilters.forEach(async (filter) => {
         let fieldName = filter.toLowerCase().replace(/ /g, "_");
@@ -327,6 +369,11 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       const searchFields = [];
       const searchValues = [];
       
+      // Run validation before applying filters
+      if (!validateAllFilters()) {
+        return; // Stop if validation fails
+      }
+
       for (const filterKey in filterValues) {
         if (filterValues.hasOwnProperty(filterKey)) {
           let backendFieldName = filterKey.toLowerCase().replace(/ /g, "_");
@@ -436,33 +483,36 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     case "Start Date":
                     case "End Date":
                       return (
-                        <DateRangeContainer key={f}>
-                          <div className="date-input-group">
-                            <label>{`${f} From`}</label>
-                            <input
-                              type="date"
-                              name={`${f}_from`}
-                              className="form-control w-300"
-                              onChange={(e) => {
-                                handleChange(`${f} From`, e.target.value);
-                              }}
-                              value={filterValues[`${f} From`]?.toISOString().split('T')[0] || ''}
-                            />
-                          </div>
-                          <div className="date-input-group">
-                            <label>{`${f} To`}</label>
-                            <input
-                              type="date"
-                              name={`${f}_to`}
-                              className="form-control w-300"
-                              
-                              onChange={(e) => {
-                                handleChange(`${f} To`, e.target.value);
-                              }}
-                              value={filterValues[`${f} To`]?.toISOString().split('T')[0] || ''}
-                            />
-                          </div>
-                        </DateRangeContainer>
+                        <Fragment key={f}>
+                          <DateRangeContainer>
+                            <div className="date-input-group">
+                              <label>{`${f} From`}</label>
+                              <input
+                                type="date"
+                                name={`${f}_from`}
+                                className="form-control w-300"
+                                onChange={(e) => {
+                                  handleChange(`${f} From`, e.target.value);
+                                }}
+                                value={filterValues[`${f} From`]?.toISOString().split('T')[0] || ''}
+                              />
+                            </div>
+                            <div className="date-input-group">
+                              <label>{`${f} To`}</label>
+                              <input
+                                type="date"
+                                name={`${f}_to`}
+                                className="form-control w-300"
+                                
+                                onChange={(e) => {
+                                  handleChange(`${f} To`, e.target.value);
+                                }}
+                                value={filterValues[`${f} To`]?.toISOString().split('T')[0] || ''}
+                              />
+                            </div>
+                          </DateRangeContainer>
+                          {filterErrors[f] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors[f]}</p>}
+                        </Fragment>
                       );
 
                     case "Activity Type":
@@ -591,7 +641,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
 
               {/* Action Buttons */}
               <div className="filter-actions">
-                <button className="btn apply" type="button" onClick={handleApply}>
+                <button className="btn apply" type="button" onClick={handleApply} disabled={isApplyDisabled}>
                   Apply
                 </button>
                 <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>
@@ -840,11 +890,13 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                   initialFilterValues={(() => {
                     const mappedValues = {};
                     if (selectedSearchField === "start_date") {
-                      mappedValues["Start Date From"] = formik.values.search_by_value_date_from;
-                      mappedValues["Start Date To"] = formik.values.search_by_value_date_to;
+                      // Ensure these are always Date objects when passed to FilterBox
+                      mappedValues["Start Date From"] = formik.values.search_by_value_date_from ? new Date(formik.values.search_by_value_date_from) : null;
+                      mappedValues["Start Date To"] = formik.values.search_by_value_date_to ? new Date(formik.values.search_by_value_date_to) : null;
                     } else if (selectedSearchField === "end_date") {
-                      mappedValues["End Date From"] = formik.values.search_by_value_date_from;
-                      mappedValues["End Date To"] = formik.values.search_by_value_date_to;
+                      // Ensure these are always Date objects when passed to FilterBox
+                      mappedValues["End Date From"] = formik.values.search_by_value_date_from ? new Date(formik.values.search_by_value_date_from) : null;
+                      mappedValues["End Date To"] = formik.values.search_by_value_date_to ? new Date(formik.values.search_by_value_date_to) : null;
                     } else if (formik.values.search_by_field && formik.values.search_by_value) {
                       // Map other single filter fields to their display names in FilterBox
                       const filterMap = {
