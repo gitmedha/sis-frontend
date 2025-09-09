@@ -547,7 +547,7 @@ const TotEdit = (props) => {
                           label="Age"
                           onKeyPress={numberChecker}
                           className="form-control"
-                          placeholder="Guest"
+                          placeholder="Age"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
