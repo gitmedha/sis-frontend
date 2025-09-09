@@ -9,7 +9,7 @@ import {
 } from "../../../store/reducers/Operations/actions";
 import { getAllBatchs, getFieldValues } from "./operationsActions";
 import { getAllSearchSrm } from "src/utils/function/lookupOptions";
-import "./Ops.css";
+import "./ops.css";
 import { getAllBatches } from "src/views/Batches/batchActions";
 import Select from "react-select";
 
@@ -141,6 +141,11 @@ const MultipleFilterBox = styled.div`
   .btn.clear:hover {
     background: #565e64;
   }
+`;
+const SearchButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 22px; /* Adjust as needed for alignment with other inputs */
 `;
 
 const activityTypesMain = [
@@ -639,10 +644,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       )}
                   </SearchValueContainer>
 
-                  <div
-                    className="col-lg-3 col-md-6 col-sm-12 mt-3 d-flex justify-content-around align-items-center"
-                    style={{ gap: "12px" }}
-                  >
+                 <SearchButtonContainer>
                     <button
                       className="btn btn-primary uniform-btn"
                       type="submit"
@@ -665,7 +667,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     >
                       CLEAR
                     </button>
-                  </div>
+                  </SearchButtonContainer>
                 </SearchRow>
                 {isFieldEmpty && (
                   <div className="row">

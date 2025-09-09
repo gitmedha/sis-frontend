@@ -462,7 +462,7 @@ const UploadFile = (props) => {
       
       const areaCheck = areaOptions.find(
         (area) => area.label === newItem["Medha Area"]
-      ).value;
+      )?.value;
       
       const batch = batchOption.find(
         (batch) => batch.name === newItem["Batch Name"]

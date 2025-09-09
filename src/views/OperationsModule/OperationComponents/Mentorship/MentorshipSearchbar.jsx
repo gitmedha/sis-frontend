@@ -24,6 +24,7 @@ const SearchRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: flex-start;
   .uniform-btn {
     height: 40px;
     display: flex;
@@ -55,6 +56,12 @@ const DateRangeContainer = styled.div`
       margin-right: 15px;
     }
   }
+`;
+
+const SearchButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 22px; /* Adjust as needed for alignment with other inputs */
 `;
 
 const MultipleFilterBox = styled.div`
@@ -749,10 +756,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                       )}
                   </SearchValueContainer>
 
-                  <div
-                    className="col-lg-3 col-md-6 col-sm-12 mt-3 d-flex justify-content-around align-items-center"
-                    style={{ gap: "12px" }}
-                  >
+                  <SearchButtonContainer>
                     <button
                       className="btn btn-primary uniform-btn"
                       type="submit"
@@ -775,7 +779,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                     >
                       CLEAR
                     </button>
-                  </div>
+                  </SearchButtonContainer>
                 </SearchRow>
                 {isFieldEmpty && (
                   <div className="row">

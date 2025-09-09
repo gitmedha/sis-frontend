@@ -9,7 +9,7 @@ import {
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
-import "./Ops.css";
+import "./ops.css";
 import Select from "react-select";
 
 const Section = styled.div`
@@ -49,6 +49,12 @@ const IconContainer = styled.div`
       color: #16574a;
     }
   }
+`;
+
+const SearchButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 22px; /* Adjust as needed for alignment with other inputs */
 `;
 
 const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
@@ -338,7 +344,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                     </div>
 
                     {/* Search Value Column */}
-                    <div className="col-lg-4 col-md-6 col-sm-6">
+                    <div className="">  
                       <SearchValueContainer>
                         {selectedSearchFields[index] === null && (
                           <Input
@@ -385,10 +391,8 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                         </IconContainer>
                       </div>
                     )} */}
-                     <div
-                    className="col-lg-3 col-md-6 col-sm-12 d-flex justify-content-around align-items-center"
-                    style={{ gap: "12px" }}
-                  >
+
+                     <SearchButtonContainer>
                     <button
                       className="btn btn-primary uniform-btn"
                       type="submit"
@@ -411,7 +415,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                     >
                       CLEAR
                     </button>
-                  </div>
+                  </SearchButtonContainer>
                   </SearchRow>
                 ))}
 
