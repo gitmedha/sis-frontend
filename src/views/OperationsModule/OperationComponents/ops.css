@@ -5,6 +5,9 @@
   background: #fff;
   max-width: 100%;
 }
+.w-300{
+  width: 300px !important;
+}
 
 .filter-title {
   margin-bottom: 12px;
@@ -82,7 +85,19 @@
   background: #21867a;
   color: white;
 }
-
+.close{
+     min-width: 80px;
+    height: 36px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #6c757d;
+    cursor: pointer;
+    -webkit-transition: background 0.2s ease;
+    transition: background 0.2s ease;
+  /* 6c757d */
+}
 .btn.apply:hover {
   background: #18645a;
 }
