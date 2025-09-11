@@ -400,7 +400,7 @@ const TotEdit = (props) => {
                           label="Email id"
                           required
                           className="form-control"
-                          placeholder="Participant Name"
+                          placeholder="Email id"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
