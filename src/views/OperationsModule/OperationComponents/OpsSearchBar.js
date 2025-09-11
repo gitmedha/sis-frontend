@@ -412,6 +412,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       const searchFields = [];
       const searchValues = [];
       const appliedFiltersSummaryParts = []; // Array to store parts of the summary string
+      const appliedList = []; // Array to store filter chips
 
       Object.keys(formikValues).forEach((key) => { // Iterate over formikValues
         const backendFieldName = backendFieldMap[key] || key;
@@ -433,6 +434,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
               ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
               : '';
             appliedFiltersSummaryParts.push(`${key.replace(' From', '')}: ${displayValue} - ${formattedTo}`);
+            appliedList.push({ label: key.replace(' From', ''), value: `${displayValue} - ${formattedTo}` });
             // Ensure we don't add "Start Date To" separately
             // delete filterValues[toKey]; // No longer needed as we iterate formikValues directly
           } else if (key === "End Date From") {
@@ -442,10 +444,12 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
               ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
               : '';
             appliedFiltersSummaryParts.push(`${key.replace(' From', '')}: ${displayValue} - ${formattedTo}`);
+            appliedList.push({ label: key.replace(' From', ''), value: `${displayValue} - ${formattedTo}` });
             // Ensure we don't add "End Date To" separately
             // delete filterValues[toKey]; // No longer needed as we iterate formikValues directly
           } else if (key !== "Start Date To" && key !== "End Date To") { // Avoid adding "To" dates if already handled
             appliedFiltersSummaryParts.push(`${key}: ${displayValue}`);
+            appliedList.push({ label: key, value: displayValue });
           }
         }
 
@@ -468,6 +472,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       closefilterBox();
       // Update persistent filter values in parent
       setPersistentFilterValues(formikValues); // Pass formikValues for persistence
+      // Set the applied filters chips
+      setAppliedFilters(appliedList);
       // Set the summary message
       if (appliedFiltersSummaryParts.length > 0) {
         setAppliedFiltersSummary("Multiple Filter Applied: " + appliedFiltersSummaryParts.join(", "));
@@ -765,6 +771,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     setShowAppliedFilterMessage(false); // Hide the message on clear
     setAppliedFiltersSummary(""); // Clear the summary as well
     setPersistentFilterValues({}); // Clear persistent filter values in the parent
+    setAppliedFilters([]); // Clear applied filter chips
     // Call the API with no search values after clearing
     const baseUrl = "users-ops-activities";
     const searchData = {
@@ -957,8 +964,19 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       </button>
                     </SearchButtonContainer>
                   </SearchRow>
-                  {showAppliedFilterMessage && appliedFiltersSummary && (
-                    <p style={{ color: '#257b69', marginTop: '10px' }}>{appliedFiltersSummary}</p>
+                  {appliedFilters.length > 0 && (
+                    <div style={{ marginTop: '10px' }}>
+                      <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                        Applied Filters ({appliedFilters.length}):
+                      </p>
+                      <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {appliedFilters.map((f, idx) => (
+                          <span key={`${f.label}-${idx}`} className="chip">
+                            {f.label}: {f.value}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
                   {isFieldEmpty && (
                     <div className="row">
