@@ -287,28 +287,36 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     // Validation function for all active filters
     const validateAllFilters = (currentFilterValues) => { // Accept currentFilterValues as argument
       const newErrors = {};
-      let allValid = true;
+      let allValid = false; // change default: we allow Apply if at least one active filter is valid
 
       if (activeFilters.length === 0) {
-        // If no filters are active, the Apply button should be disabled
         setIsApplyDisabled(true);
-        return false; // Not all valid
+        setFilterErrors({});
+        return false;
       }
 
       activeFilters.forEach(filter => {
         if (filter === "Start Date" || filter === "End Date") {
           const fromValue = currentFilterValues[`${filter} From`];
           const toValue = currentFilterValues[`${filter} To`];
-          if (!fromValue || !toValue) {
-            newErrors[filter] = "Both Start Date From and To are required.";
-            allValid = false;
-          } else if (fromValue instanceof Date && toValue instanceof Date && fromValue > toValue) {
-            newErrors[filter] = `${filter} From date cannot be after ${filter} To date.`;
-            allValid = false;
+          if (fromValue && toValue) {
+            if (fromValue instanceof Date && toValue instanceof Date && fromValue > toValue) {
+              newErrors[filter] = `${filter} From date cannot be after ${filter} To date.`;
+            } else {
+              allValid = true; // this filter is valid
+            }
+          } else if (fromValue || toValue) {
+            newErrors[filter] = `Both ${filter} From and To are required.`;
           }
-        } else if (!currentFilterValues[filter] || (typeof currentFilterValues[filter] === 'string' && currentFilterValues[filter].trim() === '')) {
-          newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
-          allValid = false;
+        } else {
+          const val = currentFilterValues[filter];
+          if (val && (typeof val !== 'string' || val.trim() !== '')) {
+            allValid = true; // at least one non-empty active filter makes form submittable
+          } else {
+            // leave error only if user tried to set it but empty is acceptable when other filters are valid
+            // Keep UX lenient: only annotate missing specific filters, but don't block Apply if any valid exists
+            // newErrors[filter] = `Please select a ${filter.toLowerCase()}.`;
+          }
         }
       });
 
@@ -334,46 +342,59 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     // }, [activeFilters, filterValues]);
 
     useEffect(() => {
-      activeFilters.forEach(async (filter) => {
-        let fieldName = filter.toLowerCase().replace(/ /g, "_");
-        if (fieldName.includes('trainer_1') || fieldName.includes('trainer_2')) {
-          fieldName = fieldName.replace('_','.');
+      const load = async () => {
+        for (const filter of activeFilters) {
+          if (filter === "Activity Type" && activityTypeOptions.length === 0) {
+            setActivityTypeOptions([
+              "Workshop/Training Session",
+              "Industry Talk",
+              "Alumni Engagement",
+              "Industry Visit",
+              "Placement Drive",
+            ]);
+          } else if (filter === "Assigned to" && assignedToOptions.length === 0) {
+            const users = await getAllSearchSrm();
+            setAssignedToOptions(users);
+          } else if (filter === "Batch" && batchOptions.length === 0) {
+            const { data } = await getAllBatches();
+            setBatchOptions(data?.data?.batchesConnection?.values || []);
+          } else if (filter === "Medha Area" && areaOptions.length === 0) {
+            const { data } = await getFieldValues("area", "users-ops-activities");
+            setAreaOptions(data || []);
+          } else if (filter === "Program" && programOptions.length === 0) {
+            const { data } = await getFieldValues("program_name", "users-ops-activities");
+            setProgramOptions(data || []);
+          }
         }
+      };
+      load();
+    }, [activeFilters, activityTypeOptions.length, assignedToOptions.length, batchOptions.length, areaOptions.length, programOptions.length]);
 
-        // Prevent re-fetching if data is already present from initialFilterValues or previously fetched
-        if (initialFilterValues[filter] && filter !== "Activity Type" && filter !== "Project Type") { // Changed filterValues to initialFilterValues
-          return; 
-        }
+    const fetchOptionsForFilter = async (filter) => {
+      if (filter === "Activity Type" && activityTypeOptions.length === 0) {
+        setActivityTypeOptions([
+          "Workshop/Training Session",
+          "Industry Talk",
+          "Alumni Engagement",
+          "Industry Visit",
+          "Placement Drive",
+        ]);
+      } else if (filter === "Assigned to" && assignedToOptions.length === 0) {
+        const users = await getAllSearchSrm();
+        setAssignedToOptions(users);
+      } else if (filter === "Batch" && batchOptions.length === 0) {
+        const { data } = await getAllBatches();
+        setBatchOptions(data?.data?.batchesConnection?.values || []);
+      } else if (filter === "Medha Area" && areaOptions.length === 0) {
+        const { data } = await getFieldValues("area", "users-ops-activities");
+        setAreaOptions(data || []);
+      } else if (filter === "Program" && programOptions.length === 0) {
+        const { data } = await getFieldValues("program_name", "users-ops-activities");
+        setProgramOptions(data || []);
+      }
+    };
 
-        if (filter === "Activity Type" && activityTypeOptions.length === 0) {
-          // If your activity types are static, you can just set them
-          setActivityTypeOptions([
-            "Workshop/Training Session",
-            "Industry Talk",
-            "Alumni Engagement",
-            "Industry Visit",
-            "Placement Drive",
-          ]);
-        } else if (filter === "Assigned to" && assignedToOptions.length === 0) {
-          const users = await getAllSearchSrm();
-          setAssignedToOptions(users);
-        } else if (filter === "Batch" && batchOptions.length === 0) {
-          const { data } = await getAllBatches();
-         
-          setBatchOptions(data?.data?.batchesConnection?.values);
-        }
-        else if (filter === "Medha Area" && areaOptions.length === 0) {
-          const { data } = await getFieldValues("area", "users-ops-activities");
-          setAreaOptions(data);
-        }
-        else if (filter === "Program" && programOptions.length === 0) {
-          const { data } = await getFieldValues("program_name", "users-ops-activities");
-          setProgramOptions(data);
-        }
-      });
-    }, [activeFilters, initialFilterValues]); // Changed filterValues to initialFilterValues in dependency array
-
-    const toggleFilter = (filter) => {
+    const toggleFilter = (filter, modalFormik) => {
       setActiveFilters((prevActiveFilters) => {
         const newActiveFilters = prevActiveFilters.includes(filter)
           ? prevActiveFilters.filter((f) => f !== filter)
@@ -381,11 +402,17 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
 
         // Also update filterValues when a filter is toggled off
         if (prevActiveFilters.includes(filter)) { // If filter is being deselected
-          // We need to clear values from Formik's state here
-          parentFormik.setFieldValue(filter, null); // Clear parent Formik's state as well
+          // We need to clear values from the MODAL Formik state here so UI and submit are clean
+          const fm = modalFormik || parentFormik;
+          fm.setFieldValue(filter, null);
           if (filter === "Start Date" || filter === "End Date") {
-            parentFormik.setFieldValue(`${filter} From`, null);
-            parentFormik.setFieldValue(`${filter} To`, null);
+            fm.setFieldValue(`${filter} From`, null);
+            fm.setFieldValue(`${filter} To`, null);
+          }
+        } else {
+          // On activation, for non-date filters, fetch options so dropdown is immediately populated
+          if (filter !== "Start Date" && filter !== "End Date") {
+            fetchOptionsForFilter(filter);
           }
         }
         return newActiveFilters;
@@ -414,7 +441,18 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       const appliedFiltersSummaryParts = []; // Array to store parts of the summary string
       const appliedList = []; // Array to store filter chips
 
+      const isKeyActive = (key) => {
+        if (key.endsWith(' From') || key.endsWith(' To')) {
+          const base = key.replace(/ (From|To)$/,'');
+          return activeFilters.includes(base);
+        }
+        return activeFilters.includes(key);
+      };
+
       Object.keys(formikValues).forEach((key) => { // Iterate over formikValues
+        if (!isKeyActive(key)) {
+          return; // Skip values for filters that are not currently active
+        }
         const backendFieldName = backendFieldMap[key] || key;
         let value = formikValues[key]; // Use value from formikValues
         let displayValue = value;
@@ -534,7 +572,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                           key={f}
                           type="button"
                           className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
-                          onClick={() => toggleFilter(f)}
+                          onClick={() => toggleFilter(f, formik)}
                           disabled={f === excludeFilter} // Disable if this filter is already selected in the single search bar
                         >
                           {f}
@@ -581,7 +619,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     />
                                   </div>
                                 </DateRangeContainer>
-                                {filterErrors[f] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors[f]}</p>}
+                                {/* {filterErrors[f] && <p style={{ color: 'red', fontSize: '0.8rem', marginTop: '5px' }}>{filterErrors[f]}</p>} */}
                               </Fragment>
                             );
 
@@ -725,6 +763,22 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                         }
                       })}
                     </div>
+
+                    {/* Applied Chips Inside Modal */}
+                    {appliedFilters && appliedFilters.length > 0 && (
+                      <div style={{ marginTop: '10px' }}>
+                        <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                          Applied Filters ({appliedFilters.length}):
+                        </p>
+                        <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {appliedFilters.map((f, idx) => (
+                            <span key={`${f.label}-${idx}`} className="chip">
+                              {f.label}: {f.value}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div className="filter-actions">
@@ -964,7 +1018,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       </button>
                     </SearchButtonContainer>
                   </SearchRow>
-                  {appliedFilters.length > 0 && (
+                  {/* {appliedFilters.length > 0 && (
                     <div style={{ marginTop: '10px' }}>
                       <p style={{ color: '#257b69', marginBottom: '6px' }}>
                         Applied Filters ({appliedFilters.length}):
@@ -977,7 +1031,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                         ))}
                       </div>
                     </div>
-                  )}
+                  )} */}
                   {isFieldEmpty && (
                     <div className="row">
                       <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
