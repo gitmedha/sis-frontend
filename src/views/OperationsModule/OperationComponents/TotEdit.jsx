@@ -110,7 +110,7 @@ const TotEdit = (props) => {
     try {
       
       
-      const { data } = await searchInstitutions(props.college || filterValue);
+      const { data } = await searchInstitutions( filterValue || props.college );
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         
