@@ -179,6 +179,8 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const [disabled, setDisabled] = useState(true);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
   const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState([]); // {label, value}
+  const [persistentFilterValues, setPersistentFilterValues] = useState({}); // persist multi-filter selections
 
   const initialValues = {
     search_by_field: "",
@@ -220,8 +222,17 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 
   // New function for clearing filters only within the modal, then closing it
   const clearModalFiltersAndClose = async () => {
-    // No need to reset filterValues in FilterBox as it will be unmounted
-    closefilterBox(); // Just close the modal, which also hides the message
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    const baseUrl = "mentorships";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
+    closefilterBox();
   };
 
   const filters = [
@@ -436,6 +447,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 
       const searchFields = [];
       const searchValues = [];
+      const appliedList = [];
 
       Object.keys(filterValues).forEach((key) => {
         const backendFieldName = backendFieldMap[key] || key;
@@ -446,6 +458,9 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
         }
         searchFields.push(backendFieldName);
         searchValues.push(value);
+        if (value !== null && value !== undefined && value !== "") {
+          appliedList.push({ label: key, value: filterValues[key] instanceof Date ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(filterValues[key]) : filterValues[key] });
+        }
       });
 
       const searchData = {
@@ -459,8 +474,10 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
         "prevSearchedPropsAndValues",
         JSON.stringify({ baseUrl, searchData })
       );
+      setPersistentFilterValues(filterValues);
+      setAppliedFilters(appliedList);
+      setShowAppliedFilterMessage(appliedList.length > 0);
       closefilterBox(); // Close the modal
-      setShowAppliedFilterMessage(true); // Show the message
       // Removed setTimeout here
     };
 
@@ -928,6 +945,15 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     setDisabled(true);
     setIsFieldEmpty(false);
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on clear
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    const baseUrl = "mentorships";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
   };
 
   const setSearchItem = async (value) => {
@@ -1198,21 +1224,29 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                       }
                     }
                   }
-                  return mappedValues;
+                  return { ...persistentFilterValues, ...mappedValues };
                 })()}
                 formik={formik} // Pass formik object directly
-                clearModalFiltersAndClose={() => {
-                  closefilterBox();
-                  // No need to reset filterValues in FilterBox as it will be unmounted
-                }}
+                clearModalFiltersAndClose={clearModalFiltersAndClose}
                 setShowAppliedFilterMessage={setShowAppliedFilterMessage}
               />
             )}
           </Form>
         )}
       </Formik>
-      {showAppliedFilterMessage && (
-        <p style={{ color: '#257b69', marginTop: '10px' }}>Multiple Filter Applied</p>
+      {appliedFilters.length > 0 && (
+        <div style={{ marginTop: '10px' }}>
+          <p style={{ color: '#257b69', marginBottom: '6px' }}>
+            Applied Filters ({appliedFilters.length}):
+          </p>
+          <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {appliedFilters.map((f, idx) => (
+              <span key={`${f.label}-${idx}`} className="chip">
+                {f.label}: {f.value}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </Fragment>
   );

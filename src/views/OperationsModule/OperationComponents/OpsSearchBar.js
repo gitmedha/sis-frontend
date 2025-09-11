@@ -178,6 +178,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false); // State for "Multiple filter applied" message
   const [appliedFiltersSummary, setAppliedFiltersSummary] = useState(""); // New state for filter summary
   const [persistentFilterValues, setPersistentFilterValues] = useState({}); // New state to persist multi-filter values
+  const [appliedFilters, setAppliedFilters] = useState([]); // Array of { label, value }
 
   const handleSubmit = async (values) => {
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
@@ -212,7 +213,14 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   // New function for clearing filters only within the modal, then closing it
   const clearModalFiltersAndClose = async () => {
     setPersistentFilterValues({}); // Clear persistent values
-
+    const searchData = {
+      searchFields: [],
+      searchValues: [],
+    };
+    setShowAppliedFilterMessage(false); // Hide the message on clear
+    setAppliedFiltersSummary(""); // Clear the summary as well
+    setAppliedFilters([]); // Clear applied filter chips
+    await searchOperationTab("users-ops-activities", searchData);
     closefilterBox(); // Just close the modal, which also hides the message
   };
 
@@ -462,7 +470,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       setPersistentFilterValues(formikValues); // Pass formikValues for persistence
       // Set the summary message
       if (appliedFiltersSummaryParts.length > 0) {
-        setAppliedFiltersSummary("Applied: " + appliedFiltersSummaryParts.join(", "));
+        setAppliedFiltersSummary("Multiple Filter Applied: " + appliedFiltersSummaryParts.join(", "));
         setShowAppliedFilterMessage(true);
       } else {
         setAppliedFiltersSummary("");
@@ -915,6 +923,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                 className="form-control"
                                 autoComplete="off"
                                 disabled={disabled}
+                                minDate={formik.values.search_by_value_date_from}
                                 onChange={(date) => formik.setFieldValue("search_by_value_date_to", date)}
                                 value={formik.values.search_by_value_date_to}
                               />

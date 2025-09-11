@@ -44,13 +44,7 @@ const SearchValueContainer = styled.div`
   flex: 0 0 300px;
 `;
 
-const PlusIconContainer = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: #28a745; /* Green color for the plus icon */
-  font-size: 24px;
-`;
+// Removed plus icon container as it's no longer used
 
 const SearchButtonContainer = styled.div`
   display: flex;
@@ -59,7 +53,9 @@ const SearchButtonContainer = styled.div`
 
 const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
   const [onefilter, setOnefilter] = useState(true);
-  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false); // State for "Multiple filter applied" message
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false); // State for applied message
+  const [appliedFilters, setAppliedFilters] = useState([]); // {label, value}
+  const [persistentFilterValues, setPersistentFilterValues] = useState({}); // persist multi-filter selections
 
   const options = [
     { key: 0, value: "student_id", label: "Student" },
@@ -118,7 +114,17 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const clearModalFiltersAndClose = async () => {
-    closefilterBox(); // Just close the modal, which also hides the message
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    const baseUrl = "students-upskillings";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
+    closefilterBox();
   };
 
   const clear = async (formik) => {
@@ -128,6 +134,15 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
     setDisabled(true);
     setIsFieldEmpty(false);
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on clear
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    const baseUrl = "students-upskillings";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
   };
 
   const setSearchItem = async (value) => {
@@ -222,14 +237,17 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
     };
 
     const [activeFilters, setActiveFilters] = useState(() => {
-      const initialActive = [];
+      const initialActive = new Set();
       if (initialSelectedField) {
         const mappedKey = filterMap[initialSelectedField];
         if (mappedKey) {
-          initialActive.push(mappedKey);
+          initialActive.add(mappedKey);
         }
       }
-      return initialActive;
+      Object.keys(initialFilterValues || {}).forEach((k) => {
+        if (initialFilterValues[k] !== null && initialFilterValues[k] !== "") initialActive.add(k);
+      });
+      return Array.from(initialActive);
     });
     const [filterValues, setFilterValues] = useState(() => {
       return initialFilterValues || {};
@@ -373,6 +391,7 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
 
       const searchFields = [];
       const searchValues = [];
+      const appliedList = [];
 
       Object.keys(filterValues).forEach((key) => {
         const backendFieldName = backendFieldMap[key] || key;
@@ -380,6 +399,9 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
 
         searchFields.push(backendFieldName);
         searchValues.push(value);
+        if (value !== null && value !== undefined && value !== "") {
+          appliedList.push({ label: key, value: filterValues[key] });
+        }
       });
 
       const searchData = {
@@ -393,8 +415,10 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
         "prevSearchedPropsAndValues",
         JSON.stringify({ baseUrl, searchData })
       );
+      setPersistentFilterValues(filterValues);
+      setAppliedFilters(appliedList);
+      setShowAppliedFilterMessage(appliedList.length > 0);
       closefilterBox();
-      setShowAppliedFilterMessage(true);
     };
 
     return (
@@ -1015,9 +1039,6 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
                       )}
                     </SearchValueContainer>
 
-                    <PlusIconContainer onClick={() => setOnefilter(false)}>
-                      <i className="fa fa-plus-circle"></i> {/* Using Font Awesome plus circle icon */}
-                    </PlusIconContainer>
                   </div>
 
                   <SearchButtonContainer>
@@ -1027,6 +1048,13 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
                       disabled={disabled}
                     >
                       Search
+                    </button>
+                    <button
+                      className="btn btn-primary uniform-btn"
+                      type="button"
+                      onClick={() => setOnefilter(false)}
+                    >
+                      Add Filter
                     </button>
                     <button
                       className="btn btn-secondary uniform-btn"
@@ -1073,7 +1101,7 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
                       mappedValues[filterKey] = formik.values.search_by_value;
                     }
                   }
-                  return mappedValues;
+                  return { ...persistentFilterValues, ...mappedValues };
                 })()}
                 formik={formik}
                 clearModalFiltersAndClose={clearModalFiltersAndClose}
@@ -1083,8 +1111,19 @@ const StudentUpskillingSearchbar = ({ searchOperationTab, resetSearch }) => {
           </Form>
         )}
       </Formik>
-      {showAppliedFilterMessage && (
-        <p style={{ color: '#257b69', marginTop: '10px' }}>Multiple Filter Applied</p>
+      {appliedFilters.length > 0 && (
+        <div style={{ marginTop: '10px' }}>
+          <p style={{ color: '#257b69', marginBottom: '6px' }}>
+            Applied Filters ({appliedFilters.length}):
+          </p>
+          <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {appliedFilters.map((f, idx) => (
+              <span key={`${f.label}-${idx}`} className="chip">
+                {f.label}: {f.value}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </Fragment>
   );

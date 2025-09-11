@@ -1,10 +1,10 @@
-.filter-box {
+/* .filter-box {
   border: 1px solid #1a2b3c;
   border-radius: 8px;
   padding: 16px;
   background: #fff;
   max-width: 100%;
-}
+} */
 .w-300{
   width: 300px !important;
 }
@@ -81,8 +81,8 @@
   transition: background 0.2s ease;
 }
 
-.btn.apply {
-  background: #21867a;
+.btn .apply .apply_pitch{
+  background: #21867a !important;
   color: white;
 }
 .close{
