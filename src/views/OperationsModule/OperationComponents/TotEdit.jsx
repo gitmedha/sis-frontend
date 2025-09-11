@@ -529,15 +529,15 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="input"
-                          name="college"
-                          label="College"
-                          // onKeyPress={handleKeyPress}
-                          className="form-control"
-                          defaultOptions={institutionOptions}
-                          filterData={filterInstitution}
-                          placeholder="College"
-                        />
+                            control="lookupAsync"
+                            name="college"
+                            label="College"
+                            // onKeyPress={handleKeyPress}
+                            className="form-control"
+                            defaultOptions={institutionOptions}
+                            filterData={filterInstitution}
+                            placeholder="College"
+                          />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
