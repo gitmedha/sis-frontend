@@ -354,7 +354,7 @@ const MentorBulkAdd = (props) => {
       return value;
     });
 
-    try {
+    try {      
       onHide("mentorship", data);
       setRows([
         {
