@@ -117,7 +117,7 @@ const TotEdit = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
