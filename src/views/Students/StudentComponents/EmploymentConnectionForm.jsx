@@ -341,6 +341,16 @@ const EnrollmentConnectionForm = (props) => {
           onSubmit={onSubmit}
           initialValues={initialValues}
           validationSchema={EmploymentConnectionValidations}
+          validate={(values) => {
+            const errors = {};
+        
+            // Require earning_type only when the chosen opportunity TYPE is Freelance
+            if (selectedOpportunityType === 'Freelance' && !values.earning_type) {
+              errors.earning_type = 'Earning type is required when type is Freelance.';
+            }
+        
+            return errors;
+          }}
         >
           {({ values, setFieldValue }) => (
             <Form>

@@ -169,6 +169,7 @@ const OpportunityForm = (props) => {
         ...props,
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
+        earning_type: props.earning_type || '', // Handle null values
       });
     }
 
