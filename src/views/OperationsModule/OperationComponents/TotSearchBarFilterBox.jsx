@@ -496,7 +496,7 @@ const FilterBox = ({
                 )}
                 <div className="filter-actions">
                   <button className="btn apply" type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>Apply</button>
-                  <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>Clear</button>
+                  <button className="btn clear" type="button" onClick={() => clearModalFiltersAndClose(formik)}>Clear</button>
                 </div>
               </MultipleFilterBox>
             </Modal.Body>

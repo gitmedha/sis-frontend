@@ -195,10 +195,10 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
           then: Yup.date()
             .required("End date is required")
             .when("search_by_value_date", (start, schema) => {
-              return schema.min(
+              return start ? schema.min(
                 start,
                 "End date must be greater than or equal to start date"
-              );
+              ) : schema;
             }),
         }),
         search_by_value_date_end_from: Yup.date().when("search_by_field", {
@@ -210,10 +210,10 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
           then: Yup.date()
             .required("End date is required")
             .when("search_by_value_date_end_from", (start, schema) => {
-              return schema.min(
+              return start ? schema.min(
                 start,
                 "End date must be greater than or equal to start date"
-              );
+              ) : schema;
             }),
         }),
       })
@@ -251,8 +251,8 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       ) {
         const startDate = formatDate(search.search_by_value_date);
         const endDate = formatDate(search.search_by_value_date_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
+        searchFields.push("start_date_from", "start_date_to");
+        searchValues.push(startDate, endDate);
         appliedList.push({ label: fieldLabelMap[search.search_by_field] || "Start Date", value: `${startDate} - ${endDate}` });
       } else if (
         search.search_by_field === "end_date" &&
@@ -261,8 +261,8 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       ) {
         const startDate = formatDate(search.search_by_value_date_end_from);
         const endDate = formatDate(search.search_by_value_date_end_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
+        searchFields.push("end_date_from", "end_date_to");
+        searchValues.push(startDate, endDate);
         appliedList.push({ label: fieldLabelMap[search.search_by_field] || "End Date", value: `${startDate} - ${endDate}` });
       }
     });
@@ -301,18 +301,12 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setOnefilter(true);
   };
 
-  const clearModalFiltersAndClose = async () => {
+  const clearModalFiltersAndClose = async (formik) => {
     setPersistentFilterValues({});
     setAppliedFilters([]);
     setShowAppliedFilterMessage(false);
     setAppliedFiltersSummary("");
-    const baseUrl = "users-tots";
-    const searchData = { searchFields: [], searchValues: [] };
-    await searchOperationTab(baseUrl, searchData);
-    await localStorage.setItem(
-      "prevSearchedPropsAndValues",
-      JSON.stringify({ baseUrl, searchData })
-    );
+    await clear(formik);
     closefilterBox();
   };
 
@@ -438,9 +432,11 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled
                         />
                       )}
-
+                       {console.log(formik.values.searches[index].search_by_value)
+                          }
                       {selectedSearchFields[index] &&
                         !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
+                         
                           <Input
                             icon={["city", "project_name", "partner_dept", "trainer_1.username",
                               "trainer_2.username", "state", "gender", "user_name"].includes(selectedSearchFields[index]) ? "down" : undefined}
@@ -449,6 +445,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                             control={getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input"}
                             options={getOptionsForField(selectedSearchFields[index])}
                             className="form-control"
+                            value={formik.values.searches[index].search_by_value}
                             disabled={disabled}
                           />
                         )}
@@ -463,6 +460,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date || null}
                               disabled={disabled}
                             />
                           </div>
@@ -474,6 +472,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_to || null}
                               disabled={disabled}
                             />
                           </div>
@@ -490,6 +489,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_end_from || null}
                               disabled={disabled}
                             />
                           </div>
@@ -501,6 +501,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_end_to || null}
                               disabled={disabled}
                             />
                           </div>

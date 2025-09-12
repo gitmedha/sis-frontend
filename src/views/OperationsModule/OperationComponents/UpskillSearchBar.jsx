@@ -248,18 +248,12 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
     setOnefilter(true);
   };
 
-  const clearModalFiltersAndClose = async () => {
+  const clearModalFiltersAndClose = async (formik) => {
     setPersistentFilterValues({});
     setAppliedFilters([]);
     setShowAppliedFilterMessage(false);
     setAppliedFiltersSummary("");
-    const baseUrl = "students-upskillings";
-    const searchData = { searchFields: [], searchValues: [] };
-    await searchOperationTab(baseUrl, searchData);
-    await localStorage.setItem(
-      "prevSearchedPropsAndValues",
-      JSON.stringify({ baseUrl, searchData })
-    );
+    await clear(formik);
     closefilterBox();
   };
 
@@ -602,7 +596,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
               )}
                   <div className="filter-actions">
                     <button className="btn apply" type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>Apply</button>
-                    <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>Clear</button>
+                    <button className="btn clear" type="button" onClick={() => clearModalFiltersAndClose(formik)}>Clear</button>
                   </div>
                 </MultipleFilterBox>
               </Modal.Body>
@@ -884,7 +878,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
               ))}
 
               {/* Applied Filters Summary */}
-              {showAppliedFilterMessage && appliedFiltersSummary && (
+              {/* {showAppliedFilterMessage && appliedFiltersSummary && (
                 <div className="row" style={{ marginBottom: '15px' }}>
                   <div className="col-12">
                     <div style={{ 
@@ -900,7 +894,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Error Message Row */}
               {isFieldEmpty && (

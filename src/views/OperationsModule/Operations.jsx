@@ -1321,18 +1321,21 @@ const Operations = ({
     async (pageIndex, pageSize, sortBy) => {
       let startFrom = (pageIndex + 1) * pageSize - pageSize;
       let filteredArray = [];
+      
+      // Use opsData as the source for search results since that's where Redux stores the search results
+      const dataSource = opsData;
 
       if (sortBy.length) {
         const { id, desc } = sortBy[0];
-        desc ? descendingSort(id, opsData) : ascendingSort(id, opsData);
+        desc ? descendingSort(id, dataSource) : ascendingSort(id, dataSource);
         arrangeRows(startFrom);
       } else {
         for (let element = 0; element < pageSize; element++) {
-          if (element + 1 > opsData.length) {
+          if (element + 1 > dataSource.length) {
             break;
           }
-          if (opsData[startFrom]) {
-            filteredArray.push(opsData[startFrom]);
+          if (dataSource[startFrom]) {
+            filteredArray.push(dataSource[startFrom]);
           }
           startFrom++;
         }
@@ -1755,7 +1758,7 @@ const Operations = ({
                   columns={columnsUserTot}
                   data={isSearching ? (isFound ? searchedData : []) : opts}
                   totalRecords={
-                    isSearching ? searchedData.length : optsAggregate.count
+                    isSearching ? opsData.length : optsAggregate.count
                   }
                   fetchData={isSearching ? fetchSearchedData : fetchData}
                   paginationPageSize={paginationPageSize}
