@@ -1,253 +1,216 @@
-import { Formik, Form } from "formik";
+import { Formik, FieldArray, Form, Field } from "formik";
 import { Modal } from "react-bootstrap";
-import styled from "styled-components";
-import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
+import { useState, useEffect, useRef } from "react";
+import { FaAngleDown, FaAngleRight, FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
-import { EmploymentConnectionValidations } from "../../../validations";
+import { EmployerValidations } from "../../../validations";
+import { getEmployersPickList } from "./employerAction";
+import { urlPath } from "../../../constants";
 import {
-  getEmployerOpportunities,
-  getEmploymentConnectionsPickList,
-  searchEmployers,
-} from "./StudentActions";
+  getAddressOptions,
+  getStateDistricts,
+} from "../../Address/addressActions";
 import {
   filterAssignedTo,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
+import { yesOrNoOptions } from "../../../common/commonConstants";
+import api from "../../../apis";
+import { isEmptyValue } from "../../../utils/function/OpsModulechecker";
+import Select, { components } from "react-select";
+import { GET_ALL_INDUSTRY, GET_PICKLIST } from "src/graphql";
+import { restructureData } from "src/utils/function/indtsryValues";
+import DropdownTreeSelect from "react-dropdown-tree-select";
+import "react-dropdown-tree-select/dist/styles.css";
 import {
+  compareObjects,
   createLatestAcivity,
   findDifferences,
-  findEmployerDifferences,
 } from "src/utils/LatestChange/Api";
-
+import NestedDropdown from "./src/views/Employers/EmployerComponents/NestedDropdown";
 const Section = styled.div`
-  padding-top: 30px;
+  padding-top: 15px;
   padding-bottom: 30px;
 
-  &:not(:first-child) {
-    border-top: 1px solid #c4c4c4;
+  &::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;  }
+
+  label {
+    color: #787b96;
   }
 
-  .section-header {
-    color: #207b69;
-    font-family: "Latto-Regular";
+  .modal-body {
+      padding:2px 2px
+  }
+
+  .required {
+    color: red;
+    font-size: 16px;
+  }
+  .section-header{
+    color: rgb(32, 123, 105);
+    font-family: Latto-Regular;
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
     line-height: 18px;
     margin-bottom: 15px;
   }
+
+  /* Set dropdown background to white */
+  .dropdown-content,
+  .dropdown-item {
+    background-color: #fff !important;
+  }
+
+  .dropdown-item{
+      margin:4px 2px;
+      padding:3px;
+      position:relative;
+      padding-bottom:8px
+  }
+
+  /* Remove border from labels */
+  .dropdown-label {
+    font-size:16px;
+    font-weight:500
+    color: #333
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer;
+    position: relative
+  }
+  .dropdown-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px; /* Thickness of the line */
+    background-color: #ddd; /* Color of the line */
+  }
+
+  /* Ensure full width for dropdown */
+  .full-width-dropdown .dropdown-trigger {
+    width: 100% !important;
+  }
+
+  .full-width-dropdown .dropdown {
+    width: 100% !important;
+  }
+
+  /* Hide extra tags beyond the first one */
+  .tag-item:nth-child(n + 2) {
+    display: none;
+  }
+
+  /* Styling for search field */
+  .search {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 5px;
+  }
+
+  .dropdown-children {
+    margin-left: 15px; /* Indent child items */
+    border-left: 2px dashed #ddd; /* Optional: Vertical line for hierarchy */
+    padding-left: 5px;
+
+  }
+
+  /* Customizing dropdown tree select styles */
+  .react-dropdown-tree-select {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 3px;
+  }
+
+  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after,
+  .react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
+    position: absolute !important;
+    right: 8px;
+    margin-top: 0.5rem;
+  }
 `;
 
-const EnrollmentConnectionForm = (props) => {
-  let { onHide, show, student, employmentConnection } = props;
-  const [assigneeOptions, setAssigneeOptions] = useState([]);
-  const [employerOptions, setEmployerOptions] = useState([]);
-  const [allStatusOptions, setAllStatusOptions] = useState([]);
-  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [sourceOptions, setSourceOptions] = useState([]);
-  const [employerOpportunityOptions, setEmployerOpportunityOptions] = useState(
-    []
-  );
-  const [workEngagementOptions, setWorkEngagementOptions] = useState([]);
-  const [selectedOpportunityType, setSelectedOpportunityType] = useState(
-    props.employmentConnection?.opportunity?.type
-  );
-  const [selectedStatus, setSelectedStatus] = useState(
-    props?.employmentConnection?.status
-  );
-  const [showEndDate, setShowEndDate] = useState(false);
-  const [endDateMandatory, setEndDateMandatory] = useState(false);
-  const [rejectionreason, setrejectionreason] = useState([]);
-  const [otherrejection, setotherrejection] = useState(false);
-  const [showOther, setShowother] = useState(false);
-  const [isRejected, setRejected] = useState(false);
-  const [ifSelectedOthers, setIfSelectedOthers] = useState(false);
+const transformData = (data, selectedValues) => {
+  return data.map((node) => {
+    const isSelected = selectedValues?.includes(node.value) || false; // Check if the node's value is in selectedValues
 
-  const userId = localStorage.getItem("user_id");
-  let initialValues = {
-    employment_connection_student: student.full_name,
-    employer_id: "",
-    opportunity_id: "",
-    status: "",
-    start_date: "",
-    end_date: "",
-    source: "",
-    salary_offered: "",
-    reason_if_rejected: "",
-    reason_if_rejected_other: "",
-    assigned_to: userId,
-    earning_type: "",
-  };
-
-  if (props.employmentConnection) {
-    initialValues = { ...initialValues, ...props.employmentConnection };
-    initialValues["employer_id"] = props.employmentConnection
-      ? Number(props.employmentConnection.opportunity?.employer?.id)
-      : null;
-
-    let dataval = rejectionreason?.find(
-      (obj) => obj.value === employmentConnection.reason_if_rejected
-    );
-    if (dataval) {
-      if (dataval.value == employmentConnection.reason_if_rejected) {
-        initialValues["reason_if_rejected"] =
-          employmentConnection.reason_if_rejected;
-      }
+    if (node.children && node.children.length > 0) {
+      // For parent nodes, disable them and hide checkboxes
+      return {
+        ...node,
+        showCheckbox: false,
+        children: transformData(node.children, selectedValues), // recursively transform children
+      };
     }
 
-    initialValues["assigned_to"] = props.employmentConnection?.assigned_to?.id;
-    initialValues["opportunity_id"] = props.employmentConnection.opportunity
-      ? props.employmentConnection.opportunity.id
-      : null;
-    initialValues["start_date"] = props.employmentConnection.start_date
-      ? new Date(props.employmentConnection.start_date)
-      : null;
-    initialValues["end_date"] = props.employmentConnection.end_date
-      ? new Date(props.employmentConnection.end_date)
-      : null;
-  }
-
-  const onModalClose = () => {
-    if (!props.employmentConnection) {
-      setEmployerOpportunityOptions([]);
-    }
-    onHide();
-  };
-
-  // Transform obj1 to match obj2 structure
-  function transformObj1(obj1) {
+    // For child nodes, set the `checked` property if they are in selectedValues
     return {
-      employment_connection_student: obj1.status, // Assuming status is employment_connection_student
-      employer_id: obj1.opportunity?.employer?.id, // Map employer id
-      opportunity_id: obj1.opportunity?.id, // Map opportunity id
-      status: obj1.status, // Same status
-      start_date: obj1.start_date, // Same start date
-      end_date: obj1.end_date, // Same end date
-      source: obj1.source, // Same source
-      salary_offered: obj1.salary_offered, // Same salary
-      reason_if_rejected: obj1.reason_if_rejected, // Same rejection reason
-      reason_if_rejected_other: obj1.reason_if_rejected_other, // Same other rejection reason
-      assigned_to: obj1.assigned_to?.id, // Only id for assigned_to
-      id: obj1.id, // Same id
-      updated_at: obj1.updated_at, // Same updated_at
-      work_engagement: obj1.work_engagement, // Same work engagement
-      number_of_internship_hours: obj1.number_of_internship_hours, // Same internship hours
-      experience_certificate: obj1.experience_certificate, // Same certificate
-      offer_letter: obj1.offer_letter, // Same offer letter
-      opportunity: {
-        id: obj1.opportunity?.id, // Same opportunity id
-        role_description: obj1.opportunity?.role_description, // Same role description
-        role_or_designation: obj1.opportunity?.role_or_designation, // Same role or designation
-        type: obj1.opportunity?.type, // Same opportunity type
-        updated_at: obj1.opportunity?.updated_at, // Same opportunity updated_at
-        employer: {
-          id: obj1.opportunity?.employer?.id, // Same employer id
-          name: obj1.opportunity?.employer?.name, // Same employer name
-        },
-      },
-      employer: obj1.employer, // Same employer name
-      status_badge: obj1.status_badge, // Same status badge
-      role_or_designation: obj1.role_or_designation, // Same role or designation
-      registration_date_formatted: obj1.registration_date_formatted, // Same registration date
-      opportunity_type: obj1.opportunity_type, // Same opportunity type
+      ...node,
+      checked: isSelected,
     };
-  }
-
-  // The comparison function
-  function compareObjects(obj1, obj2) {
-    const differences = {};
-
-    // Helper function to handle nested objects comparison
-    const compareNested = (key, value1, value2) => {
-      // Special handling for 'assigned_to' and 'employer' fields: Compare by 'id'
-      if (key === "assigned_to" || key === "employer") {
-        if (value1?.id !== value2?.id) {
-          differences[key] = { obj1: value1?.id, obj2: value2?.id };
-        }
-      } else if (
-        typeof value1 === "object" &&
-        value1 !== null &&
-        typeof value2 === "object" &&
-        value2 !== null
-      ) {
-        // For other objects, recurse into them
-        const nestedDiffs = compareObjects(value1, value2);
-        if (Object.keys(nestedDiffs).length > 0) {
-          differences[key] = nestedDiffs;
-        }
-      } else if (value1 !== value2) {
-        // Compare primitive values
-        differences[key] = { obj1: value1, obj2: value2 };
-      }
-    };
-
-    // Iterate over the keys of both objects
-    for (const key in obj1) {
-      if (key !== "updated_at" && key !== "created_at") {
-        // Exclude fields you don't want to compare
-        if (obj2.hasOwnProperty(key)) {
-          compareNested(key, obj1[key], obj2[key]);
-        } else {
-          differences[key] = { obj1: obj1[key], obj2: undefined };
-        }
-      }
+  });
+};
+function CustomNodeRenderer({ node, onClick }) {
+  return (
+    <div>
+      <div className="node-label">{node.label}</div>
+      <div className="node-controls">
+        <button onClick={() => onClick(node, "expand")}>
+          <span className="up-arrow">&#8593;</span>
+        </button>
+        <button onClick={() => onClick(node, "collapse")}>
+          <span className="down-arrow">&#8595;</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+const assignObjectPaths = (obj, stack) => {
+  Object.keys(obj).forEach((k) => {
+    const node = obj[k];
+    if (typeof node === "object") {
+      node.path = stack ? `${stack}.${k}` : k;
+      assignObjectPaths(node, node.path);
     }
+  });
+};
 
-    // Check for keys in obj2 that are not in obj1
-    for (const key in obj2) {
-      if (
-        key !== "updated_at" &&
-        key !== "created_at" &&
-        !obj1.hasOwnProperty(key)
-      ) {
-        differences[key] = { obj1: undefined, obj2: obj2[key] };
-      }
-    }
-
-    return differences;
-  }
-
-  const onSubmit = async (values) => {
-    let propgramEnrollemntData = {};
-    if (props.employmentConnection) {
-      propgramEnrollemntData = {
-        module_name: "Student",
-        activity: "Employment Connection Updated",
-        event_id: props.student.id,
-        updatedby: userId,
-        changes_in: findEmployerDifferences(initialValues, values),
-      };
-    } else {
-      propgramEnrollemntData = {
-        module_name: "student",
-        activity: "Employment Connection Created",
-        event_id: props.student.id,
-        updatedby: userId,
-        changes_in: { name: values.full_name },
-      };
-    }
-    await createLatestAcivity(propgramEnrollemntData);
-    if(selectedOpportunityType !== 'Freelance'){
-      delete values.earning_type;
-  }
-    onHide(values);
+const EmployerForm = (props) => {
+  let { onHide, show } = props;
+  const [statusOpts, setStatusOpts] = useState([]);
+  const [employerTypeOpts, setEmployerTypeOpts] = useState([]);
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [logo, setLogo] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
+  const [formValues, setFormValues] = useState(null);
+  const [isDuplicate, setDuplicate] = useState(false);
+  const userId = parseInt(localStorage.getItem("user_id"));
+  const [industryOptions, setIndustryOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [dropdownOptions, setDropdownOptions] = useState(null);
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [industry, setIndustry] = useState("");
+  const [selectedValue, setSelectedValue] = useState([{ label: "" }]);
+  const [selectedNode, setSelectedNode] = useState({});
+  const formikRef = useRef();
+  const handleExternalChange = (value) => {
+    let data = value.label;
+    setSelectedNode([{ label: data }]);
+    formikRef.current.setFieldValue("industry", data);
   };
-
-  useEffect(() => {
-    setSelectedOpportunityType(props.employmentConnection?.opportunity?.type);
-    setSelectedStatus(props.employmentConnection?.status);
-  }, [props.employmentConnection]);
-
-  useEffect(() => {
-    setShowEndDate(
-      selectedStatus === "Internship Complete" ||
-      selectedStatus === "Offer Accepted by Student" ||
-      selectedOpportunityType === "Apprenticeship"
-    );
-    setEndDateMandatory(selectedStatus === "Internship Complete");
-  }, [selectedStatus, selectedOpportunityType]);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -256,184 +219,200 @@ const EnrollmentConnectionForm = (props) => {
   }, []);
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then((data) => {
-      setrejectionreason(
-        data.reason_if_rejected?.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setWorkEngagementOptions(
-        data.work_engagement.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setAllStatusOptions(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setSourceOptions(
-        data.source.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setEarningTypeOptions(
-        data.earning_type.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
+    const getAllEmployers = async () => {
+      let { data } = await api.post("/industries/findAll");
+      const processData = (data) => {
+        return data
+          .filter((item) => item.label.toLowerCase() !== "consultancy")
+          .map((item) => {
+            if (item.label === "Irrigation") {
+              return {
+                ...item,
+                value: item.label,
+                children: [],
+              };
+            }
+            if (item.label === "Diversified") {
+              return {
+                ...item,
+                value: item.label,
+                children: [],
+              };
+            }
+            if (item.children && item.children.length > 0) {
+              return {
+                ...item,
+                children: processData(item.children),
+              };
+            }
+            return item;
+          })
+          .sort((a, b) => a.label.localeCompare(b.label));
+      };
 
-    if (props.employmentConnection) {
-      filterEmployer(
-        Number(props.employmentConnection?.opportunity?.employer?.name)
-      ).then((data) => {
-        setEmployerOptions(data);
-      });
-    }
-    if (
-      props.employmentConnection &&
-      props.employmentConnection.opportunity &&
-      props.employmentConnection.opportunity.employer
-    ) {
-      updateEmployerOpportunityOptions({
-        value: Number(props.employmentConnection.opportunity.employer.id),
-      });
-    }
-  }, [props]);
+      const updatedData = processData(data);
+      setIndustryOptions(updatedData);
+    };
 
-  useEffect(() => {
-    let filteredOptions = allStatusOptions;
-    if (
-      selectedOpportunityType === "Job" ||
-      selectedOpportunityType === "Internship" ||
-      selectedOpportunityType === "UnPaid GIG" ||
-      selectedOpportunityType === "Paid GIG" ||
-      selectedOpportunityType === "Apprenticeship" ||
-      selectedOpportunityType === "Freelance"
-    ) {
-      filteredOptions = allStatusOptions.filter(
-        (item) =>
-          item["applicable-to"].includes(selectedOpportunityType) ||
-          item["applicable-to"] === "Both"
-      );
-      
-    }
-    
-    // if(selectedOpportunityType === 'Apprenticeship'){
-    //   filteredOptions = allStatusOptions.filter(item=> item['applicable-to'].includes(selectedOpportunityType) || item['applicable-to'] === 'Apprenticeship');
-    // }
-    else {
-      filteredOptions = allStatusOptions.filter(
-        (item) => item["applicable-to"] === "Both"
-      );
-    }
-    // setStatusOptions(filteredOptions);
-
-    setStatusOptions(
-      filteredOptions.map((item) => {
-        if (
-          localStorage.getItem("user_role")?.toLowerCase() === "srm" &&
-          item.value.toLowerCase() === "unknown"
-        ) {
-          return { isDisabled: true };
-        } else {
-          return { key: item.value, value: item.value, label: item.value };
-        }
-      })
-    );
-  }, [selectedOpportunityType, allStatusOptions]);
-
-  const updateEmployerOpportunityOptions = (employer) => {
-    setEmployerOpportunityOptions([]);
-
-    getEmployerOpportunities(Number(employer.value)).then((data) => {
-      setEmployerOpportunityOptions(
-        data?.data?.data?.opportunities.map((opportunity) => ({
-          key: opportunity.role_or_designation,
-          label: `${opportunity.role_or_designation} | ${opportunity.type}`,
-          type: opportunity.type,
-          value: opportunity.id,
-        }))
-      );
-    });
-  };
-
-  const filterEmployer = async (filterValue) => {
-    try {
-      const employerData = await searchEmployers(filterValue);
-
-      let employmentConnectionEmployer = props.employmentConnection
-        ? props.employmentConnection.opportunity?.employer
-        : null;
-      let employerFoundInList = false;
-
-      let filterData = employerData.data.employersConnection.values.map(
-        (employer) => {
-          if (
-            props.employmentConnection &&
-            employer.id === Number(employmentConnectionEmployer?.id)
-          ) {
-            employerFoundInList = true;
-          }
-          return {
-            ...employer,
-            label: employer.name,
-            value: Number(employer.id),
-          };
-        }
-      );
-      if (
-        props.employmentConnection &&
-        employmentConnectionEmployer !== null &&
-        !employerFoundInList
-      ) {
-        filterData.unshift({
-          label: employmentConnectionEmployer?.name,
-          value: Number(employmentConnectionEmployer?.id),
-        });
-      }
-      return filterData;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (initialValues.reason_if_rejected in rejectionreason) {
-      setShowother(true);
-    }
+    getAllEmployers();
   }, []);
 
-  const handleStatusChange = async (value) => {
-    setSelectedStatus(value);
-    if (value === "Rejected by Employer") {
-      setRejected(true);
-    } else if (value === "Student Dropped Out") {
-      setRejected(true);
-    } else if (value === "Rejected by Student") {
-      setRejected(true);
-    } else {
-      setRejected(false);
+  useEffect(() => {
+    getEmployersPickList().then((data) => {
+      setStatusOpts(
+        data.status.map((item) => {
+          return {
+            key: item.value,
+            label: item.value,
+            value: item.value,
+          };
+        })
+      );
+    });
+
+    getAddressOptions().then((data) => {
+      setStateOptions(
+        data?.data?.data?.geographiesConnection.groupBy.state
+          .map((state) => ({
+            key: state.id,
+            label: state.key,
+            value: state.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+
+      if (props.state) {
+        onStateChange({
+          value: props.state,
+        });
+      }
+    });
+  }, [props]);
+
+  const onStateChange = (value) => {
+    setDistrictOptions([]);
+    getStateDistricts(value).then((data) => {
+      setDistrictOptions(
+        data?.data?.data?.geographiesConnection.groupBy.district
+          .map((district) => ({
+            key: district.id,
+            label: district.key,
+            value: district.key,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      );
+      setAreaOptions([]);
+      setAreaOptions(
+        data?.data?.data?.geographiesConnection.groupBy.area.map((area) => ({
+          key: area.id,
+          label: area.key,
+          value: area.key,
+        }))
+      );
+      setCityOptions([]);
+      setCityOptions(
+        data?.data?.data?.geographiesConnection.groupBy.city.map((city) => ({
+          key: city.key,
+          value: city.key,
+          label: city.key,
+        }))
+      );
+    });
+  };
+
+  const onSubmit = async (values) => {
+    values.contacts = values.contacts.map((value) => {
+      value.full_name =
+        value.full_name[0].toUpperCase() + value.full_name.slice(1);
+      value.designation =
+        value.designation[0].toUpperCase() + value.designation.slice(1);
+      return value;
+    });
+    values.name = values.name
+      .split(" ")
+      .map((word) => {
+        if (!isEmptyValue(word)) {
+          return word[0].toUpperCase() + word.substring(1);
+        }
+      })
+      .join(" ");
+    values.city = values.city[0].toUpperCase() + values.city.slice(1);
+    values.address = values.address
+      ? values.address
+          .split(" ")
+          .map((word) => {
+            if (word) {
+              return word[0].toUpperCase() + word.substring(1);
+            }
+          })
+          .join(" ")
+      : "";
+
+    setFormValues(values);
+    if (logo) {
+      values.logo = logo;
+    }
+    let EmployerEnrollmentData = {};
+    if (props.id) {
+      EmployerEnrollmentData = {
+        module_name: "employer",
+        activity: "Employer Data Update",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects(props, values),
+      };
+    }
+    await createLatestAcivity(EmployerEnrollmentData);
+    onHide(values);
+  };
+  const logoUploadHandler = ({ id }) => setLogo(id);
+
+  let initialValues = {
+    name: "",
+    industry: "",
+    email: "",
+    phone: "",
+    status: "",
+    address: "",
+    assigned_to: userId.toString(),
+    state: "",
+    pin_code: "",
+    city: "",
+    medha_area: "",
+    district: "",
+    medha_partner:"",
+    outsourced:"",
+  };
+
+  if (props.id) {
+    initialValues = { ...props };
+    initialValues["assigned_to"] = props?.assigned_to?.id;
+    initialValues["district"] = props.district ? props.district : null;
+    initialValues["medha_area"] = props.medha_area ? props.medha_area : null;
+  }
+
+  if (!props.contacts) {
+    initialValues["contacts"] = [];
+  }
+
+  const FindDuplicate = async (setValue, name) => {
+    setValue("name", name);
+
+    try {
+      const { data } = await api.post("/employers/findDuplicate", {
+        name: name,
+      });
+
+      if (data === "Record Found") {
+        return setDuplicate(true);
+      } else if (data === "Record Not Found") {
+        return setDuplicate(false);
+      }
+    } catch (error) {
+      console.error("error", error);
     }
   };
 
-  useEffect(() => {
-    setotherrejection(false);
-  }, [employmentConnection]);
-console.log(statusOptions,'statusOptions')
   return (
     <Modal
       centered
@@ -449,263 +428,453 @@ console.log(statusOptions,'statusOptions')
           id="contained-modal-title-vcenter"
           className="d-flex align-items-center"
         >
+          {props.id && props.logo ? (
+            <img
+              src={urlPath(props.logo.url)}
+              className="avatar mr-2"
+              alt="Employer Avatar"
+            />
+          ) : (
+            <div className="flex-row-centered avatar avatar-default mr-2">
+              <FaSchool size={25} />
+            </div>
+          )}
           <h1 className="text--primary bebas-thick mb-0">
-            {props.employmentConnection && props.employmentConnection.id
-              ? "Update "
-              : "Add New "}
-            Employment Connection
+            {props.id ? props.name : "Add New Employer"}
           </h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-white">
         <Formik
           onSubmit={onSubmit}
+          innerRef={formikRef}
           initialValues={initialValues}
-          validationSchema={EmploymentConnectionValidations}
+          validationSchema={EmployerValidations}
+          enableReinitialize={true}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue, errors, setValues }) => (
             <Form>
-              <Section>
-                <div className="row form_sec">
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="employment_connection_student"
-                      control="input"
-                      label="Student"
-                      className="form-control"
-                      placeholder="Student"
-                      disabled={true}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {assigneeOptions.length ? (
+              <div className="row form_sec">
+                <Section>
+                  <h3 className="section-header">Details</h3>
+                  <div className="row">
+                    <div className="col-md-6 col-sm-12 mb-2">
                       <Input
-                        control="lookupAsync"
-                        name="assigned_to"
-                        label="Assigned To"
-                        required
-                        className="form-control"
-                        placeholder="Assigned To"
-                        filterData={filterAssignedTo}
-                        defaultOptions={assigneeOptions}
-                      />
-                    ) : (
-                      <Skeleton count={1} height={45} />
-                    )}
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      control="lookupAsync"
-                      name="employer_id"
-                      label="Employer"
-                      required
-                      filterData={filterEmployer}
-                      defaultOptions={
-                        props.employmentConnection?.id ? employerOptions : true
-                      }
-                      className="form-control"
-                      placeholder="Employer"
-                      onChange={(employer) => {
-                        setSelectedOpportunityType(null);
-                        updateEmployerOpportunityOptions(employer);
-                      }}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    {employerOpportunityOptions.length ? (
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="opportunity_id"
-                        label="Opportunity"
-                        required
-                        options={employerOpportunityOptions}
-                        className="form-control"
-                        placeholder={"Opportunity"}
-                        onChange={(e) => setSelectedOpportunityType(e.type)}
-                      />
-                    ) : (
-                      <>
-                        <label
-                          className="text-heading"
-                          style={{ color: "#787B96" }}
-                        >
-                          Opportunity (select an employer first)
-                        </label>
-                        <Skeleton count={1} height={35} />
-                      </>
-                    )}
-                  </div>
-
-                  {selectedOpportunityType === "Freelance" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="earning_type"
-                        label="Earning Type"
-                        options={earningTypeOptions}
-                        className="form-control"
-                        placeholder="Earning Type"
-                        required
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="status"
-                      label="Status"
-                      required
-                      options={statusOptions}
-                      className="form-control"
-                      placeholder="Status"
-                      onChange={(e) => handleStatusChange(e.value)}
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      name="start_date"
-                      label="Start Date"
-                      required
-                      placeholder="Start Date"
-                      control="datepicker"
-                      className="form-control"
-                      autoComplete="off"
-                    />
-                  </div>
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      min={0}
-                      type="number"
-                      name="salary_offered"
-                      control="input"
-                      label="Monthly Salary"
-                      required
-                      className="form-control"
-                      placeholder="Monthly Salary"
-                    />
-                  </div>
-                  {showEndDate && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="end_date"
-                        label="End Date"
-                        placeholder="End Date"
-                        control="datepicker"
-                        className="form-control"
-                        autoComplete="off"
-                        required={endDateMandatory}
-                      />
-                    </div>
-                  )}
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="source"
-                      label="Source"
-                      required
-                      options={sourceOptions}
-                      className="form-control"
-                      placeholder="Source"
-                    />
-                  </div>
-
-                  {isRejected ||
-                    (initialValues.reason_if_rejected &&
-                      initialValues.reason_if_rejected.length) ? (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="reason_if_rejected"
-                        label="Reason if Rejected"
-                        required={
-                          selectedStatus === "Rejected by Student"
+                        name="name"
+                        label="Name"
+                        control="input"
+                        placeholder="Name"
+                        className="form-control capitalize"
+                        onChange={(e) =>
+                          FindDuplicate(setFieldValue, e.target.value)
                         }
-                        options={rejectionreason}
-                        className="form-control"
-                        onChange={(e) => {
-                          setFieldValue("reason_if_rejected", e.value);
-                          if (e.value === "Others") {
-                            setIfSelectedOthers(true);
-                          } else {
-                            setIfSelectedOthers(false);
-                          }
-                        }}
-                        placeholder="Reason if Rejected"
-                      />
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
-                  {ifSelectedOthers ||
-                    (initialValues.reason_if_rejected_other &&
-                      initialValues.reason_if_rejected_other.length) ? (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        name="reason_if_rejected_other"
-                        control="input"
-                        label="If Other, Specify"
                         required
-                        className="form-control"
-                        placeholder="If Other, Specify"
+                      />
+
+                      {isDuplicate && !props.id ? (
+                        <p style={{ color: "red" }}>
+                          This employer already exist on the system
+                        </p>
+                      ) : (
+                        <p></p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {assigneeOptions.length ? (
+                        <Input
+                          control="lookupAsync"
+                          name="assigned_to"
+                          label="Assigned To"
+                          filterData={filterAssignedTo}
+                          defaultOptions={assigneeOptions}
+                          className="form-control"
+                          placeholder="Assigned To"
+                          required
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {/* industry */}
+                      <label className="text-heading leading-24">
+                        Industry <span class="required">*</span>
+                      </label>
+
+                      <Field
+                        name="industry"
+                        defaultValue={props.industry}
+                      
+                        onChange={(value) => setFieldValue("industry", value)}
+                        data={industryOptions}
+                        error={errors.industry}
+                        component={NestedDropdown}
                       />
                     </div>
-                  ) : (
-                    <div></div>
-                  )}
-                  <div className="col-md-6 col-sm-12 mt-2">
-                    <Input
-                      icon="down"
-                      control="lookup"
-                      name="work_engagement"
-                      label="Work Engagement"
-                      options={workEngagementOptions}
-                      className="form-control"
-                      placeholder="Work Engagement"
-                      required
-                    />
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="status"
+                        label="Status"
+                        control="lookup"
+                        options={statusOpts}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        name="website"
+                        control="input"
+                        label="Website"
+                        placeholder="Website"
+                        className="form-control"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        name="phone"
+                        label="Phone"
+                        control="input"
+                        placeholder="Phone"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        name="email"
+                        label="Email"
+                        control="input"
+                        placeholder="Email"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="outsourced"
+                        label="Outsourced"
+                        control="lookup"
+                        options={[{
+                          key:0,
+                          label:'System Adoption',
+                          value:'System Adoption'
+                        },
+                      {
+                          key:1,
+                          label:'Core Programs',
+                          value:'Core Programs'
+                      }]}
+                        className="form-control"
+                        required
+                      />
+                    </div>
                   </div>
-
-                  {selectedOpportunityType === "Internship" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
+                </Section>
+                <Section>
+                  <h3 className="section-header">Address</h3>
+                  <div className="row">
+                    <div className="col-md-6 col-sm-12 mb-2">
                       <Input
-                        min={0}
-                        type="number"
                         control="input"
-                        name="number_of_internship_hours"
-                        className="form-control"
-                        label="Number of Internship hours"
+                        label="Address"
+                        name="address"
+                        placeholder="Address"
+                        className="form-control capitalize"
                         required
-                        placeholder="Number of Internship hours"
                       />
                     </div>
-                  )}
-                </div>
-                 
-              </Section>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {stateOptions.length ? (
+                        <Input
+                          icon="down"
+                          name="state"
+                          label="State"
+                          control="lookup"
+                          options={stateOptions}
+                          onChange={onStateChange}
+                          placeholder="State"
+                          className="form-control"
+                          required
+                        />
+                      ) : (
+                        <Skeleton count={1} height={45} />
+                      )}
+                    </div>
 
-              <div className="row justify-content-end mt-5">
-                <div className="col-auto p-0">
-                  <button
-                    type="button"
-                    onClick={onModalClose}
-                    className="btn btn-secondary btn-regular collapse_form_buttons"
-                  >
-                    CANCEL
-                  </button>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {cityOptions.length ? (
+                        <Input
+                          control="lookup"
+                          name="city"
+                          label="City"
+                          icon="down"
+                          className="form-control capitalize"
+                          placeholder="City"
+                          options={cityOptions}
+                          required
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view City
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {districtOptions.length ? (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="district"
+                          label="District"
+                          placeholder="District"
+                          className="form-control"
+                          required
+                          options={districtOptions}
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view Districts
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      {areaOptions.length ? (
+                        <Input
+                          icon="down"
+                          control="lookup"
+                          name="medha_area"
+                          label="Medha Area"
+                          className="form-control"
+                          placeholder="Medha Area"
+                          required
+                          options={areaOptions}
+                        />
+                      ) : (
+                        <>
+                          <label
+                            className="text-heading"
+                            style={{ color: "#787B96" }}
+                          >
+                            Please select State to view Medha Areas
+                          </label>
+                          <Skeleton count={1} height={35} />
+                        </>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        control="input"
+                        name="pin_code"
+                        label="Pin Code"
+                        placeholder="Pin Code"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                  </div>
+                </Section>
+                <Section>
+                  <h3 className="section-header">Contacts</h3>
+                  <FieldArray name="contacts">
+                    {({ insert, remove, push }) => (
+                      <div>
+                        {values.contacts &&
+                          values.contacts.length > 0 &&
+                          values.contacts.map((contact, index) => (
+                            <div
+                              key={index}
+                              className="row py-2 mx-0 mb-3 border bg-white shadow-sm rounded"
+                            >
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  control="input"
+                                  name={`contacts.${index}.full_name`}
+                                  label="Name"
+                                  placeholder="Name"
+                                  className="form-control capitalize"
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.email`}
+                                  label="Email"
+                                  control="input"
+                                  placeholder="Email"
+                                  className="form-control"
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.phone`}
+                                  control="input"
+                                  label="Phone Number"
+                                  className="form-control"
+                                  placeholder="Phone Number"
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <Input
+                                  name={`contacts.${index}.designation`}
+                                  control="input"
+                                  label="Designation"
+                                  className="form-control capitalize"
+                                  placeholder="Designation"
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6 col-sm-12 mb-2">
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        <div className="mt-2">
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={() => {
+                              push({
+                                full_name: "",
+                                email: "",
+                                phone: "",
+                                designation: "",
+                              });
+                            }}
+                          >
+                            Add Contact
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </FieldArray>
+                </Section>
+                <Section>
+                  <h3 className="section-header">Additional Info</h3>
+                  <div className="row">
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="paid_leaves"
+                        label="Paid Leaves"
+                        options={yesOrNoOptions}
+                        className="form-control"
+                        placeholder="Paid Leaves"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="employee_benefits"
+                        label="Employee Benefits"
+                        options={yesOrNoOptions}
+                        className="form-control"
+                        placeholder="Employee Benefits"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="employment_contract"
+                        label="Employment Contract"
+                        options={yesOrNoOptions}
+                        className="form-control"
+                        placeholder="Employment Contract"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="offer_letter"
+                        label="Offer Letter"
+                        options={yesOrNoOptions}
+                        className="form-control"
+                        placeholder="Offer Letter"
+                      />
+                    </div>
+                    <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="medha_partner"
+                        required
+                        label="Medha Partner"
+                        options={yesOrNoOptions}
+                        className="form-control"
+                        placeholder="Medha Partner"
+                      />
+                    </div>
+                  </div>
+                </Section>
+              </div>
+              <div className="row mt-3 py-3">
+                <div className="col-12">
+                  {props.errors
+                    ? props.errors.length !== 0 && (
+                        <div className="alert alert-danger">
+                          <span>
+                            There are some errors. Please resolve them and save
+                            again:
+                          </span>
+                          <ul className="mb-0">
+                            {props.errors.map((error, index) => (
+                              <li key={index}>
+                                {error.message.toLowerCase() ===
+                                "duplicate entry"
+                                  ? `Employer with "${formValues.name}" already exists.`
+                                  : error.message}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    : null}
                 </div>
-                <div className="col-auto p-0">
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-regular collapse_form_buttons"
-                  >
-                    SAVE
-                  </button>
+                <div className="row justify-content-end mt-5">
+                  <div className="col-auto p-0">
+                    <button
+                      type="button"
+                      onClick={onHide}
+                      className="btn btn-secondary btn-regular collapse_form_buttons"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                  <div className="col-auto p-0">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-regular collapse_form_buttons"
+                    >
+                      SAVE
+                    </button>
+                  </div>
                 </div>
               </div>
             </Form>
@@ -716,4 +885,4 @@ console.log(statusOptions,'statusOptions')
   );
 };
 
-export default EnrollmentConnectionForm;
+export default EmployerForm;
