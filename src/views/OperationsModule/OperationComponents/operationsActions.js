@@ -28,8 +28,39 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
+  SEARCH_EMPLOYERS,
   GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
+
+
+
+export const getOrgsPicklist = async (field, table)=>{
+  try {
+       const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
+       return response.data;
+  } catch (error) {
+    console.error("Error fetching organization picklist:", error);
+    throw error;
+
+  }
+}
+
+export const searchEmployers = async function (searchValue) {
+  try {
+    const { data } = await api.post("/graphql", {
+      query: SEARCH_EMPLOYERS,
+      variables: {
+        limit: 20,
+        sort: "name:asc",
+        query: searchValue,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
 export const searchPrograms = async function (searchValue) {
   try {
@@ -974,30 +1005,4 @@ export const getCurriculumInterventionFieldValues = async (field) => {
   }
 };
 
-export const getOrgsPicklist = async (field, table) => {
-  try {
-    const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching organization picklist:", error);
-    throw error;
 
-  }
-}
-
-export const searchEmployers = async function (searchValue) {
-  // try {
-  //   const { data } = await api.post("/graphql", {
-  //     query: SEARCH_EMPLOYERS,
-  //     variables: {
-  //       limit: 20,
-  //       sort: "name:asc",
-  //       query: searchValue,
-  //     },
-  //   });
-
-  //   return data;
-  // } catch (error) {
-  //   console.error(error.message);
-  // }
-};

@@ -155,7 +155,6 @@ export const EmploymentConnectionValidations = Yup.object({
   work_engagement,
   assigned_to,
   earning_type: Yup.string().required("Earning type is required."),
-
 });
 
 export const OpportunityEmploymentConnectionValidations = Yup.object({
