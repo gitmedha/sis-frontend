@@ -152,6 +152,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
   const [appliedFilters, setAppliedFilters] = useState([]); // {label, value}
   const [persistentFilterValues, setPersistentFilterValues] = useState({});
   const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
+  const [appliedFiltersSummary, setAppliedFiltersSummary] = useState("");
 
   let today = new Date();
   const initialValues = {
@@ -232,6 +233,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
     setIsFieldEmpty(false);
     setAppliedFilters([]);
     setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
     setPersistentFilterValues({});
     const baseUrl = "students-upskillings";
     const searchData = { searchFields: [], searchValues: [] };
@@ -249,6 +251,8 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
   const clearModalFiltersAndClose = async () => {
     setPersistentFilterValues({});
     setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
     const baseUrl = "students-upskillings";
     const searchData = { searchFields: [], searchValues: [] };
     await searchOperationTab(baseUrl, searchData);
@@ -340,8 +344,25 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
 
     React.useEffect(() => { ensureOptions(); }, [activeFilters]);
 
-    const toggleFilter = (filter) => {
-      setActiveFilters(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
+    const toggleFilter = (filter, modalFormik) => {
+      setActiveFilters(prev => {
+        const isCurrentlyActive = prev.includes(filter);
+        const newActiveFilters = isCurrentlyActive
+          ? prev.filter(f => f !== filter) 
+          : [...prev, filter];
+        
+        // Only clear values when filter is being deselected (was active, now inactive)
+        if (isCurrentlyActive) {
+          const fm = modalFormik;
+          fm.setFieldValue(filter, null);
+          if (filter === "Start Date" || filter === "End Date") {
+            fm.setFieldValue(`${filter} From`, null);
+            fm.setFieldValue(`${filter} To`, null);
+          }
+        }
+        
+        return newActiveFilters;
+      });
     };
 
     const handleApply = async (values) => {
@@ -361,25 +382,60 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
       const searchFields = [];
       const searchValues = [];
       const chips = [];
+      const appliedFiltersSummaryParts = [];
+      
       Object.keys(values).forEach(k => {
         let v = values[k];
         if (v !== null && v !== undefined && v !== '') {
           searchFields.push(backendFieldMap[k] || k);
+          let displayValue = v;
+          
           if (v instanceof Date && !isNaN(v)) {
-            chips.push({ label: k, value: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(v) });
+            displayValue = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(v);
             v = v.toISOString();
-          } else {
-            chips.push({ label: k, value: v });
           }
+          
+          // Handle date ranges specially
+          if (k === "Start Date From") {
+            const toValue = values["Start Date To"];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            chips.push({ label: "Start Date", value: `${displayValue} - ${formattedTo}` });
+            appliedFiltersSummaryParts.push(`Start Date: ${displayValue} - ${formattedTo}`);
+          } else if (k === "End Date From") {
+            const toValue = values["End Date To"];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            chips.push({ label: "End Date", value: `${displayValue} - ${formattedTo}` });
+            appliedFiltersSummaryParts.push(`End Date: ${displayValue} - ${formattedTo}`);
+          } else if (k !== "Start Date To" && k !== "End Date To") {
+            chips.push({ label: k, value: displayValue });
+            appliedFiltersSummaryParts.push(`${k}: ${displayValue}`);
+          }
+          
           searchValues.push(v);
         }
       });
+      
       const baseUrl = "students-upskillings";
       const searchData = { searchFields, searchValues };
       await searchOperationTab(baseUrl, searchData);
       await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({ baseUrl, searchData }));
+      
       setPersistentFilterValues(values);
       setAppliedFilters(chips);
+      
+      // Set summary message
+      if (appliedFiltersSummaryParts.length > 0) {
+        setAppliedFiltersSummary("Multiple Filter Applied: " + appliedFiltersSummaryParts.join(", "));
+        setShowAppliedFilterMessage(true);
+      } else {
+        setAppliedFiltersSummary("");
+        setShowAppliedFilterMessage(false);
+      }
+      
       closefilterBox();
     };
 
@@ -400,7 +456,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                 <MultipleFilterBox>
                   <div className="filter-chips">
                     {filters.map((f) => (
-                      <button key={f} type="button" className={`chip ${activeFilters.includes(f) ? "active" : ""}`} onClick={() => toggleFilter(f)}>
+                      <button key={f} type="button" className={`chip ${activeFilters.includes(f) ? "active" : ""}`} onClick={() => toggleFilter(f, formik)}>
                         {f}
                       </button>
                     ))}
@@ -528,6 +584,22 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                       }
                     })}
                   </div>
+                  {appliedFilters.length > 0 && (
+                <div className="row">
+                  <div className="col-12" style={{ marginTop: "10px" }}>
+                    <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                      Applied Filters ({appliedFilters.length}):
+                    </p>
+                    <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {appliedFilters.map((f, idx) => (
+                        <span key={`${f.label}-${idx}`} className="chip">
+                          {f.label}: {f.value}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
                   <div className="filter-actions">
                     <button className="btn apply" type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>Apply</button>
                     <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>Clear</button>
@@ -811,8 +883,24 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                 </SearchRow>
               ))}
 
-              {/* Action Buttons Row */}
-            
+              {/* Applied Filters Summary */}
+              {showAppliedFilterMessage && appliedFiltersSummary && (
+                <div className="row" style={{ marginBottom: '15px' }}>
+                  <div className="col-12">
+                    <div style={{ 
+                      padding: '10px 15px', 
+                      backgroundColor: '#e8f5e8', 
+                      border: '1px solid #21867a', 
+                      borderRadius: '6px',
+                      color: '#21867a',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}>
+                      {appliedFiltersSummary}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Error Message Row */}
               {isFieldEmpty && (
@@ -823,22 +911,7 @@ const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </div>
                 </div>
               )}
-              {appliedFilters.length > 0 && (
-                <div className="row">
-                  <div className="col-12" style={{ marginTop: "10px" }}>
-                    <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                      Applied Filters ({appliedFilters.length}):
-                    </p>
-                    <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {appliedFilters.map((f, idx) => (
-                        <span key={`${f.label}-${idx}`} className="chip">
-                          {f.label}: {f.value}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+              
             </Section>
             {!onefilter && (
               <FilterBox initialFilterValues={(() => {

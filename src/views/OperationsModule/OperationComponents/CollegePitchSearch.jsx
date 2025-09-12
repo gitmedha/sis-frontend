@@ -95,6 +95,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
       setAppliedFiltersSummary("");
       setShowAppliedFilterMessage(false);
       setAppliedFilters([]);
+      setOnefilter(true);
       const baseUrl = "college-pitches";
       const searchData = { searchFields: [], searchValues: [] };
       await searchOperationTab(baseUrl, searchData);
@@ -312,7 +313,20 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                         }
                       })}
                     </div>
-
+                    {appliedFilters && appliedFilters.length > 0 && (
+                      <div style={{ marginTop: '10px' }}>
+                        <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                          Applied Filters ({appliedFilters.length}):
+                        </p>
+                        <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {appliedFilters.map((f, idx) => (
+                            <span key={`${f.label}-${idx}`} className="chip">
+                              {f.label}: {f.value}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="filter-actions">
                       <button className="btn apply_pitch" style={{background:"#21867a",color:"#fff"}} type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>
                         Apply
@@ -505,7 +519,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                   </SearchRow>
                 ))}
 
-                {appliedFilters.length > 0 && (
+                {/* {appliedFilters.length > 0 && (
                   <div style={{ marginTop: '10px' }}>
                     <p style={{ color: '#257b69', marginBottom: '6px' }}>
                       Applied Filters ({appliedFilters.length}):
@@ -518,7 +532,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Action Buttons Row */}
                 
