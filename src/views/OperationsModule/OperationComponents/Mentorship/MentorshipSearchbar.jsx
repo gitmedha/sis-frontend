@@ -10,6 +10,8 @@ import {
 import { getFieldValues } from "../operationsActions";
 import { getAllSearchSrm } from "../../../../utils/function/lookupOptions";
 import Select from "react-select";
+import { Modal } from "react-bootstrap";
+import "../ops.css";
 // import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 
 const Section = styled.div`
@@ -177,6 +179,9 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [disabled, setDisabled] = useState(true);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState([]); // {label, value}
+  const [persistentFilterValues, setPersistentFilterValues] = useState({}); // persist multi-filter selections
 
   const initialValues = {
     search_by_field: "",
@@ -186,6 +191,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
   };
 
   const handleSubmit = async (values) => {
+    setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
     const baseUrl = "mentorships";
     let searchData;
 
@@ -206,11 +212,28 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
       "prevSearchedPropsAndValues",
       JSON.stringify({ baseUrl, searchData })
     );
+    // Removed setShowAppliedFilterMessage(true) and setTimeout here
   };
 
   const closefilterBox = () => {
     setOnefilter(true);
-    // clear(); // Need to pass formik prop if this is used
+    setShowAppliedFilterMessage(false); // Hide the message when modal is dismissed
+    // Removed API call and local storage update from here
+  };
+
+  // New function for clearing filters only within the modal, then closing it
+  const clearModalFiltersAndClose = async () => {
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    const baseUrl = "mentorships";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
+    closefilterBox();
   };
 
   const filters = [
@@ -223,13 +246,67 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     "Medha Area",
     "Program Name",
     "Status",
-    "Start Date",
-    "End Date",
+    // "Start Date",
+    // "End Date",
   ];
 
-  const FilterBox = ({ closefilterBox, clear }) => {
-    const [activeFilters, setActiveFilters] = useState([]);
-    const [filterValues, setFilterValues] = useState({});
+  const FilterBox = ({
+    closefilterBox,
+    clear,
+    handleSubmit,
+    initialSelectedField,
+    initialFilterValues,
+    formik,
+    clearModalFiltersAndClose,
+    setShowAppliedFilterMessage,
+    appliedFilters,
+    setAppliedFilters,
+    setPersistentFilterValues,
+  }) => {
+    const filterMap = {
+      "mentor_name": "Mentor Name",
+      "mentor_domain": "Mentor Domain",
+      "mentor_company_name": "Mentor Company Name",
+      "designation": "Designation",
+      "mentor_area": "Mentor Area",
+      "mentor_state": "Mentor State",
+      "medha_area": "Medha Area",
+      "program_name": "Program Name",
+      "status": "Status",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+    };
+
+    const [activeFilters, setActiveFilters] = useState(() => {
+      const initialActiveSet = new Set();
+      // Activate chips for any persisted values
+      if (initialFilterValues && Object.keys(initialFilterValues).length > 0) {
+        for (const key in initialFilterValues) {
+          if (!Object.prototype.hasOwnProperty.call(initialFilterValues, key)) continue;
+          const val = initialFilterValues[key];
+          if (val === null || val === undefined || val === '') continue;
+          if (key.endsWith(' From')) {
+            initialActiveSet.add(key.replace(' From', ''));
+          } else if (key.endsWith(' To')) {
+            initialActiveSet.add(key.replace(' To', ''));
+          } else {
+            initialActiveSet.add(key);
+          }
+        }
+      }
+      // Ensure single-selected field is also active
+      if (initialSelectedField) {
+        const mappedKey = filterMap[initialSelectedField];
+        if (mappedKey) {
+          initialActiveSet.add(mappedKey);
+        }
+      }
+      return Array.from(initialActiveSet);
+    });
+    const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
+    const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
+
+    // Options states for dropdowns
     const [mentorNameOptions, setMentorNameOptions] = useState([]);
     const [mentorDomainOptions, setMentorDomainOptions] = useState([]);
     const [mentorCompanyOptions, setMentorCompanyOptions] = useState([]);
@@ -240,319 +317,693 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     const [programNameOptions, setProgramNameOptions] = useState([]);
     const [statusOptions, setStatusOptions] = useState([]);
 
-    useEffect(() => {
-      activeFilters.forEach(async (filter) => {
-        if (filter === "Mentor Name" && mentorNameOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_name", "mentorship");
-          setMentorNameOptions(data);
-        } else if (filter === "Mentor Domain" && mentorDomainOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_domain", "mentorship");
-          setMentorDomainOptions(data);
-        } else if (filter === "Mentor Company Name" && mentorCompanyOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_company_name", "mentorship");
-          setMentorCompanyOptions(data);
-        } else if (filter === "Designation" && designationOptions.length === 0) {
-          const { data } = await getFieldValues("designation", "mentorship");
-          setDesignationOptions(data);
-        } else if (filter === "Mentor Area" && mentorAreaOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_area", "mentorship");
-          setMentorAreaOptions(data);
-        } else if (filter === "Mentor State" && mentorStateOptions.length === 0) {
-          const { data } = await getFieldValues("mentor_state", "mentorship");
-          setMentorStateOptions(data);
-        } else if (filter === "Medha Area" && medhaAreaOptions.length === 0) {
-          const { data } = await getFieldValues("medha_area", "mentorship");
-          setMedhaAreaOptions(data);
-        } else if (filter === "Program Name" && programNameOptions.length === 0) {
-          const { data } = await getFieldValues("program_name", "mentorship");
-          setProgramNameOptions(data);
-        } else if (filter === "Status" && statusOptions.length === 0) {
-          const { data } = await getFieldValues("status", "mentorship");
-          setStatusOptions(data);
+    // Validation function for all active filters
+    const validateAllFilters = (currentFilterValues) => {
+      const newErrors = {};
+      let allValid = false; // change default: we allow Apply if at least one active filter is valid
+
+      if (activeFilters.length === 0) {
+        setIsApplyDisabled(true);
+        setFilterErrors({});
+        return false;
+      }
+
+      activeFilters.forEach((filter) => {
+        if (filter === "Start Date" || filter === "End Date") {
+          const fromValue = currentFilterValues[`${filter} From`];
+          const toValue = currentFilterValues[`${filter} To`];
+          if (fromValue && toValue) {
+            if (fromValue instanceof Date && toValue instanceof Date && fromValue > toValue) {
+              newErrors[filter] = `${filter} From date cannot be after ${filter} To date.`;
+            } else {
+              allValid = true; // this filter is valid
+            }
+          } else if (fromValue || toValue) {
+            newErrors[filter] = `Both ${filter} From and To are required.`;
+          }
+        } else {
+          const val = currentFilterValues[filter];
+          if (val && (typeof val !== 'string' || val.trim() !== '')) {
+            allValid = true; // at least one non-empty active filter makes form submittable
+          }
         }
       });
-    }, [activeFilters]);
 
-    const toggleFilter = (filter) => {
-      setActiveFilters((prev) =>
-        prev.includes(filter)
+      setFilterErrors(newErrors);
+      setIsApplyDisabled(!allValid);
+      return allValid;
+    };
+
+
+    const toggleFilter = (filter, modalFormik) => {
+      setActiveFilters((prev) => {
+        const newActiveFilters = prev.includes(filter)
           ? prev.filter((f) => f !== filter)
-          : [...prev, filter]
-      );
+          : [...prev, filter];
+
+        // Also update filterValues when a filter is toggled off
+        if (prev.includes(filter)) { // If filter is being deselected
+          // We need to clear values from the MODAL Formik state here so UI and submit are clean
+          const fm = modalFormik || formik;
+          fm.setFieldValue(filter, null);
+          if (filter === "Start Date" || filter === "End Date") {
+            fm.setFieldValue(`${filter} From`, null);
+            fm.setFieldValue(`${filter} To`, null);
+          }
+        } else {
+          // On activation, for non-date filters, fetch options so dropdown is immediately populated
+          if (filter !== "Start Date" && filter !== "End Date") {
+            // Fetch options for Select components
+            const fieldToBackendMap = {
+              "Mentor Name": "mentor_name",
+              "Mentor Domain": "mentor_domain",
+              "Mentor Company Name": "mentor_company_name",
+              "Designation": "designation",
+              "Mentor Area": "mentor_area",
+              "Mentor State": "mentor_state",
+              "Medha Area": "medha_area",
+              "Program Name": "program_name",
+              "Status": "status",
+            };
+
+            const backendFieldName = fieldToBackendMap[filter];
+            if (backendFieldName) {
+              getFieldValues(backendFieldName, "mentorship").then(({ data }) => {
+                switch (filter) {
+                  case "Mentor Name":
+                    setMentorNameOptions(data);
+                    break;
+                  case "Mentor Domain":
+                    setMentorDomainOptions(data);
+                    break;
+                  case "Mentor Company Name":
+                    setMentorCompanyOptions(data);
+                    break;
+                  case "Designation":
+                    setDesignationOptions(data);
+                    break;
+                  case "Mentor Area":
+                    setMentorAreaOptions(data);
+                    break;
+                  case "Mentor State":
+                    setMentorStateOptions(data);
+                    break;
+                  case "Medha Area":
+                    setMedhaAreaOptions(data);
+                    break;
+                  case "Program Name":
+                    setProgramNameOptions(data);
+                    break;
+                  case "Status":
+                    setStatusOptions(data);
+                    break;
+                  default:
+                    break;
+                }
+              }).catch(error => {
+                console.error(`Error fetching values for ${filter}:`, error);
+              });
+            }
+          }
+        }
+        return newActiveFilters;
+      });
     };
 
-    const handleChange = (filter, value) => {
-      setFilterValues((prev) => ({
-        ...prev,
-        [filter]: value,
-      }));
-    };
+    const handleApply = async (formikValues) => {
+      // Run validation before applying filters
+      if (!validateAllFilters(formikValues)) {
+        return; // Stop if validation fails
+      }
 
-    const handleApply = async () => {
-      const searchFields = Object.keys(filterValues);
-      const searchValues = Object.values(filterValues);
+      const backendFieldMap = {
+        "Mentor Name": "mentor_name",
+        "Mentor Domain": "mentor_domain",
+        "Mentor Company Name": "mentor_company_name",
+        "Designation": "designation",
+        "Mentor Area": "mentor_area",
+        "Mentor State": "mentor_state",
+        "Medha Area": "medha_area",
+        "Program Name": "program_name",
+        "Status": "status",
+        "Start Date From": "start_date_from",
+        "Start Date To": "start_date_to",
+        "End Date From": "end_date_from",
+        "End Date To": "end_date_to",
+      };
+
+      const searchFields = [];
+      const searchValues = [];
+      const appliedList = [];
+
+      const isKeyActive = (key) => {
+        if (key.endsWith(' From') || key.endsWith(' To')) {
+          const base = key.replace(/ (From|To)$/,'');
+          return activeFilters.includes(base);
+        }
+        return activeFilters.includes(key);
+      };
+
+      Object.keys(formikValues).forEach((key) => {
+        if (!isKeyActive(key)) {
+          return; // Skip values for filters that are not currently active
+        }
+        const backendFieldName = backendFieldMap[key] || key;
+        let value = formikValues[key];
+        let displayValue = value;
+
+        if (value instanceof Date && !isNaN(value)) {
+          displayValue = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(value);
+          value = value.toISOString(); // Convert valid Date objects to ISO string for API
+        }
+        
+        // Add to applied list if a value is present
+        if (value !== null && value !== undefined && value !== '') {
+          // Special handling for date ranges to combine them
+          if (key === "Start Date From") {
+            const toKey = "Start Date To";
+            const toValue = formikValues[toKey];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            appliedList.push({ label: key.replace(' From', ''), value: `${displayValue} - ${formattedTo}` });
+          } else if (key === "End Date From") {
+            const toKey = "End Date To";
+            const toValue = formikValues[toKey];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            appliedList.push({ label: key.replace(' From', ''), value: `${displayValue} - ${formattedTo}` });
+          } else if (key !== "Start Date To" && key !== "End Date To") { // Avoid adding "To" dates if already handled
+            appliedList.push({ label: key, value: displayValue });
+          }
+        }
+
+        searchFields.push(backendFieldName);
+        searchValues.push(value);
+      });
 
       const searchData = {
         searchFields,
         searchValues,
       };
       const baseUrl = "mentorships";
+
       await searchOperationTab(baseUrl, searchData);
       await localStorage.setItem(
         "prevSearchedPropsAndValues",
         JSON.stringify({ baseUrl, searchData })
       );
+      setPersistentFilterValues(formikValues);
+      setAppliedFilters(appliedList);
+      setShowAppliedFilterMessage(appliedList.length > 0);
+      closefilterBox(); // Close the modal
     };
 
     return (
-      <MultipleFilterBox>
-        <div className="filter-box">
-          <h4 className="filter-title">Add Filter</h4>
+      <Formik
+        initialValues={initialFilterValues}
+        enableReinitialize={true}
+        onSubmit={(values) => handleApply(values)}
+        validate={(values) => {
+          validateAllFilters(values);
+        }}
+      >
+        {(formik) => (
+          <Form>
+            <Modal
+              centered
+              size="lg"
+              show={true}
+              onHide={() => { setPersistentFilterValues(formik.values); closefilterBox(); }}
+              animation={false}
+              aria-labelledby="contained-modal-title-vcenter"
+              className="form-modal"
+            >
+              <Modal.Header className="bg-white">
+                <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">
+                  Add Filters
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="">
+                <div className="filter-box">
+                  {/* Filter Chips */}
+                  <div className="filter-chips">
+                    {filters.map((f) => (
+                      <button
+                        key={f}
+                        type="button"
+                        className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
+                        onClick={() => toggleFilter(f, formik)}
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="filter-inputs">
+                    {activeFilters.map((f) => {
+                      switch (f) {
+                        case "Start Date":
+                        case "End Date":
+                          return (
+                            <Fragment key={f}>
+                              <DateRangeContainer>
+                                <div className="date-input-group">
+                                  <label>{`${f} From`}</label>
+                                  <Input
+                                    control="datepicker"
+                                    name={`${f} From`}
+                                    className="form-control w-300"
+                                    onChange={(date) => {
+                                      formik.setFieldValue(`${f} From`, date);
+                                    }}
+                                    value={formik.values[`${f} From`] || null}
+                                    showTime={false}
+                                  />
+                                </div>
+                                <div className="date-input-group">
+                                  <label>{`${f} To`}</label>
+                                  <Input
+                                    control="datepicker"
+                                    name={`${f} To`}
+                                    className="form-control w-300"
+                                    onChange={(date) => {
+                                      formik.setFieldValue(`${f} To`, date);
+                                    }}
+                                    minDate={formik.values[`${f} From`] || null}
+                                    value={formik.values[`${f} To`] || null}
+                                    showTime={false}
+                                  />
+                                </div>
+                              </DateRangeContainer>
+                              {filterErrors[f] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors[f]}
+                                </p>
+                              )}
+                            </Fragment>
+                          );
+                        case "Mentor Name":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="mentorName">Mentor Name</label>
+                              <Select
+                                id="mentorName"
+                                options={mentorNameOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Mentor Name", selected?.value)
+                                }
+                                placeholder="Select Mentor Name..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Mentor Name"] ? {
+                                    label: formik.values["Mentor Name"],
+                                    value: formik.values["Mentor Name"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Mentor Name"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Mentor Name"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Mentor Domain":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="mentorDomain">Mentor Domain</label>
+                              <Select
+                                id="mentorDomain"
+                                options={mentorDomainOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Mentor Domain", selected?.value)
+                                }
+                                placeholder="Select Mentor Domain..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Mentor Domain"] ? {
+                                    label: formik.values["Mentor Domain"],
+                                    value: formik.values["Mentor Domain"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Mentor Domain"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Mentor Domain"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Mentor Company Name":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="mentorCompany">Mentor Company Name</label>
+                              <Select
+                                id="mentorCompany"
+                                options={mentorCompanyOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Mentor Company Name", selected?.value)
+                                }
+                                placeholder="Select Mentor Company..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Mentor Company Name"] ? {
+                                    label: formik.values["Mentor Company Name"],
+                                    value: formik.values["Mentor Company Name"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Mentor Company Name"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Mentor Company Name"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Designation":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="designation">Designation</label>
+                              <Select
+                                id="designation"
+                                options={designationOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Designation", selected?.value)
+                                }
+                                placeholder="Select Designation..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Designation"] ? {
+                                    label: formik.values["Designation"],
+                                    value: formik.values["Designation"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Designation"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Designation"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Mentor Area":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="mentorArea">Mentor Area</label>
+                              <Select
+                                id="mentorArea"
+                                options={mentorAreaOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Mentor Area", selected?.value)
+                                }
+                                placeholder="Select Mentor Area..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Mentor Area"] ? {
+                                    label: formik.values["Mentor Area"],
+                                    value: formik.values["Mentor Area"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Mentor Area"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Mentor Area"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Mentor State":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="mentorState">Mentor State</label>
+                              <Select
+                                id="mentorState"
+                                options={mentorStateOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Mentor State", selected?.value)
+                                }
+                                placeholder="Select Mentor State..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Mentor State"] ? {
+                                    label: formik.values["Mentor State"],
+                                    value: formik.values["Mentor State"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Mentor State"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Mentor State"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Medha Area":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="medhaArea">Medha Area</label>
+                              <Select
+                                id="medhaArea"
+                                options={medhaAreaOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Medha Area", selected?.value)
+                                }
+                                placeholder="Select Medha Area..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Medha Area"] ? {
+                                    label: formik.values["Medha Area"],
+                                    value: formik.values["Medha Area"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Medha Area"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Medha Area"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Program Name":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="programName">Program Name</label>
+                              <Select
+                                id="programName"
+                                options={programNameOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Program Name", selected?.value)
+                                }
+                                placeholder="Select Program Name..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Program Name"] ? {
+                                    label: formik.values["Program Name"],
+                                    value: formik.values["Program Name"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Program Name"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Program Name"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        case "Status":
+                          return (
+                            <div key={f}>
+                              <label htmlFor="status">Status</label>
+                              <Select
+                                id="status"
+                                options={statusOptions.map((opt) => ({
+                                  label: opt.value,
+                                  value: opt.value,
+                                }))}
+                                onChange={(selected) =>
+                                  formik.setFieldValue("Status", selected?.value)
+                                }
+                                placeholder="Select Status..."
+                                isClearable
+                                isSearchable
+                                value={
+                                  formik.values["Status"] ? {
+                                    label: formik.values["Status"],
+                                    value: formik.values["Status"],
+                                  } : null
+                                }
+                                styles={{
+                                  container: (base) => ({
+                                    ...base,
+                                    width: "300px",
+                                  }),
+                                }}
+                              />
+                              {filterErrors["Status"] && (
+                                <p style={{ color: "red", fontSize: "0.8rem", marginTop: "5px" }}>
+                                  {filterErrors["Status"]}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        default:
+                          return (
+                            <Input
+                              key={f}
+                              name={f.replace(/ /g, "_").toLowerCase()}
+                              control="input"
+                              label={f}
+                              className="form-control"
+                              onChange={(e) =>
+                                formik.setFieldValue(f.replace(/ /g, "_").toLowerCase(), e.target.value)
+                              }
+                              value={formik.values[f] || ""}
+                            />
+                          );
+                      }
+                    })}
+                  </div>
 
-          {/* Filter Chips */}
-          <div className="filter-chips">
-            {filters.map((f) => (
-              <button
-                key={f}
-                type="button"
-                className={`chip ${activeFilters.includes(f) ? "active" : ""}`}
-                onClick={() => toggleFilter(f)}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
+                  {/* Live Selected Chips Inside Modal (reflect current dropdown/date selections) */}
+                  {activeFilters.length > 0 && (
+                    <div style={{ marginTop: '10px' }}>
+                      <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                      Applied Filters : ({appliedFilters.length}):
+                      </p>
+                      <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {activeFilters.map((af) => {
+                          // Build display from current Formik values
+                          if (af === 'Start Date' || af === 'End Date') {
+                            const fromVal = formik.values[`${af} From`];
+                            const toVal = formik.values[`${af} To`];
+                            const fmt = (d) => (d instanceof Date && !isNaN(d) ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(d) : '');
+                            const range = `${fmt(fromVal)}${fromVal || toVal ? ' - ' : ''}${fmt(toVal)}`;
+                            return (
+                              <span key={`live-${af}`} className="chip">
+                                {af}: {range}
+                              </span>
+                            );
+                          }
+                          const val = formik.values[af];
+                          if (val !== null && val !== undefined && val !== '') {
+                            return (
+                              <span key={`live-${af}`} className="chip">
+                                {af}: {val}
+                              </span>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                    </div>
+                  )}
 
-          {/* Filter Inputs */}
-          <div className="filter-inputs">
-            {activeFilters.map((f) => {
-              switch (f) {
-                case "Start Date":
-                case "End Date":
-                  return (
-                    <DateRangeContainer key={f}>
-                      <Input
-                        name={`${f.replace(/ /g, "_").toLowerCase()}_from`}
-                        control="datepicker"
-                        label={`${f} From`}
-                        className="form-control"
-                        onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase() + "_from", e)}
-                      />
-                      <Input
-                        name={`${f.replace(/ /g, "_").toLowerCase()}_to`}
-                        control="datepicker"
-                        label={`${f} To`}
-                        className="form-control"
-                        onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase() + "_to", e)}
-                      />
-                    </DateRangeContainer>
-                  );
-                case "Mentor Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorNameOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_name", selected?.value)}
-                      placeholder="Select Mentor Name..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Domain":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorDomainOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_domain", selected?.value)}
-                      placeholder="Select Mentor Domain..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Company Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorCompanyOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_company_name", selected?.value)}
-                      placeholder="Select Mentor Company..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Designation":
-                  return (
-                    <Select
-                      key={f}
-                      options={designationOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("designation", selected?.value)}
-                      placeholder="Select Designation..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor Area":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorAreaOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_area", selected?.value)}
-                      placeholder="Select Mentor Area..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Mentor State":
-                  return (
-                    <Select
-                      key={f}
-                      options={mentorStateOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("mentor_state", selected?.value)}
-                      placeholder="Select Mentor State..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Medha Area":
-                  return (
-                    <Select
-                      key={f}
-                      options={medhaAreaOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("medha_area", selected?.value)}
-                      placeholder="Select Medha Area..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Program Name":
-                  return (
-                    <Select
-                      key={f}
-                      options={programNameOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("program_name", selected?.value)}
-                      placeholder="Select Program Name..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                case "Status":
-                  return (
-                    <Select
-                      key={f}
-                      options={statusOptions.map((opt) => ({
-                        label: opt.value,
-                        value: opt.value,
-                      }))}
-                      onChange={(selected) => handleChange("status", selected?.value)}
-                      placeholder="Select Status..."
-                      isClearable
-                      isSearchable
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "300px",
-                        }),
-                      }}
-                    />
-                  );
-                default:
-                  return (
-                    <Input
-                      key={f}
-                      name={f.replace(/ /g, "_").toLowerCase()}
-                      control="input"
-                      label={f}
-                      className="form-control"
-                      onChange={(e) => handleChange(f.replace(/ /g, "_").toLowerCase(), e.target.value)}
-                    />
-                  );
-              }
-            })}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="filter-actions">
-            <button className="btn apply" type="button" onClick={handleApply}>
-              Apply
-            </button>
-            <button className="btn clear" type="button" onClick={closefilterBox}>
-              Clear
-            </button>
-          </div>
-        </div>
-      </MultipleFilterBox>
+                  {/* Action Buttons */}
+                  <div className="filter-actions">
+                    <button
+                      className="btn apply"
+                      style={{background:"#21867a"}}
+                      type="button"
+                      onClick={() => handleApply(formik.values)}
+                      disabled={isApplyDisabled}
+                    >
+                      Apply
+                    </button>
+                    <button
+                      className="btn clear"
+                      type="button"
+                      onClick={clearModalFiltersAndClose}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </Modal.Body>
+            </Modal>
+          </Form>
+        )}
+      </Formik>
     );
   };
 
@@ -562,6 +1013,16 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchField(null);
     setDisabled(true);
     setIsFieldEmpty(false);
+    setShowAppliedFilterMessage(false); // Hide multi-filter applied message on clear
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    const baseUrl = "mentorships";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
   };
 
   const setSearchItem = async (value) => {
@@ -601,10 +1062,10 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 
   return (
     <Fragment>
-      {onefilter ? (
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-          {(formik) => (
-            <Form>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {(formik) => (
+          <Form>
+            {onefilter ? (
               <Section>
                 <SearchRow>
                   <SearchFieldContainer>
@@ -792,12 +1253,59 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
                   </div>
                 )}
               </Section>
-            </Form>
-          )}
-        </Formik>
-      ) : (
-        <FilterBox closefilterBox={closefilterBox} clear={clear} />
-      )}
+            ) : (
+              <FilterBox
+                closefilterBox={closefilterBox}
+                handleSubmit={handleSubmit}
+                clear={clear}
+                initialSelectedField={selectedSearchField}
+                initialFilterValues={(() => {
+                  const mappedValues = {};
+                  if (formik.values.search_by_field && formik.values.search_by_value) {
+                    const filterMap = {
+                      "mentor_name": "Mentor Name",
+                      "mentor_domain": "Mentor Domain",
+                      "mentor_company_name": "Mentor Company Name",
+                      "designation": "Designation",
+                      "mentor_area": "Mentor Area",
+                      "mentor_state": "Mentor State",
+                      "medha_area": "Medha Area",
+                      "program_name": "Program Name",
+                      "status": "Status",
+                      "start_date": "Start Date",
+                      "end_date": "End Date",
+                    };
+                    const filterKey = filterMap[formik.values.search_by_field];
+                    if (filterKey) {
+                      // Handle date values specifically for pre-population
+                      if (formik.values.search_by_field === "start_date") {
+                        const dateFrom = formik.values.search_by_value_date_from;
+                        const dateTo = formik.values.search_by_value_date_to;
+                        mappedValues["Start Date From"] = dateFrom && dateFrom.toString() !== "Invalid Date" ? new Date(dateFrom) : null;
+                        mappedValues["Start Date To"] = dateTo && dateTo.toString() !== "Invalid Date" ? new Date(dateTo) : null;
+                      } else if (formik.values.search_by_field === "end_date") {
+                        const dateFrom = formik.values.search_by_value_date_from;
+                        const dateTo = formik.values.search_by_value_date_to;
+                        mappedValues["End Date From"] = dateFrom && dateFrom.toString() !== "Invalid Date" ? new Date(dateFrom) : null;
+                        mappedValues["End Date To"] = dateTo && dateTo.toString() !== "Invalid Date" ? new Date(dateTo) : null;
+                      } else {
+                        mappedValues[filterKey] = formik.values.search_by_value;
+                      }
+                    }
+                  }
+                  return { ...persistentFilterValues, ...mappedValues };
+                })()}
+                formik={formik} // Pass formik object directly
+                clearModalFiltersAndClose={clearModalFiltersAndClose}
+                setShowAppliedFilterMessage={setShowAppliedFilterMessage}
+                appliedFilters={appliedFilters}
+                setAppliedFilters={setAppliedFilters}
+                setPersistentFilterValues={setPersistentFilterValues}
+              />
+            )}
+          </Form>
+        )}
+      </Formik>
     </Fragment>
   );
 };
