@@ -110,14 +110,14 @@ const TotEdit = (props) => {
     try {
       
       
-      const { data } = await searchInstitutions(props.college || filterValue);
+      const { data } = await searchInstitutions( filterValue || props.college );
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
@@ -305,6 +305,16 @@ const TotEdit = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
+    user_name: Yup.string().required("Participant Name is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email ID is required"),
+    contact: Yup.string()
+      .matches(/^[0-9]{10}$/, "Phone number is not valid")
+      .required("Mobile number is required"),
+    state: Yup.string().required("State is required"),
+    city: Yup.string().required("District where training took place is required"),
+    project_name: Yup.string().required("Project Name is required"),
     trainer_1: Yup.string().required("Facilitator 1 is required"),
     // trainer_2: Yup.string()
     //   .required("Trainer 2 is required")
@@ -377,6 +387,7 @@ const TotEdit = (props) => {
                           control="input"
                           name="user_name"
                           label="Participant Name"
+                          required
                           className="form-control"
                           placeholder="Participant Name"
                         />
@@ -387,8 +398,9 @@ const TotEdit = (props) => {
                           control="input"
                           name="email"
                           label="Email id"
+                          required
                           className="form-control"
-                          placeholder="Participant Name"
+                          placeholder="Email id"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -459,7 +471,7 @@ const TotEdit = (props) => {
                         <Input
                           name="start_date"
                           label="Start Date "
-                          // required
+                          required
                           placeholder="Start Date"
                           control="datepicker"
                           className="form-control"
@@ -470,7 +482,7 @@ const TotEdit = (props) => {
                         <Input
                           name="end_date"
                           label="End Date"
-                          // required
+                          required
                           placeholder="End Date"
                           control="datepicker"
                           className="form-control"
@@ -517,15 +529,15 @@ const TotEdit = (props) => {
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
-                          control="lookupAsync"
-                          name="college"
-                          label="College"
-                          // onKeyPress={handleKeyPress}
-                          className="form-control"
-                          defaultOptions={institutionOptions}
-                          filterData={filterInstitution}
-                          placeholder="College"
-                        />
+                            control="lookupAsync"
+                            name="college"
+                            label="College"
+                            // onKeyPress={handleKeyPress}
+                            className="form-control"
+                            defaultOptions={institutionOptions}
+                            filterData={filterInstitution}
+                            placeholder="College"
+                          />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
                         <Input
@@ -535,7 +547,7 @@ const TotEdit = (props) => {
                           label="Age"
                           onKeyPress={numberChecker}
                           className="form-control"
-                          placeholder="Guest"
+                          placeholder="Age"
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mb-2">
@@ -556,6 +568,7 @@ const TotEdit = (props) => {
                           control="input"
                           name="contact"
                           label="Contact"
+                          required
                           className="form-control"
                           placeholder="Contact"
                           onKeyPress={mobileNochecker}
@@ -585,6 +598,7 @@ const TotEdit = (props) => {
                             label="State "
                             control="lookup"
                             options={stateOptions}
+                            required
                             onChange={onStateChange}
                             placeholder="State"
                             className="form-control"
@@ -601,6 +615,7 @@ const TotEdit = (props) => {
                             label="District where training took place"
                             control="lookup"
                             options={areaOptions}
+                            required
                             placeholder="City"
                             className="form-control"
                           />

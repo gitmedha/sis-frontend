@@ -210,17 +210,17 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
 
-    if (["city", "project_name", "partner_dept", "trainer_1.username", 
-         "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
+    if (["city", "project_name", "partner_dept", "trainer_1.username",
+      "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
       setDropdownValues(value);
     }
-    else if (value === "gender"){
-        setDropdownValues("gender");
+    else if (value === "gender") {
+      setDropdownValues("gender");
     }
-    else if (value === "user_name"){
-        setDropdownValues("user_name");
+    else if (value === "user_name") {
+      setDropdownValues("user_name");
     }
-    
+
   };
 
   const setDropdownValues = async (fieldName) => {
@@ -313,19 +313,19 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                         />
                       )}
 
-                      {selectedSearchFields[index] && 
+                      {selectedSearchFields[index] &&
                         !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
-                        <Input
-                          icon={["city", "project_name", "partner_dept", "trainer_1.username", 
-                                "trainer_2.username", "state", "gender", "user_name"].includes(selectedSearchFields[index]) ? "down" : undefined}
-                          name={`searches[${index}].search_by_value`}
-                          label="Search Value"
-                          control={getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input"}
-                          options={getOptionsForField(selectedSearchFields[index])}
-                          className="form-control"
-                          disabled={disabled}
-                        />
-                      )}
+                          <Input
+                            icon={["city", "project_name", "partner_dept", "trainer_1.username",
+                              "trainer_2.username", "state", "gender", "user_name"].includes(selectedSearchFields[index]) ? "down" : undefined}
+                            name={`searches[${index}].search_by_value`}
+                            label="Search Value"
+                            control={getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input"}
+                            options={getOptionsForField(selectedSearchFields[index])}
+                            className="form-control"
+                            disabled={disabled}
+                          />
+                        )}
 
                       {selectedSearchFields[index] === "start_date" && (
                         <DateRangeContainer>
@@ -384,12 +384,13 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                   </div>
 
                   {index === counter - 1 && (
-                    <div className="col-lg-1 col-md-2 col-sm-12">
-                      <IconContainer>
+                    <IconContainer>
+                      {/* Only show plus icon if we haven't reached the maximum */}
+                      {counter < 4 && (
                         <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
-                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
-                      </IconContainer>
-                    </div>
+                      )}
+                      {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                    </IconContainer>
                   )}
                 </SearchRow>
               ))}

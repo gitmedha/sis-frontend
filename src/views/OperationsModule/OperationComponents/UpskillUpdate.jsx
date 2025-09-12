@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { FaSchool } from "react-icons/fa";
 import { Input } from "../../../utils/Form";
 import { urlPath } from "../../../constants";
+import * as Yup from "yup";
 import {
   getAddressOptions,
   getStateDistricts,
@@ -124,6 +125,7 @@ const UpskillUpdate = (props) => {
   const filterStudent = async (filterValue) => {
     try {
       const { data } = await searchStudents(filterValue || props.student_id.id);
+      console.log(props,"data in filter");
       
       let studentFoundInList = false;
       let filterData = data.studentsConnection.values.map((student) => {
@@ -245,7 +247,7 @@ const UpskillUpdate = (props) => {
   const onSubmit = async (values) => {
     const newObject = { ...values };
 
-    newObject["student_id"] = value.student_id;
+    newObject["student_id"] = values.student_id;
     newObject["assigned_to"] = Number(values["assigned_to"]);
 
     newObject["start_date"] = moment(values["start_date"]).format("YYYY-MM-DD");
@@ -294,10 +296,29 @@ const UpskillUpdate = (props) => {
     const date = new Date(dateString);
     return date;
   }
+   const upskillValidation = Yup.object().shape({
+    assigned_to: Yup.string().required("Assigned To is required"),
+    student_id: Yup.mixed().required("Student is required"),
+    institution: Yup.number().nullable().required("Institution is required"),
+    batch: Yup.number().required("Batch is required"),
+    program_name: Yup.string().required("Program Name is required"),
+    course_name: Yup.string().required("Certificate Course Name is required"),
+    category: Yup.string().required("Category is required"),
+    sub_category: Yup.string().required("Sub Category is required"),
+    start_date: Yup.date().nullable().required("Start Date is required"),
+    end_date: Yup.date().nullable()
+      .required("End Date is required")
+      .when("start_date", (start, schema) => {
+        return schema.min(
+          start,
+          "End Date must be greater than or equal to Start Date"
+        );
+      }),
+  });
 
   let initialValues = {
     assigned_to: "",
-    student_id: "",
+    student_id: null, // Changed from "" to null for lookup
     institution: "",
     batch: "",
     start_date: "",
@@ -317,7 +338,16 @@ const UpskillUpdate = (props) => {
     initialValues["issued_org"] = props.issued_org;
     initialValues["course_name"] = props.course_name;
     
-    initialValues["student_id"] = props.student_id.id;
+    // Ensure student_id is an object for pre-population
+    // if (props.student_id && props.student_id.id) {
+    //     initialValues["student_id"] = {
+    //         label: `${props.student_id.full_name} (${props.student_id.student_id})`,
+    //         value: props.student_id.id,
+    //     };
+    // }
+    initialValues["student_id"] = props.student_id ? Number(props.student_id.id) : null;
+
+
     initialValues["start_date"] = formatDateStringToIndianStandardTime(
       props.start_date
     );
@@ -432,7 +462,11 @@ useEffect(() => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validationSchema={upskillValidation}
+            >
               {({ values, setFieldValue }) => (
                 <Form>
                   <div className="row form_sec">
@@ -449,7 +483,7 @@ useEffect(() => {
                               placeholder="Student"
                               filterData={filterStudent}
                               defaultOptions={
-                                props.student_id.id ? studentOptions : true
+                                props.student_id.id ? studentOptions : null
                               }
                               required
                             />
@@ -482,6 +516,8 @@ useEffect(() => {
                             defaultOptions={assigneeOptions}
                             isDisabled={blocked}
                           />
+                          {console.log(assigneeOptions)
+                          }
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-3">
@@ -502,6 +538,7 @@ useEffect(() => {
                             name="program_name"
                             control="lookup"
                             icon="down"
+                            required
                             label="Program Name"
                             options={programeName}
                             className="form-control"
@@ -519,6 +556,7 @@ useEffect(() => {
                             placeholder="Institution"
                             className="form-control"
                             isClearable
+                            required
                           />
                         </div>
 
@@ -555,6 +593,7 @@ useEffect(() => {
                             options={course}
                             className="form-control"
                             placeholder="Course Name"
+                            required
                           />
                         </div>
 
@@ -567,6 +606,7 @@ useEffect(() => {
                             className="form-control"
                             placeholder="Category"
                             options={categoryOptions}
+                            required
                           />
                         </div>
 
@@ -579,6 +619,7 @@ useEffect(() => {
                             className="form-control"
                             placeholder="Sub Category"
                             options={subcategory}
+                            required
                           />
                         </div>
 

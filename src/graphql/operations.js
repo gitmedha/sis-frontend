@@ -878,6 +878,7 @@ export const SEARCH_BY_STUDENTS = `
         _or:[
           {full_name_contains:$query}
           {student_id_contains:$query}
+          {id_contains:$query}
         ]
       }
     ){
