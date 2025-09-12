@@ -135,7 +135,7 @@ const OpportunityForm = (props) => {
         };
       }));
       setEarningTypeOptions(
-        data.earning_type.map((item) => ({
+        data?.earning_type?.map((item) => ({
           key: item.value,
           value: item.value,
           label: item.value,
