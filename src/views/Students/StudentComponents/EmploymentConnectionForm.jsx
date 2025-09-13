@@ -112,6 +112,9 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
+    if (selectedOpportunityType !== 'Freelance') {
+          values.earning_type = null;   
+        }
     onHide(values);
   };
 
@@ -343,7 +346,6 @@ const EnrollmentConnectionForm = (props) => {
           validationSchema={EmploymentConnectionValidations}
           validate={(values) => {
             const errors = {};
-        
             // Require earning_type only when the chosen opportunity TYPE is Freelance
             if (selectedOpportunityType === 'Freelance' && !values.earning_type) {
               errors.earning_type = 'Earning type is required when type is Freelance.';
@@ -396,6 +398,7 @@ const EnrollmentConnectionForm = (props) => {
                       placeholder="Employer"
                       onChange={(employer) => {
                         setSelectedOpportunityType(null);
+                        setFieldValue('opportunity_id', '');             
                         updateEmployerOpportunityOptions(employer);
                       }}
                     />
