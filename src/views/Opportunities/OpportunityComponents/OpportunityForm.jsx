@@ -170,6 +170,7 @@ const OpportunityForm = (props) => {
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
         earning_type: props.earning_type || '', // Handle null values
+        experience_required: props.experience_required ?? '', // ✅ make it a string
       });
     }
 
@@ -230,7 +231,7 @@ const OpportunityForm = (props) => {
       return word[0].toUpperCase() + word.substring(1);
     }).join(" ")
     if (values.type !== 'Freelance') {
-      delete values.earning_type;
+      values.earning_type = null;
   }
     onHide(values);
   };
