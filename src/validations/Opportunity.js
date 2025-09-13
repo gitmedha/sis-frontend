@@ -67,11 +67,12 @@ export const OpportunityValidations = Yup.object({
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
   ),
   pin_code,
-  earning_type: Yup.string().when('type', {
-    is: 'Freelance',
+  earning_type: Yup.string().nullable().when('type', {
+    is: (val) => val === 'Freelance',
     then: (schema) => schema.required('Earning type is required when type is Freelance.'),
-    otherwise: (schema) => schema.optional(),
+    otherwise: (schema) => schema.notRequired(),
   }),
+
 
 });
 

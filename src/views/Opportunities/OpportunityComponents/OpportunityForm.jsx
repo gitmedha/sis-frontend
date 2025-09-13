@@ -154,13 +154,13 @@ const OpportunityForm = (props) => {
           };
         })
       );
-      // setEarningTypeOptions(
-      //   data?.earning_type.map((item) => ({
-      //     key: item.value,
-      //     value: item.value,
-      //     label: item.value,
-      //   }))
-      // );
+      setEarningTypeOptions(
+        data?.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        }))
+      );
     });
 
     getAllEmployers().then((data) => {
@@ -190,6 +190,7 @@ const OpportunityForm = (props) => {
         ...props,
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : "",
+        earning_type: props.earning_type || '',
       });
     }
 
@@ -240,9 +241,9 @@ const OpportunityForm = (props) => {
       values.role_or_designation.slice(1);
     delete values.updated_at;
     // If type is not Freelance, remove earning_type
-  if (values.type !== 'Freelance') {
-    delete values.earning_type;
-  }
+    if ((values.type || "").toLowerCase().trim() !== "freelance") {
+      values.earning_type = null;
+    }
     values.skills_required = values.skills_required
       .split(",")
       .map((word) => {
@@ -272,6 +273,7 @@ const OpportunityForm = (props) => {
       };
       await createLatestAcivity(propgramEnrollemntData);
     }
+    
     // let datavaluesforlatestcreate={module_name:"opportunity",activity:"Opportunity Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newValueObject,valuesdata)};
     // await createLatestAcivity(datavaluesforlatestcreate);
 

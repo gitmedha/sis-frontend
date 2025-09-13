@@ -102,10 +102,10 @@ const EnrollmentConnectionForm = (props) => {
       ? props.employmentConnection.opportunity.id
       : null;
     initialValues["start_date"] = props.employmentConnection.start_date
-      ? new Date(props.employmentConnection.start_date)
+    ? props.employmentConnection.start_date.slice(0, 11)
       : null;
     initialValues["end_date"] = props.employmentConnection.end_date
-      ? new Date(props.employmentConnection.end_date)
+      ? new Date(props.employmentConnection?.end_date)
       : null;
   }
 
@@ -232,6 +232,10 @@ const EnrollmentConnectionForm = (props) => {
     if(selectedOpportunityType !== 'Freelance'){
       delete values.earning_type;
   }
+  if (selectedOpportunityType !== 'Freelance') {
+    values.earning_type = null;   
+  }
+
     onHide(values);
   };
 
@@ -461,7 +465,18 @@ console.log(statusOptions,'statusOptions')
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
-          validationSchema={EmploymentConnectionValidations}
+          validationSchema={EmploymentConnectionValidations} 
+          validate={(values) => {
+            const errors = {};
+        
+            // Require earning_type only when the chosen opportunity TYPE is Freelance
+            if (selectedOpportunityType === 'Freelance' && !values.earning_type) {
+              errors.earning_type = 'Earning type is required when type is Freelance.';
+            }
+        
+            return errors;
+          }}
+        
         >
           {({ values, setFieldValue }) => (
             <Form>
@@ -507,6 +522,7 @@ console.log(statusOptions,'statusOptions')
                       placeholder="Employer"
                       onChange={(employer) => {
                         setSelectedOpportunityType(null);
+                        setFieldValue('opportunity_id', '');
                         updateEmployerOpportunityOptions(employer);
                       }}
                     />
