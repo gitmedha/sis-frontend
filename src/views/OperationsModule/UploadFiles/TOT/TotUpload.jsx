@@ -315,7 +315,6 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
-    console.log(data);
 
     processFileData(data, "Fileupload");
   };
@@ -872,8 +871,8 @@ const TotUpload = (props) => {
           setUploadStatus("File successfully uploaded!");
           setUploadResult(uploadData);
 
-          console.log("Uploaded file ID:", uploadData.id);
-          console.log("Uploaded file URL:", uploadData.url);
+          // console.log("Uploaded file ID:", uploadData.id);
+          // console.log("Uploaded file URL:", uploadData.url);
 
           // Store the file info in your database or state as needed
           storeFileInfoInDatabase(uploadData);
@@ -899,7 +898,6 @@ const TotUpload = (props) => {
     try {
       // Here you would make another API call to store the file information
       // in your database along with any metadata you need
-      console.log("Storing file info in database:", fileInfo);
 
       // Example: You might want to associate this file with the current user,
       // add timestamps, or link it to specific data
@@ -967,7 +965,6 @@ const TotUpload = (props) => {
             classNamePrefix="select"
             value={options.find((option) => option.value === uploadType)}
             onChange={(selectedOption) => {
-              console.log(selectedOption.value);
               setUploadType(selectedOption.value);
             }}
             options={filteypeoptions}
