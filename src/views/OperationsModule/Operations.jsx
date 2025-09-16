@@ -1582,15 +1582,15 @@ const Operations = ({
         upskill: true,
       });
     }
-    // if (activeTab.key == "collegePitches") {
-    //   setUploadModal({
-    //     tot: false,
-    //     myData: false,
-    //     mentorship: false,
-    //     upskill: false,
-    //     pitching: true,
-    //   });
-    // }
+    if (activeTab.key == "collegePitches") {
+      setUploadModal({
+        tot: false,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        pitching: true,
+      });
+    }
   };
 
   const SampleFile = () => {
