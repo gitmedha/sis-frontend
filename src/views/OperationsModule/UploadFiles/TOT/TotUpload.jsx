@@ -3,7 +3,7 @@ import { Button, Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
-import { queryBuilder } from "../../../../apis";
+import Select from "react-select";
 import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
 import {
   FaEdit,
@@ -226,6 +226,10 @@ const Styled = styled.div`
 const options = [
   { value: "feild_activity", label: "Field Activity" },
   { value: "collegePitch", label: "Pitching" },
+];
+const filteypeoptions = [
+  { value: "newFileUpload", label: "New File Upload" },
+  { value: "newData", label: "New Data Entry" }
 ];
 
 const TotUpload = (props) => {
@@ -663,29 +667,29 @@ const TotUpload = (props) => {
   };
   // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
   // const [fileName_new, setFileName_new] = useState("")
-  const [notUploadSuccesFully_newfile,setNotUploadSuccesFully_newfile]=useState('')
+  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
   // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
   const [validationResult, setValidationResult] = useState({
-  isValid: false,
-  message: "",
-  headers: []
-});
+    isValid: false,
+    message: "",
+    headers: []
+  });
   const [fileForUpload, setFileForUpload] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState("");
   const [uploadResult, setUploadResult] = useState(null);
   const [fileNameError, setFileNameError] = useState("");
-  
+
   // Create refs for file inputs at the top with your other refs
   const fileInputRef = useRef(null);
   const fileInputRefNew = useRef(null);
-  
+
   // ... your existing code
   const expectedFileName = "ToT-Template.xlsx";
-  
+
   // ... your existing code
-  
+
   // Add this function to reset the new file input
   const resetNewFileInput = () => {
     if (fileInputRefNew.current) {
@@ -704,7 +708,7 @@ const TotUpload = (props) => {
     setUploadResult(null);
     setFileNameError("");
   };
-  
+
   // Function to validate file name
   const validateFileName = (fileName) => {
     if (fileName !== expectedFileName) {
@@ -714,7 +718,7 @@ const TotUpload = (props) => {
     setFileNameError("");
     return true;
   };
-  
+
   const handleFileChangeNewFile = (event) => {
     const fileInput = event.target;
     const file = fileInput.files[0];
@@ -754,12 +758,12 @@ const TotUpload = (props) => {
         const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         const headers = results[0];
-        
+
         // Reset file input to allow re-uploading the same file
         if (fileInputRefNew.current) {
           fileInputRefNew.current.value = "";
         }
-        
+
         // Your validation logic
         if (headers.length !== expectedColumns.length) {
           const message = `Array length mismatch. Headers has ${headers.length} items, expected ${expectedColumns.length} items.`;
@@ -831,17 +835,17 @@ const TotUpload = (props) => {
 
     reader.readAsBinaryString(file);
   };
-  
+
   // Function to upload file using your existing GraphQL mutation
- // Function to upload file using your existing GraphQL mutation
-const uploadFileToServer = async () => {
+  // Function to upload file using your existing GraphQL mutation
+  const uploadFileToServer = async () => {
     if (!fileForUpload) return;
-    
+
     setIsUploading(true);
     setUploadStatus("Uploading file...");
     setUploadProgress(0);
     setUploadResult(null);
-    
+
     try {
       // Simulate progress
       const progressInterval = setInterval(() => {
@@ -853,24 +857,24 @@ const uploadFileToServer = async () => {
           return prev + 10;
         });
       }, 300);
-      
+
       // Use your existing uploadFile function
       const result = await uploadFile(fileForUpload);
-      
+
       clearInterval(progressInterval);
       setUploadProgress(100);
-      
+
       // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } } }
       if (result.data && result.data.data && result.data.data.upload) {
         const uploadData = result.data.data.upload;
-        
+
         if (uploadData.id && uploadData.url) {
           setUploadStatus("File successfully uploaded!");
           setUploadResult(uploadData);
-          
+
           console.log("Uploaded file ID:", uploadData.id);
           console.log("Uploaded file URL:", uploadData.url);
-          
+
           // Store the file info in your database or state as needed
           storeFileInfoInDatabase(uploadData);
         } else {
@@ -880,7 +884,7 @@ const uploadFileToServer = async () => {
         console.error("Unexpected response structure:", result);
         throw new Error('Upload failed: Unexpected response structure from server');
       }
-      
+
     } catch (error) {
       console.error('Upload error:', error);
       setUploadStatus(`Upload failed: ${error.message}`);
@@ -889,30 +893,50 @@ const uploadFileToServer = async () => {
       setIsUploading(false);
     }
   };
-  
+
   // Function to store file info in your database
   const storeFileInfoInDatabase = async (fileInfo) => {
     try {
       // Here you would make another API call to store the file information
       // in your database along with any metadata you need
       console.log("Storing file info in database:", fileInfo);
-      
+
       // Example: You might want to associate this file with the current user,
       // add timestamps, or link it to specific data
       // await yourApiCallToStoreFileInfo(fileInfo);
-      
+
     } catch (error) {
       console.error('Database storage error:', error);
     }
   };
-  
-   const isUploadButtonEnabled = validationResult.isValid && 
-                               !fileNameError && 
-                               fileForUpload && 
-                               !isUploading;
 
-  const cancelNewfileupload =()=>{
-    
+  const isUploadButtonEnabled = validationResult.isValid &&
+    !fileNameError &&
+    fileForUpload &&
+    !isUploading;
+
+  const cancelNewfileupload = () => {
+    // Reset all state values related to file upload
+    setValidationResult({
+      isValid: false,
+      message: "",
+      headers: [],
+      fileName: ""
+    });
+    setFileForUpload(null);
+    setIsUploading(false);
+    setUploadProgress(0);
+    setUploadStatus("");
+    setUploadResult(null);
+    setFileNameError("");
+
+    // Clear the file input
+    if (fileInputRefNew.current) {
+      fileInputRefNew.current.value = "";
+    }
+
+    // Switch back to new data entry mode
+    setUploadType('newData');
   }
   return (
     <>
@@ -933,23 +957,22 @@ const uploadFileToServer = async () => {
             <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
           </Modal.Title>
         </Modal.Header>
-        <div className="mb-4  col-4" style={{marginLeft:'2rem'}}>
-          <label htmlFor="uploadType" className="form-label bold text-primary">
+        <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
+          <label htmlFor="uploadType" className="text--primary bebas-normal">
             Select Upload Type
           </label>
-          <select
+          <Select
             id="uploadType"
-            className="form-select"
-            value={uploadType}
-            onChange={(e) => {
-              console.log(e.target.value);
-
-              setUploadType(e.target.value)
+            className="basic-single"
+            classNamePrefix="select"
+            value={options.find((option) => option.value === uploadType)}
+            onChange={(selectedOption) => {
+              console.log(selectedOption.value);
+              setUploadType(selectedOption.value);
             }}
-          >
-            <option value="newFileUpload">New File Upload</option>
-            <option value="newData">New Data Entry</option>
-          </select>
+            options={filteypeoptions}
+            placeholder="Choose upload type..."
+          />
         </div>
         {uploadType == "newData" && <Styled>
           {showForm ? (
@@ -1097,137 +1120,133 @@ const uploadFileToServer = async () => {
           )}
         </Styled>}
 
-         {uploadType !== "newData" && (
-        <Styled>
-          <Modal.Body className="bg-white">
-            <div className="uploader-container">
-              <div className="imageUploader">
-                <p className="upload-helper-text">Click Here To Upload</p>
-                <div className="upload-helper-icon">
-                  <FaFileUpload size={30} color={"#257b69"} />
+        {uploadType !== "newData" && (
+          <Styled>
+            <Modal.Body className="bg-white">
+              <div className="uploader-container">
+                <div className="imageUploader">
+                  <p className="upload-helper-text">Click Here To Upload</p>
+                  <div className="upload-helper-icon">
+                    <FaFileUpload size={30} color={"#257b69"} />
+                  </div>
+                  <input
+                    ref={fileInputRefNew}
+                    accept=".xlsx"
+                    type="file"
+                    multiple={false}
+                    name="file-uploader"
+                    onChange={handleFileChangeNewFile}
+                    className="uploaderInput"
+                  />
                 </div>
-                <input
-                  ref={fileInputRefNew}
-                  accept=".xlsx"
-                  type="file"
-                  multiple={false}
-                  name="file-uploader"
-                  onChange={handleFileChangeNewFile}
-                  className="uploaderInput"
-                />
+                <label className="text--primary latto-bold text-center">
+                  Upload File
+                </label>
               </div>
-              <label className="text--primary latto-bold text-center">
-                Upload File
-              </label>
-            </div>
-            <div className="d-flex justify-content-center gap-2">
-              <Button 
-                      variant="btn btn-danger " 
-                      onClick={()=>cancelNewfileupload()}
-                      
-                    >
-                      {/* <i className="fas fa-cloud-upload-alt me-2"></i> */}
-                      cancel
-                    </Button>
+              <div className="d-flex justify-content-center gap-2">
+                <Button
+                  variant="btn btn-danger "
+                  onClick={() => cancelNewfileupload()}
 
-                 <Button 
-                      variant="success" 
-                      onClick={uploadFileToServer}
-                      disabled={!isUploadButtonEnabled}
-                    >
-                      {/* <i className="fas fa-cloud-upload-alt me-2"></i> */}
-                      Upload File
-                    </Button>
-            </div>
-            
-            
-            {validationResult.fileName && (
-              <div className="mt-3 ">
-                <h6 className="text--primary text-center">File: {validationResult.fileName}</h6>
-                
-                {/* Show file name error if exists */}
-                {fileNameError && (
-                  <div className="alert alert-danger">
-                    <i className="fas fa-exclamation-triangle me-2"></i>
-                    {fileNameError}
-                  </div>
-                )}
-                
-                {/* Show validation result */}
-                <div className={`alert ${validationResult.isValid ? 'alert-success' : 'alert-danger'}`}>
-                  {validationResult.message}
-                </div>
-                
-                {/* Show upload button only when file is valid AND name is correct */}
-                
-                {validationResult.isValid && !isUploading && !uploadResult && (
-                  <div className="text-center mt-3">
-                   
-                    {!isUploadButtonEnabled && !fileNameError && (
-                      <p className="text-muted small mt-2">
-                        Please fix all validation issues before uploading
-                      </p>
-                    )}
-                  </div>
-                )}
-                
-                {/* Show progress when uploading */}
-                {isUploading && (
-                  <div className="mt-3">
-                    <div className="progress">
-                      <div 
-                        className="progress-bar progress-bar-striped progress-bar-animated" 
-                        role="progressbar" 
-                        style={{ width: `${uploadProgress}%` }}
-                        aria-valuenow={uploadProgress} 
-                        aria-valuemin="0" 
-                        aria-valuemax="100"
-                      >
-                        {uploadProgress}%
-                      </div>
+                >
+                  {/* <i className="fas fa-cloud-upload-alt me-2"></i> */}
+                  cancel
+                </Button>
+
+                <Button
+                  variant="success"
+                  onClick={uploadFileToServer}
+                  disabled={!isUploadButtonEnabled}
+                >
+                  {/* <i className="fas fa-cloud-upload-alt me-2"></i> */}
+                  Upload File
+                </Button>
+              </div>
+
+
+              {validationResult.fileName && (
+                <div className="mt-3 ">
+                  <h6 className="text--primary text-center">File: {validationResult.fileName}</h6>
+
+                  {/* Show file name error if exists */}
+                  {/* Combined error display */}
+                  {(fileNameError || validationResult.message) && (
+                    <div className={`alert ${fileNameError ? 'alert-danger' : validationResult.isValid ? 'alert-success' : 'alert-danger'}`}>
+                      <i className={`fas ${fileNameError || !validationResult.isValid ? 'fa-exclamation-triangle' : 'fa-check-circle'} me-2`}></i>
+                      {fileNameError || validationResult.message}
                     </div>
-                    <p className="text-center mt-2">{uploadStatus}</p>
-                  </div>
-                )}
-                
-                {/* Show success message after upload */}
-                {uploadResult && (
-                  <div className="alert alert-success mt-3">
-                    <i className="fas fa-check-circle me-2"></i>
-                    File successfully uploaded!
-                    <div className="mt-2">
-                      <small>File ID: {uploadResult.id}</small>
-                      <br />
-                      <small>
+                  )}
+
+                  {/* Show upload button only when file is valid AND name is correct */}
+
+                  {validationResult.isValid && !isUploading && !uploadResult && (
+                    <div className="text-center mt-3">
+
+                      {!isUploadButtonEnabled && !fileNameError && (
+                        <p className="text-muted small mt-2">
+                          Please fix all validation issues before uploading
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Show progress when uploading */}
+                  {isUploading && (
+                    <div className="mt-3">
+                      <div className="progress">
+                        <div
+                          className="progress-bar progress-bar-striped progress-bar-animated"
+                          role="progressbar"
+                          style={{ width: `${uploadProgress}%` }}
+                          aria-valuenow={uploadProgress}
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        >
+                          {uploadProgress}%
+                        </div>
+                      </div>
+                      <p className="text-center mt-2">{uploadStatus}</p>
+                    </div>
+                  )}
+
+                  {/* Show success message after upload */}
+                  {uploadResult && (
+                    <div className="alert alert-success mt-3">
+                      <i className="fas fa-check-circle"></i>
+                      File successfully uploaded!
+                      <div className="mt-2">
+                        <small>File ID: {uploadResult.id}</small>
+                        <br />
+                        {/* <small>
                         File URL:{" "}
                         <a href={uploadResult.url} target="_blank" rel="noopener noreferrer">
                           {uploadResult.url}
                         </a>
-                      </small>
+                      </small> */}
+                      </div>
                     </div>
-                  </div>
-                )}
-                
-                {/* Show error message if upload failed */}
-                {uploadStatus.includes('failed') && (
-                  <div className="alert alert-danger mt-3">
-                    <i className="fas fa-exclamation-triangle me-2"></i>
-                    {uploadStatus}
-                  </div>
-                )}
-                
-                <button 
-                  className="btn btn-secondary mt-2"
-                  onClick={resetNewFileInput}
-                  disabled={isUploading}
-                >
-                  <i className="fas fa-redo"></i> Upload Different File
-                </button>
-              </div>
-            )}
-          </Modal.Body>
-        </Styled>
-      )}
+                  )}
+
+                  {/* Show error message if upload failed */}
+                  {uploadStatus.includes('failed') && (
+                    <div className="alert alert-danger mt-3">
+                      <i className="fas fa-exclamation-triangle me-2"></i>
+                      {uploadStatus}
+                    </div>
+                  )}
+
+                  <button
+                    className="btn btn-secondary mt-2"
+                    onClick={resetNewFileInput}
+                    disabled={isUploading}
+                  >
+                    <i className="fas fa-redo"></i> Upload Different File
+                  </button>
+                </div>
+              )}
+            </Modal.Body>
+          </Styled>
+        )}
 
 
       </Modal>
