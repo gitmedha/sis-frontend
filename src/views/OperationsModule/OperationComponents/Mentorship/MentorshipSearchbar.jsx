@@ -129,7 +129,7 @@ const MentorshipSearchbar = ({ searchOperationTab, resetSearch }) => {
 
   const setDropdownValues = async (fieldName) => {
     try {
-      const { data } = await getFieldValues(fieldName, "mentorships");
+      const { data } = await getFieldValues(fieldName, "mentorship");
       if (fieldName === "mentor_name") setMentorNameOption(data);
       else if (fieldName === "mentor_domain") setMentorDomain(data);
       else if (fieldName === "mentor_company_name") setMentorCompanyName(data);
