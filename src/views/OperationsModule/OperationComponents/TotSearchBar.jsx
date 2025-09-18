@@ -241,6 +241,12 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       if (setters[fieldName]) {
         setters[fieldName](data);
       }
+      else if (fieldName === "gender"){
+        setGenderOptions(data);
+      }
+      else if (fieldName === "user_name"){
+        setUserOptions(data);
+      }
     } catch (error) {
       console.error(error);
     }

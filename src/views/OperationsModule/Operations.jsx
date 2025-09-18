@@ -264,6 +264,10 @@ const Operations = ({
         Header: "End Date",
         accessor: "end_date",
       },
+      {
+        Header:"Gender",
+        accessor:"gender"
+      }
     ],
     []
   );
@@ -887,6 +891,7 @@ const Operations = ({
             case "city":
             case "project_name":
             case "partner_dept":
+            case "gender":
               sortByField = sortBy[0].id;
               break;
 
@@ -1388,7 +1393,6 @@ const Operations = ({
           }
           startFrom++;
         }
-
         setSearchedData(filteredArray);
       }
     },
@@ -1733,6 +1737,7 @@ const Operations = ({
                   onPageSizeChange={setPaginationPageSize}
                   paginationPageIndex={paginationPageIndex}
                   onPageIndexChange={setPaginationPageIndex}
+                  // allDataCount={optsAggregate.count}
                 />
               </>
             )
