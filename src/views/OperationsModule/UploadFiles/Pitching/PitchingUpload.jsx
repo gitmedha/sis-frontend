@@ -257,7 +257,6 @@ const PitchingUpload = (props) => {
       });
   
       const currentUser = localStorage.getItem("user_id");
-      console.log(assigneOption);
       
       const srmcheck = assigneOption.find(
         (user) => user.name === newItem["SRM Name"]
@@ -284,8 +283,7 @@ const PitchingUpload = (props) => {
       const phoneValid = phoneRegex.test(newItem["Phone"]);
       const whatsappValid = phoneRegex.test(newItem["WhatsApp Number"]);
       const emailValid = emailRegex.test(newItem["Email ID"]);
-      console.log(Date,Date.includes("NaN"));
-      console.log(srmcheck);
+     
       
       if (
         !newItem["Student Name"] ||
@@ -296,18 +294,19 @@ const PitchingUpload = (props) => {
         !isValidProgramName(newItem["Program name"]) ||
         (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
       ) {
-        console.log("Validation failed for row", index + 1, "with data:", newItem);
+        
         const errors = [];
         if (!newItem["Student Name"]) errors.push("Student Name is required");
         if (!newItem["Course Name"]) errors.push("Course Name is required");
         if (!phoneValid) errors.push("Phone number must be 10 digits");
-        if (!newItem["Institution"] || typeof newItem["Institution"] !== 'string') errors.push("Invalid or empty Institution name");
+        if (!newItem["Institution"]) errors.push("Invalid or empty Institution name");
         else if (!instituteId) errors.push("Institution name not found");
         if (!emailValid) errors.push("Invalid Email format");
         if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
         if (Date.includes("NaN")) errors.push("Invalid Date of Pitching, expected YYYY/MM/DD");
         if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
-
+      
+        
         notFoundData.push({
           index: index + 1,
           date_of_pitching: newItem['Date of Pitching'] || "",
