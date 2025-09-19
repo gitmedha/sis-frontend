@@ -438,6 +438,37 @@ div::-webkit-scrollbar-thumb {
   border-left: 2px dashed #ddd;
   padding-left: 6px;
 }
+
+.clone-btn {
+  padding: 6px 16px;
+  background-color: #4a90e2; /* primary blue */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clone-btn:hover:not(:disabled) {
+  background-color: #357ab8;
+  transform: translateY(-1px);
+}
+
+.clone-btn:active:not(:disabled) {
+  background-color: #2d6391;
+  transform: translateY(0);
+}
+
+.clone-btn:disabled,
+.clone-btn.btn-disabled {
+  background-color: #e0e0e0;
+  color: #666;
+  cursor: not-allowed;
+}
+
+
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';

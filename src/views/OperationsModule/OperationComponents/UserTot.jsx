@@ -39,7 +39,6 @@ const UserTot = (props) => {
       end_date:"",
       email:""
     },
-    // Add more initial rows as needed
   ]);
   const [rows, setRows] = useState([
     {
@@ -85,8 +84,9 @@ const UserTot = (props) => {
     end_date:"",
     email:""
   });
-  // 
+  
   const [showLimit, setshowLimit] = useState(false);
+  
   function checkEmptyValues(obj) {
     const result = {};
   
@@ -120,8 +120,22 @@ const UserTot = (props) => {
   
     return false;
   }
+
+  // Function to check if mandatory fields are filled for cloning
+  const areMandatoryFieldsFilled = (row) => {
+    const mandatoryFields = [
+      'user_name', 'state', 'city', 'project_name', 
+      'start_date', 'end_date', 'trainer_1', 
+      'certificate_given', 'project_type'
+    ];
+    
+    const emptyValues = checkEmptyValues(row);
+    
+    return mandatoryFields.every(field => !emptyValues[field]);
+  };
+
   const addRow = () => {
-    let value =checkEmptyValues(rows[rows.length-1])
+    let value = checkEmptyValues(rows[rows.length-1])
     if(value.student_name || value.gender){
       let obj={...classValue,[`class${[rows.length-1]}`]:value}
       return setclassValue(obj)
@@ -132,7 +146,6 @@ const UserTot = (props) => {
     } else {
       const newRowWithId = { ...newRow, id: rows.length + 1 };
       setRows([...rows, newRowWithId]);
-      // setNewRow({ id: '', name: '', age: '' });    
     }
   };
 
@@ -153,6 +166,7 @@ const UserTot = (props) => {
     }
     updateRow(rowid, key, options?.value);
   };
+  
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
@@ -239,21 +253,16 @@ const UserTot = (props) => {
   };
 
   useEffect(() => {
-    
     let isEmptyValuFound=false
-  // participant_name,age,gender,mobile,designation,college_name,project_name,partner_dept,module_name,trainer_2
- 
+    
     for (let row of rows) {
       for(let key in row){
-         // end_date,certificate_received,issued_org,assigned_to && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2')
         if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
           if(isEmptyValue(row[key])){
             isEmptyValuFound=true
           }
-         
         }
       }
-     
     }
     setDisableSaveButton(isEmptyValuFound)
   }, [rows]);
@@ -374,22 +383,32 @@ const UserTot = (props) => {
   };
 
   const CloneTheValues = () => {
-  if (rows.length >= 10) {
-    setAlert("You can't clone more than 10 items.", "error");
-    return;
-  }
+    if (rows.length >= 10) {
+      setAlert("You can't clone more than 10 items.", "error");
+      return;
+    }
 
-  // Get the last row
-  const lastRow = rows[rows.length - 1];
+    // Get the last row
+    const lastRow = rows[rows.length - 1];
+    
+    // Check if mandatory fields are filled using existing checkEmptyValues function
+    if (!areMandatoryFieldsFilled(lastRow)) {
+      setAlert("Please fill all mandatory fields in the previous row before cloning.", "error");
+      return;
+    }
 
-  // Create a deep copy with new id
-  const clonedRow = {
-    ...lastRow,
-    id: rows.length + 1,  // new unique id
+    // Create a deep copy with new id
+    const clonedRow = {
+      ...JSON.parse(JSON.stringify(lastRow)), // Deep clone
+      id: rows.length + 1,  // new unique id
+      user_name: "", // Clear the name field
+    };
+
+    setRows([...rows, clonedRow]);
   };
 
-  setRows([...rows, clonedRow]);
-};
+  // Check if clone button should be disabled
+  const isCloneDisabled = rows.length === 0 || !areMandatoryFieldsFilled(rows[rows.length - 1]);
 
   return (
     <Modal
@@ -410,9 +429,7 @@ const UserTot = (props) => {
           className="d-flex align-items-center justify-content-between"
         >
           <div className="d-flex justify-content-between">
-            {/* <h2 className="section-header">Basic Info</h2> */}
             <div className="d-flex ">
-             
               <h2 className="text--primary bebas-thick mb-0">
                 {props.id ? props.full_name : "Add New TOT Data"}
               </h2>
@@ -455,7 +472,6 @@ const UserTot = (props) => {
             <table className="create_data_table">
               <thead>
                 <tr>
-                  {/* <th className="id">ID</th> */}
                   <th>Participant Name *</th>
                   <th>Email id</th>
                   <th>Age </th>
@@ -474,7 +490,6 @@ const UserTot = (props) => {
                   <th>Trainer 2 </th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
-                  {/* <th>New Entry</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -492,11 +507,19 @@ const UserTot = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    rows={rows}
                   />
                 ))}
               </tbody>
             </table>
-            <div className="d-flex justify-content-end" onClick={()=>CloneTheValues()} style={{position:'relative', left:'246%', marginTop:'15px'}}><button>  Clone </button>
+            <div className="d-flex justify-content-end" style={{position:'relative', left:'145%', marginTop:'15px'}}>
+              <button 
+                onClick={CloneTheValues}
+                disabled={isCloneDisabled}
+                className={`clone-btn ${isCloneDisabled ? "btn-disabled" : ""}`}
+              >
+                Clone
+              </button>
             </div>
           </div>
           <div className="d-flex justify-content-end between_class bulk_add_actions">
@@ -518,7 +541,6 @@ const UserTot = (props) => {
           </div>
         </div>
       </Modal.Body>
-
     </Modal>
   );
 };
